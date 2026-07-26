@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #dc2626;
+  --color-primary-light: #ef4444;
+  --color-bg-dark: #fef2f2;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #fff5f5;
+  --color-border: #fecaca;
+  --color-border-light: #fca5a5;
+  --color-text-primary: #111827;
+  --color-text-secondary: #374151;
+  --color-text-muted: #9ca3af;
+  --color-back: #2563eb;
+  --color-lay: #dc2626;
+  --color-profit: #16a34a;
+  --color-loss: #dc2626;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #fca5a5 transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #fef2f2;
+  min-height: 100vh;
+  color: var(--color-text-primary);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Transitions ── */
+a, button {
+  transition: opacity 0.15s ease, transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+.glass-card {
+  background: #ffffff;
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  box-shadow: 0 1px 6px rgba(220, 38, 38, 0.07), 0 4px 16px rgba(220, 38, 38, 0.04);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.glass-card:hover {
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.12);
+}
+
+/* ── Animations ── */
+.fade-in {
+  animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* staggered children */
+.stagger > * { animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) both; }
+.stagger > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger > *:nth-child(2) { animation-delay: 0.10s; }
+.stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger > *:nth-child(4) { animation-delay: 0.20s; }
+.stagger > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger > *:nth-child(6) { animation-delay: 0.30s; }
+
+/* number value change flash */
+@keyframes flash {
+  0%   { background: rgba(220,38,38,0.12); }
+  100% { background: transparent; }
+}
+.value-flash {
+  animation: flash 0.5s ease-out;
+  border-radius: 4px;
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.8); }
+}
