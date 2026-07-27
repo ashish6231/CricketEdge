@@ -60,10 +60,10 @@ export default function AdminAuditLogs() {
             <div className="glass-card rounded-2xl overflow-hidden">
               <div className="divide-y divide-border/40">
                 {logs.map(log => (
-                  <div key={log._id}>
+                  <div key={log.id}>
                     <div
                       className="px-4 py-3 flex items-start gap-3 hover:bg-red-50/20 cursor-pointer transition-colors"
-                      onClick={() => setExpanded(expanded === log._id ? null : log._id)}
+                      onClick={() => setExpanded(expanded === log.id ? null : log.id)}
                     >
                       <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-bold mt-0.5 ${ACTION_COLORS[log.action] || 'bg-gray-100 text-gray-600'}`}>
                         {log.action}
@@ -78,7 +78,7 @@ export default function AdminAuditLogs() {
                       </div>
                       <div className="flex-shrink-0 text-xs text-text-muted">{fmtDateTime(log.createdAt)}</div>
                     </div>
-                    {expanded === log._id && log.changes && (
+                    {expanded === log.id && log.changes && (
                       <div className="px-4 pb-3 ml-3">
                         <pre className="text-xs bg-gray-50 rounded-xl p-3 overflow-x-auto text-text-secondary border border-border/40">
                           {JSON.stringify(log.changes, null, 2)}

@@ -13,13 +13,7 @@ async function fetchAPI(endpoint, options = {}) {
     })
     if (!res.ok) {
       const errData = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }))
-      // Dusre device pe login ho gaya — auto logout
-      if (res.status === 401 && errData.code === 'SESSION_REPLACED') {
-        localStorage.removeItem('auth_token')
-        window.location.href = '/login?reason=session_replaced'
-        return
-      }
-      throw { status: res.status, detail: errData.detail || errData.message || errData.error || `HTTP ${res.status}` }
+      throw { status: res.status, detail: errData.detail || errData.message || errData.error || `HTTP ${res.status}`, code: errData.code }
     }
     return await res.json()
   } catch (err) {
@@ -128,9 +122,13 @@ export async function getAuthStatus() {
   if (!token) return { isLoggedIn: false }
   try {
     const res = await fetchAPI('/auth/me')
+    if (!res) return { isLoggedIn: false }
     return { isLoggedIn: true, email: res.user?.email, user: res.user }
-  } catch {
-    localStorage.removeItem('auth_token')
+  } catch (err) {
+    if (err.detail !== 'Network error') {
+      localStorage.removeItem('auth_token')
+      window.location.href = '/login'
+    }
     return { isLoggedIn: false }
   }
 }

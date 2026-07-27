@@ -55,7 +55,7 @@ export default function AdminCoupons() {
 
   const toggle = async (c) => {
     try {
-      await adminUpdateCoupon(c._id, { isActive: !c.isActive })
+      await adminUpdateCoupon(c.id, { isActive: !c.isActive })
       load()
     } catch (e) {
       setError(e.detail || 'Update failed')
@@ -157,7 +157,7 @@ export default function AdminCoupons() {
                   </thead>
                   <tbody>
                     {coupons.map(c => (
-                      <tr key={c._id} className="border-b border-border/40 last:border-0 hover:bg-red-50/20">
+                      <tr key={c.id} className="border-b border-border/40 last:border-0 hover:bg-red-50/20">
                         <td className="px-4 py-3">
                           <div className="font-mono font-bold text-text-primary">{c.code}</div>
                           <div className="text-xs text-text-muted">{c.description}</div>

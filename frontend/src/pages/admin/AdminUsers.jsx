@@ -35,6 +35,7 @@ export default function AdminUsers({ isSuperAdmin }) {
   const [acting, setActing]     = useState(null)
   const [expanded, setExpanded] = useState(null)
   const [error, setError]       = useState('')
+  const [proMonths, setProMonths] = useState({})
 
   const load = useCallback(() => {
     setLoading(true)
@@ -100,43 +101,42 @@ export default function AdminUsers({ isSuperAdmin }) {
                 ? <tr><td colSpan={6} className="text-center py-10"><LoaderCircle className="animate-spin text-primary inline" /></td></tr>
                 : users.map(u => (
                   <>
-                    <tr key={u._id} className="border-b border-border/40 last:border-0 hover:bg-red-50/30 transition-colors">
+                    <tr key={u.id} className="border-b border-border/40 last:border-0 hover:bg-red-50/30 transition-colors">
                       <td className="px-4 py-3">
                         <div className="font-semibold text-text-primary">{u.name}</div>
                         <div className="text-xs text-text-muted">{u.email}</div>
                       </td>
                       <td className="px-4 py-3"><Badge value={u.role} map={ROLE_MAP} /></td>
-                      <td className="px-4 py-3"><Badge value={u.subscription?.planSlug || 'free'} map={PLAN_MAP} /></td>
+                      <td className="px-4 py-3"><Badge value={u.subPlanSlug || 'free'} map={PLAN_MAP} /></td>
                       <td className="px-4 py-3"><Badge value={u.status || 'active'} map={STATUS_MAP} /></td>
                       <td className="px-4 py-3 text-text-muted text-xs">{fmtDate(u.createdAt)}</td>
                       <td className="px-4 py-3">
-                        <button onClick={() => setExpanded(expanded === u._id ? null : u._id)}
+                        <button onClick={() => setExpanded(expanded === u.id ? null : u.id)}
                           className="text-xs font-semibold text-primary hover:underline">
-                          {expanded === u._id ? 'Close' : 'Manage'}
+                          {expanded === u.id ? 'Close' : 'Manage'}
                         </button>
                       </td>
                     </tr>
-                    {expanded === u._id && (
-                      <tr key={`${u._id}-exp`} className="bg-red-50/20">
+                    {expanded === u.id && (
+                      <tr key={`${u.id}-exp`} className="bg-red-50/20">
                         <td colSpan={6} className="px-4 py-3">
                           <div className="flex flex-wrap gap-2 items-center">
-                            {/* Status actions — only for regular users */}
                             {u.role === 'user' && (
                               <>
                                 {u.status !== 'active' && (
-                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u._id, 'active', 'Admin action')}
+                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u.id, 'active', 'Admin action')}
                                     className="px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-700 disabled:opacity-50">
                                     ✓ Activate
                                   </button>
                                 )}
                                 {u.status !== 'banned' && (
-                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u._id, 'banned', 'Admin action')}
+                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u.id, 'banned', 'Admin action')}
                                     className="px-3 py-1 rounded-lg text-xs font-semibold bg-red-100 text-red-600 disabled:opacity-50">
                                     ✕ Ban
                                   </button>
                                 )}
                                 {u.status !== 'suspended' && (
-                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u._id, 'suspended', 'Admin action')}
+                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u.id, 'suspended', 'Admin action')}
                                     className="px-3 py-1 rounded-lg text-xs font-semibold bg-yellow-100 text-yellow-700 disabled:opacity-50">
                                     ⏸ Suspend
                                   </button>
@@ -144,17 +144,24 @@ export default function AdminUsers({ isSuperAdmin }) {
                               </>
                             )}
 
-                            {/* Plan toggle — only for regular users */}
                             {u.role === 'user' && (
                               <>
-                                {u.subscription?.planSlug !== 'pro' && (
-                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserPlan, u._id, 'pro', 'Admin grant', 1)}
-                                    className="px-3 py-1 rounded-lg text-xs font-semibold bg-yellow-100 text-yellow-700 disabled:opacity-50">
-                                    ⭐ Grant Pro (1mo)
-                                  </button>
+                                {u.subPlanSlug !== 'pro' && (
+                                  <div className="flex items-center gap-1.5">
+                                    <select
+                                      value={proMonths[u.id] || 1}
+                                      onChange={e => setProMonths(p => ({ ...p, [u.id]: +e.target.value }))}
+                                      className="rounded-lg border border-border px-2 py-1 text-xs bg-white outline-none">
+                                      {[1,2,3,6,12].map(m => <option key={m} value={m}>{m} month{m > 1 ? 's' : ''}</option>)}
+                                    </select>
+                                    <button disabled={!!acting} onClick={() => act(adminUpdateUserPlan, u.id, 'pro', 'Admin grant', proMonths[u.id] || 1)}
+                                      className="px-3 py-1 rounded-lg text-xs font-semibold bg-yellow-100 text-yellow-700 disabled:opacity-50">
+                                      ⭐ Grant Pro
+                                    </button>
+                                  </div>
                                 )}
-                                {u.subscription?.planSlug === 'pro' && (
-                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserPlan, u._id, 'free', 'Admin revoke')}
+                                {u.subPlanSlug === 'pro' && (
+                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserPlan, u.id, 'free', 'Admin revoke')}
                                     className="px-3 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-600 disabled:opacity-50">
                                     ↓ Revoke Pro
                                   </button>
@@ -162,18 +169,37 @@ export default function AdminUsers({ isSuperAdmin }) {
                               </>
                             )}
 
-                            {/* Role change — superadmin only */}
                             {isSuperAdmin && u.role === 'user' && (
-                              <button disabled={!!acting} onClick={() => act(adminUpdateUserRole, u._id, 'admin')}
+                              <button disabled={!!acting} onClick={() => act(adminUpdateUserRole, u.id, 'admin')}
                                 className="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-100 text-blue-700 disabled:opacity-50">
-                                ↑ Make Admin
+                                ↑ Make Admin (Pro 1yr)
                               </button>
                             )}
                             {isSuperAdmin && u.role === 'admin' && (
-                              <button disabled={!!acting} onClick={() => act(adminUpdateUserRole, u._id, 'user')}
-                                className="px-3 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-600 disabled:opacity-50">
-                                ↓ Demote to User
-                              </button>
+                              <>
+                                {u.status !== 'banned' && (
+                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u.id, 'banned', 'Superadmin action')}
+                                    className="px-3 py-1 rounded-lg text-xs font-semibold bg-red-100 text-red-600 disabled:opacity-50">
+                                    ✕ Ban
+                                  </button>
+                                )}
+                                {u.status !== 'suspended' && (
+                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u.id, 'suspended', 'Superadmin action')}
+                                    className="px-3 py-1 rounded-lg text-xs font-semibold bg-yellow-100 text-yellow-700 disabled:opacity-50">
+                                    ⏸ Suspend
+                                  </button>
+                                )}
+                                {u.status !== 'active' && (
+                                  <button disabled={!!acting} onClick={() => act(adminUpdateUserStatus, u.id, 'active', 'Superadmin action')}
+                                    className="px-3 py-1 rounded-lg text-xs font-semibold bg-green-100 text-green-700 disabled:opacity-50">
+                                    ✓ Activate
+                                  </button>
+                                )}
+                                <button disabled={!!acting} onClick={() => act(adminUpdateUserRole, u.id, 'user')}
+                                  className="px-3 py-1 rounded-lg text-xs font-semibold bg-gray-100 text-gray-600 disabled:opacity-50">
+                                  ↓ Demote (revoke Pro)
+                                </button>
+                              </>
                             )}
 
                             {acting && <LoaderCircle size={14} className="animate-spin text-primary" />}
