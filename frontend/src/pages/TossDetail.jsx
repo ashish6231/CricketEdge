@@ -61,6 +61,11 @@ export default function TossDetail() {
   const sup = snap.supportMetrics || {}
   const am1 = snap.advancedMetricsV2?.team1 || {}
   const am2 = snap.advancedMetricsV2?.team2 || {}
+  const exp = snap.bookmakerExposure || {}
+  const exp1 = exp.team1 || {}
+  const exp2 = exp.team2 || {}
+  const ns = snap.netSupport || {}
+  const sent = snap.sentimentScore || {}
 
   // Back/Lay ratio prediction
   const aBack = raw.A_back_expo || am1.back || 0
@@ -81,6 +86,19 @@ export default function TossDetail() {
   const signalStr = betsGap >= 3 ? 'Strong 🔥 (Contra)' : betsGap >= 1.5 ? 'Moderate' : 'Weak'
   const signalCls = betsGap >= 3 ? 'text-profit' : betsGap >= 1.5 ? 'text-yellow-500' : 'text-text-muted'
   const hasBLData = t1Bets > 0 || t2Bets > 0
+
+  // Spoofing detector
+  const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
+  function calcFakeVolume(backVol, layVol) {
+    const matched = Math.min(backVol, layVol)
+    return { fakeBack: backVol - matched, oppFakeLay: layVol - matched, total: (backVol - matched) + (layVol - matched) }
+  }
+  const t1Fake = calcFakeVolume(am1.back || 0, am1.lay || 0)
+  const t2Fake = calcFakeVolume(am2.back || 0, am2.lay || 0)
+  const totalFake = t1Fake.total + t2Fake.total
+  const t1Pct = totalFake > 0 ? (t1Fake.total / totalFake) * 100 : 50
+  const t2Pct = 100 - t1Pct
+  const mostFakeTeam = t1Fake.total >= t2Fake.total ? t1 : t2
 
   return (
     <div className="p-4 max-w-3xl mx-auto fade-in space-y-4">
@@ -208,6 +226,102 @@ export default function TossDetail() {
               <div className={`text-xs mt-0.5 ${pnlCls(pl)}`}>{(pl ?? 0) >= 0 ? '✅ Bookie profit' : '❌ Bookie loss'}</div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Bookie ka risk */}
+      {(exp1.netExposure != null || exp2.netExposure != null) && (
+        <div className="glass-card rounded-2xl p-4">
+          <div className="text-sm font-bold text-text-secondary mb-3">Bookie ka risk — Kitna exposed hai?</div>
+          <div className="grid grid-cols-2 gap-3">
+            {[{ e: exp1, team: t1 }, { e: exp2, team: t2 }].map(({ e, team }) => (
+              <div key={team} className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+                <div className="text-sm font-medium mb-2">{e.teamName || team}</div>
+                <div className="text-xs space-y-1">
+                  <div className="flex justify-between"><span className="text-text-muted">Net exposure</span><span className={`font-bold ${pnlCls(e.netExposure)}`}>{fmtRs(e.netExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-text-muted">Back risk</span><span className="text-back">₹{fmt(e.backExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-text-muted">Lay risk</span><span className="text-loss">₹{fmt(e.layExposure)}</span></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Overall sentiment */}
+      {ns.teamA && sent.teamA && (
+        <div className="glass-card rounded-2xl p-4">
+          <div className="text-sm font-bold text-text-secondary mb-3">Overall sentiment — Logon ka mood</div>
+          <div className="mb-3">
+            {[t1, t2].map((team, i) => {
+              const key = i === 0 ? 'teamA' : 'teamB'
+              const pct = i === 0 ? ns.percentageA : ns.percentageB
+              return (
+                <div key={key} className="mb-2">
+                  <div className="flex justify-between text-xs mb-1">
+                    <span>{team}</span>
+                    <span className={`font-bold ${pct >= 50 ? 'text-profit' : 'text-loss'}`}>{pct?.toFixed(1)}%</span>
+                  </div>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: '#fee2e2' }}>
+                    <div className={`h-full rounded-full ${pct >= 50 ? 'bg-profit' : 'bg-loss'}`} style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          <div className="text-xs text-text-muted text-center">
+            Zyada support: <span className="text-profit font-bold">{sent.strongerTeam}</span> •{' '}
+            Difference: <span className="text-text-secondary">₹{fmt(sent.scoreDifference)}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Spoofing Detector */}
+      <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, #fde8e8 0%, #fdf0e8 100%)' }}>
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-2xl">🚨</span>
+          <span className="text-xl font-bold text-text-primary">Spoofing Detector</span>
+          <span className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#fee2e2', color: '#dc2626' }}>LIVE</span>
+        </div>
+        <p className="text-xs text-text-muted mb-4">Cumulative fake orders — canceled volume not matched as trades</p>
+        <div className="h-3 rounded-full overflow-hidden flex mb-2" style={{ background: '#fecaca' }}>
+          <div className="h-full" style={{ width: `${t1Pct}%`, background: 'linear-gradient(90deg,#dc2626,#f87171)' }} />
+          <div className="h-full" style={{ width: `${t2Pct}%`, background: 'linear-gradient(90deg,#f97316,#fbbf24)' }} />
+        </div>
+        <div className="flex justify-between text-xs font-semibold mb-4">
+          <span className="text-primary">{t1}: {t1Pct.toFixed(1)}%</span>
+          <span className="text-text-muted">{t2}: {t2Pct.toFixed(1)}%</span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          {[{ team: t1, fake: t1Fake, isMain: true }, { team: t2, fake: t2Fake, isMain: false }].map(({ team, fake, isMain }) => (
+            <div key={team} className="bg-white rounded-xl p-3" style={{ border: '1px solid #fecaca' }}>
+              <div className={`text-xs font-bold mb-3 truncate ${isMain ? 'text-primary' : 'text-text-secondary'}`}>{team}</div>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#3b82f6' }} />
+                    <span className="text-xs text-text-muted">Fake Back</span>
+                  </div>
+                  <span className="text-xs font-bold text-text-primary">{fmtVol(fake.fakeBack)}</span>
+                </div>
+                <div className="flex items-center justify-between gap-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#f87171' }} />
+                    <span className="text-xs text-text-muted">Fake Lay</span>
+                  </div>
+                  <span className="text-xs font-bold text-text-primary">{fmtVol(fake.oppFakeLay)}</span>
+                </div>
+              </div>
+              <div className="border-t border-border mt-2.5 pt-2 flex justify-between items-center">
+                <span className="text-xs font-bold text-text-secondary">Total</span>
+                <span className={`text-sm font-black ${isMain ? 'text-primary' : 'text-text-muted'}`}>{fmtVol(fake.total)}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="rounded-xl py-4 px-5 text-center" style={{ background: 'linear-gradient(135deg,#fca5a5,#fcd9b0)' }}>
+          <div className="text-xs font-bold tracking-widest text-primary/60 uppercase mb-1">Most Fake Orders On</div>
+          <div className="text-2xl font-bold text-primary">{mostFakeTeam}</div>
         </div>
       </div>
 
