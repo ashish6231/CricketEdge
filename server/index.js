@@ -13,30 +13,10 @@ const cricketRoutes = require('./routes/cricket');
 const { verifyToken } = require('./middleware/auth');
 const tennisLogin = require('./services/tennisLogin');
 const scraper = require('./services/scraper');
+const prisma = require('./db/prisma');
 
 const app = express();
 const server = http.createServer(app);
-
-// ─── MONGODB ───
-let mongoConnected = false;
-try {
-  const mongoose = require('mongoose');
-  const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/cricketedge';
-  mongoose.connect(MONGO_URI)
-    .then(async () => {
-      mongoConnected = true;
-      console.log('✅ MongoDB connected');
-      try {
-        const { seedDatabase } = require('./seedAdmin');
-        await seedDatabase();
-      } catch (e) {
-        console.log('⚠️  Seed skipped:', e.message);
-      }
-    })
-    .catch(err => console.log('⚠️  MongoDB not available:', err.message));
-} catch {
-  console.log('⚠️  MongoDB not installed');
-}
 
 // ─── MIDDLEWARE ───
 app.use(cors());
@@ -72,51 +52,45 @@ app.get('/api/user/subscription', verifyToken, (req, res) => {
 
 // ─── SUBSCRIPTION AUTO-ACTIVATION (every 1 hour) ───
 setInterval(async () => {
-  if (!mongoConnected) return;
   try {
     const now = new Date();
-    const User = require('./models/User');
-    const UserSubscription = require('./models/UserSubscription');
 
-    const expiredUsers = await User.find({
-      'subscription.planSlug': 'pro',
-      'subscription.status': 'active',
-      'subscription.expiresAt': { $lte: now },
-      'queuedSubscription.status': 'pending'
+    const expiredWithQueued = await prisma.user.findMany({
+      where: {
+        subPlanSlug: 'pro', subStatus: 'active',
+        subExpiresAt: { lte: now }, queuedStatus: 'pending'
+      }
     });
 
-    for (const user of expiredUsers) {
-      const q = user.queuedSubscription;
-      const now2 = new Date();
-      const newExpiresAt = new Date(now2);
-      if (q.billingCycle === 'yearly') newExpiresAt.setFullYear(newExpiresAt.getFullYear() + 1);
+    for (const user of expiredWithQueued) {
+      const newExpiresAt = new Date();
+      if (user.queuedBillingCycle === 'yearly') newExpiresAt.setFullYear(newExpiresAt.getFullYear() + 1);
       else newExpiresAt.setMonth(newExpiresAt.getMonth() + 1);
 
-      await UserSubscription.findOneAndUpdate(
-        { userId: user._id, planSlug: 'pro', status: 'active' },
-        { startedAt: now2, expiresAt: newExpiresAt, 'payment.paidAt': now2 }
-      );
-      await User.findByIdAndUpdate(user._id, {
-        'subscription.planId': q.planId,
-        'subscription.planSlug': 'pro',
-        'subscription.status': 'active',
-        'subscription.startedAt': now2,
-        'subscription.expiresAt': newExpiresAt,
-        'subscription.autoRenew': true,
-        $unset: { queuedSubscription: 1 }
+      await prisma.userSubscription.updateMany({
+        where: { userId: user.id, planSlug: 'pro', status: 'active' },
+        data: { startedAt: now, expiresAt: newExpiresAt, paidAt: now }
+      });
+
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          subPlanId: user.queuedPlanId, subPlanSlug: 'pro', subStatus: 'active',
+          subStartedAt: now, subExpiresAt: newExpiresAt, subAutoRenew: true,
+          queuedPlanId: null, queuedPlanSlug: null, queuedBillingCycle: null,
+          queuedAmount: null, queuedStatus: null, queuedPurchasedAt: null
+        }
       });
       console.log(`🔄 Auto-activated queued Pro for ${user.email}`);
     }
 
-    await User.updateMany(
-      {
-        'subscription.planSlug': 'pro',
-        'subscription.status': 'active',
-        'subscription.expiresAt': { $lte: now },
-        $or: [{ queuedSubscription: { $exists: false } }, { 'queuedSubscription.status': { $ne: 'pending' } }]
+    await prisma.user.updateMany({
+      where: {
+        subPlanSlug: 'pro', subStatus: 'active',
+        subExpiresAt: { lte: now }, queuedStatus: { not: 'pending' }
       },
-      { 'subscription.status': 'expired', 'subscription.planSlug': 'free' }
-    );
+      data: { subStatus: 'expired', subPlanSlug: 'free' }
+    });
   } catch (err) {
     console.error('❌ Subscription auto-activation error:', err.message);
   }
@@ -131,8 +105,19 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 (async () => {
+  try {
+    await prisma.$connect();
+    const dbHost = process.env.DATABASE_URL?.split('@')[1]?.split('?')[0];
+    console.log(`✅ PostgreSQL connected: ${dbHost}`);
+
+    const { seedDatabase } = require('./seedAdmin');
+    await seedDatabase();
+  } catch (e) {
+    console.log('⚠️  DB seed skipped:', e.message);
+  }
+
   server.listen(PORT, () => {
-    console.log(`🏏 CricketEdge auth server running on port ${PORT}`);
+    console.log(`🏏 CricketEdge server running on port ${PORT}`);
   });
 
   server.on('error', (err) => {
@@ -142,9 +127,6 @@ const PORT = process.env.PORT || 5000;
     } else throw err;
   });
 
-  // Auto-login to tennisliveload in background
   tennisLogin.startAutoLogin();
-
-  // Warmup scraper cache
   scraper.warmup();
 })();

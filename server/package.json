@@ -5,9 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "dev:test": "NODE_ENV=test nodemon index.js",
+    "start:test": "NODE_ENV=test node index.js"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "^7.9.0",
+    "@prisma/client": "^7.9.0",
     "@react-oauth/google": "^0.13.5",
     "axios": "^1.18.1",
     "bcryptjs": "^2.4.3",
@@ -17,15 +21,20 @@
     "express-session": "^1.17.3",
     "google-auth-library": "^10.9.0",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^8.0.0",
     "nodemailer": "^6.9.7",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.22.0",
+    "prisma": "^7.9.0",
     "razorpay": "^2.9.6",
     "socket.io": "^4.7.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
+  },
+  "allowScripts": {
+    "prisma@7.9.0": true,
+    "@prisma/engines@7.9.0": true
   }
 }

@@ -60,12 +60,12 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {recent.users?.map(u => (
-                <tr key={u._id} className="border-b border-border/40 last:border-0">
+                <tr key={u.id} className="border-b border-border/40 last:border-0">
                   <td className="py-2 font-medium">{u.name}</td>
                   <td className="py-2 text-text-muted">{u.email}</td>
                   <td className="py-2">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${u.subscription?.planSlug === 'pro' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'}`}>
-                      {u.subscription?.planSlug || 'free'}
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${u.subPlanSlug === 'pro' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'}`}>
+                      {u.subPlanSlug || 'free'}
                     </span>
                   </td>
                   <td className="py-2">

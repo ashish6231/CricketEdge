@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import MainLayout from './components/MainLayout'
 import LoginPage from './pages/LoginPage'
 import CricketPage from './pages/CricketPage'
@@ -9,9 +10,31 @@ import SessionDetail from './pages/SessionDetail'
 import AdminPage from './pages/AdminPage'
 import ProfilePage from './pages/ProfilePage'
 import SubscriptionPage from './pages/SubscriptionPage'
+import { getAuthStatus } from './api'
 
 function PrivateRoute() {
-  return localStorage.getItem('auth_token') ? <MainLayout /> : <Navigate to="/login" replace />
+  const [status, setStatus] = useState('loading')
+
+  const verify = async () => {
+    const token = localStorage.getItem('auth_token')
+    if (!token) { setStatus('fail'); return }
+    const res = await getAuthStatus()
+    setStatus(res.isLoggedIn ? 'ok' : 'fail')
+  }
+
+  useEffect(() => {
+    verify()
+    window.addEventListener('focus', verify)
+    document.addEventListener('visibilitychange', verify)
+    return () => {
+      window.removeEventListener('focus', verify)
+      document.removeEventListener('visibilitychange', verify)
+    }
+  }, [])
+
+  if (status === 'loading') return null
+  if (status === 'fail') return <Navigate to="/login" replace />
+  return <MainLayout />
 }
 
 function App() {

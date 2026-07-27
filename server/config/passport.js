@@ -1,15 +1,14 @@
 const passport = require('passport');
+const prisma = require('../db/prisma');
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
   try {
-    const User = require('../models/User');
-    const user = await User.findById(id);
+    const user = await prisma.user.findUnique({ where: { id } });
     done(null, user);
   } catch (err) { done(err, null); }
 });
 
-// Only setup Google OAuth if credentials are provided
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
@@ -21,23 +20,22 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
     callbackURL: '/api/auth/google/callback'
   }, async (accessToken, refreshToken, profile, done) => {
     try {
-      const User = require('../models/User');
-      let user = await User.findOne({ googleId: profile.id });
+      let user = await prisma.user.findUnique({ where: { googleId: profile.id } });
       if (!user) {
-        user = await User.findOne({ email: profile.emails[0].value });
+        user = await prisma.user.findUnique({ where: { email: profile.emails[0].value } });
         if (user) {
-          user.googleId = profile.id;
-          user.authProvider = 'google';
-          if (!user.avatar) user.avatar = profile.photos[0]?.value || '';
-          await user.save();
+          user = await prisma.user.update({
+            where: { id: user.id },
+            data: { googleId: profile.id, authProvider: 'google', avatar: user.avatar || profile.photos[0]?.value || '' }
+          });
         } else {
-          user = await User.create({
-            googleId: profile.id,
-            email: profile.emails[0].value,
-            name: profile.displayName,
-            avatar: profile.photos[0]?.value || '',
-            authProvider: 'google',
-            isVerified: true
+          user = await prisma.user.create({
+            data: {
+              googleId: profile.id, email: profile.emails[0].value,
+              name: profile.displayName, avatar: profile.photos[0]?.value || '',
+              authProvider: 'google', isVerified: true,
+              subPlanSlug: 'free', subStatus: 'active'
+            }
           });
         }
       }
@@ -45,7 +43,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
     } catch (err) { done(err, null); }
   }));
 } else {
-  console.log('⚠️  Google OAuth not configured. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .env to enable.');
+  console.log('⚠️  Google OAuth not configured.');
 }
 
 module.exports = passport;

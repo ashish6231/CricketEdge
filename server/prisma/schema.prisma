@@ -1,0 +1,240 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password      String?
+  name          String
+  avatar        String   @default("")
+  phone         String   @default("")
+  googleId      String?  @unique
+  authProvider  String   @default("local")
+  isVerified    Boolean  @default(false)
+  role          String   @default("user")
+  status        String   @default("active")
+  activeToken   String?
+  resetToken    String?
+  resetTokenExpires DateTime?
+  lastLoginAt   DateTime?
+  lastLoginIp   String   @default("")
+
+  // Subscription (embedded as flat columns)
+  subPlanId     Int?
+  subPlanSlug   String   @default("free")
+  subStatus     String   @default("active")
+  subStartedAt  DateTime?
+  subExpiresAt  DateTime?
+  subAutoRenew  Boolean  @default(true)
+
+  // Queued subscription
+  queuedPlanId        Int?
+  queuedPlanSlug      String?
+  queuedBillingCycle  String?
+  queuedAmount        Float?
+  queuedStatus        String?
+  queuedPurchasedAt   DateTime?
+
+  // OTP
+  otpCode       String?
+  otpExpiresAt  DateTime?
+  otpPurpose    String?
+
+  // Preferences
+  oddsFormat    String   @default("decimal")
+  language      String   @default("en")
+  notifEmail    Boolean  @default(true)
+  notifPush     Boolean  @default(true)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subscriptions     UserSubscription[]
+  auditLogs         AdminAuditLog[]
+  createdPlans      SubscriptionPlan[] @relation("PlanCreatedBy")
+  createdCoupons    PromoCode[]        @relation("CouponCreatedBy")
+  updatedSettings   SiteSettings[]     @relation("SettingsUpdatedBy")
+
+  @@index([role, status])
+  @@index([subPlanSlug])
+  @@index([subExpiresAt])
+  @@index([status])
+}
+
+model SubscriptionPlan {
+  id           Int      @id @default(autoincrement())
+  slug         String   @unique
+  name         String
+  description  String   @default("")
+  price        Float
+  yearlyPrice  Float
+  currency     String   @default("INR")
+  features     String[] // array of strings
+  // limits
+  maxMarketsTracked      Int     @default(5)
+  apiCallsPerMin         Int     @default(10)
+  advancedAnalytics      Boolean @default(false)
+  bookieBookAccess       Boolean @default(false)
+  predictionEngine       Boolean @default(false)
+  oddsAlerts             Boolean @default(false)
+  telegramNotifications  Boolean @default(false)
+
+  isActive      Boolean  @default(true)
+  displayOrder  Int      @default(0)
+  createdBy     Int?
+  createdByUser User?    @relation("PlanCreatedBy", fields: [createdBy], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  subscriptions UserSubscription[]
+
+  @@index([isActive, displayOrder])
+}
+
+model UserSubscription {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  planId          Int
+  planSlug        String
+  amount          Float
+  currency        String   @default("INR")
+  discountAmount  Float    @default(0)
+  couponCode      String   @default("")
+  startedAt       DateTime
+  expiresAt       DateTime
+  billingCycle    String   @default("monthly")
+  // payment
+  paymentStatus   String   @default("pending")
+  paymentMethod   String   @default("razorpay")
+  gatewayOrderId  String   @default("")
+  gatewayPaymentId String  @default("")
+  paidAt          DateTime?
+  // status
+  status          String   @default("active")
+  cancelledAt     DateTime?
+  cancelReason    String   @default("")
+  ipAddress       String   @default("")
+  userAgent       String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user User             @relation(fields: [userId], references: [id])
+  plan SubscriptionPlan @relation(fields: [planId], references: [id])
+
+  @@index([userId, status])
+  @@index([expiresAt])
+  @@index([gatewayOrderId])
+}
+
+model Match {
+  id             Int      @id @default(autoincrement())
+  matchId        String   @unique
+  eventId        String   @default("")
+  marketId       String
+  eventTypeId    Int      @default(4)
+  competition    String   @default("")
+  eventName      String
+  teamAName      String
+  teamASelectionId Int
+  teamBName      String
+  teamBSelectionId Int
+  drawSelectionId  Int?
+  matchType      String   @default("T20")
+  venue          String   @default("")
+  startTime      DateTime
+  status         String   @default("UPCOMING")
+  inplay         Boolean  @default(false)
+  totalMatched   Float    @default(0)
+  // score
+  scoreTeamARuns    Int?
+  scoreTeamAWickets Int?
+  scoreTeamAOvers   Float?
+  scoreTeamBRuns    Int?
+  scoreTeamBWickets Int?
+  scoreTeamBOvers   Float?
+  currentInnings    Int    @default(1)
+  tossWinner        String @default("")
+  battingFirst      String @default("")
+  // result
+  resultWinner   String   @default("")
+  settledAt      DateTime?
+  resultVerified Boolean  @default(false)
+  // metadata
+  source         String   @default("betfair")
+  betfairEventId String   @default("")
+  betfairMarketId String  @default("")
+  // runners stored as JSON (dynamic array)
+  runners        Json     @default("[]")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([status, inplay])
+  @@index([startTime])
+  @@index([eventTypeId])
+}
+
+model AdminAuditLog {
+  id               Int      @id @default(autoincrement())
+  adminId          Int
+  adminEmail       String
+  action           String
+  targetType       String
+  targetId         Int
+  targetIdentifier String   @default("")
+  changesBefore    Json?
+  changesAfter     Json?
+  reason           String   @default("")
+  ipAddress        String   @default("")
+  userAgent        String   @default("")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  admin User @relation(fields: [adminId], references: [id])
+
+  @@index([adminId])
+  @@index([action])
+  @@index([targetType, targetId])
+  @@index([createdAt])
+}
+
+model PromoCode {
+  id              Int      @id @default(autoincrement())
+  code            String   @unique
+  description     String   @default("")
+  discountType    String
+  discountValue   Float
+  maxDiscount     Float    @default(0)
+  applicablePlans String[] @default([])
+  usageLimit      Int      @default(0)
+  usageCount      Int      @default(0)
+  perUserLimit    Int      @default(1)
+  validFrom       DateTime
+  validUntil      DateTime
+  isActive        Boolean  @default(true)
+  createdBy       Int?
+  createdByUser   User?    @relation("CouponCreatedBy", fields: [createdBy], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([isActive, validFrom, validUntil])
+}
+
+model SiteSettings {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  value       Json
+  category    String   @default("general")
+  description String   @default("")
+  isPublic    Boolean  @default(false)
+  updatedBy   Int?
+  updatedByUser User?  @relation("SettingsUpdatedBy", fields: [updatedBy], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category])
+}
