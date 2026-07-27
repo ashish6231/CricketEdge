@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, Lock, TrendingUp, BarChart3, Shield } from 'lucide-react'
+import { ArrowLeft, LoaderCircle, Lock, TrendingUp, BarChart3 } from 'lucide-react'
 import { getTossSnapshot } from '../api'
 
 const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
@@ -72,8 +72,15 @@ export default function TossDetail() {
   const aLay  = raw.A_lay_stake || am1.lay  || 0
   const bBack = raw.B_back_expo || am2.back || 0
   const bLay  = raw.B_lay_stake || am2.lay  || 0
-  const pl1 = sp.team1_win
-  const pl2 = sp.team2_win
+  // Calculate P/L from advancedMetricsV2 accumulated back/lay volumes
+  const calcPL = (winBack, winLay, loseBack, loseLay) => {
+    if (!winBack && !winLay && !loseBack && !loseLay) return null
+    return (loseBack + winLay) - (winBack + loseLay)
+  }
+  const t1Trades = (snap.teams?.[t1] || {}).trades || []
+  const t2Trades = (snap.teams?.[t2] || {}).trades || []
+  const pl1 = sp.team1_win ?? calcPL(aBack, aLay, bBack, bLay)
+  const pl2 = sp.team2_win ?? calcPL(bBack, bLay, aBack, aLay)
   const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
   const t2Bets = tot.totalBetTeam2 || tot.team2 || 0
   const maxBets = Math.max(t1Bets, t2Bets)
@@ -101,7 +108,7 @@ export default function TossDetail() {
   const mostFakeTeam = t1Fake.total >= t2Fake.total ? t1 : t2
 
   return (
-    <div className="p-4 max-w-3xl mx-auto fade-in space-y-4">
+    <div className="p-3 w-full fade-in space-y-4">
 
       <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-text-muted hover:text-primary text-sm font-medium transition-colors">
         <ArrowLeft size={15} /> Back
@@ -325,28 +332,7 @@ export default function TossDetail() {
         </div>
       </div>
 
-      {/* Public Support */}
-      <div className="glass-card rounded-2xl p-4">
-        <div className="text-xs font-bold text-text-muted uppercase mb-3 flex items-center gap-2">
-          <Shield size={14} /> Public Support
-        </div>
-        {[{ team: t1, key: 'team1' }, { team: t2, key: 'team2' }].map(({ team, key }) => {
-          const s = sup[key] || {}
-          const pct = s.support || 0
-          return (
-            <div key={key} className="mb-3 last:mb-0">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="font-medium text-text-primary">{team}</span>
-                <span className={`font-bold ${pct >= 50 ? 'text-profit' : 'text-text-muted'}`}>{pct.toFixed(1)}%</span>
-              </div>
-              <div className="h-2 rounded-full overflow-hidden" style={{ background: '#fee2e2' }}>
-                <div className={`h-full rounded-full ${pct >= 50 ? 'bg-profit' : 'bg-primary/40'}`} style={{ width: `${pct}%` }} />
-              </div>
-              <div className="text-xs text-text-muted mt-0.5">₹{fmt(s.supportMoney)} laga</div>
-            </div>
-          )
-        })}
-      </div>
+
 
     </div>
   )
