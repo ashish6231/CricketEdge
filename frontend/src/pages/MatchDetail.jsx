@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp } from 'lucide-react'
+import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 
 // Map sport to the right API function
@@ -144,6 +144,18 @@ export default function MatchDetail({ sport }) {
   // lay/back ratio — >1 means lay dominant = bookie team (predicted winner)
   const aRatio = aLay > 0 ? aBack / aLay : 0
   const bRatio = bLay > 0 ? bBack / bLay : 0
+  // back/lay < 1 means lay dominant = bookie team
+  const bookieTeam  = aRatio <= bRatio ? t1 : t2
+  const publicTeam  = aRatio <= bRatio ? t2 : t1
+  const bookieRatioVal = Math.min(aRatio || 999, bRatio || 999)
+  const bookieRatio = bookieRatioVal === 999 ? 0 : bookieRatioVal
+  const signalStrength = bookieRatio < 0.5 ? 'Strong 🔥' : bookieRatio < 0.8 ? 'Moderate' : 'Weak'
+  const signalColor    = bookieRatio < 0.5 ? 'text-profit' : bookieRatio < 0.8 ? 'text-yellow-500' : 'text-text-muted'
+  const aTotal   = aBack + aLay
+  const bTotal   = bBack + bLay
+  const aBackPct = aTotal > 0 ? (aBack / aTotal * 100) : 50
+  const bBackPct = bTotal > 0 ? (bBack / bTotal * 100) : 50
+  const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0
 
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
@@ -164,29 +176,38 @@ export default function MatchDetail({ sport }) {
 
   // ━━━━━━━━━━ 5-RULE BOOKIE FINGERPRINT ━━━━━━━━━━
   const bkp = (() => {
-    const totalBets1 = (ib.team1 || 0) + (pb.team1 || 0)
-    const totalBets2 = (ib.team2 || 0) + (pb.team2 || 0)
+    const totalBets1 = dm.totals?.team1 ?? dm.totals?.totalBetTeam1 ?? ((ib.team1 || 0) + (pb.team1 || 0))
+    const totalBets2 = dm.totals?.team2 ?? dm.totals?.totalBetTeam2 ?? ((ib.team2 || 0) + (pb.team2 || 0))
     const sent1 = ns.percentageA ?? (sup.team1?.support ?? 50)
     const sent2 = ns.percentageB ?? (sup.team2?.support ?? 50)
+    const netExp1 = Math.abs(exp1.netExposure || 0)
+    const netExp2 = Math.abs(exp2.netExposure || 0)
+    const isWomens = /women/i.test(snapshot.competitionName || '') ||
+      [t1, t2].some(name => /\bW\b/.test(name) || /\(W\)/i.test(name))
+
+    // Weighted scoring: exposure=3, ratio=1.5, total bets=1
     const rules = [
-      { label: 'Kam Total Bets',     icon: '💰', t1wins: totalBets1 < totalBets2,              v1: `₹${fmt(totalBets1)}`,   v2: `₹${fmt(totalBets2)}` },
-      { label: 'Kam Back/Lay Ratio', icon: '📊', t1wins: aRatio < bRatio,                      v1: `${aRatio.toFixed(2)}x`, v2: `${bRatio.toFixed(2)}x` },
-      { label: 'Kam Sentiment',      icon: '👥', t1wins: sent1 < sent2,                        v1: `${sent1.toFixed(1)}%`,  v2: `${sent2.toFixed(1)}%` },
-      { label: 'Zyada Spoofing',     icon: '🚨', t1wins: t1Fake.total > t2Fake.total,          v1: fmtVol(t1Fake.total),    v2: fmtVol(t2Fake.total) },
-      { label: 'Zyada P/L',         icon: '📈', t1wins: (pl1 ?? -Infinity) > (pl2 ?? -Infinity), v1: fmtRs(pl1),           v2: fmtRs(pl2) },
+      { label: 'Zyada Negative Exposure', weight: 3,   t1wins: (exp1.netExposure || 0) < (exp2.netExposure || 0), v1: fmtRs(exp1.netExposure), v2: fmtRs(exp2.netExposure) },
+      { label: 'Kam Back/Lay Ratio',      weight: 1.5, t1wins: aRatio < bRatio,                                      v1: `${aRatio.toFixed(2)}x`, v2: `${bRatio.toFixed(2)}x` },
+      { label: 'Kam Total Bets',          weight: 1,   t1wins: totalBets1 < totalBets2,                               v1: `₹${fmt(totalBets1)}`,   v2: `₹${fmt(totalBets2)}` },
     ]
-    const t1Score = rules.filter(r => r.t1wins).length
-    const bookieIdx = t1Score >= 3 ? 0 : 1
-    const matchScore = bookieIdx === 0 ? t1Score : rules.filter(r => !r.t1wins).length
-    const confidence = matchScore === 5 ? { label: '99% Confirmed 🔥', color: 'text-profit' }
-                     : matchScore === 4 ? { label: '90% Strong ⚡',    color: 'text-profit' }
-                     : matchScore === 3 ? { label: '70% Moderate',      color: 'text-yellow-500' }
-                     :                   { label: 'Weak Signal',         color: 'text-text-muted' }
+
+    const maxScore = rules.reduce((s, r) => s + r.weight, 0)
+    const t1Score = rules.reduce((s, r) => s + (r.t1wins ? r.weight : 0), 0)
+    const t2Score = rules.reduce((s, r) => s + (!r.t1wins ? r.weight : 0), 0)
+    const bookieIdx = t1Score >= t2Score ? 0 : 1
+    const matchScore = Math.max(t1Score, t2Score)
+    const confidence = matchScore === maxScore      ? { label: '99% Confirmed 🔥', color: 'text-profit' }
+                     : matchScore >= maxScore * 0.7 ? { label: '90% Strong ⚡',    color: 'text-profit' }
+                     : matchScore >= maxScore * 0.4 ? { label: '70% Moderate',      color: 'text-yellow-500' }
+                     :                                { label: 'Weak Signal',         color: 'text-text-muted' }
     return {
       bookieName: bookieIdx === 0 ? t1 : t2,
       matchScore,
+      maxScore,
       confidence,
       bookieIdx,
+      isWomens,
       rules: rules.map(r => ({ ...r, bookieWins: bookieIdx === 0 ? r.t1wins : !r.t1wins }))
     }
   })()
@@ -251,11 +272,71 @@ export default function MatchDetail({ sport }) {
         )}
       </div>
 
+      {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
+      {hasBLPrediction && (
+        <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)', border: '2px solid #fecaca' }}>
+          <div className="text-sm font-bold text-primary mb-3 flex items-center gap-2">
+            <TrendingUp size={16} /> 🧠 CricketEdge Prediction
+          </div>
+
+          {/* Predicted Winner Banner */}
+          <div className="rounded-xl p-4 text-center mb-4" style={{ background: 'rgba(22,163,74,0.07)', border: '1px solid rgba(22,163,74,0.25)' }}>
+            <div className="text-xs text-text-muted uppercase tracking-widest mb-1">Predicted Winner</div>
+            <div className="text-2xl font-black text-profit">{bookieTeam}</div>
+            <div className="text-xs mt-1 text-text-muted">Bookie is team ki jeet chahta hai</div>
+          </div>
+
+          {/* Back/Lay ratio bars — both teams */}
+          <div className="space-y-3 mb-4">
+            {[{ team: t1, backPct: aBackPct, ratio: aRatio, isBookie: aRatio <= bRatio },
+              { team: t2, backPct: bBackPct, ratio: bRatio, isBookie: bRatio < aRatio }]
+              .map(({ team, backPct, ratio, isBookie }) => (
+              <div key={team}>
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs font-semibold text-text-secondary">{team}</span>
+                  <div className="flex items-center gap-2">
+                    {isBookie && <span className="text-xs font-bold text-profit bg-profit/10 px-2 py-0.5 rounded-full">Bookie Team</span>}
+                    <span className="text-xs text-text-muted">Back/Lay: <b className={isBookie ? 'text-loss' : 'text-profit'}>{ratio.toFixed(2)}x</b></span>
+                  </div>
+                </div>
+                <div className="flex h-2 rounded-full overflow-hidden">
+                  <div className="bg-back transition-all" style={{ width: `${backPct}%` }} />
+                  <div className="bg-loss/70 transition-all" style={{ width: `${100 - backPct}%` }} />
+                </div>
+                <div className="flex justify-between text-xs text-text-muted mt-0.5">
+                  <span className="text-back">Back {backPct.toFixed(0)}%</span>
+                  <span className="text-loss">Lay {(100 - backPct).toFixed(0)}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Signal strength + logic */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+              <div className="text-xs text-text-muted mb-1">Signal Strength</div>
+              <div className={`text-sm font-bold ${signalColor}`}>{signalStrength}</div>
+              <div className="text-xs text-text-muted mt-0.5">Back/Lay: {bookieRatio.toFixed(2)}x</div>
+            </div>
+            <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+              <div className="text-xs text-text-muted mb-1">Public Favourite</div>
+              <div className="text-sm font-bold text-loss">{publicTeam}</div>
+              <div className="text-xs text-text-muted mt-0.5">Log is team pe back kar rahe hain</div>
+            </div>
+          </div>
+
+          <div className="mt-3 text-xs text-text-muted p-2.5 rounded-xl" style={{ background: 'rgba(220,38,38,0.04)', border: '1px solid rgba(220,38,38,0.1)' }}>
+            💡 <b>{bookieTeam}</b> pe lay zyada hai → public is team ke against bet kar raha hai → bookie ko is team ki jeet se profit hoga
+          </div>
+        </div>
+      )}
+
       {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}
       <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid', borderColor: bkp.matchScore >= 4 ? '#86efac' : bkp.matchScore === 3 ? '#fde68a' : '#fecaca' }}>
         <div className="px-4 py-3 flex items-center gap-2" style={{ background: bkp.matchScore >= 4 ? 'linear-gradient(135deg,#f0fdf4,#fefce8)' : 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
           <span className="text-base">🕵️</span>
           <span className="text-sm font-bold text-text-primary">Bookie Fingerprint</span>
+          {bkp.isWomens && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fce7f3', color: '#be185d' }}>♀️ Women's</span>}
           <span className={`ml-auto text-xs font-black ${bkp.confidence.color}`}>{bkp.confidence.label}</span>
         </div>
 
@@ -264,15 +345,14 @@ export default function MatchDetail({ sport }) {
           <div className="rounded-xl p-3 text-center mb-4" style={{ background: bkp.matchScore >= 4 ? 'rgba(22,163,74,0.08)' : 'rgba(234,179,8,0.08)', border: `1px solid ${bkp.matchScore >= 4 ? 'rgba(22,163,74,0.3)' : 'rgba(234,179,8,0.3)'}` }}>
             <div className="text-xs text-text-muted uppercase tracking-widest mb-0.5">Predicted Bookie Team</div>
             <div className={`text-2xl font-black ${bkp.matchScore >= 4 ? 'text-profit' : 'text-yellow-600'}`}>{bkp.bookieName}</div>
-            <div className="text-xs text-text-muted mt-0.5">{bkp.matchScore}/5 rules match</div>
+            <div className="text-xs text-text-muted mt-0.5">{bkp.matchScore}/{bkp.totalRules} rules match</div>
           </div>
 
           {/* Rules checklist */}
           <div className="space-y-2">
             {bkp.rules.map((r, idx) => (
               <div key={r.label} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: r.bookieWins ? 'rgba(22,163,74,0.06)' : 'rgba(220,38,38,0.04)', border: `1px solid ${r.bookieWins ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.12)'}` }}>
-                <span className="text-xs font-bold text-text-muted shrink-0">Rule {idx + 1}</span>
-                <span className="text-xs font-bold shrink-0" style={{ color: r.bookieWins ? '#16a34a' : '#dc2626' }}>{r.bookieWins ? 'Pass' : 'Fail'}</span>
+                <span className="text-xs font-bold shrink-0" style={{ color: r.bookieWins ? '#16a34a' : '#dc2626' }}>{r.bookieWins ? '✅' : '❌'} {r.label}</span>
                 <div className="flex-1 text-right">
                   <span className={`text-xs font-bold ${bkp.bookieIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{r.v1}</span>
                   <span className="text-xs text-text-muted mx-1">vs</span>
@@ -284,7 +364,7 @@ export default function MatchDetail({ sport }) {
 
           {bkp.matchScore >= 4 && (
             <div className="mt-3 text-xs text-center p-2 rounded-xl" style={{ background: 'rgba(22,163,74,0.06)', border: '1px solid rgba(22,163,74,0.15)' }}>
-              💡 <b>{bkp.bookieName}</b> pe {bkp.matchScore}/5 bookie signals match — high confidence pick
+              💡 <b>{bkp.bookieName}</b> pe {bkp.matchScore}/{bkp.totalRules} bookie signals match — high confidence pick
             </div>
           )}
         </div>
