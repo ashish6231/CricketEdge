@@ -68,14 +68,14 @@ function App() {
 
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<Navigate to="/cricket" replace />} />
-          <Route path="/cricket" element={<ProRoute><CricketPage /></ProRoute>} />
-          <Route path="/cricket/match/:matchId" element={<ProRoute><CricketPage /></ProRoute>} />
-          <Route path="/tennis" element={<ProRoute><TennisPage /></ProRoute>} />
-          <Route path="/tennis/match/:matchId" element={<ProRoute><TennisPage /></ProRoute>} />
-          <Route path="/session" element={<ProRoute><SessionPage /></ProRoute>} />
-          <Route path="/session/match/:matchId" element={<ProRoute><SessionDetail /></ProRoute>} />
-          <Route path="/toss" element={<ProRoute><TossPage /></ProRoute>} />
-          <Route path="/toss/match/:matchId" element={<ProRoute><TossPage /></ProRoute>} />
+          <Route path="/cricket" element={<CricketPage />} />
+          <Route path="/cricket/match/:matchId" element={<CricketPage />} />
+          <Route path="/tennis" element={<TennisPage />} />
+          <Route path="/tennis/match/:matchId" element={<TennisPage />} />
+          <Route path="/session" element={<SessionPage />} />
+          <Route path="/session/match/:matchId" element={<SessionDetail />} />
+          <Route path="/toss" element={<TossPage />} />
+          <Route path="/toss/match/:matchId" element={<TossPage />} />
           <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/subscription" element={<SubscriptionPage />} />
