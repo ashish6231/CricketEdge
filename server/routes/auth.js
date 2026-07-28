@@ -63,7 +63,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
 
     const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
-    if (existing) return res.status(409).json({ success: false, message: 'Email already registered' });
+    if (existing) return res.status(409).json({ success: false, message: 'Account already exists with this email' });
 
     const hashed = await bcrypt.hash(password, 12);
     const now = new Date();
@@ -89,7 +89,7 @@ router.post('/register', async (req, res) => {
     }
 
     const token = generateToken(user);
-    await prisma.user.update({ where: { id: user.id }, data: { activeToken: token } });
+    await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({ success: true, message: 'Account created successfully', token, user: sanitizeUser(user) });
   } catch (err) {
     console.error(err);
@@ -117,7 +117,7 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ success: false, message: 'Your account is suspended. Contact support.' });
 
     const token = generateToken(user);
-    await prisma.user.update({ where: { id: user.id }, data: { activeToken: token } });
+    await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({ success: true, message: 'Login successful', token, user: sanitizeUser(user) });
   } catch (err) {
     console.error(err);
@@ -132,8 +132,9 @@ router.post('/forgot-password', async (req, res) => {
     if (!email) return res.status(400).json({ success: false, message: 'Email required' });
 
     const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    // Always return same message to prevent email enumeration
     if (!user || user.authProvider !== 'local')
-      return res.status(404).json({ success: false, message: 'No account found with this email' });
+      return res.json({ success: true, message: 'If this email exists, an OTP has been sent' });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     await prisma.user.update({
@@ -142,7 +143,7 @@ router.post('/forgot-password', async (req, res) => {
     });
 
     await sendOTP(user.email, otp, user.name);
-    res.json({ success: true, message: 'OTP sent to your email', email: user.email });
+    res.json({ success: true, message: 'If this email exists, an OTP has been sent' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -153,16 +154,18 @@ router.post('/forgot-password', async (req, res) => {
 router.post('/verify-otp', async (req, res) => {
   try {
     const { email, otp } = req.body;
+    if (!email || !otp)
+      return res.status(400).json({ success: false, message: 'Email and OTP required' });
     const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
     if (!user || user.otpCode !== otp)
       return res.status(400).json({ success: false, message: 'Invalid OTP' });
-    if (new Date() > user.otpExpiresAt)
+    if (!user.otpExpiresAt || new Date() > user.otpExpiresAt)
       return res.status(400).json({ success: false, message: 'OTP expired' });
 
     const resetToken = crypto.randomBytes(32).toString('hex');
     await prisma.user.update({
       where: { id: user.id },
-      data: { resetToken, resetTokenExpires: new Date(Date.now() + 30 * 60 * 1000) }
+      data: { resetToken, resetTokenExpires: new Date(Date.now() + 30 * 60 * 1000), otpCode: null, otpExpiresAt: null }
     });
     res.json({ success: true, message: 'OTP verified', resetToken });
   } catch (err) {
@@ -204,7 +207,7 @@ router.post('/resend-otp', async (req, res) => {
     const { email } = req.body;
     const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
     if (!user || user.authProvider !== 'local')
-      return res.status(404).json({ success: false, message: 'No account found' });
+      return res.json({ success: true, message: 'If this email exists, an OTP has been sent' });
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     await prisma.user.update({
@@ -222,18 +225,21 @@ router.post('/resend-otp', async (req, res) => {
 // ─── GET ME ───
 router.get('/me', async (req, res) => {
   try {
+    const { JWT_SECRET } = require('../middleware/auth');
     const jwt = require('jsonwebtoken');
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer '))
       return res.status(401).json({ success: false, message: 'No token' });
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'cricketedge_jwt_secret_change_in_production');
+    const decoded = jwt.verify(token, JWT_SECRET);
 
     const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.status === 'banned')
       return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });
+    if (user.activeToken && user.activeToken !== token)
+      return res.status(401).json({ success: false, message: 'Logged in on another device', code: 'SESSION_REPLACED' });
 
     res.json({ success: true, user: sanitizeUser(user) });
   } catch (err) {
@@ -250,9 +256,7 @@ router.post('/google/verify', async (req, res) => {
 
     let googleId, email, name, avatar;
 
-    if (userInfo && userInfo.sub) {
-      ({ sub: googleId, email, name, picture: avatar } = userInfo);
-    } else {
+    {
       const { OAuth2Client } = require('google-auth-library');
       const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
       const ticket = await client.verifyIdToken({ idToken: credential, audience: process.env.GOOGLE_CLIENT_ID });
@@ -295,6 +299,7 @@ router.post('/google/verify', async (req, res) => {
     if (user.status === 'suspended') return res.status(403).json({ success: false, message: 'Account suspended. Contact support.' });
 
     const token = generateToken(user);
+    await prisma.user.update({ where: { id: user.id }, data: { activeToken: token } });
     res.json({ success: true, token, user: sanitizeUser(user) });
   } catch (err) {
     console.error('Google verify error:', err.message);
@@ -320,8 +325,13 @@ router.get('/google/callback',
   },
   (req, res) => {
     const token = generateToken(req.user);
+    prisma.user.update({ where: { id: req.user.id }, data: { activeToken: token, lastLoginAt: new Date() } }).catch(() => {});
     const redirectTo = req.session.redirectTo || '/';
-    res.redirect(`${redirectTo}?auth=success&token=${token}`);
+    // Token URL mein expose na ho — sessionStorage use karo
+    res.send(`<script>
+sessionStorage.setItem('pending_token','${token}');
+window.location='${redirectTo}';
+</script>`);
   }
 );
 

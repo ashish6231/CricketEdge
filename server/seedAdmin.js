@@ -45,8 +45,12 @@ async function seedDatabase() {
     }
     console.log('✅ Settings seeded');
 
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@cricketedge.com';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminEmail || !adminPassword) {
+      console.warn('⚠️  ADMIN_EMAIL and ADMIN_PASSWORD env vars not set — skipping superadmin seed');
+      return;
+    }
     const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
 
     if (!existingAdmin) {
@@ -73,7 +77,7 @@ async function seedDatabase() {
           }
         });
       }
-      console.log(`✅ Super admin created: ${adminEmail} / ${adminPassword}`);
+      console.log(`✅ Super admin created: ${adminEmail}`);
     } else {
       console.log('ℹ️ Admin already exists');
     }

@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
+const { verifyToken, requireProSubscription } = require('../middleware/auth');
+const { requireAdmin } = require('../middleware/admin');
 
-// ──── Auth ────
+// ──── Auth (admin only — scraper login control) ────
 
-router.post('/auth/login', async (req, res) => {
+router.post('/auth/login', requireAdmin, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
     return res.status(400).json({ detail: 'Email and password are required' });
@@ -17,25 +19,25 @@ router.post('/auth/login', async (req, res) => {
   res.json({ status: 'logged_in', email, message: '✅ Login successful! Ab live matches ka data ab accessible hoga.' });
 });
 
-router.get('/auth/status', (req, res) => {
+router.get('/auth/status', requireAdmin, (req, res) => {
   res.json(scraper.getAuthState());
 });
 
-router.post('/auth/logout', (req, res) => {
+router.post('/auth/logout', requireAdmin, (req, res) => {
   scraper.logout();
   res.json({ status: 'logged_out', message: 'Logged out successfully' });
 });
 
 // ──── Cricket ────
 
-router.get('/cricket/matches', async (req, res) => {
+router.get('/cricket/matches', requireProSubscription, async (req, res) => {
   const data = await scraper.getAllCricketMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   const matches = Array.isArray(data) ? data : [];
   res.json({ total: matches.length, matches });
 });
 
-router.get('/cricket/match/:matchId', async (req, res) => {
+router.get('/cricket/match/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getCricketSnapshot(req.params.matchId);
   if (data?.error) {
     if (String(data.error).includes('401'))
@@ -45,7 +47,7 @@ router.get('/cricket/match/:matchId', async (req, res) => {
   res.json(data);
 });
 
-router.get('/cricket/odds/:matchId', async (req, res) => {
+router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getCricketSnapshot(req.params.matchId);
   if (data?.error) return res.json({ error: data.error });
   const teams = data.teams || {};
@@ -62,20 +64,20 @@ router.get('/cricket/odds/:matchId', async (req, res) => {
   res.json({ matchId: req.params.matchId, teamNames: data.teamNames || [], odds: result });
 });
 
-router.get('/cricket/full', async (req, res) => {
+router.get('/cricket/full', requireProSubscription, async (req, res) => {
   const includeSnapshots = req.query.include_snapshots !== 'false';
   res.json(await scraper.getCricketFullData(includeSnapshots));
 });
 
 // ──── Tennis ────
 
-router.get('/tennis/matches', async (req, res) => {
+router.get('/tennis/matches', requireProSubscription, async (req, res) => {
   const data = await scraper.getAllTennisMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   res.json({ total: data.length, matches: data });
 });
 
-router.get('/tennis/match/:matchId', async (req, res) => {
+router.get('/tennis/match/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getTennisSnapshot(req.params.matchId);
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
@@ -84,13 +86,13 @@ router.get('/tennis/match/:matchId', async (req, res) => {
 
 // ──── Session ────
 
-router.get('/session/matches', async (req, res) => {
+router.get('/session/matches', requireProSubscription, async (req, res) => {
   const data = await scraper.getAllSessionMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   res.json({ total: data.length, matches: data });
 });
 
-router.get('/session/trades/:matchId', async (req, res) => {
+router.get('/session/trades/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getSessionTrades(req.params.matchId);
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Session live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
@@ -99,13 +101,13 @@ router.get('/session/trades/:matchId', async (req, res) => {
 
 // ──── Toss ────
 
-router.get('/toss/matches', async (req, res) => {
+router.get('/toss/matches', requireProSubscription, async (req, res) => {
   const data = await scraper.getAllTossMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   res.json({ total: data.length, matches: data });
 });
 
-router.get('/toss/match/:matchId', async (req, res) => {
+router.get('/toss/match/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getTossSnapshot(req.params.matchId);
   if (data?.error) {
     if (String(data.error).includes('401'))
@@ -117,7 +119,7 @@ router.get('/toss/match/:matchId', async (req, res) => {
 
 // ──── Live Odds ────
 
-router.get('/live-odds/:matchId', async (req, res) => {
+router.get('/live-odds/:matchId', requireProSubscription, async (req, res) => {
   res.json(await scraper.getLiveOdds(req.params.matchId));
 });
 

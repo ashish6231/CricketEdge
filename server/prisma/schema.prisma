@@ -64,6 +64,8 @@ model User {
   @@index([subPlanSlug])
   @@index([subExpiresAt])
   @@index([status])
+  @@index([resetToken])
+  @@index([activeToken])
 }
 
 model SubscriptionPlan {

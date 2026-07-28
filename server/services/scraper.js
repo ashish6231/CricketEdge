@@ -84,7 +84,7 @@ function isLoggedIn() {
 }
 
 function getAuthState() {
-  return { isLoggedIn: tennisLogin.isConnected(), email: process.env.TENNIS_EMAIL || null };
+  return { isLoggedIn: tennisLogin.isConnected() };
 }
 
 // ──── Cache ────

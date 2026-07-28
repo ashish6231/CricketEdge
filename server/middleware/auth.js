@@ -1,7 +1,11 @@
 const jwt = require('jsonwebtoken');
 const prisma = require('../db/prisma');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'cricketedge_jwt_secret_change_in_production';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error('❌ FATAL: JWT_SECRET environment variable is not set!');
+  process.exit(1);
+}
 
 function generateToken(user) {
   return jwt.sign(
@@ -43,10 +47,21 @@ function optionalAuth(req, res, next) {
 }
 
 function requireProSubscription(req, res, next) {
-  verifyToken(req, res, () => {
-    const plan = req.user?.plan;
+  verifyToken(req, res, async () => {
     const role = req.user?.role;
-    if (plan === 'pro' || role === 'superadmin') return next();
+    if (role === 'admin' || role === 'superadmin') return next();
+    // Always check DB for fresh plan — JWT plan can be stale
+    try {
+      const user = await prisma.user.findUnique({
+        where: { id: req.user.userId },
+        select: { subPlanSlug: true, subStatus: true, subExpiresAt: true }
+      });
+      const now = new Date();
+      const isActivePro = user?.subPlanSlug === 'pro' &&
+        user?.subStatus === 'active' &&
+        (!user?.subExpiresAt || new Date(user.subExpiresAt) > now);
+      if (isActivePro) return next();
+    } catch { /* fall through to 403 */ }
     return res.status(403).json({
       success: false, message: 'Pro subscription required',
       code: 'SUBSCRIPTION_REQUIRED', upgradeUrl: '/subscription'

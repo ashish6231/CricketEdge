@@ -39,6 +39,8 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           });
         }
       }
+      if (user.status === 'banned') return done(null, false, { message: 'Account banned' });
+      if (user.status === 'suspended') return done(null, false, { message: 'Account suspended' });
       done(null, user);
     } catch (err) { done(err, null); }
   }));

@@ -42,6 +42,7 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
 router.get('/users', requireAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 20, search = '', role = '', status = '' } = req.query;
+    const safeLimit = Math.min(+limit || 20, 100);
     const where = {};
     if (search) where.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
     if (role) where.role = role;
@@ -50,12 +51,12 @@ router.get('/users', requireAdmin, async (req, res) => {
     const [users, total] = await Promise.all([
       prisma.user.findMany({
         where, orderBy: { createdAt: 'desc' },
-        skip: (+page - 1) * +limit, take: +limit,
+        skip: (+page - 1) * safeLimit, take: safeLimit,
         select: { id: true, name: true, email: true, role: true, status: true, subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true }
       }),
       prisma.user.count({ where })
     ]);
-    res.json({ success: true, data: users, pagination: { page: +page, limit: +limit, total, pages: Math.ceil(total / +limit) } });
+    res.json({ success: true, data: users, pagination: { page: +page, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -78,6 +79,8 @@ router.get('/users/:id', requireAdmin, async (req, res) => {
 router.patch('/users/:id/status', requireAdmin, async (req, res) => {
   try {
     const { status, reason } = req.body;
+    if (!['active', 'banned', 'suspended'].includes(status))
+      return res.status(400).json({ success: false, message: 'status must be active, banned, or suspended' });
     const before = await prisma.user.findUnique({ where: { id: +req.params.id }, select: { status: true, role: true } });
     if (!before) return res.status(404).json({ success: false, message: 'User not found' });
     if (before.role === 'superadmin') return res.status(403).json({ success: false, message: 'Cannot modify a superadmin' });
@@ -128,7 +131,9 @@ router.post('/admins', requireSuperAdmin, async (req, res) => {
     }
 
     await auditLog(req.user, 'user_verify', 'user', admin.id, admin.email, { after: { role: 'admin', planSlug: 'pro' } }, 'Admin created by superadmin', req);
-    res.json({ success: true, data: admin });
+    // Never return password hash
+    const { password: _pw, ...safeAdmin } = admin;
+    res.json({ success: true, data: safeAdmin });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -241,10 +246,19 @@ router.get('/plans', requireAdmin, async (req, res) => {
 
 router.post('/plans', requireSuperAdmin, async (req, res) => {
   try {
+    const { slug, name, description, price, yearlyPrice, currency, features, isActive, displayOrder,
+            maxMarketsTracked, apiCallsPerMin, advancedAnalytics, bookieBookAccess,
+            predictionEngine, oddsAlerts, telegramNotifications } = req.body;
+    if (!slug || !name || price === undefined || yearlyPrice === undefined)
+      return res.status(400).json({ success: false, message: 'slug, name, price, yearlyPrice required' });
+    const data = { slug, name, description, price, yearlyPrice, currency, features, isActive,
+                   displayOrder, maxMarketsTracked, apiCallsPerMin, advancedAnalytics,
+                   bookieBookAccess, predictionEngine, oddsAlerts, telegramNotifications,
+                   createdBy: req.user.userId };
     const plan = await prisma.subscriptionPlan.upsert({
-      where: { slug: req.body.slug },
-      update: { ...req.body, createdBy: req.user.userId },
-      create: { ...req.body, createdBy: req.user.userId }
+      where: { slug },
+      update: data,
+      create: data
     });
     await auditLog(req.user, 'plan_create', 'plan', plan.id, plan.slug, { after: plan }, '', req);
     res.json({ success: true, data: plan });
@@ -255,8 +269,15 @@ router.post('/plans', requireSuperAdmin, async (req, res) => {
 
 router.patch('/plans/:id', requireSuperAdmin, async (req, res) => {
   try {
+    const { name, description, price, yearlyPrice, currency, features, isActive, displayOrder,
+            maxMarketsTracked, apiCallsPerMin, advancedAnalytics, bookieBookAccess,
+            predictionEngine, oddsAlerts, telegramNotifications } = req.body;
+    const data = Object.fromEntries(Object.entries({ name, description, price, yearlyPrice, currency,
+      features, isActive, displayOrder, maxMarketsTracked, apiCallsPerMin, advancedAnalytics,
+      bookieBookAccess, predictionEngine, oddsAlerts, telegramNotifications
+    }).filter(([, v]) => v !== undefined));
     const before = await prisma.subscriptionPlan.findUnique({ where: { id: +req.params.id } });
-    const plan = await prisma.subscriptionPlan.update({ where: { id: +req.params.id }, data: req.body });
+    const plan = await prisma.subscriptionPlan.update({ where: { id: +req.params.id }, data });
     await auditLog(req.user, 'plan_update', 'plan', plan.id, plan.slug, { before, after: plan }, '', req);
     res.json({ success: true, data: plan });
   } catch (err) {
@@ -276,7 +297,14 @@ router.get('/coupons', requireAdmin, async (req, res) => {
 
 router.post('/coupons', requireAdmin, async (req, res) => {
   try {
-    const coupon = await prisma.promoCode.create({ data: { ...req.body, createdBy: req.user.userId } });
+    const { code, description, discountType, discountValue, maxDiscount, applicablePlans,
+            usageLimit, perUserLimit, validFrom, validUntil, isActive } = req.body;
+    if (!code || !discountType || discountValue === undefined || !validFrom || !validUntil)
+      return res.status(400).json({ success: false, message: 'code, discountType, discountValue, validFrom, validUntil required' });
+    const coupon = await prisma.promoCode.create({
+      data: { code, description, discountType, discountValue, maxDiscount, applicablePlans,
+              usageLimit, perUserLimit, validFrom, validUntil, isActive, createdBy: req.user.userId }
+    });
     await auditLog(req.user, 'coupon_create', 'coupon', coupon.id, coupon.code, { after: coupon }, '', req);
     res.json({ success: true, data: coupon });
   } catch (err) {
@@ -286,7 +314,12 @@ router.post('/coupons', requireAdmin, async (req, res) => {
 
 router.patch('/coupons/:id', requireAdmin, async (req, res) => {
   try {
-    const coupon = await prisma.promoCode.update({ where: { id: +req.params.id }, data: req.body });
+    const { description, discountType, discountValue, maxDiscount, applicablePlans,
+            usageLimit, perUserLimit, validFrom, validUntil, isActive } = req.body;
+    const data = Object.fromEntries(Object.entries({ description, discountType, discountValue,
+      maxDiscount, applicablePlans, usageLimit, perUserLimit, validFrom, validUntil, isActive
+    }).filter(([, v]) => v !== undefined));
+    const coupon = await prisma.promoCode.update({ where: { id: +req.params.id }, data });
     res.json({ success: true, data: coupon });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -322,6 +355,7 @@ router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
 router.get('/audit-logs', requireAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 50, action = '', adminId = '' } = req.query;
+    const safeLimit = Math.min(+limit || 50, 100);
     const where = {};
     if (action) where.action = action;
     if (adminId) where.adminId = +adminId;
@@ -329,12 +363,12 @@ router.get('/audit-logs', requireAdmin, async (req, res) => {
     const [logs, total] = await Promise.all([
       prisma.adminAuditLog.findMany({
         where, orderBy: { createdAt: 'desc' },
-        skip: (+page - 1) * +limit, take: +limit,
+        skip: (+page - 1) * safeLimit, take: safeLimit,
         include: { admin: { select: { name: true, email: true } } }
       }),
       prisma.adminAuditLog.count({ where })
     ]);
-    res.json({ success: true, data: logs, pagination: { page: +page, limit: +limit, total } });
+    res.json({ success: true, data: logs, pagination: { page: +page, limit: safeLimit, total } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

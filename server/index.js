@@ -6,6 +6,7 @@ const cors = require('cors');
 const path = require('path');
 const session = require('express-session');
 
+const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
 const subscriptionRoutes = require('./routes/subscription');
 const adminRoutes = require('./routes/admin');
@@ -14,18 +15,50 @@ const { verifyToken } = require('./middleware/auth');
 const tennisLogin = require('./services/tennisLogin');
 const scraper = require('./services/scraper');
 const prisma = require('./db/prisma');
+const { setIo } = require('./socketInstance');
 
 const app = express();
 const server = http.createServer(app);
+const io = new (require('socket.io').Server)(server, {
+  cors: { origin: (origin, cb) => { if (!origin || ['https://cricketedge-gct4.onrender.com','https://cricketedge.app','http://localhost:5173','http://localhost:3000'].includes(origin)) cb(null, true); else cb(new Error('Not allowed')); }, credentials: true }
+});
+setIo(io);
+io.use((socket, next) => {
+  const token = socket.handshake.auth?.token;
+  if (!token) return next(new Error('No token'));
+  try {
+    const { JWT_SECRET } = require('./middleware/auth');
+    const jwt = require('jsonwebtoken');
+    const decoded = jwt.verify(token, JWT_SECRET);
+    socket.userId = decoded.userId;
+    socket.join(`user:${decoded.userId}`);
+    next();
+  } catch { next(new Error('Invalid token')); }
+});
 
 // ─── MIDDLEWARE ───
-app.use(cors());
-app.use(express.json());
+const allowedOrigins = [
+  'https://cricketedge-gct4.onrender.com',
+  'https://cricketedge.app',
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:5173', 'http://localhost:3000'] : [])
+];
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    cb(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+}));
+app.use(express.json({ limit: '50kb' }));
+
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { success: false, message: 'Too many attempts, try again after 15 minutes' } });
+const otpLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 5, message: { success: false, message: 'Too many OTP requests, try again after 10 minutes' } });
+const adminLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, message: { success: false, message: 'Too many admin requests' } });
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'cricketedge_session_secret_dev',
+  secret: process.env.SESSION_SECRET || (() => { throw new Error('SESSION_SECRET env var not set!'); })(),
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }
+  cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 }
 }));
 
 try {
@@ -37,13 +70,19 @@ try {
 }
 
 // ─── ROUTES ───
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/forgot-password', otpLimiter);
+app.use('/api/auth/verify-otp', otpLimiter);
+app.use('/api/auth/resend-otp', otpLimiter);
+app.use('/api/admin', adminLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api', cricketRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, status: 'OK', timestamp: new Date().toISOString() });
+  res.json({ success: true, status: 'OK' });
 });
 
 app.get('/api/user/subscription', verifyToken, (req, res) => {
