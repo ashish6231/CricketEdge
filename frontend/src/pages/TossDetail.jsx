@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, Lock, TrendingUp, BarChart3 } from 'lucide-react'
+import { ArrowLeft, LoaderCircle, Lock, BarChart3 } from 'lucide-react'
 import { getTossSnapshot } from '../api'
 
 const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
@@ -72,29 +72,67 @@ export default function TossDetail() {
   const aLay  = raw.A_lay_stake || am1.lay  || 0
   const bBack = raw.B_back_expo || am2.back || 0
   const bLay  = raw.B_lay_stake || am2.lay  || 0
-  // Calculate P/L from advancedMetricsV2 accumulated back/lay volumes
-  const calcPL = (winBack, winLay, loseBack, loseLay) => {
-    if (!winBack && !winLay && !loseBack && !loseLay) return null
-    return (loseBack + winLay) - (winBack + loseLay)
-  }
   const t1Trades = (snap.teams?.[t1] || {}).trades || []
   const t2Trades = (snap.teams?.[t2] || {}).trades || []
-  const pl1 = sp.team1_win ?? calcPL(aBack, aLay, bBack, bLay)
-  const pl2 = sp.team2_win ?? calcPL(bBack, bLay, aBack, aLay)
   const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
   const t2Bets = tot.totalBetTeam2 || tot.team2 || 0
-  const maxBets = Math.max(t1Bets, t2Bets)
-  const minBets = Math.min(t1Bets, t2Bets)
-  const betsGap = minBets > 0 ? maxBets / minBets : 0
-  const bookieTeam = betsGap >= 3
-    ? (t1Bets <= t2Bets ? t1 : t2)
-    : (t1Bets >= t2Bets ? t1 : t2)
-  const publicTeam = bookieTeam === t1 ? t2 : t1
-  const signalStr = betsGap >= 3 ? 'Strong 🔥 (Contra)' : betsGap >= 1.5 ? 'Moderate' : 'Weak'
-  const signalCls = betsGap >= 3 ? 'text-profit' : betsGap >= 1.5 ? 'text-yellow-500' : 'text-text-muted'
-  const hasBLData = t1Bets > 0 || t2Bets > 0
 
-  // Spoofing detector
+  const isWomens = /women/i.test(snap.competitionName || '') ||
+    [t1, t2].some(name => /\bW\b/.test(name) || /\(W\)/i.test(name))
+
+  // Toss Winner Prediction
+  const exp1Net = exp1.netExposure || 0
+  const exp2Net = exp2.netExposure || 0
+  const sent1Pct = ns.percentageA ?? (sup.team1?.support ?? 50)
+  const sent2Pct = ns.percentageB ?? (sup.team2?.support ?? 50)
+  const hasExpData = exp1Net !== 0 || exp2Net !== 0
+  const hasSentData = sent1Pct !== 50 || sent2Pct !== 50
+  const hasTossRuleData = hasExpData || hasSentData
+
+  const tossPrediction = (() => {
+    if (!hasTossRuleData) return null
+    let t1Score = 0, t2Score = 0
+    const rules = []
+
+    if (hasExpData) {
+      if (isWomens) {
+        // Women: lower net exposure = winner
+        const t1wins = exp1Net < exp2Net
+        rules.push({ label: 'Kam Net Exposure', t1wins, v1: fmtRs(exp1Net), v2: fmtRs(exp2Net) })
+        if (t1wins) t1Score++; else t2Score++
+      } else {
+        // Mens: higher positive net exposure = winner
+        const t1wins = exp1Net > exp2Net
+        rules.push({ label: 'Zyada Positive Exposure', t1wins, v1: fmtRs(exp1Net), v2: fmtRs(exp2Net) })
+        if (t1wins) t1Score++; else t2Score++
+      }
+    }
+
+    if (hasSentData) {
+      if (isWomens) {
+        // Women: lower sentiment = winner
+        const t1wins = sent1Pct < sent2Pct
+        rules.push({ label: 'Kam Overall Sentiment', t1wins, v1: `${sent1Pct?.toFixed(1)}%`, v2: `${sent2Pct?.toFixed(1)}%` })
+        if (t1wins) t1Score++; else t2Score++
+      } else {
+        // Mens: higher sentiment = winner
+        const t1wins = sent1Pct > sent2Pct
+        rules.push({ label: 'Zyada Overall Sentiment', t1wins, v1: `${sent1Pct?.toFixed(1)}%`, v2: `${sent2Pct?.toFixed(1)}%` })
+        if (t1wins) t1Score++; else t2Score++
+      }
+    }
+
+    const winnerIdx = t1Score >= t2Score ? 0 : 1
+    const winnerName = winnerIdx === 0 ? t1 : t2
+    const matchScore = Math.max(t1Score, t2Score)
+    const totalRules = rules.length
+    const confidence = matchScore === totalRules ? { label: 'High Confidence 🔥', color: 'text-profit' }
+                     : { label: 'Low Confidence', color: 'text-yellow-500' }
+    return {
+      winnerName, winnerIdx, matchScore, totalRules, confidence, isWomens,
+      rules: rules.map(r => ({ ...r, winnerWins: winnerIdx === 0 ? r.t1wins : !r.t1wins }))
+    }
+  })()
   const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
   function calcFakeVolume(backVol, layVol) {
     const matched = Math.min(backVol, layVol)
@@ -129,48 +167,37 @@ export default function TossDetail() {
         </div>
       </div>
 
-      {/* Back/Lay Toss Prediction */}
-      {hasBLData && (
-        <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)', border: '2px solid #fecaca' }}>
-          <div className="text-sm font-bold text-primary mb-3 flex items-center gap-2">
-            <TrendingUp size={16} /> 🧠 Back/Lay Toss Prediction
-          </div>
 
-          <div className="rounded-xl p-4 text-center mb-4" style={{ background: 'rgba(22,163,74,0.07)', border: '1px solid rgba(22,163,74,0.25)' }}>
-            <div className="text-xs text-text-muted uppercase tracking-widest mb-1">Predicted Toss Winner</div>
-            <div className="text-2xl font-black text-profit">{bookieTeam}</div>
-            <div className="text-xs mt-1 text-text-muted">Bookie is team ki jeet chahta hai</div>
-          </div>
 
-          <div className="space-y-3 mb-4">
-            {[{ team: t1, bets: t1Bets, isBookie: bookieTeam === t1 },
-              { team: t2, bets: t2Bets, isBookie: bookieTeam === t2 }]
-              .map(({ team, bets, isBookie }) => (
-              <div key={team}>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs font-semibold text-text-secondary">{team}</span>
-                  <div className="flex items-center gap-2">
-                    {isBookie && <span className="text-xs font-bold text-profit bg-profit/10 px-2 py-0.5 rounded-full">Predicted Winner</span>}
-                    <span className="text-xs text-text-muted">Total Bets: <b className={isBookie ? 'text-profit' : 'text-text-muted'}>₹{fmt(bets)}</b></span>
+      {/* Toss Winner Prediction */}
+      {tossPrediction && (
+        <div className="rounded-2xl overflow-hidden" style={{ border: `2px solid ${tossPrediction.matchScore === tossPrediction.totalRules ? '#86efac' : '#fde68a'}` }}>
+          <div className="px-4 py-3 flex items-center gap-2" style={{ background: tossPrediction.matchScore === tossPrediction.totalRules ? 'linear-gradient(135deg,#f0fdf4,#fefce8)' : 'linear-gradient(135deg,#fefce8,#fff8f0)' }}>
+            <span className="text-base">🪙</span>
+            <span className="text-sm font-bold text-text-primary">Predicted Toss Winner</span>
+            {tossPrediction.isWomens
+              ? <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fce7f3', color: '#be185d' }}>♀️ Women's Rules</span>
+              : <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#eff6ff', color: '#1d4ed8' }}>👨 Men's Rules</span>
+            }
+            <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
+          </div>
+          <div className="p-4">
+            <div className="rounded-xl p-3 text-center mb-4" style={{ background: tossPrediction.matchScore === tossPrediction.totalRules ? 'rgba(22,163,74,0.08)' : 'rgba(234,179,8,0.08)', border: `1px solid ${tossPrediction.matchScore === tossPrediction.totalRules ? 'rgba(22,163,74,0.3)' : 'rgba(234,179,8,0.3)'}` }}>
+              <div className="text-xs text-text-muted uppercase tracking-widest mb-0.5">Toss Jeetega</div>
+              <div className={`text-2xl font-black ${tossPrediction.matchScore === tossPrediction.totalRules ? 'text-profit' : 'text-yellow-600'}`}>{tossPrediction.winnerName}</div>
+              <div className="text-xs text-text-muted mt-0.5">{tossPrediction.matchScore}/{tossPrediction.totalRules} signals match</div>
+            </div>
+            <div className="space-y-2">
+              {tossPrediction.rules.map(r => (
+                <div key={r.label} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: r.winnerWins ? 'rgba(22,163,74,0.06)' : 'rgba(220,38,38,0.04)', border: `1px solid ${r.winnerWins ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.12)'}` }}>
+                  <span className="text-xs font-bold shrink-0" style={{ color: r.winnerWins ? '#16a34a' : '#dc2626' }}>{r.winnerWins ? '✅' : '❌'} {r.label}</span>
+                  <div className="flex-1 text-right">
+                    <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{r.v1}</span>
+                    <span className="text-xs text-text-muted mx-1">vs</span>
+                    <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 1 ? 'text-profit' : 'text-text-muted'}`}>{r.v2}</span>
                   </div>
                 </div>
-                <div className="flex h-2 rounded-full overflow-hidden" style={{ background: '#fee2e2' }}>
-                  <div className={`h-full rounded-full ${isBookie ? 'bg-profit' : 'bg-loss/70'}`} style={{ width: `${t1Bets + t2Bets > 0 ? (bets / (t1Bets + t2Bets) * 100) : 50}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
-              <div className="text-xs text-text-muted mb-1">Signal Strength</div>
-              <div className={`text-sm font-bold ${signalCls}`}>{signalStr}</div>
-              <div className="text-xs text-text-muted mt-0.5">Bets gap: {betsGap.toFixed(1)}x</div>
-            </div>
-            <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
-              <div className="text-xs text-text-muted mb-1">Public Favourite</div>
-              <div className="text-sm font-bold text-loss">{publicTeam}</div>
-              <div className="text-xs text-text-muted mt-0.5">Log is team pe back kar rahe hain</div>
+              ))}
             </div>
           </div>
         </div>
@@ -222,19 +249,7 @@ export default function TossDetail() {
         </div>
       )}
 
-      {/* Bookie P/L */}
-      <div className="glass-card rounded-2xl p-4">
-        <div className="text-xs font-bold text-text-muted uppercase mb-3">Bookie P/L — Kaun jeete to kya hoga?</div>
-        <div className="grid grid-cols-2 gap-3">
-          {[{ team: t1, pl: pl1 }, { team: t2, pl: pl2 }].map(({ team, pl }) => (
-            <div key={team} className="rounded-xl p-3 border" style={{ background: (pl ?? 0) >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', borderColor: (pl ?? 0) >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)' }}>
-              <div className="text-xs text-text-muted mb-1">Agar {team} jeete</div>
-              <div className={`text-xl font-bold ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-              <div className={`text-xs mt-0.5 ${pnlCls(pl)}`}>{(pl ?? 0) >= 0 ? '✅ Bookie profit' : '❌ Bookie loss'}</div>
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       {/* Bookie ka risk */}
       {(exp1.netExposure != null || exp2.netExposure != null) && (

@@ -185,11 +185,30 @@ export default function MatchDetail({ sport }) {
     const isWomens = /women/i.test(snapshot.competitionName || '') ||
       [t1, t2].some(name => /\bW\b/.test(name) || /\(W\)/i.test(name))
 
+    // Exposure override: agar exposure negative hai BUT ratio 2x+ aur bets 1.5x+ hain
+    // toh yeh public noise hai, bookie signal nahi — exposure weight 0 karo
+    const exp1Net = exp1.netExposure || 0
+    const exp2Net = exp2.netExposure || 0
+    const t1HasMoreNegExp = exp1Net < exp2Net  // t1 zyada negative
+    const t2HasMoreNegExp = exp2Net < exp1Net  // t2 zyada negative
+    const exposedTeamRatio    = t1HasMoreNegExp ? aRatio : bRatio
+    const nonExposedTeamRatio = t1HasMoreNegExp ? bRatio : aRatio
+    const exposedTeamBets     = t1HasMoreNegExp ? totalBets1 : totalBets2
+    const nonExposedTeamBets  = t1HasMoreNegExp ? totalBets2 : totalBets1
+    const noExposureData = exp1Net === 0 && exp2Net === 0
+    const isExposureMisleading =
+      noExposureData || (
+        (t1HasMoreNegExp || t2HasMoreNegExp) &&
+        nonExposedTeamRatio > 0 &&
+        exposedTeamRatio / (nonExposedTeamRatio || 1) >= 2 &&
+        exposedTeamBets / (nonExposedTeamBets || 1) >= 1.5
+      )
+
     // Weighted scoring: exposure=3, ratio=1.5, total bets=1
     const rules = [
-      { label: 'Zyada Negative Exposure', weight: 3,   t1wins: (exp1.netExposure || 0) < (exp2.netExposure || 0), v1: fmtRs(exp1.netExposure), v2: fmtRs(exp2.netExposure) },
-      { label: 'Kam Back/Lay Ratio',      weight: 1.5, t1wins: aRatio < bRatio,                                      v1: `${aRatio.toFixed(2)}x`, v2: `${bRatio.toFixed(2)}x` },
-      { label: 'Kam Total Bets',          weight: 1,   t1wins: totalBets1 < totalBets2,                               v1: `₹${fmt(totalBets1)}`,   v2: `₹${fmt(totalBets2)}` },
+      { label: 'Zyada Negative Exposure', weight: isExposureMisleading ? 0 : 3, t1wins: exp1Net < exp2Net, v1: fmtRs(exp1Net), v2: fmtRs(exp2Net), overridden: isExposureMisleading },
+      { label: 'Kam Back/Lay Ratio',      weight: 1.5, t1wins: aRatio < bRatio,       v1: `${aRatio.toFixed(2)}x`, v2: `${bRatio.toFixed(2)}x` },
+      { label: 'Kam Total Bets',          weight: 1,   t1wins: totalBets1 < totalBets2, v1: `₹${fmt(totalBets1)}`,   v2: `₹${fmt(totalBets2)}` },
     ]
 
     const maxScore = rules.reduce((s, r) => s + r.weight, 0)
@@ -352,7 +371,7 @@ export default function MatchDetail({ sport }) {
           <div className="space-y-2">
             {bkp.rules.map((r, idx) => (
               <div key={r.label} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: r.bookieWins ? 'rgba(22,163,74,0.06)' : 'rgba(220,38,38,0.04)', border: `1px solid ${r.bookieWins ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.12)'}` }}>
-                <span className="text-xs font-bold shrink-0" style={{ color: r.bookieWins ? '#16a34a' : '#dc2626' }}>{r.bookieWins ? '✅' : '❌'} {r.label}</span>
+                <span className="text-xs font-bold shrink-0" style={{ color: r.bookieWins ? '#16a34a' : '#dc2626' }}>{r.bookieWins ? '✅' : '❌'} {r.label}{r.overridden ? ' ⚠️ (ignored)' : ''}</span>
                 <div className="flex-1 text-right">
                   <span className={`text-xs font-bold ${bkp.bookieIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{r.v1}</span>
                   <span className="text-xs text-text-muted mx-1">vs</span>
