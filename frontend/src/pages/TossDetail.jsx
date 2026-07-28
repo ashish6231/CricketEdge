@@ -270,6 +270,26 @@ export default function TossDetail() {
         </div>
       )}
 
+      {/* Bookie P/L from exposure */}
+      {(exp1.netExposure != null || exp2.netExposure != null) && (() => {
+        const t1ifWins = exp1.netExposure != null ? -exp1.netExposure : null
+        const t2ifWins = exp2.netExposure != null ? -exp2.netExposure : null
+        return (
+          <div className="glass-card rounded-2xl p-4">
+            <div className="text-xs font-bold text-text-muted uppercase mb-3">📈 Bookie P/L (Agar Team Jeete)</div>
+            <div className="grid grid-cols-2 gap-3">
+              {[{ name: t1, pl: t1ifWins }, { name: t2, pl: t2ifWins }].map(({ name, pl }) => (
+                <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
+                  <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
+                  <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
+                  <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      })()}
+
       {/* Overall sentiment */}
       {ns.teamA && sent.teamA && (
         <div className="glass-card rounded-2xl p-4">
