@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
-const { verifyToken, requireProSubscription } = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const { requireAdmin } = require('../middleware/admin');
 
 // ──── Auth (admin only — scraper login control) ────
@@ -30,14 +30,14 @@ router.post('/auth/logout', requireAdmin, (req, res) => {
 
 // ──── Cricket ────
 
-router.get('/cricket/matches', requireProSubscription, async (req, res) => {
+router.get('/cricket/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllCricketMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   const matches = Array.isArray(data) ? data : [];
   res.json({ total: matches.length, matches });
 });
 
-router.get('/cricket/match/:matchId', requireProSubscription, async (req, res) => {
+router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getCricketSnapshot(req.params.matchId);
   if (data?.error) {
     if (String(data.error).includes('401'))
@@ -47,7 +47,7 @@ router.get('/cricket/match/:matchId', requireProSubscription, async (req, res) =
   res.json(data);
 });
 
-router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) => {
+router.get('/cricket/odds/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getCricketSnapshot(req.params.matchId);
   if (data?.error) return res.json({ error: data.error });
   const teams = data.teams || {};
@@ -64,20 +64,20 @@ router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) =>
   res.json({ matchId: req.params.matchId, teamNames: data.teamNames || [], odds: result });
 });
 
-router.get('/cricket/full', requireProSubscription, async (req, res) => {
+router.get('/cricket/full', verifyToken, async (req, res) => {
   const includeSnapshots = req.query.include_snapshots !== 'false';
   res.json(await scraper.getCricketFullData(includeSnapshots));
 });
 
 // ──── Tennis ────
 
-router.get('/tennis/matches', requireProSubscription, async (req, res) => {
+router.get('/tennis/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllTennisMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   res.json({ total: data.length, matches: data });
 });
 
-router.get('/tennis/match/:matchId', requireProSubscription, async (req, res) => {
+router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getTennisSnapshot(req.params.matchId);
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
@@ -86,13 +86,13 @@ router.get('/tennis/match/:matchId', requireProSubscription, async (req, res) =>
 
 // ──── Session ────
 
-router.get('/session/matches', requireProSubscription, async (req, res) => {
+router.get('/session/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllSessionMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   res.json({ total: data.length, matches: data });
 });
 
-router.get('/session/trades/:matchId', requireProSubscription, async (req, res) => {
+router.get('/session/trades/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getSessionTrades(req.params.matchId);
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Session live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
@@ -101,13 +101,13 @@ router.get('/session/trades/:matchId', requireProSubscription, async (req, res) 
 
 // ──── Toss ────
 
-router.get('/toss/matches', requireProSubscription, async (req, res) => {
+router.get('/toss/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllTossMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   res.json({ total: data.length, matches: data });
 });
 
-router.get('/toss/match/:matchId', requireProSubscription, async (req, res) => {
+router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getTossSnapshot(req.params.matchId);
   if (data?.error) {
     if (String(data.error).includes('401'))
@@ -119,7 +119,7 @@ router.get('/toss/match/:matchId', requireProSubscription, async (req, res) => {
 
 // ──── Live Odds ────
 
-router.get('/live-odds/:matchId', requireProSubscription, async (req, res) => {
+router.get('/live-odds/:matchId', verifyToken, async (req, res) => {
   res.json(await scraper.getLiveOdds(req.params.matchId));
 });
 
