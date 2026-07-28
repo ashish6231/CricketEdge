@@ -215,15 +215,18 @@ export default function MatchDetail({ sport }) {
     const t1Score = rules.reduce((s, r) => s + (r.t1wins ? r.weight : 0), 0)
     const t2Score = rules.reduce((s, r) => s + (!r.t1wins ? r.weight : 0), 0)
     const bookieIdx = t1Score >= t2Score ? 0 : 1
-    const matchScore = Math.max(t1Score, t2Score)
-    const confidence = matchScore === maxScore      ? { label: '99% Confirmed 🔥', color: 'text-profit' }
-                     : matchScore >= maxScore * 0.7 ? { label: '90% Strong ⚡',    color: 'text-profit' }
-                     : matchScore >= maxScore * 0.4 ? { label: '70% Moderate',      color: 'text-yellow-500' }
-                     :                                { label: 'Weak Signal',         color: 'text-text-muted' }
+    const matchedRules = rules.filter((r, _) => bookieIdx === 0 ? r.t1wins : !r.t1wins).length
+    const totalRules = rules.filter(r => r.weight > 0).length
+    const matchScore = matchedRules
+    const confidence = matchedRules === totalRules      ? { label: '99% Confirmed 🔥', color: 'text-profit' }
+                     : matchedRules >= totalRules * 0.7 ? { label: '90% Strong ⚡',    color: 'text-profit' }
+                     : matchedRules >= totalRules * 0.4 ? { label: '70% Moderate',      color: 'text-yellow-500' }
+                     :                                    { label: 'Weak Signal',         color: 'text-text-muted' }
     return {
       bookieName: bookieIdx === 0 ? t1 : t2,
       matchScore,
       maxScore,
+      totalRules,
       confidence,
       bookieIdx,
       isWomens,
@@ -351,8 +354,8 @@ export default function MatchDetail({ sport }) {
       )}
 
       {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}
-      <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid', borderColor: bkp.matchScore >= 4 ? '#86efac' : bkp.matchScore === 3 ? '#fde68a' : '#fecaca' }}>
-        <div className="px-4 py-3 flex items-center gap-2" style={{ background: bkp.matchScore >= 4 ? 'linear-gradient(135deg,#f0fdf4,#fefce8)' : 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
+      <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid', borderColor: bkp.matchScore === bkp.totalRules ? '#86efac' : bkp.matchScore >= 2 ? '#fde68a' : '#fecaca' }}>
+        <div className="px-4 py-3 flex items-center gap-2" style={{ background: bkp.matchScore === bkp.totalRules ? 'linear-gradient(135deg,#f0fdf4,#fefce8)' : 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
           <span className="text-base">🕵️</span>
           <span className="text-sm font-bold text-text-primary">Bookie Fingerprint</span>
           {bkp.isWomens && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fce7f3', color: '#be185d' }}>♀️ Women's</span>}
@@ -361,9 +364,9 @@ export default function MatchDetail({ sport }) {
 
         <div className="p-4">
           {/* Winner banner */}
-          <div className="rounded-xl p-3 text-center mb-4" style={{ background: bkp.matchScore >= 4 ? 'rgba(22,163,74,0.08)' : 'rgba(234,179,8,0.08)', border: `1px solid ${bkp.matchScore >= 4 ? 'rgba(22,163,74,0.3)' : 'rgba(234,179,8,0.3)'}` }}>
+          <div className="rounded-xl p-3 text-center mb-4" style={{ background: bkp.matchScore === bkp.totalRules ? 'rgba(22,163,74,0.08)' : 'rgba(234,179,8,0.08)', border: `1px solid ${bkp.matchScore === bkp.totalRules ? 'rgba(22,163,74,0.3)' : 'rgba(234,179,8,0.3)'}` }}>
             <div className="text-xs text-text-muted uppercase tracking-widest mb-0.5">Predicted Bookie Team</div>
-            <div className={`text-2xl font-black ${bkp.matchScore >= 4 ? 'text-profit' : 'text-yellow-600'}`}>{bkp.bookieName}</div>
+            <div className={`text-2xl font-black ${bkp.matchScore === bkp.totalRules ? 'text-profit' : 'text-yellow-600'}`}>{bkp.bookieName}</div>
             <div className="text-xs text-text-muted mt-0.5">{bkp.matchScore}/{bkp.totalRules} rules match</div>
           </div>
 
@@ -381,7 +384,7 @@ export default function MatchDetail({ sport }) {
             ))}
           </div>
 
-          {bkp.matchScore >= 4 && (
+          {bkp.matchScore === bkp.totalRules && (
             <div className="mt-3 text-xs text-center p-2 rounded-xl" style={{ background: 'rgba(22,163,74,0.06)', border: '1px solid rgba(22,163,74,0.15)' }}>
               💡 <b>{bkp.bookieName}</b> pe {bkp.matchScore}/{bkp.totalRules} bookie signals match — high confidence pick
             </div>
