@@ -12,6 +12,7 @@ const cricketRoutes = require('./routes/cricket');
 const cronRoutes = require('./routes/cron');
 const { verifyToken } = require('./middleware/auth');
 const tennisLogin = require('./services/tennisLogin');
+const scraper = require('./services/scraper');
 const prisma = require('./db/prisma');
 
 const app = express();
@@ -37,7 +38,7 @@ const otpLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 5, message: { succ
 const adminLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, message: { success: false, message: 'Too many admin requests' } });
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'fallback_secret',
+  secret: process.env.SESSION_SECRET || (() => { throw new Error('SESSION_SECRET env var not set!'); })(),
   resave: false,
   saveUninitialized: false,
   cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 }
@@ -64,6 +65,7 @@ async function _init() {
     console.log('⚠️  DB init skipped:', e.message);
   }
   tennisLogin.startAutoLogin().catch(() => {});
+  scraper.warmup().catch(() => {});
 }
 
 app.use(async (req, res, next) => {

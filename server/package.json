@@ -28,7 +28,6 @@
     "pg": "^8.22.0",
     "prisma": "^7.9.0",
     "razorpay": "^2.9.6",
-    "socket.io": "^4.7.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
