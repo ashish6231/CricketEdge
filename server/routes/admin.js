@@ -224,9 +224,8 @@ router.patch('/users/:id/plan', requireAdmin, async (req, res) => {
 
     await auditLog(req.user, 'user_verify', 'user', user.id, user.email, { before: { planSlug: before.subPlanSlug }, after: { planSlug } }, reason || `Plan changed to ${planSlug} by admin`, req);
 
-    const { getIo } = require('../socketInstance');
-    const io = getIo();
-    if (io) io.to(`user:${req.params.id}`).emit('planUpdate', { planSlug, status: 'active', expiresAt: user.subExpiresAt });
+    const { emitToUser } = require('../socketInstance');
+    emitToUser(req.params.id, 'planUpdate', { planSlug, status: 'active', expiresAt: user.subExpiresAt });
 
     res.json({ success: true, data: user });
   } catch (err) {

@@ -1,8 +1,3 @@
-/**
- * tennisliveload.com API Scraper
- * Python scraper.py ka Node.js version — same logic, same endpoints
- */
-
 const axios = require('axios');
 const tennisLogin = require('./tennisLogin');
 
@@ -18,11 +13,10 @@ const ENDPOINTS = {
   TOSS_MATCHES:     '/api/toss/matches',
   TOSS_SNAPSHOT:    '/api/toss/snapshot',
   LIVE_ODDS:        '/api/live-odds',
-  AUTH_LOGIN:       '/api/auth/login',
 };
 
-const CACHE_TTL = 15 * 1000;
-const LIST_TTL  = 60 * 1000;
+const CACHE_TTL  = 15 * 1000;
+const LIST_TTL   = 60 * 1000;
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -30,7 +24,6 @@ const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
 ];
 
-// ──── HTTP Client ────
 function _getHeaders() {
   const cookies = tennisLogin.getCookies() || '';
   return {
@@ -60,8 +53,7 @@ async function _callApi(endpoint, params = null, method = 'GET') {
   }
 }
 
-// ──── Login / Logout — tennisLogin ke through (single session) ────
-
+// ──── Login / Logout ────
 async function login(email, password) {
   try {
     await tennisLogin.login(email, password);
@@ -74,9 +66,7 @@ async function login(email, password) {
 }
 
 function logout() {
-  // tennisLogin ka session clear karo
   tennisLogin._sessionCookies = null;
-  tennisLogin._connected = false;
 }
 
 function isLoggedIn() {
@@ -87,9 +77,8 @@ function getAuthState() {
   return { isLoggedIn: tennisLogin.isConnected() };
 }
 
-// ──── Cache ────
+// ──── Simple Cache (in-memory, per-request reuse) ────
 const _cache = {};
-const _bgIntervals = {};
 
 function _cacheGet(key, maxAge = CACHE_TTL) {
   const e = _cache[key];
@@ -101,19 +90,8 @@ function _cacheSet(key, data) {
   _cache[key] = { data, ts: Date.now() };
 }
 
-// Background polling for snapshots (every 1.5s like Python)
-function _ensureBg(matchId, endpoint) {
-  const key = `${endpoint}:${matchId}`;
-  if (_bgIntervals[key]) return;
-  _bgIntervals[key] = setInterval(async () => {
-    const data = await _callApi(endpoint, { matchId });
-    if (data && !data.error) _cacheSet(key, data);
-  }, 1500);
-}
-
 async function _cachedCall(endpoint, matchId) {
   const key = `${endpoint}:${matchId}`;
-  _ensureBg(matchId, endpoint);
   const cached = _cacheGet(key);
   if (cached) return cached;
   const data = await _callApi(endpoint, { matchId });
@@ -121,25 +99,15 @@ async function _cachedCall(endpoint, matchId) {
   return data;
 }
 
-// Background polling for match lists (every 10s like Python)
-const _listBgIntervals = {};
-
 async function _cachedList(key, fn, ttl = LIST_TTL) {
   const cached = _cacheGet(key, ttl);
   if (cached !== null) return cached;
   const data = await fn();
   if (data && !(typeof data === 'object' && data.error)) _cacheSet(key, data);
-  if (!_listBgIntervals[key]) {
-    _listBgIntervals[key] = setInterval(async () => {
-      const fresh = await fn();
-      if (fresh && !(typeof fresh === 'object' && fresh.error)) _cacheSet(key, fresh);
-    }, 10000);
-  }
   return data;
 }
 
-// ──── Public API Functions ────
-
+// ──── Public API ────
 const getAllCricketMatches  = () => _cachedList('cricket_matches', () => _callApi(ENDPOINTS.CRICKET_MATCHES));
 const getAllTennisMatches   = () => _cachedList('tennis_matches',  () => _callApi(ENDPOINTS.TENNIS_MATCHES));
 const getAllSessionMatches  = () => _cachedList('session_matches', () => _callApi(ENDPOINTS.SESSION_MATCHES));
@@ -171,7 +139,6 @@ async function getCricketFullData(includeSnapshots = true) {
   return result;
 }
 
-// Warmup on startup
 async function warmup() {
   try {
     await Promise.all([
