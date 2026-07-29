@@ -3,6 +3,7 @@ const router = express.Router();
 const scraper = require('../services/scraper');
 const { verifyToken } = require('../middleware/auth');
 const { requireAdmin } = require('../middleware/admin');
+const { predictMatch } = require('../services/bookiePrediction');
 
 // ──── Auth (admin only — scraper login control) ────
 
@@ -44,6 +45,7 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
       return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: req.params.matchId });
     return res.status(502).json({ detail: data.error });
   }
+  data.bookiePrediction = predictMatch(data);
   res.json(data);
 });
 
@@ -81,6 +83,7 @@ router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getTennisSnapshot(req.params.matchId);
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
+  data.bookiePrediction = predictMatch(data);
   res.json(data);
 });
 
@@ -114,6 +117,7 @@ router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
       return res.json({ error: 'login_required', message: 'Toss live/upcoming data requires login.', matchId: req.params.matchId });
     return res.status(502).json({ detail: data.error });
   }
+  data.bookiePrediction = predictMatch(data);
   res.json(data);
 });
 
