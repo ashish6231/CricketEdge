@@ -94,6 +94,7 @@ app.get('/api/user/subscription', verifyToken, (req, res) => {
   res.json({ success: true, userId: req.user.userId, plan: req.user.plan || 'free' });
 });
 
+// ─── SERVER LISTEN ───
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🏏 CricketEdge server running on port ${PORT}`));
 
