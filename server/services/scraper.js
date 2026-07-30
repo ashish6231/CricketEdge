@@ -87,11 +87,11 @@ function getAuthState() {
   return { isLoggedIn: tennisLogin.isConnected() };
 }
 
-// ──── Cache ────
+// ──── Cache & Deduplication ────
 const _cache = {};
-const _bgIntervals = {};
+const _inFlight = {};
 
-function _cacheGet(key, maxAge = CACHE_TTL) {
+function _cacheGet(key, maxAge) {
   const e = _cache[key];
   if (e && (Date.now() - e.ts) < maxAge) return e.data;
   return null;
@@ -101,41 +101,47 @@ function _cacheSet(key, data) {
   _cache[key] = { data, ts: Date.now() };
 }
 
-// Background polling for snapshots (every 1.5s like Python)
-function _ensureBg(matchId, endpoint) {
-  const key = `${endpoint}:${matchId}`;
-  if (_bgIntervals[key]) return;
-  _bgIntervals[key] = setInterval(async () => {
-    const data = await _callApi(endpoint, { matchId });
-    if (data && !data.error) _cacheSet(key, data);
-  }, 1500);
-}
-
 async function _cachedCall(endpoint, matchId) {
   const key = `${endpoint}:${matchId}`;
-  _ensureBg(matchId, endpoint);
-  const cached = _cacheGet(key);
+  // 1.5 seconds TTL for live snapshots
+  const cached = _cacheGet(key, 1500);
   if (cached) return cached;
-  const data = await _callApi(endpoint, { matchId });
-  if (data && !data.error) _cacheSet(key, data);
-  return data;
+  
+  if (_inFlight[key]) return _inFlight[key];
+  
+  _inFlight[key] = _callApi(endpoint, { matchId })
+    .then(data => {
+      if (data && !data.error) _cacheSet(key, data);
+      delete _inFlight[key];
+      return data;
+    })
+    .catch(err => {
+      delete _inFlight[key];
+      return { error: err.message || 'API Error' };
+    });
+    
+  return _inFlight[key];
 }
 
-// Background polling for match lists (every 10s like Python)
-const _listBgIntervals = {};
-
-async function _cachedList(key, fn, ttl = LIST_TTL) {
+async function _cachedList(key, fn, ttl = 5000) {
+  // 5 seconds TTL for match lists
   const cached = _cacheGet(key, ttl);
   if (cached !== null) return cached;
-  const data = await fn();
-  if (data && !(typeof data === 'object' && data.error)) _cacheSet(key, data);
-  if (!_listBgIntervals[key]) {
-    _listBgIntervals[key] = setInterval(async () => {
-      const fresh = await fn();
-      if (fresh && !(typeof fresh === 'object' && fresh.error)) _cacheSet(key, fresh);
-    }, 10000);
-  }
-  return data;
+  
+  if (_inFlight[key]) return _inFlight[key];
+  
+  _inFlight[key] = fn()
+    .then(data => {
+      if (data && !(typeof data === 'object' && data.error)) _cacheSet(key, data);
+      delete _inFlight[key];
+      return data;
+    })
+    .catch(err => {
+      delete _inFlight[key];
+      return { error: err.message || 'API Error' };
+    });
+    
+  return _inFlight[key];
 }
 
 // ──── Public API Functions ────
