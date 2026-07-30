@@ -12,6 +12,8 @@ import ProfilePage from './pages/ProfilePage'
 import SubscriptionPage from './pages/SubscriptionPage'
 import { getAuthStatus } from './api'
 
+
+//public
 function PrivateRoute() {
   const [status, setStatus] = useState('loading')
   const [user, setUser] = useState(null)
