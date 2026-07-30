@@ -4,8 +4,6 @@
   "description": "Backend for Cricket Betting Analyzer with Betfair-style demo data",
   "main": "index.js",
   "scripts": {
-    "build": "npx prisma generate",
-    "postinstall": "npx prisma generate",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "dev:test": "NODE_ENV=test nodemon index.js",
