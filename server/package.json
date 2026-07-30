@@ -30,6 +30,9 @@
     "razorpay": "^2.9.6",
     "uuid": "^9.0.0"
   },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
