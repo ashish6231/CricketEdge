@@ -34,6 +34,9 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "allowScripts": {
     "prisma@7.9.0": true,
     "@prisma/engines@7.9.0": true
