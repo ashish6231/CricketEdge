@@ -18,18 +18,9 @@ const prisma = require('./db/prisma');
 const app = express();
 
 // ─── MIDDLEWARE ───
-const allowedOrigins = [
-  'https://cricketedge-gct4.onrender.com',
-  'https://cricketedge.app',
-  'https://cricket-edge-online.vercel.app',
-  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:5173', 'http://localhost:3000'] : [])
-];
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
-  },
-  credentials: true
+  origin: '*',
+  credentials: false
 }));
 app.use(express.json({ limit: '50kb' }));
 
