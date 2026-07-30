@@ -94,10 +94,8 @@ app.get('/api/user/subscription', verifyToken, (req, res) => {
   res.json({ success: true, userId: req.user.userId, plan: req.user.plan || 'free' });
 });
 
-// ─── LOCAL DEV: server.listen ───
-if (process.env.NODE_ENV !== 'production') {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => console.log(`🏏 CricketEdge server running on port ${PORT}`));
-}
+// ─── SERVER LISTEN ───
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🏏 CricketEdge server running on port ${PORT}`));
 
 module.exports = app;
