@@ -109,7 +109,7 @@ export default function MatchDetail({ sport }) {
   const getLatestOdds = (trades) => {
     const sorted = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
     const back = sorted.find(t => t.type === 'back')?.price
-    const lay  = sorted.find(t => t.type === 'lay')?.price
+    const lay = sorted.find(t => t.type === 'lay')?.price
     return { back, lay }
   }
   const t1Odds = getLatestOdds(t1Trades)
@@ -137,22 +137,22 @@ export default function MatchDetail({ sport }) {
   // ━━━━━━━━━━ BACK/LAY RATIO BASED PREDICTION ━━━━━━━━━━
   const raw = dm.raw || {}
   const aBack = raw.A_back_expo || am1.back || 0
-  const aLay  = raw.A_lay_stake || am1.lay  || 0
+  const aLay = raw.A_lay_stake || am1.lay || 0
   const bBack = raw.B_back_expo || am2.back || 0
-  const bLay  = raw.B_lay_stake || am2.lay  || 0
+  const bLay = raw.B_lay_stake || am2.lay || 0
 
   // lay/back ratio — >1 means lay dominant = bookie team (predicted winner)
   const aRatio = aLay > 0 ? aBack / aLay : 0
   const bRatio = bLay > 0 ? bBack / bLay : 0
   // back/lay < 1 means lay dominant = bookie team
-  const bookieTeam  = aRatio <= bRatio ? t1 : t2
-  const publicTeam  = aRatio <= bRatio ? t2 : t1
+  const bookieTeam = aRatio <= bRatio ? t1 : t2
+  const publicTeam = aRatio <= bRatio ? t2 : t1
   const bookieRatioVal = Math.min(aRatio || 999, bRatio || 999)
   const bookieRatio = bookieRatioVal === 999 ? 0 : bookieRatioVal
   const signalStrength = bookieRatio < 0.5 ? 'Strong 🔥' : bookieRatio < 0.8 ? 'Moderate' : 'Weak'
-  const signalColor    = bookieRatio < 0.5 ? 'text-profit' : bookieRatio < 0.8 ? 'text-yellow-500' : 'text-text-muted'
-  const aTotal   = aBack + aLay
-  const bTotal   = bBack + bLay
+  const signalColor = bookieRatio < 0.5 ? 'text-profit' : bookieRatio < 0.8 ? 'text-yellow-500' : 'text-text-muted'
+  const aTotal = aBack + aLay
+  const bTotal = bBack + bLay
   const aBackPct = aTotal > 0 ? (aBack / aTotal * 100) : 50
   const bBackPct = bTotal > 0 ? (bBack / bTotal * 100) : 50
   const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0
@@ -191,10 +191,10 @@ export default function MatchDetail({ sport }) {
     const exp2Net = exp2.netExposure || 0
     const t1HasMoreNegExp = exp1Net < exp2Net  // t1 zyada negative
     const t2HasMoreNegExp = exp2Net < exp1Net  // t2 zyada negative
-    const exposedTeamRatio    = t1HasMoreNegExp ? aRatio : bRatio
+    const exposedTeamRatio = t1HasMoreNegExp ? aRatio : bRatio
     const nonExposedTeamRatio = t1HasMoreNegExp ? bRatio : aRatio
-    const exposedTeamBets     = t1HasMoreNegExp ? totalBets1 : totalBets2
-    const nonExposedTeamBets  = t1HasMoreNegExp ? totalBets2 : totalBets1
+    const exposedTeamBets = t1HasMoreNegExp ? totalBets1 : totalBets2
+    const nonExposedTeamBets = t1HasMoreNegExp ? totalBets2 : totalBets1
     const noExposureData = exp1Net === 0 && exp2Net === 0
     const isExposureMisleading =
       noExposureData || (
@@ -207,8 +207,8 @@ export default function MatchDetail({ sport }) {
     // Weighted scoring: exposure=3, ratio=1.5, total bets=1
     const rules = [
       { label: 'Zyada Negative Exposure', weight: isExposureMisleading ? 0 : 3, t1wins: exp1Net < exp2Net, v1: fmtRs(exp1Net), v2: fmtRs(exp2Net), overridden: isExposureMisleading },
-      { label: 'Kam Back/Lay Ratio',      weight: 1.5, t1wins: aRatio < bRatio,       v1: `${aRatio.toFixed(2)}x`, v2: `${bRatio.toFixed(2)}x` },
-      { label: 'Kam Total Bets',          weight: 1,   t1wins: totalBets1 < totalBets2, v1: `₹${fmt(totalBets1)}`,   v2: `₹${fmt(totalBets2)}` },
+      { label: 'Kam Back/Lay Ratio', weight: 1.5, t1wins: aRatio < bRatio, v1: `${aRatio.toFixed(2)}x`, v2: `${bRatio.toFixed(2)}x` },
+      { label: 'Kam Total Bets', weight: 1, t1wins: totalBets1 < totalBets2, v1: `₹${fmt(totalBets1)}`, v2: `₹${fmt(totalBets2)}` },
     ]
 
     const maxScore = rules.reduce((s, r) => s + r.weight, 0)
@@ -218,10 +218,10 @@ export default function MatchDetail({ sport }) {
     const matchedRules = rules.filter((r, _) => bookieIdx === 0 ? r.t1wins : !r.t1wins).length
     const totalRules = rules.filter(r => r.weight > 0).length
     const matchScore = matchedRules
-    const confidence = matchedRules === totalRules      ? { label: '99% Confirmed 🔥', color: 'text-profit' }
-                     : matchedRules >= totalRules * 0.7 ? { label: '90% Strong ⚡',    color: 'text-profit' }
-                     : matchedRules >= totalRules * 0.4 ? { label: '70% Moderate',      color: 'text-yellow-500' }
-                     :                                    { label: 'Weak Signal',         color: 'text-text-muted' }
+    const confidence = matchedRules === totalRules ? { label: '99% Confirmed 🔥', color: 'text-profit' }
+      : matchedRules >= totalRules * 0.7 ? { label: '90% Strong ⚡', color: 'text-profit' }
+        : matchedRules >= totalRules * 0.4 ? { label: '70% Moderate', color: 'text-yellow-500' }
+          : { label: 'Weak Signal', color: 'text-text-muted' }
     return {
       bookieName: bookieIdx === 0 ? t1 : t2,
       matchScore,
@@ -278,25 +278,20 @@ export default function MatchDetail({ sport }) {
         </div>
 
         {/* P/L */}
-        {(() => {
-          const t1ifWins = exp1.netExposure != null ? -exp1.netExposure : null
-          const t2ifWins = exp2.netExposure != null ? -exp2.netExposure : null
-          if (t1ifWins == null && t2ifWins == null) return null
-          return (
-            <div className="p-4">
-              <div className="text-xs font-black text-text-primary uppercase tracking-wider mb-2">📈 Bookie P/L (Agar Team Jeete)</div>
-              <div className="grid grid-cols-2 gap-3">
-                {[{ name: t1, pl: t1ifWins }, { name: t2, pl: t2ifWins }].map(({ name, pl }) => (
-                  <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
-                    <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
-                    <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-                    <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
-                  </div>
-                ))}
-              </div>
+        {pl1 != null && pl2 != null && (
+          <div className="p-4">
+            <div className="text-xs font-black text-text-primary uppercase tracking-wider mb-2">📈 Bookie P/L (Agar Team Jeete)</div>
+            <div className="grid grid-cols-2 gap-3">
+              {[{ name: t1, pl: pl1 }, { name: t2, pl: pl2 }].map(({ name, pl }) => (
+                <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
+                  <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
+                  <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
+                  <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
+                </div>
+              ))}
             </div>
-          )
-        })()}
+          </div>
+        )}
       </div>
 
       {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
@@ -316,26 +311,26 @@ export default function MatchDetail({ sport }) {
           {/* Back/Lay ratio bars — both teams */}
           <div className="space-y-3 mb-4">
             {[{ team: t1, backPct: aBackPct, ratio: aRatio, isBookie: aRatio <= bRatio },
-              { team: t2, backPct: bBackPct, ratio: bRatio, isBookie: bRatio < aRatio }]
+            { team: t2, backPct: bBackPct, ratio: bRatio, isBookie: bRatio < aRatio }]
               .map(({ team, backPct, ratio, isBookie }) => (
-              <div key={team}>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs font-semibold text-text-secondary">{team}</span>
-                  <div className="flex items-center gap-2">
-                    {isBookie && <span className="text-xs font-bold text-profit bg-profit/10 px-2 py-0.5 rounded-full">Bookie Team</span>}
-                    <span className="text-xs text-text-muted">Back/Lay: <b className={isBookie ? 'text-loss' : 'text-profit'}>{ratio.toFixed(2)}x</b></span>
+                <div key={team}>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs font-semibold text-text-secondary">{team}</span>
+                    <div className="flex items-center gap-2">
+                      {isBookie && <span className="text-xs font-bold text-profit bg-profit/10 px-2 py-0.5 rounded-full">Bookie Team</span>}
+                      <span className="text-xs text-text-muted">Back/Lay: <b className={isBookie ? 'text-loss' : 'text-profit'}>{ratio.toFixed(2)}x</b></span>
+                    </div>
+                  </div>
+                  <div className="flex h-2 rounded-full overflow-hidden">
+                    <div className="bg-back transition-all" style={{ width: `${backPct}%` }} />
+                    <div className="bg-loss/70 transition-all" style={{ width: `${100 - backPct}%` }} />
+                  </div>
+                  <div className="flex justify-between text-xs text-text-muted mt-0.5">
+                    <span className="text-back">Back {backPct.toFixed(0)}%</span>
+                    <span className="text-loss">Lay {(100 - backPct).toFixed(0)}%</span>
                   </div>
                 </div>
-                <div className="flex h-2 rounded-full overflow-hidden">
-                  <div className="bg-back transition-all" style={{ width: `${backPct}%` }} />
-                  <div className="bg-loss/70 transition-all" style={{ width: `${100 - backPct}%` }} />
-                </div>
-                <div className="flex justify-between text-xs text-text-muted mt-0.5">
-                  <span className="text-back">Back {backPct.toFixed(0)}%</span>
-                  <span className="text-loss">Lay {(100 - backPct).toFixed(0)}%</span>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           {/* Signal strength + logic */}
@@ -426,7 +421,7 @@ export default function MatchDetail({ sport }) {
               const v1 = dm.totals.team1 ?? dm.totals.totalBetTeam1
               const v2 = dm.totals.team2 ?? dm.totals.totalBetTeam2
               return (
-                  <div>
+                <div>
                   <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Total Bets</div>
                   <div className="grid grid-cols-2 gap-3">
                     {[{ team: t1, val: v1 }, { team: t2, val: v2 }].map(({ team, val }) => {
@@ -496,7 +491,7 @@ export default function MatchDetail({ sport }) {
             })}
           </div>
           <div className="text-xs text-text-muted text-center">
-            Zyada support: <span className="text-profit font-bold">{sent.strongerTeam}</span> • 
+            Zyada support: <span className="text-profit font-bold">{sent.strongerTeam}</span> •
             Difference: <span className="text-text-secondary">₹{fmt(sent.scoreDifference)}</span>
           </div>
         </div>
@@ -516,10 +511,10 @@ export default function MatchDetail({ sport }) {
                 <div className="text-center text-[10px] font-bold text-text-secondary truncate px-1">{t2}</div>
               </div>
               {[
-                { label: 'P/L',  v1: <span className={`font-bold text-xs ${pnlCls(pnl.team1)}`}>{fmtRs(pnl.team1)}</span>,  v2: <span className={`font-bold text-xs ${pnlCls(pnl.team2)}`}>{fmtRs(pnl.team2)}</span> },
-                { label: 'Bets', v1: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team1)}</span>,              v2: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team2)}</span> },
-                { label: 'Back', v1: <span className="text-[11px] text-back">₹{fmt(vol.team1?.back)}</span>,               v2: <span className="text-[11px] text-back">₹{fmt(vol.team2?.back)}</span> },
-                { label: 'Lay',  v1: <span className="text-[11px] text-loss">₹{fmt(vol.team1?.lay)}</span>,                v2: <span className="text-[11px] text-loss">₹{fmt(vol.team2?.lay)}</span> },
+                { label: 'P/L', v1: <span className={`font-bold text-xs ${pnlCls(pnl.team1)}`}>{fmtRs(pnl.team1)}</span>, v2: <span className={`font-bold text-xs ${pnlCls(pnl.team2)}`}>{fmtRs(pnl.team2)}</span> },
+                { label: 'Bets', v1: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team1)}</span>, v2: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team2)}</span> },
+                { label: 'Back', v1: <span className="text-[11px] text-back">₹{fmt(vol.team1?.back)}</span>, v2: <span className="text-[11px] text-back">₹{fmt(vol.team2?.back)}</span> },
+                { label: 'Lay', v1: <span className="text-[11px] text-loss">₹{fmt(vol.team1?.lay)}</span>, v2: <span className="text-[11px] text-loss">₹{fmt(vol.team2?.lay)}</span> },
               ].map(({ label, v1, v2 }, i) => (
                 <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== 3 ? 'border-b border-border/30' : ''}`}>
                   <div className="text-[10px] text-text-muted flex items-center font-semibold">{label}</div>
@@ -543,7 +538,7 @@ export default function MatchDetail({ sport }) {
         <p className="text-xs text-text-muted mb-4">Cumulative fake orders — canceled volume not matched as trades</p>
 
         {/* Progress bar */}
-        <div className="h-3 rounded-full overflow-hidden flex mb-2"style={{ background: '#fecaca' }}>
+        <div className="h-3 rounded-full overflow-hidden flex mb-2" style={{ background: '#fecaca' }}>
           <div className="h-full" style={{ width: `${t1Pct}%`, background: 'linear-gradient(90deg,#dc2626,#f87171)' }} />
           <div className="h-full" style={{ width: `${t2Pct}%`, background: 'linear-gradient(90deg,#f97316,#fbbf24)' }} />
         </div>
