@@ -98,8 +98,13 @@ export default function TossDetail() {
   const hasSentData = sent1Pct !== 50 || sent2Pct !== 50
   const hasTossRuleData = hasExpData || hasSentData
 
+  // Highest single-odds money across all trades per team
+  const t1MaxBet = t1Trades.reduce((max, t) => t.size > max ? t.size : max, 0)
+  const t2MaxBet = t2Trades.reduce((max, t) => t.size > max ? t.size : max, 0)
+  const hasMaxBetData = t1MaxBet > 0 || t2MaxBet > 0
+
   const tossPrediction = (() => {
-    if (!hasTossRuleData) return null
+    if (!hasTossRuleData && !hasMaxBetData) return null
     let t1Score = 0, t2Score = 0
     const rules = []
 
@@ -119,16 +124,26 @@ export default function TossDetail() {
 
     if (hasSentData) {
       if (isWomens) {
-        // Women: lower sentiment = winner
         const t1wins = sent1Pct < sent2Pct
         rules.push({ label: 'Kam Overall Sentiment', t1wins, v1: `${sent1Pct?.toFixed(1)}%`, v2: `${sent2Pct?.toFixed(1)}%` })
         if (t1wins) t1Score++; else t2Score++
       } else {
-        // Mens: higher sentiment = winner
         const t1wins = sent1Pct > sent2Pct
         rules.push({ label: 'Zyada Overall Sentiment', t1wins, v1: `${sent1Pct?.toFixed(1)}%`, v2: `${sent2Pct?.toFixed(1)}%` })
         if (t1wins) t1Score++; else t2Score++
       }
+    }
+
+    // Highest single-odds money — jis team pe kisi ek odds pe sabse zyada paisa lga
+    if (hasMaxBetData && t1MaxBet !== t2MaxBet) {
+      const t1wins = t1MaxBet > t2MaxBet
+      rules.push({
+        label: 'Sabse Bada Single Bet',
+        t1wins,
+        v1: `₹${Math.round(t1MaxBet).toLocaleString('en-IN')}`,
+        v2: `₹${Math.round(t2MaxBet).toLocaleString('en-IN')}`,
+      })
+      if (t1wins) t1Score++; else t2Score++
     }
 
     const winnerIdx = t1Score >= t2Score ? 0 : 1

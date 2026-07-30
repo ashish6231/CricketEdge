@@ -38,7 +38,7 @@ const otpLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 5, message: { succ
 const adminLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, message: { success: false, message: 'Too many admin requests' } });
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || (() => { throw new Error('SESSION_SECRET env var not set!'); })(),
+  secret: process.env.SESSION_SECRET || 'fallback-secret-change-me',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 }
@@ -65,7 +65,6 @@ async function _init() {
     console.log('⚠️  DB init skipped:', e.message);
   }
   tennisLogin.startAutoLogin().catch(() => {});
-  scraper.warmup().catch(() => {});
 }
 
 app.use(async (req, res, next) => {
