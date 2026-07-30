@@ -20,7 +20,7 @@ const { setIo } = require('./socketInstance');
 const app = express();
 const server = http.createServer(app);
 const io = new (require('socket.io').Server)(server, {
-  cors: { origin: (origin, cb) => { if (!origin || ['https://cricketedge-gct4.onrender.com','https://cricketedge.app','https://cricket-edge-online.vercel.app','http://localhost:5173','http://localhost:3000'].includes(origin)) cb(null, true); else cb(new Error('Not allowed')); }, credentials: true }
+  cors: { origin: (origin, cb) => { if (!origin || ['https://cricketedge-production.up.railway.app','https://cricketedge.app','https://cricket-edge-online.vercel.app','http://localhost:5173','http://localhost:3000'].includes(origin)) cb(null, true); else cb(new Error('Not allowed')); }, credentials: true }
 });
 setIo(io);
 io.use((socket, next) => {
@@ -38,7 +38,7 @@ io.use((socket, next) => {
 
 // ─── MIDDLEWARE ───
 const allowedOrigins = [
-  'https://cricketedge-gct4.onrender.com',
+  'https://cricketedge-production.up.railway.app',
   'https://cricketedge.app',
   'https://cricket-edge-online.vercel.app',
   ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:5173', 'http://localhost:3000'] : [])
