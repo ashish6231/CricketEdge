@@ -19,6 +19,7 @@ const app = express();
 
 // ─── MIDDLEWARE ───
 const allowedOrigins = [
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) : []),
   'https://cricketedge-gct4.onrender.com',
   'https://cricketedge.app',
   'https://cricket-edge-online.vercel.app',
