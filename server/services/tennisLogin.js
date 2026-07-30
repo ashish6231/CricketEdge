@@ -1,37 +1,46 @@
 const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
+const prisma = require('../db/prisma');
 
 const BASE_URL = process.env.TENNIS_BASE_URL || 'https://tennisliveload.com';
 const LOGIN_URL = `${BASE_URL}/api/auth/login`;
-const COOKIES_FILE = path.join(__dirname, '../tennis_cookies.json');
+const SETTINGS_KEY = 'tennisSession';
 
 let _sessionCookies = null;
 let _sessionExpiry = null;
 let _storedEmail = null;
 let _storedPassword = null;
 
-// Load persisted cookies on startup
-try {
-  if (fs.existsSync(COOKIES_FILE)) {
-    const saved = JSON.parse(fs.readFileSync(COOKIES_FILE, 'utf8'));
-    if (saved.cookies && saved.expiry && Date.now() < saved.expiry) {
-      _sessionCookies = saved.cookies;
-      _sessionExpiry = saved.expiry;
-      console.log('✅ tennisliveload: loaded saved session from disk');
+async function _loadFromDb() {
+  try {
+    const row = await prisma.siteSettings.findUnique({ where: { key: SETTINGS_KEY } });
+    if (row?.value) {
+      const saved = row.value;
+      if (saved.cookies && saved.expiry && Date.now() < saved.expiry) {
+        _sessionCookies = saved.cookies;
+        _sessionExpiry = saved.expiry;
+        console.log('✅ tennisliveload: loaded saved session from DB');
+        return true;
+      }
     }
-  }
-} catch {}
+  } catch {}
+  return false;
+}
 
-function _persist() {
-  try { fs.writeFileSync(COOKIES_FILE, JSON.stringify({ cookies: _sessionCookies, expiry: _sessionExpiry })); } catch {}
+async function _persist() {
+  try {
+    const data = { cookies: _sessionCookies, expiry: _sessionExpiry };
+    await prisma.siteSettings.upsert({
+      where: { key: SETTINGS_KEY },
+      update: { value: data },
+      create: { key: SETTINGS_KEY, value: data, category: 'internal', description: 'Tennis session cookies' }
+    });
+  } catch {}
 }
 
 function isSessionValid() {
   return !!(_sessionCookies && _sessionExpiry && Date.now() < _sessionExpiry);
 }
 
-// Verify session is actually valid by calling a lightweight API
 async function _verifySession() {
   if (!_sessionCookies) return false;
   try {
@@ -62,7 +71,7 @@ async function login(email, password) {
   }
 
   _sessionExpiry = Date.now() + (30 * 24 * 60 * 60 * 1000); // 30 days
-  _persist();
+  await _persist();
   console.log('✅ tennisliveload.com login successful');
   return { success: true };
 }
@@ -87,15 +96,16 @@ async function startAutoLogin() {
   _storedEmail = email;
   _storedPassword = password;
 
-  // If we have cookies, verify they still work on the actual site
+  await _loadFromDb();
+
   if (isSessionValid()) {
     const ok = await _verifySession();
     if (ok) {
       console.log('✅ tennisliveload: session verified, skipping login');
-      _startRefreshLoop();
       return;
     }
-    console.log('⚠️  tennisliveload: saved session invalid, re-logging in...');
+    console.log('⚠️  tennisliveload: saved session invalid, will retry later');
+    return;
   }
 
   try {
@@ -103,21 +113,26 @@ async function startAutoLogin() {
   } catch (err) {
     console.error('❌ tennisliveload login failed:', err.message);
   }
-
-  _startRefreshLoop();
 }
 
-function _startRefreshLoop() {
-  // Check every hour — re-login only if session actually expired/invalid
-  setInterval(async () => {
-    if (isSessionValid()) return;
-    console.log('🔄 tennisliveload: session expired, re-logging in...');
-    try {
-      await login(_storedEmail, _storedPassword);
-    } catch (err) {
-      console.error('❌ tennisliveload re-login failed:', err.message);
-    }
-  }, 60 * 60 * 1000);
+// Called by cron or on-demand to refresh if expired
+async function refreshIfNeeded() {
+  if (!_storedEmail) {
+    _storedEmail = process.env.TENNIS_EMAIL;
+    _storedPassword = process.env.TENNIS_PASSWORD;
+  }
+  if (!_storedEmail || !_storedPassword) return;
+
+  if (!isSessionValid()) {
+    await _loadFromDb();
+  }
+  if (isSessionValid()) return;
+
+  try {
+    await login(_storedEmail, _storedPassword);
+  } catch (err) {
+    console.error('❌ tennisliveload re-login failed:', err.message);
+  }
 }
 
-module.exports = { login, getCookies, isConnected, startAutoLogin };
+module.exports = { login, getCookies, isConnected, startAutoLogin, refreshIfNeeded };

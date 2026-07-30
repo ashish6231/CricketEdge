@@ -1,5 +1,4 @@
-let _io = null;
-module.exports = {
-  setIo: (io) => { _io = io; },
-  getIo: () => _io
-};
+// Real-time disabled on serverless — plan updates reflect on next API call/refresh
+function emitToUser(_userId, _event, _data) {}
+
+module.exports = { emitToUser };

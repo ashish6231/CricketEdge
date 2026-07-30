@@ -66,6 +66,15 @@ export default function TossDetail() {
   const exp2 = exp.team2 || {}
   const ns = snap.netSupport || {}
   const sent = snap.sentimentScore || {}
+  const ip  = snap.inPlayPnl        || {}
+  const ib  = snap.inPlayTotalBets  || {}
+  const iv  = snap.inPlayVolume     || {}
+  const pp  = snap.preMatchPnl      || {}
+  const pb  = snap.preMatchTotalBets|| {}
+  const pv  = snap.preMatchVolume   || {}
+  const tp  = snap.threeMinPnl      || {}
+  const tb  = snap.threeMinTotalBets|| {}
+  const tv  = snap.threeMinVolume   || {}
 
   // Back/Lay ratio prediction
   const aBack = raw.A_back_expo || am1.back || 0
@@ -89,8 +98,13 @@ export default function TossDetail() {
   const hasSentData = sent1Pct !== 50 || sent2Pct !== 50
   const hasTossRuleData = hasExpData || hasSentData
 
+  // Highest single-odds money across all trades per team
+  const t1MaxBet = t1Trades.reduce((max, t) => t.size > max ? t.size : max, 0)
+  const t2MaxBet = t2Trades.reduce((max, t) => t.size > max ? t.size : max, 0)
+  const hasMaxBetData = t1MaxBet > 0 || t2MaxBet > 0
+
   const tossPrediction = (() => {
-    if (!hasTossRuleData) return null
+    if (!hasTossRuleData && !hasMaxBetData) return null
     let t1Score = 0, t2Score = 0
     const rules = []
 
@@ -110,16 +124,26 @@ export default function TossDetail() {
 
     if (hasSentData) {
       if (isWomens) {
-        // Women: lower sentiment = winner
         const t1wins = sent1Pct < sent2Pct
         rules.push({ label: 'Kam Overall Sentiment', t1wins, v1: `${sent1Pct?.toFixed(1)}%`, v2: `${sent2Pct?.toFixed(1)}%` })
         if (t1wins) t1Score++; else t2Score++
       } else {
-        // Mens: higher sentiment = winner
         const t1wins = sent1Pct > sent2Pct
         rules.push({ label: 'Zyada Overall Sentiment', t1wins, v1: `${sent1Pct?.toFixed(1)}%`, v2: `${sent2Pct?.toFixed(1)}%` })
         if (t1wins) t1Score++; else t2Score++
       }
+    }
+
+    // Highest single-odds money — jis team pe kisi ek odds pe sabse zyada paisa lga
+    if (hasMaxBetData && t1MaxBet !== t2MaxBet) {
+      const t1wins = t1MaxBet > t2MaxBet
+      rules.push({
+        label: 'Sabse Bada Single Bet',
+        t1wins,
+        v1: `₹${Math.round(t1MaxBet).toLocaleString('en-IN')}`,
+        v2: `₹${Math.round(t2MaxBet).toLocaleString('en-IN')}`,
+      })
+      if (t1wins) t1Score++; else t2Score++
     }
 
     const winnerIdx = t1Score >= t2Score ? 0 : 1
@@ -134,16 +158,17 @@ export default function TossDetail() {
     }
   })()
   const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
-  function calcFakeVolume(backVol, layVol) {
-    const matched = Math.min(backVol, layVol)
-    return { fakeBack: backVol - matched, oppFakeLay: layVol - matched, total: (backVol - matched) + (layVol - matched) }
+  function getTop5Bets(trades) {
+    const byKey = {}
+    trades.forEach(t => {
+      const key = `${t.price}_${t.type}`
+      if (!byKey[key]) byKey[key] = { price: t.price, type: t.type, size: 0 }
+      byKey[key].size += t.size
+    })
+    return Object.values(byKey).sort((a, b) => b.size - a.size).slice(0, 5)
   }
-  const t1Fake = calcFakeVolume(am1.back || 0, am1.lay || 0)
-  const t2Fake = calcFakeVolume(am2.back || 0, am2.lay || 0)
-  const totalFake = t1Fake.total + t2Fake.total
-  const t1Pct = totalFake > 0 ? (t1Fake.total / totalFake) * 100 : 50
-  const t2Pct = 100 - t1Pct
-  const mostFakeTeam = t1Fake.total >= t2Fake.total ? t1 : t2
+  const t1Top5 = getTop5Bets(t1Trades)
+  const t2Top5 = getTop5Bets(t2Trades)
 
   return (
     <div className="p-3 w-full fade-in space-y-4">
@@ -271,24 +296,50 @@ export default function TossDetail() {
       )}
 
       {/* Bookie P/L from exposure */}
-      {(exp1.netExposure != null || exp2.netExposure != null) && (() => {
-        const t1ifWins = exp1.netExposure != null ? -exp1.netExposure : null
-        const t2ifWins = exp2.netExposure != null ? -exp2.netExposure : null
-        return (
-          <div className="glass-card rounded-2xl p-4">
-            <div className="text-xs font-bold text-text-muted uppercase mb-3">📈 Bookie P/L (Agar Team Jeete)</div>
-            <div className="grid grid-cols-2 gap-3">
-              {[{ name: t1, pl: t1ifWins }, { name: t2, pl: t2ifWins }].map(({ name, pl }) => (
-                <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
-                  <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
-                  <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-                  <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
+      {(snap.teams?.[t1]?.pnlIfWins != null || snap.teams?.[t2]?.pnlIfWins != null) && (
+        <div className="glass-card rounded-2xl p-4">
+          <div className="text-xs font-bold text-text-muted uppercase mb-3">📈 Bookie P/L (Agar Team Jeete)</div>
+          <div className="grid grid-cols-2 gap-3">
+            {[{ name: t1, pl: snap.teams?.[t1]?.pnlIfWins }, { name: t2, pl: snap.teams?.[t2]?.pnlIfWins }].map(({ name, pl }) => (
+              <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
+                <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
+                <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
+                <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* In-Play / Pre-Match Stats */}
+      <div className="space-y-2">
+        {[{ title: 'In-Play', pnl: ip, bets: ib, vol: iv }, { title: 'Pre-Match', pnl: pp, bets: pb, vol: pv }, { title: 'Last 3 Min', pnl: tp, bets: tb, vol: tv }].map(({ title, pnl, bets, vol }) => (
+          <div key={title} className="glass-card rounded-2xl overflow-hidden">
+            <div className="px-4 py-2 border-b border-border" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
+              <span className="text-xs font-black uppercase tracking-wider text-primary">{title}</span>
+            </div>
+            <div className="p-3">
+              <div className="grid grid-cols-3 gap-1 mb-1.5">
+                <div />
+                <div className="text-center text-[10px] font-bold text-text-secondary truncate px-1">{t1}</div>
+                <div className="text-center text-[10px] font-bold text-text-secondary truncate px-1">{t2}</div>
+              </div>
+              {[
+                { label: 'P/L',  v1: <span className={`font-bold text-xs ${pnlCls(pnl.team1)}`}>{fmtRs(pnl.team1)}</span>,  v2: <span className={`font-bold text-xs ${pnlCls(pnl.team2)}`}>{fmtRs(pnl.team2)}</span> },
+                { label: 'Bets', v1: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team1)}</span>,             v2: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team2)}</span> },
+                { label: 'Back', v1: <span className="text-[11px] text-back">₹{fmt(vol.team1?.back)}</span>,                v2: <span className="text-[11px] text-back">₹{fmt(vol.team2?.back)}</span> },
+                { label: 'Lay',  v1: <span className="text-[11px] text-loss">₹{fmt(vol.team1?.lay)}</span>,                 v2: <span className="text-[11px] text-loss">₹{fmt(vol.team2?.lay)}</span> },
+              ].map(({ label, v1, v2 }, i) => (
+                <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== 3 ? 'border-b border-border/30' : ''}`}>
+                  <div className="text-[10px] text-text-muted flex items-center font-semibold">{label}</div>
+                  <div className="text-center flex items-center justify-center">{v1}</div>
+                  <div className="text-center flex items-center justify-center">{v2}</div>
                 </div>
               ))}
             </div>
           </div>
-        )
-      })()}
+        ))}
+      </div>
 
       {/* Overall sentiment */}
       {ns.teamA && sent.teamA && (
@@ -318,57 +369,30 @@ export default function TossDetail() {
         </div>
       )}
 
-      {/* Spoofing Detector */}
-      <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, #fde8e8 0%, #fdf0e8 100%)' }}>
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-2xl">🚨</span>
-          <span className="text-xl font-bold text-text-primary">Spoofing Detector</span>
-          <span className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#fee2e2', color: '#dc2626' }}>LIVE</span>
+      {/* Top 5 Bets */}
+      <div className="glass-card rounded-2xl overflow-hidden">
+        <div className="px-4 py-3 border-b border-border" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
+          <span className="text-sm font-bold text-primary">💰 Top 5 Bets (Poore Match Mein)</span>
         </div>
-        <p className="text-xs text-text-muted mb-4">Cumulative fake orders — canceled volume not matched as trades</p>
-        <div className="h-3 rounded-full overflow-hidden flex mb-2" style={{ background: '#fecaca' }}>
-          <div className="h-full" style={{ width: `${t1Pct}%`, background: 'linear-gradient(90deg,#dc2626,#f87171)' }} />
-          <div className="h-full" style={{ width: `${t2Pct}%`, background: 'linear-gradient(90deg,#f97316,#fbbf24)' }} />
-        </div>
-        <div className="flex justify-between text-xs font-semibold mb-4">
-          <span className="text-primary">{t1}: {t1Pct.toFixed(1)}%</span>
-          <span className="text-text-muted">{t2}: {t2Pct.toFixed(1)}%</span>
-        </div>
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          {[{ team: t1, fake: t1Fake, isMain: true }, { team: t2, fake: t2Fake, isMain: false }].map(({ team, fake, isMain }) => (
-            <div key={team} className="bg-white rounded-xl p-3" style={{ border: '1px solid #fecaca' }}>
-              <div className={`text-xs font-bold mb-3 truncate ${isMain ? 'text-primary' : 'text-text-secondary'}`}>{team}</div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#3b82f6' }} />
-                    <span className="text-xs text-text-muted">Fake Back</span>
+        <div className="grid grid-cols-2 divide-x divide-border">
+          {[{ team: t1, bets: t1Top5 }, { team: t2, bets: t2Top5 }].map(({ team, bets }) => (
+            <div key={team} className="p-3">
+              <div className="text-xs font-bold text-text-secondary truncate mb-2">{team}</div>
+              <div className="space-y-1.5">
+                {bets.map((b, i) => (
+                  <div key={i} className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${b.type === 'back' ? 'bg-blue-100 text-back' : 'bg-red-100 text-loss'}`}>{b.type === 'back' ? 'B' : 'L'}</span>
+                      <span className="text-xs font-semibold text-text-primary">{b.price}</span>
+                    </div>
+                    <span className="text-xs font-bold text-text-primary">₹{fmtVol(b.size)}</span>
                   </div>
-                  <span className="text-xs font-bold text-text-primary">{fmtVol(fake.fakeBack)}</span>
-                </div>
-                <div className="flex items-center justify-between gap-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#f87171' }} />
-                    <span className="text-xs text-text-muted">Fake Lay</span>
-                  </div>
-                  <span className="text-xs font-bold text-text-primary">{fmtVol(fake.oppFakeLay)}</span>
-                </div>
-              </div>
-              <div className="border-t border-border mt-2.5 pt-2 flex justify-between items-center">
-                <span className="text-xs font-bold text-text-secondary">Total</span>
-                <span className={`text-sm font-black ${isMain ? 'text-primary' : 'text-text-muted'}`}>{fmtVol(fake.total)}</span>
+                ))}
               </div>
             </div>
           ))}
         </div>
-        <div className="rounded-xl py-4 px-5 text-center" style={{ background: 'linear-gradient(135deg,#fca5a5,#fcd9b0)' }}>
-          <div className="text-xs font-bold tracking-widest text-primary/60 uppercase mb-1">Most Fake Orders On</div>
-          <div className="text-2xl font-bold text-primary">{mostFakeTeam}</div>
-        </div>
       </div>
-
-
-
     </div>
   )
 }
