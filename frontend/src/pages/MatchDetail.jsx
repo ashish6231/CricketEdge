@@ -114,8 +114,8 @@ export default function MatchDetail({ sport }) {
   }
   const t1Odds = getLatestOdds(t1Trades)
   const t2Odds = getLatestOdds(t2Trades)
-  const am1 = snapshot.advancedMetricsV2?.team1 || {}
-  const am2 = snapshot.advancedMetricsV2?.team2 || {}
+  const am1 = snapshot.advancedMetrics?.team1 || {}
+  const am2 = snapshot.advancedMetrics?.team2 || {}
   const t1Fake = calcFakeVolume(am1.back || 0, am1.lay || 0)
   const t2Fake = calcFakeVolume(am2.back || 0, am2.lay || 0)
   const totalFake = t1Fake.total + t2Fake.total
@@ -136,10 +136,10 @@ export default function MatchDetail({ sport }) {
 
   // ━━━━━━━━━━ BACK/LAY RATIO BASED PREDICTION ━━━━━━━━━━
   const raw = dm.raw || {}
-  const aBack = raw.A_back_expo || am1.back || 0
-  const aLay = raw.A_lay_stake || am1.lay || 0
-  const bBack = raw.B_back_expo || am2.back || 0
-  const bLay = raw.B_lay_stake || am2.lay || 0
+  const aBack = am1.back || 0
+  const aLay = am1.lay || 0
+  const bBack = am2.back || 0
+  const bLay = am2.lay || 0
 
   // lay/back ratio — >1 means lay dominant = bookie team (predicted winner)
   const aRatio = aLay > 0 ? aBack / aLay : 0
@@ -165,7 +165,7 @@ export default function MatchDetail({ sport }) {
   const pv = snapshot.preMatchVolume || {}
   const sup = snapshot.supportMetrics || {}
   const ml = snapshot.matchLoadV2 || {}
-  const am = snapshot.advancedMetricsV2 || {}
+  const am = snapshot.advancedMetrics || {}
   const sig = snapshot.marketSignals || {}
   const trap = sig.trap || {}
   const exp = snapshot.bookmakerExposure || {}
@@ -176,8 +176,8 @@ export default function MatchDetail({ sport }) {
 
   // ━━━━━━━━━━ 5-RULE BOOKIE FINGERPRINT ━━━━━━━━━━
   const bkp = (() => {
-    const totalBets1 = dm.totals?.team1 ?? dm.totals?.totalBetTeam1 ?? ((ib.team1 || 0) + (pb.team1 || 0))
-    const totalBets2 = dm.totals?.team2 ?? dm.totals?.totalBetTeam2 ?? ((ib.team2 || 0) + (pb.team2 || 0))
+    const totalBets1 = dm.totals?.totalBetTeam1 ?? ((ib.team1 || 0) + (pb.team1 || 0))
+    const totalBets2 = dm.totals?.totalBetTeam2 ?? ((ib.team2 || 0) + (pb.team2 || 0))
     const sent1 = ns.percentageA ?? (sup.team1?.support ?? 50)
     const sent2 = ns.percentageB ?? (sup.team2?.support ?? 50)
     const netExp1 = Math.abs(exp1.netExposure || 0)
@@ -405,7 +405,7 @@ export default function MatchDetail({ sport }) {
               <div>
                 <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Raw Accumulated Values</div>
                 <div className="grid grid-cols-2 gap-3">
-                  {[{ team: t1, back: dm.raw.A_back_expo, lay: dm.raw.A_lay_stake }, { team: t2, back: dm.raw.B_back_expo, lay: dm.raw.B_lay_stake }].map(({ team, back, lay }) => (
+                  {[{ team: t1, back: am1.back, lay: am1.lay }, { team: t2, back: am2.back, lay: am2.lay }].map(({ team, back, lay }) => (
                     <div key={team} className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
                       <div className="text-xs font-bold text-text-primary mb-2 truncate">{team}</div>
                       <div className="text-xs space-y-1">

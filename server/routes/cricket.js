@@ -44,6 +44,15 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
       return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: req.params.matchId });
     return res.status(502).json({ detail: data.error });
   }
+  
+  const matches = await scraper.getAllCricketMatches();
+  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == req.params.matchId);
+  if (matchInfo && !data.error) {
+    data.inPlay = matchInfo.inPlay;
+    data.competitionName = matchInfo.competitionName;
+    data.status = matchInfo.status;
+  }
+  
   res.json(data);
 });
 
@@ -81,6 +90,15 @@ router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getTennisSnapshot(req.params.matchId);
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
+
+  const matches = await scraper.getAllTennisMatches();
+  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == req.params.matchId);
+  if (matchInfo && !data.error) {
+    data.inPlay = matchInfo.inPlay;
+    data.competitionName = matchInfo.competitionName;
+    data.status = matchInfo.status;
+  }
+  
   res.json(data);
 });
 
@@ -114,6 +132,15 @@ router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
       return res.json({ error: 'login_required', message: 'Toss live/upcoming data requires login.', matchId: req.params.matchId });
     return res.status(502).json({ detail: data.error });
   }
+
+  const matches = await scraper.getAllTossMatches();
+  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == req.params.matchId);
+  if (matchInfo && !data.error) {
+    data.inPlay = matchInfo.inPlay;
+    data.competitionName = matchInfo.competitionName;
+    data.status = matchInfo.status;
+  }
+
   res.json(data);
 });
 

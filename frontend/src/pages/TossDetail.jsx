@@ -59,8 +59,8 @@ export default function TossDetail() {
   const tot = snap.deepMetrics?.totals || {}
   const sp  = snap.deepMetrics?.simplePL || {}
   const sup = snap.supportMetrics || {}
-  const am1 = snap.advancedMetricsV2?.team1 || {}
-  const am2 = snap.advancedMetricsV2?.team2 || {}
+  const am1 = snap.advancedMetrics?.team1 || {}
+  const am2 = snap.advancedMetrics?.team2 || {}
   const exp = snap.bookmakerExposure || {}
   const exp1 = exp.team1 || {}
   const exp2 = exp.team2 || {}
@@ -68,10 +68,10 @@ export default function TossDetail() {
   const sent = snap.sentimentScore || {}
 
   // Back/Lay ratio prediction
-  const aBack = raw.A_back_expo || am1.back || 0
-  const aLay  = raw.A_lay_stake || am1.lay  || 0
-  const bBack = raw.B_back_expo || am2.back || 0
-  const bLay  = raw.B_lay_stake || am2.lay  || 0
+  const aBack = am1.back || 0
+  const aLay  = am1.lay  || 0
+  const bBack = am2.back || 0
+  const bLay  = am2.lay  || 0
   const t1Trades = (snap.teams?.[t1] || {}).trades || []
   const t2Trades = (snap.teams?.[t2] || {}).trades || []
   const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
