@@ -80,6 +80,31 @@ router.get('/cricket/odds/:matchId', verifyToken, async (req, res) => {
   }
   res.json({ matchId: req.params.matchId, teamNames: data.teamNames || [], odds: result });
 });
+router.get('/cricket/odds-bulk', verifyToken, async (req, res) => {
+  const matchIds = req.query.ids ? req.query.ids.split(',') : [];
+  if (!matchIds.length) return res.json({});
+  
+  const results = {};
+  await Promise.all(matchIds.map(async (id) => {
+    const data = await scraper.getCricketSnapshot(id);
+    if (!data || data.error) return;
+    
+    const teams = data.teams || {};
+    const odds = {};
+    for (const [teamName, teamData] of Object.entries(teams)) {
+      const trades = teamData.trades || [];
+      if (!trades.length) { odds[teamName] = { back: null, lay: null }; continue; }
+      const sorted = [...trades].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+      odds[teamName] = {
+        back: sorted.find(t => t.type === 'back')?.price ?? null,
+        lay:  sorted.find(t => t.type === 'lay')?.price  ?? null,
+      };
+    }
+    results[id] = { teamNames: data.teamNames || [], odds };
+  }));
+  
+  res.json(results);
+});
 
 router.get('/cricket/full', verifyToken, async (req, res) => {
   const includeSnapshots = req.query.include_snapshots !== 'false';

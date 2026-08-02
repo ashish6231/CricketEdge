@@ -41,6 +41,11 @@ export async function getCricketOdds(matchId) {
   return fetchAPI(`/cricket/odds/${matchId}`)
 }
 
+export async function getCricketOddsBulk(matchIds) {
+  if (!matchIds || matchIds.length === 0) return {};
+  return fetchAPI(`/cricket/odds-bulk?ids=${matchIds.join(',')}`)
+}
+
 // ──── Tennis ────
 
 export async function getTennisMatches() {

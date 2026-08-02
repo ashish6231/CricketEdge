@@ -191,6 +191,12 @@ const TeamCard = ({ teamData, isToss = false, marketVol = 0 }) => {
           <span className="text-[#8e8e93] text-sm">Last price matched:</span>
           <span className="text-white text-sm font-bold tracking-wide">{formatMoney(teamData.lastPrice)}</span>
         </div>
+        <div className="flex justify-between items-center mt-1 pt-3 border-t border-[#2c2c2e]/50">
+          <span className="text-[#8e8e93] text-sm font-bold">Bookie P/L:</span>
+          <span className={`text-sm font-black tracking-wide ${pl >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
+            {pl >= 0 ? '+' : ''}{formatMoney(pl)}
+          </span>
+        </div>
         {isToss && (
           <div className="mt-2 pt-3 border-t border-[#2c2c2e] space-y-2">
             <div className="flex justify-between">

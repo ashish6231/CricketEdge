@@ -51,22 +51,20 @@ export default function CricketPage() {
   useEffect(() => {
     const matches = competitions[selectedComp] || []
     if (!matches.length) return
-    matches.forEach(m => {
-      getCricketOdds(m.matchId).then(data => {
-        if (data && !data.error) {
-          setOddsMap(prev => ({ ...prev, [m.matchId]: data }))
-        }
-      })
-    })
-    const interval = setInterval(() => {
-      matches.forEach(m => {
-        getCricketOdds(m.matchId).then(data => {
+    const matchIds = matches.map(m => m.matchId)
+    
+    const fetchOdds = () => {
+      import('../api').then(({ getCricketOddsBulk }) => {
+        getCricketOddsBulk(matchIds).then(data => {
           if (data && !data.error) {
-            setOddsMap(prev => ({ ...prev, [m.matchId]: data }))
+            setOddsMap(prev => ({ ...prev, ...data }))
           }
         })
       })
-    }, 2000)
+    }
+    
+    fetchOdds()
+    const interval = setInterval(fetchOdds, 2000)
     return () => clearInterval(interval)
   }, [selectedComp, competitions])
 
