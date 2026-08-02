@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
-import { LoaderCircle, Activity, ChevronRight } from 'lucide-react'
+import { LoaderCircle, Activity, ChevronRight, Lock } from 'lucide-react'
 import { getTennisMatches } from '../api'
 import MatchDetail from './MatchDetail'
 
@@ -16,7 +16,8 @@ const fmtDateTime = (ts) => {
 
 export default function TennisPage() {
   const navigate = useNavigate()
-  const { isLoggedIn } = useOutletContext()
+  const { isLoggedIn, user } = useOutletContext()
+  const isPro = user?.subscription?.planSlug === 'pro' || user?.role === 'admin' || user?.role === 'superadmin'
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
   const [competitions, setCompetitions] = useState({})
@@ -100,8 +101,8 @@ export default function TennisPage() {
                   {currentMatches.map(match => (
                     <button
                       key={match.matchId}
-                      onClick={() => navigate(`/tennis/match/${match.matchId}`)}
-                      className="glass-card rounded-xl p-4 hover:bg-bg-card-hover transition-all text-left group"
+                      onClick={() => isPro || match.status === 'ended' ? navigate(`/tennis/match/${match.matchId}`) : null}
+                      className={`glass-card rounded-xl p-4 transition-all text-left group ${!isPro && match.status !== 'ended' ? 'opacity-80 cursor-not-allowed' : 'hover:bg-bg-card-hover'}`}
                     >
                       {fmtDateTime(match.startTime) && <div className="text-[11px] text-text-muted mb-1 font-medium">📅 {fmtDateTime(match.startTime)}</div>}
                       <div className="flex items-center justify-between mb-2">
@@ -120,7 +121,10 @@ export default function TennisPage() {
                         Total Matched: <span className="text-text-secondary font-medium">{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-profit">✅ Free access</span>
+                        {match.status === 'ended' || isPro
+                          ? <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>{isPro && match.status !== 'ended' ? '⭐ Pro access' : '✅ Free access'}</span>
+                          : <span className="text-xs font-semibold flex items-center gap-1" style={{ color: '#dc2626' }}><Lock size={11} /> Pro Required</span>
+                        }
                         <ChevronRight className="h-4 w-4 text-text-muted group-hover:text-primary transition-colors" />
                       </div>
                     </button>

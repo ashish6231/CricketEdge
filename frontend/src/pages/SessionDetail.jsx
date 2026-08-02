@@ -78,16 +78,20 @@ export default function SessionDetail() {
   const [data, setData]               = useState(null)
   const [loading, setLoading]         = useState(true)
   const [requiresLogin, setRequiresLogin] = useState(false)
+  const [requiresPro, setRequiresPro] = useState(false)
   const [activeInning, setActiveInning]   = useState(1)
 
   useEffect(() => {
     const fetch = (isInitial = false) => {
-      if (isInitial) { setLoading(true); setRequiresLogin(false) }
+      if (isInitial) { setLoading(true); setRequiresLogin(false); setRequiresPro(false) }
       getSessionTrades(matchId).then(res => {
         if (res?.error === 'login_required') setRequiresLogin(true)
         else if (res) setData(res)
         if (isInitial) setLoading(false)
-      }).catch(() => { if (isInitial) setLoading(false) })
+      }).catch(err => {
+        if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)
+        if (isInitial) setLoading(false)
+      })
     }
     fetch(true)
     const interval = setInterval(() => fetch(false), 2000)
@@ -97,6 +101,24 @@ export default function SessionDetail() {
   if (loading) return (
     <div className="flex h-[80vh] items-center justify-center">
       <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  )
+
+  if (requiresPro) return (
+    <div className="flex h-[80vh] items-center justify-center p-4">
+      <div className="rounded-2xl p-8 max-w-sm w-full text-center" style={{ background: '#fff', border: '2px solid #fbbf24', boxShadow: '0 4px 32px rgba(251,191,36,0.15)' }}>
+        <div className="text-5xl mb-4">⭐</div>
+        <h2 className="text-xl font-black text-text-primary mb-2">Pro Plan Needed</h2>
+        <p className="text-text-secondary text-sm mb-2">Yeh match sirf <b>Pro subscribers</b> ke liye available hai.</p>
+        <p className="text-text-muted text-xs mb-6">Live session data dekhne ke liye Pro plan lo.</p>
+        <a href="https://t.me/cricket_edgeonline" target="_blank" rel="noopener noreferrer"
+          className="block w-full py-3 rounded-xl font-bold text-white text-sm mb-3"
+          style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+          🚀 Buy Pro — Telegram pe Contact Karo
+        </a>
+        <p className="text-xs text-text-muted mb-4">Telegram: <span className="font-bold text-[#229ED9]">@cricket_edgeonline</span></p>
+        <button onClick={() => navigate(-1)} className="text-sm text-text-muted hover:text-primary">← Back</button>
+      </div>
     </div>
   )
 

@@ -16,7 +16,8 @@ const fmtDateTime = (ts) => {
 
 export default function CricketPage() {
   const navigate = useNavigate()
-  const { isLoggedIn } = useOutletContext()
+  const { isLoggedIn, user } = useOutletContext()
+  const isPro = user?.subscription?.planSlug === 'pro' || user?.role === 'admin' || user?.role === 'superadmin'
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
   const [competitions, setCompetitions] = useState({})
@@ -91,8 +92,8 @@ export default function CricketPage() {
 
   const getAccessType = (match) => {
     if (match.status === 'ended') return 'free'
-    if (isLoggedIn) return 'free'
-    return 'login'
+    if (isPro) return 'pro'
+    return 'locked'
   }
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
@@ -156,8 +157,8 @@ export default function CricketPage() {
                     return (
                       <button
                         key={match.matchId}
-                        onClick={() => navigate(`/cricket/match/${match.matchId}`)}
-                        className="glass-card rounded-2xl p-4 hover:shadow-md transition-all text-left group"
+                        onClick={() => accessType !== 'locked' ? navigate(`/cricket/match/${match.matchId}`) : null}
+                        className={`glass-card rounded-2xl p-4 transition-all text-left group ${accessType === 'locked' ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-md'}`}
                       >
                         {dt && <div className="text-[11px] text-text-muted mb-1 font-medium">📅 {dt}</div>}
                         <div className="flex items-start justify-between mb-2 gap-2">
@@ -187,7 +188,9 @@ export default function CricketPage() {
                         <div className="flex items-center justify-between">
                           {accessType === 'free'
                             ? <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>✅ Free access</span>
-                            : <span className="text-xs font-semibold flex items-center gap-1 text-primary"><Lock size={11} /> Login required</span>
+                            : accessType === 'pro'
+                              ? <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>⭐ Pro access</span>
+                              : <span className="text-xs font-semibold flex items-center gap-1" style={{ color: '#dc2626' }}><Lock size={11} /> Pro Required</span>
                           }
                           <ChevronRight className="h-4 w-4 text-text-muted group-hover:text-primary transition-colors" />
                         </div>

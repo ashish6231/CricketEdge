@@ -7,7 +7,8 @@ const STORAGE_KEY = 'session_selected_comp'
 
 export default function SessionPage() {
   const navigate = useNavigate()
-  const { isLoggedIn } = useOutletContext()
+  const { isLoggedIn, user } = useOutletContext()
+  const isPro = user?.subscription?.planSlug === 'pro' || user?.role === 'admin' || user?.role === 'superadmin'
   const [matches, setMatches] = useState([])
   const [loading, setLoading] = useState(true)
   const [competitions, setCompetitions] = useState({})
@@ -52,8 +53,8 @@ export default function SessionPage() {
 
   const getAccessType = (match) => {
     if (match.status === 'ended') return 'free'
-    if (isLoggedIn) return 'free'
-    return 'login'
+    if (isPro) return 'pro'
+    return 'locked'
   }
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
@@ -97,8 +98,8 @@ export default function SessionPage() {
                 return (
                   <button
                     key={match.matchId}
-                    onClick={() => navigate(`/session/match/${match.matchId}`)}
-                    className={`glass-card rounded-xl p-4 hover:bg-bg-card-hover transition-all text-left group ${accessType === 'login' ? 'border border-primary/20' : ''}`}
+                    onClick={() => accessType !== 'locked' ? navigate(`/session/match/${match.matchId}`) : null}
+                    className={`glass-card rounded-xl p-4 transition-all text-left group ${accessType === 'locked' ? 'opacity-80 cursor-not-allowed border border-primary/20' : 'hover:bg-bg-card-hover'}`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold text-text-primary">{match.matchName}</span>
@@ -108,7 +109,7 @@ export default function SessionPage() {
                       Total Matched: <span className="text-text-secondary font-medium">{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      {accessType === 'free' ? <span className="text-xs text-profit">✅ Free access</span> : <span className="text-xs text-primary flex items-center gap-1"><Lock size={12} /> Login required</span>}
+                      {accessType === 'free' ? <span className="text-xs text-profit">✅ Free access</span> : accessType === 'pro' ? <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>⭐ Pro access</span> : <span className="text-xs font-semibold flex items-center gap-1" style={{ color: '#dc2626' }}><Lock size={12} /> Pro Required</span>}
                       <ChevronRight className="h-4 w-4 text-text-muted group-hover:text-primary" />
                     </div>
                   </button>
