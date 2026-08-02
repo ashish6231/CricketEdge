@@ -47,11 +47,13 @@ const formatMoney = (val) => {
 
 const formatVolStr = (val) => {
   if (!val) return '0'
-  const abs = Math.abs(val)
-  if (abs >= 10000000) return `${val < 0 ? '-' : ''}${Number((abs / 10000000).toFixed(2))}Cr`
-  if (abs >= 100000) return `${val < 0 ? '-' : ''}${Number((abs / 100000).toFixed(2))}L`
-  if (abs >= 1000) return `${val < 0 ? '-' : ''}${Number((abs / 1000).toFixed(2))}k`
-  return val.toString()
+  const num = Number(val)
+  if (isNaN(num)) return val.toString()
+  const abs = Math.abs(num)
+  if (abs >= 10000000) return `${num < 0 ? '-' : ''}${Number((abs / 10000000).toFixed(2))}Cr`
+  if (abs >= 100000) return `${num < 0 ? '-' : ''}${Number((abs / 100000).toFixed(2))}L`
+  if (abs >= 1000) return `${num < 0 ? '-' : ''}${Number((abs / 1000).toFixed(2))}k`
+  return Number(num.toFixed(2)).toString()
 }
 
 const formatVolTooltip = (val) => {
