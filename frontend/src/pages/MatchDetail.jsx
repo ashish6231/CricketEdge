@@ -173,7 +173,22 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
   if (!teamData) return null
 
   const pl = teamData.bookieProfitIfWins || 0
-
+  
+  const getSessionPlForLine = (lineItem) => {
+    if (!isSession || !teamData.orderBook) return 0
+    const score = Math.floor(lineItem.price)
+    let sessionPl = 0
+    teamData.orderBook.forEach(line => {
+      if (score > line.price) {
+        sessionPl -= line.back
+        sessionPl += line.lay
+      } else {
+        sessionPl += line.back
+        sessionPl -= line.lay
+      }
+    })
+    return sessionPl
+  }
   return (
     <div className="bg-[#111111] rounded-xl border border-[#2c2c2e] overflow-hidden mb-4 shadow-xl">
       {/* Header */}
@@ -287,19 +302,25 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
           </div>
 
           <div className="w-full text-sm">
-            <div className="grid grid-cols-4 pb-3 border-b border-[#2c2c2e] mt-2">
+            <div className={`grid ${isSession ? 'grid-cols-5' : 'grid-cols-4'} pb-3 border-b border-[#2c2c2e] mt-2`}>
               <div className="text-[#8e8e93] text-xs font-semibold pl-2">Price</div>
               <div className="text-[#3b82f6] text-xs font-semibold text-right">To Back</div>
               <div className="text-[#10b981] text-xs font-semibold text-right">To Lay</div>
               <div className="text-[#10b981] text-xs font-semibold text-right pr-2">Traded</div>
+              {isSession && <div className="text-[#a855f7] text-xs font-semibold text-right pr-2">P/L</div>}
             </div>
             <div className="max-h-[300px] overflow-y-auto">
               {teamData.orderBook.filter(item => !activeOnly || item.totalVol > 0).map((item, idx) => (
-                <div key={idx} className="grid grid-cols-4 py-2.5 border-b border-[#2c2c2e]/40 hover:bg-[#2c2c2e]/60 transition-colors">
+                <div key={idx} className={`grid ${isSession ? 'grid-cols-5' : 'grid-cols-4'} py-2.5 border-b border-[#2c2c2e]/40 hover:bg-[#2c2c2e]/60 transition-colors`}>
                   <div className="text-white font-bold pl-2">{formatOdds(item.price)}</div>
                   <div className="text-[#3b82f6] text-right font-medium">{item.back > 0 ? formatVolStr(item.back) : '-'}</div>
                   <div className="text-[#10b981] text-right font-medium">{item.lay > 0 ? formatVolStr(item.lay) : '-'}</div>
                   <div className="text-[#10b981] text-right font-medium pr-2">{item.traded > 0 ? formatVolStr(item.traded) : '-'}</div>
+                  {isSession && (
+                    <div className={`text-right font-bold pr-2 ${getSessionPlForLine(item) >= 0 ? 'text-[#16a34a]' : 'text-[#ef4444]'}`}>
+                      {formatVolStr(getSessionPlForLine(item))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
