@@ -7,7 +7,7 @@ const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs  = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
 const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
 
-export default function TossDetail() {
+export default function TossDetail({ isEmbedded = false }) {
   const { matchId } = useParams()
   const navigate    = useNavigate()
   const { isLoggedIn } = useOutletContext()
@@ -168,13 +168,13 @@ export default function TossDetail() {
   const mostFakeTeam = t1Fake.total >= t2Fake.total ? t1 : t2
 
   return (
-    <div className="p-3 w-full fade-in space-y-4">
+    <div className={`w-full fade-in space-y-4 ${isEmbedded ? '' : 'p-3'}`}>
 
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-text-muted hover:text-primary text-sm font-medium transition-colors">
-        <ArrowLeft size={15} /> Back
-      </button>
-
-      {/* Header */}
+      {!isEmbedded && (
+        <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-text-muted hover:text-primary text-sm font-medium transition-colors">
+          <ArrowLeft size={15} /> Back
+        </button>
+      )}      {/* Header */}
       <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center justify-between">
           <div>

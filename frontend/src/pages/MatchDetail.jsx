@@ -1,3 +1,6 @@
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, CartesianGrid } from "recharts"
+import TossDetail from './TossDetail'
+
 import { useEffect, useState, useContext } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
@@ -37,6 +40,251 @@ const fmtVol = (n) => {
   return Math.round(n).toLocaleString('en-IN')
 }
 
+const formatMoney = (val) => {
+  if (!val) return '$0.00'
+  return '$' + val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+const formatOdds = (val) => {
+  if (!val) return '—'
+  return val.toFixed(2)
+}
+
+const processTeamData = (teamName, teamData, timeFilter = 'all') => {
+  let trades = teamData?.trades || []
+
+  if (timeFilter !== 'all' && trades.length > 0) {
+    const hours = timeFilter === '1h' ? 1 : 3
+    const maxTime = Math.max(...trades.map(t => t.updatedAt))
+    const cutoff = maxTime - (hours * 60 * 60 * 1000)
+    trades = trades.filter(t => t.updatedAt >= cutoff)
+  }
+
+  if (trades.length === 0) return {
+    name: teamName, low: 0, high: 0, totalBet: 0, lastPrice: 0, trend: 'Neutral', orderBook: [], maxVol: 0, peakPrice: 0, timeSeries: []
+  }
+
+  const prices = trades.map(t => t.price)
+  const low = Math.min(...prices)
+  const high = Math.max(...prices)
+
+  const totalBet = trades.reduce((sum, t) => sum + t.size, 0)
+  
+  const sortedTrades = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
+  const lastPrice = sortedTrades[0]?.price
+
+  let trend = 'Neutral'
+  if (sortedTrades.length >= 2) {
+     const last = sortedTrades[0].price
+     const prev = sortedTrades.find(t => t.price !== last)?.price || last
+     if (last > prev) trend = 'Rising'
+     else if (last < prev) trend = 'Dropping'
+  }
+
+  let totalBack = 0
+  let totalLay = 0
+  let totalBackLiability = 0
+  let totalLayLiability = 0
+
+  const priceMap = {}
+  trades.forEach(t => {
+    if (!priceMap[t.price]) {
+      priceMap[t.price] = { price: t.price, back: 0, lay: 0, traded: 0, totalVol: 0 }
+    }
+    if (t.type === 'back') {
+      priceMap[t.price].back += t.size
+      totalBack += t.size
+      totalBackLiability += t.size * (t.price - 1)
+    } else if (t.type === 'lay') {
+      priceMap[t.price].lay += t.size
+      totalLay += t.size
+      totalLayLiability += t.size * (t.price - 1)
+    }
+    
+    priceMap[t.price].traded += t.size
+    priceMap[t.price].totalVol += t.size
+  })
+
+  const orderBook = Object.values(priceMap).sort((a, b) => a.price - b.price)
+  const maxVol = orderBook.length > 0 ? Math.max(...orderBook.map(o => o.totalVol)) : 0
+  const peakPrice = orderBook.find(o => o.totalVol === maxVol)?.price
+
+  const timeSeries = sortedTrades.slice().reverse().map(t => ({
+    time: new Date(t.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    price: t.price,
+    volume: t.size
+  }))
+
+  return {
+    name: teamName,
+    low, high, totalBet, lastPrice, trend, orderBook, maxVol, peakPrice, timeSeries,
+    totalBack, totalLay, totalBackLiability, totalLayLiability
+  }
+}
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#1c1c1e] border border-[#2c2c2e] p-2 rounded text-xs shadow-xl">
+        <p className="text-gray-300 font-bold mb-1">{`Price: ${formatOdds(payload[0].payload.price)}`}</p>
+        <p className="text-[#3b82f6] font-medium">{`Traded: ${formatMoney(payload[0].payload.totalVol)}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const TimeTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-[#1c1c1e] border border-[#2c2c2e] p-2 rounded text-xs shadow-xl">
+        <p className="text-gray-300 font-bold mb-1">{`Time: ${label}`}</p>
+        <p className="text-[#10b981] font-medium">{`Price: ${formatOdds(payload[0].payload.price)}`}</p>
+        <p className="text-[#3b82f6] font-medium">{`Vol: ${formatMoney(payload[0].payload.volume)}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const TeamCard = ({ teamData, isToss = false }) => {
+  const [activeTab, setActiveTab] = useState('volume')
+  const [activeOnly, setActiveOnly] = useState(true)
+
+  if (!teamData) return null
+
+  const pl = teamData.bookieProfitIfWins || 0
+
+  return (
+    <div className="bg-[#111111] rounded-xl border border-[#2c2c2e] overflow-hidden mb-4 shadow-xl">
+      {/* Header */}
+      <div className="flex justify-between items-center px-4 py-4 border-b border-[#2c2c2e]">
+        <div className="font-bold text-white text-lg tracking-wide">{teamData.name}</div>
+        <div className="flex items-center gap-4">
+          <div className={`text-xs flex items-center gap-1.5 font-medium ${teamData.trend === 'Rising' ? 'text-red-500' : teamData.trend === 'Dropping' ? 'text-[#10b981]' : 'text-[#8e8e93]'}`}>
+            {teamData.trend === 'Rising' ? <TrendingUp size={14}/> : teamData.trend === 'Dropping' ? <TrendingUp size={14} className="rotate-180"/> : <span>—</span>}
+            Odds {teamData.trend}
+          </div>
+          <div className="flex bg-[#000000] rounded-lg p-0.5 border border-[#2c2c2e]/50">
+            <button onClick={() => setActiveTab('volume')} className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${activeTab === 'volume' ? 'bg-[#222222] text-white' : 'text-[#8e8e93] hover:text-white'}`}>Chart</button>
+            <button onClick={() => setActiveTab('time')} className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${activeTab === 'time' ? 'bg-[#222222] text-white' : 'text-[#8e8e93] hover:text-white'}`}>History</button>
+            <button onClick={() => setActiveTab('book')} className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${activeTab === 'book' ? 'bg-[#222222] text-white' : 'text-[#8e8e93] hover:text-white'}`}>Order Book</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="px-5 py-5 space-y-3">
+        <div className="flex justify-between">
+          <span className="text-[#8e8e93] text-sm">Range:</span>
+          <span className="text-white text-sm font-bold tracking-wide">Low: {formatOdds(teamData.low)} <span className="ml-1">High: {formatOdds(teamData.high)}</span></span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-[#8e8e93] text-sm">On this selection:</span>
+          <span className="text-white text-sm font-bold tracking-wide">{formatMoney(teamData.totalBet)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-[#8e8e93] text-sm">Last price matched:</span>
+          <span className="text-white text-sm font-bold tracking-wide">{formatMoney(teamData.lastPrice)}</span>
+        </div>
+        {isToss && (
+          <div className="mt-2 pt-3 border-t border-[#2c2c2e] space-y-2">
+            <div className="flex justify-between">
+              <span className="text-[#8e8e93] text-sm">Back Stake:</span>
+              <span className="text-[#3b82f6] text-sm font-bold tracking-wide">{formatMoney(teamData.totalBack)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-[#8e8e93] text-sm">Lay Stake:</span>
+              <span className="text-[#ef4444] text-sm font-bold tracking-wide">{formatMoney(teamData.totalLay)}</span>
+            </div>
+            <div className="flex justify-between mt-1 pt-2 border-t border-[#2c2c2e]/50">
+              <span className="text-[#8e8e93] text-sm">Bookie P&L (If {teamData.name} wins):</span>
+              <span className={`text-sm font-bold tracking-wide ${pl >= 0 ? 'text-[#10b981]' : 'text-red-500'}`}>
+                {pl >= 0 ? '+' : ''}{formatMoney(pl)}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'volume' && (
+        <div className="px-5 pb-5">
+          <div className="flex justify-between items-center mb-6">
+            <span className="text-[#8e8e93] text-[10px] font-bold uppercase tracking-widest">VOLUME BY PRICE</span>
+            <span className="text-[#8e8e93] text-xs font-medium">Peak @ {formatOdds(teamData.peakPrice)}</span>
+          </div>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={teamData.orderBook} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2c2c2e" vertical={false} />
+                <XAxis dataKey="price" stroke="#8e8e93" tick={{fontSize: 10}} tickFormatter={(val) => formatOdds(val)} minTickGap={20} />
+                <YAxis stroke="#8e8e93" tick={{fontSize: 10}} tickFormatter={(val) => val >= 1000 ? `${(val/1000).toFixed(1)}k` : val} />
+                <Tooltip content={<CustomTooltip />} cursor={{fill: '#2c2c2e', opacity: 0.4}} />
+                <Bar dataKey="totalVol" radius={[2, 2, 0, 0]}>
+                  {teamData.orderBook.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.price === teamData.peakPrice ? '#3b82f6' : '#4b4b4b'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'time' && (
+        <div className="px-5 pb-5">
+          <div className="flex justify-between items-center mb-6">
+            <span className="text-[#8e8e93] text-[10px] font-bold uppercase tracking-widest">PRICE HISTORY</span>
+          </div>
+          <div className="h-[200px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={teamData.timeSeries} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#2c2c2e" vertical={false} />
+                <XAxis dataKey="time" stroke="#8e8e93" tick={{fontSize: 10}} minTickGap={30} />
+                <YAxis domain={['auto', 'auto']} stroke="#8e8e93" tick={{fontSize: 10}} tickFormatter={(val) => formatOdds(val)} />
+                <Tooltip content={<TimeTooltip />} />
+                <Line type="monotone" dataKey="price" stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'book' && (
+        <div className="px-5 pb-5">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-[#8e8e93] text-xs font-medium">Showing {teamData.orderBook.length} of {teamData.orderBook.length} price levels</span>
+            <div className="flex bg-[#0a0a0a] rounded-lg p-1">
+              <button onClick={() => setActiveOnly(true)} className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${activeOnly ? 'bg-[#2c2c2e] text-white' : 'text-gray-400 hover:text-white'}`}>Active Only</button>
+              <button onClick={() => setActiveOnly(false)} className={`px-3 py-1 rounded-md text-xs font-semibold transition-colors ${!activeOnly ? 'bg-[#2c2c2e] text-white' : 'text-gray-400 hover:text-white'}`}>All Prices</button>
+            </div>
+          </div>
+
+          <div className="w-full text-sm">
+            <div className="grid grid-cols-4 pb-3 border-b border-[#2c2c2e] mt-2">
+              <div className="text-[#8e8e93] text-xs font-semibold pl-2">Price</div>
+              <div className="text-[#3b82f6] text-xs font-semibold text-right">To Back</div>
+              <div className="text-[#f97316] text-xs font-semibold text-right">To Lay</div>
+              <div className="text-[#10b981] text-xs font-semibold text-right pr-2">Traded</div>
+            </div>
+            <div className="max-h-[300px] overflow-y-auto">
+              {teamData.orderBook.filter(item => !activeOnly || item.totalVol > 0).map((item, idx) => (
+                <div key={idx} className="grid grid-cols-4 py-2.5 border-b border-[#2c2c2e]/40 hover:bg-[#2c2c2e]/60 transition-colors">
+                  <div className="text-white font-bold pl-2">{formatOdds(item.price)}</div>
+                  <div className="text-[#3b82f6] text-right font-medium">{item.back > 0 ? formatMoney(item.back) : '-'}</div>
+                  <div className="text-[#f97316] text-right font-medium">{item.lay > 0 ? formatMoney(item.lay) : '-'}</div>
+                  <div className="text-[#10b981] text-right font-medium pr-2">{item.traded > 0 ? formatMoney(item.traded) : '-'}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function MatchDetail({ sport }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
@@ -46,6 +294,24 @@ export default function MatchDetail({ sport }) {
   const [requiresLogin, setRequiresLogin] = useState(false)
   const [requiresPro, setRequiresPro] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
+  const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
+  const [timeFilter, setTimeFilter] = useState('all')
+  const [marketType, setMarketType] = useState('match_odds')
+  const [showMarketMenu, setShowMarketMenu] = useState(false)
+  const [tossSnapshot, setTossSnapshot] = useState(null)
+
+  useEffect(() => {
+    if (marketType === 'toss') {
+      const fetchToss = () => {
+        getTossSnapshot(matchId).then(data => {
+          if (data && !data.error) setTossSnapshot(data)
+        })
+      }
+      fetchToss()
+      const interval = setInterval(fetchToss, 1500)
+      return () => clearInterval(interval)
+    }
+  }, [marketType, matchId])
 
   useEffect(() => {
     const apiFn = API_MAP[sport] || getCricketSnapshot
@@ -265,14 +531,118 @@ export default function MatchDetail({ sport }) {
     }
   })()
 
+  const graphSnap = marketType === 'toss' ? (tossSnapshot || snapshot) : snapshot
+  const graphT1 = marketType === 'toss' ? (graphSnap?.teamNames?.[0] || t1) : t1
+  const graphT2 = marketType === 'toss' ? (graphSnap?.teamNames?.[1] || t2) : t2
+  const effectiveTimeFilter = marketType === 'toss' ? 'all' : timeFilter
+  const t1GraphData = processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter)
+  const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter)
+  
+  t1GraphData.bookieProfitIfWins = t1GraphData.totalLayLiability + t2GraphData.totalBack - t2GraphData.totalBackLiability
+  t2GraphData.bookieProfitIfWins = t2GraphData.totalLayLiability + t1GraphData.totalBack - t1GraphData.totalBackLiability
+  const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
+  const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
+  const t2PctVol = marketVol > 0 ? ((t2GraphData?.totalBet || 0) / marketVol) * 100 : 50
+
   return (
     <div className="p-3 w-full fade-in stagger space-y-4">
 
-      {/* Back */}
-      <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-primary text-sm">
-        <ArrowLeft size={16} /> Back
-      </button>
+      {/* Header and Toggle */}
+      <div className="flex items-center justify-between mb-4">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-primary text-sm font-medium">
+          <ArrowLeft size={16} /> Back
+        </button>
+        <button 
+          onClick={() => setShowAdvancedGraph(!showAdvancedGraph)} 
+          className="px-4 py-1.5 rounded-lg text-xs font-bold text-white shadow-lg transition-colors flex items-center gap-2"
+          style={{ background: showAdvancedGraph ? '#4b5563' : 'linear-gradient(135deg,#2563eb,#3b82f6)' }}
+        >
+          <BarChart3 size={14} />
+          {showAdvancedGraph ? 'Show Basic Data' : 'Graphs & Order Book'}
+        </button>
+      </div>
 
+      {showAdvancedGraph && (
+        <div className="flex justify-end gap-2 -mt-2 mb-2">
+          {/* Temporary spacer since we moved filters inside the dark view */}
+        </div>
+      )}
+
+      {showAdvancedGraph ? (
+        <div className="w-full bg-[#0a0a0a] min-h-screen p-6 -mx-3 sm:mx-0 rounded-xl font-sans">
+          {/* Top Header Row */}
+          <div className="flex justify-between items-start mb-10">
+            <div>
+              <div className="flex items-center gap-4">
+                <h1 className="text-white text-[22px] font-bold tracking-wide">{t1} vs {t2}</h1>
+                <span className="px-2 py-0.5 bg-red-900/40 text-red-500 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 border border-red-800/50"><span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>LIVE</span>
+              </div>
+              <div className="text-[#8e8e93] text-[13px] mt-1.5 font-medium tracking-wide">
+                The Hundred - Womens
+                {snapshot.serverTime && ` · ${new Date(snapshot.serverTime).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} - ${new Date(snapshot.serverTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`}
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex bg-[#111111] p-0.5 rounded-lg border border-[#2c2c2e]/50">
+                <button onClick={() => setTimeFilter('all')} className={`px-3 py-1.5 text-xs rounded-md font-semibold transition-colors ${timeFilter === 'all' ? 'bg-[#222222] text-white' : 'text-[#8e8e93] hover:text-white'}`}>All Time</button>
+                <button onClick={() => setTimeFilter('3h')} className={`px-3 py-1.5 text-xs rounded-md font-semibold transition-colors ${timeFilter === '3h' ? 'bg-[#222222] text-white' : 'text-[#8e8e93] hover:text-white'}`}>3H</button>
+                <button onClick={() => setTimeFilter('1h')} className={`px-3 py-1.5 text-xs rounded-md font-semibold transition-colors ${timeFilter === '1h' ? 'bg-[#222222] text-white' : 'text-[#8e8e93] hover:text-white'}`}>1H</button>
+              </div>
+              <div className="relative">
+                <div 
+                  onClick={() => setShowMarketMenu(!showMarketMenu)}
+                  className="bg-[#111111] text-white text-[13px] px-4 py-2 rounded-lg border border-[#2c2c2e]/50 flex items-center gap-8 cursor-pointer font-semibold shadow-sm hover:bg-[#1a1a1a] transition-colors"
+                >
+                  <span>{marketType === 'toss' ? 'Toss' : 'Match Odds'}</span>
+                  <ChevronDown size={14} className="text-[#8e8e93]" />
+                </div>
+                {showMarketMenu && (
+                  <div className="absolute top-full right-0 mt-2 w-36 bg-[#1c1c1e] border border-[#2c2c2e] rounded-lg shadow-2xl z-50 overflow-hidden">
+                    <div 
+                      onClick={() => { setMarketType('match_odds'); setShowMarketMenu(false); }}
+                      className="px-4 py-3 text-[13px] font-bold text-white hover:bg-[#2c2c2e] cursor-pointer"
+                    >
+                      Match Odds
+                    </div>
+                    <div 
+                      onClick={() => { setMarketType('toss'); setShowMarketMenu(false); }}
+                      className="px-4 py-3 text-[13px] font-bold text-white hover:bg-[#2c2c2e] cursor-pointer border-t border-[#2c2c2e]"
+                    >
+                      Toss
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Match Odds / Toss Total Bar */}
+          <div className="mb-6 mt-6">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-white font-bold text-base tracking-wide">{marketType === 'toss' ? 'Toss Market' : 'Match Odds'}</h2>
+              <div className="text-[13px] text-[#8e8e93] font-medium tracking-wide">
+                On this market: <span className="text-white font-bold tracking-wide ml-1">{formatMoney(marketVol)}</span>
+              </div>
+            </div>
+
+            {/* Progress Bar (White vs Dark Grey) */}
+            <div className="h-[6px] w-full bg-[#2c2c2e] mb-3 flex rounded-sm">
+              <div className="bg-white h-full transition-all duration-500 rounded-l-sm" style={{ width: `${t1PctVol}%` }} />
+            </div>
+            <div className="flex justify-between text-[11px] font-bold text-[#8e8e93] tracking-wide">
+              <span>{t1GraphData?.name} <span className="text-white ml-1">{t1PctVol.toFixed(0)}%</span></span>
+              <span>{t2GraphData?.name} <span className="text-white ml-1">{t2PctVol.toFixed(0)}%</span></span>
+            </div>
+          </div>
+
+          {/* Side by Side Grid for Team Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
+            <TeamCard teamData={t1GraphData} isToss={marketType === 'toss'} />
+            <TeamCard teamData={t2GraphData} isToss={marketType === 'toss'} />
+          </div>
+        </div>
+      ) : (
+        <>
       {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
       <div className="glass-card rounded-2xl overflow-hidden">
         {/* Date / Title */}
@@ -613,6 +983,8 @@ export default function MatchDetail({ sport }) {
           <div className="text-2xl font-bold text-primary">{mostFakeTeam}</div>
         </div>
       </div>
+        </>
+      )}
     </div>
   )
 }
