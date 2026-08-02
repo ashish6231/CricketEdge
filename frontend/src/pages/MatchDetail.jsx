@@ -147,7 +147,7 @@ const TimeTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const TeamCard = ({ teamData, isToss = false }) => {
+const TeamCard = ({ teamData, isToss = false, marketVol = 0 }) => {
   const [activeTab, setActiveTab] = useState('volume')
   const [activeOnly, setActiveOnly] = useState(true)
 
@@ -175,15 +175,19 @@ const TeamCard = ({ teamData, isToss = false }) => {
 
       {/* Stats */}
       <div className="px-5 py-5 space-y-3">
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span className="text-[#8e8e93] text-sm">Range:</span>
-          <span className="text-white text-sm font-bold tracking-wide">Low: {formatOdds(teamData.low)} <span className="ml-1">High: {formatOdds(teamData.high)}</span></span>
+          <span className="text-white text-sm font-bold tracking-wide">Low: {formatOdds(teamData.low)} <span className="ml-2">High: {formatOdds(teamData.high)}</span></span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
+          <span className="text-[#8e8e93] text-sm">On this market:</span>
+          <span className="text-white text-sm font-bold tracking-wide">{formatMoney(marketVol)}</span>
+        </div>
+        <div className="flex justify-between items-center">
           <span className="text-[#8e8e93] text-sm">On this selection:</span>
           <span className="text-white text-sm font-bold tracking-wide">{formatMoney(teamData.totalBet)}</span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center">
           <span className="text-[#8e8e93] text-sm">Last price matched:</span>
           <span className="text-white text-sm font-bold tracking-wide">{formatMoney(teamData.lastPrice)}</span>
         </div>
@@ -301,19 +305,6 @@ export default function MatchDetail({ sport }) {
   const [tossSnapshot, setTossSnapshot] = useState(null)
 
   useEffect(() => {
-    if (marketType === 'toss') {
-      const fetchToss = () => {
-        getTossSnapshot(matchId).then(data => {
-          if (data && !data.error) setTossSnapshot(data)
-        })
-      }
-      fetchToss()
-      const interval = setInterval(fetchToss, 1500)
-      return () => clearInterval(interval)
-    }
-  }, [marketType, matchId])
-
-  useEffect(() => {
     const apiFn = API_MAP[sport] || getCricketSnapshot
 
     const fetchData = (isInitial = false) => {
@@ -322,12 +313,19 @@ export default function MatchDetail({ sport }) {
         setRequiresLogin(false)
         setRequiresPro(false)
         setSnapshot(null)
+        setTossSnapshot(null)
       }
-      apiFn(matchId).then(data => {
+      
+      // Fetch both Match Odds and Toss Data simultaneously
+      Promise.all([
+        apiFn(matchId),
+        sport === 'cricket' ? getTossSnapshot(matchId).catch(() => null) : Promise.resolve(null)
+      ]).then(([data, tossData]) => {
         if (data?.error === 'login_required') {
           setRequiresLogin(true)
         } else if (data && !data.error) {
           setSnapshot(data)
+          if (tossData && !tossData.error) setTossSnapshot(tossData)
           setRequiresLogin(false)
           const now = new Date()
           setLastUpdated(now)
@@ -376,16 +374,16 @@ export default function MatchDetail({ sport }) {
   if (requiresLogin) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        <div className="rounded-2xl p-8 max-w-md text-center" style={{ background: '#fff', border: '1px solid #fecaca', boxShadow: '0 4px 24px rgba(220,38,38,0.08)' }}>
+        <div className="rounded-2xl p-8 max-w-md text-center" style={{ background: '#111111', border: '1px solid #2c2c2e', boxShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
           <div className="text-xs text-text-muted mb-4">
             📅 {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} &nbsp;⏰ {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
           </div>
-          <div className="p-4 rounded-2xl border mb-4 inline-block" style={{ background: '#fee2e2', borderColor: '#fca5a5' }}><Lock className="h-8 w-8 text-primary" /></div>
+          <div className="p-4 rounded-2xl border mb-4 inline-block" style={{ background: 'rgba(220,38,38,0.15)', borderColor: '#3a3a3c' }}><Lock className="h-8 w-8 text-primary" /></div>
           <h2 className="text-xl font-bold text-text-primary mb-2">🔒 Login Zaruri Hai</h2>
           <p className="text-text-secondary mb-4">Live/upcoming match ka data dekhne ke liye login karo.</p>
           <p className="text-text-muted text-xs mb-6">Account ke liye Telegram: <span className="text-[#229ED9]">@CricketMan2026</span></p>
           <div className="flex gap-3">
-            <button onClick={() => navigate(-1)} className="px-4 py-2 rounded-xl text-text-secondary text-sm font-medium" style={{ background: '#fff0f0', border: '1px solid #fecaca' }}>← Wapas</button>
+            <button onClick={() => navigate(-1)} className="px-4 py-2 rounded-xl text-text-secondary text-sm font-medium" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>← Wapas</button>
             <button onClick={() => {
               window.dispatchEvent(new CustomEvent('open-login-modal'))
             }} className="px-6 py-2 text-white rounded-xl font-semibold text-sm" style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>🔑 Login karo</button>
@@ -538,8 +536,14 @@ export default function MatchDetail({ sport }) {
   const t1GraphData = processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter)
   const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter)
   
-  t1GraphData.bookieProfitIfWins = t1GraphData.totalLayLiability + t2GraphData.totalBack - t2GraphData.totalBackLiability
-  t2GraphData.bookieProfitIfWins = t2GraphData.totalLayLiability + t1GraphData.totalBack - t1GraphData.totalBackLiability
+  // Betfair Exchange P/L Formula:
+  // If Team A wins:
+  //   PL = Σ(BackStakeA × (OddsA-1))  [back profit on winner]
+  //      − Σ(LayStakeA × (OddsA-1))   [lay loss on winner]
+  //      − Σ(BackStakeB)              [back loss on loser]
+  //      + Σ(LayStakeB)              [lay profit on loser]
+  t1GraphData.bookieProfitIfWins = t1GraphData.totalBackLiability - t1GraphData.totalLayLiability - t2GraphData.totalBack + t2GraphData.totalLay
+  t2GraphData.bookieProfitIfWins = t2GraphData.totalBackLiability - t2GraphData.totalLayLiability - t1GraphData.totalBack + t1GraphData.totalLay
   const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
   const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
   const t2PctVol = marketVol > 0 ? ((t2GraphData?.totalBet || 0) / marketVol) * 100 : 50
@@ -547,26 +551,32 @@ export default function MatchDetail({ sport }) {
   return (
     <div className="p-3 w-full fade-in stagger space-y-4">
 
-      {/* Header and Toggle */}
+      {/* Header with Tabs */}
       <div className="flex items-center justify-between mb-4">
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-primary text-sm font-medium">
           <ArrowLeft size={16} /> Back
         </button>
-        <button 
-          onClick={() => setShowAdvancedGraph(!showAdvancedGraph)} 
-          className="px-4 py-1.5 rounded-lg text-xs font-bold text-white shadow-lg transition-colors flex items-center gap-2"
-          style={{ background: showAdvancedGraph ? '#4b5563' : 'linear-gradient(135deg,#2563eb,#3b82f6)' }}
-        >
-          <BarChart3 size={14} />
-          {showAdvancedGraph ? 'Show Basic Data' : 'Graphs & Order Book'}
-        </button>
-      </div>
-
-      {showAdvancedGraph && (
-        <div className="flex justify-end gap-2 -mt-2 mb-2">
-          {/* Temporary spacer since we moved filters inside the dark view */}
+        <div className="flex rounded-lg p-0.5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+          <button 
+            onClick={() => setShowAdvancedGraph(false)} 
+            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+              !showAdvancedGraph ? 'text-white' : 'text-[#8e8e93] hover:text-white'
+            }`}
+            style={!showAdvancedGraph ? { background: 'linear-gradient(135deg,#dc2626,#f97316)' } : {}}
+          >
+            Simple Book
+          </button>
+          <button 
+            onClick={() => setShowAdvancedGraph(true)} 
+            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${
+              showAdvancedGraph ? 'text-white' : 'text-[#8e8e93] hover:text-white'
+            }`}
+            style={showAdvancedGraph ? { background: 'linear-gradient(135deg,#2563eb,#3b82f6)' } : {}}
+          >
+            <BarChart3 size={12} /> Graphs
+          </button>
         </div>
-      )}
+      </div>
 
       {showAdvancedGraph ? (
         <div className="w-full bg-[#0a0a0a] min-h-screen p-6 -mx-3 sm:mx-0 rounded-xl font-sans">
@@ -620,9 +630,6 @@ export default function MatchDetail({ sport }) {
           <div className="mb-6 mt-6">
             <div className="flex justify-between items-center mb-5">
               <h2 className="text-white font-bold text-base tracking-wide">{marketType === 'toss' ? 'Toss Market' : 'Match Odds'}</h2>
-              <div className="text-[13px] text-[#8e8e93] font-medium tracking-wide">
-                On this market: <span className="text-white font-bold tracking-wide ml-1">{formatMoney(marketVol)}</span>
-              </div>
             </div>
 
             {/* Progress Bar (White vs Dark Grey) */}
@@ -637,8 +644,8 @@ export default function MatchDetail({ sport }) {
 
           {/* Side by Side Grid for Team Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
-            <TeamCard teamData={t1GraphData} isToss={marketType === 'toss'} />
-            <TeamCard teamData={t2GraphData} isToss={marketType === 'toss'} />
+            <TeamCard teamData={t1GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
+            <TeamCard teamData={t2GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
           </div>
         </div>
       ) : (
@@ -646,7 +653,7 @@ export default function MatchDetail({ sport }) {
       {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
       <div className="glass-card rounded-2xl overflow-hidden">
         {/* Date / Title */}
-        <div className="px-5 pt-4 pb-3" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)', borderBottom: '1px solid #fecaca' }}>
+        <div className="px-5 pt-4 pb-3" style={{ background: 'linear-gradient(135deg,#1a1a1a,#111111)', borderBottom: '1px solid #2c2c2e' }}>
           {snapshot.serverTime && (
             <div className="text-xs text-text-muted mb-1">
               📅 {new Date(snapshot.serverTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} &nbsp;⏰ {new Date(snapshot.serverTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
@@ -660,7 +667,7 @@ export default function MatchDetail({ sport }) {
         </div>
 
         {/* Odds */}
-        <div className="grid grid-cols-2 divide-x divide-[#fecaca]" style={{ borderBottom: '1px solid #fecaca' }}>
+        <div className="grid grid-cols-2 divide-x divide-[#2c2c2e]" style={{ borderBottom: '1px solid #2c2c2e' }}>
           {[{ name: t1, odds: t1Odds }, { name: t2, odds: t2Odds }].map(({ name, odds }) => (
             <div key={name} className="px-3 py-2.5">
               <div className="text-xs font-semibold text-text-secondary truncate mb-1.5">{name}</div>
@@ -697,7 +704,7 @@ export default function MatchDetail({ sport }) {
 
       {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
       {hasBLPrediction && (
-        <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)', border: '2px solid #fecaca' }}>
+        <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg,#1a1a1a,#111111)', border: '2px solid #2c2c2e' }}>
           <div className="text-sm font-bold text-primary mb-3 flex items-center gap-2">
             <TrendingUp size={16} /> 🧠 CricketEdge Prediction
           </div>
@@ -736,12 +743,12 @@ export default function MatchDetail({ sport }) {
 
           {/* Signal strength + logic */}
           <div className="grid grid-cols-2 gap-2">
-            <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+            <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
               <div className="text-xs text-text-muted mb-1">Signal Strength</div>
               <div className={`text-sm font-bold ${signalColor}`}>{signalStrength}</div>
               <div className="text-xs text-text-muted mt-0.5">Back/Lay: {bookieRatio.toFixed(2)}x</div>
             </div>
-            <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+            <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
               <div className="text-xs text-text-muted mb-1">Public Favourite</div>
               <div className="text-sm font-bold text-loss">{publicTeam}</div>
               <div className="text-xs text-text-muted mt-0.5">Log is team pe back kar rahe hain</div>
@@ -755,11 +762,11 @@ export default function MatchDetail({ sport }) {
       )}
 
       {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}
-      <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid', borderColor: bkp.matchScore === bkp.totalRules ? '#86efac' : bkp.matchScore >= 2 ? '#fde68a' : '#fecaca' }}>
-        <div className="px-4 py-3 flex items-center gap-2" style={{ background: bkp.matchScore === bkp.totalRules ? 'linear-gradient(135deg,#f0fdf4,#fefce8)' : 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
+      <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid', borderColor: bkp.matchScore === bkp.totalRules ? '#22c55e' : bkp.matchScore >= 2 ? '#eab308' : '#3a3a3c' }}>
+        <div className="px-4 py-3 flex items-center gap-2" style={{ background: bkp.matchScore === bkp.totalRules ? 'rgba(22,163,74,0.1)' : '#1a1a1a' }}>
           <span className="text-base">🕵️</span>
           <span className="text-sm font-bold text-text-primary">Bookie Fingerprint</span>
-          {bkp.isWomens && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fce7f3', color: '#be185d' }}>♀️ Women's</span>}
+          {bkp.isWomens && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(190,24,93,0.15)', color: '#f472b6' }}>♀️ Women's</span>}
           <span className={`ml-auto text-xs font-black ${bkp.confidence.color}`}>{bkp.confidence.label}</span>
         </div>
 
@@ -797,7 +804,7 @@ export default function MatchDetail({ sport }) {
       {/* ━━━━━━━━━━ 4. DEEP BETTING METRICS ━━━━━━━━━━ */}
       {(dm.raw || dm.totals) && (
         <div className="glass-card rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border flex items-center gap-2" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
+          <div className="px-4 py-3 border-b border-border flex items-center gap-2" style={{ background: '#1a1a1a' }}>
             <BarChart3 size={15} className="text-primary" />
             <span className="text-sm font-bold text-primary">Deep Betting Metrics</span>
           </div>
@@ -807,7 +814,7 @@ export default function MatchDetail({ sport }) {
                 <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Raw Accumulated Values</div>
                 <div className="grid grid-cols-2 gap-3">
                   {[{ team: t1, back: am1.back, lay: am1.lay }, { team: t2, back: am2.back, lay: am2.lay }].map(({ team, back, lay }) => (
-                    <div key={team} className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+                    <div key={team} className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
                       <div className="text-xs font-bold text-text-primary mb-2 truncate">{team}</div>
                       <div className="text-xs space-y-1">
                         <div className="flex justify-between"><span className="text-text-muted">Back Expo</span><span className="font-bold text-back">{back != null ? Number(back).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
@@ -829,7 +836,7 @@ export default function MatchDetail({ sport }) {
                       const isLower = (v1 != null && v2 != null) && (team === t1 ? v1 < v2 : v2 < v1)
                       const isHigher = (v1 != null && v2 != null) && (team === t1 ? v1 > v2 : v2 > v1)
                       return (
-                        <div key={team} className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+                        <div key={team} className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
                           <div className="text-xs font-bold text-text-primary mb-1 truncate">{team}</div>
                           <div className="flex items-center gap-1">
                             <div className="text-sm font-bold text-text-primary">{val != null ? Number(val).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</div>
@@ -851,7 +858,7 @@ export default function MatchDetail({ sport }) {
       <div className="glass-card rounded-2xl p-5">
         <div className="text-sm font-bold text-text-secondary mb-3">Bookie ka risk — Kitna exposed hai?</div>
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+          <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
             <div className="text-sm font-medium mb-2">{exp1.teamName || t1}</div>
             <div className="text-xs space-y-1">
               <div className="flex justify-between"><span className="text-text-muted">Net exposure</span><span className={`font-bold ${pnlCls(exp1.netExposure)}`}>{fmtRs(exp1.netExposure)}</span></div>
@@ -859,7 +866,7 @@ export default function MatchDetail({ sport }) {
               <div className="flex justify-between"><span className="text-text-muted">Lay risk</span><span className="text-loss">₹{fmt(exp1.layExposure)}</span></div>
             </div>
           </div>
-          <div className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+          <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
             <div className="text-sm font-medium mb-2">{exp2.teamName || t2}</div>
             <div className="text-xs space-y-1">
               <div className="flex justify-between"><span className="text-text-muted">Net exposure</span><span className={`font-bold ${pnlCls(exp2.netExposure)}`}>{fmtRs(exp2.netExposure)}</span></div>
@@ -884,7 +891,7 @@ export default function MatchDetail({ sport }) {
                     <span>{team}</span>
                     <span className={`font-bold ${pct >= 50 ? 'text-profit' : 'text-loss'}`}>{pct?.toFixed(1)}%</span>
                   </div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: "#fee2e2" }}>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: '#2c2c2e' }}>
                     <div className={`h-full rounded-full ${pct >= 50 ? 'bg-profit' : 'bg-loss'}`} style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -902,7 +909,7 @@ export default function MatchDetail({ sport }) {
       <div className="space-y-2">
         {[{ title: 'In-Play', pnl: ip, bets: ib, vol: iv }, { title: 'Pre-Match', pnl: pp, bets: pb, vol: pv }].map(({ title, pnl, bets, vol }) => (
           <div key={title} className="glass-card rounded-2xl overflow-hidden">
-            <div className="px-4 py-2 border-b border-border" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
+            <div className="px-4 py-2 border-b border-border" style={{ background: '#1a1a1a' }}>
               <span className="text-xs font-black uppercase tracking-wider text-primary">{title}</span>
             </div>
             <div className="p-3">
@@ -929,17 +936,17 @@ export default function MatchDetail({ sport }) {
       </div>
 
       {/* ━━━━━━━━━━ 10. SPOOFING DETECTOR ━━━━━━━━━━ */}
-      <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, #fde8e8 0%, #fdf0e8 100%)' }}>
+      <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
         {/* Header */}
         <div className="flex items-center gap-2 mb-1">
           <span className="text-2xl">🚨</span>
           <span className="text-xl font-bold text-text-primary">Spoofing Detector</span>
-          <span className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#fee2e2', color: '#dc2626' }}>LIVE</span>
+          <span className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ background: 'rgba(220,38,38,0.15)', color: '#ef4444' }}>LIVE</span>
         </div>
         <p className="text-xs text-text-muted mb-4">Cumulative fake orders — canceled volume not matched as trades</p>
 
         {/* Progress bar */}
-        <div className="h-3 rounded-full overflow-hidden flex mb-2" style={{ background: '#fecaca' }}>
+        <div className="h-3 rounded-full overflow-hidden flex mb-2" style={{ background: '#2c2c2e' }}>
           <div className="h-full" style={{ width: `${t1Pct}%`, background: 'linear-gradient(90deg,#dc2626,#f87171)' }} />
           <div className="h-full" style={{ width: `${t2Pct}%`, background: 'linear-gradient(90deg,#f97316,#fbbf24)' }} />
         </div>
@@ -951,7 +958,7 @@ export default function MatchDetail({ sport }) {
         {/* Team cards */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           {[{ team: t1, fake: t1Fake, isMain: true }, { team: t2, fake: t2Fake, isMain: false }].map(({ team, fake, isMain }) => (
-            <div key={team} className="bg-white rounded-xl p-3" style={{ border: '1px solid #fecaca' }}>
+            <div key={team} className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
               <div className={`text-xs font-bold mb-3 truncate ${isMain ? 'text-primary' : 'text-text-secondary'}`}>{team}</div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-1">
@@ -978,7 +985,7 @@ export default function MatchDetail({ sport }) {
         </div>
 
         {/* Bottom banner */}
-        <div className="rounded-xl py-4 px-5 text-center" style={{ background: 'linear-gradient(135deg,#fca5a5,#fcd9b0)' }}>
+        <div className="rounded-xl py-4 px-5 text-center" style={{ background: 'linear-gradient(135deg,rgba(220,38,38,0.2),rgba(249,115,22,0.2))', border: '1px solid #2c2c2e' }}>
           <div className="text-xs font-bold tracking-widest text-primary/60 uppercase mb-1">Most Fake Orders On</div>
           <div className="text-2xl font-bold text-primary">{mostFakeTeam}</div>
         </div>

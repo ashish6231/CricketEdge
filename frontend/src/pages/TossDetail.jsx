@@ -99,6 +99,20 @@ export default function TossDetail({ isEmbedded = false }) {
   const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
   const t2Bets = tot.totalBetTeam2 || tot.team2 || 0
 
+  const getTradeStats = (trades = []) => {
+    let tBack = 0, tLay = 0, tBackLiab = 0, tLayLiab = 0
+    trades.forEach(t => {
+      if (t.type === 'back') { tBack += t.size; tBackLiab += t.size * (t.price - 1) }
+      else if (t.type === 'lay') { tLay += t.size; tLayLiab += t.size * (t.price - 1) }
+    })
+    return { tBack, tLay, tBackLiab, tLayLiab }
+  }
+  const s1 = getTradeStats(t1Trades)
+  const s2 = getTradeStats(t2Trades)
+  // exact Betfair Bookie P/L
+  const t1BookiePL = s1.tBackLiab - s1.tLayLiab - s2.tBack + s2.tLay
+  const t2BookiePL = s2.tBackLiab - s2.tLayLiab - s1.tBack + s1.tLay
+
   const isWomens = /women/i.test(snap.competitionName || '') ||
     [t1, t2].some(name => /\bW\b/.test(name) || /\(W\)/i.test(name))
 
@@ -292,25 +306,21 @@ export default function TossDetail({ isEmbedded = false }) {
         </div>
       )}
 
-      {/* Bookie P/L from exposure */}
-      {(exp1.netExposure != null || exp2.netExposure != null) && (() => {
-        const t1ifWins = exp1.netExposure != null ? -exp1.netExposure : null
-        const t2ifWins = exp2.netExposure != null ? -exp2.netExposure : null
-        return (
-          <div className="glass-card rounded-2xl p-4">
-            <div className="text-xs font-bold text-text-muted uppercase mb-3">📈 Bookie P/L (Agar Team Jeete)</div>
-            <div className="grid grid-cols-2 gap-3">
-              {[{ name: t1, pl: t1ifWins }, { name: t2, pl: t2ifWins }].map(({ name, pl }) => (
-                <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
-                  <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
-                  <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-                  <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
-                </div>
-              ))}
-            </div>
+      {/* Bookie P/L from Trades (Exact Betfair Formula) */}
+      {(t1Trades.length > 0 || t2Trades.length > 0) && (
+        <div className="glass-card rounded-2xl p-4">
+          <div className="text-xs font-bold text-text-muted uppercase mb-3">📈 Bookie P/L (Agar Team Jeete)</div>
+          <div className="grid grid-cols-2 gap-3">
+            {[{ name: t1, pl: t1BookiePL }, { name: t2, pl: t2BookiePL }].map(({ name, pl }) => (
+              <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
+                <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
+                <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
+                <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
+              </div>
+            ))}
           </div>
-        )
-      })()}
+        </div>
+      )}
 
       {/* Overall sentiment */}
       {ns.teamA && sent.teamA && (

@@ -6,8 +6,6 @@ import { getAuthStatus, logout } from '../api'
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
   { path: '/tennis',  label: 'Tennis',  icon: '🎾' },
-  { path: '/session', label: 'Session', icon: '📊' },
-  { path: '/toss',    label: 'Toss',    icon: '🪙' },
 ]
 
 export default function MainLayout() {
@@ -57,14 +55,14 @@ export default function MainLayout() {
   const initials = authUser?.name?.[0]?.toUpperCase() || '?'
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#fef2f2' }}>
+    <div className="flex min-h-screen bg-[#000000]">
       {/* Top accent */}
       <div className="fixed top-0 left-0 right-0 h-1 z-50"
         style={{ background: 'linear-gradient(90deg,#dc2626,#f97316,#dc2626)' }} />
 
       {/* Header */}
-      <header className="fixed top-1 left-0 right-0 z-40 border-b border-border"
-        style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(20px)', boxShadow: '0 1px 12px rgba(220,38,38,0.08)' }}>
+      <header className="fixed top-1 left-0 right-0 z-40 border-b border-[#2c2c2e]"
+        style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(20px)', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center h-13 px-4 gap-3">
           {/* Mobile toggle */}
           <button className="md:hidden text-text-muted hover:text-primary" onClick={() => setMobileMenu(m => !m)}>
@@ -91,7 +89,7 @@ export default function MainLayout() {
                 }`}
                 style={location.pathname.startsWith(item.path)
                   ? { background: 'linear-gradient(135deg,#dc2626,#f97316)' }
-                  : { background: 'rgba(220,38,38,0.06)' }
+                  : { background: 'rgba(255,255,255,0.05)' }
                 }>
                 {item.icon} {item.label}
               </Link>
@@ -122,7 +120,7 @@ export default function MainLayout() {
               <div className="relative" ref={dropRef}>
                 <button onClick={() => setDropdown(d => !d)}
                   className="flex items-center gap-1.5 px-2 py-1 rounded-full transition-all"
-                  style={{ background: 'rgba(220,38,38,0.08)', border: '1px solid #fecaca' }}>
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #2c2c2e' }}>
                   {/* Avatar circle */}
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-black"
                     style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
@@ -136,7 +134,7 @@ export default function MainLayout() {
 
                 {dropdown && (
                   <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl shadow-xl z-50 overflow-hidden"
-                    style={{ background: '#fff', border: '1px solid #fecaca', boxShadow: '0 8px 32px rgba(220,38,38,0.12)' }}>
+                    style={{ background: '#111111', border: '1px solid #2c2c2e', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
                     {/* User info */}
                     <div className="px-4 py-3 border-b border-border/60">
                       <div className="font-bold text-sm text-text-primary truncate">{authUser.name}</div>
@@ -159,20 +157,20 @@ export default function MainLayout() {
 
                     {/* Profile link */}
                     <Link to="/profile" onClick={() => setDropdown(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-red-50 transition-colors">
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-[#1a1a1a] transition-colors">
                       <User size={14} className="text-text-muted" /> My Profile
                     </Link>
 
                     {/* Subscription */}
                     <Link to="/subscription" onClick={() => setDropdown(false)}
-                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-red-50 transition-colors">
+                      className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-[#1a1a1a] transition-colors">
                       <span className="text-yellow-500 text-sm">⭐</span>
                       {authUser?.subscription?.planSlug === 'pro' ? 'Manage Subscription' : 'Upgrade to Pro'}
                     </Link>
 
                     {/* Logout */}
                     <button onClick={handleLogout}
-                      className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-loss hover:bg-red-50 transition-colors border-t border-border/60">
+                      className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm text-loss hover:bg-[#1a1a1a] transition-colors border-t border-border/60">
                       <LogOut size={14} /> Logout
                     </button>
                   </div>

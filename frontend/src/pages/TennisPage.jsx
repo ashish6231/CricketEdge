@@ -54,7 +54,7 @@ export default function TennisPage() {
     <div className="flex h-[calc(100vh-57px)] overflow-hidden">
 
       {/* ── Sidebar — always visible ── */}
-      <div className="hidden md:flex w-60 border-r border-border flex-col overflow-y-auto flex-shrink-0" style={{ background: 'rgba(255,242,242,0.7)' }}>
+      <div className="hidden md:flex w-60 border-r border-border flex-col overflow-y-auto flex-shrink-0" style={{ background: '#0a0a0a' }}>
         <div className="px-3 py-2.5 text-xs font-black uppercase tracking-wider text-text-muted border-b border-border">🎾 Tennis</div>
         {Object.entries(competitions).map(([comp, compMatches]) => (
           <button
@@ -78,9 +78,9 @@ export default function TennisPage() {
       </div>
 
       {/* ── Mobile selector ── */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-border p-2" style={{ background: '#fff' }}>
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-border p-2" style={{ background: '#111111' }}>
         <select value={selectedComp || ''} onChange={e => handleCompSelect(e.target.value)}
-          className="w-full border border-border rounded-xl px-3 py-2 text-sm text-text-primary" style={{ background: '#fff' }}>
+          className="w-full border border-border rounded-xl px-3 py-2 text-sm text-text-primary" style={{ background: '#1a1a1a', color: '#fff' }}>
           {Object.keys(competitions).map(comp => <option key={comp} value={comp}>{comp}</option>)}
         </select>
       </div>

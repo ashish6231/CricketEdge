@@ -80,13 +80,13 @@ export default function CricketPage() {
   const getMatchStatusBadge = (match) => {
     if (match.inPlay && match.status === 'in-play') {
       return (
-        <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: '#fee2e2', color: '#dc2626' }}>
-          <span className="pulse-dot h-1.5 w-1.5 rounded-full inline-block" style={{ background: '#dc2626' }} /> LIVE
+        <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: 'rgba(220,38,38,0.15)', color: '#ef4444' }}>
+          <span className="pulse-dot h-1.5 w-1.5 rounded-full inline-block" style={{ background: '#ef4444' }} /> LIVE
         </span>
       )
     }
-    if (match.status === 'ended') return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(22,163,74,0.1)', color: '#16a34a' }}>ENDED</span>
-    if (match.status === 'upcoming') return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#2563eb' }}>UPCOMING</span>
+    if (match.status === 'ended') return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(22,163,74,0.15)', color: '#22c55e' }}>ENDED</span>
+    if (match.status === 'upcoming') return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6' }}>UPCOMING</span>
     return <span className="text-xs text-text-muted">{match.status}</span>
   }
 
@@ -104,7 +104,7 @@ export default function CricketPage() {
     <div className="flex h-[calc(100vh-57px)] overflow-hidden">
 
       {/* ── Sidebar — always visible ── */}
-      <div className="hidden md:flex w-60 border-r border-border flex-col overflow-y-auto flex-shrink-0" style={{ background: 'rgba(255,242,242,0.7)' }}>
+      <div className="hidden md:flex w-60 border-r border-border flex-col overflow-y-auto flex-shrink-0" style={{ background: '#0a0a0a' }}>
         <div className="px-3 py-2.5 text-xs font-black uppercase tracking-wider text-text-muted border-b border-border">🏏 Cricket</div>
         {Object.entries(competitions).map(([comp, compMatches]) => (
           <button
@@ -128,9 +128,9 @@ export default function CricketPage() {
       </div>
 
       {/* ── Mobile selector ── */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-border p-2" style={{ background: '#fff' }}>
+      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-border p-2" style={{ background: '#111111' }}>
         <select value={selectedComp || ''} onChange={e => handleCompSelect(e.target.value)}
-          className="w-full border border-border rounded-xl px-3 py-2 text-sm text-text-primary" style={{ background: '#fff' }}>
+          className="w-full border border-border rounded-xl px-3 py-2 text-sm text-text-primary" style={{ background: '#1a1a1a', color: '#fff' }}>
           {Object.keys(competitions).map(comp => <option key={comp} value={comp}>{comp}</option>)}
         </select>
       </div>
@@ -170,7 +170,7 @@ export default function CricketPage() {
                             {o.teamNames.map(tn => {
                               const tod = o.odds?.[tn]
                               return (
-                                <div key={tn} className="flex-1 rounded-lg px-2 py-1" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
+                                <div key={tn} className="flex-1 rounded-lg px-2 py-1" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
                                   <div className="text-[10px] font-semibold text-text-secondary truncate mb-0.5">{tn}</div>
                                   <div className="flex gap-1.5 text-[10px]">
                                     <span className="font-bold text-back">B: {tod?.back ?? '—'}</span>
