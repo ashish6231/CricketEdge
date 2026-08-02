@@ -58,7 +58,7 @@ export default function MainLayout() {
     <div className="flex min-h-screen bg-[#000000]">
       {/* Top accent */}
       <div className="fixed top-0 left-0 right-0 h-1 z-50"
-        style={{ background: 'linear-gradient(90deg,#dc2626,#f97316,#dc2626)' }} />
+        style={{ background: 'linear-gradient(90deg,#dc2626,#10b981,#dc2626)' }} />
 
       {/* Header */}
       <header className="fixed top-1 left-0 right-0 z-40 border-b border-[#2c2c2e]"
@@ -72,7 +72,7 @@ export default function MainLayout() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 flex-shrink-0">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+              style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
               <Activity className="h-4 w-4 text-white" />
             </div>
             <span className="font-black text-lg tracking-tight text-text-primary">
@@ -88,7 +88,7 @@ export default function MainLayout() {
                   location.pathname.startsWith(item.path) ? 'text-white shadow-sm' : 'text-text-secondary hover:text-primary'
                 }`}
                 style={location.pathname.startsWith(item.path)
-                  ? { background: 'linear-gradient(135deg,#dc2626,#f97316)' }
+                  ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' }
                   : { background: 'rgba(255,255,255,0.05)' }
                 }>
                 {item.icon} {item.label}
@@ -123,7 +123,7 @@ export default function MainLayout() {
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #2c2c2e' }}>
                   {/* Avatar circle */}
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-black"
-                    style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+                    style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
                     {initials}
                   </div>
                   <span className="hidden sm:block text-xs font-semibold text-text-primary max-w-24 truncate">
@@ -180,7 +180,7 @@ export default function MainLayout() {
               /* ── Login button ── */
               <Link to="/login"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white"
-                style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+                style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
                 Login
               </Link>
             )}

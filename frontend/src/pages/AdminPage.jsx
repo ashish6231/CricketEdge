@@ -43,7 +43,7 @@ export default function AdminPage() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-5">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white"
-          style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+          style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
           <Shield size={18} />
         </div>
         <div>
@@ -61,7 +61,7 @@ export default function AdminPage() {
             <button key={t.id} onClick={() => setTab(t.id)}
               className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all"
               style={active
-                ? { background: 'linear-gradient(135deg,#dc2626,#f97316)', color: '#fff' }
+                ? { background: 'linear-gradient(135deg,#dc2626,#10b981)', color: '#fff' }
                 : { background: 'rgba(220,38,38,0.06)', color: '#374151' }
               }
             >

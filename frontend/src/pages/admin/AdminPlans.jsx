@@ -96,7 +96,7 @@ export default function AdminPlans({ isSuperAdmin }) {
               </div>
               <button onClick={save} disabled={saving}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+                style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
                 {saving ? <LoaderCircle size={14} className="animate-spin" /> : <Check size={14} />}
                 Save Changes
               </button>

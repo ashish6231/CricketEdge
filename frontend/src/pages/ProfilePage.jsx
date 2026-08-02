@@ -31,7 +31,7 @@ export default function ProfilePage() {
       <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center gap-4 mb-4">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-black"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
             {user.name?.[0]?.toUpperCase() || '?'}
           </div>
           <div>

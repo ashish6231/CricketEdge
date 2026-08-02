@@ -113,7 +113,7 @@ export default function SessionDetail() {
         <p className="text-text-muted text-xs mb-6">Live session data dekhne ke liye Pro plan lo.</p>
         <a href="https://t.me/cricket_edgeonline" target="_blank" rel="noopener noreferrer"
           className="block w-full py-3 rounded-xl font-bold text-white text-sm mb-3"
-          style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+          style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
           🚀 Buy Pro — Telegram pe Contact Karo
         </a>
         <p className="text-xs text-text-muted mb-4">Telegram: <span className="font-bold text-[#229ED9]">@cricket_edgeonline</span></p>
@@ -132,7 +132,7 @@ export default function SessionDetail() {
         <p className="text-text-secondary text-sm mb-6">Live/upcoming session data dekhne ke liye login karo.</p>
         <div className="flex gap-3 justify-center">
           <button onClick={() => navigate(-1)} className="px-4 py-2 rounded-xl text-sm font-medium text-text-secondary" style={{ background: '#fff0f0', border: '1px solid #fecaca' }}>← Wapas</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent('open-login-modal'))} className="px-6 py-2 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>🔑 Login karo</button>
+          <button onClick={() => window.dispatchEvent(new CustomEvent('open-login-modal'))} className="px-6 py-2 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>🔑 Login karo</button>
         </div>
       </div>
     </div>

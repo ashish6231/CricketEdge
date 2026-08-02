@@ -54,7 +54,7 @@ export default function TossPage() {
         </span>
       )
     }
-    if (match.status === 'ended') return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(22,163,74,0.1)', color: '#16a34a' }}>ENDED</span>
+    if (match.status === 'ended') return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}>ENDED</span>
     if (match.status === 'upcoming') return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#2563eb' }}>UPCOMING</span>
     return <span className="text-xs text-text-muted">{match.status}</span>
   }
@@ -79,15 +79,15 @@ export default function TossPage() {
           <button
             key={comp}
             onClick={() => handleCompSelect(comp)}
-            className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-r-2 ${selectedComp === comp ? 'border-primary font-semibold' : 'border-transparent text-text-secondary hover:bg-primary/5'}`}
-            style={selectedComp === comp ? { background: 'rgba(220,38,38,0.07)', color: '#dc2626' } : {}}
+            className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-r-2 ${selectedComp === comp ? 'font-semibold' : 'border-transparent text-text-secondary hover:bg-[#10b981]/10'}`}
+            style={selectedComp === comp ? { background: 'rgba(16,185,129,0.07)', color: '#10b981', borderColor: '#10b981' } : {}}
           >
             <div className="font-medium truncate text-xs">{comp}</div>
             <div className="text-xs text-text-muted mt-0.5 flex items-center gap-1.5">
               {compMatches.length} markets
               {compMatches.some(m => m.inPlay && m.status === 'in-play') && (
-                <span className="flex items-center gap-0.5" style={{ color: '#dc2626' }}>
-                  <span className="pulse-dot h-1.5 w-1.5 rounded-full inline-block" style={{ background: '#dc2626' }} />
+                <span className="flex items-center gap-0.5" style={{ color: '#10b981' }}>
+                  <span className="pulse-dot h-1.5 w-1.5 rounded-full inline-block" style={{ background: '#10b981' }} />
                   {compMatches.filter(m => m.inPlay && m.status === 'in-play').length} live
                 </span>
               )}
@@ -136,9 +136,9 @@ export default function TossPage() {
                         </div>
                         <div className="flex items-center justify-between">
                           {accessType === 'free'
-                            ? <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>✅ Free access</span>
+                            ? <span className="text-xs font-semibold" style={{ color: '#10b981' }}>✅ Free access</span>
                             : accessType === 'pro'
-                              ? <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>⭐ Pro access</span>
+                              ? <span className="text-xs font-semibold" style={{ color: '#10b981' }}>⭐ Pro access</span>
                               : <span className="text-xs font-semibold flex items-center gap-1" style={{ color: '#dc2626' }}><Lock size={11} /> Pro Required</span>
                           }
                           <ChevronRight className="h-4 w-4 text-text-muted group-hover:text-primary transition-colors" />

@@ -68,7 +68,7 @@ export default function AdminCoupons() {
         <span className="text-sm text-text-muted">{coupons.length} coupon{coupons.length !== 1 ? 's' : ''}</span>
         <button onClick={() => { setShowForm(!showForm); setError('') }}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-white"
-          style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+          style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
           {showForm ? <X size={13} /> : <Plus size={13} />}
           {showForm ? 'Cancel' : 'New Coupon'}
         </button>
@@ -130,7 +130,7 @@ export default function AdminCoupons() {
           </div>
           <button onClick={create} disabled={saving || !form.code || !form.discountValue || !form.validFrom || !form.validUntil}
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
             {saving ? <LoaderCircle size={14} className="animate-spin" /> : <Plus size={14} />}
             Create Coupon
           </button>

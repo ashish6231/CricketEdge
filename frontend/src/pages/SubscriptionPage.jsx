@@ -144,7 +144,7 @@ export default function SubscriptionPage() {
             {['monthly', 'yearly'].map(c => (
               <button key={c} onClick={() => setCycle(c)}
                 className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${cycle === c ? 'text-white' : 'text-text-secondary'}`}
-                style={cycle === c ? { background: 'linear-gradient(135deg,#dc2626,#f97316)' } : { background: '#fff0f0', border: '1px solid #fecaca' }}
+                style={cycle === c ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' } : { background: '#fff0f0', border: '1px solid #fecaca' }}
               >
                 {c === 'monthly' ? `Monthly ₹${fmt(plan.price)}` : `Yearly ₹${fmt(plan.yearlyPrice)}`}
                 {c === 'yearly' && <span className="ml-1 text-xs opacity-80">(Save 2mo)</span>}
@@ -167,7 +167,7 @@ export default function SubscriptionPage() {
 
           <button onClick={handleBuy} disabled={paying}
             className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}
+            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
           >
             {paying ? <LoaderCircle size={16} className="animate-spin" /> : <Crown size={16} />}
             {paying ? 'Processing...' : `Buy Pro — ₹${fmt(price)}`}
@@ -183,7 +183,7 @@ export default function SubscriptionPage() {
           {!hasQueued && plan && (
             <button onClick={handleBuy} disabled={paying}
               className="mt-4 px-6 py-2 rounded-xl text-sm font-semibold text-white"
-              style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}
+              style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
             >
               Renew Early
             </button>

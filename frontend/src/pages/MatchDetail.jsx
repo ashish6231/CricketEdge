@@ -82,15 +82,15 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
   const low = Math.min(...prices)
   const high = Math.max(...prices)
 
-  const totalBet = trades.reduce((sum, t) => sum + t.size, 0)
+  const totalBet = trades.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0)
 
   const sortedTrades = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
-  const lastPrice = sortedTrades[0]?.price
+  const lastPrice = parseFloat(sortedTrades[0]?.price) || 0
 
   let trend = 'Neutral'
   if (sortedTrades.length >= 2) {
-    const last = sortedTrades[0].price
-    const prev = sortedTrades.find(t => t.price !== last)?.price || last
+    const last = parseFloat(sortedTrades[0].price) || 0
+    const prev = parseFloat(sortedTrades.find(t => t.price !== sortedTrades[0].price)?.price) || last
     if (last > prev) trend = 'Rising'
     else if (last < prev) trend = 'Dropping'
   }
@@ -102,21 +102,24 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
 
   const priceMap = {}
   trades.forEach(t => {
-    if (!priceMap[t.price]) {
-      priceMap[t.price] = { price: t.price, back: 0, lay: 0, traded: 0, totalVol: 0 }
+    const p = parseFloat(t.price) || 0
+    const s = parseFloat(t.size) || 0
+    
+    if (!priceMap[p]) {
+      priceMap[p] = { price: p, back: 0, lay: 0, traded: 0, totalVol: 0 }
     }
     if (t.type === 'back') {
-      priceMap[t.price].back += t.size
-      totalBack += t.size
-      totalBackLiability += t.size * (t.price - 1)
+      priceMap[p].back += s
+      totalBack += s
+      totalBackLiability += s * (p - 1)
     } else if (t.type === 'lay') {
-      priceMap[t.price].lay += t.size
-      totalLay += t.size
-      totalLayLiability += t.size * (t.price - 1)
+      priceMap[p].lay += s
+      totalLay += s
+      totalLayLiability += s * (p - 1)
     }
 
-    priceMap[t.price].traded += t.size
-    priceMap[t.price].totalVol += t.size
+    priceMap[p].traded += s
+    priceMap[p].totalVol += s
   })
 
   const orderBook = Object.values(priceMap).sort((a, b) => a.price - b.price)
@@ -125,8 +128,8 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
 
   const timeSeries = sortedTrades.slice().reverse().map(t => ({
     time: new Date(t.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    price: t.price,
-    volume: t.size
+    price: parseFloat(t.price) || 0,
+    volume: parseFloat(t.size) || 0
   }))
 
   return {
@@ -208,18 +211,18 @@ const TeamCard = ({ teamData, isToss = false, marketVol = 0 }) => {
         <div className="flex justify-between items-center mt-1 pt-3 border-t border-[#2c2c2e]/50">
           <span className="text-[#8e8e93] text-sm font-bold">Bookie P/L:</span>
           <span className={`text-sm font-black tracking-wide ${pl >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
-            {pl >= 0 ? '+' : ''}{formatMoney(pl)}
+            {pl >= 0 ? '+' : ''}{formatVolStr(pl)}
           </span>
         </div>
         {isToss && (
           <div className="mt-2 pt-3 border-t border-[#2c2c2e] space-y-2">
             <div className="flex justify-between">
               <span className="text-[#8e8e93] text-sm">Back Stake:</span>
-              <span className="text-[#3b82f6] text-sm font-bold tracking-wide">{formatMoney(teamData.totalBack)}</span>
+              <span className="text-[#3b82f6] text-sm font-bold tracking-wide">{formatVolStr(teamData.totalBack)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-[#8e8e93] text-sm">Lay Stake:</span>
-              <span className="text-[#ef4444] text-sm font-bold tracking-wide">{formatMoney(teamData.totalLay)}</span>
+              <span className="text-[#ef4444] text-sm font-bold tracking-wide">{formatVolStr(teamData.totalLay)}</span>
             </div>
           </div>
         )}
@@ -283,7 +286,7 @@ const TeamCard = ({ teamData, isToss = false, marketVol = 0 }) => {
             <div className="grid grid-cols-4 pb-3 border-b border-[#2c2c2e] mt-2">
               <div className="text-[#8e8e93] text-xs font-semibold pl-2">Price</div>
               <div className="text-[#3b82f6] text-xs font-semibold text-right">To Back</div>
-              <div className="text-[#f97316] text-xs font-semibold text-right">To Lay</div>
+              <div className="text-[#10b981] text-xs font-semibold text-right">To Lay</div>
               <div className="text-[#10b981] text-xs font-semibold text-right pr-2">Traded</div>
             </div>
             <div className="max-h-[300px] overflow-y-auto">
@@ -291,7 +294,7 @@ const TeamCard = ({ teamData, isToss = false, marketVol = 0 }) => {
                 <div key={idx} className="grid grid-cols-4 py-2.5 border-b border-[#2c2c2e]/40 hover:bg-[#2c2c2e]/60 transition-colors">
                   <div className="text-white font-bold pl-2">{formatOdds(item.price)}</div>
                   <div className="text-[#3b82f6] text-right font-medium">{item.back > 0 ? formatVolStr(item.back) : '-'}</div>
-                  <div className="text-[#f97316] text-right font-medium">{item.lay > 0 ? formatVolStr(item.lay) : '-'}</div>
+                  <div className="text-[#10b981] text-right font-medium">{item.lay > 0 ? formatVolStr(item.lay) : '-'}</div>
                   <div className="text-[#10b981] text-right font-medium pr-2">{item.traded > 0 ? formatVolStr(item.traded) : '-'}</div>
                 </div>
               ))}
@@ -374,7 +377,7 @@ export default function MatchDetail({ sport }) {
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full py-3 rounded-xl font-bold text-white text-sm mb-3"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}
+            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
           >
             🚀 Buy Pro — Telegram pe Contact Karo
           </a>
@@ -400,7 +403,7 @@ export default function MatchDetail({ sport }) {
             <button onClick={() => navigate(-1)} className="px-4 py-2 rounded-xl text-text-secondary text-sm font-medium" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>← Wapas</button>
             <button onClick={() => {
               window.dispatchEvent(new CustomEvent('open-login-modal'))
-            }} className="px-6 py-2 text-white rounded-xl font-semibold text-sm" style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>🔑 Login karo</button>
+            }} className="px-6 py-2 text-white rounded-xl font-semibold text-sm" style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>🔑 Login karo</button>
           </div>
         </div>
       </div>
@@ -556,8 +559,8 @@ export default function MatchDetail({ sport }) {
   //      − Σ(LayStakeA × (OddsA-1))   [lay loss on winner]
   //      − Σ(BackStakeB)              [back loss on loser]
   //      + Σ(LayStakeB)              [lay profit on loser]
-  t1GraphData.bookieProfitIfWins = t1GraphData.totalBackLiability - t1GraphData.totalLayLiability - t2GraphData.totalBack + t2GraphData.totalLay
-  t2GraphData.bookieProfitIfWins = t2GraphData.totalBackLiability - t2GraphData.totalLayLiability - t1GraphData.totalBack + t1GraphData.totalLay
+  t1GraphData.bookieProfitIfWins = -(t1GraphData.totalBackLiability - t1GraphData.totalLayLiability - t2GraphData.totalBack + t2GraphData.totalLay)
+  t2GraphData.bookieProfitIfWins = -(t2GraphData.totalBackLiability - t2GraphData.totalLayLiability - t1GraphData.totalBack + t1GraphData.totalLay)
 
   // Sync with Simple View PL if on match odds and all time
   if (marketType === 'match_odds' && timeFilter === 'all') {
@@ -586,7 +589,7 @@ export default function MatchDetail({ sport }) {
             onClick={() => setShowAdvancedGraph(false)}
             className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${!showAdvancedGraph ? 'text-white' : 'text-[#8e8e93] hover:text-white'
               }`}
-            style={!showAdvancedGraph ? { background: 'linear-gradient(135deg,#dc2626,#f97316)' } : {}}
+            style={!showAdvancedGraph ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' } : {}}
           >
             Simple Book
           </button>
@@ -674,34 +677,34 @@ export default function MatchDetail({ sport }) {
       ) : (
         <>
           {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
-          <div className="glass-card rounded-2xl overflow-hidden">
+          <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
             {/* Date / Title */}
-            <div className="px-5 pt-4 pb-3" style={{ background: 'linear-gradient(135deg,#1a1a1a,#111111)', borderBottom: '1px solid #2c2c2e' }}>
+            <div className="px-5 pt-4 pb-3" style={{ background: '#111111', borderBottom: '1px solid #2c2c2e' }}>
               {snapshot.serverTime && (
-                <div className="text-xs text-text-muted mb-1">
+                <div className="text-xs text-[#8e8e93] mb-1">
                   📅 {new Date(snapshot.serverTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} &nbsp;⏰ {new Date(snapshot.serverTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                 </div>
               )}
               <div className="flex items-center justify-between gap-2">
-                <h1 className="text-lg font-black text-text-primary">{t1} vs {t2}</h1>
-                {snapshot.inPlay && <span className="text-back text-xs font-semibold flex items-center gap-1 shrink-0"><span className="pulse-dot h-2 w-2 rounded-full bg-back" /> LIVE</span>}
+                <h1 className="text-lg font-bold text-white">{t1} vs {t2}</h1>
+                {snapshot.inPlay && <span className="text-[#3b82f6] text-xs font-bold flex items-center gap-1 shrink-0"><span className="pulse-dot h-2 w-2 rounded-full bg-[#3b82f6]" /> LIVE</span>}
               </div>
-              {snapshot.competitionName && <div className="text-xs text-text-muted mt-0.5">{snapshot.competitionName}</div>}
+              {snapshot.competitionName && <div className="text-xs text-[#8e8e93] mt-0.5">{snapshot.competitionName}</div>}
             </div>
 
             {/* Odds */}
             <div className="grid grid-cols-2 divide-x divide-[#2c2c2e]" style={{ borderBottom: '1px solid #2c2c2e' }}>
               {[{ name: t1, odds: t1Odds }, { name: t2, odds: t2Odds }].map(({ name, odds }) => (
                 <div key={name} className="px-3 py-2.5">
-                  <div className="text-xs font-semibold text-text-secondary truncate mb-1.5">{name}</div>
+                  <div className="text-xs font-semibold text-gray-300 truncate mb-1.5">{name}</div>
                   <div className="flex gap-2">
-                    <div className="flex-1 rounded-lg py-1.5 text-center" style={{ background: 'rgba(37,99,235,0.08)' }}>
-                      <div className="text-[10px] text-text-muted">Back</div>
-                      <div className="text-sm font-black text-back">{odds.back ?? '—'}</div>
+                    <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-[10px] text-[#8e8e93]">Back</div>
+                      <div className="text-sm font-bold text-[#3b82f6]">{odds.back ?? '—'}</div>
                     </div>
-                    <div className="flex-1 rounded-lg py-1.5 text-center" style={{ background: 'rgba(220,38,38,0.08)' }}>
-                      <div className="text-[10px] text-text-muted">Lay</div>
-                      <div className="text-sm font-black text-loss">{odds.lay ?? '—'}</div>
+                    <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-[10px] text-[#8e8e93]">Lay</div>
+                      <div className="text-sm font-bold text-[#ef4444]">{odds.lay ?? '—'}</div>
                     </div>
                   </div>
                 </div>
@@ -711,13 +714,13 @@ export default function MatchDetail({ sport }) {
             {/* P/L */}
             {pl1 != null && pl2 != null && (
               <div className="p-4">
-                <div className="text-xs font-black text-text-primary uppercase tracking-wider mb-2">📈 Bookie P/L (Agar Team Jeete)</div>
+                <div className="text-xs font-bold text-[#8e8e93] uppercase tracking-wider mb-2">Bookie P/L</div>
                 <div className="grid grid-cols-2 gap-3">
                   {[{ name: t1, pl: pl1 }, { name: t2, pl: pl2 }].map(({ name, pl }) => (
-                    <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
-                      <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
-                      <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-                      <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
+                    <div key={name} className="rounded-xl p-3 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-sm font-bold text-gray-300 mb-1 truncate">{name}</div>
+                      <div className={`text-lg font-bold tracking-wide ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
+                      <div className={`text-xs font-semibold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? 'PROFIT' : 'LOSS'}</div>
                     </div>
                   ))}
                 </div>
@@ -727,16 +730,16 @@ export default function MatchDetail({ sport }) {
 
           {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
           {hasBLPrediction && (
-            <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg,#1a1a1a,#111111)', border: '2px solid #2c2c2e' }}>
-              <div className="text-sm font-bold text-primary mb-3 flex items-center gap-2">
-                <TrendingUp size={16} /> 🧠 CricketEdge Prediction
+            <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+              <div className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                <TrendingUp size={16} className="text-[#3b82f6]" /> Prediction
               </div>
 
               {/* Predicted Winner Banner */}
-              <div className="rounded-xl p-4 text-center mb-4" style={{ background: 'rgba(22,163,74,0.07)', border: '1px solid rgba(22,163,74,0.25)' }}>
-                <div className="text-xs text-text-muted uppercase tracking-widest mb-1">Predicted Winner</div>
-                <div className="text-2xl font-black text-profit">{bookieTeam}</div>
-                <div className="text-xs mt-1 text-text-muted">Bookie is team ki jeet chahta hai</div>
+              <div className="rounded-xl p-4 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Predicted Winner</div>
+                <div className="text-xl font-bold text-white">{bookieTeam}</div>
+                <div className="text-xs mt-1 text-[#8e8e93]">Bookie favors this team</div>
               </div>
 
               {/* Back/Lay ratio bars — both teams */}
@@ -746,19 +749,19 @@ export default function MatchDetail({ sport }) {
                   .map(({ team, backPct, ratio, isBookie }) => (
                     <div key={team}>
                       <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-semibold text-text-secondary">{team}</span>
+                        <span className="text-xs font-semibold text-gray-300">{team}</span>
                         <div className="flex items-center gap-2">
-                          {isBookie && <span className="text-xs font-bold text-profit bg-profit/10 px-2 py-0.5 rounded-full">Bookie Team</span>}
-                          <span className="text-xs text-text-muted">Back/Lay: <b className={isBookie ? 'text-loss' : 'text-profit'}>{ratio.toFixed(2)}x</b></span>
+                          {isBookie && <span className="text-[10px] font-bold text-[#10b981] border border-[#10b981]/30 px-1.5 py-0.5 rounded">Bookie</span>}
+                          <span className="text-xs text-[#8e8e93]">B/L: <b className="text-white">{ratio.toFixed(2)}x</b></span>
                         </div>
                       </div>
-                      <div className="flex h-2 rounded-full overflow-hidden">
-                        <div className="bg-back transition-all" style={{ width: `${backPct}%` }} />
-                        <div className="bg-loss/70 transition-all" style={{ width: `${100 - backPct}%` }} />
+                      <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e]">
+                        <div className="bg-[#3b82f6] transition-all" style={{ width: `${backPct}%` }} />
+                        <div className="bg-[#ef4444] transition-all" style={{ width: `${100 - backPct}%` }} />
                       </div>
-                      <div className="flex justify-between text-xs text-text-muted mt-0.5">
-                        <span className="text-back">Back {backPct.toFixed(0)}%</span>
-                        <span className="text-loss">Lay {(100 - backPct).toFixed(0)}%</span>
+                      <div className="flex justify-between text-[10px] text-[#8e8e93] mt-1">
+                        <span className="text-[#3b82f6]">Back {backPct.toFixed(0)}%</span>
+                        <span className="text-[#ef4444]">Lay {(100 - backPct).toFixed(0)}%</span>
                       </div>
                     </div>
                   ))}
@@ -766,82 +769,71 @@ export default function MatchDetail({ sport }) {
 
               {/* Signal strength + logic */}
               <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
-                  <div className="text-xs text-text-muted mb-1">Signal Strength</div>
-                  <div className={`text-sm font-bold ${signalColor}`}>{signalStrength}</div>
-                  <div className="text-xs text-text-muted mt-0.5">Back/Lay: {bookieRatio.toFixed(2)}x</div>
+                <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                  <div className="text-xs text-[#8e8e93] mb-1">Signal Strength</div>
+                  <div className="text-sm font-bold text-white">{signalStrength}</div>
+                  <div className="text-xs text-[#8e8e93] mt-0.5">Ratio: {bookieRatio.toFixed(2)}x</div>
                 </div>
-                <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
-                  <div className="text-xs text-text-muted mb-1">Public Favourite</div>
-                  <div className="text-sm font-bold text-loss">{publicTeam}</div>
-                  <div className="text-xs text-text-muted mt-0.5">Log is team pe back kar rahe hain</div>
+                <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                  <div className="text-xs text-[#8e8e93] mb-1">Public Team</div>
+                  <div className="text-sm font-bold text-white">{publicTeam}</div>
+                  <div className="text-[10px] text-[#8e8e93] mt-0.5">Highly backed</div>
                 </div>
-              </div>
-
-              <div className="mt-3 text-xs text-text-muted p-2.5 rounded-xl" style={{ background: 'rgba(220,38,38,0.04)', border: '1px solid rgba(220,38,38,0.1)' }}>
-                💡 <b>{bookieTeam}</b> pe lay zyada hai → public is team ke against bet kar raha hai → bookie ko is team ki jeet se profit hoga
               </div>
             </div>
           )}
 
           {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}
-          <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid', borderColor: bkp.matchScore === bkp.totalRules ? '#22c55e' : bkp.matchScore >= 2 ? '#eab308' : '#3a3a3c' }}>
-            <div className="px-4 py-3 flex items-center gap-2" style={{ background: bkp.matchScore === bkp.totalRules ? 'rgba(22,163,74,0.1)' : '#1a1a1a' }}>
-              <span className="text-base">🕵️</span>
-              <span className="text-sm font-bold text-text-primary">Bookie Fingerprint</span>
-              {bkp.isWomens && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: 'rgba(190,24,93,0.15)', color: '#f472b6' }}>♀️ Women's</span>}
-              <span className={`ml-auto text-xs font-black ${bkp.confidence.color}`}>{bkp.confidence.label}</span>
+          <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+            <div className="px-4 py-3 flex items-center gap-2 border-b border-[#2c2c2e]" style={{ background: '#111111' }}>
+              <span className="text-sm font-bold text-white">Bookie Fingerprint</span>
+              {bkp.isWomens && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border border-[#f472b6]/30 text-[#f472b6]">Women's</span>}
+              <span className={`ml-auto text-xs font-bold ${bkp.confidence.color}`}>{bkp.confidence.label}</span>
             </div>
 
             <div className="p-4">
               {/* Winner banner */}
-              <div className="rounded-xl p-3 text-center mb-4" style={{ background: bkp.matchScore === bkp.totalRules ? 'rgba(22,163,74,0.08)' : 'rgba(234,179,8,0.08)', border: `1px solid ${bkp.matchScore === bkp.totalRules ? 'rgba(22,163,74,0.3)' : 'rgba(234,179,8,0.3)'}` }}>
-                <div className="text-xs text-text-muted uppercase tracking-widest mb-0.5">Predicted Bookie Team</div>
-                <div className={`text-2xl font-black ${bkp.matchScore === bkp.totalRules ? 'text-profit' : 'text-yellow-600'}`}>{bkp.bookieName}</div>
-                <div className="text-xs text-text-muted mt-0.5">{bkp.matchScore}/{bkp.totalRules} rules match</div>
+              <div className="rounded-xl p-3 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-0.5">Predicted Team</div>
+                <div className="text-xl font-bold text-white">{bkp.bookieName}</div>
+                <div className="text-xs text-[#8e8e93] mt-0.5">{bkp.matchScore}/{bkp.totalRules} rules match</div>
               </div>
 
               {/* Rules checklist */}
               <div className="space-y-2">
                 {bkp.rules.map((r, idx) => (
-                  <div key={r.label} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: r.bookieWins ? 'rgba(22,163,74,0.06)' : 'rgba(220,38,38,0.04)', border: `1px solid ${r.bookieWins ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.12)'}` }}>
-                    <span className="text-xs font-bold shrink-0" style={{ color: r.bookieWins ? '#16a34a' : '#dc2626' }}>{r.bookieWins ? '✅' : '❌'} {r.label}{r.overridden ? ' ⚠️ (ignored)' : ''}</span>
+                  <div key={r.label} className="flex items-center gap-2 rounded-xl px-3 py-2 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                    <span className="text-xs font-bold shrink-0" style={{ color: r.bookieWins ? '#10b981' : '#ef4444' }}>{r.bookieWins ? '✓' : '✗'} {r.label}{r.overridden ? ' ⚠️' : ''}</span>
                     <div className="flex-1 text-right">
-                      <span className={`text-xs font-bold ${bkp.bookieIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{r.v1}</span>
-                      <span className="text-xs text-text-muted mx-1">vs</span>
-                      <span className={`text-xs font-bold ${bkp.bookieIdx === 1 ? 'text-profit' : 'text-text-muted'}`}>{r.v2}</span>
+                      <span className={`text-xs font-bold ${bkp.bookieIdx === 0 ? 'text-white' : 'text-[#8e8e93]'}`}>{r.v1}</span>
+                      <span className="text-xs text-[#8e8e93] mx-1">vs</span>
+                      <span className={`text-xs font-bold ${bkp.bookieIdx === 1 ? 'text-white' : 'text-[#8e8e93]'}`}>{r.v2}</span>
                     </div>
                   </div>
                 ))}
               </div>
-
-              {bkp.matchScore === bkp.totalRules && (
-                <div className="mt-3 text-xs text-center p-2 rounded-xl" style={{ background: 'rgba(22,163,74,0.06)', border: '1px solid rgba(22,163,74,0.15)' }}>
-                  💡 <b>{bkp.bookieName}</b> pe {bkp.matchScore}/{bkp.totalRules} bookie signals match — high confidence pick
-                </div>
-              )}
             </div>
           </div>
 
 
           {/* ━━━━━━━━━━ 4. DEEP BETTING METRICS ━━━━━━━━━━ */}
           {(dm.raw || dm.totals) && (
-            <div className="glass-card rounded-2xl overflow-hidden">
-              <div className="px-4 py-3 border-b border-border flex items-center gap-2" style={{ background: '#1a1a1a' }}>
-                <BarChart3 size={15} className="text-primary" />
-                <span className="text-sm font-bold text-primary">Deep Betting Metrics</span>
+            <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+              <div className="px-4 py-3 border-b border-[#2c2c2e] flex items-center gap-2" style={{ background: '#111111' }}>
+                <BarChart3 size={15} className="text-white" />
+                <span className="text-sm font-bold text-white">Deep Betting Metrics</span>
               </div>
               <div className="p-4 space-y-4">
                 {dm.raw && Object.keys(dm.raw).length > 0 && (
                   <div>
-                    <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Raw Accumulated Values</div>
+                    <div className="text-xs font-bold text-[#8e8e93] mb-2 uppercase tracking-wide">Raw Accumulated Values</div>
                     <div className="grid grid-cols-2 gap-3">
                       {[{ team: t1, back: am1.back, lay: am1.lay }, { team: t2, back: am2.back, lay: am2.lay }].map(({ team, back, lay }) => (
-                        <div key={team} className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
-                          <div className="text-xs font-bold text-text-primary mb-2 truncate">{team}</div>
+                        <div key={team} className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                          <div className="text-xs font-bold text-white mb-2 truncate">{team}</div>
                           <div className="text-xs space-y-1">
-                            <div className="flex justify-between"><span className="text-text-muted">Back Expo</span><span className="font-bold text-back">{back != null ? Number(back).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
-                            <div className="flex justify-between"><span className="text-text-muted">Lay Stake</span><span className="font-bold text-loss">{lay != null ? Number(lay).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
+                            <div className="flex justify-between"><span className="text-[#8e8e93]">Back Expo</span><span className="font-bold text-[#3b82f6]">{back != null ? Number(back).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
+                            <div className="flex justify-between"><span className="text-[#8e8e93]">Lay Stake</span><span className="font-bold text-[#ef4444]">{lay != null ? Number(lay).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
                           </div>
                         </div>
                       ))}
@@ -853,14 +845,14 @@ export default function MatchDetail({ sport }) {
                   const v2 = dm.totals.team2 ?? dm.totals.totalBetTeam2
                   return (
                     <div>
-                      <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Total Bets</div>
+                      <div className="text-xs font-bold text-[#8e8e93] mb-2 uppercase tracking-wide">Total Bets</div>
                       <div className="grid grid-cols-2 gap-3">
                         {[{ team: t1, val: v1 }, { team: t2, val: v2 }].map(({ team, val }) => {
                           const isLower = (v1 != null && v2 != null) && (team === t1 ? v1 < v2 : v2 < v1)
                           const isHigher = (v1 != null && v2 != null) && (team === t1 ? v1 > v2 : v2 > v1)
                           return (
-                            <div key={team} className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
-                              <div className="text-xs font-bold text-text-primary mb-1 truncate">{team}</div>
+                            <div key={team} className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                              <div className="text-xs font-bold text-white mb-1 truncate">{team}</div>
                               <div className="flex items-center gap-1">
                                 <div className="text-sm font-bold text-text-primary">{val != null ? Number(val).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</div>
                                 {isLower && <ChevronDown size={18} className="text-loss shrink-0" />}
@@ -878,23 +870,23 @@ export default function MatchDetail({ sport }) {
           )}
 
           {/* ━━━━━━━━━━ 8. BOOKMAKER EXPOSURE ━━━━━━━━━━ */}
-          <div className="glass-card rounded-2xl p-5">
-            <div className="text-sm font-bold text-text-secondary mb-3">Bookie ka risk — Kitna exposed hai?</div>
+          <div className="rounded-2xl p-4" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+            <div className="text-sm font-bold text-gray-300 mb-3">Bookie Exposure</div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
-                <div className="text-sm font-medium mb-2">{exp1.teamName || t1}</div>
+              <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                <div className="text-sm font-medium mb-2 text-white">{exp1.teamName || t1}</div>
                 <div className="text-xs space-y-1">
-                  <div className="flex justify-between"><span className="text-text-muted">Net exposure</span><span className={`font-bold ${pnlCls(exp1.netExposure)}`}>{fmtRs(exp1.netExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Back risk</span><span className="text-back">₹{fmt(exp1.backExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Lay risk</span><span className="text-loss">₹{fmt(exp1.layExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Net Exp</span><span className={`font-bold ${pnlCls(exp1.netExposure)}`}>{fmtRs(exp1.netExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Back</span><span className="text-[#3b82f6]">₹{fmt(exp1.backExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Lay</span><span className="text-[#ef4444]">₹{fmt(exp1.layExposure)}</span></div>
                 </div>
               </div>
-              <div className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
-                <div className="text-sm font-medium mb-2">{exp2.teamName || t2}</div>
+              <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                <div className="text-sm font-medium mb-2 text-white">{exp2.teamName || t2}</div>
                 <div className="text-xs space-y-1">
-                  <div className="flex justify-between"><span className="text-text-muted">Net exposure</span><span className={`font-bold ${pnlCls(exp2.netExposure)}`}>{fmtRs(exp2.netExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Back risk</span><span className="text-back">₹{fmt(exp2.backExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Lay risk</span><span className="text-loss">₹{fmt(exp2.layExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Net Exp</span><span className={`font-bold ${pnlCls(exp2.netExposure)}`}>{fmtRs(exp2.netExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Back</span><span className="text-[#3b82f6]">₹{fmt(exp2.backExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Lay</span><span className="text-[#ef4444]">₹{fmt(exp2.layExposure)}</span></div>
                 </div>
               </div>
             </div>
@@ -902,8 +894,8 @@ export default function MatchDetail({ sport }) {
 
           {/* ━━━━━━━━━━ 9. NET SUPPORT & SENTIMENT ━━━━━━━━━━ */}
           {ns.teamA && sent.teamA && (
-            <div className="glass-card rounded-2xl p-5">
-              <div className="text-sm font-bold text-text-secondary mb-3">Overall sentiment — Logon ka mood</div>
+            <div className="rounded-2xl p-4" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+              <div className="text-sm font-bold text-gray-300 mb-3">Sentiment Support</div>
               <div className="mb-3">
                 {[t1, t2].map((team, i) => {
                   const key = i === 0 ? 'teamA' : 'teamB'
@@ -911,19 +903,18 @@ export default function MatchDetail({ sport }) {
                   return (
                     <div key={key} className="mb-2">
                       <div className="flex justify-between text-xs mb-1">
-                        <span>{team}</span>
-                        <span className={`font-bold ${pct >= 50 ? 'text-profit' : 'text-loss'}`}>{pct?.toFixed(1)}%</span>
+                        <span className="text-white">{team}</span>
+                        <span className={`font-bold ${pct >= 50 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>{pct?.toFixed(1)}%</span>
                       </div>
-                      <div className="h-2 rounded-full overflow-hidden" style={{ background: '#2c2c2e' }}>
-                        <div className={`h-full rounded-full ${pct >= 50 ? 'bg-profit' : 'bg-loss'}`} style={{ width: `${pct}%` }} />
+                      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#2c2c2e' }}>
+                        <div className={`h-full rounded-full ${pct >= 50 ? 'bg-[#10b981]' : 'bg-[#ef4444]'}`} style={{ width: `${pct}%` }} />
                       </div>
                     </div>
                   )
                 })}
               </div>
-              <div className="text-xs text-text-muted text-center">
-                Zyada support: <span className="text-profit font-bold">{sent.strongerTeam}</span> •
-                Difference: <span className="text-text-secondary">₹{fmt(sent.scoreDifference)}</span>
+              <div className="text-xs text-[#8e8e93] text-center border-t border-[#2c2c2e] pt-3 mt-1">
+                Highest Support: <span className="text-white font-bold">{sent.strongerTeam}</span>
               </div>
             </div>
           )}
@@ -931,24 +922,24 @@ export default function MatchDetail({ sport }) {
           {/* ━━━━━━━━━━ 5. QUICK STATS ━━━━━━━━━━ */}
           <div className="space-y-2">
             {[{ title: 'In-Play', pnl: ip, bets: ib, vol: iv }, { title: 'Pre-Match', pnl: pp, bets: pb, vol: pv }].map(({ title, pnl, bets, vol }) => (
-              <div key={title} className="glass-card rounded-2xl overflow-hidden">
-                <div className="px-4 py-2 border-b border-border" style={{ background: '#1a1a1a' }}>
-                  <span className="text-xs font-black uppercase tracking-wider text-primary">{title}</span>
+              <div key={title} className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+                <div className="px-4 py-2 border-b border-[#2c2c2e]" style={{ background: '#111111' }}>
+                  <span className="text-xs font-bold uppercase tracking-wider text-white">{title}</span>
                 </div>
                 <div className="p-3">
                   <div className="grid grid-cols-3 gap-1 mb-1.5">
                     <div />
-                    <div className="text-center text-[10px] font-bold text-text-secondary truncate px-1">{t1}</div>
-                    <div className="text-center text-[10px] font-bold text-text-secondary truncate px-1">{t2}</div>
+                    <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate px-1">{t1}</div>
+                    <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate px-1">{t2}</div>
                   </div>
                   {[
                     { label: 'P/L', v1: <span className={`font-bold text-xs ${pnlCls(pnl.team1)}`}>{fmtRs(pnl.team1)}</span>, v2: <span className={`font-bold text-xs ${pnlCls(pnl.team2)}`}>{fmtRs(pnl.team2)}</span> },
-                    { label: 'Bets', v1: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team1)}</span>, v2: <span className="text-[11px] text-text-secondary">₹{fmt(bets.team2)}</span> },
-                    { label: 'Back', v1: <span className="text-[11px] text-back">₹{fmt(vol.team1?.back)}</span>, v2: <span className="text-[11px] text-back">₹{fmt(vol.team2?.back)}</span> },
-                    { label: 'Lay', v1: <span className="text-[11px] text-loss">₹{fmt(vol.team1?.lay)}</span>, v2: <span className="text-[11px] text-loss">₹{fmt(vol.team2?.lay)}</span> },
+                    { label: 'Bets', v1: <span className="text-[11px] text-[#8e8e93]">₹{fmt(bets.team1)}</span>, v2: <span className="text-[11px] text-[#8e8e93]">₹{fmt(bets.team2)}</span> },
+                    { label: 'Back', v1: <span className="text-[11px] text-[#3b82f6]">₹{fmt(vol.team1?.back)}</span>, v2: <span className="text-[11px] text-[#3b82f6]">₹{fmt(vol.team2?.back)}</span> },
+                    { label: 'Lay', v1: <span className="text-[11px] text-[#ef4444]">₹{fmt(vol.team1?.lay)}</span>, v2: <span className="text-[11px] text-[#ef4444]">₹{fmt(vol.team2?.lay)}</span> },
                   ].map(({ label, v1, v2 }, i) => (
-                    <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== 3 ? 'border-b border-border/30' : ''}`}>
-                      <div className="text-[10px] text-text-muted flex items-center font-semibold">{label}</div>
+                    <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== 3 ? 'border-b border-[#2c2c2e]' : ''}`}>
+                      <div className="text-[10px] text-[#8e8e93] flex items-center font-semibold">{label}</div>
                       <div className="text-center flex items-center justify-center">{v1}</div>
                       <div className="text-center flex items-center justify-center">{v2}</div>
                     </div>
@@ -959,58 +950,54 @@ export default function MatchDetail({ sport }) {
           </div>
 
           {/* ━━━━━━━━━━ 10. SPOOFING DETECTOR ━━━━━━━━━━ */}
-          <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+          <div className="rounded-2xl p-4" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
             {/* Header */}
-            <div className="flex items-center gap-2 mb-1">
-              <span className="text-2xl">🚨</span>
-              <span className="text-xl font-bold text-text-primary">Spoofing Detector</span>
-              <span className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ background: 'rgba(220,38,38,0.15)', color: '#ef4444' }}>LIVE</span>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-sm font-bold text-gray-300">Spoofing Detector</span>
+              <span className="ml-auto px-2 py-0.5 rounded text-[10px] font-bold border border-[#ef4444]/30 text-[#ef4444]">LIVE</span>
             </div>
-            <p className="text-xs text-text-muted mb-4">Cumulative fake orders — canceled volume not matched as trades</p>
 
             {/* Progress bar */}
-            <div className="h-3 rounded-full overflow-hidden flex mb-2" style={{ background: '#2c2c2e' }}>
-              <div className="h-full" style={{ width: `${t1Pct}%`, background: 'linear-gradient(90deg,#dc2626,#f87171)' }} />
-              <div className="h-full" style={{ width: `${t2Pct}%`, background: 'linear-gradient(90deg,#f97316,#fbbf24)' }} />
+            <div className="h-1.5 rounded-full overflow-hidden flex mb-2" style={{ background: '#2c2c2e' }}>
+              <div className="h-full bg-[#ef4444]" style={{ width: `${t1Pct}%` }} />
+              <div className="h-full bg-[#10b981]" style={{ width: `${t2Pct}%` }} />
             </div>
-            <div className="flex justify-between text-xs font-semibold mb-4">
-              <span className="text-primary">{t1}: {t1Pct.toFixed(1)}%</span>
-              <span className="text-text-muted">{t2}: {t2Pct.toFixed(1)}%</span>
+            <div className="flex justify-between text-[10px] font-semibold mb-4">
+              <span className="text-white">{t1}: {t1Pct.toFixed(1)}%</span>
+              <span className="text-[#8e8e93]">{t2}: {t2Pct.toFixed(1)}%</span>
             </div>
 
             {/* Team cards */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               {[{ team: t1, fake: t1Fake, isMain: true }, { team: t2, fake: t2Fake, isMain: false }].map(({ team, fake, isMain }) => (
-                <div key={team} className="rounded-xl p-3" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
-                  <div className={`text-xs font-bold mb-3 truncate ${isMain ? 'text-primary' : 'text-text-secondary'}`}>{team}</div>
+                <div key={team} className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                  <div className={`text-xs font-bold mb-3 truncate ${isMain ? 'text-white' : 'text-gray-400'}`}>{team}</div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between gap-1">
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: '#3b82f6' }} />
-                        <span className="text-xs text-text-muted">Fake Back</span>
+                        <span className="text-[10px] text-[#8e8e93]">Fake Back</span>
                       </div>
-                      <span className="text-xs font-bold text-text-primary">{fmtVol(fake.fakeBack)}</span>
+                      <span className="text-[10px] font-bold text-white">{fmtVol(fake.fakeBack)}</span>
                     </div>
                     <div className="flex items-center justify-between gap-1">
                       <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="w-2.5 h-2.5 rounded-sm shrink-0" style={{ background: '#f87171' }} />
-                        <span className="text-xs text-text-muted">Fake Lay</span>
+                        <span className="text-[10px] text-[#8e8e93]">Fake Lay</span>
                       </div>
-                      <span className="text-xs font-bold text-text-primary">{fmtVol(fake.oppFakeLay)}</span>
+                      <span className="text-[10px] font-bold text-white">{fmtVol(fake.oppFakeLay)}</span>
                     </div>
                   </div>
-                  <div className="border-t border-border mt-2.5 pt-2 flex justify-between items-center">
-                    <span className="text-xs font-bold text-text-secondary">Total</span>
-                    <span className={`text-sm font-black ${isMain ? 'text-primary' : 'text-text-muted'}`}>{fmtVol(fake.total)}</span>
+                  <div className="border-t border-[#2c2c2e] mt-2 pt-2 flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-[#8e8e93]">Total</span>
+                    <span className={`text-xs font-bold ${isMain ? 'text-white' : 'text-[#8e8e93]'}`}>{fmtVol(fake.total)}</span>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* Bottom banner */}
-            <div className="rounded-xl py-4 px-5 text-center" style={{ background: 'linear-gradient(135deg,rgba(220,38,38,0.2),rgba(249,115,22,0.2))', border: '1px solid #2c2c2e' }}>
-              <div className="text-xs font-bold tracking-widest text-primary/60 uppercase mb-1">Most Fake Orders On</div>
-              <div className="text-2xl font-bold text-primary">{mostFakeTeam}</div>
+            <div className="rounded-xl py-3 px-4 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+              <div className="text-[10px] font-bold tracking-widest text-[#8e8e93] uppercase mb-1">Most Fake Orders</div>
+              <div className="text-sm font-bold text-white">{mostFakeTeam}</div>
             </div>
           </div>
         </>

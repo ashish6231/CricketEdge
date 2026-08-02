@@ -13,7 +13,7 @@ const ACTION_COLORS = {
   user_verify:   'bg-blue-100 text-blue-700',
   plan_create:   'bg-purple-100 text-purple-700',
   plan_update:   'bg-purple-100 text-purple-700',
-  coupon_create: 'bg-orange-100 text-orange-700',
+  coupon_create: 'bg-green-100 text-green-700',
   settings_update:'bg-gray-100 text-gray-600',
 }
 

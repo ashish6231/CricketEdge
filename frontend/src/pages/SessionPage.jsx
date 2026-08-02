@@ -69,8 +69,9 @@ export default function SessionPage() {
             key={comp}
             onClick={() => handleCompSelect(comp)}
             className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-              selectedComp === comp ? 'bg-primary/10 text-primary border-r-2 border-primary' : 'text-text-secondary hover:bg-bg-card-hover'
+              selectedComp === comp ? 'font-semibold' : 'border-transparent text-text-secondary hover:bg-[#10b981]/10'
             }`}
+            style={selectedComp === comp ? { background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRight: '2px solid #10b981' } : {}}
           >
             <div className="font-medium truncate">{comp}</div>
             <div className="text-xs text-text-muted mt-0.5">
@@ -109,7 +110,7 @@ export default function SessionPage() {
                       Total Matched: <span className="text-text-secondary font-medium">{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 })}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      {accessType === 'free' ? <span className="text-xs text-profit">✅ Free access</span> : accessType === 'pro' ? <span className="text-xs font-semibold" style={{ color: '#16a34a' }}>⭐ Pro access</span> : <span className="text-xs font-semibold flex items-center gap-1" style={{ color: '#dc2626' }}><Lock size={12} /> Pro Required</span>}
+                      {accessType === 'free' ? <span className="text-xs text-profit">✅ Free access</span> : accessType === 'pro' ? <span className="text-xs font-semibold" style={{ color: '#10b981' }}>⭐ Pro access</span> : <span className="text-xs font-semibold flex items-center gap-1" style={{ color: '#dc2626' }}><Lock size={12} /> Pro Required</span>}
                       <ChevronRight className="h-4 w-4 text-text-muted group-hover:text-primary" />
                     </div>
                   </button>

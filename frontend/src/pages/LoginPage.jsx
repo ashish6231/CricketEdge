@@ -44,13 +44,13 @@ export default function LoginPage({ onLoginSuccess }) {
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#fef2f2' }}>
       {/* Top accent */}
-      <div className="fixed top-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg,#dc2626,#f97316,#dc2626)' }} />
+      <div className="fixed top-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg,#dc2626,#10b981,#dc2626)' }} />
 
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
           <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 shadow-lg"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
             <Activity className="h-7 w-7 text-white" />
           </div>
           <h1 className="text-2xl font-black text-text-primary tracking-tight">
@@ -67,7 +67,7 @@ export default function LoginPage({ onLoginSuccess }) {
               <button key={t} onClick={() => switchTab(t)}
                 className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all capitalize"
                 style={tab === t
-                  ? { background: 'linear-gradient(135deg,#dc2626,#f97316)', color: '#fff', boxShadow: '0 2px 8px rgba(220,38,38,0.25)' }
+                  ? { background: 'linear-gradient(135deg,#dc2626,#10b981)', color: '#fff', boxShadow: '0 2px 8px rgba(220,38,38,0.25)' }
                   : { color: '#6b7280' }
                 }>
                 {t === 'login' ? 'Login' : 'Sign Up'}
@@ -77,7 +77,7 @@ export default function LoginPage({ onLoginSuccess }) {
 
           {/* Alerts */}
           {sessionReplaced && (
-            <div className="flex items-center gap-2 rounded-xl px-3 py-2 mb-4 text-xs text-orange-700"
+            <div className="flex items-center gap-2 rounded-xl px-3 py-2 mb-4 text-xs text-green-700"
               style={{ background: 'rgba(234,88,12,0.08)', border: '1px solid #fed7aa' }}>
               <AlertTriangle size={13} className="flex-shrink-0" /> Aapka session kisi aur device pe login hone se hat gaya.
             </div>
@@ -140,7 +140,7 @@ export default function LoginPage({ onLoginSuccess }) {
 
             <button type="submit" disabled={loading}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm text-white disabled:opacity-60 mt-1"
-              style={{ background: 'linear-gradient(135deg,#dc2626,#f97316)' }}>
+              style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
               {loading
                 ? <><LoaderCircle size={15} className="animate-spin" /> {tab === 'login' ? 'Logging in…' : 'Creating account…'}</>
                 : <><Lock size={14} /> {tab === 'login' ? 'Login' : 'Create Account'}</>
