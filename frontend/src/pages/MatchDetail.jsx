@@ -1,7 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, CartesianGrid } from "recharts"
 import TossDetail from './TossDetail'
 
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState, useContext, useMemo } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
@@ -16,7 +16,7 @@ const API_MAP = {
 
 const fmt = (n) => {
   if (n === null || n === undefined) return '—'
-  return Math.round(n).toLocaleString('en-IN')
+  return formatVolStr(n)
 }
 
 const fmtRs = (n) => {
@@ -36,8 +36,8 @@ function calcFakeVolume(backVol, layVol) {
 }
 
 const fmtVol = (n) => {
-  if (!n) return '0'
-  return Math.round(n).toLocaleString('en-IN')
+  if (!n) return '0.00'
+  return formatVolStr(n)
 }
 
 const formatMoney = (val) => {
@@ -46,19 +46,19 @@ const formatMoney = (val) => {
 }
 
 const formatVolStr = (val) => {
-  if (!val) return '0'
+  if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
   const num = Number(val)
   if (isNaN(num)) return val.toString()
   const abs = Math.abs(num)
-  if (abs >= 10000000) return `${num < 0 ? '-' : ''}${Number((abs / 10000000).toFixed(2))}Cr`
-  if (abs >= 100000) return `${num < 0 ? '-' : ''}${Number((abs / 100000).toFixed(2))}L`
-  if (abs >= 1000) return `${num < 0 ? '-' : ''}${Number((abs / 1000).toFixed(2))}k`
-  return Number(num.toFixed(2)).toString()
+  if (abs >= 10000000) return `${num < 0 ? '-' : ''}${(abs / 10000000).toFixed(2)}Cr`
+  if (abs >= 100000) return `${num < 0 ? '-' : ''}${(abs / 100000).toFixed(2)}L`
+  if (abs >= 1000) return `${num < 0 ? '-' : ''}${(abs / 1000).toFixed(2)}k`
+  return num.toFixed(2)
 }
 
 const formatVolTooltip = (val) => {
-  if (!val) return '0'
-  return Math.round(val).toLocaleString('en-IN')
+  if (!val) return '0.00'
+  return formatVolStr(val)
 }
 
 const formatOdds = (val) => {
@@ -166,7 +166,7 @@ const TimeTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-const TeamCard = ({ teamData, isToss = false, marketVol = 0 }) => {
+const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }) => {
   const [activeTab, setActiveTab] = useState('volume')
   const [activeOnly, setActiveOnly] = useState(true)
 
@@ -210,12 +210,14 @@ const TeamCard = ({ teamData, isToss = false, marketVol = 0 }) => {
           <span className="text-[#8e8e93] text-sm">Last price matched:</span>
           <span className="text-[#10b981] text-sm font-bold tracking-wide">{formatOdds(teamData.lastPrice)}</span>
         </div>
-        <div className="flex justify-between items-center mt-1 pt-3 border-t border-[#2c2c2e]/50">
-          <span className="text-[#8e8e93] text-sm font-bold">Bookie P/L:</span>
-          <span className={`text-sm font-black tracking-wide ${pl >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
-            {pl >= 0 ? '+' : ''}{formatVolStr(pl)}
-          </span>
-        </div>
+        {!isSession && (
+          <div className="flex justify-between items-center mt-1 pt-3 border-t border-[#2c2c2e]/50">
+            <span className="text-[#8e8e93] text-sm font-bold">Bookie P/L:</span>
+            <span className={`text-sm font-black tracking-wide ${pl >= 0 ? 'text-[#16a34a]' : 'text-[#dc2626]'}`}>
+              {pl >= 0 ? '+' : ''}{formatVolStr(pl)}
+            </span>
+          </div>
+        )}
         {isToss && (
           <div className="mt-2 pt-3 border-t border-[#2c2c2e] space-y-2">
             <div className="flex justify-between">
@@ -322,6 +324,50 @@ export default function MatchDetail({ sport }) {
   const [marketType, setMarketType] = useState('match_odds')
   const [showMarketMenu, setShowMarketMenu] = useState(false)
   const [tossSnapshot, setTossSnapshot] = useState(null)
+  const [sessionTrades, setSessionTrades] = useState([])
+  const [activeSessions, setActiveSessions] = useState([])
+
+  const isSessionMarket = marketType.startsWith('session_')
+  const selectedSessionName = isSessionMarket ? marketType.replace('session_', '') : ''
+  const selectedSessionTrades = isSessionMarket ? sessionTrades.filter(t => t.team === selectedSessionName) : []
+
+  const sessionOrderBook = useMemo(() => {
+    if (!isSessionMarket || !selectedSessionTrades.length) return []
+    const lineMap = {}
+    selectedSessionTrades.forEach(t => {
+      const p = t.price
+      if (!lineMap[p]) lineMap[p] = { price: p, yesVol: 0, noVol: 0 }
+      if (t.type === 'back') lineMap[p].yesVol += t.size
+      else lineMap[p].noVol += t.size
+    })
+    return Object.values(lineMap).map(l => ({
+      ...l,
+      totalVol: l.yesVol + l.noVol
+    })).sort((a, b) => a.price - b.price)
+  }, [selectedSessionTrades, isSessionMarket])
+
+  const sessionScoresPL = useMemo(() => {
+    if (!isSessionMarket || !sessionOrderBook.length) return []
+    const minLine = Math.floor(sessionOrderBook[0].price)
+    const maxLine = Math.ceil(sessionOrderBook[sessionOrderBook.length - 1].price)
+    
+    const scores = []
+    for (let score = minLine - 1; score <= maxLine + 1; score++) {
+      let pl = 0
+      sessionOrderBook.forEach(line => {
+        if (score > line.price) {
+          pl -= line.yesVol
+          pl += line.noVol
+        } else {
+          pl += line.yesVol
+          pl -= line.noVol
+        }
+      })
+      scores.push({ score, pl })
+    }
+    return scores
+  }, [sessionOrderBook, isSessionMarket])
+
 
   useEffect(() => {
     const apiFn = API_MAP[sport] || getCricketSnapshot
@@ -335,16 +381,28 @@ export default function MatchDetail({ sport }) {
         setTossSnapshot(null)
       }
 
-      // Fetch both Match Odds and Toss Data simultaneously
       Promise.all([
         apiFn(matchId),
-        sport === 'cricket' ? getTossSnapshot(matchId).catch(() => null) : Promise.resolve(null)
-      ]).then(([data, tossData]) => {
+        sport === 'cricket' ? getTossSnapshot(matchId).catch(() => null) : Promise.resolve(null),
+        sport === 'cricket' ? getSessionTrades(matchId).catch(() => null) : Promise.resolve(null)
+      ]).then(([data, tossData, sessionData]) => {
         if (data?.error === 'login_required') {
           setRequiresLogin(true)
         } else if (data && !data.error) {
           setSnapshot(data)
           if (tossData && !tossData.error) setTossSnapshot(tossData)
+          if (sessionData && !sessionData.error && sessionData.trades) {
+            setSessionTrades(sessionData.trades)
+            let activeSessionNames = []
+            if (sessionData.odds && sessionData.odds.length > 0) {
+              activeSessionNames = [...new Set(sessionData.odds.map(o => o.marketName))]
+            } else if (sessionData.markets && sessionData.markets.length > 0) {
+              activeSessionNames = [...new Set(sessionData.markets.map(m => m.marketName))]
+            } else {
+              activeSessionNames = [...new Set(sessionData.trades.map(t => t.team))]
+            }
+            setActiveSessions(activeSessionNames)
+          }
           setRequiresLogin(false)
           const now = new Date()
           setLastUpdated(now)
@@ -554,6 +612,7 @@ export default function MatchDetail({ sport }) {
   const effectiveTimeFilter = marketType === 'toss' ? 'all' : timeFilter
   const t1GraphData = processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter)
   const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter)
+  const sessionGraphData = isSessionMarket ? processTeamData('Total Runs', { trades: selectedSessionTrades }, timeFilter) : null
 
   // Betfair Exchange P/L Formula:
   // If Team A wins:
@@ -631,7 +690,7 @@ export default function MatchDetail({ sport }) {
                   onClick={() => setShowMarketMenu(!showMarketMenu)}
                   className="bg-[#111111] text-white text-[13px] px-4 py-2 rounded-lg border border-[#2c2c2e]/50 flex items-center gap-8 cursor-pointer font-semibold shadow-sm hover:bg-[#1a1a1a] transition-colors"
                 >
-                  <span>{marketType === 'toss' ? 'Toss' : 'Match Odds'}</span>
+                  <span>{marketType === 'toss' ? 'Toss' : marketType.startsWith('session_') ? marketType.replace('session_', '') : 'Match Odds'}</span>
                   <ChevronDown size={14} className="text-[#8e8e93]" />
                 </div>
                 {showMarketMenu && (
@@ -648,12 +707,30 @@ export default function MatchDetail({ sport }) {
                     >
                       Toss
                     </div>
+                    {activeSessions.map(session => (
+                      <div key={session} onClick={() => { setMarketType('session_' + session); setShowMarketMenu(false); }} className="px-4 py-3 text-[13px] font-bold text-white hover:bg-[#2c2c2e] cursor-pointer border-t border-[#2c2c2e]">
+                        {session}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
             </div>
           </div>
 
+
+          {isSessionMarket ? (
+            <div className="mt-6 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex justify-between items-center mb-5 px-1">
+                <h2 className="text-white font-bold text-base tracking-wide">{selectedSessionName}</h2>
+                <div className="text-[#8e8e93] text-sm font-medium tracking-wide">
+                  On this market: <span className="text-white font-bold ml-1">${formatMoney(sessionGraphData?.totalBet || 0)}</span>
+                </div>
+              </div>
+              <TeamCard teamData={sessionGraphData} isToss={false} isSession={true} marketVol={sessionGraphData?.totalBet || 0} />
+            </div>
+          ) : (
+            <>
           {/* Match Odds / Toss Total Bar */}
           <div className="mb-6 mt-6">
             <div className="flex justify-between items-center mb-5">
@@ -675,9 +752,19 @@ export default function MatchDetail({ sport }) {
             <TeamCard teamData={t1GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
             <TeamCard teamData={t2GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
           </div>
+            </>
+          )} 
         </div>
       ) : (
         <>
+          {isSessionMarket ? (
+            <div className="p-4 text-center text-[#8e8e93] py-10">
+              <BarChart3 className="mx-auto mb-3 opacity-20" size={48} />
+              <p>Session data is only available in Graphs view.</p>
+              <button onClick={() => setShowAdvancedGraph(true)} className="mt-4 px-4 py-2 bg-[#16a34a] text-white rounded-lg text-sm font-bold">Switch to Graphs</button>
+            </div>
+          ) : (
+            <>
           {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
           <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
             {/* Date / Title */}
@@ -783,6 +870,8 @@ export default function MatchDetail({ sport }) {
                 </div>
               </div>
             </div>
+          )}
+            </>
           )}
 
           {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}
