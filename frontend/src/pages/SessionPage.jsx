@@ -98,8 +98,8 @@ export default function SessionPage() {
                 return (
                   <button
                     key={match.matchId}
-                    onClick={() => accessType !== 'locked' ? navigate(`/session/match/${match.matchId}`) : null}
-                    className={`glass-card rounded-xl p-4 transition-all text-left group ${accessType === 'locked' ? 'opacity-80 cursor-not-allowed border border-primary/20' : 'hover:bg-bg-card-hover'}`}
+                    onClick={() => navigate(`/session/match/${match.matchId}`)}
+                    className={`glass-card rounded-xl p-4 transition-all text-left group hover:bg-bg-card-hover`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold text-text-primary">{match.matchName}</span>

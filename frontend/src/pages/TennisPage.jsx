@@ -101,8 +101,8 @@ export default function TennisPage() {
                   {currentMatches.map(match => (
                     <button
                       key={match.matchId}
-                      onClick={() => isPro || match.status === 'ended' ? navigate(`/tennis/match/${match.matchId}`) : null}
-                      className={`glass-card rounded-xl p-4 transition-all text-left group ${!isPro && match.status !== 'ended' ? 'opacity-80 cursor-not-allowed' : 'hover:bg-bg-card-hover'}`}
+                      onClick={() => navigate(`/tennis/match/${match.matchId}`)}
+                      className={`glass-card rounded-xl p-4 transition-all text-left group hover:bg-bg-card-hover`}
                     >
                       {fmtDateTime(match.startTime) && <div className="text-[11px] text-text-muted mb-1 font-medium">📅 {fmtDateTime(match.startTime)}</div>}
                       <div className="flex items-center justify-between mb-2">

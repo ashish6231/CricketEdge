@@ -157,8 +157,8 @@ export default function CricketPage() {
                     return (
                       <button
                         key={match.matchId}
-                        onClick={() => accessType !== 'locked' ? navigate(`/cricket/match/${match.matchId}`) : null}
-                        className={`glass-card rounded-2xl p-4 transition-all text-left group ${accessType === 'locked' ? 'opacity-80 cursor-not-allowed' : 'hover:shadow-md'}`}
+                        onClick={() => navigate(`/cricket/match/${match.matchId}`)}
+                        className={`glass-card rounded-2xl p-4 transition-all text-left group hover:shadow-md`}
                       >
                         {dt && <div className="text-[11px] text-text-muted mb-1 font-medium">📅 {dt}</div>}
                         <div className="flex items-start justify-between mb-2 gap-2">
