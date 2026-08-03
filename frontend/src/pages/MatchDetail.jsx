@@ -101,12 +101,13 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
   let totalLay = 0
   let totalBackLiability = 0
   let totalLayLiability = 0
+  let backValue = 0
 
   const priceMap = {}
   trades.forEach(t => {
     const p = parseFloat(t.price) || 0
     const s = parseFloat(t.size) || 0
-    
+
     if (!priceMap[p]) {
       priceMap[p] = { price: p, back: 0, lay: 0, traded: 0, totalVol: 0 }
     }
@@ -114,6 +115,7 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
       priceMap[p].back += s
       totalBack += s
       totalBackLiability += s * (p - 1)
+      backValue += p * s
     } else if (t.type === 'lay') {
       priceMap[p].lay += s
       totalLay += s
@@ -134,10 +136,12 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
     volume: parseFloat(t.size) || 0
   }))
 
+  const backLayRatio = totalLayLiability > 0 ? backValue / totalLayLiability : 0
+
   return {
     name: teamName,
     low, high, totalBet, lastPrice, trend, orderBook, maxVol, peakPrice, timeSeries,
-    totalBack, totalLay, totalBackLiability, totalLayLiability
+    totalBack, totalLay, totalBackLiability, totalLayLiability, backValue, backLayRatio
   }
 }
 
@@ -173,7 +177,7 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
   if (!teamData) return null
 
   const pl = teamData.bookieProfitIfWins || 0
-  
+
   const getSessionPlForLine = (lineItem) => {
     if (!isSession || !teamData.orderBook) return 0
     const score = Math.floor(lineItem.price)
@@ -371,7 +375,7 @@ export default function MatchDetail({ sport }) {
     if (!isSessionMarket || !sessionOrderBook.length) return []
     const minLine = Math.floor(sessionOrderBook[0].price)
     const maxLine = Math.ceil(sessionOrderBook[sessionOrderBook.length - 1].price)
-    
+
     const scores = []
     for (let score = minLine - 1; score <= maxLine + 1; score++) {
       let pl = 0
@@ -658,6 +662,13 @@ export default function MatchDetail({ sport }) {
   const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
   const t2PctVol = marketVol > 0 ? ((t2GraphData?.totalBet || 0) / marketVol) * 100 : 50
 
+  // Toss Back/Lay data (always from tossSnapshot, independent of marketType)
+  const tossSnap = tossSnapshot || null
+  const tossT1Name = tossSnap?.teamNames?.[0] || t1
+  const tossT2Name = tossSnap?.teamNames?.[1] || t2
+  const tossT1Data = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], 'all') : null
+  const tossT2Data = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], 'all') : null
+
   return (
     <div className="p-3 w-full fade-in stagger space-y-4">
 
@@ -752,29 +763,59 @@ export default function MatchDetail({ sport }) {
             </div>
           ) : (
             <>
-          {/* Match Odds / Toss Total Bar */}
-          <div className="mb-6 mt-6">
-            <div className="flex justify-between items-center mb-5">
-              <h2 className="text-white font-bold text-base tracking-wide">{marketType === 'toss' ? 'Toss Market' : 'Match Odds'}</h2>
-            </div>
+              {/* Match Odds / Toss Total Bar */}
+              <div className="mb-6 mt-6">
+                <div className="flex justify-between items-center mb-5">
+                  <h2 className="text-white font-bold text-base tracking-wide">{marketType === 'toss' ? 'Toss Market' : 'Match Odds'}</h2>
+                </div>
 
-            {/* Progress Bar (White vs Dark Grey) */}
-            <div className="h-[6px] w-full bg-[#2c2c2e] mb-3 flex rounded-sm">
-              <div className="bg-white h-full transition-all duration-500 rounded-l-sm" style={{ width: `${t1PctVol}%` }} />
-            </div>
-            <div className="flex justify-between text-[11px] font-bold text-[#8e8e93] tracking-wide">
-              <span>{t1GraphData?.name} <span className="text-white ml-1">{t1PctVol.toFixed(0)}%</span></span>
-              <span>{t2GraphData?.name} <span className="text-white ml-1">{t2PctVol.toFixed(0)}%</span></span>
-            </div>
-          </div>
+                {/* Progress Bar (White vs Dark Grey) */}
+                <div className="h-[6px] w-full bg-[#2c2c2e] mb-3 flex rounded-sm">
+                  <div className="bg-white h-full transition-all duration-500 rounded-l-sm" style={{ width: `${t1PctVol}%` }} />
+                </div>
+                <div className="flex justify-between text-[11px] font-bold text-[#8e8e93] tracking-wide">
+                  <span>{t1GraphData?.name} <span className="text-white ml-1">{t1PctVol.toFixed(0)}%</span></span>
+                  <span>{t2GraphData?.name} <span className="text-white ml-1">{t2PctVol.toFixed(0)}%</span></span>
+                </div>
+              </div>
 
-          {/* Side by Side Grid for Team Cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
-            <TeamCard teamData={t1GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
-            <TeamCard teamData={t2GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
-          </div>
+              {/* Back/Lay Summary — only for Toss */}
+              {marketType === 'toss' && (
+                <div className="rounded-2xl overflow-hidden mt-6" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+                  <div className="px-4 py-3 border-b border-[#2c2c2e]" style={{ background: '#111111' }}>
+                    <span className="text-sm font-bold text-white">Toss Back / Lay Summary</span>
+                  </div>
+                  <div className="p-4">
+                    <div className="w-full text-sm">
+                      <div className="grid grid-cols-4 pb-2 border-b border-[#2c2c2e] mb-1">
+                        <div className="text-[#8e8e93] text-xs font-semibold">Team</div>
+                        <div className="text-[#3b82f6] text-xs font-semibold text-right">Back Value</div>
+                        <div className="text-[#ef4444] text-xs font-semibold text-right">Lay Liab.</div>
+                        <div className="text-[#10b981] text-xs font-semibold text-right">B/L Ratio</div>
+                      </div>
+                      {[
+                        { team: t1GraphData?.name || t1, data: t1GraphData },
+                        { team: t2GraphData?.name || t2, data: t2GraphData }
+                      ].map(({ team, data }) => (
+                        <div key={team} className="grid grid-cols-4 py-2.5 border-b border-[#2c2c2e]/40 last:border-0">
+                          <div className="text-white font-bold text-xs truncate pr-2">{team}</div>
+                          <div className="text-[#3b82f6] text-right font-bold text-xs">₹{formatMoney(data?.backValue || 0)}</div>
+                          <div className="text-[#ef4444] text-right font-bold text-xs">₹{formatMoney(data?.totalLayLiability || 0)}</div>
+                          <div className="text-[#10b981] text-right font-bold text-xs">{data?.backLayRatio?.toFixed(2) || '0.00'}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Side by Side Grid for Team Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
+                <TeamCard teamData={t1GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
+                <TeamCard teamData={t2GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
+              </div>
             </>
-          )} 
+          )}
         </div>
       ) : (
         <>
@@ -786,113 +827,140 @@ export default function MatchDetail({ sport }) {
             </div>
           ) : (
             <>
-          {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
-          <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-            {/* Date / Title */}
-            <div className="px-5 pt-4 pb-3" style={{ background: '#111111', borderBottom: '1px solid #2c2c2e' }}>
-              {snapshot.serverTime && (
-                <div className="text-xs text-[#8e8e93] mb-1">
-                  📅 {new Date(snapshot.serverTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} &nbsp;⏰ {new Date(snapshot.serverTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                </div>
-              )}
-              <div className="flex items-center justify-between gap-2">
-                <h1 className="text-lg font-bold text-white">{t1} vs {t2}</h1>
-                {snapshot.inPlay && <span className="text-[#3b82f6] text-xs font-bold flex items-center gap-1 shrink-0"><span className="pulse-dot h-2 w-2 rounded-full bg-[#3b82f6]" /> LIVE</span>}
-              </div>
-              {snapshot.competitionName && <div className="text-xs text-[#8e8e93] mt-0.5">{snapshot.competitionName}</div>}
-            </div>
-
-            {/* Odds */}
-            <div className="grid grid-cols-2 divide-x divide-[#2c2c2e]" style={{ borderBottom: '1px solid #2c2c2e' }}>
-              {[{ name: t1, odds: t1Odds }, { name: t2, odds: t2Odds }].map(({ name, odds }) => (
-                <div key={name} className="px-3 py-2.5">
-                  <div className="text-xs font-semibold text-gray-300 truncate mb-1.5">{name}</div>
-                  <div className="flex gap-2">
-                    <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-[10px] text-[#8e8e93]">Back</div>
-                      <div className="text-sm font-bold text-[#3b82f6]">{odds.back ?? '—'}</div>
+              {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
+              <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+                {/* Date / Title */}
+                <div className="px-5 pt-4 pb-3" style={{ background: '#111111', borderBottom: '1px solid #2c2c2e' }}>
+                  {snapshot.serverTime && (
+                    <div className="text-xs text-[#8e8e93] mb-1">
+                      📅 {new Date(snapshot.serverTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} &nbsp;⏰ {new Date(snapshot.serverTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                     </div>
-                    <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-[10px] text-[#8e8e93]">Lay</div>
-                      <div className="text-sm font-bold text-[#ef4444]">{odds.lay ?? '—'}</div>
+                  )}
+                  <div className="flex items-center justify-between gap-2">
+                    <h1 className="text-lg font-bold text-white">{t1} vs {t2}</h1>
+                    {snapshot.inPlay && <span className="text-[#3b82f6] text-xs font-bold flex items-center gap-1 shrink-0"><span className="pulse-dot h-2 w-2 rounded-full bg-[#3b82f6]" /> LIVE</span>}
+                  </div>
+                  {snapshot.competitionName && <div className="text-xs text-[#8e8e93] mt-0.5">{snapshot.competitionName}</div>}
+                </div>
+
+                {/* Odds */}
+                <div className="grid grid-cols-2 divide-x divide-[#2c2c2e]" style={{ borderBottom: '1px solid #2c2c2e' }}>
+                  {[{ name: t1, odds: t1Odds }, { name: t2, odds: t2Odds }].map(({ name, odds }) => (
+                    <div key={name} className="px-3 py-2.5">
+                      <div className="text-xs font-semibold text-gray-300 truncate mb-1.5">{name}</div>
+                      <div className="flex gap-2">
+                        <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                          <div className="text-[10px] text-[#8e8e93]">Back</div>
+                          <div className="text-sm font-bold text-[#3b82f6]">{odds.back ?? '—'}</div>
+                        </div>
+                        <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                          <div className="text-[10px] text-[#8e8e93]">Lay</div>
+                          <div className="text-sm font-bold text-[#ef4444]">{odds.lay ?? '—'}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* P/L */}
+                {pl1 != null && pl2 != null && (
+                  <div className="p-4">
+                    <div className="text-xs font-bold text-[#8e8e93] uppercase tracking-wider mb-2">Bookie P/L</div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[{ name: t1, pl: pl1 }, { name: t2, pl: pl2 }].map(({ name, pl }) => (
+                        <div key={name} className="rounded-xl p-3 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                          <div className="text-sm font-bold text-gray-300 mb-1 truncate">{name}</div>
+                          <div className={`text-lg font-bold tracking-wide ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
+                          <div className={`text-xs font-semibold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? 'PROFIT' : 'LOSS'}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
+              {hasBLPrediction && (
+                <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+                  <div className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                    <TrendingUp size={16} className="text-[#3b82f6]" /> Prediction
+                  </div>
+
+                  {/* Predicted Winner Banner */}
+                  <div className="rounded-xl p-4 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                    <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Predicted Winner</div>
+                    <div className="text-xl font-bold text-white">{bookieTeam}</div>
+                    <div className="text-xs mt-1 text-[#8e8e93]">Bookie favors this team</div>
+                  </div>
+
+                  {/* Back/Lay ratio bars — both teams */}
+                  <div className="space-y-3 mb-4">
+                    {[{ team: t1, backPct: aBackPct, ratio: aRatio, isBookie: aRatio <= bRatio },
+                    { team: t2, backPct: bBackPct, ratio: bRatio, isBookie: bRatio < aRatio }]
+                      .map(({ team, backPct, ratio, isBookie }) => (
+                        <div key={team}>
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-xs font-semibold text-gray-300">{team}</span>
+                            <div className="flex items-center gap-2">
+                              {isBookie && <span className="text-[10px] font-bold text-[#10b981] border border-[#10b981]/30 px-1.5 py-0.5 rounded">Bookie</span>}
+                              <span className="text-xs text-[#8e8e93]">B/L: <b className="text-white">{ratio.toFixed(2)}x</b></span>
+                            </div>
+                          </div>
+                          <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e]">
+                            <div className="bg-[#3b82f6] transition-all" style={{ width: `${backPct}%` }} />
+                            <div className="bg-[#ef4444] transition-all" style={{ width: `${100 - backPct}%` }} />
+                          </div>
+                          <div className="flex justify-between text-[10px] text-[#8e8e93] mt-1">
+                            <span className="text-[#3b82f6]">Back {backPct.toFixed(0)}%</span>
+                            <span className="text-[#ef4444]">Lay {(100 - backPct).toFixed(0)}%</span>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+
+                  {/* Signal strength + logic */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-xs text-[#8e8e93] mb-1">Signal Strength</div>
+                      <div className="text-sm font-bold text-white">{signalStrength}</div>
+                      <div className="text-xs text-[#8e8e93] mt-0.5">Ratio: {bookieRatio.toFixed(2)}x</div>
+                    </div>
+                    <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-xs text-[#8e8e93] mb-1">Public Team</div>
+                      <div className="text-sm font-bold text-white">{publicTeam}</div>
+                      <div className="text-[10px] text-[#8e8e93] mt-0.5">Highly backed</div>
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* P/L */}
-            {pl1 != null && pl2 != null && (
-              <div className="p-4">
-                <div className="text-xs font-bold text-[#8e8e93] uppercase tracking-wider mb-2">Bookie P/L</div>
-                <div className="grid grid-cols-2 gap-3">
-                  {[{ name: t1, pl: pl1 }, { name: t2, pl: pl2 }].map(({ name, pl }) => (
-                    <div key={name} className="rounded-xl p-3 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-sm font-bold text-gray-300 mb-1 truncate">{name}</div>
-                      <div className={`text-lg font-bold tracking-wide ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-                      <div className={`text-xs font-semibold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? 'PROFIT' : 'LOSS'}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
-          {hasBLPrediction && (
-            <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-              <div className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                <TrendingUp size={16} className="text-[#3b82f6]" /> Prediction
-              </div>
-
-              {/* Predicted Winner Banner */}
-              <div className="rounded-xl p-4 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Predicted Winner</div>
-                <div className="text-xl font-bold text-white">{bookieTeam}</div>
-                <div className="text-xs mt-1 text-[#8e8e93]">Bookie favors this team</div>
-              </div>
-
-              {/* Back/Lay ratio bars — both teams */}
-              <div className="space-y-3 mb-4">
-                {[{ team: t1, backPct: aBackPct, ratio: aRatio, isBookie: aRatio <= bRatio },
-                { team: t2, backPct: bBackPct, ratio: bRatio, isBookie: bRatio < aRatio }]
-                  .map(({ team, backPct, ratio, isBookie }) => (
-                    <div key={team}>
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-semibold text-gray-300">{team}</span>
-                        <div className="flex items-center gap-2">
-                          {isBookie && <span className="text-[10px] font-bold text-[#10b981] border border-[#10b981]/30 px-1.5 py-0.5 rounded">Bookie</span>}
-                          <span className="text-xs text-[#8e8e93]">B/L: <b className="text-white">{ratio.toFixed(2)}x</b></span>
-                        </div>
-                      </div>
-                      <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e]">
-                        <div className="bg-[#3b82f6] transition-all" style={{ width: `${backPct}%` }} />
-                        <div className="bg-[#ef4444] transition-all" style={{ width: `${100 - backPct}%` }} />
-                      </div>
-                      <div className="flex justify-between text-[10px] text-[#8e8e93] mt-1">
-                        <span className="text-[#3b82f6]">Back {backPct.toFixed(0)}%</span>
-                        <span className="text-[#ef4444]">Lay {(100 - backPct).toFixed(0)}%</span>
-                      </div>
-                    </div>
-                  ))}
-              </div>
-
-              {/* Signal strength + logic */}
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                  <div className="text-xs text-[#8e8e93] mb-1">Signal Strength</div>
-                  <div className="text-sm font-bold text-white">{signalStrength}</div>
-                  <div className="text-xs text-[#8e8e93] mt-0.5">Ratio: {bookieRatio.toFixed(2)}x</div>
-                </div>
-                <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                  <div className="text-xs text-[#8e8e93] mb-1">Public Team</div>
-                  <div className="text-sm font-bold text-white">{publicTeam}</div>
-                  <div className="text-[10px] text-[#8e8e93] mt-0.5">Highly backed</div>
-                </div>
-              </div>
-            </div>
-          )}
+              )}
             </>
+          )}
+
+          {/* ━━━━━━━━━━ TOSS BACK/LAY (compact, Simple view) ━━━━━━━━━━ */}
+          {tossT1Data && tossT2Data && (
+            <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+              <div className="px-4 py-2.5 border-b border-[#2c2c2e]" style={{ background: '#111111' }}>
+                <span className="text-xs font-bold text-white uppercase tracking-wider">Toss Back / Lay</span>
+              </div>
+              <div className="p-3">
+                <div className="grid grid-cols-3 gap-1 mb-1.5">
+                  <div />
+                  <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate px-1">{tossT1Name}</div>
+                  <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate px-1">{tossT2Name}</div>
+                </div>
+                {[
+                  { label: 'Back Val', v1: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossT1Data.backValue)}</span>, v2: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossT2Data.backValue)}</span> },
+                  { label: 'Lay Liab', v1: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossT1Data.totalLayLiability)}</span>, v2: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossT2Data.totalLayLiability)}</span> },
+                  { label: 'B/L Ratio', v1: <span className="text-[11px] text-[#10b981] font-bold">{tossT1Data.backLayRatio?.toFixed(2) || '0.00'}</span>, v2: <span className="text-[11px] text-[#10b981] font-bold">{tossT2Data.backLayRatio?.toFixed(2) || '0.00'}</span> },
+                ].map(({ label, v1, v2 }, i) => (
+                  <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== 2 ? 'border-b border-[#2c2c2e]' : ''}`}>
+                    <div className="text-[10px] text-[#8e8e93] flex items-center font-semibold">{label}</div>
+                    <div className="text-center flex items-center justify-center">{v1}</div>
+                    <div className="text-center flex items-center justify-center">{v2}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
 
           {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}
