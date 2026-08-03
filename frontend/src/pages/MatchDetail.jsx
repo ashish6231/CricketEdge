@@ -631,12 +631,12 @@ export default function MatchDetail({ sport }) {
     }
   })()
 
-  const graphSnap = marketType === 'toss' ? (tossSnapshot || snapshot) : snapshot
+  const graphSnap = marketType === 'toss' ? tossSnapshot : snapshot
   const graphT1 = marketType === 'toss' ? (graphSnap?.teamNames?.[0] || t1) : t1
   const graphT2 = marketType === 'toss' ? (graphSnap?.teamNames?.[1] || t2) : t2
   const effectiveTimeFilter = marketType === 'toss' ? 'all' : timeFilter
-  const t1GraphData = processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter)
-  const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter)
+  const t1GraphData = graphSnap ? processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter) : null
+  const t2GraphData = graphSnap ? processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter) : null
   const sessionGraphData = isSessionMarket ? processTeamData('Total Runs', { trades: selectedSessionTrades }, timeFilter) : null
 
   // Betfair Exchange P/L Formula:
@@ -645,18 +645,20 @@ export default function MatchDetail({ sport }) {
   //      − Σ(LayStakeA × (OddsA-1))   [lay loss on winner]
   //      − Σ(BackStakeB)              [back loss on loser]
   //      + Σ(LayStakeB)              [lay profit on loser]
-  t1GraphData.bookieProfitIfWins = -(t1GraphData.totalBackLiability - t1GraphData.totalLayLiability - t2GraphData.totalBack + t2GraphData.totalLay)
-  t2GraphData.bookieProfitIfWins = -(t2GraphData.totalBackLiability - t2GraphData.totalLayLiability - t1GraphData.totalBack + t1GraphData.totalLay)
+  if (t1GraphData && t2GraphData) {
+    t1GraphData.bookieProfitIfWins = -(t1GraphData.totalBackLiability - t1GraphData.totalLayLiability - t2GraphData.totalBack + t2GraphData.totalLay)
+    t2GraphData.bookieProfitIfWins = -(t2GraphData.totalBackLiability - t2GraphData.totalLayLiability - t1GraphData.totalBack + t1GraphData.totalLay)
 
-  // Sync with Simple View PL if on match odds and all time
-  if (marketType === 'match_odds' && timeFilter === 'all') {
-    const sp = snapshot?.deepMetrics?.simplePL || {}
-    const t1Data = snapshot?.teams?.[t1] || {}
-    const t2Data = snapshot?.teams?.[t2] || {}
-    const pl1 = sp.team1_win ?? t1Data.pnlIfWins
-    const pl2 = sp.team2_win ?? t2Data.pnlIfWins
-    t1GraphData.bookieProfitIfWins = pl1 ?? t1GraphData.bookieProfitIfWins
-    t2GraphData.bookieProfitIfWins = pl2 ?? t2GraphData.bookieProfitIfWins
+    // Sync with Simple View PL if on match odds and all time
+    if (marketType === 'match_odds' && timeFilter === 'all') {
+      const sp = snapshot?.deepMetrics?.simplePL || {}
+      const t1Data = snapshot?.teams?.[t1] || {}
+      const t2Data = snapshot?.teams?.[t2] || {}
+      const pl1 = sp.team1_win ?? t1Data.pnlIfWins
+      const pl2 = sp.team2_win ?? t2Data.pnlIfWins
+      t1GraphData.bookieProfitIfWins = pl1 ?? t1GraphData.bookieProfitIfWins
+      t2GraphData.bookieProfitIfWins = pl2 ?? t2GraphData.bookieProfitIfWins
+    }
   }
   const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
   const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
