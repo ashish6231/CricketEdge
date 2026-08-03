@@ -42,33 +42,42 @@ export default function LoginPage({ onLoginSuccess }) {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#fef2f2' }}>
-      {/* Top accent */}
-      <div className="fixed top-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg,#dc2626,#10b981,#dc2626)' }} />
+    <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: '#0a0a0a' }}>
+      
+      {/* Top accent line */}
+      <div className="fixed top-0 left-0 right-0 h-[2px]" style={{ background: '#10b981' }} />
 
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-[320px]">
+        
+        {/* Simple VPN Banner */}
+        <div className="w-full mb-6 bg-yellow-500/10 border border-yellow-500/20 py-2 rounded-lg text-center">
+          <span className="text-[11px] font-bold text-yellow-500 uppercase tracking-widest">
+            Use VPN To Use This Website
+          </span>
+        </div>
+
         {/* Logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 shadow-lg"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
-            <Activity className="h-7 w-7 text-white" />
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
+            style={{ background: 'linear-gradient(135deg, #16a34a, #10b981)' }}>
+            <Activity className="h-5 w-5 text-white" />
           </div>
-          <h1 className="text-2xl font-black text-text-primary tracking-tight">
-            Cricket<span className="text-primary">Edge</span>
+          <h1 className="text-xl font-bold text-white tracking-tight">
+            Cricket<span className="text-[#10b981]">Edge</span>
           </h1>
-          <p className="text-xs text-text-muted mt-1">Live cricket analytics platform</p>
         </div>
 
         {/* Card */}
-        <div className="glass-card rounded-2xl p-6">
+        <div className="rounded-xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+          
           {/* Tabs */}
-          <div className="flex gap-1 p-1 rounded-xl mb-5" style={{ background: 'rgba(220,38,38,0.06)' }}>
+          <div className="flex gap-1 p-1 rounded-lg mb-4 bg-[#0a0a0a] border border-[#2c2c2e]">
             {['login', 'signup'].map(t => (
               <button key={t} onClick={() => switchTab(t)}
-                className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all capitalize"
+                className="flex-1 py-1.5 rounded-md text-[13px] font-semibold transition-colors capitalize"
                 style={tab === t
-                  ? { background: 'linear-gradient(135deg,#dc2626,#10b981)', color: '#fff', boxShadow: '0 2px 8px rgba(220,38,38,0.25)' }
-                  : { color: '#6b7280' }
+                  ? { background: '#1c1c1e', color: '#fff', border: '1px solid #2c2c2e' }
+                  : { color: '#8e8e93' }
                 }>
                 {t === 'login' ? 'Login' : 'Sign Up'}
               </button>
@@ -77,20 +86,17 @@ export default function LoginPage({ onLoginSuccess }) {
 
           {/* Alerts */}
           {sessionReplaced && (
-            <div className="flex items-center gap-2 rounded-xl px-3 py-2 mb-4 text-xs text-green-700"
-              style={{ background: 'rgba(234,88,12,0.08)', border: '1px solid #fed7aa' }}>
-              <AlertTriangle size={13} className="flex-shrink-0" /> Aapka session kisi aur device pe login hone se hat gaya.
+            <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4 text-[11px] text-orange-400 bg-orange-500/10 border border-orange-500/20">
+              <AlertTriangle size={14} className="flex-shrink-0" /> Aapka session hat gaya.
             </div>
           )}
           {error && (
-            <div className="flex items-center gap-2 rounded-xl px-3 py-2 mb-4 text-xs text-primary"
-              style={{ background: 'rgba(220,38,38,0.08)', border: '1px solid #fecaca' }}>
-              <AlertTriangle size={13} className="flex-shrink-0" /> {error}
+            <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4 text-[11px] text-red-400 bg-red-500/10 border border-red-500/20">
+              <AlertTriangle size={14} className="flex-shrink-0" /> {error}
             </div>
           )}
           {success && (
-            <div className="rounded-xl px-3 py-2 mb-4 text-xs text-center text-green-700"
-              style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(22,163,74,0.2)' }}>
+            <div className="rounded-lg px-3 py-2 mb-4 text-[11px] text-center text-green-400 bg-green-500/10 border border-green-500/20">
               {success}
             </div>
           )}
@@ -99,68 +105,67 @@ export default function LoginPage({ onLoginSuccess }) {
             {/* Name — signup only */}
             {tab === 'signup' && (
               <div>
-                <label className="text-xs text-text-muted block mb-1">Full Name</label>
+                <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#636366]" />
                   <input type="text" value={name} onChange={e => setName(e.target.value)}
                     placeholder="Rahul Sharma" required disabled={loading}
-                    className="w-full rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none"
-                    style={{ background: '#fff8f8', border: '1px solid #fecaca' }} />
+                    className="w-full rounded-lg pl-9 pr-3 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
+                    style={{ border: '1px solid #2c2c2e' }} />
                 </div>
               </div>
             )}
 
             {/* Email */}
             <div>
-              <label className="text-xs text-text-muted block mb-1">Email</label>
+              <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#636366]" />
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="your@email.com" required disabled={loading}
-                  className="w-full rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none"
-                  style={{ background: '#fff8f8', border: '1px solid #fecaca' }} />
+                  className="w-full rounded-lg pl-9 pr-3 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
+                  style={{ border: '1px solid #2c2c2e' }} />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="text-xs text-text-muted block mb-1">Password</label>
+              <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Password</label>
               <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#636366]" />
                 <input type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••" required disabled={loading} minLength={6}
-                  className="w-full rounded-xl pl-4 pr-10 py-2.5 text-sm outline-none"
-                  style={{ background: '#fff8f8', border: '1px solid #fecaca' }} />
+                  className="w-full rounded-lg pl-9 pr-9 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
+                  style={{ border: '1px solid #2c2c2e' }} />
                 <button type="button" onClick={() => setShowPass(p => !p)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted">
-                  {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#636366] hover:text-white">
+                  {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
                 </button>
               </div>
-              {tab === 'signup' && <p className="text-xs text-text-muted mt-1">Minimum 6 characters</p>}
             </div>
 
             <button type="submit" disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm text-white disabled:opacity-60 mt-1"
-              style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg font-bold text-[13px] text-white disabled:opacity-70 mt-4 bg-[#10b981] hover:bg-[#059669] transition-colors">
               {loading
-                ? <><LoaderCircle size={15} className="animate-spin" /> {tab === 'login' ? 'Logging in…' : 'Creating account…'}</>
-                : <><Lock size={14} /> {tab === 'login' ? 'Login' : 'Create Account'}</>
+                ? <><LoaderCircle size={14} className="animate-spin" /> {tab === 'login' ? 'Wait...' : 'Creating...'}</>
+                : <>{tab === 'login' ? 'Sign In' : 'Sign Up'}</>
               }
             </button>
           </form>
 
           {tab === 'login' && (
-            <p className="text-center text-xs text-text-muted mt-4">
-              Account nahi hai?{' '}
-              <button onClick={() => switchTab('signup')} className="text-primary font-semibold hover:underline">
-                Sign up karo
+            <p className="text-center text-[12px] text-[#8e8e93] mt-4">
+              Don't have an account?{' '}
+              <button onClick={() => switchTab('signup')} className="text-[#10b981] font-semibold hover:underline">
+                Sign Up
               </button>
             </p>
           )}
           {tab === 'signup' && (
-            <p className="text-center text-xs text-text-muted mt-4">
+            <p className="text-center text-[12px] text-[#8e8e93] mt-4">
               Already have an account?{' '}
-              <button onClick={() => switchTab('login')} className="text-primary font-semibold hover:underline">
-                Login karo
+              <button onClick={() => switchTab('login')} className="text-[#10b981] font-semibold hover:underline">
+                Sign In
               </button>
             </p>
           )}
