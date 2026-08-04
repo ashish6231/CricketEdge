@@ -73,8 +73,8 @@ model SubscriptionPlan {
   slug         String   @unique
   name         String
   description  String   @default("")
-  price        Float
-  yearlyPrice  Float
+  price        Int
+  yearlyPrice  Int
   currency     String   @default("INR")
   features     String[] // array of strings
   // limits

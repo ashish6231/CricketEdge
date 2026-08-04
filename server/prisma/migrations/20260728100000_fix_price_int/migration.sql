@@ -1,0 +1,2 @@
+ALTER TABLE "SubscriptionPlan" ALTER COLUMN "price" TYPE INTEGER USING ROUND("price")::INTEGER;
+ALTER TABLE "SubscriptionPlan" ALTER COLUMN "yearlyPrice" TYPE INTEGER USING ROUND("yearlyPrice")::INTEGER;
