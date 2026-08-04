@@ -190,7 +190,7 @@ export default function MainLayout() {
 
       {/* Content */}
       <main className="flex-1 pt-14 w-full">
-        <Outlet context={{ isLoggedIn, user: authUser, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout }} />
+        <Outlet context={{ isLoggedIn, user: authUser, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
       </main>
     </div>
   )

@@ -16,7 +16,7 @@ const fmtDateTime = (ts) => {
 
 export default function TennisPage() {
   const navigate = useNavigate()
-  const { isLoggedIn, user } = useOutletContext()
+  const { isLoggedIn, user, mobileMenu, setMobileMenu } = useOutletContext()
   const isPro = user?.subscription?.planSlug === 'pro' || user?.role === 'admin' || user?.role === 'superadmin'
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
@@ -79,12 +79,39 @@ export default function TennisPage() {
         ))}
       </div>
 
-      {/* ── Mobile selector ── */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 border-t border-border p-2" style={{ background: '#111111' }}>
-        <select value={selectedComp || ''} onChange={e => handleCompSelect(e.target.value)}
-          className="w-full border border-border rounded-xl px-3 py-2 text-sm text-text-primary" style={{ background: '#1a1a1a', color: '#fff' }}>
-          {Object.keys(competitions).map(comp => <option key={comp} value={comp}>{comp}</option>)}
-        </select>
+      {/* ── Mobile drawer ── */}
+      <div className="md:hidden fixed inset-0 z-50 flex pointer-events-none">
+        <div
+          className="absolute inset-0 bg-black/60 transition-opacity duration-300"
+          style={{ opacity: mobileMenu ? 1 : 0, pointerEvents: mobileMenu ? 'auto' : 'none' }}
+          onClick={() => setMobileMenu(false)}
+        />
+        <div
+          className="relative w-72 max-w-[80vw] h-full flex flex-col overflow-y-auto pointer-events-auto"
+          style={{
+            background: '#0a0a0a', borderRight: '1px solid #2c2c2e',
+            transform: mobileMenu ? 'translateX(0)' : 'translateX(-100%)',
+            transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
+          }}
+        >
+          <div className="px-3 py-2.5 text-xs font-black uppercase tracking-wider text-text-muted border-b border-border">🎾 Tennis</div>
+          {Object.entries(competitions).map(([comp, compMatches]) => (
+            <button key={comp} onClick={() => { handleCompSelect(comp); setMobileMenu(false) }}
+              className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-r-2 ${selectedComp === comp ? 'font-semibold' : 'border-transparent text-text-secondary'}`}
+              style={selectedComp === comp ? { background: 'rgba(16,185,129,0.07)', color: '#10b981', borderColor: '#10b981' } : {}}>
+              <div className="font-medium truncate text-xs">{comp}</div>
+              <div className="text-xs text-text-muted mt-0.5 flex items-center gap-1.5">
+                {compMatches.length} matches
+                {compMatches.some(m => m.status === 'in-play') && (
+                  <span className="flex items-center gap-0.5" style={{ color: '#10b981' }}>
+                    <span className="pulse-dot h-1.5 w-1.5 rounded-full inline-block" style={{ background: '#10b981' }} />
+                    {compMatches.filter(m => m.status === 'in-play').length} live
+                  </span>
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── Main content ── */}
