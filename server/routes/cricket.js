@@ -64,6 +64,12 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
   res.json(data);
 });
 
+router.get('/toss/matches', verifyToken, async (req, res) => {
+  const data = await scraper.getAllTossMatches();
+  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss matches data' });
+  res.json({ matches: data });
+});
+
 router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getTossSnapshot(req.params.matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data' });

@@ -1,6 +1,2 @@
-const { getCricketFullData, warmup } = require('./server/services/scraper');
-(async () => {
-  await warmup();
-  const data = await getCricketFullData(true);
-  console.log(JSON.stringify(data.matches[0], null, 2));
-})();
+const scraper = require('./server/services/scraper');
+scraper.getAllTossMatches().then(res => console.log(JSON.stringify(res, null, 2)));

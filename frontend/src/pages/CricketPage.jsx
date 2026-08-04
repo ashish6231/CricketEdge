@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext, useParams, Routes, Route } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock } from 'lucide-react'
-import { getCricketMatches, getCricketOdds } from '../api'
+import { getCricketMatches, getCricketOdds, getTossMatches } from '../api'
 import MatchDetail from './MatchDetail'
 
 const STORAGE_KEY = 'cricket_selected_comp'
@@ -24,9 +24,21 @@ export default function CricketPage() {
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || null)
   const [allMatches, setAllMatches] = useState([])
   const [oddsMap, setOddsMap] = useState({})
+  const [tossMatchIds, setTossMatchIds] = useState(new Set())
 
   useEffect(() => {
-    getCricketMatches().then(data => {
+    Promise.all([
+      getCricketMatches(),
+      getTossMatches().catch(() => ({ matches: [] }))
+    ]).then(([data, tossData]) => {
+      const tossArr = Array.isArray(tossData?.matches)
+        ? tossData.matches
+        : Array.isArray(tossData?.matches?.matches)
+          ? tossData.matches.matches
+          : []
+      if (tossArr.length) {
+        setTossMatchIds(new Set(tossArr.map(m => m.matchId)))
+      }
       if (data?.matches) {
         setAllMatches(data.matches)
         const grouped = {}
@@ -111,7 +123,12 @@ export default function CricketPage() {
             className={`w-full text-left px-3 py-2.5 text-sm transition-colors border-r-2 ${selectedComp === comp ? 'font-semibold' : 'border-transparent text-text-secondary hover:bg-[#10b981]/10'}`}
             style={selectedComp === comp ? { background: 'rgba(16,185,129,0.07)', color: '#10b981', borderColor: '#10b981' } : {}}
           >
-            <div className="font-medium truncate text-xs">{comp}</div>
+            <div className="font-medium truncate text-xs flex items-center justify-between gap-1">
+              <span className="truncate">{comp}</span>
+              {compMatches.some(m => tossMatchIds.has(m.matchId)) && (
+                <span className="text-red-500 font-bold flex-shrink-0">T</span>
+              )}
+            </div>
             <div className="text-xs text-text-muted mt-0.5 flex items-center gap-1.5">
               {compMatches.length} matches
               {compMatches.some(m => m.inPlay && m.status === 'in-play') && (
