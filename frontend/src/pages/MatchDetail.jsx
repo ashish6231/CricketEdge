@@ -663,7 +663,7 @@ export default function MatchDetail({ sport }) {
   const t2LayVol = tossM2?.lay ?? 0
 
   const predictedTossWinner = (tossM1 && tossM2)
-    ? (t1LayVol > t2LayVol ? tossT1Name : t2LayVol > t1LayVol ? tossT2Name : (t1LayTrades > t2LayTrades ? tossT1Name : t2LayTrades > t1LayTrades ? tossT2Name : 'Waiting for more data...'))
+    ? (t1LayTrades > t2LayTrades ? tossT1Name : t2LayTrades > t1LayTrades ? tossT2Name : (t1LayVol > t2LayVol ? tossT1Name : t2LayVol > t1LayVol ? tossT2Name : 'Waiting for more data...'))
     : 'Waiting for more data...'
 
   // Betfair Exchange P/L Formula:
@@ -696,7 +696,7 @@ export default function MatchDetail({ sport }) {
     <div className="p-3 w-full fade-in stagger space-y-4">
 
       {/* Header with Tabs */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 sticky top-0 pt-3 pb-2 z-30 -mx-3 px-3 border-b border-[#2c2c2e]/50 backdrop-blur-md" style={{ background: 'rgba(0,0,0,0.85)' }}>
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-primary text-sm font-medium">
           <ArrowLeft size={16} /> Back
         </button>
@@ -815,13 +815,13 @@ export default function MatchDetail({ sport }) {
           {tossM1 && tossM2 ? (
             <>
               <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                <div className="px-4 py-3 flex items-center justify-center border-b border-[#2c2c2e]">
+                <div className="px-4 py-3 flex items-center justify-start border-b border-[#2c2c2e]">
                   <span className="text-sm font-bold text-white flex items-center gap-2"><TrendingUp size={15} className="text-[#a855f7]" /> CricketEdge Toss Winner</span>
                 </div>
                 <div className="p-4">
                   <div className="rounded-xl p-4 text-center mb-5 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                     <div className="text-2xl font-black text-[#10b981] mb-1">{predictedTossWinner}</div>
-                    <div className="text-[10px] text-[#8e8e93]">Based on high lay bets • Not guaranteed</div>
+                    <div className="text-[10px] text-[#8e8e93]">Based on high lay trades • Not guaranteed</div>
                   </div>
                   <div className="px-1">
                     <div className="grid grid-cols-3 gap-1 mb-2">
