@@ -880,13 +880,30 @@ export default function MatchDetail({ sport }) {
             const bestYes = lines.reduce((best, l) => l.yes > 0 ? l.price : best, null)
             const bestNo = lines.reduce((best, l) => l.no > 0 ? l.price : best, null)
             const predicted = bestYes != null && bestNo != null ? Math.round((bestYes + bestNo) / 2 * 2) / 2 : bestYes ?? bestNo
+
+            // Bookie P/L at each run score using Betfair formula:
+            // score > line.price → yes wins: back loses (-yes), lay wins (+no)
+            // score <= line.price → no wins: back wins (+yes), lay loses (-no)
+            const calcPlAtScore = (score) => lines.reduce((pl, l) => {
+              return score > l.price
+                ? pl - l.yes + l.no
+                : pl + l.yes - l.no
+            }, 0)
+
+            const allPrices = lines.map(l => l.price)
+            const minScore = allPrices.length ? Math.floor(Math.min(...allPrices)) - 1 : 0
+            const maxScore = allPrices.length ? Math.ceil(Math.max(...allPrices)) + 1 : 0
+            const plRows = []
+            for (let s = minScore; s <= maxScore; s++) plRows.push({ score: s, pl: calcPlAtScore(s) })
+            const bestPlRow = plRows.reduce((best, r) => r.pl > best.pl ? r : best, plRows[0] || { score: 0, pl: 0 })
+
             return (
               <div key={sessionName} className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
                 <div className="px-4 py-2.5 border-b border-[#2c2c2e]">
                   <span className="text-xs font-bold text-white">{sessionName}</span>
                 </div>
                 <div className="p-3">
-                  <div className="grid grid-cols-3 gap-2 mb-2">
+                  <div className="grid grid-cols-3 gap-2 mb-3">
                     <div className="rounded-lg p-2 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                       <div className="text-[10px] text-[#8e8e93] mb-0.5">Best Yes</div>
                       <div className="text-sm font-bold text-[#3b82f6]">{bestYes ?? '—'}</div>
@@ -900,6 +917,28 @@ export default function MatchDetail({ sport }) {
                       <div className="text-sm font-bold text-[#ef4444]">{bestNo ?? '—'}</div>
                     </div>
                   </div>
+
+                  {/* Bookie P/L by score */}
+                  {plRows.length > 0 && (
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-[10px] text-[#8e8e93] font-bold uppercase tracking-wide">Bookie P/L by Score</span>
+                        <span className="text-[10px] text-[#10b981] font-bold">Best: {bestPlRow.score} runs ({fmtRs(bestPlRow.pl)})</span>
+                      </div>
+                      <div className="max-h-36 overflow-y-auto rounded-lg" style={{ border: '1px solid #2c2c2e' }}>
+                        <div className="grid grid-cols-2 text-[10px] text-[#8e8e93] font-semibold px-2 py-1 border-b border-[#2c2c2e]" style={{ background: '#0a0a0a' }}>
+                          <span>Score</span><span className="text-right">Bookie P/L</span>
+                        </div>
+                        {plRows.map(r => (
+                          <div key={r.score} className={`grid grid-cols-2 text-[10px] px-2 py-1 border-b border-[#2c2c2e]/30 ${r.score === bestPlRow.score ? 'bg-[#10b981]/10' : ''}`}>
+                            <span className={`font-bold ${r.score === bestPlRow.score ? 'text-[#10b981]' : 'text-white'}`}>{r.score}</span>
+                            <span className={`text-right font-bold ${r.pl >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>{fmtRs(r.pl)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {lines.length > 0 && (
                     <div className="max-h-40 overflow-y-auto">
                       <div className="grid grid-cols-3 text-[10px] text-[#8e8e93] font-semibold pb-1 border-b border-[#2c2c2e] mb-1">
