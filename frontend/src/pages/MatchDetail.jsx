@@ -347,7 +347,12 @@ export default function MatchDetail({ sport }) {
   const [requiresPro, setRequiresPro] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
-  const [activeTab, setActiveTab] = useState('simple') // 'simple' | 'graph' | 'toss' | 'session'
+  const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem(`tab_${matchId}`) || 'simple')
+
+  const handleTabChange = (key) => {
+    sessionStorage.setItem(`tab_${matchId}`, key)
+    setActiveTab(key)
+  }
   const [timeFilter, setTimeFilter] = useState('all')
   const [marketType, setMarketType] = useState('match_odds')
   const [showMarketMenu, setShowMarketMenu] = useState(false)
@@ -709,7 +714,7 @@ export default function MatchDetail({ sport }) {
           ].filter(Boolean).map(({ key, label, icon }) => (
             <button
               key={key}
-              onClick={() => setActiveTab(key)}
+              onClick={() => handleTabChange(key)}
               className={`px-2.5 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1 ${
                 activeTab === key ? 'text-white' : 'text-[#8e8e93] hover:text-white'
               }`}
