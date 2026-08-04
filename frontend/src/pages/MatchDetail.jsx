@@ -102,6 +102,7 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
   let totalBackLiability = 0
   let totalLayLiability = 0
   let backValue = 0
+  let layTradeCount = 0
 
   const priceMap = {}
   trades.forEach(t => {
@@ -120,6 +121,7 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
       priceMap[p].lay += s
       totalLay += s
       totalLayLiability += s * (p - 1)
+      layTradeCount++
     }
 
     priceMap[p].traded += s
@@ -141,7 +143,7 @@ const processTeamData = (teamName, teamData, timeFilter = 'all') => {
   return {
     name: teamName,
     low, high, totalBet, lastPrice, trend, orderBook, maxVol, peakPrice, timeSeries,
-    totalBack, totalLay, totalBackLiability, totalLayLiability, backValue, backLayRatio
+    totalBack, totalLay, totalBackLiability, totalLayLiability, backValue, backLayRatio, layTradeCount
   }
 }
 
@@ -345,6 +347,7 @@ export default function MatchDetail({ sport }) {
   const [requiresPro, setRequiresPro] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
+  const [activeTab, setActiveTab] = useState('simple') // 'simple' | 'graph' | 'toss' | 'session'
   const [timeFilter, setTimeFilter] = useState('all')
   const [marketType, setMarketType] = useState('match_odds')
   const [showMarketMenu, setShowMarketMenu] = useState(false)
@@ -631,13 +634,37 @@ export default function MatchDetail({ sport }) {
     }
   })()
 
-  const graphSnap = marketType === 'toss' ? tossSnapshot : snapshot
-  const graphT1 = marketType === 'toss' ? (graphSnap?.teamNames?.[0] || t1) : t1
-  const graphT2 = marketType === 'toss' ? (graphSnap?.teamNames?.[1] || t2) : t2
-  const effectiveTimeFilter = marketType === 'toss' ? 'all' : timeFilter
-  const t1GraphData = graphSnap ? processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter) : null
-  const t2GraphData = graphSnap ? processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter) : null
+  const graphSnap = snapshot
+  const graphT1 = t1
+  const graphT2 = t2
+  const effectiveTimeFilter = timeFilter
+  const t1GraphData = processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter)
+  const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter)
   const sessionGraphData = isSessionMarket ? processTeamData('Total Runs', { trades: selectedSessionTrades }, timeFilter) : null
+
+  // ━━━━━ TOSS AI PREDICTION LOGIC ━━━━━
+  const tossSnap = tossSnapshot
+  const tossT1Name = tossSnap?.teamNames?.[0] || t1
+  const tossT2Name = tossSnap?.teamNames?.[1] || t2
+  const tossM1 = tossSnap?.advancedMetricsV2?.team1
+  const tossM2 = tossSnap?.advancedMetricsV2?.team2
+  const tossS1 = tossSnap?.syntheticSupport?.teamA
+  const tossS2 = tossSnap?.syntheticSupport?.teamB
+  const tossSup1 = tossSnap?.supportMetrics?.team1
+  const tossSup2 = tossSnap?.supportMetrics?.team2
+
+  const tossT1GraphData = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], effectiveTimeFilter) : null
+  const tossT2GraphData = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], effectiveTimeFilter) : null
+  const tossMarketVol = (tossT1GraphData?.totalBet || 0) + (tossT2GraphData?.totalBet || 0)
+
+  const t1LayTrades = tossS1?.tradeCount ?? 0
+  const t2LayTrades = tossS2?.tradeCount ?? 0
+  const t1LayVol = tossM1?.lay ?? 0
+  const t2LayVol = tossM2?.lay ?? 0
+
+  const predictedTossWinner = (tossM1 && tossM2)
+    ? (t1LayVol > t2LayVol ? tossT1Name : t2LayVol > t1LayVol ? tossT2Name : (t1LayTrades > t2LayTrades ? tossT1Name : t2LayTrades > t1LayTrades ? tossT2Name : 'Waiting for more data...'))
+    : 'Waiting for more data...'
 
   // Betfair Exchange P/L Formula:
   // If Team A wins:
@@ -664,12 +691,6 @@ export default function MatchDetail({ sport }) {
   const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
   const t2PctVol = marketVol > 0 ? ((t2GraphData?.totalBet || 0) / marketVol) * 100 : 50
 
-  // Toss Back/Lay data (always from tossSnapshot, independent of marketType)
-  const tossSnap = tossSnapshot || null
-  const tossT1Name = tossSnap?.teamNames?.[0] || t1
-  const tossT2Name = tossSnap?.teamNames?.[1] || t2
-  const tossT1Data = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], 'all') : null
-  const tossT2Data = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], 'all') : null
 
   return (
     <div className="p-3 w-full fade-in stagger space-y-4">
@@ -679,27 +700,33 @@ export default function MatchDetail({ sport }) {
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-primary text-sm font-medium">
           <ArrowLeft size={16} /> Back
         </button>
-        <div className="flex rounded-lg p-0.5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-          <button
-            onClick={() => setShowAdvancedGraph(false)}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${!showAdvancedGraph ? 'text-white' : 'text-[#8e8e93] hover:text-white'
+        <div className="flex rounded-lg p-0.5 gap-0.5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+          {[
+            { key: 'simple', label: 'Simple Book' },
+            { key: 'graph', label: 'Graphs', icon: <BarChart3 size={11} /> },
+            { key: 'toss', label: 'Toss' },
+            { key: 'session', label: 'Session' },
+          ].map(({ key, label, icon }) => (
+            <button
+              key={key}
+              onClick={() => setActiveTab(key)}
+              className={`px-2.5 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1 ${
+                activeTab === key ? 'text-white' : 'text-[#8e8e93] hover:text-white'
               }`}
-            style={!showAdvancedGraph ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' } : {}}
-          >
-            Simple Book
-          </button>
-          <button
-            onClick={() => setShowAdvancedGraph(true)}
-            className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${showAdvancedGraph ? 'text-white' : 'text-[#8e8e93] hover:text-white'
-              }`}
-            style={showAdvancedGraph ? { background: 'linear-gradient(135deg,#2563eb,#3b82f6)' } : {}}
-          >
-            <BarChart3 size={12} /> Graphs
-          </button>
+              style={activeTab === key ? {
+                background: key === 'graph' ? 'linear-gradient(135deg,#2563eb,#3b82f6)'
+                  : key === 'toss' ? 'linear-gradient(135deg,#7c3aed,#a855f7)'
+                  : key === 'session' ? 'linear-gradient(135deg,#b45309,#f59e0b)'
+                  : 'linear-gradient(135deg,#dc2626,#10b981)'
+              } : {}}
+            >
+              {icon}{label}
+            </button>
+          ))}
         </div>
       </div>
 
-      {showAdvancedGraph ? (
+      {activeTab === 'graph' ? (
         <div className="w-full bg-[#0a0a0a] min-h-screen p-6 -mx-3 sm:mx-0 rounded-xl font-sans">
           {/* Top Header Row */}
           <div className="flex justify-between items-start mb-10">
@@ -724,7 +751,7 @@ export default function MatchDetail({ sport }) {
                   onClick={() => setShowMarketMenu(!showMarketMenu)}
                   className="bg-[#111111] text-white text-[13px] px-4 py-2 rounded-lg border border-[#2c2c2e]/50 flex items-center gap-8 cursor-pointer font-semibold shadow-sm hover:bg-[#1a1a1a] transition-colors"
                 >
-                  <span>{marketType === 'toss' ? 'Toss' : marketType.startsWith('session_') ? marketType.replace('session_', '') : 'Match Odds'}</span>
+                  <span>{marketType.startsWith('session_') ? marketType.replace('session_', '') : 'Match Odds'}</span>
                   <ChevronDown size={14} className="text-[#8e8e93]" />
                 </div>
                 {showMarketMenu && (
@@ -734,12 +761,6 @@ export default function MatchDetail({ sport }) {
                       className="px-4 py-3 text-[13px] font-bold text-white hover:bg-[#2c2c2e] cursor-pointer"
                     >
                       Match Odds
-                    </div>
-                    <div
-                      onClick={() => { setMarketType('toss'); setShowMarketMenu(false); }}
-                      className="px-4 py-3 text-[13px] font-bold text-white hover:bg-[#2c2c2e] cursor-pointer border-t border-[#2c2c2e]"
-                    >
-                      Toss
                     </div>
                     {activeSessions.map(session => (
                       <div key={session} onClick={() => { setMarketType('session_' + session); setShowMarketMenu(false); }} className="px-4 py-3 text-[13px] font-bold text-white hover:bg-[#2c2c2e] cursor-pointer border-t border-[#2c2c2e]">
@@ -765,10 +786,10 @@ export default function MatchDetail({ sport }) {
             </div>
           ) : (
             <>
-              {/* Match Odds / Toss Total Bar */}
+              {/* Match Odds Total Bar */}
               <div className="mb-6 mt-6">
                 <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-white font-bold text-base tracking-wide">{marketType === 'toss' ? 'Toss Market' : 'Match Odds'}</h2>
+                  <h2 className="text-white font-bold text-base tracking-wide">Match Odds</h2>
                 </div>
 
                 {/* Progress Bar (White vs Dark Grey) */}
@@ -781,42 +802,121 @@ export default function MatchDetail({ sport }) {
                 </div>
               </div>
 
-              {/* Back/Lay Summary — only for Toss */}
-              {marketType === 'toss' && (
-                <div className="rounded-2xl overflow-hidden mt-6" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                  <div className="px-4 py-3 border-b border-[#2c2c2e]" style={{ background: '#111111' }}>
-                    <span className="text-sm font-bold text-white">Toss Back / Lay Summary</span>
+              {/* Side by Side Grid for Team Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
+                <TeamCard teamData={t1GraphData} isToss={false} marketVol={marketVol} />
+                <TeamCard teamData={t2GraphData} isToss={false} marketVol={marketVol} />
+              </div>
+            </>
+          )}
+        </div>
+      ) : activeTab === 'toss' ? (
+        <div className="space-y-4">
+          {tossM1 && tossM2 ? (
+            <>
+              <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+                <div className="px-4 py-3 flex items-center justify-center border-b border-[#2c2c2e]">
+                  <span className="text-sm font-bold text-white flex items-center gap-2"><TrendingUp size={15} className="text-[#a855f7]" /> CricketEdge Toss Winner</span>
+                </div>
+                <div className="p-4">
+                  <div className="rounded-xl p-4 text-center mb-5 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                    <div className="text-2xl font-black text-[#10b981] mb-1">{predictedTossWinner}</div>
+                    <div className="text-[10px] text-[#8e8e93]">Based on high lay bets • Not guaranteed</div>
                   </div>
-                  <div className="p-4">
-                    <div className="w-full text-sm">
-                      <div className="grid grid-cols-4 pb-2 border-b border-[#2c2c2e] mb-1">
-                        <div className="text-[#8e8e93] text-xs font-semibold">Team</div>
-                        <div className="text-[#3b82f6] text-xs font-semibold text-right">Back Value</div>
-                        <div className="text-[#ef4444] text-xs font-semibold text-right">Lay Liab.</div>
-                        <div className="text-[#10b981] text-xs font-semibold text-right">B/L Ratio</div>
+                  <div className="px-1">
+                    <div className="grid grid-cols-3 gap-1 mb-2">
+                      <div />
+                      <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate">{tossT1Name}</div>
+                      <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate">{tossT2Name}</div>
+                    </div>
+                    {[
+                      { label: 'Back Val', v1: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossM1.back)}</span>, v2: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossM2.back)}</span> },
+                      { label: 'Lay Liab', v1: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM1.lay)}</span>, v2: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM2.lay)}</span> },
+                      { label: 'Total Bet', v1: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM1.totalBet)}</span>, v2: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM2.totalBet)}</span> },
+                      { label: 'Lay Trades', v1: <span className="text-[11px] text-white font-bold">{tossS1?.tradeCount ?? '—'}</span>, v2: <span className="text-[11px] text-white font-bold">{tossS2?.tradeCount ?? '—'}</span> },
+                      { label: 'Support %', v1: <span className="text-[11px] font-bold" style={{color:(tossSup1?.support??0)>(tossSup2?.support??0)?'#10b981':'#8e8e93'}}>{tossSup1?tossSup1.support.toFixed(1)+'%':'—'}</span>, v2: <span className="text-[11px] font-bold" style={{color:(tossSup2?.support??0)>(tossSup1?.support??0)?'#10b981':'#8e8e93'}}>{tossSup2?tossSup2.support.toFixed(1)+'%':'—'}</span> },
+                      { label: 'B/L Ratio', v1: <span className="text-[11px] text-[#10b981] font-bold">{tossM1.lay>0?(tossM1.back/tossM1.lay).toFixed(2):'—'}</span>, v2: <span className="text-[11px] text-[#10b981] font-bold">{tossM2.lay>0?(tossM2.back/tossM2.lay).toFixed(2):'—'}</span> },
+                    ].map(({ label, v1, v2 }, i, arr) => (
+                      <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== arr.length - 1 ? 'border-b border-[#2c2c2e]' : ''}`}>
+                        <div className="text-[10px] text-[#8e8e93] flex items-center font-semibold">{label}</div>
+                        <div className="text-center flex items-center justify-center">{v1}</div>
+                        <div className="text-center flex items-center justify-center">{v2}</div>
                       </div>
-                      {[
-                        { team: t1GraphData?.name || t1, data: t1GraphData },
-                        { team: t2GraphData?.name || t2, data: t2GraphData }
-                      ].map(({ team, data }) => (
-                        <div key={team} className="grid grid-cols-4 py-2.5 border-b border-[#2c2c2e]/40 last:border-0">
-                          <div className="text-white font-bold text-xs truncate pr-2">{team}</div>
-                          <div className="text-[#3b82f6] text-right font-bold text-xs">₹{formatMoney(data?.backValue || 0)}</div>
-                          <div className="text-[#ef4444] text-right font-bold text-xs">₹{formatMoney(data?.totalLayLiability || 0)}</div>
-                          <div className="text-[#10b981] text-right font-bold text-xs">{data?.backLayRatio?.toFixed(2) || '0.00'}</div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Toss Graph Team Cards */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-6">
+                <TeamCard teamData={tossT1GraphData} isToss={true} marketVol={tossMarketVol} />
+                <TeamCard teamData={tossT2GraphData} isToss={true} marketVol={tossMarketVol} />
+              </div>
+            </>
+          ) : (
+            <div className="flex h-[40vh] items-center justify-center text-center">
+              <div className="text-3xl mb-3">🪙</div>
+              <p className="text-[#8e8e93] text-sm mt-2">No toss data available</p>
+            </div>
+          )}
+        </div>
+      ) : activeTab === 'session' ? (
+        <div className="space-y-3">
+          {activeSessions.length > 0 ? activeSessions.map(sessionName => {
+            const trades = sessionTrades.filter(t => t.team === sessionName)
+            const lineMap = {}
+            trades.forEach(t => {
+              const p = t.price
+              if (!lineMap[p]) lineMap[p] = { price: p, yes: 0, no: 0 }
+              if (t.type === 'back') lineMap[p].yes += t.size
+              else lineMap[p].no += t.size
+            })
+            const lines = Object.values(lineMap).sort((a, b) => a.price - b.price)
+            const bestYes = lines.reduce((best, l) => l.yes > 0 ? l.price : best, null)
+            const bestNo = lines.reduce((best, l) => l.no > 0 ? l.price : best, null)
+            const predicted = bestYes != null && bestNo != null ? Math.round((bestYes + bestNo) / 2 * 2) / 2 : bestYes ?? bestNo
+            return (
+              <div key={sessionName} className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+                <div className="px-4 py-2.5 border-b border-[#2c2c2e]">
+                  <span className="text-xs font-bold text-white">{sessionName}</span>
+                </div>
+                <div className="p-3">
+                  <div className="grid grid-cols-3 gap-2 mb-2">
+                    <div className="rounded-lg p-2 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-[10px] text-[#8e8e93] mb-0.5">Best Yes</div>
+                      <div className="text-sm font-bold text-[#3b82f6]">{bestYes ?? '—'}</div>
+                    </div>
+                    <div className="rounded-lg p-2 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-[10px] text-[#8e8e93] mb-0.5">Predicted</div>
+                      <div className="text-sm font-bold text-white">~{predicted ?? '—'}</div>
+                    </div>
+                    <div className="rounded-lg p-2 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                      <div className="text-[10px] text-[#8e8e93] mb-0.5">Best No</div>
+                      <div className="text-sm font-bold text-[#ef4444]">{bestNo ?? '—'}</div>
+                    </div>
+                  </div>
+                  {lines.length > 0 && (
+                    <div className="max-h-40 overflow-y-auto">
+                      <div className="grid grid-cols-3 text-[10px] text-[#8e8e93] font-semibold pb-1 border-b border-[#2c2c2e] mb-1">
+                        <span>Price</span><span className="text-center text-[#3b82f6]">Yes</span><span className="text-right text-[#ef4444]">No</span>
+                      </div>
+                      {lines.map(l => (
+                        <div key={l.price} className="grid grid-cols-3 text-[10px] py-1 border-b border-[#2c2c2e]/30">
+                          <span className="text-white font-bold">{l.price}</span>
+                          <span className="text-center text-[#3b82f6]">{l.yes > 0 ? formatVolStr(l.yes) : '—'}</span>
+                          <span className="text-right text-[#ef4444]">{l.no > 0 ? formatVolStr(l.no) : '—'}</span>
                         </div>
                       ))}
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
-
-              {/* Side by Side Grid for Team Cards */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
-                <TeamCard teamData={t1GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
-                <TeamCard teamData={t2GraphData} isToss={marketType === 'toss'} marketVol={marketVol} />
               </div>
-            </>
+            )
+          }) : (
+            <div className="flex h-[40vh] items-center justify-center text-center">
+              <div className="text-3xl mb-3">📊</div>
+              <p className="text-[#8e8e93] text-sm mt-2">No session data available</p>
+            </div>
           )}
         </div>
       ) : (
@@ -935,34 +1035,8 @@ export default function MatchDetail({ sport }) {
                   </div>
                 </div>
               )}
-            </>
-          )}
 
-          {/* ━━━━━━━━━━ TOSS BACK/LAY (compact, Simple view) ━━━━━━━━━━ */}
-          {tossT1Data && tossT2Data && (
-            <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-              <div className="px-4 py-2.5 border-b border-[#2c2c2e]" style={{ background: '#111111' }}>
-                <span className="text-xs font-bold text-white uppercase tracking-wider">Toss Back / Lay</span>
-              </div>
-              <div className="p-3">
-                <div className="grid grid-cols-3 gap-1 mb-1.5">
-                  <div />
-                  <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate px-1">{tossT1Name}</div>
-                  <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate px-1">{tossT2Name}</div>
-                </div>
-                {[
-                  { label: 'Back Val', v1: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossT1Data.backValue)}</span>, v2: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossT2Data.backValue)}</span> },
-                  { label: 'Lay Liab', v1: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossT1Data.totalLayLiability)}</span>, v2: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossT2Data.totalLayLiability)}</span> },
-                  { label: 'B/L Ratio', v1: <span className="text-[11px] text-[#10b981] font-bold">{tossT1Data.backLayRatio?.toFixed(2) || '0.00'}</span>, v2: <span className="text-[11px] text-[#10b981] font-bold">{tossT2Data.backLayRatio?.toFixed(2) || '0.00'}</span> },
-                ].map(({ label, v1, v2 }, i) => (
-                  <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== 2 ? 'border-b border-[#2c2c2e]' : ''}`}>
-                    <div className="text-[10px] text-[#8e8e93] flex items-center font-semibold">{label}</div>
-                    <div className="text-center flex items-center justify-center">{v1}</div>
-                    <div className="text-center flex items-center justify-center">{v2}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            </>
           )}
 
           {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}

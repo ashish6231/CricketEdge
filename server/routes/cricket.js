@@ -64,6 +64,18 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
   res.json(data);
 });
 
+router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
+  const data = await scraper.getTossSnapshot(req.params.matchId);
+  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data' });
+  res.json(data);
+});
+
+router.get('/session/trades/:matchId', verifyToken, async (req, res) => {
+  const data = await scraper.getSessionTrades(req.params.matchId);
+  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
+  res.json(data);
+});
+
 router.get('/cricket/odds/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getCricketSnapshot(req.params.matchId);
   if (data?.error) return res.json({ error: data.error });
@@ -135,69 +147,6 @@ router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getTennisSnapshot(req.params.matchId);
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
-
-  if (matchInfo && !data.error) {
-    data.inPlay = matchInfo.inPlay;
-    data.competitionName = matchInfo.competitionName;
-    data.status = matchInfo.status;
-  }
-  res.json(data);
-});
-
-// ──── Session ────
-
-router.get('/session/matches', verifyToken, async (req, res) => {
-  const data = await scraper.getAllSessionMatches();
-  if (data?.error) return res.status(502).json({ detail: data.error });
-  res.json({ total: data.length, matches: data });
-});
-
-router.get('/session/trades/:matchId', verifyToken, async (req, res) => {
-  const matches = await scraper.getAllSessionMatches();
-  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == req.params.matchId);
-  const isEnded = matchInfo?.status === 'ended';
-  if (!isEnded) {
-    const role = req.user?.role;
-    if (role !== 'admin' && role !== 'superadmin') {
-      const prisma = require('../db/prisma');
-      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-      const isActivePro = user?.subPlanSlug === 'pro' && user?.subStatus === 'active' && (!user?.subExpiresAt || new Date(user.subExpiresAt) > new Date());
-      if (!isActivePro) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
-    }
-  }
-  const data = await scraper.getSessionTrades(req.params.matchId);
-  if (data?.error === 'Login required for live matches')
-    return res.json({ error: 'login_required', message: 'Session live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
-  res.json(data);
-});
-
-// ──── Toss ────
-
-router.get('/toss/matches', verifyToken, async (req, res) => {
-  const data = await scraper.getAllTossMatches();
-  if (data?.error) return res.status(502).json({ detail: data.error });
-  res.json({ total: data.length, matches: data });
-});
-
-router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
-  const matches = await scraper.getAllTossMatches();
-  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == req.params.matchId);
-  const isEnded = matchInfo?.status === 'ended';
-  if (!isEnded) {
-    const role = req.user?.role;
-    if (role !== 'admin' && role !== 'superadmin') {
-      const prisma = require('../db/prisma');
-      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-      const isActivePro = user?.subPlanSlug === 'pro' && user?.subStatus === 'active' && (!user?.subExpiresAt || new Date(user.subExpiresAt) > new Date());
-      if (!isActivePro) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
-    }
-  }
-  const data = await scraper.getTossSnapshot(req.params.matchId);
-  if (data?.error) {
-    if (String(data.error).includes('401'))
-      return res.json({ error: 'login_required', message: 'Toss live/upcoming data requires login.', matchId: req.params.matchId });
-    return res.status(502).json({ detail: data.error });
-  }
 
   if (matchInfo && !data.error) {
     data.inPlay = matchInfo.inPlay;
