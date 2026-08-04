@@ -704,9 +704,9 @@ export default function MatchDetail({ sport }) {
           {[
             { key: 'simple', label: 'Simple Book' },
             { key: 'graph', label: 'Graphs', icon: <BarChart3 size={11} /> },
-            { key: 'toss', label: 'Toss' },
+            (tossM1 && tossM2) ? { key: 'toss', label: 'Toss' } : null,
             { key: 'session', label: 'Session' },
-          ].map(({ key, label, icon }) => (
+          ].filter(Boolean).map(({ key, label, icon }) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
