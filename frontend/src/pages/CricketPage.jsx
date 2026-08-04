@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams, Routes, Route } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock } from 'lucide-react'
 import { getCricketMatches, getCricketOdds, getTossMatches } from '../api'
@@ -25,6 +25,8 @@ export default function CricketPage() {
   const [allMatches, setAllMatches] = useState([])
   const [oddsMap, setOddsMap] = useState({})
   const [tossMatchIds, setTossMatchIds] = useState(new Set())
+  const scrollRef = useRef(null)
+  const SCROLL_KEY = 'cricket_scroll_pos'
 
   useEffect(() => {
     Promise.all([
@@ -151,13 +153,13 @@ export default function CricketPage() {
       </div>
 
       {/* ── Main content area ── */}
-      <div className="flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {matchId ? (
           // Show match detail inline
           <MatchDetail sport="cricket" />
         ) : (
           // Show match cards
-          <div className="p-4 fade-in">
+          <div className="p-4 fade-in" ref={el => { if (el) { const s = sessionStorage.getItem(SCROLL_KEY); if (s) { scrollRef.current.scrollTop = Number(s); sessionStorage.removeItem(SCROLL_KEY) } }}}>
             {selectedComp && currentMatches.length > 0 ? (
               <>
                 <div className="flex items-center justify-between mb-3">
@@ -172,7 +174,10 @@ export default function CricketPage() {
                     return (
                       <button
                         key={match.matchId}
-                        onClick={() => navigate(`/cricket/match/${match.matchId}`)}
+                        onClick={() => {
+                          sessionStorage.setItem(SCROLL_KEY, scrollRef.current?.scrollTop || 0)
+                          navigate(`/cricket/match/${match.matchId}`)
+                        }}
                         className={`glass-card rounded-2xl p-4 transition-all text-left group hover:shadow-md`}
                       >
                         {dt && <div className="text-[11px] text-text-muted mb-1 font-medium">📅 {dt}</div>}

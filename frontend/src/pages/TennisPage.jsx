@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Activity, ChevronRight, Lock } from 'lucide-react'
 import { getTennisMatches } from '../api'
@@ -22,6 +22,8 @@ export default function TennisPage() {
   const [loading, setLoading] = useState(true)
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || null)
+  const scrollRef = useRef(null)
+  const SCROLL_KEY = 'tennis_scroll_pos'
 
   useEffect(() => {
     getTennisMatches().then(data => {
@@ -86,11 +88,11 @@ export default function TennisPage() {
       </div>
 
       {/* ── Main content ── */}
-      <div className="flex-1 overflow-y-auto">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {matchId ? (
           <MatchDetail sport="tennis" />
         ) : (
-          <div className="p-4 fade-in">
+          <div className="p-4 fade-in" ref={el => { if (el) { const s = sessionStorage.getItem(SCROLL_KEY); if (s) { scrollRef.current.scrollTop = Number(s); sessionStorage.removeItem(SCROLL_KEY) } }}}>
             {selectedComp && currentMatches.length > 0 ? (
               <>
                 <div className="flex items-center justify-between mb-3">
@@ -101,7 +103,10 @@ export default function TennisPage() {
                   {currentMatches.map(match => (
                     <button
                       key={match.matchId}
-                      onClick={() => navigate(`/tennis/match/${match.matchId}`)}
+                      onClick={() => {
+                        sessionStorage.setItem(SCROLL_KEY, scrollRef.current?.scrollTop || 0)
+                        navigate(`/tennis/match/${match.matchId}`)
+                      }}
                       className={`glass-card rounded-xl p-4 transition-all text-left group hover:bg-bg-card-hover`}
                     >
                       {fmtDateTime(match.startTime) && <div className="text-[11px] text-text-muted mb-1 font-medium">📅 {fmtDateTime(match.startTime)}</div>}
