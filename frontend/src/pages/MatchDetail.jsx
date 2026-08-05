@@ -661,15 +661,42 @@ export default function MatchDetail({ sport }) {
   const tossT1GraphData = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], effectiveTimeFilter) : null
   const tossT2GraphData = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], effectiveTimeFilter) : null
   const tossMarketVol = (tossT1GraphData?.totalBet || 0) + (tossT2GraphData?.totalBet || 0)
+  const tossT1PctVol = tossMarketVol > 0 ? ((tossT1GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
+  const tossT2PctVol = tossMarketVol > 0 ? ((tossT2GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
 
   const t1LayTrades = tossS1?.tradeCount ?? 0
   const t2LayTrades = tossS2?.tradeCount ?? 0
   const t1LayVol = tossM1?.lay ?? 0
   const t2LayVol = tossM2?.lay ?? 0
 
-  const predictedTossWinner = (tossM1 && tossM2)
-    ? (t1LayTrades > t2LayTrades ? tossT1Name : t2LayTrades > t1LayTrades ? tossT2Name : (t1LayVol > t2LayVol ? tossT1Name : t2LayVol > t1LayVol ? tossT2Name : 'Waiting for more data...'))
-    : 'Waiting for more data...'
+  let predictedTossWinner = 'Waiting for more data...';
+  if (tossM1 && tossM2) {
+    const t1Back = tossM1.back ?? 0;
+    const t2Back = tossM2.back ?? 0;
+    const t1Total = tossM1.totalBet ?? 0;
+    const t2Total = tossM2.totalBet ?? 0;
+    const mTotal = t1Total + t2Total;
+
+    if (mTotal > 0) {
+      const t1LoadPct = t1Total / mTotal;
+      const t2LoadPct = t2Total / mTotal;
+
+      // Trap Logic: Favorite has > 74% load, but Underdog has higher LayVol AND Underdog LayVol > Underdog BackVol
+      const t1IsTrapWinner = t2LoadPct > 0.74 && t1LayVol > t2LayVol && t1LayVol > t1Back;
+      const t2IsTrapWinner = t1LoadPct > 0.74 && t2LayVol > t1LayVol && t2LayVol > t2Back;
+
+      if (t1IsTrapWinner) {
+        predictedTossWinner = tossT1Name;
+      } else if (t2IsTrapWinner) {
+        predictedTossWinner = tossT2Name;
+      } else {
+        // Standard Logic
+        predictedTossWinner = t1LayTrades > t2LayTrades ? tossT1Name
+          : t2LayTrades > t1LayTrades ? tossT2Name
+          : (t1LayVol > t2LayVol ? tossT1Name : t2LayVol > t1LayVol ? tossT2Name : 'Waiting for more data...');
+      }
+    }
+  }
 
   // Betfair Exchange P/L Formula:
   // If Team A wins:
@@ -819,6 +846,22 @@ export default function MatchDetail({ sport }) {
         <div className="space-y-4">
           {tossM1 && tossM2 ? (
             <>
+              {/* Toss Odds Total Bar */}
+              <div className="mb-6 mt-6">
+                <div className="flex justify-between items-center mb-5">
+                  <h2 className="text-white font-bold text-base tracking-wide">Toss Odds</h2>
+                </div>
+
+                {/* Progress Bar (White vs Dark Grey) */}
+                <div className="h-[6px] w-full bg-[#2c2c2e] mb-3 flex rounded-sm">
+                  <div className="bg-white h-full transition-all duration-500 rounded-l-sm" style={{ width: `${tossT1PctVol}%` }} />
+                </div>
+                <div className="flex justify-between text-[11px] font-bold text-[#8e8e93] tracking-wide">
+                  <span>{tossT1Name} <span className="text-white ml-1">{tossT1PctVol.toFixed(0)}%</span></span>
+                  <span>{tossT2Name} <span className="text-white ml-1">{tossT2PctVol.toFixed(0)}%</span></span>
+                </div>
+              </div>
+
               <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
                 <div className="px-4 py-3 flex items-center justify-start border-b border-[#2c2c2e]">
                   <span className="text-sm font-bold text-white flex items-center gap-2"><TrendingUp size={15} className="text-[#a855f7]" /> CricketEdge Toss Winner</span>
