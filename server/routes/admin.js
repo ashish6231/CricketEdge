@@ -41,16 +41,19 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
 // ==================== USERS ====================
 router.get('/users', requireAdmin, async (req, res) => {
   try {
-    const { page = 1, limit = 20, search = '', role = '', status = '' } = req.query;
+    const { page = 1, limit = 20, search = '', role = '', status = '', plan = '' } = req.query;
     const safeLimit = Math.min(+limit || 20, 100);
     const where = {};
     if (search) where.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
     if (role) where.role = role;
     if (status) where.status = status;
+    if (plan) where.subPlanSlug = plan;
+
+    const orderBy = plan === 'pro' ? { subExpiresAt: 'asc' } : { createdAt: 'desc' };
 
     const [users, total] = await Promise.all([
       prisma.user.findMany({
-        where, orderBy: { createdAt: 'desc' },
+        where, orderBy,
         skip: (+page - 1) * safeLimit, take: safeLimit,
         select: { id: true, name: true, email: true, role: true, status: true, subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true }
       }),

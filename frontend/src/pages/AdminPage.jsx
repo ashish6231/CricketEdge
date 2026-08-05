@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle } from 'lucide-react'
+import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown } from 'lucide-react'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminUsers from './admin/AdminUsers'
+import AdminProUsers from './admin/AdminProUsers'
 import AdminPlans from './admin/AdminPlans'
 import AdminCoupons from './admin/AdminCoupons'
 import AdminSettings from './admin/AdminSettings'
@@ -11,6 +12,7 @@ import AdminAuditLogs from './admin/AdminAuditLogs'
 const TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'users',     label: 'Users',     icon: Users },
+  { id: 'pro_users', label: 'Pro Users', icon: Crown },
   { id: 'plans',     label: 'Plans',     icon: CreditCard },
   { id: 'coupons',   label: 'Coupons',   icon: Tag },
   { id: 'settings',  label: 'Settings',  icon: Settings },
@@ -75,6 +77,7 @@ export default function AdminPage() {
       {/* Tab Content */}
       {tab === 'dashboard' && <AdminDashboard />}
       {tab === 'users'     && <AdminUsers isSuperAdmin={isSuperAdmin} />}
+      {tab === 'pro_users' && <AdminProUsers isSuperAdmin={isSuperAdmin} />}
       {tab === 'plans'     && <AdminPlans isSuperAdmin={isSuperAdmin} />}
       {tab === 'coupons'   && <AdminCoupons />}
       {tab === 'settings'  && <AdminSettings isSuperAdmin={isSuperAdmin} />}
