@@ -681,13 +681,20 @@ export default function MatchDetail({ sport }) {
       const t1LoadPct = t1Total / mTotal;
       const t2LoadPct = t2Total / mTotal;
 
-      // Trap Logic: Favorite has > 74% load, but Underdog has higher LayVol AND Underdog LayVol > Underdog BackVol
+      // Trap 1: Smart Money Trap (e.g. Kandy Royals vs Colombo Kaps)
+      // Favorite has > 74% load, but Underdog has higher LayVol AND Underdog LayVol > Underdog BackVol
       const t1IsTrapWinner = t2LoadPct > 0.74 && t1LayVol > t2LayVol && t1LayVol > t1Back;
       const t2IsTrapWinner = t1LoadPct > 0.74 && t2LayVol > t1LayVol && t2LayVol > t2Back;
 
-      if (t1IsTrapWinner) {
+      // Trap 2: Zero Lay Trap (e.g. Ruby Trichy vs Madurai Panthers)
+      // If a team has literally 0 Lay Volume and their load is moderate (<= 75%), they lose.
+      // (If load is extreme > 75%, like Welsh Fire W, they still win)
+      const t1ZeroLayTrap = t2LayVol === 0 && t1LayVol > 0 && t2LoadPct <= 0.75; // t2 loses -> t1 wins
+      const t2ZeroLayTrap = t1LayVol === 0 && t2LayVol > 0 && t1LoadPct <= 0.75; // t1 loses -> t2 wins
+
+      if (t1IsTrapWinner || t1ZeroLayTrap) {
         predictedTossWinner = tossT1Name;
-      } else if (t2IsTrapWinner) {
+      } else if (t2IsTrapWinner || t2ZeroLayTrap) {
         predictedTossWinner = tossT2Name;
       } else {
         // Standard Logic
