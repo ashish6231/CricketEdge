@@ -38,8 +38,12 @@ router.get('/cricket/matches', verifyToken, async (req, res) => {
 });
 
 router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
-  const matches = await scraper.getAllCricketMatches();
-  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == req.params.matchId);
+  const matchId = req.params.matchId;
+  const [matches, data] = await Promise.all([
+    scraper.getAllCricketMatches(),
+    scraper.getCricketSnapshot(matchId),
+  ]);
+  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded) {
     const role = req.user?.role;
@@ -50,10 +54,9 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
       if (!isActivePro) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
     }
   }
-  const data = await scraper.getCricketSnapshot(req.params.matchId);
   if (data?.error) {
     if (String(data.error).includes('401'))
-      return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: req.params.matchId });
+      return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
     return res.status(502).json({ detail: data.error });
   }
   if (matchInfo && !data.error) {
@@ -138,8 +141,12 @@ router.get('/tennis/matches', verifyToken, async (req, res) => {
 });
 
 router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
-  const matches = await scraper.getAllTennisMatches();
-  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == req.params.matchId);
+  const matchId = req.params.matchId;
+  const [matches, data] = await Promise.all([
+    scraper.getAllTennisMatches(),
+    scraper.getTennisSnapshot(matchId),
+  ]);
+  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded) {
     const role = req.user?.role;
@@ -150,9 +157,8 @@ router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
       if (!isActivePro) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
     }
   }
-  const data = await scraper.getTennisSnapshot(req.params.matchId);
   if (data?.error === 'Login required for live matches')
-    return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId: req.params.matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
+    return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
 
   if (matchInfo && !data.error) {
     data.inPlay = matchInfo.inPlay;

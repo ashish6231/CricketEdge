@@ -31,7 +31,7 @@ export default function TossDetail({ isEmbedded = false }) {
       })
     }
     fetch(true)
-    const interval = setInterval(() => fetch(false), 1500)
+    const interval = setInterval(() => fetch(false), 3000)
     return () => clearInterval(interval)
   }, [matchId, isLoggedIn])
 

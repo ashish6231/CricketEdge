@@ -346,6 +346,7 @@ export default function MatchDetail({ sport }) {
   const { isLoggedIn } = useOutletContext()
   const [snapshot, setSnapshot] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [fetchError, setFetchError] = useState(null)
   const [requiresLogin, setRequiresLogin] = useState(false)
   const [requiresPro, setRequiresPro] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
@@ -407,55 +408,77 @@ export default function MatchDetail({ sport }) {
 
   useEffect(() => {
     const apiFn = API_MAP[sport] || getCricketSnapshot
+    let cancelled = false
+
+    const applySessionData = (sessionData) => {
+      if (!sessionData?.trades) return
+      setSessionTrades(sessionData.trades)
+      let activeSessionNames = []
+      if (sessionData.odds?.length > 0) {
+        activeSessionNames = [...new Set(sessionData.odds.map(o => o.marketName))]
+      } else if (sessionData.markets?.length > 0) {
+        activeSessionNames = [...new Set(sessionData.markets.map(m => m.marketName))]
+      } else {
+        activeSessionNames = [...new Set(sessionData.trades.map(t => t.team))]
+      }
+      setActiveSessions(activeSessionNames)
+    }
+
+    const fetchSecondary = () => {
+      if (sport !== 'cricket') return
+      getTossSnapshot(matchId).catch(() => null).then(tossData => {
+        if (cancelled || !tossData || tossData.error) return
+        setTossSnapshot(tossData)
+      })
+      getSessionTrades(matchId).catch(() => null).then(sessionData => {
+        if (cancelled) return
+        applySessionData(sessionData)
+      })
+    }
 
     const fetchData = (isInitial = false) => {
       if (isInitial) {
         setLoading(true)
+        setFetchError(null)
         setRequiresLogin(false)
         setRequiresPro(false)
         setSnapshot(null)
         setTossSnapshot(null)
       }
 
-      Promise.all([
-        apiFn(matchId),
-        sport === 'cricket' ? getTossSnapshot(matchId).catch(() => null) : Promise.resolve(null),
-        sport === 'cricket' ? getSessionTrades(matchId).catch(() => null) : Promise.resolve(null)
-      ]).then(([data, tossData, sessionData]) => {
-        if (data?.error === 'login_required') {
-          setRequiresLogin(true)
-        } else if (data && !data.error) {
-          setSnapshot(data)
-          if (tossData && !tossData.error) setTossSnapshot(tossData)
-          if (sessionData && !sessionData.error && sessionData.trades) {
-            setSessionTrades(sessionData.trades)
-            let activeSessionNames = []
-            if (sessionData.odds && sessionData.odds.length > 0) {
-              activeSessionNames = [...new Set(sessionData.odds.map(o => o.marketName))]
-            } else if (sessionData.markets && sessionData.markets.length > 0) {
-              activeSessionNames = [...new Set(sessionData.markets.map(m => m.marketName))]
-            } else {
-              activeSessionNames = [...new Set(sessionData.trades.map(t => t.team))]
-            }
-            setActiveSessions(activeSessionNames)
+      // Main snapshot first — don't wait for toss/session (they load in background)
+      apiFn(matchId)
+        .then(data => {
+          if (cancelled) return
+          if (data?.error === 'login_required') {
+            setRequiresLogin(true)
+          } else if (data && !data.error) {
+            setSnapshot(data)
+            setFetchError(null)
+            const now = new Date()
+            setLastUpdated(now)
+            window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: now } }))
+          } else if (isInitial) {
+            setFetchError(data?.error || data?.message || 'Match data load nahi ho paya')
           }
-          setRequiresLogin(false)
-          const now = new Date()
-          setLastUpdated(now)
-          window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: now } }))
-        }
-        if (isInitial) setLoading(false)
-      }).catch(err => {
-        if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) {
-          setRequiresPro(true)
-        }
-        if (isInitial) setLoading(false)
-      })
+          if (isInitial) setLoading(false)
+        })
+        .catch(err => {
+          if (cancelled) return
+          if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) {
+            setRequiresPro(true)
+          } else if (isInitial) {
+            setFetchError(err?.detail || 'Network error — dubara try karo')
+          }
+          if (isInitial) setLoading(false)
+        })
+
+      fetchSecondary()
     }
 
     fetchData(true)
-    const interval = setInterval(() => fetchData(false), 1500)
-    return () => clearInterval(interval)
+    const interval = setInterval(() => fetchData(false), 3000)
+    return () => { cancelled = true; clearInterval(interval) }
   }, [matchId, sport, isLoggedIn])
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
@@ -501,6 +524,25 @@ export default function MatchDetail({ sport }) {
               window.dispatchEvent(new CustomEvent('open-login-modal'))
             }} className="px-6 py-2 text-white rounded-xl font-semibold text-sm" style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>🔑 Login karo</button>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (fetchError && !snapshot) {
+    return (
+      <div className="flex h-[80vh] items-center justify-center p-4">
+        <div className="rounded-2xl p-8 max-w-md w-full text-center" style={{ background: '#111', border: '1px solid #2c2c2e' }}>
+          <div className="text-4xl mb-3">⚠️</div>
+          <h2 className="text-lg font-bold text-text-primary mb-2">Data load nahi ho paya</h2>
+          <p className="text-text-muted text-sm mb-4">{fetchError}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-5 py-2 rounded-xl text-white text-sm font-semibold"
+            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
+          >
+            Dubara try karo
+          </button>
         </div>
       </div>
     )

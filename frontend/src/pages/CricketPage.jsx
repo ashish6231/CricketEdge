@@ -63,24 +63,31 @@ export default function CricketPage() {
   }, [])
 
   useEffect(() => {
+    // Match detail open hone par bulk odds band — server match detail ke liye free
+    if (matchId) return
+
     const matches = competitions[selectedComp] || []
     if (!matches.length) return
-    const matchIds = matches.map(m => m.matchId)
-    
+    // Sirf live/upcoming matches ke odds refresh karo
+    const activeIds = matches
+      .filter(m => m.status !== 'ended')
+      .map(m => m.matchId)
+    if (!activeIds.length) return
+
     const fetchOdds = () => {
       import('../api').then(({ getCricketOddsBulk }) => {
-        getCricketOddsBulk(matchIds).then(data => {
+        getCricketOddsBulk(activeIds).then(data => {
           if (data && !data.error) {
             setOddsMap(prev => ({ ...prev, ...data }))
           }
         })
       })
     }
-    
+
     fetchOdds()
-    const interval = setInterval(fetchOdds, 2000)
+    const interval = setInterval(fetchOdds, 3000)
     return () => clearInterval(interval)
-  }, [selectedComp, competitions])
+  }, [selectedComp, competitions, matchId])
 
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)

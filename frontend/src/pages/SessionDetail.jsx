@@ -94,7 +94,7 @@ export default function SessionDetail() {
       })
     }
     fetch(true)
-    const interval = setInterval(() => fetch(false), 2000)
+    const interval = setInterval(() => fetch(false), 3000)
     return () => clearInterval(interval)
   }, [matchId, isLoggedIn])
 

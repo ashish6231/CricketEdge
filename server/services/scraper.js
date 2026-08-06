@@ -23,6 +23,8 @@ const ENDPOINTS = {
 
 const CACHE_TTL = 15 * 1000;
 const LIST_TTL  = 60 * 1000;
+const SNAPSHOT_CACHE_TTL = 3000; // align with 3s frontend polling
+const LIST_CACHE_TTL = 10000;
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -103,8 +105,7 @@ function _cacheSet(key, data) {
 
 async function _cachedCall(endpoint, matchId) {
   const key = `${endpoint}:${matchId}`;
-  // 1.5 seconds TTL for live snapshots
-  const cached = _cacheGet(key, 1500);
+  const cached = _cacheGet(key, SNAPSHOT_CACHE_TTL);
   if (cached) return cached;
   
   if (_inFlight[key]) return _inFlight[key];
@@ -123,8 +124,7 @@ async function _cachedCall(endpoint, matchId) {
   return _inFlight[key];
 }
 
-async function _cachedList(key, fn, ttl = 5000) {
-  // 5 seconds TTL for match lists
+async function _cachedList(key, fn, ttl = LIST_CACHE_TTL) {
   const cached = _cacheGet(key, ttl);
   if (cached !== null) return cached;
   

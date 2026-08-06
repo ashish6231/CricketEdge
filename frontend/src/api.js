@@ -1,4 +1,5 @@
 const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
+const API_TIMEOUT_MS = 12000
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('auth_token')
@@ -6,9 +7,12 @@ const getAuthHeader = () => {
 }
 
 async function fetchAPI(endpoint, options = {}) {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS)
   try {
     const res = await fetch(`${API_BASE}${endpoint}`, {
       ...options,
+      signal: controller.signal,
       headers: { ...getAuthHeader(), ...options.headers }
     })
     if (!res.ok) {
@@ -17,9 +21,12 @@ async function fetchAPI(endpoint, options = {}) {
     }
     return await res.json()
   } catch (err) {
+    if (err.name === 'AbortError') throw { detail: 'Request timeout — server slow hai, dubara try karo' }
     if (err.detail) throw err
     console.error(`API Error: ${endpoint}`, err)
     throw { detail: 'Network error' }
+  } finally {
+    clearTimeout(timer)
   }
 }
 
