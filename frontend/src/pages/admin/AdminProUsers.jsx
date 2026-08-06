@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react'
-import { LoaderCircle, Search, ChevronLeft, ChevronRight, Crown, Ban, CheckCircle, PauseCircle, ChevronDown, Clock } from 'lucide-react'
+import { LoaderCircle, Search, ChevronLeft, ChevronRight, Crown, Ban, CheckCircle, PauseCircle, Clock, MoreVertical, X } from 'lucide-react'
 import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan } from '../../api'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -30,11 +30,14 @@ const Chip = ({ cfg }) => (
   </span>
 )
 
-const ActionBtn = ({ onClick, disabled, color, bg, children }) => (
-  <button onClick={onClick} disabled={disabled}
-    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-opacity disabled:opacity-40"
-    style={{ color, background: bg }}>
-    {children}
+const ActionMenuItem = ({ onClick, disabled, color, icon, label, loading }) => (
+  <button onClick={onClick} disabled={disabled || loading}
+    className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all hover:bg-white/5 disabled:opacity-40"
+    style={{ color }}>
+    <div className="flex items-center gap-2.5">
+      {icon} <span>{label}</span>
+    </div>
+    {loading && <LoaderCircle size={14} className="animate-spin text-primary" />}
   </button>
 )
 
@@ -117,7 +120,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
           <p className="text-sm">No pro users found.</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2 relative">
           {users.map(u => {
             const statusCfg = STATUS_CFG[u.status || 'active']
             const planCfg   = PLAN_CFG[u.subPlanSlug || 'free']
@@ -128,7 +131,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
             const isExpired = remaining === 'Expired'
 
             return (
-              <div key={u.id} className="rounded-2xl overflow-hidden" style={{ background: '#111', border: '1px solid #1e1e1e' }}>
+              <div key={u.id} className={`relative rounded-2xl ${isOpen ? 'z-50' : 'z-0'}`} style={{ background: '#111', border: '1px solid #1e1e1e' }}>
 
                 {/* ── Card header ── */}
                 <div className="flex items-center gap-3 px-4 py-3">
@@ -155,54 +158,51 @@ export default function AdminProUsers({ isSuperAdmin }) {
                     <Chip cfg={planCfg} />
                     <Chip cfg={statusCfg} />
                     <button onClick={() => setExpanded(isOpen ? null : u.id)}
-                      className="p-1 rounded-lg transition-colors"
-                      style={{ background: isOpen ? 'rgba(220,38,38,0.1)' : 'rgba(255,255,255,0.04)' }}>
-                      <ChevronDown size={14} className="text-text-muted transition-transform duration-200" style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                      className="p-1.5 rounded-xl transition-all hover:bg-white/10 active:scale-95"
+                      style={{ background: isOpen ? 'rgba(255,255,255,0.1)' : 'transparent' }}>
+                      <MoreVertical size={16} className="text-text-muted" />
                     </button>
                   </div>
                 </div>
 
-                {/* ── Manage panel ── */}
-                <div style={{
-                  maxHeight: isOpen ? 300 : 0,
-                  overflow: 'hidden',
-                  transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1)',
-                }}>
-                  <div className="px-4 py-3 flex flex-wrap gap-2 items-center" style={{ borderTop: '1px solid #1e1e1e', background: '#0d0d0d' }}>
+                {/* ── Floating Popover Menu ── */}
+                {isOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setExpanded(null)}></div>
+                    <div className="absolute right-4 top-14 z-50 w-52 rounded-2xl border border-[#2c2c2e] p-1 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-200"
+                      style={{ background: 'rgba(20,20,20,0.85)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+                      
+                      <div className="px-3 py-2 text-[10px] font-bold tracking-wider uppercase text-[#555] border-b border-[#2c2c2e] mb-1">
+                        Manage User
+                      </div>
 
-                    {/* Status actions */}
-                    {(u.role === 'user' || (isSuperAdmin && u.role === 'admin')) && (<>
-                      {u.status !== 'active' && (
-                        <ActionBtn disabled={isActing} color="#10b981" bg="rgba(16,185,129,0.1)"
-                          onClick={() => act(u.id, adminUpdateUserStatus, u.id, 'active', 'Admin action')}>
-                          <CheckCircle size={12} /> Activate
-                        </ActionBtn>
-                      )}
-                      {u.status !== 'suspended' && (
-                        <ActionBtn disabled={isActing} color="#f59e0b" bg="rgba(245,158,11,0.1)"
-                          onClick={() => act(u.id, adminUpdateUserStatus, u.id, 'suspended', 'Admin action')}>
-                          <PauseCircle size={12} /> Suspend
-                        </ActionBtn>
-                      )}
-                      {u.status !== 'banned' && (
-                        <ActionBtn disabled={isActing} color="#ef4444" bg="rgba(239,68,68,0.1)"
-                          onClick={() => act(u.id, adminUpdateUserStatus, u.id, 'banned', 'Admin action')}>
-                          <Ban size={12} /> Ban
-                        </ActionBtn>
-                      )}
-                    </>)}
+                      {/* Status actions */}
+                      {(u.role === 'user' || (isSuperAdmin && u.role === 'admin')) && (<>
+                        {u.status !== 'active' && (
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#10b981" icon={<CheckCircle size={14} />} label="Activate"
+                            onClick={() => act(u.id, adminUpdateUserStatus, u.id, 'active', 'Admin action')} />
+                        )}
+                        {u.status !== 'suspended' && (
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#f59e0b" icon={<PauseCircle size={14} />} label="Suspend"
+                            onClick={() => act(u.id, adminUpdateUserStatus, u.id, 'suspended', 'Admin action')} />
+                        )}
+                        {u.status !== 'banned' && (
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#ef4444" icon={<Ban size={14} />} label="Ban User"
+                            onClick={() => act(u.id, adminUpdateUserStatus, u.id, 'banned', 'Admin action')} />
+                        )}
+                      </>)}
 
-                    {/* Plan actions */}
-                    {u.role === 'user' && (
-                      <ActionBtn disabled={isActing} color="#8e8e93" bg="rgba(142,142,147,0.1)"
-                        onClick={() => act(u.id, adminUpdateUserPlan, u.id, 'free', 'Admin revoke')}>
-                        Revoke Pro
-                      </ActionBtn>
-                    )}
-
-                    {isActing && <LoaderCircle size={14} className="animate-spin text-[#f59e0b] ml-1" />}
-                  </div>
-                </div>
+                      {/* Plan actions */}
+                      {u.role === 'user' && (
+                        <>
+                          <div className="h-px bg-[#2c2c2e] my-1"></div>
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#8e8e93" icon={<X size={14} />} label="Revoke Pro"
+                            onClick={() => act(u.id, adminUpdateUserPlan, u.id, 'free', 'Admin revoke')} />
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
 
               </div>
             )
