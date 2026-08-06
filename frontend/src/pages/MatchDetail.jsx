@@ -6,6 +6,7 @@ import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
+import { predictMatchWinner } from '../utils/matchWinnerPredictor'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -561,7 +562,11 @@ export default function MatchDetail({ sport }) {
   const bTotal = bBack + bLay
   const aBackPct = aTotal > 0 ? (aBack / aTotal * 100) : 50
   const bBackPct = bTotal > 0 ? (bBack / bTotal * 100) : 50
-  const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0
+
+  const matchWinnerPrediction = predictMatchWinner(snapshot)
+  const predictedMatchWinner = matchWinnerPrediction?.winnerName || bookieTeam
+  const matchWinnerReason = matchWinnerPrediction?.reason || 'Bookie back/lay ratio'
+  const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0 || !!matchWinnerPrediction
 
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
@@ -1049,8 +1054,14 @@ export default function MatchDetail({ sport }) {
                   {/* Predicted Winner Banner */}
                   <div className="rounded-xl p-4 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                     <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Predicted Winner</div>
-                    <div className="text-xl font-bold text-white">{bookieTeam}</div>
-                    <div className="text-xs mt-1 text-[#8e8e93]">Bookie favors this team</div>
+                    <div className="text-xl font-bold text-white">{predictedMatchWinner}</div>
+                    <div className="text-xs mt-1 text-[#8e8e93]">{matchWinnerReason} • Lower odds = favorite</div>
+                    {matchWinnerPrediction?.odds && (
+                      <div className="flex justify-center gap-4 mt-2 text-[10px] text-[#8e8e93]">
+                        <span>{t1}: {matchWinnerPrediction.odds.recent.t1?.toFixed(2) ?? matchWinnerPrediction.odds.preMatch.t1?.toFixed(2) ?? '—'}</span>
+                        <span>{t2}: {matchWinnerPrediction.odds.recent.t2?.toFixed(2) ?? matchWinnerPrediction.odds.preMatch.t2?.toFixed(2) ?? '—'}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Back/Lay ratio bars — both teams */}

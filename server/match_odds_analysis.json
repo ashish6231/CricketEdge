@@ -1,0 +1,1513 @@
+{
+  "generatedAt": "2026-08-06T18:37:23.389Z",
+  "results": [
+    {
+      "matchId": "35886500",
+      "matchName": "Sri Lanka W v Pakistan W",
+      "competition": "Womens International Twenty20 Matches",
+      "totalMatched": 12386830.764770003,
+      "actualWinner": "Sri Lanka W",
+      "odds": {
+        "winner": "Sri Lanka W",
+        "t1": {
+          "name": "Sri Lanka W",
+          "min": 1.01,
+          "max": 2.92,
+          "last": 1.36,
+          "recentMin": 1.01,
+          "tradeCount": 287
+        },
+        "t2": {
+          "name": "Pakistan W",
+          "min": 1.51,
+          "max": 160,
+          "last": 3.65,
+          "recentMin": 1.51,
+          "tradeCount": 373
+        }
+      },
+      "metrics": {
+        "t1": "Sri Lanka W",
+        "t2": "Pakistan W",
+        "o1": {
+          "min": 1.01,
+          "last": 1.36,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 1.51,
+          "last": 3.65,
+          "first": 120
+        },
+        "t1Back": 2985109.2804000005,
+        "t2Back": 2563652.611399999,
+        "t1Lay": 2941303.4781,
+        "t2Lay": 1718172.2463999998,
+        "t1Total": 5926412.7585,
+        "t2Total": 4281824.8577999985,
+        "mTotal": 10208237.616299998,
+        "t1LoadPct": 0.5805519994006609,
+        "t2LoadPct": 0.4194480005993392,
+        "t1LayTrades": 347,
+        "t2LayTrades": 317,
+        "bookieFav": "Sri Lanka W",
+        "msPred": "Sri Lanka W",
+        "trap": "none",
+        "preMatchOdds1": 1.0180000000000002,
+        "preMatchOdds2": 108,
+        "t1BackPct": 51.18439809927452,
+        "t2BackPct": 59.267271390554235
+      }
+    },
+    {
+      "matchId": "35905387",
+      "matchName": "Charaideo Sunrisers v Dibrugarh Warriors",
+      "competition": "Assam Premier League",
+      "totalMatched": 783.90891,
+      "actualWinner": "Dibrugarh Warriors",
+      "odds": {
+        "winner": "Dibrugarh Warriors",
+        "t1": {
+          "name": "Charaideo Sunrisers",
+          "min": 1.6,
+          "max": 26,
+          "last": 3,
+          "recentMin": 1.6,
+          "tradeCount": 51
+        },
+        "t2": {
+          "name": "Dibrugarh Warriors",
+          "min": 1.01,
+          "max": 2.54,
+          "last": 1.26,
+          "recentMin": 1.01,
+          "tradeCount": 67
+        }
+      },
+      "metrics": {
+        "t1": "Charaideo Sunrisers",
+        "t2": "Dibrugarh Warriors",
+        "o1": {
+          "min": 1.6,
+          "last": 3,
+          "first": 11
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 1.26,
+          "first": 1.01
+        },
+        "t1Back": 653.4449000000001,
+        "t2Back": 261.50140000000005,
+        "t1Lay": 170.8965,
+        "t2Lay": 90.3884,
+        "t1Total": 824.3414,
+        "t2Total": 351.88980000000004,
+        "mTotal": 1176.2312000000002,
+        "t1LoadPct": 0.7008327954572195,
+        "t2LoadPct": 0.29916720454278034,
+        "t1LayTrades": 62,
+        "t2LayTrades": 56,
+        "bookieFav": "Charaideo Sunrisers",
+        "msPred": "Charaideo Sunrisers",
+        "trap": "none",
+        "preMatchOdds1": 9.754,
+        "preMatchOdds2": 1.036,
+        "t1BackPct": 74.87820604671157,
+        "t2BackPct": 82.93228267830202
+      }
+    },
+    {
+      "matchId": "35901972",
+      "matchName": "Fearless Lions of West Ham v Sharks Academy",
+      "competition": "European Cricket Series",
+      "totalMatched": 7383.092990000001,
+      "actualWinner": "Sharks Academy",
+      "odds": {
+        "winner": "Sharks Academy",
+        "t1": {
+          "name": "Fearless Lions of West Ham",
+          "min": 4.7,
+          "max": 170,
+          "last": 4.7,
+          "recentMin": 4.7,
+          "tradeCount": 43
+        },
+        "t2": {
+          "name": "Sharks Academy",
+          "min": 1.01,
+          "max": 1.3,
+          "last": 1.2,
+          "recentMin": 1.01,
+          "tradeCount": 47
+        }
+      },
+      "metrics": {
+        "t1": "Fearless Lions of West Ham",
+        "t2": "Sharks Academy",
+        "o1": {
+          "min": 4.7,
+          "last": 4.7,
+          "first": 170
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 1.2,
+          "first": 1.01
+        },
+        "t1Back": 2061.7629999999995,
+        "t2Back": 244.28330000000022,
+        "t1Lay": 4971.707000000001,
+        "t2Lay": 277.4783000000002,
+        "t1Total": 7033.470000000001,
+        "t2Total": 521.7616000000005,
+        "mTotal": 7555.231600000002,
+        "t1LoadPct": 0.9309403566132902,
+        "t2LoadPct": 0.06905964338670972,
+        "t1LayTrades": 45,
+        "t2LayTrades": 45,
+        "bookieFav": "Fearless Lions of West Ham",
+        "msPred": "Sharks Academy",
+        "trap": "none",
+        "preMatchOdds1": 70.4,
+        "preMatchOdds2": 1.0180000000000002,
+        "t1BackPct": 46.35802622121985,
+        "t2BackPct": 62.64440400342587
+      }
+    },
+    {
+      "matchId": "35896815",
+      "matchName": "Jaffna Kings v Galle Marvels",
+      "competition": "Lanka Premier League",
+      "totalMatched": 33393597.470027998,
+      "actualWinner": "Jaffna Kings",
+      "odds": {
+        "winner": "Jaffna Kings",
+        "t1": {
+          "name": "Jaffna Kings",
+          "min": 1.01,
+          "max": 3.35,
+          "last": 2.6,
+          "recentMin": 1.01,
+          "tradeCount": 258
+        },
+        "t2": {
+          "name": "Galle Marvels",
+          "min": 1.42,
+          "max": 1000,
+          "last": 1.62,
+          "recentMin": 1.42,
+          "tradeCount": 423
+        }
+      },
+      "metrics": {
+        "t1": "Jaffna Kings",
+        "t2": "Galle Marvels",
+        "o1": {
+          "min": 1.01,
+          "last": 2.6,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 1.42,
+          "last": 1.62,
+          "first": 1000
+        },
+        "t1Back": 4217780.829,
+        "t2Back": 2233721.215199999,
+        "t1Lay": 4577075.812199999,
+        "t2Lay": 1722758.3789999997,
+        "t1Total": 8794856.641199999,
+        "t2Total": 3956479.594199999,
+        "mTotal": 12751336.235399997,
+        "t1LoadPct": 0.6897203931289883,
+        "t2LoadPct": 0.3102796068710118,
+        "t1LayTrades": 340,
+        "t2LayTrades": 341,
+        "bookieFav": "Jaffna Kings",
+        "msPred": "Galle Marvels",
+        "trap": "none",
+        "preMatchOdds1": 2.238,
+        "preMatchOdds2": 480,
+        "t1BackPct": 49.13863099815777,
+        "t2BackPct": 47.656180860152205
+      }
+    },
+    {
+      "matchId": "35883428",
+      "matchName": "Ireland v Afghanistan",
+      "competition": "One Day Internationals",
+      "totalMatched": 88170.15261,
+      "actualWinner": "Afghanistan",
+      "odds": {
+        "winner": "Afghanistan",
+        "t1": {
+          "name": "Ireland",
+          "min": 1.87,
+          "max": 4.2,
+          "last": 3,
+          "recentMin": 1.87,
+          "tradeCount": 97
+        },
+        "t2": {
+          "name": "Afghanistan",
+          "min": 1.31,
+          "max": 2.14,
+          "last": 1.45,
+          "recentMin": 1.31,
+          "tradeCount": 77
+        }
+      },
+      "metrics": {
+        "t1": "Ireland",
+        "t2": "Afghanistan",
+        "o1": {
+          "min": 1.87,
+          "last": 3,
+          "first": 1.87
+        },
+        "o2": {
+          "min": 1.31,
+          "last": 1.45,
+          "first": 2.14
+        },
+        "t1Back": 13455.922099999998,
+        "t2Back": 23749.6194,
+        "t1Lay": 17133.260599999994,
+        "t2Lay": 34285.815999999984,
+        "t1Total": 30589.18269999999,
+        "t2Total": 58035.43539999999,
+        "mTotal": 88624.61809999998,
+        "t1LoadPct": 0.3451544656077903,
+        "t2LoadPct": 0.6548455343922097,
+        "t1LayTrades": 84,
+        "t2LayTrades": 90,
+        "bookieFav": "Afghanistan",
+        "msPred": "Afghanistan",
+        "trap": "high",
+        "preMatchOdds1": 2.162,
+        "preMatchOdds2": 1.9099999999999997,
+        "t1BackPct": 43.278284375881505,
+        "t2BackPct": 41.348023700254174
+      }
+    },
+    {
+      "matchId": "35894889",
+      "matchName": "Hampshire v Glamorgan",
+      "competition": "Metro Bank One Day Cup",
+      "totalMatched": 383201.3059599999,
+      "actualWinner": "Hampshire",
+      "odds": {
+        "winner": "Hampshire",
+        "t1": {
+          "name": "Hampshire",
+          "min": 1.01,
+          "max": 2.1,
+          "last": 1.87,
+          "recentMin": 1.01,
+          "tradeCount": 194
+        },
+        "t2": {
+          "name": "Glamorgan",
+          "min": 1.9,
+          "max": 1000,
+          "last": 2.14,
+          "recentMin": 1.9,
+          "tradeCount": 199
+        }
+      },
+      "metrics": {
+        "t1": "Hampshire",
+        "t2": "Glamorgan",
+        "o1": {
+          "min": 1.01,
+          "last": 1.87,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 1.9,
+          "last": 2.14,
+          "first": 1000
+        },
+        "t1Back": 105145.41040000001,
+        "t2Back": 113554.6006,
+        "t1Lay": 77772.36570000002,
+        "t2Lay": 25199.89270000001,
+        "t1Total": 182917.77610000002,
+        "t2Total": 138754.49330000003,
+        "mTotal": 321672.26940000005,
+        "t1LoadPct": 0.568646394173759,
+        "t2LoadPct": 0.431353605826241,
+        "t1LayTrades": 190,
+        "t2LayTrades": 203,
+        "bookieFav": "Hampshire",
+        "msPred": "Hampshire",
+        "trap": "none",
+        "preMatchOdds1": 1.026,
+        "preMatchOdds2": 224.2,
+        "t1BackPct": 46.674746109398775,
+        "t2BackPct": 45.23560365963046
+      }
+    },
+    {
+      "matchId": "35891017",
+      "matchName": "Ruby Trichy Warriors v Madurai Panthers",
+      "competition": "Tamil Nadu Premier League",
+      "totalMatched": 1101591.5714790002,
+      "actualWinner": "Madurai Panthers",
+      "odds": {
+        "winner": "Madurai Panthers",
+        "t1": {
+          "name": "Ruby Trichy Warriors",
+          "min": 1.03,
+          "max": 500,
+          "last": 2.76,
+          "recentMin": 1.03,
+          "tradeCount": 337
+        },
+        "t2": {
+          "name": "Madurai Panthers",
+          "min": 1.01,
+          "max": 34,
+          "last": 2.7,
+          "recentMin": 1.01,
+          "tradeCount": 365
+        }
+      },
+      "metrics": {
+        "t1": "Ruby Trichy Warriors",
+        "t2": "Madurai Panthers",
+        "o1": {
+          "min": 1.03,
+          "last": 2.76,
+          "first": 500
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 2.7,
+          "first": 1.01
+        },
+        "t1Back": 356499.1215999998,
+        "t2Back": 251024.6414,
+        "t1Lay": 353625.9074,
+        "t2Lay": 250605.24910000007,
+        "t1Total": 710125.0289999999,
+        "t2Total": 501629.8905000001,
+        "mTotal": 1211754.9194999998,
+        "t1LoadPct": 0.5860302422316677,
+        "t2LoadPct": 0.41396975776833245,
+        "t1LayTrades": 345,
+        "t2LayTrades": 357,
+        "bookieFav": "Ruby Trichy Warriors",
+        "msPred": "Madurai Panthers",
+        "trap": "none",
+        "preMatchOdds1": 242,
+        "preMatchOdds2": 1.018,
+        "t1BackPct": 49.794363182935264,
+        "t2BackPct": 51.431208177516076
+      }
+    },
+    {
+      "matchId": "35894890",
+      "matchName": "Surrey v Kent",
+      "competition": "Metro Bank One Day Cup",
+      "totalMatched": 359777.89342,
+      "actualWinner": "Surrey",
+      "odds": {
+        "winner": "Surrey",
+        "t1": {
+          "name": "Surrey",
+          "min": 1.01,
+          "max": 3.2,
+          "last": 2.6,
+          "recentMin": 1.01,
+          "tradeCount": 258
+        },
+        "t2": {
+          "name": "Kent",
+          "min": 1.46,
+          "max": 1000,
+          "last": 1.56,
+          "recentMin": 1.46,
+          "tradeCount": 299
+        }
+      },
+      "metrics": {
+        "t1": "Surrey",
+        "t2": "Kent",
+        "o1": {
+          "min": 1.01,
+          "last": 2.6,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 1.46,
+          "last": 1.56,
+          "first": 1000
+        },
+        "t1Back": 128754.86590000002,
+        "t2Back": 56511.94989999999,
+        "t1Lay": 92385.65460000002,
+        "t2Lay": 66773.8785,
+        "t1Total": 221140.52050000004,
+        "t2Total": 123285.8284,
+        "mTotal": 344426.34890000004,
+        "t1LoadPct": 0.6420545965959343,
+        "t2LoadPct": 0.3579454034040657,
+        "t1LayTrades": 264,
+        "t2LayTrades": 293,
+        "bookieFav": "Kent",
+        "msPred": "Kent",
+        "trap": "high",
+        "preMatchOdds1": 2.3180000000000005,
+        "preMatchOdds2": 444,
+        "t1BackPct": 56.960107160705306,
+        "t2BackPct": 32.32578802841498
+      }
+    },
+    {
+      "matchId": "35897417",
+      "matchName": "United Arab Emirates v Canada",
+      "competition": "ICC Cricket World Cup League 2",
+      "totalMatched": 1400.7516869999997,
+      "actualWinner": "United Arab Emirates",
+      "odds": {
+        "winner": "United Arab Emirates",
+        "t1": {
+          "name": "United Arab Emirates",
+          "min": 1.64,
+          "max": 2.5,
+          "last": 2.04,
+          "recentMin": 1.64,
+          "tradeCount": 46
+        },
+        "t2": {
+          "name": "Canada",
+          "min": 1.66,
+          "max": 2.56,
+          "last": 1.95,
+          "recentMin": 1.66,
+          "tradeCount": 43
+        }
+      },
+      "metrics": {
+        "t1": "United Arab Emirates",
+        "t2": "Canada",
+        "o1": {
+          "min": 1.64,
+          "last": 2.04,
+          "first": 1.74
+        },
+        "o2": {
+          "min": 1.66,
+          "last": 1.95,
+          "first": 2.36
+        },
+        "t1Back": 371.64240000000007,
+        "t2Back": 522.3098,
+        "t1Lay": 334.3373,
+        "t2Lay": 430.3275,
+        "t1Total": 705.9797000000001,
+        "t2Total": 952.6373,
+        "mTotal": 1658.6170000000002,
+        "t1LoadPct": 0.4256435934275363,
+        "t2LoadPct": 0.5743564065724636,
+        "t1LayTrades": 43,
+        "t2LayTrades": 46,
+        "bookieFav": "United Arab Emirates",
+        "msPred": "Canada",
+        "trap": "none",
+        "preMatchOdds1": 2.086,
+        "preMatchOdds2": 1.9779999999999998,
+        "t1BackPct": 54.24954792043398,
+        "t2BackPct": 53.122351867544495
+      }
+    },
+    {
+      "matchId": "35898104",
+      "matchName": "Manchester Super Giants W v Welsh Fire W",
+      "competition": "The Hundred - Womens",
+      "totalMatched": 18698602.778976,
+      "actualWinner": "Welsh Fire W",
+      "odds": {
+        "winner": "Welsh Fire W",
+        "t1": {
+          "name": "Manchester Super Giants W",
+          "min": 1.25,
+          "max": 1000,
+          "last": 1.25,
+          "recentMin": 1.25,
+          "tradeCount": 356
+        },
+        "t2": {
+          "name": "Welsh Fire W",
+          "min": 1.01,
+          "max": 3.05,
+          "last": 2.6,
+          "recentMin": 1.01,
+          "tradeCount": 241
+        }
+      },
+      "metrics": {
+        "t1": "Manchester Super Giants W",
+        "t2": "Welsh Fire W",
+        "o1": {
+          "min": 1.25,
+          "last": 1.25,
+          "first": 1000
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 2.6,
+          "first": 1.01
+        },
+        "t1Back": 2715613.926100001,
+        "t2Back": 1709372.5596,
+        "t1Lay": 2592382.3427999998,
+        "t2Lay": 1511326.953700001,
+        "t1Total": 5307996.268900001,
+        "t2Total": 3220699.5133000007,
+        "mTotal": 8528695.782200001,
+        "t1LoadPct": 0.6223690473258725,
+        "t2LoadPct": 0.37763095267412766,
+        "t1LayTrades": 293,
+        "t2LayTrades": 304,
+        "bookieFav": "Manchester Super Giants W",
+        "msPred": "Welsh Fire W",
+        "trap": "none",
+        "preMatchOdds1": 850,
+        "preMatchOdds2": 1.0180000000000002,
+        "t1BackPct": 51.09866016694543,
+        "t2BackPct": 53.67533106587496
+      }
+    },
+    {
+      "matchId": "35901973",
+      "matchName": "Apex Cc v Comilla Warriors",
+      "competition": "European Cricket Series",
+      "totalMatched": 25681.4004,
+      "actualWinner": "Comilla Warriors",
+      "odds": {
+        "winner": "Comilla Warriors",
+        "t1": {
+          "name": "Apex Cc",
+          "min": 1.05,
+          "max": 6.4,
+          "last": 1.44,
+          "recentMin": 1.05,
+          "tradeCount": 135
+        },
+        "t2": {
+          "name": "Comilla Warriors",
+          "min": 1.01,
+          "max": 10,
+          "last": 2.56,
+          "recentMin": 1.01,
+          "tradeCount": 136
+        }
+      },
+      "metrics": {
+        "t1": "Apex Cc",
+        "t2": "Comilla Warriors",
+        "o1": {
+          "min": 1.05,
+          "last": 1.44,
+          "first": 2.42
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 2.56,
+          "first": 1.01
+        },
+        "t1Back": 7803.9677,
+        "t2Back": 4570.8215999999975,
+        "t1Lay": 7012.2539,
+        "t2Lay": 4874.338300000001,
+        "t1Total": 14816.2216,
+        "t2Total": 9445.159899999999,
+        "mTotal": 24261.3815,
+        "t1LoadPct": 0.6106915881933599,
+        "t2LoadPct": 0.38930841180664005,
+        "t1LayTrades": 138,
+        "t2LayTrades": 133,
+        "bookieFav": "Apex Cc",
+        "msPred": "Comilla Warriors",
+        "trap": "high",
+        "preMatchOdds1": 2.948,
+        "preMatchOdds2": 1.0720000000000003,
+        "t1BackPct": 35.020718050627536,
+        "t2BackPct": 47.87658647916464
+      }
+    },
+    {
+      "matchId": "35905388",
+      "matchName": "Barpeta Braves v Tezpur Titans",
+      "competition": "Assam Premier League",
+      "totalMatched": 611.6602800000001,
+      "actualWinner": "Barpeta Braves",
+      "odds": {
+        "winner": "Barpeta Braves",
+        "t1": {
+          "name": "Barpeta Braves",
+          "min": 1.01,
+          "max": 3,
+          "last": 1.7,
+          "recentMin": 1.01,
+          "tradeCount": 89
+        },
+        "t2": {
+          "name": "Tezpur Titans",
+          "min": 1.48,
+          "max": 50,
+          "last": 2.44,
+          "recentMin": 1.48,
+          "tradeCount": 56
+        }
+      },
+      "metrics": {
+        "t1": "Barpeta Braves",
+        "t2": "Tezpur Titans",
+        "o1": {
+          "min": 1.01,
+          "last": 1.7,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 1.48,
+          "last": 2.44,
+          "first": 13.5
+        },
+        "t1Back": 774.9785000000005,
+        "t2Back": 965.3191,
+        "t1Lay": 282.40810000000005,
+        "t2Lay": 807.4559999999999,
+        "t1Total": 1057.3866000000005,
+        "t2Total": 1772.7750999999998,
+        "mTotal": 2830.1617000000006,
+        "t1LoadPct": 0.37361349353289613,
+        "t2LoadPct": 0.6263865064671038,
+        "t1LayTrades": 68,
+        "t2LayTrades": 77,
+        "bookieFav": "Tezpur Titans",
+        "msPred": "Barpeta Braves",
+        "trap": "none",
+        "preMatchOdds1": 1.0580000000000003,
+        "preMatchOdds2": 26.9,
+        "t1BackPct": 81.60973929370437,
+        "t2BackPct": 74.50258470006322
+      }
+    },
+    {
+      "matchId": "35898081",
+      "matchName": "East Delhi Riders v North Delhi Strikers",
+      "competition": "Delhi Premier League",
+      "totalMatched": 267408.85362899996,
+      "actualWinner": "North Delhi Strikers",
+      "odds": {
+        "winner": "North Delhi Strikers",
+        "t1": {
+          "name": "East Delhi Riders",
+          "min": 1.35,
+          "max": 1000,
+          "last": 1.35,
+          "recentMin": 1.35,
+          "tradeCount": 251
+        },
+        "t2": {
+          "name": "North Delhi Strikers",
+          "min": 1.01,
+          "max": 2.8,
+          "last": 2.54,
+          "recentMin": 1.01,
+          "tradeCount": 228
+        }
+      },
+      "metrics": {
+        "t1": "East Delhi Riders",
+        "t2": "North Delhi Strikers",
+        "o1": {
+          "min": 1.35,
+          "last": 1.35,
+          "first": 1000
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 2.54,
+          "first": 1.01
+        },
+        "t1Back": 27790.202399999995,
+        "t2Back": 71876.60889999998,
+        "t1Lay": 31398.73759999999,
+        "t2Lay": 83588.46880000002,
+        "t1Total": 59188.93999999999,
+        "t2Total": 155465.0777,
+        "mTotal": 214654.01769999997,
+        "t1LoadPct": 0.275741123479563,
+        "t2LoadPct": 0.7242588765204371,
+        "t1LayTrades": 249,
+        "t2LayTrades": 230,
+        "bookieFav": "North Delhi Strikers",
+        "msPred": "East Delhi Riders",
+        "trap": "none",
+        "preMatchOdds1": 302.76,
+        "preMatchOdds2": 1.7540000000000002,
+        "t1BackPct": 31.413255239282705,
+        "t2BackPct": 44.96451686443842
+      }
+    },
+    {
+      "matchId": "35901974",
+      "matchName": "Sharks Cricket Academy v Apex Cc",
+      "competition": "European Cricket Series",
+      "totalMatched": 6348.889725,
+      "actualWinner": "Apex Cc",
+      "odds": {
+        "winner": "Apex Cc",
+        "t1": {
+          "name": "Sharks Cricket Academy",
+          "min": 1.2,
+          "max": 1000,
+          "last": 1.62,
+          "recentMin": 1.2,
+          "tradeCount": 135
+        },
+        "t2": {
+          "name": "Apex Cc",
+          "min": 1.01,
+          "max": 6,
+          "last": 1.37,
+          "recentMin": 1.01,
+          "tradeCount": 136
+        }
+      },
+      "metrics": {
+        "t1": "Sharks Cricket Academy",
+        "t2": "Apex Cc",
+        "o1": {
+          "min": 1.2,
+          "last": 1.62,
+          "first": 1000
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 1.37,
+          "first": 1.01
+        },
+        "t1Back": 4423.7707,
+        "t2Back": 2584.4857999999995,
+        "t1Lay": 2745.1874999999995,
+        "t2Lay": 1324.9228000000003,
+        "t1Total": 7168.958199999999,
+        "t2Total": 3909.4085999999998,
+        "mTotal": 11078.3668,
+        "t1LoadPct": 0.64711327305032,
+        "t2LoadPct": 0.35288672694968,
+        "t1LayTrades": 131,
+        "t2LayTrades": 140,
+        "bookieFav": "Sharks Cricket Academy",
+        "msPred": "Sharks Cricket Academy",
+        "trap": "none",
+        "preMatchOdds1": 243.6,
+        "preMatchOdds2": 1.022,
+        "t1BackPct": 34.04251870223131,
+        "t2BackPct": 72.17214695764144
+      }
+    },
+    {
+      "matchId": "35891019",
+      "matchName": "Chepauk Super Gillies v Nellai Royal Kings",
+      "competition": "Tamil Nadu Premier League",
+      "totalMatched": 1496039.9845599998,
+      "actualWinner": "Nellai Royal Kings",
+      "odds": {
+        "winner": "Nellai Royal Kings",
+        "t1": {
+          "name": "Chepauk Super Gillies",
+          "min": 1.46,
+          "max": 500,
+          "last": 1.57,
+          "recentMin": 1.46,
+          "tradeCount": 338
+        },
+        "t2": {
+          "name": "Nellai Royal Kings",
+          "min": 1.01,
+          "max": 3.2,
+          "last": 3.2,
+          "recentMin": 1.01,
+          "tradeCount": 277
+        }
+      },
+      "metrics": {
+        "t1": "Chepauk Super Gillies",
+        "t2": "Nellai Royal Kings",
+        "o1": {
+          "min": 1.46,
+          "last": 1.57,
+          "first": 500
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 3.2,
+          "first": 1.01
+        },
+        "t1Back": 125806.36610000007,
+        "t2Back": 351364.246,
+        "t1Lay": 133030.12589999998,
+        "t2Lay": 304018.65700000006,
+        "t1Total": 258836.49200000006,
+        "t2Total": 655382.903,
+        "mTotal": 914219.3950000001,
+        "t1LoadPct": 0.2831229499347911,
+        "t2LoadPct": 0.7168770500652089,
+        "t1LayTrades": 311,
+        "t2LayTrades": 304,
+        "bookieFav": "Chepauk Super Gillies",
+        "msPred": "Nellai Royal Kings",
+        "trap": "none",
+        "preMatchOdds1": 380,
+        "preMatchOdds2": 1.0180000000000002,
+        "t1BackPct": 36.81240637745874,
+        "t2BackPct": 52.643740320096775
+      }
+    },
+    {
+      "matchId": "35896816",
+      "matchName": "Colombo Kaps v Kandy Royals",
+      "competition": "Lanka Premier League",
+      "totalMatched": 20409413.868460998,
+      "actualWinner": "Colombo Kaps",
+      "odds": {
+        "winner": "Colombo Kaps",
+        "t1": {
+          "name": "Colombo Kaps",
+          "min": 1.01,
+          "max": 3.1,
+          "last": 2.12,
+          "recentMin": 1.01,
+          "tradeCount": 294
+        },
+        "t2": {
+          "name": "Kandy Royals",
+          "min": 1.48,
+          "max": 1000,
+          "last": 1.89,
+          "recentMin": 1.48,
+          "tradeCount": 401
+        }
+      },
+      "metrics": {
+        "t1": "Colombo Kaps",
+        "t2": "Kandy Royals",
+        "o1": {
+          "min": 1.01,
+          "last": 2.12,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 1.48,
+          "last": 1.89,
+          "first": 1000
+        },
+        "t1Back": 4023334.5190999983,
+        "t2Back": 2543887.275200001,
+        "t1Lay": 3332377.8495000005,
+        "t2Lay": 2381448.4631999996,
+        "t1Total": 7355712.368599999,
+        "t2Total": 4925335.738400001,
+        "mTotal": 12281048.107,
+        "t1LoadPct": 0.59894825787771,
+        "t2LoadPct": 0.40105174212228994,
+        "t1LayTrades": 348,
+        "t2LayTrades": 347,
+        "bookieFav": "Kandy Royals",
+        "msPred": "Colombo Kaps",
+        "trap": "none",
+        "preMatchOdds1": 2.458,
+        "preMatchOdds2": 620,
+        "t1BackPct": 56.53368876135205,
+        "t2BackPct": 48.952354860266304
+      }
+    },
+    {
+      "matchId": "35898055",
+      "matchName": "Manchester Super Giants v Welsh Fire",
+      "competition": "The Hundred",
+      "totalMatched": 36378068.46696,
+      "actualWinner": "Manchester Super Giants",
+      "odds": {
+        "winner": "Manchester Super Giants",
+        "t1": {
+          "name": "Manchester Super Giants",
+          "min": 1.01,
+          "max": 2.88,
+          "last": 1.75,
+          "recentMin": 1.01,
+          "tradeCount": 278
+        },
+        "t2": {
+          "name": "Welsh Fire",
+          "min": 1.53,
+          "max": 1000,
+          "last": 2.32,
+          "recentMin": 1.53,
+          "tradeCount": 362
+        }
+      },
+      "metrics": {
+        "t1": "Manchester Super Giants",
+        "t2": "Welsh Fire",
+        "o1": {
+          "min": 1.01,
+          "last": 1.75,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 1.53,
+          "last": 2.32,
+          "first": 1000
+        },
+        "t1Back": 4721868.275099999,
+        "t2Back": 7281186.763199999,
+        "t1Lay": 5481693.735599998,
+        "t2Lay": 6420314.997500007,
+        "t1Total": 10203562.010699999,
+        "t2Total": 13701501.760700006,
+        "mTotal": 23905063.771400005,
+        "t1LoadPct": 0.4268368454598113,
+        "t2LoadPct": 0.5731631545401886,
+        "t1LayTrades": 322,
+        "t2LayTrades": 318,
+        "bookieFav": "Manchester Super Giants",
+        "msPred": "No Prediction",
+        "trap": "none",
+        "preMatchOdds1": 1.018,
+        "preMatchOdds2": 594,
+        "t1BackPct": 48.76196374449232,
+        "t2BackPct": 52.484024978928254
+      }
+    },
+    {
+      "matchId": "35894891",
+      "matchName": "Trent Rockets W v Birmingham Phoenix W",
+      "competition": "The Hundred - Womens",
+      "totalMatched": 11331443.680479998,
+      "actualWinner": "Trent Rockets W",
+      "odds": {
+        "winner": "Trent Rockets W",
+        "t1": {
+          "name": "Trent Rockets W",
+          "min": 1.01,
+          "max": 1.77,
+          "last": 1.77,
+          "recentMin": 1.01,
+          "tradeCount": 142
+        },
+        "t2": {
+          "name": "Birmingham Phoenix W",
+          "min": 2.34,
+          "max": 1000,
+          "last": 2.34,
+          "recentMin": 2.34,
+          "tradeCount": 265
+        }
+      },
+      "metrics": {
+        "t1": "Trent Rockets W",
+        "t2": "Birmingham Phoenix W",
+        "o1": {
+          "min": 1.01,
+          "last": 1.77,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 2.34,
+          "last": 2.34,
+          "first": 1000
+        },
+        "t1Back": 1577103.3517999998,
+        "t2Back": 1163894.9616000003,
+        "t1Lay": 1706837.3911,
+        "t2Lay": 693616.6745,
+        "t1Total": 3283940.7429,
+        "t2Total": 1857511.6361000002,
+        "mTotal": 5141452.379000001,
+        "t1LoadPct": 0.6387184983591578,
+        "t2LoadPct": 0.3612815016408421,
+        "t1LayTrades": 200,
+        "t2LayTrades": 207,
+        "bookieFav": "Trent Rockets W",
+        "msPred": "Birmingham Phoenix W",
+        "trap": "none",
+        "preMatchOdds1": 1.02,
+        "preMatchOdds2": 562,
+        "t1BackPct": 47.62313163602745,
+        "t2BackPct": 52.011208308548696
+      }
+    },
+    {
+      "matchId": "35882856",
+      "matchName": "West Indies v Pakistan",
+      "competition": "Test Matches",
+      "totalMatched": 24296663.95222,
+      "actualWinner": "Pakistan",
+      "odds": {
+        "winner": "Pakistan",
+        "t1": {
+          "name": "West Indies",
+          "min": 1.65,
+          "max": 1000,
+          "last": 1.65,
+          "recentMin": 1.65,
+          "tradeCount": 418
+        },
+        "t2": {
+          "name": "Pakistan",
+          "min": 1.01,
+          "max": 4.6,
+          "last": 4.5,
+          "recentMin": 1.01,
+          "tradeCount": 351
+        }
+      },
+      "metrics": {
+        "t1": "West Indies",
+        "t2": "Pakistan",
+        "o1": {
+          "min": 1.65,
+          "last": 1.65,
+          "first": 240
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 4.5,
+          "first": 1.01
+        },
+        "t1Back": 6003381.018499998,
+        "t2Back": 7651736.536499999,
+        "t1Lay": 8033812.345300002,
+        "t2Lay": 7344725.493100002,
+        "t1Total": 14037193.3638,
+        "t2Total": 14996462.029600002,
+        "mTotal": 29033655.393400002,
+        "t1LoadPct": 0.48348005697522217,
+        "t2LoadPct": 0.5165199430247778,
+        "t1LayTrades": 380,
+        "t2LayTrades": 389,
+        "bookieFav": "West Indies",
+        "msPred": "Pakistan",
+        "trap": "none",
+        "preMatchOdds1": 141,
+        "preMatchOdds2": 3.682,
+        "t1BackPct": 41.45400310898527,
+        "t2BackPct": 50.39912065330029
+      }
+    },
+    {
+      "matchId": "35901975",
+      "matchName": "Comilla Warriors v Fearless Lions of West Ham",
+      "competition": "European Cricket Series",
+      "totalMatched": 2786.979019,
+      "actualWinner": "Comilla Warriors",
+      "odds": {
+        "winner": "Comilla Warriors",
+        "t1": {
+          "name": "Comilla Warriors",
+          "min": 1.01,
+          "max": 1.32,
+          "last": 1.26,
+          "recentMin": 1.01,
+          "tradeCount": 41
+        },
+        "t2": {
+          "name": "Fearless Lions of West Ham",
+          "min": 4.5,
+          "max": 36,
+          "last": 5.5,
+          "recentMin": 4.5,
+          "tradeCount": 14
+        }
+      },
+      "metrics": {
+        "t1": "Comilla Warriors",
+        "t2": "Fearless Lions of West Ham",
+        "o1": {
+          "min": 1.01,
+          "last": 1.26,
+          "first": 1.03
+        },
+        "o2": {
+          "min": 4.5,
+          "last": 5.5,
+          "first": 36
+        },
+        "t1Back": 134.05640000000008,
+        "t2Back": 404.71799999999996,
+        "t1Lay": 36.00930000000002,
+        "t2Lay": 144.97,
+        "t1Total": 170.0657000000001,
+        "t2Total": 549.688,
+        "mTotal": 719.7537000000001,
+        "t1LoadPct": 0.2362831896522381,
+        "t2LoadPct": 0.763716810347762,
+        "t1LayTrades": 28,
+        "t2LayTrades": 27,
+        "bookieFav": "Fearless Lions of West Ham",
+        "msPred": "Comilla Warriors",
+        "trap": "none",
+        "preMatchOdds1": 1.024,
+        "preMatchOdds2": 23.080000000000002,
+        "t1BackPct": 79.91477709749869,
+        "t2BackPct": 62.70747677782853
+      }
+    },
+    {
+      "matchId": "35894895",
+      "matchName": "Trent Rockets v Birmingham Phoenix",
+      "competition": "The Hundred",
+      "totalMatched": 46852964.892624,
+      "actualWinner": "Trent Rockets",
+      "odds": {
+        "winner": "Trent Rockets",
+        "t1": {
+          "name": "Trent Rockets",
+          "min": 1.01,
+          "max": 1.78,
+          "last": 1.73,
+          "recentMin": 1.01,
+          "tradeCount": 139
+        },
+        "t2": {
+          "name": "Birmingham Phoenix",
+          "min": 2.26,
+          "max": 1000,
+          "last": 2.26,
+          "recentMin": 2.26,
+          "tradeCount": 270
+        }
+      },
+      "metrics": {
+        "t1": "Trent Rockets",
+        "t2": "Birmingham Phoenix",
+        "o1": {
+          "min": 1.01,
+          "last": 1.73,
+          "first": 1.01
+        },
+        "o2": {
+          "min": 2.26,
+          "last": 2.26,
+          "first": 1000
+        },
+        "t1Back": 4948848.724799998,
+        "t2Back": 4032282.8387999996,
+        "t1Lay": 5375804.397899999,
+        "t2Lay": 2938999.7166000004,
+        "t1Total": 10324653.122699998,
+        "t2Total": 6971282.5554,
+        "mTotal": 17295935.678099997,
+        "t1LoadPct": 0.5969409990216955,
+        "t2LoadPct": 0.4030590009783046,
+        "t1LayTrades": 204,
+        "t2LayTrades": 205,
+        "bookieFav": "Trent Rockets",
+        "msPred": "Trent Rockets",
+        "trap": "none",
+        "preMatchOdds1": 1.5239999999999998,
+        "preMatchOdds2": 398,
+        "t1BackPct": 48.21503016434798,
+        "t2BackPct": 59.237916045371705
+      }
+    },
+    {
+      "matchId": "35901987",
+      "matchName": "South Delhi Superstarz v Outer Delhi Warriors",
+      "competition": "Delhi Premier League",
+      "totalMatched": 914629.1718080001,
+      "actualWinner": "Outer Delhi Warriors",
+      "odds": {
+        "winner": "Outer Delhi Warriors",
+        "t1": {
+          "name": "South Delhi Superstarz",
+          "min": 1.25,
+          "max": 1000,
+          "last": 1.35,
+          "recentMin": 1.25,
+          "tradeCount": 255
+        },
+        "t2": {
+          "name": "Outer Delhi Warriors",
+          "min": 1.01,
+          "max": 3.1,
+          "last": 1.25,
+          "recentMin": 1.01,
+          "tradeCount": 187
+        }
+      },
+      "metrics": {
+        "t1": "South Delhi Superstarz",
+        "t2": "Outer Delhi Warriors",
+        "o1": {
+          "min": 1.25,
+          "last": 1.35,
+          "first": 1000
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 1.25,
+          "first": 1.01
+        },
+        "t1Back": 81686.77999999998,
+        "t2Back": 177097.42820000002,
+        "t1Lay": 54818.78499999998,
+        "t2Lay": 121948.06660000006,
+        "t1Total": 136505.56499999997,
+        "t2Total": 299045.4948000001,
+        "mTotal": 435551.05980000005,
+        "t1LoadPct": 0.31340886889973757,
+        "t2LoadPct": 0.6865911311002625,
+        "t1LayTrades": 222,
+        "t2LayTrades": 220,
+        "bookieFav": "Outer Delhi Warriors",
+        "msPred": "Outer Delhi Warriors",
+        "trap": "none",
+        "preMatchOdds1": 600,
+        "preMatchOdds2": 1.02,
+        "t1BackPct": 47.048970842211006,
+        "t2BackPct": 47.60395957452722
+      }
+    },
+    {
+      "matchId": "35905389",
+      "matchName": "Barak Legends v Jorhat Stallions",
+      "competition": "Assam Premier League",
+      "totalMatched": 84973.13744800001,
+      "actualWinner": "Jorhat Stallions",
+      "odds": {
+        "winner": "Jorhat Stallions",
+        "t1": {
+          "name": "Barak Legends",
+          "min": 1.1,
+          "max": 1000,
+          "last": 1.69,
+          "recentMin": 1.1,
+          "tradeCount": 223
+        },
+        "t2": {
+          "name": "Jorhat Stallions",
+          "min": 1.01,
+          "max": 8.8,
+          "last": 2.54,
+          "recentMin": 1.01,
+          "tradeCount": 202
+        }
+      },
+      "metrics": {
+        "t1": "Barak Legends",
+        "t2": "Jorhat Stallions",
+        "o1": {
+          "min": 1.1,
+          "last": 1.69,
+          "first": 250
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 2.54,
+          "first": 1.01
+        },
+        "t1Back": 10399.529500000002,
+        "t2Back": 9489.7112,
+        "t1Lay": 15253.3278,
+        "t2Lay": 14441.3671,
+        "t1Total": 25652.857300000003,
+        "t2Total": 23931.0783,
+        "mTotal": 49583.935600000004,
+        "t1LoadPct": 0.517362266419207,
+        "t2LoadPct": 0.48263773358079304,
+        "t1LayTrades": 218,
+        "t2LayTrades": 207,
+        "bookieFav": "Barak Legends",
+        "msPred": "Barak Legends",
+        "trap": "none",
+        "preMatchOdds1": 314,
+        "preMatchOdds2": 1.0180000000000002,
+        "t1BackPct": 42.04675913586547,
+        "t2BackPct": 49.54602431285741
+      }
+    },
+    {
+      "matchId": "35903766",
+      "matchName": "Rainham v Apex Cc",
+      "competition": "European Cricket Series",
+      "totalMatched": 35257.635936000006,
+      "actualWinner": "Apex Cc",
+      "odds": {
+        "winner": "Apex Cc",
+        "t1": {
+          "name": "Rainham",
+          "min": 1.88,
+          "max": 330,
+          "last": 1.88,
+          "recentMin": 1.88,
+          "tradeCount": 54
+        },
+        "t2": {
+          "name": "Apex Cc",
+          "min": 1.01,
+          "max": 2.14,
+          "last": 1.61,
+          "recentMin": 1.01,
+          "tradeCount": 69
+        }
+      },
+      "metrics": {
+        "t1": "Rainham",
+        "t2": "Apex Cc",
+        "o1": {
+          "min": 1.88,
+          "last": 1.88,
+          "first": 10
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 1.61,
+          "first": 1.01
+        },
+        "t1Back": 29832.395800000002,
+        "t2Back": 615.7665000000002,
+        "t1Lay": 72567.661,
+        "t2Lay": 714.2868000000003,
+        "t1Total": 102400.05679999999,
+        "t2Total": 1330.0533000000005,
+        "mTotal": 103730.11009999999,
+        "t1LoadPct": 0.9871777510048165,
+        "t2LoadPct": 0.012822248995183517,
+        "t1LayTrades": 53,
+        "t2LayTrades": 70,
+        "bookieFav": "Rainham",
+        "msPred": "Apex Cc",
+        "trap": "low",
+        "preMatchOdds1": 21.3,
+        "preMatchOdds2": 1.0219999999999998,
+        "t1BackPct": 44.914867046389084,
+        "t2BackPct": 17.636485568432857
+      }
+    },
+    {
+      "matchId": "35898196",
+      "matchName": "Typhoons v Dragons",
+      "competition": "Super 50 Cup Women",
+      "totalMatched": 50696.113192,
+      "actualWinner": "Typhoons",
+      "odds": {
+        "winner": "Typhoons",
+        "t1": {
+          "name": "Typhoons",
+          "min": 1.01,
+          "max": 2.58,
+          "last": 2.58,
+          "recentMin": 1.01,
+          "tradeCount": 97
+        },
+        "t2": {
+          "name": "Dragons",
+          "min": 1.64,
+          "max": 1000,
+          "last": 1.64,
+          "recentMin": 1.64,
+          "tradeCount": 106
+        }
+      },
+      "metrics": {
+        "t1": "Typhoons",
+        "t2": "Dragons",
+        "o1": {
+          "min": 1.01,
+          "last": 2.58,
+          "first": 1.4
+        },
+        "o2": {
+          "min": 1.64,
+          "last": 1.64,
+          "first": 21
+        },
+        "t1Back": 2592.3789,
+        "t2Back": 29084.016200000005,
+        "t1Lay": 2855.8714999999997,
+        "t2Lay": 14580.6325,
+        "t1Total": 5448.2504,
+        "t2Total": 43664.648700000005,
+        "mTotal": 49112.8991,
+        "t1LoadPct": 0.11093318659333633,
+        "t2LoadPct": 0.8890668134066637,
+        "t1LayTrades": 84,
+        "t2LayTrades": 119,
+        "bookieFav": "Typhoons",
+        "msPred": "Typhoons",
+        "trap": "none",
+        "preMatchOdds1": 1.194,
+        "preMatchOdds2": 270.548,
+        "t1BackPct": 47.0641248996664,
+        "t2BackPct": 60.36828998412862
+      }
+    },
+    {
+      "matchId": "35903771",
+      "matchName": "Markhor London v Comilla Warriors",
+      "competition": "European Cricket Series",
+      "totalMatched": 15778.839887999999,
+      "actualWinner": "Comilla Warriors",
+      "odds": {
+        "winner": "Comilla Warriors",
+        "t1": {
+          "name": "Markhor London",
+          "min": 1.62,
+          "max": 120,
+          "last": 1.62,
+          "recentMin": 1.62,
+          "tradeCount": 114
+        },
+        "t2": {
+          "name": "Comilla Warriors",
+          "min": 1.01,
+          "max": 2.12,
+          "last": 1.95,
+          "recentMin": 1.01,
+          "tradeCount": 140
+        }
+      },
+      "metrics": {
+        "t1": "Markhor London",
+        "t2": "Comilla Warriors",
+        "o1": {
+          "min": 1.62,
+          "last": 1.62,
+          "first": 25
+        },
+        "o2": {
+          "min": 1.01,
+          "last": 1.95,
+          "first": 1.01
+        },
+        "t1Back": 3090.4901999999993,
+        "t2Back": 2872.6409,
+        "t1Lay": 4392.496900000001,
+        "t2Lay": 5561.218799999998,
+        "t1Total": 7482.9871,
+        "t2Total": 8433.859699999997,
+        "mTotal": 15916.846799999998,
+        "t1LoadPct": 0.47012999459164245,
+        "t2LoadPct": 0.5298700054083576,
+        "t1LayTrades": 132,
+        "t2LayTrades": 122,
+        "bookieFav": "Comilla Warriors",
+        "msPred": "Markhor London",
+        "trap": "high",
+        "preMatchOdds1": 63.4,
+        "preMatchOdds2": 1.022,
+        "t1BackPct": 41.20375096056252,
+        "t2BackPct": 35.69872425086824
+      }
+    }
+  ]
+}
