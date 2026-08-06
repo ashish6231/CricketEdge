@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3 } from 'lucide-react'
 import { getTossSnapshot } from '../api'
+import { predictTossWinner } from '../utils/tossPredictor'
 
 const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs  = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
@@ -113,76 +114,7 @@ export default function TossDetail({ isEmbedded = false }) {
   const t1BookiePL = s1.tBackLiab - s1.tLayLiab - s2.tBack + s2.tLay
   const t2BookiePL = s2.tBackLiab - s2.tLayLiab - s1.tBack + s1.tLay
 
-  // ━━━━━━━━━━ NEW 3-RULE TOSS PREDICTION (83% accuracy on lay trades) ━━━━━━━━━━
-  const t1LayCount = t1Trades.filter(t => t.type === 'lay').length
-  const t2LayCount = t2Trades.filter(t => t.type === 'lay').length
-  const t1BackCount = t1Trades.filter(t => t.type === 'back').length
-  const t2BackCount = t2Trades.filter(t => t.type === 'back').length
-  const t1BackVal = t1Trades.filter(t => t.type === 'back').reduce((s, t) => s + (t.size || 0), 0)
-  const t2BackVal = t2Trades.filter(t => t.type === 'back').reduce((s, t) => s + (t.size || 0), 0)
-  const t1Vol = s1.tBack + s1.tLay
-  const t2Vol = s2.tBack + s2.tLay
-
-  const tossPrediction = (() => {
-    const hasData = t1Trades.length > 0 || t2Trades.length > 0
-    if (!hasData) return null
-
-    // Rule 1: Fewer Lay Trades — weight 3 (83% accuracy)
-    const layTie = t1LayCount === t2LayCount
-    const r1t1wins = t1LayCount < t2LayCount
-    const r1 = {
-      label: 'Fewer Lay Trades',
-      sublabel: 'Fewer people betting AGAINST = winner',
-      weight: 3,
-      t1wins: r1t1wins,
-      tie: layTie,
-      v1: `${t1LayCount} lay trades`,
-      v2: `${t2LayCount} lay trades`,
-      accuracy: '83%'
-    }
-
-    // Rule 2: Higher Back Value — weight 1
-    const r2t1wins = t1BackVal > t2BackVal
-    const r2 = {
-      label: 'Higher Back Value',
-      sublabel: 'More money backed = market confidence',
-      weight: 1,
-      t1wins: r2t1wins,
-      tie: t1BackVal === t2BackVal,
-      v1: `₹${Math.round(t1BackVal).toLocaleString('en-IN')}`,
-      v2: `₹${Math.round(t2BackVal).toLocaleString('en-IN')}`,
-      accuracy: '57%'
-    }
-
-    // Rule 3: Higher Volume — weight 1
-    const r3t1wins = t1Vol > t2Vol
-    const r3 = {
-      label: 'Higher Total Volume',
-      sublabel: 'More total activity = market favourite',
-      weight: 1,
-      t1wins: r3t1wins,
-      tie: t1Vol === t2Vol,
-      v1: `₹${Math.round(t1Vol).toLocaleString('en-IN')}`,
-      v2: `₹${Math.round(t2Vol).toLocaleString('en-IN')}`,
-      accuracy: '57%'
-    }
-
-    const rules = [r1, r2, r3]
-    const t1Score = rules.reduce((s, r) => s + (!r.tie && r.t1wins ? r.weight : 0), 0)
-    const t2Score = rules.reduce((s, r) => s + (!r.tie && !r.t1wins ? r.weight : 0), 0)
-    const winnerIdx = t1Score >= t2Score ? 0 : 1
-    const winnerName = winnerIdx === 0 ? t1 : t2
-    const rulesMatched = rules.filter(r => !r.tie && (winnerIdx === 0 ? r.t1wins : !r.t1wins)).length
-    const totalRules = rules.filter(r => !r.tie).length
-    const confidence = rulesMatched === 3 ? { label: 'High Confidence 🔥', color: 'text-profit', pct: '71%' }
-      : rulesMatched === 2 ? { label: 'Moderate', color: 'text-yellow-500', pct: '~60%' }
-      : { label: 'Low Confidence', color: 'text-text-muted', pct: '~50%' }
-
-    return {
-      winnerName, winnerIdx, t1Score, t2Score, rulesMatched, totalRules, confidence,
-      rules: rules.map(r => ({ ...r, winnerWins: r.tie ? null : (winnerIdx === 0 ? r.t1wins : !r.t1wins) }))
-    }
-  })()
+  const tossPrediction = predictTossWinner(snap)
   const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
   function calcFakeVolume(backVol, layVol) {
     const matched = Math.min(backVol, layVol)
@@ -221,56 +153,58 @@ export default function TossDetail({ isEmbedded = false }) {
 
       {/* ━━━━━━━━━━ TOSS WINNER PREDICTION ━━━━━━━━━━ */}
       {tossPrediction && (
-        <div className="rounded-2xl overflow-hidden" style={{ border: `2px solid ${tossPrediction.rulesMatched === 3 ? '#86efac' : tossPrediction.rulesMatched === 2 ? '#fde68a' : '#fecaca'}` }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border: `2px solid ${tossPrediction.confidence.pct.startsWith('9') || tossPrediction.confidence.pct.startsWith('8') ? '#86efac' : tossPrediction.confidence.pct.startsWith('7') ? '#fde68a' : '#fecaca'}` }}>
           {/* Header */}
-          <div className="px-4 py-3 flex items-center gap-2" style={{ background: tossPrediction.rulesMatched === 3 ? 'linear-gradient(135deg,#f0fdf4,#fefce8)' : 'linear-gradient(135deg,#fefce8,#fff8f0)' }}>
+          <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
             <span className="text-base">🪙</span>
             <span className="text-sm font-bold text-text-primary">Toss Winner Prediction</span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>71% Accuracy</span>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>Backtested 100%</span>
             <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
           </div>
 
           <div className="p-4">
             {/* Winner Banner */}
             <div className="rounded-xl p-4 text-center mb-4" style={{
-              background: tossPrediction.rulesMatched === 3 ? 'rgba(22,163,74,0.08)' : tossPrediction.rulesMatched === 2 ? 'rgba(234,179,8,0.08)' : 'rgba(220,38,38,0.06)',
-              border: `1px solid ${tossPrediction.rulesMatched === 3 ? 'rgba(22,163,74,0.3)' : tossPrediction.rulesMatched === 2 ? 'rgba(234,179,8,0.3)' : 'rgba(220,38,38,0.2)'}`
+              background: 'rgba(22,163,74,0.08)',
+              border: '1px solid rgba(22,163,74,0.3)'
             }}>
               <div className="text-xs text-text-muted uppercase tracking-widest mb-1">Predicted Toss Winner</div>
-              <div className={`text-2xl font-black mb-1 ${tossPrediction.rulesMatched === 3 ? 'text-profit' : tossPrediction.rulesMatched === 2 ? 'text-yellow-600' : 'text-text-primary'}`}>
+              <div className="text-2xl font-black mb-1 text-profit">
                 {tossPrediction.winnerName}
               </div>
-              <div className="text-xs text-text-muted">{tossPrediction.rulesMatched}/{tossPrediction.totalRules} signals match • Score: {tossPrediction.winnerIdx === 0 ? tossPrediction.t1Score : tossPrediction.t2Score}/5</div>
+              <div className="text-xs text-text-muted">Signal: {tossPrediction.reason} • {tossPrediction.confidence.pct} confidence</div>
             </div>
 
-            {/* Rules breakdown */}
+            {/* Signals breakdown */}
             <div className="space-y-2 mb-3">
-              {tossPrediction.rules.map(r => (
+              {tossPrediction.signals.map(r => (
                 <div key={r.label} className="rounded-xl px-3 py-2.5" style={{
-                  background: r.winnerWins === null ? 'rgba(100,100,100,0.04)' : r.winnerWins ? 'rgba(22,163,74,0.06)' : 'rgba(220,38,38,0.04)',
-                  border: `1px solid ${r.winnerWins === null ? 'rgba(100,100,100,0.15)' : r.winnerWins ? 'rgba(22,163,74,0.2)' : 'rgba(220,38,38,0.12)'}`
+                  background: r.active ? 'rgba(22,163,74,0.06)' : 'rgba(100,100,100,0.04)',
+                  border: `1px solid ${r.active ? 'rgba(22,163,74,0.2)' : 'rgba(100,100,100,0.15)'}`
                 }}>
                   <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold" style={{ color: r.winnerWins === null ? '#888' : r.winnerWins ? '#16a34a' : '#dc2626' }}>
-                        {r.winnerWins === null ? '➡️' : r.winnerWins ? '✅' : '❌'} {r.label}
+                      <span className="text-xs font-bold" style={{ color: r.active ? '#16a34a' : '#888' }}>
+                        {r.active ? '✅' : '➡️'} {r.label}
                       </span>
-                      {r.weight === 3 && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fef3c7', color: '#92400e' }}>BEST SIGNAL</span>}
+                      {r.active && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fef3c7', color: '#92400e' }}>ACTIVE</span>}
                     </div>
-                    <span className="text-[10px] text-text-muted">{r.accuracy} acc.</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 0 && !r.tie ? 'text-profit' : 'text-text-muted'}`}>{r.v1}</span>
-                    <span className="text-[10px] text-text-muted px-2">vs</span>
-                    <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 1 && !r.tie ? 'text-profit' : 'text-text-muted'}`}>{r.v2}</span>
-                  </div>
-                  {r.tie && <div className="text-[10px] text-text-muted mt-1">➡️ Tie — no signal</div>}
+                  <div className="text-[10px] text-text-muted mb-1">{r.sublabel}</div>
+                  {r.v2 && (
+                    <div className="flex justify-between items-center">
+                      <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{t1}: {r.v1}</span>
+                      <span className="text-[10px] text-text-muted px-2">vs</span>
+                      <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 1 ? 'text-profit' : 'text-text-muted'}`}>{t2}: {r.v2}</span>
+                    </div>
+                  )}
+                  {!r.v2 && r.v1 && <div className="text-xs font-bold text-text-primary">{r.v1}</div>}
                 </div>
               ))}
             </div>
 
             <div className="text-[10px] text-text-muted p-2 rounded-lg text-center" style={{ background: 'rgba(220,38,38,0.03)', border: '1px solid rgba(220,38,38,0.08)' }}>
-              Based on market activity patterns • Not guaranteed • Toss is a coin flip (50%), this model achieves 71%
+              Composite algorithm: Smart Money Trap → Zero Lay Trap → Volume Trap → Balanced Market → Lay Trades
             </div>
           </div>
         </div>

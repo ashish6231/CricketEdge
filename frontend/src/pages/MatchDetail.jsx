@@ -5,6 +5,7 @@ import { useEffect, useState, useContext, useMemo } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
+import { predictTossWinner } from '../utils/tossPredictor'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -664,46 +665,9 @@ export default function MatchDetail({ sport }) {
   const tossT1PctVol = tossMarketVol > 0 ? ((tossT1GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
   const tossT2PctVol = tossMarketVol > 0 ? ((tossT2GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
 
-  const t1LayTrades = tossS1?.tradeCount ?? 0
-  const t2LayTrades = tossS2?.tradeCount ?? 0
-  const t1LayVol = tossM1?.lay ?? 0
-  const t2LayVol = tossM2?.lay ?? 0
-
-  let predictedTossWinner = 'Waiting for more data...';
-  if (tossM1 && tossM2) {
-    const t1Back = tossM1.back ?? 0;
-    const t2Back = tossM2.back ?? 0;
-    const t1Total = tossM1.totalBet ?? 0;
-    const t2Total = tossM2.totalBet ?? 0;
-    const mTotal = t1Total + t2Total;
-
-    if (mTotal > 0) {
-      const t1LoadPct = t1Total / mTotal;
-      const t2LoadPct = t2Total / mTotal;
-
-      // Trap 1: Smart Money Trap (e.g. Kandy Royals vs Colombo Kaps)
-      // Favorite has > 74% load, but Underdog has higher LayVol AND Underdog LayVol > Underdog BackVol
-      const t1IsTrapWinner = t2LoadPct > 0.74 && t1LayVol > t2LayVol && t1LayVol > t1Back;
-      const t2IsTrapWinner = t1LoadPct > 0.74 && t2LayVol > t1LayVol && t2LayVol > t2Back;
-
-      // Trap 2: Zero Lay Trap (e.g. Ruby Trichy vs Madurai Panthers)
-      // If a team has literally 0 Lay Volume and their load is moderate (<= 75%), they lose.
-      // (If load is extreme > 75%, like Welsh Fire W, they still win)
-      const t1ZeroLayTrap = t2LayVol === 0 && t1LayVol > 0 && t2LoadPct <= 0.75; // t2 loses -> t1 wins
-      const t2ZeroLayTrap = t1LayVol === 0 && t2LayVol > 0 && t1LoadPct <= 0.75; // t1 loses -> t2 wins
-
-      if (t1IsTrapWinner || t1ZeroLayTrap) {
-        predictedTossWinner = tossT1Name;
-      } else if (t2IsTrapWinner || t2ZeroLayTrap) {
-        predictedTossWinner = tossT2Name;
-      } else {
-        // Standard Logic
-        predictedTossWinner = t1LayTrades > t2LayTrades ? tossT1Name
-          : t2LayTrades > t1LayTrades ? tossT2Name
-          : (t1LayVol > t2LayVol ? tossT1Name : t2LayVol > t1LayVol ? tossT2Name : 'Waiting for more data...');
-      }
-    }
-  }
+  const tossPrediction = tossSnap ? predictTossWinner(tossSnap) : null
+  const predictedTossWinner = tossPrediction?.winnerName || 'Waiting for more data...'
+  const tossPredictionReason = tossPrediction?.reason || ''
 
   // Betfair Exchange P/L Formula:
   // If Team A wins:
@@ -876,7 +840,7 @@ export default function MatchDetail({ sport }) {
                 <div className="p-4">
                   <div className="rounded-xl p-4 text-center mb-5 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                     <div className="text-2xl font-black text-[#10b981] mb-1">{predictedTossWinner}</div>
-                    <div className="text-[10px] text-[#8e8e93]">Based on high lay trades • Not guaranteed</div>
+                    <div className="text-[10px] text-[#8e8e93]">{tossPredictionReason || 'Analyzing market signals...'} • Not guaranteed</div>
                   </div>
                   <div className="px-1">
                     <div className="grid grid-cols-3 gap-1 mb-2">
