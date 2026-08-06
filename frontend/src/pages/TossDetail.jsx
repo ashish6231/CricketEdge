@@ -3,6 +3,7 @@ import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3 } from 'lucide-react'
 import { getTossSnapshot } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
+import { getBookiePl, getTeamMetrics, getTradeStats } from '../utils/bookiePl'
 
 const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs  = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
@@ -82,8 +83,8 @@ export default function TossDetail({ isEmbedded = false }) {
   const tot = snap.deepMetrics?.totals || {}
   const sp  = snap.deepMetrics?.simplePL || {}
   const sup = snap.supportMetrics || {}
-  const am1 = snap.advancedMetrics?.team1 || {}
-  const am2 = snap.advancedMetrics?.team2 || {}
+  const am1 = getTeamMetrics(snap, 0)
+  const am2 = getTeamMetrics(snap, 1)
   const exp = snap.bookmakerExposure || {}
   const exp1 = exp.team1 || {}
   const exp2 = exp.team2 || {}
@@ -100,19 +101,9 @@ export default function TossDetail({ isEmbedded = false }) {
   const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
   const t2Bets = tot.totalBetTeam2 || tot.team2 || 0
 
-  const getTradeStats = (trades = []) => {
-    let tBack = 0, tLay = 0, tBackLiab = 0, tLayLiab = 0
-    trades.forEach(t => {
-      if (t.type === 'back') { tBack += t.size; tBackLiab += t.size * (t.price - 1) }
-      else if (t.type === 'lay') { tLay += t.size; tLayLiab += t.size * (t.price - 1) }
-    })
-    return { tBack, tLay, tBackLiab, tLayLiab }
-  }
   const s1 = getTradeStats(t1Trades)
   const s2 = getTradeStats(t2Trades)
-  // exact Betfair Bookie P/L
-  const t1BookiePL = s1.tBackLiab - s1.tLayLiab - s2.tBack + s2.tLay
-  const t2BookiePL = s2.tBackLiab - s2.tLayLiab - s1.tBack + s1.tLay
+  const { pl1: t1BookiePL, pl2: t2BookiePL, source: plSource } = getBookiePl(snap, t1, t2)
 
   const tossPrediction = predictTossWinner(snap)
   const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
@@ -280,7 +271,9 @@ export default function TossDetail({ isEmbedded = false }) {
       {/* Bookie P/L from Trades (Exact Betfair Formula) */}
       {(t1Trades.length > 0 || t2Trades.length > 0) && (
         <div className="glass-card rounded-2xl p-4">
-          <div className="text-xs font-bold text-text-muted uppercase mb-3">📈 Bookie P/L (Agar Team Jeete)</div>
+          <div className="text-xs font-bold text-text-muted uppercase mb-3">
+            📈 Bookie P/L (Agar Team Jeete){plSource === 'api' ? ' • API' : ' • Trades'}
+          </div>
           <div className="grid grid-cols-2 gap-3">
             {[{ name: t1, pl: t1BookiePL }, { name: t2, pl: t2BookiePL }].map(({ name, pl }) => (
               <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>

@@ -7,6 +7,7 @@ import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, Trend
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchWinner } from '../utils/matchWinnerPredictor'
+import { getBookiePl, calcBookiePlFromTrades } from '../utils/bookiePl'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -535,9 +536,7 @@ export default function MatchDetail({ sport }) {
   const t1Data = teams[t1] || {}
   const t2Data = teams[t2] || {}
 
-  // P/L if win — deepMetrics.simplePL is the correct source (all trades combined)
-  const pl1 = sp.team1_win ?? t1Data.pnlIfWins
-  const pl2 = sp.team2_win ?? t2Data.pnlIfWins
+  const { pl1, pl2 } = getBookiePl(snapshot, t1, t2)
   const dpl1 = dp.team1_win
   const dpl2 = dp.team2_win
 
@@ -674,23 +673,17 @@ export default function MatchDetail({ sport }) {
   const predictedTossWinner = tossPrediction?.winnerName || 'Waiting for more data...'
   const tossPredictionReason = tossPrediction?.reason || ''
 
-  // Betfair Exchange P/L Formula:
-  // If Team A wins:
-  //   PL = Σ(BackStakeA × (OddsA-1))  [back profit on winner]
-  //      − Σ(LayStakeA × (OddsA-1))   [lay loss on winner]
-  //      − Σ(BackStakeB)              [back loss on loser]
-  //      + Σ(LayStakeB)              [lay profit on loser]
+  // Betfair bookie P/L — prefer API simplePL; fallback to trade calc (same formula as TossDetail)
   if (t1GraphData && t2GraphData) {
-    t1GraphData.bookieProfitIfWins = -(t1GraphData.totalBackLiability - t1GraphData.totalLayLiability - t2GraphData.totalBack + t2GraphData.totalLay)
-    t2GraphData.bookieProfitIfWins = -(t2GraphData.totalBackLiability - t2GraphData.totalLayLiability - t1GraphData.totalBack + t1GraphData.totalLay)
+    const calc = calcBookiePlFromTrades(
+      snapshot?.teams?.[t1]?.trades || [],
+      snapshot?.teams?.[t2]?.trades || [],
+    )
+    t1GraphData.bookieProfitIfWins = calc.team1Win
+    t2GraphData.bookieProfitIfWins = calc.team2Win
 
-    // Sync with Simple View PL if on match odds and all time
+    // All-time match odds: use server-side simplePL (authoritative)
     if (marketType === 'match_odds' && timeFilter === 'all') {
-      const sp = snapshot?.deepMetrics?.simplePL || {}
-      const t1Data = snapshot?.teams?.[t1] || {}
-      const t2Data = snapshot?.teams?.[t2] || {}
-      const pl1 = sp.team1_win ?? t1Data.pnlIfWins
-      const pl2 = sp.team2_win ?? t2Data.pnlIfWins
       t1GraphData.bookieProfitIfWins = pl1 ?? t1GraphData.bookieProfitIfWins
       t2GraphData.bookieProfitIfWins = pl2 ?? t2GraphData.bookieProfitIfWins
     }
