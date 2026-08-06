@@ -7,7 +7,8 @@ import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, Trend
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchWinner } from '../utils/matchWinnerPredictor'
-import { getBookiePl, calcBookiePlFromTrades } from '../utils/bookiePl'
+import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../utils/bookiePl'
+import { getSpoofingMetrics } from '../utils/spoofingDetector'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -29,14 +30,6 @@ const fmtRs = (n) => {
 }
 
 const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
-
-// Fake volume from advancedMetricsV2 back/lay data (same as source site)
-function calcFakeVolume(backVol, layVol) {
-  const matched = Math.min(backVol, layVol)
-  const fakeBack = backVol - matched
-  const oppFakeLay = layVol - matched
-  return { fakeBack, oppFakeLay, total: fakeBack + oppFakeLay }
-}
 
 const fmtVol = (n) => {
   if (!n) return '0.00'
@@ -566,12 +559,7 @@ export default function MatchDetail({ sport }) {
   const t2Odds = getLatestOdds(t2Trades)
   const am1 = snapshot.advancedMetrics?.team1 || {}
   const am2 = snapshot.advancedMetrics?.team2 || {}
-  const t1Fake = calcFakeVolume(am1.back || 0, am1.lay || 0)
-  const t2Fake = calcFakeVolume(am2.back || 0, am2.lay || 0)
-  const totalFake = t1Fake.total + t2Fake.total
-  const t1Pct = totalFake > 0 ? (t1Fake.total / totalFake) * 100 : 50
-  const t2Pct = 100 - t1Pct
-  const mostFakeTeam = t1Fake.total >= t2Fake.total ? t1 : t2
+  const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snapshot)
   const sp = dm.simplePL || {}
   const dp = dm.derivedPL || {}
   const teams = snapshot.teams || {}
@@ -715,20 +703,13 @@ export default function MatchDetail({ sport }) {
   const predictedTossWinner = tossPrediction?.winnerName || 'Waiting for more data...'
   const tossPredictionReason = tossPrediction?.reason || ''
 
-  // Betfair bookie P/L — prefer API simplePL; fallback to trade calc (same formula as TossDetail)
+  // Bookie P/L on graph — from trades (respects time filter)
   if (t1GraphData && t2GraphData) {
-    const calc = calcBookiePlFromTrades(
-      snapshot?.teams?.[t1]?.trades || [],
-      snapshot?.teams?.[t2]?.trades || [],
-    )
+    const t1Filtered = filterTradesByTime(snapshot?.teams?.[t1]?.trades || [], effectiveTimeFilter)
+    const t2Filtered = filterTradesByTime(snapshot?.teams?.[t2]?.trades || [], effectiveTimeFilter)
+    const calc = calcBookiePlFromTrades(t1Filtered, t2Filtered)
     t1GraphData.bookieProfitIfWins = calc.team1Win
     t2GraphData.bookieProfitIfWins = calc.team2Win
-
-    // All-time match odds: use server-side simplePL (authoritative)
-    if (marketType === 'match_odds' && timeFilter === 'all') {
-      t1GraphData.bookieProfitIfWins = pl1 ?? t1GraphData.bookieProfitIfWins
-      t2GraphData.bookieProfitIfWins = pl2 ?? t2GraphData.bookieProfitIfWins
-    }
   }
   const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
   const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50

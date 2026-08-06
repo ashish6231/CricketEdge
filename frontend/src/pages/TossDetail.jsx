@@ -3,7 +3,8 @@ import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3 } from 'lucide-react'
 import { getTossSnapshot } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
-import { getBookiePl, getTeamMetrics, getTradeStats } from '../utils/bookiePl'
+import { getBookiePl, getTeamMetrics } from '../utils/bookiePl'
+import { getSpoofingMetrics } from '../utils/spoofingDetector'
 
 const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs  = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
@@ -101,22 +102,11 @@ export default function TossDetail({ isEmbedded = false }) {
   const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
   const t2Bets = tot.totalBetTeam2 || tot.team2 || 0
 
-  const s1 = getTradeStats(t1Trades)
-  const s2 = getTradeStats(t2Trades)
   const { pl1: t1BookiePL, pl2: t2BookiePL, source: plSource } = getBookiePl(snap, t1, t2)
 
   const tossPrediction = predictTossWinner(snap)
   const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
-  function calcFakeVolume(backVol, layVol) {
-    const matched = Math.min(backVol, layVol)
-    return { fakeBack: backVol - matched, oppFakeLay: layVol - matched, total: (backVol - matched) + (layVol - matched) }
-  }
-  const t1Fake = calcFakeVolume(am1.back || 0, am1.lay || 0)
-  const t2Fake = calcFakeVolume(am2.back || 0, am2.lay || 0)
-  const totalFake = t1Fake.total + t2Fake.total
-  const t1Pct = totalFake > 0 ? (t1Fake.total / totalFake) * 100 : 50
-  const t2Pct = 100 - t1Pct
-  const mostFakeTeam = t1Fake.total >= t2Fake.total ? t1 : t2
+  const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snap)
 
   return (
     <div className={`w-full fade-in space-y-4 ${isEmbedded ? '' : 'p-3'}`}>

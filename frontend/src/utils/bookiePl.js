@@ -35,8 +35,16 @@ export function calcBookiePlFromTrades(t1Trades, t2Trades) {
   }
 }
 
+/** Filter trades by time window (same logic as MatchDetail processTeamData) */
+export function filterTradesByTime(trades = [], timeFilter = 'all') {
+  if (timeFilter === 'all' || !trades.length) return trades
+  const hours = timeFilter === '1h' ? 1 : 3
+  const maxTime = Math.max(...trades.map(t => t.updatedAt || 0))
+  const cutoff = maxTime - hours * 60 * 60 * 1000
+  return trades.filter(t => (t.updatedAt || 0) >= cutoff)
+}
+
 /**
- * Best available P/L for UI — API first, then trade calc.
  * @returns {{ pl1, pl2, source: 'api' | 'trades' }}
  */
 export function getBookiePl(snap, t1, t2) {
