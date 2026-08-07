@@ -79,6 +79,13 @@ router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
   res.json(data);
 });
 
+router.get('/session/matches', verifyToken, async (req, res) => {
+  const data = await scraper.getAllSessionMatches();
+  if (data?.error) return res.status(502).json({ error: data.error });
+  const matches = Array.isArray(data) ? data : [];
+  res.json({ total: matches.length, matches });
+});
+
 router.get('/session/trades/:matchId', verifyToken, async (req, res) => {
   const data = await scraper.getSessionTrades(req.params.matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
@@ -102,8 +109,8 @@ router.get('/cricket/odds/:matchId', verifyToken, async (req, res) => {
   res.json({ matchId: req.params.matchId, teamNames: data.teamNames || [], odds: result });
 });
 router.get('/cricket/odds-bulk', verifyToken, async (req, res) => {
-  const matchIds = req.query.ids ? req.query.ids.split(',') : [];
-  if (!matchIds.length) return res.json({});
+  const matchIds = req.query.ids ? req.query.ids.split(',').filter(Boolean) : [];
+  if (!matchIds.length) return res.status(400).json({ error: 'No match IDs provided' });
   
   const results = {};
   await Promise.all(matchIds.map(async (id) => {

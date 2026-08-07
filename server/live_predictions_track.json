@@ -1,0 +1,291 @@
+{
+  "predictions": [
+    {
+      "matchId": "35903775",
+      "matchName": "Apex Cc v Markhor London",
+      "competition": "European Cricket Series",
+      "capturedAt": "2026-08-06T19:14:54.324Z",
+      "status": "in-play",
+      "moreBetted": "Markhor London",
+      "msPred": "Apex Cc",
+      "bookieFav": "Apex Cc",
+      "startPick": "Apex Cc",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "Apex Cc",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 2.4,
+        "pre2": 3,
+        "last1": 1.02,
+        "last2": 14
+      },
+      "teamNames": [
+        "Apex Cc",
+        "Markhor London"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:54.324Z"
+    },
+    {
+      "matchId": "35909452",
+      "matchName": "Brazil v Peru",
+      "competition": "International Twenty20 Matches",
+      "capturedAt": "2026-08-06T19:14:54.655Z",
+      "status": "in-play",
+      "moreBetted": "Peru",
+      "msPred": "Brazil",
+      "bookieFav": "Brazil",
+      "startPick": "Brazil",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "Brazil",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 1.31,
+        "pre2": 4.8,
+        "last1": 1.02,
+        "last2": 3.5
+      },
+      "teamNames": [
+        "Brazil",
+        "Peru"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:54.655Z"
+    },
+    {
+      "matchId": "35905390",
+      "matchName": "Nagaon Rangers v Guwahati Royals",
+      "competition": "Assam Premier League",
+      "capturedAt": "2026-08-06T19:14:54.993Z",
+      "status": "in-play",
+      "moreBetted": "Nagaon Rangers",
+      "msPred": "Guwahati Royals",
+      "bookieFav": "Guwahati Royals",
+      "startPick": "Guwahati Royals",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "Guwahati Royals",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 3.8,
+        "pre2": 1.96,
+        "last1": 21,
+        "last2": 1.06
+      },
+      "teamNames": [
+        "Nagaon Rangers",
+        "Guwahati Royals"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:54.993Z"
+    },
+    {
+      "matchId": "35904711",
+      "matchName": "New Delhi Tigers v Purani Delhi 6",
+      "competition": "Delhi Premier League",
+      "capturedAt": "2026-08-06T19:14:55.333Z",
+      "status": "in-play",
+      "moreBetted": "New Delhi Tigers",
+      "msPred": "New Delhi Tigers",
+      "bookieFav": "Purani Delhi 6",
+      "startPick": "Purani Delhi 6",
+      "startReason": "Fade Public Money",
+      "startHighConf": false,
+      "livePick": "Purani Delhi 6",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 1.58,
+        "pre2": 2.26,
+        "last1": 500,
+        "last2": 1.02
+      },
+      "teamNames": [
+        "New Delhi Tigers",
+        "Purani Delhi 6"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:55.333Z"
+    },
+    {
+      "matchId": "35909450",
+      "matchName": "Turks And Caicos v Colombia",
+      "competition": "International Twenty20 Matches",
+      "capturedAt": "2026-08-06T19:14:55.659Z",
+      "status": "in-play",
+      "moreBetted": "Turks And Caicos",
+      "msPred": "Colombia",
+      "bookieFav": "Colombia",
+      "startPick": "Colombia",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "Colombia",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 5,
+        "pre2": 2.68,
+        "last1": 290,
+        "last2": 1.02
+      },
+      "teamNames": [
+        "Turks And Caicos",
+        "Colombia"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:55.659Z"
+    },
+    {
+      "matchId": "35902018",
+      "matchName": "London Spirit W v MI London W",
+      "competition": "The Hundred - Womens",
+      "capturedAt": "2026-08-06T19:14:56.072Z",
+      "status": "in-play",
+      "moreBetted": "MI London W",
+      "msPred": "London Spirit W",
+      "bookieFav": "London Spirit W",
+      "startPick": "London Spirit W",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "MI London W",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 1.08,
+        "pre2": 9.6,
+        "last1": 110,
+        "last2": 1.02
+      },
+      "teamNames": [
+        "London Spirit W",
+        "MI London W"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:56.072Z"
+    },
+    {
+      "matchId": "35891022",
+      "matchName": "Salem Spartans v Lyca Kovai Kings",
+      "competition": "Tamil Nadu Premier League",
+      "capturedAt": "2026-08-06T19:14:56.394Z",
+      "status": "in-play",
+      "moreBetted": "Salem Spartans",
+      "msPred": "Salem Spartans",
+      "bookieFav": "Lyca Kovai Kings",
+      "startPick": "Lyca Kovai Kings",
+      "startReason": "Fade Public Money",
+      "startHighConf": false,
+      "livePick": "Lyca Kovai Kings",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 1.89,
+        "pre2": 2.22,
+        "last1": 210,
+        "last2": 1.02
+      },
+      "teamNames": [
+        "Salem Spartans",
+        "Lyca Kovai Kings"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:56.394Z"
+    },
+    {
+      "matchId": "35903778",
+      "matchName": "Comilla Warriors v Rainham",
+      "competition": "European Cricket Series",
+      "capturedAt": "2026-08-06T19:14:56.724Z",
+      "status": "in-play",
+      "moreBetted": "Rainham",
+      "msPred": "Comilla Warriors",
+      "bookieFav": "Comilla Warriors",
+      "startPick": "Comilla Warriors",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "Comilla Warriors",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 5.8,
+        "pre2": 1.23,
+        "last1": 1.02,
+        "last2": 12.5
+      },
+      "teamNames": [
+        "Comilla Warriors",
+        "Rainham"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:56.724Z"
+    },
+    {
+      "matchId": "35902022",
+      "matchName": "London Spirit v MI London",
+      "competition": "The Hundred",
+      "capturedAt": "2026-08-06T19:14:57.079Z",
+      "status": "in-play",
+      "moreBetted": "London Spirit",
+      "msPred": "London Spirit",
+      "bookieFav": "MI London",
+      "startPick": "MI London",
+      "startReason": "Fade Public Money",
+      "startHighConf": false,
+      "livePick": "MI London",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 1.98,
+        "pre2": 1.97,
+        "last1": 2.4,
+        "last2": 1.71
+      },
+      "teamNames": [
+        "London Spirit",
+        "MI London"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:57.079Z"
+    },
+    {
+      "matchId": "35909451",
+      "matchName": "Mexico v Panama",
+      "competition": "International Twenty20 Matches",
+      "capturedAt": "2026-08-06T19:14:57.404Z",
+      "status": "in-play",
+      "moreBetted": "Mexico",
+      "msPred": "Panama",
+      "bookieFav": "Panama",
+      "startPick": "Panama",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "Panama",
+      "liveReason": "Last 5 Odds (96%)",
+      "odds": {
+        "pre1": 2.42,
+        "pre2": 1.59,
+        "last1": 3.15,
+        "last2": 1.32
+      },
+      "teamNames": [
+        "Mexico",
+        "Panama"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:57.404Z"
+    },
+    {
+      "matchId": "35909449",
+      "matchName": "Peru v Colombia",
+      "competition": "International Twenty20 Matches",
+      "capturedAt": "2026-08-06T19:14:57.717Z",
+      "status": "in-play",
+      "moreBetted": "Peru",
+      "msPred": "Colombia",
+      "bookieFav": "Peru",
+      "startPick": "Colombia",
+      "startReason": "Fade Public Money",
+      "startHighConf": true,
+      "livePick": "Peru",
+      "liveReason": "Pre-Match Odds fallback",
+      "odds": {
+        "pre1": 2,
+        "pre2": 2,
+        "last1": 2,
+        "last2": 2
+      },
+      "teamNames": [
+        "Peru",
+        "Colombia"
+      ],
+      "firstCapturedAt": "2026-08-06T19:14:57.717Z"
+    }
+  ],
+  "verified": []
+}

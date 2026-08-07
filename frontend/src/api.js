@@ -49,7 +49,9 @@ export async function getCricketOdds(matchId) {
 }
 
 export async function getCricketOddsBulk(matchIds) {
-  if (!matchIds || matchIds.length === 0) return {};
+  if (!matchIds?.length) {
+    throw { detail: 'No match IDs provided' }
+  }
   return fetchAPI(`/cricket/odds-bulk?ids=${matchIds.join(',')}`)
 }
 

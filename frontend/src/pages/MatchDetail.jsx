@@ -6,9 +6,11 @@ import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
-import { predictMatchWinner } from '../utils/matchWinnerPredictor'
+import { predictMatchStart } from '../utils/matchStartPredictor'
 import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
+import { tradeMatchesMarket } from '../utils/sessionMetrics'
+import SessionPanel from '../components/SessionPanel'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -355,11 +357,12 @@ export default function MatchDetail({ sport }) {
   const [showMarketMenu, setShowMarketMenu] = useState(false)
   const [tossSnapshot, setTossSnapshot] = useState(null)
   const [sessionTrades, setSessionTrades] = useState([])
+  const [sessionOdds, setSessionOdds] = useState([])
   const [activeSessions, setActiveSessions] = useState([])
 
   const isSessionMarket = marketType.startsWith('session_')
   const selectedSessionName = isSessionMarket ? marketType.replace('session_', '') : ''
-  const selectedSessionTrades = isSessionMarket ? sessionTrades.filter(t => t.team === selectedSessionName) : []
+  const selectedSessionTrades = isSessionMarket ? sessionTrades.filter(t => tradeMatchesMarket(t, selectedSessionName)) : []
 
   const sessionOrderBook = useMemo(() => {
     if (!isSessionMarket || !selectedSessionTrades.length) return []
@@ -404,14 +407,15 @@ export default function MatchDetail({ sport }) {
     let cancelled = false
 
     const applySessionData = (sessionData) => {
-      if (!sessionData?.trades) return
-      setSessionTrades(sessionData.trades)
+      if (!sessionData?.trades && !sessionData?.odds?.length) return
+      if (sessionData.trades) setSessionTrades(sessionData.trades)
+      if (sessionData.odds) setSessionOdds(sessionData.odds)
       let activeSessionNames = []
       if (sessionData.odds?.length > 0) {
         activeSessionNames = [...new Set(sessionData.odds.map(o => o.marketName))]
       } else if (sessionData.markets?.length > 0) {
         activeSessionNames = [...new Set(sessionData.markets.map(m => m.marketName))]
-      } else {
+      } else if (sessionData.trades) {
         activeSessionNames = [...new Set(sessionData.trades.map(t => t.team))]
       }
       setActiveSessions(activeSessionNames)
@@ -592,10 +596,12 @@ export default function MatchDetail({ sport }) {
   const aBackPct = aTotal > 0 ? (aBack / aTotal * 100) : 50
   const bBackPct = bTotal > 0 ? (bBack / bTotal * 100) : 50
 
-  const matchWinnerPrediction = predictMatchWinner(snapshot)
-  const predictedMatchWinner = matchWinnerPrediction?.winnerName || bookieTeam
-  const matchWinnerReason = matchWinnerPrediction?.reason || 'Bookie back/lay ratio'
-  const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0 || !!matchWinnerPrediction
+  const primaryPrediction = predictMatchStart(snapshot)
+  const isLive = snapshot.inPlay || snapshot.status === 'in-play'
+  const predictedMatchWinner = primaryPrediction?.winnerName || bookieTeam
+  const matchWinnerReason = primaryPrediction?.reason || 'Bookie back/lay ratio'
+  const predictionAccuracy = primaryPrediction?.confidence?.pct || '84.6%'
+  const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0 || !!primaryPrediction
 
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
@@ -901,103 +907,7 @@ export default function MatchDetail({ sport }) {
           )}
         </div>
       ) : activeTab === 'session' ? (
-        <div className="space-y-3">
-          {activeSessions.length > 0 ? activeSessions.map(sessionName => {
-            const trades = sessionTrades.filter(t => t.team === sessionName)
-            const lineMap = {}
-            trades.forEach(t => {
-              const p = t.price
-              if (!lineMap[p]) lineMap[p] = { price: p, yes: 0, no: 0 }
-              if (t.type === 'back') lineMap[p].yes += t.size
-              else lineMap[p].no += t.size
-            })
-            const lines = Object.values(lineMap).sort((a, b) => a.price - b.price)
-            const bestYes = lines.reduce((best, l) => l.yes > 0 ? l.price : best, null)
-            const bestNo = lines.reduce((best, l) => l.no > 0 ? l.price : best, null)
-            const predicted = bestYes != null && bestNo != null ? Math.round((bestYes + bestNo) / 2 * 2) / 2 : bestYes ?? bestNo
-
-            // Bookie P/L at each run score using Betfair formula:
-            // score > line.price → yes wins: back loses (-yes), lay wins (+no)
-            // score <= line.price → no wins: back wins (+yes), lay loses (-no)
-            const calcPlAtScore = (score) => lines.reduce((pl, l) => {
-              return score > l.price
-                ? pl - l.yes + l.no
-                : pl + l.yes - l.no
-            }, 0)
-
-            const allPrices = lines.map(l => l.price)
-            const minScore = allPrices.length ? Math.floor(Math.min(...allPrices)) - 1 : 0
-            const maxScore = allPrices.length ? Math.ceil(Math.max(...allPrices)) + 1 : 0
-            const plRows = []
-            for (let s = minScore; s <= maxScore; s++) plRows.push({ score: s, pl: calcPlAtScore(s) })
-            const bestPlRow = plRows.reduce((best, r) => r.pl > best.pl ? r : best, plRows[0] || { score: 0, pl: 0 })
-
-            return (
-              <div key={sessionName} className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                <div className="px-4 py-2.5 border-b border-[#2c2c2e]">
-                  <span className="text-xs font-bold text-white">{sessionName}</span>
-                </div>
-                <div className="p-3">
-                  <div className="grid grid-cols-3 gap-2 mb-3">
-                    <div className="rounded-lg p-2 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-[10px] text-[#8e8e93] mb-0.5">Best Yes</div>
-                      <div className="text-sm font-bold text-[#3b82f6]">{bestYes ?? '—'}</div>
-                    </div>
-                    <div className="rounded-lg p-2 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-[10px] text-[#8e8e93] mb-0.5">Predicted</div>
-                      <div className="text-sm font-bold text-white">~{predicted ?? '—'}</div>
-                    </div>
-                    <div className="rounded-lg p-2 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-[10px] text-[#8e8e93] mb-0.5">Best No</div>
-                      <div className="text-sm font-bold text-[#ef4444]">{bestNo ?? '—'}</div>
-                    </div>
-                  </div>
-
-                  {/* Bookie P/L by score */}
-                  {plRows.length > 0 && (
-                    <div className="mb-3">
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[10px] text-[#8e8e93] font-bold uppercase tracking-wide">Bookie P/L by Score</span>
-                        <span className="text-[10px] text-[#10b981] font-bold">Best: {bestPlRow.score} runs ({fmtRs(bestPlRow.pl)})</span>
-                      </div>
-                      <div className="max-h-36 overflow-y-auto rounded-lg" style={{ border: '1px solid #2c2c2e' }}>
-                        <div className="grid grid-cols-2 text-[10px] text-[#8e8e93] font-semibold px-2 py-1 border-b border-[#2c2c2e]" style={{ background: '#0a0a0a' }}>
-                          <span>Score</span><span className="text-right">Bookie P/L</span>
-                        </div>
-                        {plRows.map(r => (
-                          <div key={r.score} className={`grid grid-cols-2 text-[10px] px-2 py-1 border-b border-[#2c2c2e]/30 ${r.score === bestPlRow.score ? 'bg-[#10b981]/10' : ''}`}>
-                            <span className={`font-bold ${r.score === bestPlRow.score ? 'text-[#10b981]' : 'text-white'}`}>{r.score}</span>
-                            <span className={`text-right font-bold ${r.pl >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>{fmtRs(r.pl)}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {lines.length > 0 && (
-                    <div className="max-h-40 overflow-y-auto">
-                      <div className="grid grid-cols-3 text-[10px] text-[#8e8e93] font-semibold pb-1 border-b border-[#2c2c2e] mb-1">
-                        <span>Price</span><span className="text-center text-[#3b82f6]">Yes</span><span className="text-right text-[#ef4444]">No</span>
-                      </div>
-                      {lines.map(l => (
-                        <div key={l.price} className="grid grid-cols-3 text-[10px] py-1 border-b border-[#2c2c2e]/30">
-                          <span className="text-white font-bold">{l.price}</span>
-                          <span className="text-center text-[#3b82f6]">{l.yes > 0 ? formatVolStr(l.yes) : '—'}</span>
-                          <span className="text-right text-[#ef4444]">{l.no > 0 ? formatVolStr(l.no) : '—'}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )
-          }) : (
-            <div className="flex h-[40vh] items-center justify-center text-center">
-              <div className="text-3xl mb-3">📊</div>
-              <p className="text-[#8e8e93] text-sm mt-2">No session data available</p>
-            </div>
-          )}
-        </div>
+        <SessionPanel odds={sessionOdds} trades={sessionTrades} />
       ) : (
         <>
           {isSessionMarket ? (
@@ -1064,18 +974,26 @@ export default function MatchDetail({ sport }) {
               {hasBLPrediction && (
                 <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
                   <div className="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                    <TrendingUp size={16} className="text-[#3b82f6]" /> Prediction
+                    <TrendingUp size={16} className="text-[#3b82f6]" /> Match Start Pick
+                    {primaryPrediction?.confidence && (
+                      <span className={`ml-auto text-[10px] font-semibold ${primaryPrediction.confidence.color}`}>
+                        {primaryPrediction.confidence.label}
+                      </span>
+                    )}
                   </div>
 
-                  {/* Predicted Winner Banner */}
+                  {/* Predicted Winner Banner — fixed at match open, odds change se pick nahi badlegi */}
                   <div className="rounded-xl p-4 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                    <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Predicted Winner</div>
+                    <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Match Start Pick</div>
                     <div className="text-xl font-bold text-white">{predictedMatchWinner}</div>
-                    <div className="text-xs mt-1 text-[#8e8e93]">{matchWinnerReason} • Lower odds = favorite</div>
-                    {matchWinnerPrediction?.odds && (
+                    <div className="text-xs mt-1 text-[#8e8e93]">{matchWinnerReason} • {predictionAccuracy} backtest (26 matches)</div>
+                    {isLive && (
+                      <div className="text-[10px] mt-1 text-[#636366]">Match open par fix — live odds change se pick nahi badlegi</div>
+                    )}
+                    {primaryPrediction?.preOdds && (
                       <div className="flex justify-center gap-4 mt-2 text-[10px] text-[#8e8e93]">
-                        <span>{t1}: {matchWinnerPrediction.odds.recent.t1?.toFixed(2) ?? matchWinnerPrediction.odds.preMatch.t1?.toFixed(2) ?? '—'}</span>
-                        <span>{t2}: {matchWinnerPrediction.odds.recent.t2?.toFixed(2) ?? matchWinnerPrediction.odds.preMatch.t2?.toFixed(2) ?? '—'}</span>
+                        <span>{t1}: {primaryPrediction.preOdds.t1?.toFixed(2) ?? '—'} <span className="text-[#636366]">(pre-match)</span></span>
+                        <span>{t2}: {primaryPrediction.preOdds.t2?.toFixed(2) ?? '—'} <span className="text-[#636366]">(pre-match)</span></span>
                       </div>
                     )}
                   </div>

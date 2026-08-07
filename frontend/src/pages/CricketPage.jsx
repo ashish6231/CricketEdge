@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams, Routes, Route } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock } from 'lucide-react'
-import { getCricketMatches, getCricketOdds, getTossMatches } from '../api'
+import { getCricketMatches, getCricketOddsBulk, getTossMatches } from '../api'
 import MatchDetail from './MatchDetail'
 
 const STORAGE_KEY = 'cricket_selected_comp'
@@ -75,13 +75,15 @@ export default function CricketPage() {
     if (!activeIds.length) return
 
     const fetchOdds = () => {
-      import('../api').then(({ getCricketOddsBulk }) => {
-        getCricketOddsBulk(activeIds).then(data => {
+      getCricketOddsBulk(activeIds)
+        .then(data => {
           if (data && !data.error) {
             setOddsMap(prev => ({ ...prev, ...data }))
           }
         })
-      })
+        .catch(err => {
+          console.warn('Bulk odds fetch failed:', err?.detail || err)
+        })
     }
 
     fetchOdds()
