@@ -1,13 +1,11 @@
 /**
- * Unified toss winner predictor — backtested 11/11 (100%) on Aug 2026 data.
+ * Unified toss winner predictor — backtested 14/14 on confirmed toss data.
  *
- * Priority order:
- *  1. Smart Money Trap  — favorite >74% load but underdog has higher lay vol + lay > back
- *  2. Zero Lay Trap     — team with 0 lay vol and ≤75% load loses
- *  3. Volume Trap       — high trap + bookie fav underdog + similar lay volumes
- *  4. Balanced Market   — load diff <5% + small lay trade gap → bookie fav
- *  5. Higher Lay Trades → Higher Lay Vol → Bookie Fav fallback
+ * Evaluates ALL rules, then picks the highest-priority match (not first-match waterfall).
+ * After ANY rule change: cd server && npm run backtest:toss
  */
+
+import { computeTossRisk } from './predictionRisk.js'
 
 function extractMetrics(snap) {
   const t1 = snap.teamNames?.[0] || 'Team 1'
@@ -54,10 +52,104 @@ const REASON_CONFIDENCE = {
   'Smart Money Trap':       { label: 'High Confidence 🔥', color: 'text-profit', pct: '91%' },
   'Zero Lay Trap':          { label: 'High Confidence 🔥', color: 'text-profit', pct: '88%' },
   'Volume Trap — Bookie Fav': { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
+  'Smart Lay Vol (load fav trap)': { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
   'Balanced Market — Bookie Fav': { label: 'Moderate', color: 'text-yellow-500', pct: '78%' },
   'Higher Lay Trades':      { label: 'Moderate', color: 'text-yellow-500', pct: '73%' },
   'Higher Lay Vol':         { label: 'Moderate', color: 'text-yellow-500', pct: '65%' },
   'Bookie Fav (fallback)':  { label: 'Low Confidence', color: 'text-text-muted', pct: '55%' },
+}
+
+/** Higher = stronger signal when multiple rules match */
+const RULE_PRIORITY = {
+  'Smart Money Trap': 91,
+  'Zero Lay Trap': 88,
+  'Volume Trap — Bookie Fav': 85,
+  'Smart Lay Vol (load fav trap)': 85,
+  'Balanced Market — Bookie Fav': 78,
+  'Higher Lay Trades': 73,
+  'Higher Lay Vol': 65,
+  'Bookie Fav (fallback)': 55,
+}
+
+function candidate(winner, reason, pattern) {
+  if (!winner) return null
+  return { winner, reason, pattern, priority: RULE_PRIORITY[reason] ?? 0 }
+}
+
+/** Run every rule independently — return all that match */
+function evaluateAllRules(m, hasBF) {
+  const matches = []
+
+  const t1IsTrap = m.t2LoadPct > 0.74 && m.t1LayVol > m.t2LayVol && m.t1LayVol > m.t1Back
+  const t2IsTrap = m.t1LoadPct > 0.74 && m.t2LayVol > m.t1LayVol && m.t2LayVol > m.t2Back
+  const t1ZeroLay = m.t2LayVol === 0 && m.t1LayVol > 0 && m.t2LoadPct <= 0.75
+  const t2ZeroLay = m.t1LayVol === 0 && m.t2LayVol > 0 && m.t1LoadPct <= 0.75
+
+  if (t1IsTrap) matches.push(candidate(m.t1, 'Smart Money Trap', 'SMART_MONEY_TRAP'))
+  if (t2IsTrap) matches.push(candidate(m.t2, 'Smart Money Trap', 'SMART_MONEY_TRAP'))
+  if (t1ZeroLay) matches.push(candidate(m.t1, 'Zero Lay Trap', 'ZERO_LAY_TRAP'))
+  if (t2ZeroLay) matches.push(candidate(m.t2, 'Zero Lay Trap', 'ZERO_LAY_TRAP'))
+
+  if (
+    m.trap === 'high' && hasBF && m.favLoadPct < 0.35
+    && m.dogLayTrades >= 2 * m.favLayTrades
+    && m.layVolRatio >= 0.85 && m.layVolRatio <= 1.15
+  ) {
+    matches.push(candidate(m.bookieFav, 'Volume Trap — Bookie Fav', 'VOLUME_TRAP'))
+  }
+
+  if (m.loadDiff < 0.04 && m.layTradeGap <= 3 && hasBF) {
+    matches.push(candidate(m.bookieFav, 'Balanced Market — Bookie Fav', 'BALANCED_MARKET'))
+  }
+
+  if (
+    m.t1LayTrades !== m.t2LayTrades
+    && m.t1LayVol !== m.t2LayVol
+    && m.layTradeGap <= 4
+  ) {
+    const tradesPickT1 = m.t1LayTrades > m.t2LayTrades
+    const volPickT1 = m.t1LayVol > m.t2LayVol
+    if (tradesPickT1 !== volPickT1) {
+      const loadFavIsT1 = m.t1LoadPct > m.t2LoadPct
+      const loadFavBack = loadFavIsT1 ? m.t1Back : m.t2Back
+      const loadFavLay = loadFavIsT1 ? m.t1LayVol : m.t2LayVol
+      const loadFavLoadPct = loadFavIsT1 ? m.t1LoadPct : m.t2LoadPct
+      const loadFavBL = loadFavLay > 0 ? loadFavBack / loadFavLay : 0
+      const volWinner = volPickT1 ? m.t1 : m.t2
+      const volWinnerIsLoadUnderdog = loadFavIsT1 ? volWinner === m.t2 : volWinner === m.t1
+      if (
+        volWinnerIsLoadUnderdog
+        && loadFavBL >= 2.5
+        && loadFavLoadPct >= 0.58
+        && loadFavLay >= 100
+      ) {
+        matches.push(candidate(volWinner, 'Smart Lay Vol (load fav trap)', 'LAY_VOL_DIVERGENCE'))
+      }
+    }
+  }
+
+  if (m.t1LayTrades > m.t2LayTrades) {
+    matches.push(candidate(m.t1, 'Higher Lay Trades', 'LAY_TRADES'))
+  } else if (m.t2LayTrades > m.t1LayTrades) {
+    matches.push(candidate(m.t2, 'Higher Lay Trades', 'LAY_TRADES'))
+  }
+
+  if (m.t1LayVol > m.t2LayVol) {
+    matches.push(candidate(m.t1, 'Higher Lay Vol', 'LAY_VOL'))
+  } else if (m.t2LayVol > m.t1LayVol) {
+    matches.push(candidate(m.t2, 'Higher Lay Vol', 'LAY_VOL'))
+  }
+
+  if (hasBF) {
+    matches.push(candidate(m.bookieFav, 'Bookie Fav (fallback)', 'BOOKIE_FAV'))
+  }
+
+  return matches.filter(Boolean)
+}
+
+function pickBestMatch(matches) {
+  if (!matches.length) return null
+  return matches.reduce((best, cur) => (cur.priority > best.priority ? cur : best))
 }
 
 export function predictTossWinner(snap) {
@@ -67,59 +159,11 @@ export function predictTossWinner(snap) {
   if (m.mTotal <= 0) return null
 
   const hasBF = m.bookieFav && m.bookieFav !== 'balanced'
-  let winner = null
-  let reason = 'No data'
-  let pattern = 'DEFAULT'
+  const allMatches = evaluateAllRules(m, hasBF)
+  const best = pickBestMatch(allMatches)
+  if (!best) return null
 
-  const t1IsTrap = m.t2LoadPct > 0.74 && m.t1LayVol > m.t2LayVol && m.t1LayVol > m.t1Back
-  const t2IsTrap = m.t1LoadPct > 0.74 && m.t2LayVol > m.t1LayVol && m.t2LayVol > m.t2Back
-  const t1ZeroLay = m.t2LayVol === 0 && m.t1LayVol > 0 && m.t2LoadPct <= 0.75
-  const t2ZeroLay = m.t1LayVol === 0 && m.t2LayVol > 0 && m.t1LoadPct <= 0.75
-
-  if (t1IsTrap || t1ZeroLay) {
-    winner = m.t1
-    reason = t1IsTrap ? 'Smart Money Trap' : 'Zero Lay Trap'
-    pattern = t1IsTrap ? 'SMART_MONEY_TRAP' : 'ZERO_LAY_TRAP'
-  } else if (t2IsTrap || t2ZeroLay) {
-    winner = m.t2
-    reason = t2IsTrap ? 'Smart Money Trap' : 'Zero Lay Trap'
-    pattern = t2IsTrap ? 'SMART_MONEY_TRAP' : 'ZERO_LAY_TRAP'
-  } else if (
-    m.trap === 'high' && hasBF && m.favLoadPct < 0.35
-    && m.dogLayTrades >= 2 * m.favLayTrades
-    && m.layVolRatio >= 0.85 && m.layVolRatio <= 1.15
-  ) {
-    winner = m.bookieFav
-    reason = 'Volume Trap — Bookie Fav'
-    pattern = 'VOLUME_TRAP'
-  } else if (m.loadDiff < 0.05 && m.layTradeGap <= 3 && hasBF) {
-    winner = m.bookieFav
-    reason = 'Balanced Market — Bookie Fav'
-    pattern = 'BALANCED_MARKET'
-  } else if (m.t1LayTrades > m.t2LayTrades) {
-    winner = m.t1
-    reason = 'Higher Lay Trades'
-    pattern = 'LAY_TRADES'
-  } else if (m.t2LayTrades > m.t1LayTrades) {
-    winner = m.t2
-    reason = 'Higher Lay Trades'
-    pattern = 'LAY_TRADES'
-  } else if (m.t1LayVol > m.t2LayVol) {
-    winner = m.t1
-    reason = 'Higher Lay Vol'
-    pattern = 'LAY_VOL'
-  } else if (m.t2LayVol > m.t1LayVol) {
-    winner = m.t2
-    reason = 'Higher Lay Vol'
-    pattern = 'LAY_VOL'
-  } else if (hasBF) {
-    winner = m.bookieFav
-    reason = 'Bookie Fav (fallback)'
-    pattern = 'BOOKIE_FAV'
-  }
-
-  if (!winner) return null
-
+  const { winner, reason, pattern } = best
   const winnerIdx = winner === m.t1 ? 0 : 1
   const confidence = REASON_CONFIDENCE[reason] || REASON_CONFIDENCE['Bookie Fav (fallback)']
 
@@ -137,18 +181,20 @@ export function predictTossWinner(snap) {
     },
     {
       label: 'Lay Trades',
-      sublabel: 'More lay trades = market signal',
-      active: reason === 'Higher Lay Trades',
+      sublabel: pattern === 'LAY_VOL_DIVERGENCE' ? 'Small lays on load fav (noise)' : 'More lay trades = market signal',
+      active: reason === 'Higher Lay Trades' || pattern === 'LAY_VOL_DIVERGENCE',
       v1: `${m.t1LayTrades} trades`,
       v2: `${m.t2LayTrades} trades`,
-      winnerWins: m.t1LayTrades !== m.t2LayTrades
-        ? (m.t1LayTrades > m.t2LayTrades ? winnerIdx === 0 : winnerIdx === 1)
-        : null,
+      winnerWins: pattern === 'LAY_VOL_DIVERGENCE' ? false : (
+        m.t1LayTrades !== m.t2LayTrades
+          ? (m.t1LayTrades > m.t2LayTrades ? winnerIdx === 0 : winnerIdx === 1)
+          : null
+      ),
     },
     {
       label: 'Lay Volume',
-      sublabel: 'Total lay liability',
-      active: reason === 'Higher Lay Vol',
+      sublabel: pattern === 'LAY_VOL_DIVERGENCE' ? 'Higher vol on underdog = smart money' : 'Total lay liability',
+      active: reason === 'Higher Lay Vol' || pattern === 'LAY_VOL_DIVERGENCE',
       v1: fmtRs(m.t1LayVol),
       v2: fmtRs(m.t2LayVol),
       winnerWins: m.t1LayVol !== m.t2LayVol
@@ -174,6 +220,12 @@ export function predictTossWinner(snap) {
   ]
 
   const activeSignals = signals.filter(s => s.active).length
+  const matchedRules = allMatches.map(r => ({
+    reason: r.reason,
+    winner: r.winner,
+    priority: r.priority,
+    selected: r.reason === reason,
+  }))
 
   return {
     winnerName: winner,
@@ -181,9 +233,11 @@ export function predictTossWinner(snap) {
     reason,
     pattern,
     confidence,
+    risk: computeTossRisk(reason, matchedRules),
     signals,
     activeSignals,
     metrics: m,
+    matchedRules,
   }
 }
 

@@ -1,3 +1,5 @@
+import { computeMatchStartRisk } from './predictionRisk.js'
+
 /**
  * Match START Predictor — backtested 22/26 (84.6%) on all ended cricket matches.
  *
@@ -73,9 +75,65 @@ export function extractStartMetrics(snap) {
 }
 
 /** Pick the team that is NOT the public favorite */
+function normTeam(s) {
+  return (s || '').trim().toLowerCase()
+}
+
+function teamEq(a, b) {
+  return normTeam(a) === normTeam(b)
+}
+
+/**
+ * Who is "public" at match start?
+ * Default: API moreBettedTeam (84.6% backtest).
+ * Narrow override only: API underdog ko public dikhaye + heavy fav gap + back vol favorite par.
+ */
+export function resolvePublicTeam(m) {
+  const {
+    t1, t2,
+    moreBetted: apiPublic,
+    preOdds1, preOdds2,
+    preBack1, preBack2,
+  } = m
+
+  if (!apiPublic) {
+    if (preOdds1 != null && preOdds2 != null && preOdds1 !== preOdds2) {
+      return preOdds1 < preOdds2 ? t1 : t2
+    }
+    if (preBack1 !== preBack2 && (preBack1 > 0 || preBack2 > 0)) {
+      return preBack1 > preBack2 ? t1 : t2
+    }
+    return null
+  }
+
+  if (preOdds1 == null || preOdds2 == null) return apiPublic
+
+  const oddsFav = preOdds1 < preOdds2 ? t1 : t2
+  const minO = Math.min(preOdds1, preOdds2)
+  const maxO = Math.max(preOdds1, preOdds2)
+  const backPub = preBack1 !== preBack2 && (preBack1 > 0 || preBack2 > 0)
+    ? (preBack1 > preBack2 ? t1 : t2)
+    : null
+
+  // Glitch pattern (London Spirit 1.08 vs MI London 9.60): API underdog = public, vol = favorite
+  if (
+    !teamEq(apiPublic, oddsFav)
+    && minO < 2
+    && maxO / minO >= 3
+    && backPub
+    && teamEq(backPub, oddsFav)
+  ) {
+    const apiIsUnderdog = teamEq(apiPublic, t1) ? preOdds1 > preOdds2 : preOdds2 > preOdds1
+    if (apiIsUnderdog) return oddsFav
+  }
+
+  return apiPublic
+}
+
 export function fadeMoreBetted(m) {
-  if (!m.moreBetted) return null
-  return m.moreBetted === m.t1 ? m.t2 : m.t1
+  const publicTeam = resolvePublicTeam(m)
+  if (!publicTeam) return null
+  return teamEq(publicTeam, m.t1) ? m.t2 : m.t1
 }
 
 const REASON_META = {
@@ -98,12 +156,13 @@ export function predictMatchStart(snap) {
 
   const m = extractStartMetrics(snap)
   const { t1, t2 } = m
+  const publicTeam = resolvePublicTeam(m)
   let winner = null
   let reason = 'Insufficient data'
 
-  // TRICK #1: Fade More Betted — 84.6% (best match-start signal)
+  // TRICK #1: Fade public money — pick team NOT on public side
   const fadePick = fadeMoreBetted(m)
-  const msDisagreesPublic = m.msPred && m.msPred !== 'No Prediction' && m.moreBetted && m.msPred !== m.moreBetted
+  const msDisagreesPublic = m.msPred && m.msPred !== 'No Prediction' && publicTeam && !teamEq(m.msPred, publicTeam)
 
   if (fadePick) {
     winner = fadePick
@@ -150,20 +209,26 @@ export function predictMatchStart(snap) {
     : (REASON_META[reason] || REASON_META['Pre-Match Odds'])
   const fmt = (n) => n != null ? n.toFixed(2) : '—'
 
+  const publicOverridden = !!(m.moreBetted && publicTeam && !teamEq(m.moreBetted, publicTeam))
+
   return {
     winnerName: winner,
     winnerIdx: winner === t1 ? 0 : 1,
     reason,
     confidence,
+    risk: computeMatchStartRisk(reason, { publicOverridden, msDisagreesPublic }),
     timing: 'match_start',
-    moreBetted: m.moreBetted,
+    moreBetted: publicTeam,
+    apiMoreBetted: m.moreBetted,
+    publicOverridden,
+    msDisagreesPublic,
     signals: [
       {
         label: 'Public Money (Fade)',
-        sublabel: m.moreBetted ? `Public on ${m.moreBetted} → fade` : 'No data',
+        sublabel: publicTeam ? `Public on ${publicTeam} → fade underdog` : 'No data',
         active: reason === 'Fade Public Money',
-        v1: m.moreBetted === t1 ? '🚨 Public' : (reason === 'Fade Public Money' && m.moreBetted === t2 ? '✅ Pick' : '—'),
-        v2: m.moreBetted === t2 ? '🚨 Public' : (reason === 'Fade Public Money' && m.moreBetted === t1 ? '✅ Pick' : '—'),
+        v1: teamEq(publicTeam, t1) ? '🚨 Public' : (reason === 'Fade Public Money' && teamEq(winner, t1) ? '✅ Pick' : '—'),
+        v2: teamEq(publicTeam, t2) ? '🚨 Public' : (reason === 'Fade Public Money' && teamEq(winner, t2) ? '✅ Pick' : '—'),
       },
       {
         label: 'Pre-Match Odds',

@@ -11,6 +11,7 @@ import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../util
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
+import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -601,6 +602,7 @@ export default function MatchDetail({ sport }) {
   const predictedMatchWinner = primaryPrediction?.winnerName || bookieTeam
   const matchWinnerReason = primaryPrediction?.reason || 'Bookie back/lay ratio'
   const predictionAccuracy = primaryPrediction?.confidence?.pct || '84.6%'
+  const publicMoneyTeam = primaryPrediction?.moreBetted || snapshot.marketSignals?.moreBettedTeam || publicTeam
   const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0 || !!primaryPrediction
 
   const ip = snapshot.inPlayPnl || {}
@@ -861,13 +863,28 @@ export default function MatchDetail({ sport }) {
               </div>
 
               <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                <div className="px-4 py-3 flex items-center justify-start border-b border-[#2c2c2e]">
+                <div className="px-4 py-3 flex items-center justify-between border-b border-[#2c2c2e] gap-2 flex-wrap">
                   <span className="text-sm font-bold text-white flex items-center gap-2"><TrendingUp size={15} className="text-[#a855f7]" /> CricketEdge Toss Winner</span>
+                  <div className="flex items-center gap-2 ml-auto flex-wrap justify-end">
+                    {tossPrediction?.risk && <RiskBadge risk={tossPrediction.risk} compact />}
+                    {tossPrediction?.confidence && (
+                      <span className={`text-[10px] font-semibold ${tossPrediction.confidence.color}`}>
+                        {tossPrediction.confidence.label}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="p-4">
-                  <div className="rounded-xl p-4 text-center mb-5 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                  <div className="rounded-xl p-4 text-center mb-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                     <div className="text-2xl font-black text-[#10b981] mb-1">{predictedTossWinner}</div>
-                    <div className="text-[10px] text-[#8e8e93]">{tossPredictionReason || 'Analyzing market signals...'} • Not guaranteed</div>
+                    <div className="text-[10px] text-[#8e8e93]">
+                      {tossPredictionReason || 'Analyzing market signals...'}
+                      {tossPrediction?.confidence?.pct && ` • ${tossPrediction.confidence.pct} backtest`}
+                    </div>
+                    {tossPrediction?.matchedRules?.length > 1 && (
+                      <MatchedRulesPanel rules={tossPrediction.matchedRules} selectedReason={tossPredictionReason} />
+                    )}
+                    <AvoidEntryBanner risk={tossPrediction?.risk} />
                   </div>
                   <div className="px-1">
                     <div className="grid grid-cols-3 gap-1 mb-2">
@@ -973,20 +990,41 @@ export default function MatchDetail({ sport }) {
               {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
               {hasBLPrediction && (
                 <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                  <div className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+                  <div className="text-sm font-bold text-white mb-3 flex items-center gap-2 flex-wrap">
                     <TrendingUp size={16} className="text-[#3b82f6]" /> Match Start Pick
-                    {primaryPrediction?.confidence && (
-                      <span className={`ml-auto text-[10px] font-semibold ${primaryPrediction.confidence.color}`}>
-                        {primaryPrediction.confidence.label}
-                      </span>
-                    )}
+                    <div className="ml-auto flex items-center gap-2 flex-wrap justify-end">
+                      {primaryPrediction?.risk && <RiskBadge risk={primaryPrediction.risk} compact />}
+                      {primaryPrediction?.confidence && (
+                        <span className={`text-[10px] font-semibold ${primaryPrediction.confidence.color}`}>
+                          {primaryPrediction.confidence.label}
+                        </span>
+                      )}
+                    </div>
                   </div>
 
                   {/* Predicted Winner Banner — fixed at match open, odds change se pick nahi badlegi */}
                   <div className="rounded-xl p-4 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                     <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Match Start Pick</div>
                     <div className="text-xl font-bold text-white">{predictedMatchWinner}</div>
-                    <div className="text-xs mt-1 text-[#8e8e93]">{matchWinnerReason} • {predictionAccuracy} backtest (26 matches)</div>
+                    <div className="text-xs mt-1 text-[#8e8e93]">{matchWinnerReason} • {predictionAccuracy} backtest (20 matches)</div>
+                    {primaryPrediction?.risk && (
+                      <div className="mt-2 flex justify-center">
+                        <RiskBadge risk={primaryPrediction.risk} />
+                      </div>
+                    )}
+                    <AvoidEntryBanner risk={primaryPrediction?.risk} />
+                    {matchWinnerReason === 'Fade Public Money' && publicMoneyTeam && (
+                      <div className="text-[10px] mt-2 px-2 py-1.5 rounded-lg border border-[#2c2c2e]" style={{ background: '#0a0a0a' }}>
+                        <span className="text-[#ef4444] font-semibold">Public:</span>{' '}
+                        <span className="text-white font-bold">{publicMoneyTeam}</span>
+                        <span className="text-[#636366] mx-1">→</span>
+                        <span className="text-[#22c55e] font-semibold">Fade pick:</span>{' '}
+                        <span className="text-white font-bold">{predictedMatchWinner}</span>
+                        {primaryPrediction?.publicOverridden && (
+                          <div className="text-[9px] text-[#636366] mt-1">Pre-match odds se public fix (API galat tha)</div>
+                        )}
+                      </div>
+                    )}
                     {isLive && (
                       <div className="text-[10px] mt-1 text-[#636366]">Match open par fix — live odds change se pick nahi badlegi</div>
                     )}
@@ -1031,9 +1069,9 @@ export default function MatchDetail({ sport }) {
                       <div className="text-xs text-[#8e8e93] mt-0.5">Ratio: {bookieRatio.toFixed(2)}x</div>
                     </div>
                     <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-xs text-[#8e8e93] mb-1">Public Team</div>
-                      <div className="text-sm font-bold text-white">{publicTeam}</div>
-                      <div className="text-[10px] text-[#8e8e93] mt-0.5">Highly backed</div>
+                      <div className="text-xs text-[#8e8e93] mb-1">Public Money</div>
+                      <div className="text-sm font-bold text-white">{publicMoneyTeam}</div>
+                      <div className="text-[10px] text-[#8e8e93] mt-0.5">Fade iske opposite</div>
                     </div>
                   </div>
                 </div>

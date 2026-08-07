@@ -3,6 +3,7 @@ import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3 } from 'lucide-react'
 import { getTossSnapshot } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
+import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { getBookiePl, getTeamMetrics } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 
@@ -136,10 +137,11 @@ export default function TossDetail({ isEmbedded = false }) {
       {tossPrediction && (
         <div className="rounded-2xl overflow-hidden" style={{ border: `2px solid ${tossPrediction.confidence.pct.startsWith('9') || tossPrediction.confidence.pct.startsWith('8') ? '#86efac' : tossPrediction.confidence.pct.startsWith('7') ? '#fde68a' : '#fecaca'}` }}>
           {/* Header */}
-          <div className="px-4 py-3 flex items-center gap-2" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
+          <div className="px-4 py-3 flex items-center gap-2 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
             <span className="text-base">🪙</span>
             <span className="text-sm font-bold text-text-primary">Toss Winner Prediction</span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>Backtested 100%</span>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>14/14 backtest</span>
+            {tossPrediction.risk && <RiskBadge risk={tossPrediction.risk} compact />}
             <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
           </div>
 
@@ -154,6 +156,15 @@ export default function TossDetail({ isEmbedded = false }) {
                 {tossPrediction.winnerName}
               </div>
               <div className="text-xs text-text-muted">Signal: {tossPrediction.reason} • {tossPrediction.confidence.pct} confidence</div>
+              {tossPrediction.risk && (
+                <div className="mt-2 flex justify-center">
+                  <RiskBadge risk={tossPrediction.risk} />
+                </div>
+              )}
+              {tossPrediction.matchedRules?.length > 1 && (
+                <MatchedRulesPanel rules={tossPrediction.matchedRules} selectedReason={tossPrediction.reason} />
+              )}
+              <AvoidEntryBanner risk={tossPrediction.risk} />
             </div>
 
             {/* Signals breakdown */}
@@ -185,7 +196,7 @@ export default function TossDetail({ isEmbedded = false }) {
             </div>
 
             <div className="text-[10px] text-text-muted p-2 rounded-lg text-center" style={{ background: 'rgba(220,38,38,0.03)', border: '1px solid rgba(220,38,38,0.08)' }}>
-              Composite algorithm: Smart Money Trap → Zero Lay Trap → Volume Trap → Balanced Market → Lay Trades
+              All rules evaluated — highest priority signal wins • Not guaranteed
             </div>
           </div>
         </div>

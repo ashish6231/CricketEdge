@@ -18,6 +18,9 @@ const ACTUAL = {
   '35902018': 'London Spirit W',
   '35891022': 'Salem Spartans',
   '35902022': 'MI London',
+  '35904757': 'Nellai Royal Kings',
+  '35904760': 'Tiruppur Tamizhans',
+  '35905512': 'Sunrisers Leeds W',
 };
 
 const BASE = 'https://tennisliveload.com';

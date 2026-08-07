@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-08-07T14:28:20.256Z",
+  "overall": {
+    "correct": 2,
+    "total": 3,
+    "accuracy": "66.7"
+  },
+  "byReason": [
+    {
+      "reason": "Balanced Market — Bookie Fav",
+      "correct": 1,
+      "total": 1,
+      "pct": "100.0"
+    },
+    {
+      "reason": "Volume Trap — Bookie Fav",
+      "correct": 0,
+      "total": 1,
+      "pct": "0.0"
+    },
+    {
+      "reason": "Higher Lay Trades",
+      "correct": 1,
+      "total": 1,
+      "pct": "100.0"
+    }
+  ],
+  "failures": [
+    {
+      "matchId": "35891022",
+      "matchName": "Salem Spartans v Lyca Kovai Kings",
+      "competition": "Tamil Nadu Premier League",
+      "actual": "Lyca Kovai Kings",
+      "predicted": "Salem Spartans",
+      "reason": "Volume Trap — Bookie Fav",
+      "pattern": "VOLUME_TRAP",
+      "correct": false
+    }
+  ],
+  "all": [
+    {
+      "matchId": "35902018",
+      "matchName": "London Spirit W v MI London W",
+      "competition": "The Hundred - Womens",
+      "actual": "London Spirit W",
+      "predicted": "London Spirit W",
+      "reason": "Balanced Market — Bookie Fav",
+      "pattern": "BALANCED_MARKET",
+      "correct": true
+    },
+    {
+      "matchId": "35891022",
+      "matchName": "Salem Spartans v Lyca Kovai Kings",
+      "competition": "Tamil Nadu Premier League",
+      "actual": "Lyca Kovai Kings",
+      "predicted": "Salem Spartans",
+      "reason": "Volume Trap — Bookie Fav",
+      "pattern": "VOLUME_TRAP",
+      "correct": false
+    },
+    {
+      "matchId": "35902022",
+      "matchName": "London Spirit v MI London",
+      "competition": "The Hundred",
+      "actual": "MI London",
+      "predicted": "MI London",
+      "reason": "Higher Lay Trades",
+      "pattern": "LAY_TRADES",
+      "correct": true
+    }
+  ]
+}
