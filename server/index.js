@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const fs = require('fs');
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
@@ -16,11 +17,20 @@ const tennisLogin = require('./services/tennisLogin');
 const scraper = require('./services/scraper');
 const prisma = require('./db/prisma');
 const { setIo } = require('./socketInstance');
+const { getAllowedOrigins } = require('./lib/publicUrl');
+
+const allowedOrigins = getAllowedOrigins();
 
 const app = express();
 const server = http.createServer(app);
 const io = new (require('socket.io').Server)(server, {
-  cors: { origin: (origin, cb) => { if (!origin || ['https://cricketedge-production.up.railway.app','https://cricketedge.app','https://cricket-edge-online.vercel.app','http://localhost:5173','http://localhost:3000'].includes(origin)) cb(null, true); else cb(new Error('Not allowed')); }, credentials: true }
+  cors: {
+    origin: (origin, cb) => {
+      if (!origin || allowedOrigins.includes(origin)) cb(null, true);
+      else cb(new Error('Not allowed'));
+    },
+    credentials: true,
+  },
 });
 setIo(io);
 io.use((socket, next) => {
@@ -37,12 +47,6 @@ io.use((socket, next) => {
 });
 
 // ─── MIDDLEWARE ───
-const allowedOrigins = [
-  'https://cricketedge-production.up.railway.app',
-  'https://cricketedge.app',
-  'https://cricket-edge-online.vercel.app',
-  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:5173', 'http://localhost:3000'] : [])
-];
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
@@ -136,11 +140,20 @@ setInterval(async () => {
   }
 }, 60 * 60 * 1000);
 
-// Serve frontend
-app.use(express.static(path.join(__dirname, '../client/dist')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
+// Serve frontend only if dist exists (API-only Railway deploy is OK)
+const distCandidates = [
+  path.join(__dirname, '../frontend/dist'),
+  path.join(__dirname, '../client/dist'),
+];
+const staticDir = distCandidates.find(d => fs.existsSync(path.join(d, 'index.html')));
+if (staticDir) {
+  app.use(express.static(staticDir));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(staticDir, 'index.html'), (err) => {
+      if (err) res.status(404).json({ error: 'Not found' });
+    });
+  });
+}
 
 const PORT = process.env.PORT || 5000;
 
@@ -157,7 +170,11 @@ const PORT = process.env.PORT || 5000;
   }
 
   server.listen(PORT, '0.0.0.0', () => {
-    console.log(`🏏 CricketEdge server running on port ${PORT}`);
+    const { getApiPublicUrl, getFrontendUrl } = require('./lib/publicUrl');
+    console.log(`🏏 CricEdge server running on port ${PORT}`);
+    console.log(`   API: ${getApiPublicUrl()}`);
+    console.log(`   Frontend: ${getFrontendUrl()}`);
+    console.log(`   CORS: ${allowedOrigins.join(', ')}`);
   });
 
   server.on('error', (err) => {

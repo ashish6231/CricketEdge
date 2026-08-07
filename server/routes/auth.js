@@ -1,4 +1,5 @@
 const express = require('express');
+const { getFrontendUrl } = require('../lib/publicUrl');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const router = express.Router();
@@ -32,7 +33,7 @@ async function sendOTP(email, otp, name) {
     </div>
   `;
   if (emailEnabled && transporter) {
-    await transporter.sendMail({ from: process.env.SMTP_USER || 'noreply@cricketedge.app', to: email, subject, html });
+    await transporter.sendMail({ from: process.env.SMTP_USER || 'noreply@cricedge.in', to: email, subject, html });
   } else {
     console.log(`\n📧 OTP EMAIL TO ${email}:\nSubject: ${subject}\nOTP: ${otp}\n`);
   }
@@ -312,7 +313,7 @@ router.get('/google', (req, res, next) => {
   const passport = require('passport');
   if (!passport._strategies.google)
     return res.status(503).json({ success: false, message: 'Google OAuth not configured' });
-  req.session.redirectTo = req.query.redirect || '/';
+  req.session.redirectTo = req.query.redirect || getFrontendUrl();
   passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
 });
 
@@ -320,13 +321,13 @@ router.get('/google/callback',
   (req, res, next) => {
     const passport = require('passport');
     if (!passport._strategies.google)
-      return res.redirect('/?error=google_auth_not_configured');
-    passport.authenticate('google', { failureRedirect: '/?error=google_auth_failed' })(req, res, next);
+      return res.redirect(`${getFrontendUrl()}/?error=google_auth_not_configured`);
+    passport.authenticate('google', { failureRedirect: `${getFrontendUrl()}/?error=google_auth_failed` })(req, res, next);
   },
   (req, res) => {
     const token = generateToken(req.user);
     prisma.user.update({ where: { id: req.user.id }, data: { activeToken: token, lastLoginAt: new Date() } }).catch(() => {});
-    const redirectTo = req.session.redirectTo || '/';
+    const redirectTo = req.session.redirectTo || getFrontendUrl();
     // Token URL mein expose na ho — sessionStorage use karo
     res.send(`<script>
 sessionStorage.setItem('pending_token','${token}');

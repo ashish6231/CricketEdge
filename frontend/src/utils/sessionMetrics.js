@@ -110,6 +110,93 @@ export function getLiquidity(gap) {
   return LIQUIDITY.low
 }
 
+/**
+ * Yes/No session pick from market lines + predicted runs.
+ * Yes @ yesLine = score yesLine+ jayega | No @ noLine = score noLine se neeche rahega
+ */
+export function computeSessionPick({ bestYes, bestNo, predicted, gap, lines = [], bestPlRow }) {
+  if (predicted == null) return null
+
+  const yesLine = bestYes
+  const noLine = bestNo
+  const base = {
+    predictedRuns: predicted,
+    yesLine,
+    noLine,
+    gap,
+  }
+
+  if (yesLine == null && noLine == null) return { ...base, pick: null, reason: 'Line data nahi' }
+
+  let pick = null
+  let betLine = null
+  let reason = ''
+  let strength = 'medium'
+
+  if (yesLine != null && noLine != null) {
+    if (predicted >= noLine) {
+      pick = 'YES'
+      betLine = yesLine
+      strength = predicted >= noLine + 1 ? 'high' : 'medium'
+      reason = `~${predicted} runs — ${yesLine} Yes (score ${yesLine}+ expected)`
+    } else if (predicted <= yesLine) {
+      pick = 'NO'
+      betLine = noLine
+      strength = predicted <= yesLine - 1 ? 'high' : 'medium'
+      reason = `~${predicted} runs — ${noLine} No (score ${noLine} se neeche)`
+    } else {
+      const yesDist = predicted - yesLine
+      const noDist = noLine - predicted
+      if (yesDist >= noDist) {
+        pick = 'YES'
+        betLine = yesLine
+        reason = `~${predicted} runs gap mein — ${yesLine} Yes lean (+${yesDist.toFixed(1)} margin)`
+      } else {
+        pick = 'NO'
+        betLine = noLine
+        reason = `~${predicted} runs gap mein — ${noLine} No lean (+${noDist.toFixed(1)} margin)`
+      }
+      strength = gap != null && gap <= 20 ? 'low' : 'medium'
+    }
+  } else if (yesLine != null) {
+    pick = predicted >= yesLine ? 'YES' : 'NO'
+    betLine = yesLine
+    reason = pick === 'YES'
+      ? `~${predicted} runs — ${yesLine}+ expected`
+      : `~${predicted} runs — ${yesLine} se neeche`
+  } else {
+    pick = predicted < noLine ? 'NO' : 'YES'
+    betLine = noLine
+    reason = pick === 'NO'
+      ? `~${predicted} runs — ${noLine} se neeche`
+      : `~${predicted} runs — ${noLine}+ expected`
+  }
+
+  // Volume tilt at nearest line to predicted
+  let volNote = null
+  if (lines.length) {
+    const nearest = lines.reduce((best, l) => (
+      Math.abs(l.price - predicted) < Math.abs(best.price - predicted) ? l : best
+    ), lines[0])
+    if (nearest.yes + nearest.no > 0) {
+      const yesPct = (nearest.yes / (nearest.yes + nearest.no)) * 100
+      if (yesPct >= 65) volNote = `${nearest.price} line par ${yesPct.toFixed(0)}% Yes vol`
+      else if (yesPct <= 35) volNote = `${nearest.price} line par ${(100 - yesPct).toFixed(0)}% No vol`
+    }
+  }
+
+  return {
+    ...base,
+    pick,
+    betLine,
+    reason,
+    strength,
+    volNote,
+    oppositeLine: pick === 'YES' ? noLine : yesLine,
+    bookieSweetSpot: bestPlRow?.score ?? null,
+  }
+}
+
 /** Full metrics for one session market — trades filtered strictly per marketName */
 export function computeSessionMetrics(oddsItem, trades = []) {
   const parsed = parseSession(oddsItem.marketName)
@@ -141,6 +228,10 @@ export function computeSessionMetrics(oddsItem, trades = []) {
   const totalVol = lines.reduce((s, l) => s + l.totalVol, 0)
   const liquidity = getLiquidity(gap)
 
+  const sessionPick = computeSessionPick({
+    bestYes, bestNo, predicted, gap, lines, bestPlRow, totalVol,
+  })
+
   return {
     ...parsed,
     marketName: oddsItem.marketName,
@@ -149,6 +240,7 @@ export function computeSessionMetrics(oddsItem, trades = []) {
     predicted,
     gap,
     liquidity,
+    sessionPick,
     lines,
     plRows,
     plRowsFull,
@@ -164,4 +256,22 @@ export function buildAllSessions(odds = [], trades = []) {
   return odds
     .map(o => computeSessionMetrics(o, trades))
     .sort((a, b) => a.inning - b.inning || a.over - b.over)
+}
+
+/** Cheap fingerprint — skip React state updates when poll returns same data */
+export function sessionDataFingerprint(data) {
+  if (!data) return ''
+  const trades = data.trades || []
+  const odds = data.odds || []
+  let fp = `t${trades.length}`
+  if (trades.length) {
+    const last = trades[trades.length - 1]
+    const vol = trades.reduce((s, t) => s + (parseFloat(t.size) || 0), 0)
+    fp += `:${last?.updatedAt || 0}:${vol.toFixed(0)}`
+  }
+  fp += `|o${odds.length}`
+  if (odds.length) {
+    fp += ':' + odds.map(o => `${o.marketName}:${o.bestYes}:${o.bestNo}`).join(';')
+  }
+  return fp
 }

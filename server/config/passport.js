@@ -1,5 +1,6 @@
 const passport = require('passport');
 const prisma = require('../db/prisma');
+const { getApiPublicUrl } = require('../lib/publicUrl');
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
@@ -17,7 +18,7 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
   passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/auth/google/callback'
+    callbackURL: `${getApiPublicUrl()}/api/auth/google/callback`,
   }, async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await prisma.user.findUnique({ where: { googleId: profile.id } });

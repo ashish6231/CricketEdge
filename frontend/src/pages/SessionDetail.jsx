@@ -9,7 +9,8 @@ import {
   CartesianGrid, Cell, ReferenceLine,
 } from 'recharts'
 import { getSessionTrades } from '../api'
-import { buildAllSessions, fmtRs, formatVolStr } from '../utils/sessionMetrics'
+import { buildAllSessions, fmtRs, formatVolStr, sessionDataFingerprint } from '../utils/sessionMetrics'
+import SessionPickBanner from '../components/SessionPickBanner'
 
 function RangeBar({ bestYes, bestNo, predicted }) {
   if (bestYes == null || bestNo == null) return null
@@ -36,23 +37,29 @@ function RangeBar({ bestYes, bestNo, predicted }) {
   )
 }
 
-function PlHoverPreview({ run, overLabel }) {
-  if (!run) return null
-  const profit = run.pl >= 0
+function PlHoverPreviewSlot({ run, overLabel }) {
   return (
-    <div
-      className="mb-2 rounded-lg px-3 py-2.5 border text-center"
-      style={{
-        background: profit ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
-        borderColor: profit ? 'rgba(34,197,94,0.35)' : 'rgba(239,68,68,0.35)',
-      }}
-    >
-      <div className="text-[11px] text-[#8e8e93]">
-        Agar <span className="text-white font-bold">{run.score} runs</span> par settle ho ({overLabel})
-      </div>
-      <div className={`text-base font-black mt-0.5 ${profit ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
-        Bookie {profit ? 'Profit' : 'Loss'}: {fmtRs(run.pl)}
-      </div>
+    <div className="mb-2 h-[68px] flex items-stretch">
+      {run ? (
+        <div
+          className="w-full rounded-lg px-3 py-2 border flex flex-col justify-center"
+          style={{
+            background: run.pl >= 0 ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)',
+            borderColor: run.pl >= 0 ? 'rgba(34,197,94,0.35)' : 'rgba(239,68,68,0.35)',
+          }}
+        >
+          <div className="text-[11px] text-[#8e8e93]">
+            Agar <span className="text-white font-bold">{run.score} runs</span> par settle ho ({overLabel})
+          </div>
+          <div className={`text-base font-black mt-0.5 ${run.pl >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
+            Bookie {run.pl >= 0 ? 'Profit' : 'Loss'}: {fmtRs(run.pl)}
+          </div>
+        </div>
+      ) : (
+        <div className="w-full rounded-lg border border-[#2c2c2e]/60 flex items-center justify-center text-[10px] text-[#636366]" style={{ background: '#0a0a0a' }}>
+          Hover a run row — profit/loss detail yahan dikhega
+        </div>
+      )}
     </div>
   )
 }
@@ -72,7 +79,7 @@ function CustomPlTooltip({ active, payload, label, overLabel }) {
 }
 
 function SessionCard({ session, expanded, onToggle }) {
-  const { label, bestYes, bestNo, predicted, gap, liquidity, plRows, plRowsFull, bestPlRow, volumeChart, lines, totalVol, over, isRunsLine } = session
+  const { label, bestYes, bestNo, predicted, gap, liquidity, plRows, plRowsFull, bestPlRow, volumeChart, lines, totalVol, over, isRunsLine, sessionPick } = session
   const [hoveredRun, setHoveredRun] = useState(null)
   const overLabel = isRunsLine ? 'Runs Line' : `${over} Overs`
 
@@ -101,8 +108,19 @@ function SessionCard({ session, expanded, onToggle }) {
         </div>
 
         <div className="text-right flex-shrink-0">
-          <div className="text-lg font-black text-white leading-none">~{predicted ?? '—'}</div>
-          <div className="text-[10px] text-[#8e8e93]">runs</div>
+          {sessionPick?.pick ? (
+            <>
+              <div className={`text-base font-black leading-none ${sessionPick.pick === 'YES' ? 'text-[#3b82f6]' : 'text-[#ef4444]'}`}>
+                {sessionPick.pick} @ {sessionPick.betLine}
+              </div>
+              <div className="text-[10px] text-[#8e8e93]">~{predicted ?? '—'} runs</div>
+            </>
+          ) : (
+            <>
+              <div className="text-lg font-black text-white leading-none">~{predicted ?? '—'}</div>
+              <div className="text-[10px] text-[#8e8e93]">runs</div>
+            </>
+          )}
         </div>
 
         {gap != null && (
@@ -140,6 +158,9 @@ function SessionCard({ session, expanded, onToggle }) {
 
       {expanded && (
         <div className="px-4 pb-4 space-y-4 border-t border-[#2c2c2e] pt-4 slide-up">
+          {sessionPick?.pick && (
+            <SessionPickBanner pick={sessionPick} overLabel={overLabel} />
+          )}
           {/* Bookie best score */}
           {plRowsFull?.length > 0 && (
             <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#0a0a0a' }}>
@@ -153,17 +174,19 @@ function SessionCard({ session, expanded, onToggle }) {
               </div>
               {plRows.length > 0 && (
                 <div className="h-[120px] w-full mb-3">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" debounce={50}>
                     <BarChart data={plRows} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#2c2c2e" vertical={false} />
                       <XAxis dataKey="score" stroke="#8e8e93" fontSize={10} tickLine={false} axisLine={false} />
                       <YAxis stroke="#8e8e93" fontSize={10} tickLine={false} axisLine={false} tickFormatter={v => formatVolStr(v)} />
                       <Tooltip
-                        cursor={{ fill: '#2c2c2e', opacity: 0.4 }}
+                        animationDuration={0}
+                        cursor={{ fill: '#2c2c2e', opacity: 0.35 }}
+                        wrapperStyle={{ outline: 'none', zIndex: 20 }}
                         content={<CustomPlTooltip overLabel={overLabel} />}
                       />
                       <ReferenceLine y={0} stroke="#3a3a3c" />
-                      <Bar dataKey="pl" radius={[3, 3, 0, 0]}>
+                      <Bar dataKey="pl" radius={[3, 3, 0, 0]} isAnimationActive={false}>
                         {plRows.map(r => (
                           <Cell
                             key={r.score}
@@ -176,7 +199,7 @@ function SessionCard({ session, expanded, onToggle }) {
                   </ResponsiveContainer>
                 </div>
               )}
-              <PlHoverPreview run={hoveredRun} overLabel={overLabel} />
+              <PlHoverPreviewSlot run={hoveredRun} overLabel={overLabel} />
               <div className="rounded-lg overflow-hidden border border-[#2c2c2e]">
                 <div className="grid grid-cols-3 text-[10px] text-[#8e8e93] font-bold px-3 py-2 border-b border-[#2c2c2e]" style={{ background: '#111' }}>
                   <span>Runs</span>
@@ -193,8 +216,8 @@ function SessionCard({ session, expanded, onToggle }) {
                       title={`${r.score} runs → Bookie ${profit ? 'Profit' : 'Loss'}: ${fmtRs(r.pl)}`}
                       onMouseEnter={() => setHoveredRun(r)}
                       onMouseLeave={() => setHoveredRun(prev => (prev?.score === r.score ? null : prev))}
-                      className={`grid grid-cols-3 text-[11px] px-3 py-1.5 border-b border-[#2c2c2e]/30 cursor-pointer transition-colors ${
-                        isHovered ? 'bg-[#2c2c2e]/60' : r.score === bestPlRow.score ? 'bg-[#22c55e]/10' : 'hover:bg-[#1a1a1a]/80'
+                      className={`grid grid-cols-3 text-[11px] px-3 py-1.5 border-b border-[#2c2c2e]/30 cursor-default ${
+                        isHovered ? 'bg-[#2c2c2e]/60' : r.score === bestPlRow.score ? 'bg-[#22c55e]/10' : ''
                       }`}
                     >
                       <span className={`font-bold ${r.score === bestPlRow.score ? 'text-[#22c55e]' : 'text-white'}`}>
@@ -220,19 +243,21 @@ function SessionCard({ session, expanded, onToggle }) {
                 <span className="ml-auto text-[#636366] font-normal normal-case">{formatVolStr(totalVol)} matched</span>
               </div>
               <div className="h-[120px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" debounce={50}>
                   <BarChart data={volumeChart} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#2c2c2e" vertical={false} />
                     <XAxis dataKey="price" stroke="#8e8e93" fontSize={10} tickLine={false} axisLine={false} />
                     <YAxis stroke="#8e8e93" fontSize={10} tickLine={false} axisLine={false} tickFormatter={v => formatVolStr(v)} />
                     <Tooltip
-                      cursor={{ fill: '#2c2c2e', opacity: 0.4 }}
+                      animationDuration={0}
+                      cursor={{ fill: '#2c2c2e', opacity: 0.35 }}
+                      wrapperStyle={{ outline: 'none', zIndex: 20 }}
                       contentStyle={{ background: '#111', border: '1px solid #2c2c2e', borderRadius: 12, fontSize: 12 }}
                       formatter={(v, name) => [formatVolStr(v), name === 'yes' ? 'Yes (Back)' : 'No (Lay)']}
                       labelFormatter={p => `Line: ${p} runs`}
                     />
-                    <Bar dataKey="yes" stackId="v" fill="#3b82f6" radius={[0, 0, 0, 0]} />
-                    <Bar dataKey="no" stackId="v" fill="#ef4444" radius={[3, 3, 0, 0]} />
+                    <Bar dataKey="yes" stackId="v" fill="#3b82f6" radius={[0, 0, 0, 0]} isAnimationActive={false} />
+                    <Bar dataKey="no" stackId="v" fill="#ef4444" radius={[3, 3, 0, 0]} isAnimationActive={false} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -282,7 +307,13 @@ export default function SessionDetail() {
       if (isInitial) { setLoading(true); setRequiresLogin(false); setRequiresPro(false) }
       getSessionTrades(matchId).then(res => {
         if (res?.error === 'login_required') setRequiresLogin(true)
-        else if (res) { setData(res); setLastRefresh(new Date()) }
+        else if (res) {
+          setData(prev => {
+            if (prev && sessionDataFingerprint(prev) === sessionDataFingerprint(res)) return prev
+            return res
+          })
+          setLastRefresh(new Date())
+        }
         if (isInitial) setLoading(false)
       }).catch(err => {
         if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)

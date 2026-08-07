@@ -9,7 +9,7 @@ import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchStart } from '../utils/matchStartPredictor'
 import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
-import { tradeMatchesMarket } from '../utils/sessionMetrics'
+import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 
@@ -407,8 +407,12 @@ export default function MatchDetail({ sport }) {
     const apiFn = API_MAP[sport] || getCricketSnapshot
     let cancelled = false
 
+    let lastSessionFp = ''
     const applySessionData = (sessionData) => {
       if (!sessionData?.trades && !sessionData?.odds?.length) return
+      const fp = sessionDataFingerprint(sessionData)
+      if (fp === lastSessionFp) return
+      lastSessionFp = fp
       if (sessionData.trades) setSessionTrades(sessionData.trades)
       if (sessionData.odds) setSessionOdds(sessionData.odds)
       let activeSessionNames = []
