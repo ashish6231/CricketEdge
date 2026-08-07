@@ -22,6 +22,8 @@ const { getAllowedOrigins } = require('./lib/publicUrl');
 const allowedOrigins = getAllowedOrigins();
 
 const app = express();
+// Railway/Vercel sit behind a reverse proxy — required for rate-limit + sessions
+app.set('trust proxy', 1);
 const server = http.createServer(app);
 const io = new (require('socket.io').Server)(server, {
   cors: {
