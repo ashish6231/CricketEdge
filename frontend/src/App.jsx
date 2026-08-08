@@ -8,6 +8,7 @@ import AdminPage from './pages/AdminPage'
 import ProfilePage from './pages/ProfilePage'
 import SubscriptionPage from './pages/SubscriptionPage'
 import { getAuthStatus } from './api'
+import { hasProAccess } from './lib/subscriptionAccess'
 
 
 //public
@@ -47,7 +48,7 @@ function PrivateRoute() {
 function ProRoute({ children }) {
   const { user, isLoggedIn } = useOutletContext()
   if (!isLoggedIn || !user) return null
-  const isPro = user.subscription?.planSlug === 'pro' || user.role === 'admin' || user.role === 'superadmin'
+  const isPro = hasProAccess(user)
   if (!isPro) return <Navigate to="/subscription" replace />
   return children
 }

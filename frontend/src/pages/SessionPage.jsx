@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock, BarChart3 } from 'lucide-react'
 import { getSessionMatches } from '../api'
+import { hasProAccess } from '../lib/subscriptionAccess'
 import SessionDetail from './SessionDetail'
 
 const STORAGE_KEY = 'session_selected_comp'
@@ -19,7 +20,7 @@ export default function SessionPage() {
   const navigate = useNavigate()
   const { matchId } = useParams()
   const { isLoggedIn, user, mobileMenu, setMobileMenu } = useOutletContext()
-  const isPro = user?.subscription?.planSlug === 'pro' || user?.role === 'admin' || user?.role === 'superadmin'
+  const isPro = hasProAccess(user)
   const [matches, setMatches] = useState([])
   const [loading, setLoading] = useState(true)
   const [competitions, setCompetitions] = useState({})

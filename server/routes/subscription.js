@@ -4,6 +4,7 @@ const Razorpay = require('razorpay');
 const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
+const { expireTrialIfNeeded, getTrialDaysLeft, isActiveTrial } = require('../lib/subscriptionAccess');
 
 function getRazorpay() {
   const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
@@ -25,14 +26,15 @@ router.get('/plans', async (req, res) => {
 // GET /api/subscription/my
 router.get('/my', verifyToken, async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { id: req.user.userId },
       select: {
         subPlanSlug: true, subStatus: true, subStartedAt: true, subExpiresAt: true, subAutoRenew: true,
         queuedPlanSlug: true, queuedBillingCycle: true, queuedAmount: true, queuedStatus: true, queuedPurchasedAt: true,
-        name: true, email: true
+        name: true, email: true, role: true
       }
     });
+    user = await expireTrialIfNeeded(prisma, req.user.userId) || user;
     const history = await prisma.userSubscription.findMany({
       where: { userId: req.user.userId },
       orderBy: { createdAt: 'desc' },
@@ -40,7 +42,11 @@ router.get('/my', verifyToken, async (req, res) => {
     });
     res.json({
       success: true,
-      subscription: { planSlug: user.subPlanSlug, status: user.subStatus, startedAt: user.subStartedAt, expiresAt: user.subExpiresAt, autoRenew: user.subAutoRenew },
+      subscription: {
+        planSlug: user.subPlanSlug, status: user.subStatus, startedAt: user.subStartedAt,
+        expiresAt: user.subExpiresAt, autoRenew: user.subAutoRenew,
+        isTrial: isActiveTrial(user), trialDaysLeft: getTrialDaysLeft(user),
+      },
       queuedSubscription: user.queuedPlanSlug ? { planSlug: user.queuedPlanSlug, billingCycle: user.queuedBillingCycle, amount: user.queuedAmount, status: user.queuedStatus, purchasedAt: user.queuedPurchasedAt } : null,
       history
     });
@@ -52,17 +58,30 @@ router.get('/my', verifyToken, async (req, res) => {
 // GET /api/subscription/check-expiry
 router.get('/check-expiry', verifyToken, async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { id: req.user.userId },
-      select: { subPlanSlug: true, subExpiresAt: true, queuedPlanSlug: true, queuedStatus: true }
+      select: { subPlanSlug: true, subStatus: true, subExpiresAt: true, queuedPlanSlug: true, queuedStatus: true, role: true }
     });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    user = await expireTrialIfNeeded(prisma, req.user.userId) || user;
 
     const now = new Date();
     const expiresAt = user.subExpiresAt ? new Date(user.subExpiresAt) : null;
 
+    if (user.subPlanSlug === 'trial' && expiresAt) {
+      const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
+      return res.json({
+        success: true,
+        isTrial: true,
+        expiresSoon: daysLeft <= 3 && daysLeft >= 0,
+        daysLeft: daysLeft > 0 ? daysLeft : 0,
+        expiresAt,
+        queued: false,
+      });
+    }
+
     if (!expiresAt || user.subPlanSlug !== 'pro')
-      return res.json({ success: true, expiresSoon: false, daysLeft: null, queued: false });
+      return res.json({ success: true, expiresSoon: false, daysLeft: null, queued: false, isTrial: false });
 
     const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));
     res.json({

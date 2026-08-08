@@ -3,6 +3,7 @@ const router = express.Router();
 const scraper = require('../services/scraper');
 const { verifyToken, requireProSubscription } = require('../middleware/auth');
 const { requireAdmin } = require('../middleware/admin');
+const { hasProAccess } = require('../lib/subscriptionAccess');
 
 // ──── Auth (admin only — scraper login control) ────
 
@@ -49,9 +50,8 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
     const role = req.user?.role;
     if (role !== 'admin' && role !== 'superadmin') {
       const prisma = require('../db/prisma');
-      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-      const isActivePro = user?.subPlanSlug === 'pro' && user?.subStatus === 'active' && (!user?.subExpiresAt || new Date(user.subExpiresAt) > new Date());
-      if (!isActivePro) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
+      if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
     }
   }
   if (data?.error) {
@@ -159,9 +159,8 @@ router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
     const role = req.user?.role;
     if (role !== 'admin' && role !== 'superadmin') {
       const prisma = require('../db/prisma');
-      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-      const isActivePro = user?.subPlanSlug === 'pro' && user?.subStatus === 'active' && (!user?.subExpiresAt || new Date(user.subExpiresAt) > new Date());
-      if (!isActivePro) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
+      if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
     }
   }
   if (data?.error === 'Login required for live matches')

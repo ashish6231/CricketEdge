@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { LoaderCircle, CheckCircle, Crown, Calendar, AlertTriangle } from 'lucide-react'
 import { getPlans, getMySubscription, createOrder, verifyPayment, paymentFailed } from '../api'
+import { isActiveTrial, isPaidPro, getTrialDaysLeft } from '../lib/subscriptionAccess'
 
 const fmt = (n) => Number(n).toLocaleString('en-IN')
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -74,37 +75,50 @@ export default function SubscriptionPage() {
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 
-  const isPro = mySub?.subscription?.planSlug === 'pro' && mySub?.subscription?.status === 'active'
+  const isPro = isPaidPro({ subscription: mySub?.subscription, role: user?.role })
+  const onTrial = mySub?.subscription?.isTrial || isActiveTrial({ subscription: mySub?.subscription, role: user?.role })
+  const trialDaysLeft = mySub?.subscription?.trialDaysLeft ?? getTrialDaysLeft({ subscription: mySub?.subscription, role: user?.role })
   const expiresAt = mySub?.subscription?.expiresAt
   const hasQueued = mySub?.queuedSubscription?.status === 'pending'
   const price = cycle === 'yearly' ? plan?.yearlyPrice : plan?.price
+  const planLabel = onTrial ? `Trial · ${trialDaysLeft} day${trialDaysLeft !== 1 ? 's' : ''} left` : isPro ? '⭐ Pro' : 'Free'
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4 fade-in">
       <h1 className="text-2xl font-black text-text-primary">Subscription</h1>
 
+      {onTrial && (
+        <div className="rounded-2xl px-4 py-3 text-sm font-semibold"
+          style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
+          🎁 Your free 3-day trial is active. You have full live match access for {trialDaysLeft} more day{trialDaysLeft !== 1 ? 's' : ''}.
+          After that you'll move to the Free plan — upgrade to Pro to keep access.
+        </div>
+      )}
+
       {/* Current Status */}
       <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center gap-2 mb-3">
-          <Crown size={18} className={isPro ? 'text-yellow-500' : 'text-text-muted'} />
+          <Crown size={18} className={isPro || onTrial ? 'text-yellow-500' : 'text-text-muted'} />
           <span className="font-bold text-text-primary">Current Plan</span>
         </div>
         <div className="flex items-center justify-between">
           <div>
-            <div className={`text-xl font-black ${isPro ? 'text-yellow-500' : 'text-text-muted'}`}>
-              {isPro ? '⭐ Pro' : 'Free'}
+            <div className={`text-xl font-black ${isPro ? 'text-yellow-500' : onTrial ? 'text-emerald-400' : 'text-text-muted'}`}>
+              {planLabel}
             </div>
-            {isPro && expiresAt && (
+            {(isPro || onTrial) && expiresAt && (
               <div className="text-xs text-text-muted mt-1 flex items-center gap-1">
-                <Calendar size={12} /> Expires: {fmtDate(expiresAt)}
+                <Calendar size={12} /> {onTrial ? 'Trial ends' : 'Expires'}: {fmtDate(expiresAt)}
               </div>
             )}
             {hasQueued && (
               <div className="text-xs text-profit mt-1">✅ Next renewal queued</div>
             )}
           </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-bold ${isPro ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'}`}>
-            {mySub?.subscription?.status || 'active'}
+          <div className={`px-3 py-1 rounded-full text-xs font-bold ${
+            onTrial ? 'bg-emerald-100 text-emerald-700' : isPro ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'
+          }`}>
+            {onTrial ? 'trial' : mySub?.subscription?.status || 'active'}
           </div>
         </div>
       </div>

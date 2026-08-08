@@ -26,7 +26,7 @@ function getAllowedOrigins() {
     .map(s => s.trim())
     .filter(Boolean);
   const dev = process.env.NODE_ENV !== 'production'
-    ? ['http://localhost:5173', 'http://localhost:3000']
+    ? ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:3001']
     : [];
   return [...new Set([...defaults, ...fromEnv, ...dev])];
 }

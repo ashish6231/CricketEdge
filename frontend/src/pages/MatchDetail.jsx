@@ -6,7 +6,7 @@ import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
-import { predictMatchStart } from '../utils/matchStartPredictor'
+import { predictMatchStart, lockMatchStartPrediction } from '../utils/matchStartPredictor'
 import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
@@ -360,6 +360,7 @@ export default function MatchDetail({ sport }) {
   const [sessionTrades, setSessionTrades] = useState([])
   const [sessionOdds, setSessionOdds] = useState([])
   const [activeSessions, setActiveSessions] = useState([])
+  const [lockedMatchStartPick, setLockedMatchStartPick] = useState(null)
 
   const isSessionMarket = marketType.startsWith('session_')
   const selectedSessionName = isSessionMarket ? marketType.replace('session_', '') : ''
@@ -402,6 +403,15 @@ export default function MatchDetail({ sport }) {
     return scores
   }, [sessionOrderBook, isSessionMarket])
 
+  useEffect(() => {
+    setLockedMatchStartPick(null)
+  }, [matchId])
+
+  useEffect(() => {
+    if (!snapshot) return
+    const next = predictMatchStart(snapshot)
+    setLockedMatchStartPick(prev => lockMatchStartPrediction(next, prev))
+  }, [snapshot])
 
   useEffect(() => {
     const apiFn = API_MAP[sport] || getCricketSnapshot
@@ -601,13 +611,13 @@ export default function MatchDetail({ sport }) {
   const aBackPct = aTotal > 0 ? (aBack / aTotal * 100) : 50
   const bBackPct = bTotal > 0 ? (bBack / bTotal * 100) : 50
 
-  const primaryPrediction = predictMatchStart(snapshot)
+  const primaryPrediction = lockedMatchStartPick
   const isLive = snapshot.inPlay || snapshot.status === 'in-play'
-  const predictedMatchWinner = primaryPrediction?.winnerName || bookieTeam
-  const matchWinnerReason = primaryPrediction?.reason || 'Bookie back/lay ratio'
-  const predictionAccuracy = primaryPrediction?.confidence?.pct || '84.6%'
-  const publicMoneyTeam = primaryPrediction?.moreBetted || snapshot.marketSignals?.moreBettedTeam || publicTeam
-  const hasBLPrediction = aBack > 0 || aLay > 0 || bBack > 0 || bLay > 0 || !!primaryPrediction
+  const predictedMatchWinner = primaryPrediction?.winnerName
+  const matchWinnerReason = primaryPrediction?.reason
+  const predictionAccuracy = primaryPrediction?.confidence?.pct
+  const publicMoneyTeam = primaryPrediction?.moreBetted || snapshot.marketSignals?.moreBettedTeam
+  const hasMatchStartPick = !!primaryPrediction?.winnerName
 
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
@@ -992,7 +1002,7 @@ export default function MatchDetail({ sport }) {
               </div>
 
               {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
-              {hasBLPrediction && (
+              {hasMatchStartPick && (
                 <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
                   <div className="text-sm font-bold text-white mb-3 flex items-center gap-2 flex-wrap">
                     <TrendingUp size={16} className="text-[#3b82f6]" /> Match Start Pick

@@ -201,8 +201,21 @@ export async function adminGetUsers(params = {}) {
   return fetchAPI(`/admin/users${q ? '?' + q : ''}`)
 }
 
+export async function adminGetLapsedUsers(params = {}) {
+  return adminGetUsers({ ...params, segment: 'lapsed' })
+}
+
 export async function adminGetUser(id) {
   return fetchAPI(`/admin/users/${id}`)
+}
+
+export async function adminGetUserSubscriptions(userId) {
+  return fetchAPI(`/admin/users/${userId}/subscriptions`)
+}
+
+export async function adminGetSubscriptionLogs(params = {}) {
+  const q = new URLSearchParams(params).toString()
+  return fetchAPI(`/admin/subscription-logs${q ? '?' + q : ''}`)
 }
 
 export async function adminUpdateUserStatus(id, status, reason) {
@@ -229,12 +242,32 @@ export async function adminUpdateUserPlan(id, planSlug, reason, durationMonths) 
   })
 }
 
+export async function adminGrantTrial(id, force = false) {
+  return fetchAPI(`/admin/users/${id}/grant-trial`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ force }),
+  })
+}
+
+export async function adminGrantTrialAll() {
+  return fetchAPI('/admin/grant-trial-all', { method: 'POST' })
+}
+
 export async function adminCreateAdmin(data) {
   return fetchAPI('/admin/admins', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   })
+}
+
+export async function adminGetAdmins() {
+  return fetchAPI('/admin/admins')
+}
+
+export async function adminGetPermissions() {
+  return fetchAPI('/admin/permissions')
 }
 
 export async function adminGetPlans() {

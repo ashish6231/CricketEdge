@@ -2,6 +2,7 @@ import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Activity, Menu, X, Shield, LogOut, User, ChevronDown } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout } from '../api'
+import { getPlanLabel, isActiveTrial, isPaidPro, getTrialDaysLeft } from '../lib/subscriptionAccess'
 
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
@@ -19,10 +20,19 @@ export default function MainLayout() {
   const dropRef = useRef(null)
 
   useEffect(() => {
-    getAuthStatus().then(data => {
-      setIsLoggedIn(data.isLoggedIn || false)
-      setAuthUser(data.user || null)
-    }).catch(() => {})
+    const refresh = () => {
+      getAuthStatus().then(data => {
+        setIsLoggedIn(data.isLoggedIn || false)
+        setAuthUser(data.user || null)
+      }).catch(() => {})
+    }
+    refresh()
+    window.addEventListener('focus', refresh)
+    document.addEventListener('visibilitychange', refresh)
+    return () => {
+      window.removeEventListener('focus', refresh)
+      document.removeEventListener('visibilitychange', refresh)
+    }
   }, [])
 
   // Close dropdown on outside click
@@ -52,6 +62,9 @@ export default function MainLayout() {
   }
 
   const isAdmin = authUser?.role === 'admin' || authUser?.role === 'superadmin'
+  const onTrial = isActiveTrial(authUser)
+  const paidPro = isPaidPro(authUser)
+  const planLabel = getPlanLabel(authUser)
   const initials = authUser?.name?.[0]?.toUpperCase() || '?'
 
   return (
@@ -146,11 +159,13 @@ export default function MainLayout() {
                           </span>
                         )}
                         <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                          authUser.subscription?.planSlug === 'pro'
-                            ? 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-100 text-gray-500'
+                          onTrial
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : paidPro
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-gray-100 text-gray-500'
                         }`}>
-                          {authUser.subscription?.planSlug === 'pro' ? '⭐ Pro' : 'Free'}
+                          {planLabel}
                         </span>
                       </div>
                     </div>
@@ -165,7 +180,7 @@ export default function MainLayout() {
                     <Link to="/subscription" onClick={() => setDropdown(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-[#1a1a1a] transition-colors">
                       <span className="text-yellow-500 text-sm">⭐</span>
-                      {authUser?.subscription?.planSlug === 'pro' ? 'Manage Subscription' : 'Upgrade to Pro'}
+                      {paidPro ? 'Manage Subscription' : onTrial ? 'Upgrade Before Trial Ends' : 'Upgrade to Pro'}
                     </Link>
 
                     {/* Logout */}
@@ -188,8 +203,17 @@ export default function MainLayout() {
         </div>
       </header>
 
+      {/* Trial banner */}
+      {onTrial && (
+        <div className="fixed top-[53px] left-0 right-0 z-30 px-4 py-2 text-center text-xs font-semibold"
+          style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(220,38,38,0.1))', borderBottom: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
+          🎁 Free 3-day trial active — {getTrialDaysLeft(authUser)} day{getTrialDaysLeft(authUser) !== 1 ? 's' : ''} left with full live match access.
+          {' '}<Link to="/subscription" className="underline text-white">Upgrade to Pro</Link> before trial ends.
+        </div>
+      )}
+
       {/* Content */}
-      <main className="flex-1 pt-14 w-full">
+      <main className={`flex-1 w-full ${onTrial ? 'pt-[88px]' : 'pt-14'}`}>
         <Outlet context={{ isLoggedIn, user: authUser, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
       </main>
     </div>

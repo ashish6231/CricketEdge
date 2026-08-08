@@ -1,7 +1,78 @@
 const express = require('express');
 const router = express.Router();
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
+const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissions');
 const prisma = require('../db/prisma');
+const { grantTrialIfEligible, grantTrialToAllEligible, TRIAL_DAYS } = require('../lib/subscriptionAccess');
+
+function parseUserId(raw) {
+  const id = parseInt(raw, 10);
+  return Number.isInteger(id) && id > 0 ? id : null;
+}
+
+function lapsedProWhere(extra = {}) {
+  const now = new Date();
+  return {
+    role: 'user',
+    subscriptions: {
+      some: { planSlug: 'pro', paymentStatus: 'completed' },
+    },
+    NOT: {
+      AND: [
+        { subPlanSlug: 'pro' },
+        { subStatus: 'active' },
+        { subExpiresAt: { gt: now } },
+      ],
+    },
+    ...extra,
+  };
+}
+
+async function fetchLapsedUsers({ page = 1, limit = 20, search = '', status = '' }) {
+  const safeLimit = Math.min(+limit || 20, 100);
+  const extra = {};
+  if (search) extra.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
+  if (status) extra.status = status;
+  const where = lapsedProWhere(extra);
+
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      orderBy: { subExpiresAt: 'desc' },
+      skip: (+page - 1) * safeLimit,
+      take: safeLimit,
+      select: {
+        id: true, name: true, email: true, role: true, status: true,
+        subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true,
+        subscriptions: {
+          where: { planSlug: 'pro', paymentStatus: 'completed' },
+          orderBy: { expiresAt: 'desc' },
+          take: 1,
+          select: { expiresAt: true, paidAt: true, amount: true, billingCycle: true, paymentMethod: true },
+        },
+      },
+    }),
+    prisma.user.count({ where }),
+  ]);
+
+  const userIds = users.map(u => u.id);
+  const purchaseCounts = userIds.length
+    ? await prisma.userSubscription.groupBy({
+        by: ['userId'],
+        where: { userId: { in: userIds }, planSlug: 'pro', paymentStatus: 'completed' },
+        _count: { id: true },
+      })
+    : [];
+  const countMap = Object.fromEntries(purchaseCounts.map(c => [c.userId, c._count.id]));
+
+  const data = users.map(({ subscriptions, ...u }) => ({
+    ...u,
+    lastProSub: subscriptions[0] || null,
+    proPurchaseCount: countMap[u.id] || 0,
+  }));
+
+  return { data, pagination: { page: +page, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } };
+}
 
 async function auditLog(admin, action, targetType, targetId, targetIdentifier, changes, reason, req) {
   try {
@@ -21,9 +92,10 @@ async function auditLog(admin, action, targetType, targetId, targetIdentifier, c
 // ==================== DASHBOARD ====================
 router.get('/dashboard', requireAdmin, async (req, res) => {
   try {
-    const [totalUsers, proSubscribers, freeUsers, activeUsers, bannedUsers, recentUsers] = await Promise.all([
+    const [totalUsers, proSubscribers, lapsedProUsers, freeUsers, activeUsers, bannedUsers, recentUsers] = await Promise.all([
       prisma.user.count(),
-      prisma.user.count({ where: { subPlanSlug: 'pro' } }),
+      prisma.user.count({ where: { subPlanSlug: 'pro', subStatus: 'active', subExpiresAt: { gt: new Date() } } }),
+      prisma.user.count({ where: lapsedProWhere() }),
       prisma.user.count({ where: { subPlanSlug: { not: 'pro' } } }),
       prisma.user.count({ where: { status: 'active' } }),
       prisma.user.count({ where: { status: 'banned' } }),
@@ -32,7 +104,7 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
         select: { id: true, name: true, email: true, role: true, status: true, subPlanSlug: true, createdAt: true }
       })
     ]);
-    res.json({ success: true, data: { stats: { totalUsers, proSubscribers, freeUsers, activeUsers, bannedUsers }, recent: { users: recentUsers } } });
+    res.json({ success: true, data: { stats: { totalUsers, proSubscribers, lapsedProUsers, freeUsers, activeUsers, bannedUsers }, recent: { users: recentUsers } } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -41,6 +113,11 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
 // ==================== USERS ====================
 router.get('/users', requireAdmin, async (req, res) => {
   try {
+    if (req.query.segment === 'lapsed') {
+      const result = await fetchLapsedUsers(req.query);
+      return res.json({ success: true, ...result });
+    }
+
     const { page = 1, limit = 20, search = '', role = '', status = '', plan = '' } = req.query;
     const safeLimit = Math.min(+limit || 20, 100);
     const where = {};
@@ -65,14 +142,48 @@ router.get('/users', requireAdmin, async (req, res) => {
   }
 });
 
+// Alias for Former Pro tab (same handler as GET /users?segment=lapsed)
+router.get('/lapsed-users', requireAdmin, async (req, res) => {
+  try {
+    const result = await fetchLapsedUsers(req.query);
+    res.json({ success: true, ...result });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.get('/users/:id/subscriptions', requireAdmin, async (req, res) => {
+  try {
+    const userId = parseUserId(req.params.id);
+    if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, name: true, email: true } });
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    const subscriptions = await prisma.userSubscription.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true, planSlug: true, amount: true, currency: true, discountAmount: true, couponCode: true,
+        startedAt: true, expiresAt: true, billingCycle: true, paymentStatus: true, paymentMethod: true,
+        gatewayOrderId: true, gatewayPaymentId: true, paidAt: true, status: true,
+        cancelledAt: true, cancelReason: true, createdAt: true,
+      },
+    });
+    res.json({ success: true, data: { user, subscriptions } });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 router.get('/users/:id', requireAdmin, async (req, res) => {
   try {
+    const userId = parseUserId(req.params.id);
+    if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
     const user = await prisma.user.findUnique({
-      where: { id: +req.params.id },
+      where: { id: userId },
       select: { id: true, name: true, email: true, role: true, status: true, subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true, avatar: true, phone: true, isVerified: true, lastLoginAt: true }
     });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    const subscriptions = await prisma.userSubscription.findMany({ where: { userId: +req.params.id }, orderBy: { createdAt: 'desc' }, take: 10 });
+    const subscriptions = await prisma.userSubscription.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
     res.json({ success: true, data: { user, subscriptions } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -81,18 +192,48 @@ router.get('/users/:id', requireAdmin, async (req, res) => {
 
 router.patch('/users/:id/status', requireAdmin, async (req, res) => {
   try {
+    const userId = parseUserId(req.params.id);
+    if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
     const { status, reason } = req.body;
     if (!['active', 'banned', 'suspended'].includes(status))
       return res.status(400).json({ success: false, message: 'status must be active, banned, or suspended' });
-    const before = await prisma.user.findUnique({ where: { id: +req.params.id }, select: { status: true, role: true } });
+    const before = await prisma.user.findUnique({ where: { id: userId }, select: { status: true, role: true } });
     if (!before) return res.status(404).json({ success: false, message: 'User not found' });
     if (before.role === 'superadmin') return res.status(403).json({ success: false, message: 'Cannot modify a superadmin' });
     if (before.role === 'admin' && req.user.role !== 'superadmin') return res.status(403).json({ success: false, message: 'Only superadmin can modify an admin' });
 
-    const user = await prisma.user.update({ where: { id: +req.params.id }, data: { status } });
+    const user = await prisma.user.update({ where: { id: userId }, data: { status } });
     const action = status === 'banned' ? 'user_ban' : status === 'suspended' ? 'user_suspend' : 'user_unsuspend';
     await auditLog(req.user, action, 'user', user.id, user.email, { before: { status: before.status }, after: { status } }, reason, req);
     res.json({ success: true, data: user });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ==================== PERMISSIONS & ADMINS ====================
+router.get('/permissions', requireAdmin, (req, res) => {
+  res.json({
+    success: true,
+    data: {
+      role: req.user.role,
+      matrix: PERMISSION_MATRIX,
+      capabilities: ADMIN_CAPABILITIES[req.user.role] || [],
+    },
+  });
+});
+
+router.get('/admins', requireSuperAdmin, async (req, res) => {
+  try {
+    const admins = await prisma.user.findMany({
+      where: { role: { in: ['admin', 'superadmin'] } },
+      orderBy: { createdAt: 'asc' },
+      select: {
+        id: true, name: true, email: true, role: true, status: true,
+        subPlanSlug: true, subExpiresAt: true, createdAt: true, lastLoginAt: true,
+      },
+    });
+    res.json({ success: true, data: admins });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -105,36 +246,24 @@ router.post('/admins', requireSuperAdmin, async (req, res) => {
     const { name, email, password } = req.body;
     if (!name || !email || !password)
       return res.status(400).json({ success: false, message: 'name, email and password required' });
+    if (password.length < 6)
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
 
     const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
     if (existing) return res.status(409).json({ success: false, message: 'Email already registered' });
 
     const now = new Date();
-    const plan = await prisma.subscriptionPlan.findFirst({ where: { slug: 'pro' } });
     const hashed = await bcrypt.hash(password, 12);
 
     const admin = await prisma.user.create({
       data: {
         name, email: email.toLowerCase(), password: hashed,
         authProvider: 'local', isVerified: true, role: 'admin', status: 'active',
-        subPlanId: plan?.id, subPlanSlug: 'pro', subStatus: 'active',
-        subStartedAt: now, subExpiresAt: new Date('2099-12-31'), subAutoRenew: true
-      }
+        subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false,
+      },
     });
 
-    if (plan) {
-      await prisma.userSubscription.create({
-        data: {
-          userId: admin.id, planId: plan.id, planSlug: 'pro',
-          amount: 0, startedAt: now, expiresAt: new Date('2099-12-31'),
-          billingCycle: 'yearly', paymentStatus: 'completed',
-          paymentMethod: 'wallet', paidAt: now, status: 'active'
-        }
-      });
-    }
-
-    await auditLog(req.user, 'user_verify', 'user', admin.id, admin.email, { after: { role: 'admin', planSlug: 'pro' } }, 'Admin created by superadmin', req);
-    // Never return password hash
+    await auditLog(req.user, 'admin_create', 'user', admin.id, admin.email, { after: { role: 'admin' } }, 'Admin account created', req);
     const { password: _pw, ...safeAdmin } = admin;
     res.json({ success: true, data: safeAdmin });
   } catch (err) {
@@ -144,54 +273,87 @@ router.post('/admins', requireSuperAdmin, async (req, res) => {
 
 router.patch('/users/:id/role', requireSuperAdmin, async (req, res) => {
   try {
+    const userId = parseUserId(req.params.id);
+    if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
     const { role } = req.body;
     if (!['user', 'admin'].includes(role))
       return res.status(400).json({ success: false, message: 'role must be user or admin' });
 
-    const now = new Date();
-    const before = await prisma.user.findUnique({ where: { id: +req.params.id }, select: { role: true } });
+    const before = await prisma.user.findUnique({ where: { id: userId }, select: { role: true, email: true } });
     if (!before) return res.status(404).json({ success: false, message: 'User not found' });
     if (before.role === 'superadmin') return res.status(403).json({ success: false, message: 'Cannot modify a superadmin' });
 
-    let extraData = {};
-
-    // Promote to admin → auto Pro for 1 year
-    if (role === 'admin' && before.role === 'user') {
-      const plan = await prisma.subscriptionPlan.findFirst({ where: { slug: 'pro' } });
-      const expiresAt = new Date(now);
-      expiresAt.setFullYear(expiresAt.getFullYear() + 1);
-      extraData = { subPlanId: plan?.id, subPlanSlug: 'pro', subStatus: 'active', subStartedAt: now, subExpiresAt: expiresAt };
-      const existingSub = await prisma.userSubscription.findFirst({ where: { userId: +req.params.id, status: 'active' } });
-      const subData = { planId: plan?.id, planSlug: 'pro', amount: 0, startedAt: now, expiresAt, billingCycle: 'yearly', paymentStatus: 'completed', paymentMethod: 'wallet', paidAt: now, status: 'active' };
-      if (existingSub) await prisma.userSubscription.update({ where: { id: existingSub.id }, data: subData });
-      else await prisma.userSubscription.create({ data: { userId: +req.params.id, ...subData } });
-    }
-
-    // Demote to user → revoke Pro
-    if (role === 'user' && before.role === 'admin') {
-      extraData = { subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subExpiresAt: null };
-      await prisma.userSubscription.updateMany({
-        where: { userId: +req.params.id, status: 'active' },
-        data: { status: 'cancelled', cancelledAt: now, cancelReason: 'Admin demoted' }
-      });
-    }
-
-    const user = await prisma.user.update({ where: { id: +req.params.id }, data: { role, ...extraData } });
-    await auditLog(req.user, 'user_verify', 'user', user.id, user.email, { before: { role: before.role }, after: { role } }, 'Role changed by superadmin', req);
+    const user = await prisma.user.update({ where: { id: userId }, data: { role } });
+    await auditLog(req.user, role === 'admin' ? 'admin_create' : 'admin_demote', 'user', user.id, user.email, { before: { role: before.role }, after: { role } }, 'Role changed by superadmin', req);
     res.json({ success: true, data: user });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
 
-// ─── CHANGE USER PLAN ───
+// ─── GRANT TRIAL TO ONE USER ───
+router.post('/users/:id/grant-trial', requireAdmin, async (req, res) => {
+  try {
+    const userId = parseUserId(req.params.id);
+    if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
+    const force = req.body?.force === true;
+
+    const result = await grantTrialIfEligible(prisma, userId, { force });
+    if (!result.user) return res.status(404).json({ success: false, message: 'User not found' });
+
+    if (!result.granted) {
+      const messages = {
+        not_user: 'Cannot grant trial to admin accounts',
+        inactive: 'User account is not active',
+        already_pro: 'User already has Pro',
+        trial_active: 'User already has an active trial',
+        trial_used: 'User already used their trial. Use force to re-grant.',
+        invalid_plan: 'User plan is not eligible for trial',
+      };
+      return res.status(400).json({ success: false, message: messages[result.reason] || 'Trial not granted', reason: result.reason });
+    }
+
+    await auditLog(req.user, 'plan_change', 'user', result.user.id, result.user.email,
+      { before: { planSlug: 'free' }, after: { planSlug: 'trial' } },
+      force ? 'Trial re-granted by admin' : 'Trial granted by admin', req);
+
+    res.json({
+      success: true,
+      message: `${TRIAL_DAYS}-day trial granted`,
+      data: { id: result.user.id, subPlanSlug: result.user.subPlanSlug, subExpiresAt: result.user.subExpiresAt },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ─── GRANT TRIAL TO ALL ELIGIBLE EXISTING USERS ───
+router.post('/grant-trial-all', requireAdmin, async (req, res) => {
+  try {
+    const { eligible, granted } = await grantTrialToAllEligible(prisma);
+    await auditLog(req.user, 'plan_change', 'system', null, null,
+      { before: {}, after: { granted, eligible } },
+      `Bulk trial grant: ${granted}/${eligible} users`, req);
+    res.json({
+      success: true,
+      message: `Trial granted to ${granted} of ${eligible} eligible users`,
+      data: { eligible, granted },
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ─── CHANGE USER PLAN (subscription only — never changes role) ───
 router.patch('/users/:id/plan', requireAdmin, async (req, res) => {
   try {
+    const userId = parseUserId(req.params.id);
+    if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
     const { planSlug, reason, durationMonths } = req.body;
     if (!['free', 'pro'].includes(planSlug))
       return res.status(400).json({ success: false, message: 'planSlug must be free or pro' });
 
-    const before = await prisma.user.findUnique({ where: { id: +req.params.id }, select: { subPlanSlug: true, subExpiresAt: true, role: true } });
+    const before = await prisma.user.findUnique({ where: { id: userId }, select: { subPlanSlug: true, subExpiresAt: true, role: true } });
     if (!before) return res.status(404).json({ success: false, message: 'User not found' });
     if (before.role !== 'user') return res.status(403).json({ success: false, message: 'Cannot modify an admin or superadmin' });
 
@@ -206,7 +368,7 @@ router.patch('/users/:id/plan', requireAdmin, async (req, res) => {
 
     const plan = await prisma.subscriptionPlan.findFirst({ where: { slug: planSlug } });
 
-    const existingSub = await prisma.userSubscription.findFirst({ where: { userId: +req.params.id, status: 'active' } });
+    const existingSub = await prisma.userSubscription.findFirst({ where: { userId, status: 'active' } });
     const subData = {
       planId: plan?.id, planSlug, amount: 0,
       startedAt: now, expiresAt: planSlug === 'pro' ? expiresAt : new Date('2099-12-31'),
@@ -217,19 +379,19 @@ router.patch('/users/:id/plan', requireAdmin, async (req, res) => {
     if (existingSub) {
       await prisma.userSubscription.update({ where: { id: existingSub.id }, data: subData });
     } else {
-      await prisma.userSubscription.create({ data: { userId: +req.params.id, ...subData } });
+      await prisma.userSubscription.create({ data: { userId, ...subData } });
     }
 
     const user = await prisma.user.update({
-      where: { id: +req.params.id },
+      where: { id: userId },
       data: { subPlanId: plan?.id, subPlanSlug: planSlug, subStatus: 'active', subStartedAt: now, subExpiresAt: expiresAt }
     });
 
-    await auditLog(req.user, 'user_verify', 'user', user.id, user.email, { before: { planSlug: before.subPlanSlug }, after: { planSlug } }, reason || `Plan changed to ${planSlug} by admin`, req);
+    await auditLog(req.user, 'plan_change', 'user', user.id, user.email, { before: { planSlug: before.subPlanSlug }, after: { planSlug } }, reason || `Plan changed to ${planSlug} by admin`, req);
 
     const { getIo } = require('../socketInstance');
     const io = getIo();
-    if (io) io.to(`user:${req.params.id}`).emit('planUpdate', { planSlug, status: 'active', expiresAt: user.subExpiresAt });
+    if (io) io.to(`user:${userId}`).emit('planUpdate', { planSlug, status: 'active', expiresAt: user.subExpiresAt });
 
     res.json({ success: true, data: user });
   } catch (err) {
@@ -298,7 +460,7 @@ router.get('/coupons', requireAdmin, async (req, res) => {
   }
 });
 
-router.post('/coupons', requireAdmin, async (req, res) => {
+router.post('/coupons', requireSuperAdmin, async (req, res) => {
   try {
     const { code, description, discountType, discountValue, maxDiscount, applicablePlans,
             usageLimit, perUserLimit, validFrom, validUntil, isActive } = req.body;
@@ -315,7 +477,7 @@ router.post('/coupons', requireAdmin, async (req, res) => {
   }
 });
 
-router.patch('/coupons/:id', requireAdmin, async (req, res) => {
+router.patch('/coupons/:id', requireSuperAdmin, async (req, res) => {
   try {
     const { description, discountType, discountValue, maxDiscount, applicablePlans,
             usageLimit, perUserLimit, validFrom, validUntil, isActive } = req.body;
@@ -349,6 +511,46 @@ router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
     });
     await auditLog(req.user, 'settings_update', 'settings', setting.id, setting.key, { before, after: setting }, req.body.reason, req);
     res.json({ success: true, data: setting });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// ==================== SUBSCRIPTION LOGS ====================
+router.get('/subscription-logs', requireAdmin, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, search = '', paymentStatus = '', planSlug = '', status = '' } = req.query;
+    const safeLimit = Math.min(+limit || 50, 100);
+    const where = {};
+    if (paymentStatus) where.paymentStatus = paymentStatus;
+    if (planSlug) where.planSlug = planSlug;
+    if (status) where.status = status;
+    if (search) {
+      where.user = {
+        OR: [
+          { name: { contains: search, mode: 'insensitive' } },
+          { email: { contains: search, mode: 'insensitive' } },
+        ],
+      };
+    }
+
+    const [logs, total] = await Promise.all([
+      prisma.userSubscription.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (+page - 1) * safeLimit,
+        take: safeLimit,
+        select: {
+          id: true, planSlug: true, amount: true, currency: true, discountAmount: true, couponCode: true,
+          startedAt: true, expiresAt: true, billingCycle: true, paymentStatus: true, paymentMethod: true,
+          gatewayOrderId: true, gatewayPaymentId: true, paidAt: true, status: true,
+          cancelledAt: true, cancelReason: true, createdAt: true,
+          user: { select: { id: true, name: true, email: true } },
+        },
+      }),
+      prisma.userSubscription.count({ where }),
+    ]);
+    res.json({ success: true, data: logs, pagination: { page: +page, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

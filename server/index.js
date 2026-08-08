@@ -18,6 +18,7 @@ const scraper = require('./services/scraper');
 const prisma = require('./db/prisma');
 const { setIo } = require('./socketInstance');
 const { getAllowedOrigins } = require('./lib/publicUrl');
+const { expireAllTrials } = require('./lib/subscriptionAccess');
 
 const allowedOrigins = getAllowedOrigins();
 
@@ -137,6 +138,8 @@ setInterval(async () => {
       },
       data: { subStatus: 'expired', subPlanSlug: 'free' }
     });
+
+    await expireAllTrials(prisma);
   } catch (err) {
     console.error('❌ Subscription auto-activation error:', err.message);
   }

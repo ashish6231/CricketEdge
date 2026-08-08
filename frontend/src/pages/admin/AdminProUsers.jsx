@@ -20,8 +20,9 @@ const STATUS_CFG = {
   suspended: { label: 'Suspended', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
 }
 const PLAN_CFG = {
-  pro:  { label: '⭐ Pro',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  free: { label: 'Free',   color: '#8e8e93', bg: 'rgba(142,142,147,0.10)' },
+  pro:   { label: '⭐ Pro',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  trial: { label: 'Trial',   color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+  free:  { label: 'Free',    color: '#8e8e93', bg: 'rgba(142,142,147,0.10)' },
 }
 
 const Chip = ({ cfg }) => (
@@ -123,7 +124,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
         <div className="space-y-2 relative">
           {users.map(u => {
             const statusCfg = STATUS_CFG[u.status || 'active']
-            const planCfg   = PLAN_CFG[u.subPlanSlug || 'free']
+            const planCfg   = PLAN_CFG[u.subPlanSlug] || PLAN_CFG.free
             const isOpen    = expanded === u.id
             const isActing  = acting === u.id
             

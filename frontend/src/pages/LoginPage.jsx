@@ -31,7 +31,7 @@ export default function LoginPage({ onLoginSuccess }) {
         if (!name.trim()) { setError('Name required'); setLoading(false); return }
         res = await register(name.trim(), email, password)
       }
-      setSuccess(tab === 'login' ? '✅ Login successful!' : '✅ Account created!')
+      setSuccess(tab === 'login' ? (res.message ? `✅ ${res.message}` : '✅ Login successful!') : (res.message ? `✅ ${res.message}` : '✅ Account created! 3-day free trial activated.'))
       if (onLoginSuccess) onLoginSuccess(res.user?.email, res.user)
       setTimeout(() => navigate('/cricket', { replace: true }), 800)
     } catch (err) {

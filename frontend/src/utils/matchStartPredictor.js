@@ -256,4 +256,10 @@ export function predictMatchStart(snap) {
   }
 }
 
+export function lockMatchStartPrediction(current, locked) {
+  if (!current?.winnerName) return locked
+  if (locked?.winnerName) return locked
+  return current
+}
+
 export default predictMatchStart

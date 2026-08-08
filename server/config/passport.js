@@ -1,6 +1,7 @@
 const passport = require('passport');
 const prisma = require('../db/prisma');
 const { getApiPublicUrl } = require('../lib/publicUrl');
+const { grantTrialToNewUser, syncUserTrialState } = require('../lib/subscriptionAccess');
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
@@ -30,18 +31,22 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
             data: { googleId: profile.id, authProvider: 'google', avatar: user.avatar || profile.photos[0]?.value || '' }
           });
         } else {
+          const now = new Date();
           user = await prisma.user.create({
             data: {
               googleId: profile.id, email: profile.emails[0].value,
               name: profile.displayName, avatar: profile.photos[0]?.value || '',
               authProvider: 'google', isVerified: true,
-              subPlanSlug: 'free', subStatus: 'active'
+              role: 'user', subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false
             }
           });
+          await grantTrialToNewUser(prisma, user.id, now);
+          user = await prisma.user.findUnique({ where: { id: user.id } });
         }
       }
       if (user.status === 'banned') return done(null, false, { message: 'Account banned' });
       if (user.status === 'suspended') return done(null, false, { message: 'Account suspended' });
+      user = (await syncUserTrialState(prisma, user.id)).user;
       done(null, user);
     } catch (err) { done(err, null); }
   }));

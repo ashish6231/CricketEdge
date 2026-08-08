@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams, Routes, Route } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock } from 'lucide-react'
 import { getCricketMatches, getCricketOddsBulk, getTossMatches } from '../api'
+import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
 
 const STORAGE_KEY = 'cricket_selected_comp'
@@ -17,7 +18,7 @@ const fmtDateTime = (ts) => {
 export default function CricketPage() {
   const navigate = useNavigate()
   const { isLoggedIn, user, mobileMenu, setMobileMenu } = useOutletContext()
-  const isPro = user?.subscription?.planSlug === 'pro' || user?.role === 'admin' || user?.role === 'superadmin'
+  const isPro = hasProAccess(user)
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
   const [competitions, setCompetitions] = useState({})

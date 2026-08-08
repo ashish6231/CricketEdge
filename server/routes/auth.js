@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const { generateToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
+const { TRIAL_DAYS, grantTrialToNewUser, expireTrialIfNeeded, getTrialDaysLeft, isActiveTrial, syncUserTrialState, grantTrialIfEligible } = require('../lib/subscriptionAccess');
 
 let emailEnabled = false;
 let transporter = null;
@@ -46,10 +47,14 @@ function sanitizeUser(user) {
     email: user.email,
     avatar: user.avatar || '',
     role: user.role || 'user',
+    createdAt: user.createdAt,
+    authProvider: user.authProvider,
     subscription: {
       planSlug: user.subPlanSlug || 'free',
       status: user.subStatus || 'active',
-      expiresAt: user.subExpiresAt
+      expiresAt: user.subExpiresAt,
+      isTrial: isActiveTrial(user),
+      trialDaysLeft: getTrialDaysLeft(user),
     }
   };
 }
@@ -77,21 +82,17 @@ router.post('/register', async (req, res) => {
       }
     });
 
-    const freePlan = await prisma.subscriptionPlan.findUnique({ where: { slug: 'free' } });
-    if (freePlan) {
-      await prisma.userSubscription.create({
-        data: {
-          userId: user.id, planId: freePlan.id, planSlug: 'free',
-          amount: 0, startedAt: now, expiresAt: new Date('2099-12-31'),
-          billingCycle: 'monthly', paymentStatus: 'completed',
-          paymentMethod: 'wallet', paidAt: now, status: 'active'
-        }
-      });
-    }
+    await grantTrialToNewUser(prisma, user.id, now);
+    const freshUser = await prisma.user.findUnique({ where: { id: user.id } });
 
-    const token = generateToken(user);
+    const token = generateToken(freshUser);
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
-    res.json({ success: true, message: 'Account created successfully', token, user: sanitizeUser(user) });
+    res.json({
+      success: true,
+      message: `Account created! ${TRIAL_DAYS}-day free trial activated.`,
+      token,
+      user: sanitizeUser(freshUser)
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -118,8 +119,15 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ success: false, message: 'Your account is suspended. Contact support.' });
 
     const token = generateToken(user);
+    const { user: freshUser, trialGranted } = await syncUserTrialState(prisma, user.id);
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
-    res.json({ success: true, message: 'Login successful', token, user: sanitizeUser(user) });
+    res.json({
+      success: true,
+      message: trialGranted ? `Login successful! ${TRIAL_DAYS}-day free trial activated.` : 'Login successful',
+      token,
+      user: sanitizeUser(freshUser || user),
+      trialGranted,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -235,7 +243,7 @@ router.get('/me', async (req, res) => {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+    const { user } = await syncUserTrialState(prisma, decoded.userId);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.status === 'banned')
       return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });
@@ -282,26 +290,18 @@ router.post('/google/verify', async (req, res) => {
             role: 'user', subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false
           }
         });
-        const freePlan = await prisma.subscriptionPlan.findUnique({ where: { slug: 'free' } });
-        if (freePlan) {
-          await prisma.userSubscription.create({
-            data: {
-              userId: user.id, planId: freePlan.id, planSlug: 'free',
-              amount: 0, startedAt: now, expiresAt: new Date('2099-12-31'),
-              billingCycle: 'monthly', paymentStatus: 'completed',
-              paymentMethod: 'wallet', paidAt: now, status: 'active'
-            }
-          });
-        }
+        await grantTrialToNewUser(prisma, user.id, now);
+        user = await prisma.user.findUnique({ where: { id: user.id } });
       }
     }
 
     if (user.status === 'banned') return res.status(403).json({ success: false, message: 'Account banned. Contact support.' });
     if (user.status === 'suspended') return res.status(403).json({ success: false, message: 'Account suspended. Contact support.' });
 
-    const token = generateToken(user);
+    const { user: freshUser } = await syncUserTrialState(prisma, user.id);
+    const token = generateToken(freshUser || user);
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token } });
-    res.json({ success: true, token, user: sanitizeUser(user) });
+    res.json({ success: true, token, user: sanitizeUser(freshUser || user) });
   } catch (err) {
     console.error('Google verify error:', err.message);
     res.status(401).json({ success: false, message: 'Google verification failed' });
