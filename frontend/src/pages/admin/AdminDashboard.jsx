@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { LoaderCircle, Users, Crown, UserCheck, Ban, TrendingUp, UserMinus } from 'lucide-react'
+import { LoaderCircle, Users, Crown, UserCheck, Ban, TrendingUp, UserMinus, Gift } from 'lucide-react'
 import { adminDashboard, adminGetUsers, adminGetPermissions } from '../../api'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -83,11 +83,12 @@ export default function AdminDashboard({ isSuperAdmin }) {
       )}
 
       {/* ── Stat Cards ── */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         <StatCard icon={Users}      label="Total Users"     value={stats.totalUsers}    color="#6366f1" />
         <StatCard icon={Crown}      label="Pro Subscribers" value={stats.proSubscribers} color="#f59e0b" sub={`${proRatio}%`} />
+        <StatCard icon={Gift}       label="Trial Users"     value={stats.trialUsers}    color="#10b981" />
         <StatCard icon={UserMinus}  label="Former Pro"      value={stats.lapsedProUsers} color="#a855f7" />
-        <StatCard icon={UserCheck}  label="Free Users"      value={stats.freeUsers}     color="#10b981" />
+        <StatCard icon={UserCheck}  label="Free Users"      value={stats.freeUsers}     color="#8e8e93" />
         <StatCard icon={TrendingUp} label="Active"          value={stats.activeUsers}   color="#0ea5e9" />
         <StatCard icon={Ban}        label="Banned"          value={stats.bannedUsers}   color="#ef4444" />
       </div>
@@ -104,6 +105,7 @@ export default function AdminDashboard({ isSuperAdmin }) {
         </div>
         <div className="flex justify-between mt-1.5 text-[11px] text-[#444]">
           <span>{stats.proSubscribers} pro</span>
+          <span>{stats.trialUsers} trial</span>
           <span>{stats.freeUsers} free</span>
         </div>
       </div>

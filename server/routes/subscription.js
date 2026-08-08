@@ -4,7 +4,7 @@ const Razorpay = require('razorpay');
 const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
-const { expireTrialIfNeeded, getTrialDaysLeft, isActiveTrial } = require('../lib/subscriptionAccess');
+const { expireTrialIfNeeded, expireTrialForProUpgrade, getTrialDaysLeft, isActiveTrial, refreshUserSubscriptionState } = require('../lib/subscriptionAccess');
 
 function getRazorpay() {
   const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
@@ -34,7 +34,7 @@ router.get('/my', verifyToken, async (req, res) => {
         name: true, email: true, role: true
       }
     });
-    user = await expireTrialIfNeeded(prisma, req.user.userId) || user;
+    user = await refreshUserSubscriptionState(prisma, req.user.userId) || user;
     const history = await prisma.userSubscription.findMany({
       where: { userId: req.user.userId },
       orderBy: { createdAt: 'desc' },
@@ -63,7 +63,7 @@ router.get('/check-expiry', verifyToken, async (req, res) => {
       select: { subPlanSlug: true, subStatus: true, subExpiresAt: true, queuedPlanSlug: true, queuedStatus: true, role: true }
     });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    user = await expireTrialIfNeeded(prisma, req.user.userId) || user;
+    user = await refreshUserSubscriptionState(prisma, req.user.userId) || user;
 
     const now = new Date();
     const expiresAt = user.subExpiresAt ? new Date(user.subExpiresAt) : null;
@@ -206,6 +206,17 @@ router.post('/verify-payment', verifyToken, async (req, res) => {
         queuedPlanId: null, queuedPlanSlug: null, queuedBillingCycle: null,
         queuedAmount: null, queuedStatus: null, queuedPurchasedAt: null
       }
+    });
+
+    await expireTrialForProUpgrade(prisma, req.user.userId, now);
+    await prisma.userSubscription.updateMany({
+      where: {
+        userId: req.user.userId,
+        status: 'active',
+        id: { not: sub.id },
+        planSlug: { not: 'pro' },
+      },
+      data: { status: 'expired', cancelledAt: now, cancelReason: 'Upgraded to Pro' },
     });
 
     res.json({ success: true, data: sub, message: 'Payment successful! Pro plan activated.' });

@@ -256,10 +256,25 @@ export function predictMatchStart(snap) {
   }
 }
 
-export function lockMatchStartPrediction(current, locked) {
+const REASON_PRIORITY = {
+  'Fade Public (MS confirms)': 8,
+  'Fade Public Money': 7,
+  'Smart Money Trap': 6,
+  'Market Signals AI': 5,
+  'Pre-Match Back Volume': 4,
+  'Pre-Match Odds Favorite': 3,
+  'Bookie Favourite': 2,
+  'Pre-Match Odds': 1,
+}
+
+export function lockMatchStartPrediction(current, locked, { inPlay = false } = {}) {
   if (!current?.winnerName) return locked
-  if (locked?.winnerName) return locked
-  return current
+  if (!locked?.winnerName) return current
+  if (inPlay) return locked
+  const curP = REASON_PRIORITY[current.reason] ?? 0
+  const lockP = REASON_PRIORITY[locked.reason] ?? 0
+  if (curP > lockP) return current
+  return locked
 }
 
 export default predictMatchStart

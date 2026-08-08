@@ -92,11 +92,12 @@ async function auditLog(admin, action, targetType, targetId, targetIdentifier, c
 // ==================== DASHBOARD ====================
 router.get('/dashboard', requireAdmin, async (req, res) => {
   try {
-    const [totalUsers, proSubscribers, lapsedProUsers, freeUsers, activeUsers, bannedUsers, recentUsers] = await Promise.all([
+    const [totalUsers, proSubscribers, lapsedProUsers, trialUsers, freeUsers, activeUsers, bannedUsers, recentUsers] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { subPlanSlug: 'pro', subStatus: 'active', subExpiresAt: { gt: new Date() } } }),
       prisma.user.count({ where: lapsedProWhere() }),
-      prisma.user.count({ where: { subPlanSlug: { not: 'pro' } } }),
+      prisma.user.count({ where: { subPlanSlug: 'trial', subStatus: 'active', subExpiresAt: { gt: new Date() } } }),
+      prisma.user.count({ where: { subPlanSlug: 'free' } }),
       prisma.user.count({ where: { status: 'active' } }),
       prisma.user.count({ where: { status: 'banned' } }),
       prisma.user.findMany({
@@ -104,7 +105,7 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
         select: { id: true, name: true, email: true, role: true, status: true, subPlanSlug: true, createdAt: true }
       })
     ]);
-    res.json({ success: true, data: { stats: { totalUsers, proSubscribers, lapsedProUsers, freeUsers, activeUsers, bannedUsers }, recent: { users: recentUsers } } });
+    res.json({ success: true, data: { stats: { totalUsers, proSubscribers, lapsedProUsers, trialUsers, freeUsers, activeUsers, bannedUsers }, recent: { users: recentUsers } } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

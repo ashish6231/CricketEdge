@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const { generateToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
-const { TRIAL_DAYS, grantTrialToNewUser, expireTrialIfNeeded, getTrialDaysLeft, isActiveTrial, syncUserTrialState, grantTrialIfEligible } = require('../lib/subscriptionAccess');
+const { TRIAL_DAYS, grantTrialToNewUser, getTrialDaysLeft, isActiveTrial, syncUserTrialState, refreshUserSubscriptionState } = require('../lib/subscriptionAccess');
 
 let emailEnabled = false;
 let transporter = null;
@@ -118,8 +118,8 @@ router.post('/login', async (req, res) => {
     if (user.status === 'suspended')
       return res.status(403).json({ success: false, message: 'Your account is suspended. Contact support.' });
 
-    const token = generateToken(user);
     const { user: freshUser, trialGranted } = await syncUserTrialState(prisma, user.id);
+    const token = generateToken(freshUser || user);
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({
       success: true,
@@ -243,7 +243,7 @@ router.get('/me', async (req, res) => {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    const { user } = await syncUserTrialState(prisma, decoded.userId);
+    const user = await refreshUserSubscriptionState(prisma, decoded.userId);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.status === 'banned')
       return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });

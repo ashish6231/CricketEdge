@@ -410,7 +410,8 @@ export default function MatchDetail({ sport }) {
   useEffect(() => {
     if (!snapshot) return
     const next = predictMatchStart(snapshot)
-    setLockedMatchStartPick(prev => lockMatchStartPrediction(next, prev))
+    const inPlay = snapshot.inPlay || snapshot.status === 'in-play'
+    setLockedMatchStartPick(prev => lockMatchStartPrediction(next, prev, { inPlay }))
   }, [snapshot])
 
   useEffect(() => {

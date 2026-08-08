@@ -29,12 +29,20 @@ export default function AdminPage() {
   const navigate = useNavigate()
   const { isLoggedIn, user } = useOutletContext()
   const [tab, setTab] = useState('dashboard')
+  const isSuperAdmin = user?.role === 'superadmin'
+  const tabs = ALL_TABS.filter(t => isSuperAdmin || !t.superadminOnly)
 
   useEffect(() => {
     if (!isLoggedIn || (user && !['admin', 'superadmin'].includes(user.role))) {
       navigate('/')
     }
-  }, [isLoggedIn, user])
+  }, [isLoggedIn, user, navigate])
+
+  useEffect(() => {
+    if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings'].includes(tab)) {
+      setTab('dashboard')
+    }
+  }, [tab, isSuperAdmin])
 
   if (!user) return (
     <div className="flex h-[80vh] items-center justify-center">
@@ -43,15 +51,6 @@ export default function AdminPage() {
   )
 
   if (!['admin', 'superadmin'].includes(user.role)) return null
-
-  const isSuperAdmin = user?.role === 'superadmin'
-  const tabs = ALL_TABS.filter(t => isSuperAdmin || !t.superadminOnly)
-
-  useEffect(() => {
-    if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings'].includes(tab)) {
-      setTab('dashboard')
-    }
-  }, [tab, isSuperAdmin])
 
   return (
     <div className="max-w-6xl mx-auto p-4 fade-in">

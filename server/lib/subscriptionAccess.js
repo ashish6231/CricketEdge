@@ -34,9 +34,29 @@ function getTrialDaysLeft(user, now = new Date()) {
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
+async function expireActiveSubscriptions(prisma, userId, { exceptId = null, reason = 'Replaced', now = new Date() } = {}) {
+  await prisma.userSubscription.updateMany({
+    where: {
+      userId,
+      status: 'active',
+      ...(exceptId ? { id: { not: exceptId } } : {}),
+    },
+    data: { status: 'expired', cancelledAt: now, cancelReason: reason },
+  });
+}
+
+async function expireTrialForProUpgrade(prisma, userId, now = new Date()) {
+  await prisma.userSubscription.updateMany({
+    where: { userId, planSlug: 'trial', status: 'active' },
+    data: { status: 'expired', cancelledAt: now, cancelReason: 'Upgraded to Pro' },
+  });
+}
+
 async function grantTrial(prisma, userId, now = new Date()) {
   const trialExpires = getTrialExpiresAt(now);
   const proPlan = await prisma.subscriptionPlan.findFirst({ where: { slug: 'pro' } });
+
+  await expireActiveSubscriptions(prisma, userId, { reason: 'Trial started', now });
 
   await prisma.user.update({
     where: { id: userId },
@@ -96,6 +116,11 @@ async function grantTrialIfEligible(prisma, userId, { force = false } = {}) {
 
   const updated = await grantTrial(prisma, userId, new Date());
   return { granted: true, user: updated, reason: null };
+}
+
+async function refreshUserSubscriptionState(prisma, userId) {
+  const user = await expireTrialIfNeeded(prisma, userId);
+  return user || await prisma.user.findUnique({ where: { id: userId } });
 }
 
 async function syncUserTrialState(prisma, userId) {
@@ -185,9 +210,12 @@ module.exports = {
   getTrialDaysLeft,
   grantTrialToNewUser,
   grantTrialIfEligible,
+  refreshUserSubscriptionState,
   syncUserTrialState,
   grantTrialToAllEligible,
   hasUsedTrial,
   expireTrialIfNeeded,
+  expireTrialForProUpgrade,
+  expireActiveSubscriptions,
   expireAllTrials,
 };
