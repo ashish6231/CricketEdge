@@ -1,23 +1,15 @@
 import { useEffect, useState, useCallback } from 'react'
 import { LoaderCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { adminGetAuditLogs } from '../../api'
+import {
+  AUDIT_ACTIONS,
+  getAuditActionColor,
+  getAuditChanges,
+} from '../../utils/adminAuditLogs'
 
 const fmtDateTime = (d) => d
   ? new Date(d).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
   : '—'
-
-const ACTION_COLORS = {
-  user_ban:      'bg-red-100 text-red-600',
-  user_suspend:  'bg-yellow-100 text-yellow-700',
-  user_unsuspend:'bg-green-100 text-green-700',
-  user_verify:   'bg-blue-100 text-blue-700',
-  plan_create:   'bg-purple-100 text-purple-700',
-  plan_update:   'bg-purple-100 text-purple-700',
-  coupon_create: 'bg-green-100 text-green-700',
-  settings_update:'bg-gray-100 text-gray-600',
-}
-
-const ACTIONS = ['user_ban','user_suspend','user_unsuspend','user_verify','plan_create','plan_update','coupon_create','settings_update']
 
 export default function AdminAuditLogs() {
   const [logs, setLogs]         = useState([])
@@ -45,7 +37,7 @@ export default function AdminAuditLogs() {
         <select value={action} onChange={e => { setAction(e.target.value); setPage(1) }}
           className="glass-card rounded-xl px-3 py-2 text-sm outline-none text-text-secondary bg-white">
           <option value="">All Actions</option>
-          {ACTIONS.map(a => <option key={a} value={a}>{a}</option>)}
+          {AUDIT_ACTIONS.map(a => <option key={a} value={a}>{a}</option>)}
         </select>
         <span className="text-xs text-text-muted">{pagination.total ?? 0} entries</span>
       </div>
@@ -59,13 +51,15 @@ export default function AdminAuditLogs() {
           : (
             <div className="glass-card rounded-2xl overflow-hidden">
               <div className="divide-y divide-border/40">
-                {logs.map(log => (
+                {logs.map(log => {
+                  const changes = getAuditChanges(log)
+                  return (
                   <div key={log.id}>
                     <div
                       className="px-4 py-3 flex items-start gap-3 hover:bg-red-50/20 cursor-pointer transition-colors"
                       onClick={() => setExpanded(expanded === log.id ? null : log.id)}
                     >
-                      <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-bold mt-0.5 ${ACTION_COLORS[log.action] || 'bg-gray-100 text-gray-600'}`}>
+                      <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-xs font-bold mt-0.5 ${getAuditActionColor(log.action)}`}>
                         {log.action}
                       </span>
                       <div className="flex-1 min-w-0">
@@ -78,15 +72,25 @@ export default function AdminAuditLogs() {
                       </div>
                       <div className="flex-shrink-0 text-xs text-text-muted">{fmtDateTime(log.createdAt)}</div>
                     </div>
-                    {expanded === log.id && log.changes && (
-                      <div className="px-4 pb-3 ml-3">
-                        <pre className="text-xs bg-gray-50 rounded-xl p-3 overflow-x-auto text-text-secondary border border-border/40">
-                          {JSON.stringify(log.changes, null, 2)}
-                        </pre>
+                    {expanded === log.id && changes && (
+                      <div className="grid gap-2 px-4 pb-3 ml-3 sm:grid-cols-2">
+                        <div>
+                          <div className="mb-1 text-[10px] font-bold uppercase text-text-muted">Before</div>
+                          <pre className="text-xs bg-gray-50 rounded-xl p-3 overflow-x-auto text-text-secondary border border-border/40">
+                            {JSON.stringify(changes.before, null, 2)}
+                          </pre>
+                        </div>
+                        <div>
+                          <div className="mb-1 text-[10px] font-bold uppercase text-text-muted">After</div>
+                          <pre className="text-xs bg-gray-50 rounded-xl p-3 overflow-x-auto text-text-secondary border border-border/40">
+                            {JSON.stringify(changes.after, null, 2)}
+                          </pre>
+                        </div>
                       </div>
                     )}
                   </div>
-                ))}
+                  )
+                })}
               </div>
             </div>
           )

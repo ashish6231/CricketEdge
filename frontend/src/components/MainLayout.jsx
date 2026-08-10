@@ -2,7 +2,7 @@ import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Activity, Menu, X, Shield, LogOut, User, ChevronDown } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout } from '../api'
-import { getPlanLabel, isActiveTrial, isPaidPro, getTrialDaysLeft } from '../lib/subscriptionAccess'
+import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
@@ -207,7 +207,7 @@ export default function MainLayout() {
       {onTrial && (
         <div className="fixed top-[53px] left-0 right-0 z-30 px-4 py-2 text-center text-xs font-semibold"
           style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(220,38,38,0.1))', borderBottom: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
-          🎁 Free 3-day trial active — {getTrialDaysLeft(authUser)} day{getTrialDaysLeft(authUser) !== 1 ? 's' : ''} left with full live match access.
+          🎁 Free 30-minute trial active — {formatTrialTimeLeft(getTrialMinutesLeft(authUser))} left with full live match access.
           {' '}<Link to="/subscription" className="underline text-white">Upgrade to Pro</Link> before trial ends.
         </div>
       )}

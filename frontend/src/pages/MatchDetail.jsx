@@ -6,12 +6,12 @@ import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
-import { predictMatchStart, lockMatchStartPrediction } from '../utils/matchStartPredictor'
+import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
 import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
-import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
+import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner, ExitAdviceBanner } from '../components/PredictionMeta'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -619,6 +619,14 @@ export default function MatchDetail({ sport }) {
   const predictionAccuracy = primaryPrediction?.confidence?.pct
   const publicMoneyTeam = primaryPrediction?.moreBetted || snapshot.marketSignals?.moreBettedTeam
   const hasMatchStartPick = !!primaryPrediction?.winnerName
+  const pickBackOdds = predictedMatchWinner === t1 ? t1Odds.back : predictedMatchWinner === t2 ? t2Odds.back : null
+  const opponentBackOdds = predictedMatchWinner === t1 ? t2Odds.back : predictedMatchWinner === t2 ? t1Odds.back : null
+  const matchStartExitAdvice = getMatchStartExitAdvice({
+    lockedPick: primaryPrediction,
+    inPlay: isLive,
+    pickBackOdds,
+    opponentBackOdds,
+  })
 
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
@@ -1028,6 +1036,7 @@ export default function MatchDetail({ sport }) {
                       </div>
                     )}
                     <AvoidEntryBanner risk={primaryPrediction?.risk} />
+                    <ExitAdviceBanner advice={matchStartExitAdvice} />
                     {matchWinnerReason === 'Fade Public Money' && publicMoneyTeam && (
                       <div className="text-[10px] mt-2 px-2 py-1.5 rounded-lg border border-[#2c2c2e]" style={{ background: '#0a0a0a' }}>
                         <span className="text-[#ef4444] font-semibold">Public:</span>{' '}
@@ -1040,8 +1049,14 @@ export default function MatchDetail({ sport }) {
                         )}
                       </div>
                     )}
-                    {isLive && (
-                      <div className="text-[10px] mt-1 text-[#636366]">Match open par fix — live odds change se pick nahi badlegi</div>
+                    {isLive ? (
+                      <div className="text-[10px] mt-1 text-[#636366]">
+                        Match-start pick locked — live odds se team change nahi hogi
+                      </div>
+                    ) : (
+                      <div className="text-[10px] mt-1 text-[#636366]">
+                        Pehli pick lock — refresh/polling se team flip nahi hogi
+                      </div>
                     )}
                     {primaryPrediction?.preOdds && (
                       <div className="flex justify-center gap-4 mt-2 text-[10px] text-[#8e8e93]">

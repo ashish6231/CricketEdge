@@ -203,6 +203,15 @@ export function predictMatchStart(snap) {
 
   if (!winner) return null
 
+  const pickOdds = winner === t1 ? m.preOdds1 : m.preOdds2
+  const oppOdds = winner === t1 ? m.preOdds2 : m.preOdds1
+  const extremeDogFade = (
+    pickOdds != null
+    && oppOdds != null
+    && oppOdds <= 0.45
+    && pickOdds >= 2.5
+  )
+
   // Boost confidence when MS also disagrees with public (87.5% on 16 matches)
   const confidence = msDisagreesPublic && reason === 'Fade Public Money'
     ? REASON_META['Fade Public (MS confirms)']
@@ -216,12 +225,14 @@ export function predictMatchStart(snap) {
     winnerIdx: winner === t1 ? 0 : 1,
     reason,
     confidence,
-    risk: computeMatchStartRisk(reason, { publicOverridden, msDisagreesPublic }),
+    risk: computeMatchStartRisk(reason, { publicOverridden, msDisagreesPublic, extremeDogFade }),
     timing: 'match_start',
     moreBetted: publicTeam,
     apiMoreBetted: m.moreBetted,
     publicOverridden,
     msDisagreesPublic,
+    extremeDogFade,
+    lockedAt: 'match_open',
     signals: [
       {
         label: 'Public Money (Fade)',
@@ -269,12 +280,41 @@ const REASON_PRIORITY = {
 
 export function lockMatchStartPrediction(current, locked, { inPlay = false } = {}) {
   if (!current?.winnerName) return locked
-  if (!locked?.winnerName) return current
+  if (!locked?.winnerName) return { ...current, lockedAt: current.lockedAt || 'match_open' }
+
+  // Never flip the picked team after the first lock — polling must not change your entry side.
+  if (current.winnerName !== locked.winnerName) return locked
   if (inPlay) return locked
+
   const curP = REASON_PRIORITY[current.reason] ?? 0
   const lockP = REASON_PRIORITY[locked.reason] ?? 0
-  if (curP > lockP) return current
+  if (curP > lockP) {
+    return {
+      ...current,
+      winnerName: locked.winnerName,
+      winnerIdx: locked.winnerIdx,
+      lockedAt: locked.lockedAt || 'match_open',
+    }
+  }
   return locked
+}
+
+/** Live guidance when fade underdog is stuck vs a heavy favorite (~30p). */
+export function getMatchStartExitAdvice({
+  lockedPick,
+  inPlay = false,
+  pickBackOdds,
+  opponentBackOdds,
+}) {
+  if (!lockedPick?.winnerName || !inPlay) return null
+  if (pickBackOdds == null || opponentBackOdds == null) return null
+  if (opponentBackOdds > 0.35 || pickBackOdds < 2) return null
+
+  return {
+    level: 'warning',
+    title: 'Exit / hedge consider karo',
+    message: `Favorite ab ~${Math.round(opponentBackOdds * 100)}p par hai. Fade pick ki price move nahi ho rahi — loss cut ya hedge socho. Match-start pick change nahi hogi.`,
+  }
 }
 
 export default predictMatchStart

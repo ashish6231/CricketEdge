@@ -5,7 +5,14 @@ const crypto = require('crypto');
 const router = express.Router();
 const { generateToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
-const { TRIAL_DAYS, grantTrialToNewUser, getTrialDaysLeft, isActiveTrial, syncUserTrialState, refreshUserSubscriptionState } = require('../lib/subscriptionAccess');
+const {
+  TRIAL_LABEL,
+  grantTrialToNewUser,
+  getTrialMinutesLeft,
+  isActiveTrial,
+  syncUserTrialState,
+  refreshUserSubscriptionState,
+} = require('../lib/subscriptionAccess');
 
 let emailEnabled = false;
 let transporter = null;
@@ -54,7 +61,7 @@ function sanitizeUser(user) {
       status: user.subStatus || 'active',
       expiresAt: user.subExpiresAt,
       isTrial: isActiveTrial(user),
-      trialDaysLeft: getTrialDaysLeft(user),
+      trialMinutesLeft: getTrialMinutesLeft(user),
     }
   };
 }
@@ -89,7 +96,7 @@ router.post('/register', async (req, res) => {
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({
       success: true,
-      message: `Account created! ${TRIAL_DAYS}-day free trial activated.`,
+      message: `Account created! ${TRIAL_LABEL} free trial activated.`,
       token,
       user: sanitizeUser(freshUser)
     });
@@ -123,7 +130,7 @@ router.post('/login', async (req, res) => {
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({
       success: true,
-      message: trialGranted ? `Login successful! ${TRIAL_DAYS}-day free trial activated.` : 'Login successful',
+      message: trialGranted ? `Login successful! ${TRIAL_LABEL} free trial activated.` : 'Login successful',
       token,
       user: sanitizeUser(freshUser || user),
       trialGranted,

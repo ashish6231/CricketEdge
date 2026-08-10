@@ -69,12 +69,12 @@ export default function AdminUsers({ isSuperAdmin }) {
   }
 
   const grantTrial = async (userId, force = true) => {
-    if (force && !window.confirm('Grant 3-day trial to this user?')) return
+    if (force && !window.confirm('Grant 30-minute trial to this user?')) return
     await act(userId, adminGrantTrial, userId, force)
   }
 
   const grantTrialAll = async () => {
-    if (!window.confirm('Grant 3-day trial to all eligible free users who never had trial?')) return
+    if (!window.confirm('Grant 30-minute trial to all eligible free users who never had trial?')) return
     setBulkGranting(true)
     setError('')
     try {
@@ -215,7 +215,7 @@ export default function AdminUsers({ isSuperAdmin }) {
                       {u.role === 'user' && (<>
                         <div className="h-px bg-[#2c2c2e] my-1"></div>
                         {u.subPlanSlug === 'free' && (
-                          <ActionMenuItem disabled={isActing} loading={isActing} color="#10b981" icon={<Gift size={14} />} label="Grant 3-Day Trial"
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#10b981" icon={<Gift size={14} />} label="Grant 30-Min Trial"
                             onClick={() => grantTrial(u.id, true)} />
                         )}
                         {u.subPlanSlug !== 'pro' ? (

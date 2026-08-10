@@ -21,6 +21,7 @@ export default function CricketPage() {
   const isPro = hasProAccess(user)
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || null)
   const [allMatches, setAllMatches] = useState([])
@@ -34,6 +35,7 @@ export default function CricketPage() {
       getCricketMatches(),
       getTossMatches().catch(() => ({ matches: [] }))
     ]).then(([data, tossData]) => {
+      setLoadError('')
       const tossArr = Array.isArray(tossData?.matches)
         ? tossData.matches
         : Array.isArray(tossData?.matches?.matches)
@@ -59,6 +61,9 @@ export default function CricketPage() {
           setSelectedComp(compWithEnded?.[0] || Object.keys(grouped)[0] || null)
         }
       }
+      setLoading(false)
+    }).catch(err => {
+      setLoadError(err?.detail || 'Live matches load nahi ho paaye. Thodi der baad dubara try karo.')
       setLoading(false)
     })
   }, [])
@@ -119,6 +124,15 @@ export default function CricketPage() {
   }
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
+  if (loadError) return (
+    <div className="flex h-[80vh] items-center justify-center px-6">
+      <div className="max-w-md rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-center">
+        <p className="text-sm font-semibold text-red-300">{loadError}</p>
+        <p className="mt-2 text-xs text-text-muted">VPN on karke refresh karo, ya thodi der baad dubara try karo.</p>
+        <button onClick={() => window.location.reload()} className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white">Retry</button>
+      </div>
+    </div>
+  )
 
   const currentMatches = competitions[selectedComp] || []
 

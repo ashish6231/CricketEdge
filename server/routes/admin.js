@@ -3,7 +3,7 @@ const router = express.Router();
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
 const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissions');
 const prisma = require('../db/prisma');
-const { grantTrialIfEligible, grantTrialToAllEligible, TRIAL_DAYS } = require('../lib/subscriptionAccess');
+const { grantTrialIfEligible, grantTrialToAllEligible, TRIAL_LABEL } = require('../lib/subscriptionAccess');
 
 function parseUserId(raw) {
   const id = parseInt(raw, 10);
@@ -320,7 +320,7 @@ router.post('/users/:id/grant-trial', requireAdmin, async (req, res) => {
 
     res.json({
       success: true,
-      message: `${TRIAL_DAYS}-day trial granted`,
+      message: `${TRIAL_LABEL} trial granted`,
       data: { id: result.user.id, subPlanSlug: result.user.subPlanSlug, subExpiresAt: result.user.subExpiresAt },
     });
   } catch (err) {

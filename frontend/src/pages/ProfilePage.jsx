@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate, useOutletContext, Link } from 'react-router-dom'
 import { LoaderCircle, Crown, LogOut, Shield } from 'lucide-react'
 import { logout } from '../api'
-import { isActiveTrial, isPaidPro, getTrialDaysLeft } from '../lib/subscriptionAccess'
+import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
@@ -24,7 +24,7 @@ export default function ProfilePage() {
 
   const isPro = isPaidPro(user)
   const onTrial = isActiveTrial(user)
-  const planName = onTrial ? `Trial (${getTrialDaysLeft(user)} days left)` : isPro ? '⭐ Pro' : 'Free'
+  const planName = onTrial ? `Trial (${formatTrialTimeLeft(getTrialMinutesLeft(user))} left)` : isPro ? '⭐ Pro' : 'Free'
 
   return (
     <div className="max-w-lg mx-auto p-4 space-y-4 fade-in">
@@ -43,7 +43,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-1 mt-1">
               {user.role === 'superadmin' && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">Superadmin</span>}
               {user.role === 'admin' && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Admin</span>}
-              {onTrial && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Trial · {getTrialDaysLeft(user)}d left</span>}
+              {onTrial && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Trial · {formatTrialTimeLeft(getTrialMinutesLeft(user))} left</span>}
               {isPro
                 ? <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700">⭐ Pro</span>
                 : !onTrial && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">Free</span>

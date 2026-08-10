@@ -40,6 +40,26 @@ export function AvoidEntryBanner({ risk }) {
   )
 }
 
+export function ExitAdviceBanner({ advice }) {
+  if (!advice) return null
+  return (
+    <div
+      className="mt-2 px-2.5 py-2 rounded-lg text-center"
+      style={{
+        background: 'rgba(234,179,8,0.1)',
+        border: '1px solid rgba(234,179,8,0.35)',
+      }}
+    >
+      <div className="text-[10px] font-black uppercase tracking-wide text-[#eab308]">
+        ⚠️ {advice.title}
+      </div>
+      <div className="mt-1 text-[10px] font-normal normal-case text-[#8e8e93]">
+        {advice.message}
+      </div>
+    </div>
+  )
+}
+
 export function MatchedRulesPanel({ rules, selectedReason }) {
   const [open, setOpen] = useState(false)
   if (!rules?.length) return null

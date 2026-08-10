@@ -8,7 +8,9 @@
     "dev": "nodemon index.js",
     "dev:test": "NODE_ENV=test nodemon index.js",
     "start:test": "NODE_ENV=test node index.js",
-    "backtest:toss": "node backtest_toss.mjs"
+    "test": "node --test tests/*.test.js",
+    "backtest:toss": "node backtest_toss.mjs",
+    "revoke:all-trials": "node scripts/revoke_all_trials.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.9.1",

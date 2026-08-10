@@ -143,7 +143,7 @@ setInterval(async () => {
   } catch (err) {
     console.error('❌ Subscription auto-activation error:', err.message);
   }
-}, 60 * 60 * 1000);
+}, 5 * 60 * 1000);
 
 // Serve frontend only if dist exists (API-only Railway deploy is OK)
 const distCandidates = [
@@ -154,6 +154,9 @@ const staticDir = distCandidates.find(d => fs.existsSync(path.join(d, 'index.htm
 if (staticDir) {
   app.use(express.static(staticDir));
   app.get('*', (req, res) => {
+    if (req.path.startsWith('/api/')) {
+      return res.status(404).json({ success: false, detail: 'Not found' });
+    }
     res.sendFile(path.join(staticDir, 'index.html'), (err) => {
       if (err) res.status(404).json({ error: 'Not found' });
     });
@@ -161,6 +164,33 @@ if (staticDir) {
 }
 
 const PORT = process.env.PORT || 5000;
+let shuttingDown = false;
+let shutdownComplete = false;
+
+function shutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  console.log(`\n${signal} received, shutting down...`);
+
+  server.close(async closeError => {
+    if (shutdownComplete) return;
+    shutdownComplete = true;
+
+    if (closeError) {
+      console.error('HTTP server shutdown failed:', closeError.message);
+    }
+    try {
+      await prisma.$disconnect();
+    } catch (error) {
+      console.error('Prisma shutdown failed:', error.message);
+      closeError ||= error;
+    }
+    process.exit(closeError ? 1 : 0);
+  });
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));
 
 (async () => {
   try {

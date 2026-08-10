@@ -71,7 +71,18 @@ export function computeTossRisk(reason, matchedRules = []) {
   return { ...RISK_TIERS[tier], reason }
 }
 
-export function computeMatchStartRisk(reason, { publicOverridden = false, msDisagreesPublic = false } = {}) {
+export function computeMatchStartRisk(
+  reason,
+  { publicOverridden = false, msDisagreesPublic = false, extremeDogFade = false } = {},
+) {
+  if (extremeDogFade) {
+    return {
+      ...RISK_TIERS.high,
+      reason,
+      note: 'Heavy underdog fade — favorite 30–45p par stuck ho sakta hai',
+      avoidEntry: true,
+    }
+  }
   if (publicOverridden) return { ...RISK_TIERS.high, reason, note: 'API public override' }
   if (reason === 'Fade Public Money' && msDisagreesPublic) {
     return { ...RISK_TIERS.low, reason }

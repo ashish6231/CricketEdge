@@ -6,7 +6,7 @@
 const axios = require('axios');
 const tennisLogin = require('./tennisLogin');
 
-const BASE_URL = 'https://tennisliveload.com';
+const BASE_URL = process.env.TENNIS_BASE_URL || 'https://tennisliveload.com';
 
 const ENDPOINTS = {
   CRICKET_MATCHES:  '/api/cricket/matches',
@@ -25,6 +25,15 @@ const CACHE_TTL = 15 * 1000;
 const LIST_TTL  = 60 * 1000;
 const SNAPSHOT_CACHE_TTL = 3000; // align with 3s frontend polling
 const LIST_CACHE_TTL = 10000;
+const STALE_CACHE_MAX_AGE = 30 * 60 * 1000;
+
+function _formatUpstreamError(errPayload) {
+  const raw = errPayload?.error || errPayload?.message || 'Service temporarily unavailable';
+  if (/530|1033|ENOTFOUND|ECONNREFUSED|ETIMEDOUT|timed out/i.test(String(raw))) {
+    return 'Live match data is temporarily unavailable. Please try again in a few minutes.';
+  }
+  return String(raw).replace(/tennisliveload\.com/gi, 'live feed');
+}
 
 const USER_AGENTS = [
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -56,9 +65,14 @@ async function _callApi(endpoint, params = null, method = 'GET') {
       : await axios.post(url, params, config);
     return resp.data;
   } catch (err) {
-    if (err.response) return { error: `HTTP ${err.response.status}`, message: err.message };
-    if (err.code === 'ECONNABORTED') return { error: 'Request timed out' };
-    return { error: err.message };
+    if (err.response) {
+      return {
+        error: _formatUpstreamError({ error: `HTTP ${err.response.status}` }),
+        upstreamStatus: err.response.status,
+      };
+    }
+    if (err.code === 'ECONNABORTED') return { error: _formatUpstreamError({ error: 'Request timed out' }) };
+    return { error: _formatUpstreamError({ error: err.message }) };
   }
 }
 
@@ -99,6 +113,13 @@ function _cacheGet(key, maxAge) {
   return null;
 }
 
+function _cacheGetStale(key, maxAge = STALE_CACHE_MAX_AGE) {
+  const e = _cache[key];
+  if (!e || (Date.now() - e.ts) > maxAge) return null;
+  if (typeof e.data === 'object' && e.data?.error) return null;
+  return e.data;
+}
+
 function _cacheSet(key, data) {
   _cache[key] = { data, ts: Date.now() };
 }
@@ -132,7 +153,17 @@ async function _cachedList(key, fn, ttl = LIST_CACHE_TTL) {
   
   _inFlight[key] = fn()
     .then(data => {
-      if (data && !(typeof data === 'object' && data.error)) _cacheSet(key, data);
+      if (data && !(typeof data === 'object' && data.error)) {
+        _cacheSet(key, data);
+        delete _inFlight[key];
+        return data;
+      }
+      const stale = _cacheGetStale(key);
+      if (stale !== null) {
+        console.warn(`⚠️  upstream failed for ${key}, serving stale cache`);
+        delete _inFlight[key];
+        return stale;
+      }
       delete _inFlight[key];
       return data;
     })

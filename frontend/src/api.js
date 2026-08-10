@@ -1,9 +1,20 @@
-const API_BASE = (import.meta.env.VITE_API_URL || '') + '/api'
+const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
 const API_TIMEOUT_MS = 12000
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('auth_token')
   return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+async function getAPIError(res) {
+  const errData = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }))
+  const raw = errData.detail || errData.message || errData.error || `HTTP ${res.status}`
+  const detail = String(raw).replace(/tennisliveload\.com/gi, 'live feed')
+  return {
+    status: res.status,
+    detail,
+    code: errData.code,
+  }
 }
 
 async function fetchAPI(endpoint, options = {}) {
@@ -16,8 +27,7 @@ async function fetchAPI(endpoint, options = {}) {
       headers: { ...getAuthHeader(), ...options.headers }
     })
     if (!res.ok) {
-      const errData = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }))
-      throw { status: res.status, detail: errData.detail || errData.message || errData.error || `HTTP ${res.status}`, code: errData.code }
+      throw await getAPIError(res)
     }
     return await res.json()
   } catch (err) {

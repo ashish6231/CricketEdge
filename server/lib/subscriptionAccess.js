@@ -1,8 +1,9 @@
-const TRIAL_DAYS = 3;
+const TRIAL_MINUTES = 30;
+const TRIAL_LABEL = '30-minute';
 
 function getTrialExpiresAt(from = new Date()) {
   const expires = new Date(from);
-  expires.setDate(expires.getDate() + TRIAL_DAYS);
+  expires.setMinutes(expires.getMinutes() + TRIAL_MINUTES);
   return expires;
 }
 
@@ -27,11 +28,11 @@ function isPaidPro(user, now = new Date()) {
   return user.subPlanSlug === 'pro' && user.subStatus === 'active';
 }
 
-function getTrialDaysLeft(user, now = new Date()) {
+function getTrialMinutesLeft(user, now = new Date()) {
   if (!isActiveTrial(user, now) || !user.subExpiresAt) return 0;
   const diff = new Date(user.subExpiresAt) - now;
   if (diff <= 0) return 0;
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
+  return Math.ceil(diff / (1000 * 60));
 }
 
 async function expireActiveSubscriptions(prisma, userId, { exceptId = null, reason = 'Replaced', now = new Date() } = {}) {
@@ -201,13 +202,43 @@ async function expireAllTrials(prisma) {
   return expired.length;
 }
 
+async function revokeAllActiveTrials(prisma, { reason = 'Trial revoked', now = new Date() } = {}) {
+  const active = await prisma.user.findMany({
+    where: { subPlanSlug: 'trial', subStatus: 'active' },
+    select: { id: true, email: true, subExpiresAt: true },
+  });
+
+  if (!active.length) return { matched: 0, revoked: 0, users: [] };
+
+  const ids = active.map(u => u.id);
+
+  await prisma.user.updateMany({
+    where: { id: { in: ids } },
+    data: {
+      subPlanSlug: 'free',
+      subStatus: 'active',
+      subPlanId: null,
+      subExpiresAt: null,
+      subAutoRenew: false,
+    },
+  });
+
+  await prisma.userSubscription.updateMany({
+    where: { userId: { in: ids }, planSlug: 'trial', status: 'active' },
+    data: { status: 'expired', cancelledAt: now, cancelReason: reason },
+  });
+
+  return { matched: active.length, revoked: active.length, users: active };
+}
+
 module.exports = {
-  TRIAL_DAYS,
+  TRIAL_MINUTES,
+  TRIAL_LABEL,
   getTrialExpiresAt,
   hasProAccess,
   isActiveTrial,
   isPaidPro,
-  getTrialDaysLeft,
+  getTrialMinutesLeft,
   grantTrialToNewUser,
   grantTrialIfEligible,
   refreshUserSubscriptionState,
@@ -218,4 +249,5 @@ module.exports = {
   expireTrialForProUpgrade,
   expireActiveSubscriptions,
   expireAllTrials,
+  revokeAllActiveTrials,
 };

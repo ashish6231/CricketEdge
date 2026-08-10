@@ -31,9 +31,18 @@ router.post('/auth/logout', requireAdmin, (req, res) => {
 
 // ──── Cricket ────
 
+function upstreamUnavailable(res, data) {
+  const detail = String(data?.error || 'Live match data is temporarily unavailable. Please try again shortly.')
+    .replace(/tennisliveload\.com/gi, 'live feed');
+  return res.status(503).json({
+    detail,
+    code: 'SERVICE_UNAVAILABLE',
+  });
+}
+
 router.get('/cricket/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllCricketMatches();
-  if (data?.error) return res.status(502).json({ detail: data.error });
+  if (data?.error) return upstreamUnavailable(res, data);
   const matches = Array.isArray(data) ? data : [];
   res.json({ total: matches.length, matches });
 });
@@ -57,7 +66,7 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
   if (data?.error) {
     if (String(data.error).includes('401'))
       return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
-    return res.status(502).json({ detail: data.error });
+    return upstreamUnavailable(res, data);
   }
   if (matchInfo && !data.error) {
     data.inPlay = matchInfo.inPlay;
@@ -69,7 +78,7 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
 
 router.get('/toss/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllTossMatches();
-  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss matches data' });
+  if (!data || data.error) return upstreamUnavailable(res, data || { error: 'No toss matches data' });
   res.json({ matches: data });
 });
 

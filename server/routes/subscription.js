@@ -4,7 +4,13 @@ const Razorpay = require('razorpay');
 const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
-const { expireTrialIfNeeded, expireTrialForProUpgrade, getTrialDaysLeft, isActiveTrial, refreshUserSubscriptionState } = require('../lib/subscriptionAccess');
+const {
+  expireTrialIfNeeded,
+  expireTrialForProUpgrade,
+  getTrialMinutesLeft,
+  isActiveTrial,
+  refreshUserSubscriptionState,
+} = require('../lib/subscriptionAccess');
 
 function getRazorpay() {
   const { RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET } = process.env;
@@ -45,7 +51,7 @@ router.get('/my', verifyToken, async (req, res) => {
       subscription: {
         planSlug: user.subPlanSlug, status: user.subStatus, startedAt: user.subStartedAt,
         expiresAt: user.subExpiresAt, autoRenew: user.subAutoRenew,
-        isTrial: isActiveTrial(user), trialDaysLeft: getTrialDaysLeft(user),
+        isTrial: isActiveTrial(user), trialMinutesLeft: getTrialMinutesLeft(user),
       },
       queuedSubscription: user.queuedPlanSlug ? { planSlug: user.queuedPlanSlug, billingCycle: user.queuedBillingCycle, amount: user.queuedAmount, status: user.queuedStatus, purchasedAt: user.queuedPurchasedAt } : null,
       history

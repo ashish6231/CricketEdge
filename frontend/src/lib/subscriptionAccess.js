@@ -25,16 +25,22 @@ export function isPaidPro(user) {
   return new Date(sub.expiresAt) > new Date()
 }
 
-export function getTrialDaysLeft(user) {
+export function getTrialMinutesLeft(user) {
   if (!isActiveTrial(user) || !user.subscription?.expiresAt) return 0
   const diff = new Date(user.subscription.expiresAt) - new Date()
   if (diff <= 0) return 0
-  return Math.ceil(diff / (1000 * 60 * 60 * 24))
+  return Math.ceil(diff / (1000 * 60))
+}
+
+export function formatTrialTimeLeft(minutes) {
+  if (minutes <= 0) return '0 min'
+  if (minutes === 1) return '1 min'
+  return `${minutes} min`
 }
 
 export function getPlanLabel(user) {
   if (user?.role === 'admin' || user?.role === 'superadmin') return user.role === 'superadmin' ? 'Superadmin' : 'Admin'
-  if (isActiveTrial(user)) return `Trial · ${getTrialDaysLeft(user)}d left`
+  if (isActiveTrial(user)) return `Trial · ${formatTrialTimeLeft(getTrialMinutesLeft(user))} left`
   if (isPaidPro(user)) return '⭐ Pro'
   return 'Free'
 }

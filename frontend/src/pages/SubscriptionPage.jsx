@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { LoaderCircle, CheckCircle, Crown, Calendar, AlertTriangle } from 'lucide-react'
 import { getPlans, getMySubscription, createOrder, verifyPayment, paymentFailed } from '../api'
-import { isActiveTrial, isPaidPro, getTrialDaysLeft } from '../lib/subscriptionAccess'
+import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 
 const fmt = (n) => Number(n).toLocaleString('en-IN')
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -77,11 +77,11 @@ export default function SubscriptionPage() {
 
   const isPro = isPaidPro({ subscription: mySub?.subscription, role: user?.role })
   const onTrial = mySub?.subscription?.isTrial || isActiveTrial({ subscription: mySub?.subscription, role: user?.role })
-  const trialDaysLeft = mySub?.subscription?.trialDaysLeft ?? getTrialDaysLeft({ subscription: mySub?.subscription, role: user?.role })
+  const trialMinutesLeft = mySub?.subscription?.trialMinutesLeft ?? getTrialMinutesLeft({ subscription: mySub?.subscription, role: user?.role })
   const expiresAt = mySub?.subscription?.expiresAt
   const hasQueued = mySub?.queuedSubscription?.status === 'pending'
   const price = cycle === 'yearly' ? plan?.yearlyPrice : plan?.price
-  const planLabel = onTrial ? `Trial · ${trialDaysLeft} day${trialDaysLeft !== 1 ? 's' : ''} left` : isPro ? '⭐ Pro' : 'Free'
+  const planLabel = onTrial ? `Trial · ${formatTrialTimeLeft(trialMinutesLeft)} left` : isPro ? '⭐ Pro' : 'Free'
 
   return (
     <div className="max-w-2xl mx-auto p-4 space-y-4 fade-in">
@@ -90,7 +90,7 @@ export default function SubscriptionPage() {
       {onTrial && (
         <div className="rounded-2xl px-4 py-3 text-sm font-semibold"
           style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
-          🎁 Your free 3-day trial is active. You have full live match access for {trialDaysLeft} more day{trialDaysLeft !== 1 ? 's' : ''}.
+          🎁 Your free 30-minute trial is active. You have full live match access for {formatTrialTimeLeft(trialMinutesLeft)} more.
           After that you'll move to the Free plan — upgrade to Pro to keep access.
         </div>
       )}
