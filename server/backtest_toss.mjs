@@ -28,6 +28,11 @@ const CONFIRMED_ACTUAL = {
   '35904757': 'Nellai Royal Kings',
   '35904760': 'Tiruppur Tamizhans',
   '35905512': 'Sunrisers Leeds W',
+  // Aug 11-12 2026 failures — added after algo update
+  '35920148': 'Manchester Super Giants', // Manchester vs Sunrisers Leeds — Manchester won toss
+  '35920051': 'Tiruppur Tamizhans',      // Lyca vs Tiruppur — Tiruppur won toss (Lyca haari)
+  '35916520': 'Salem Spartans',          // Salem vs Madurai — Salem won (15% load, both zero lay)
+  '35916620': 'Trent Rockets W',         // Trent W vs Southern Brave W — Trent won (gap=1)
 };
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

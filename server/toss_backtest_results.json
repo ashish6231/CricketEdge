@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-07T14:28:20.256Z",
+  "generatedAt": "2026-08-11T18:46:38.641Z",
   "overall": {
     "correct": 2,
-    "total": 3,
-    "accuracy": "66.7"
+    "total": 4,
+    "accuracy": "50.0"
   },
   "byReason": [
     {
-      "reason": "Balanced Market — Bookie Fav",
-      "correct": 1,
+      "reason": "Both Zero Lay — Bookie Fav Underdog",
+      "correct": 0,
       "total": 1,
-      "pct": "100.0"
+      "pct": "0.0"
     },
     {
-      "reason": "Volume Trap — Bookie Fav",
+      "reason": "Trap + Tiny Trade Gap — Bookie Fav",
       "correct": 0,
       "total": 1,
       "pct": "0.0"
@@ -23,49 +23,75 @@
       "correct": 1,
       "total": 1,
       "pct": "100.0"
+    },
+    {
+      "reason": "Zero Lay Trap",
+      "correct": 1,
+      "total": 1,
+      "pct": "100.0"
     }
   ],
   "failures": [
     {
-      "matchId": "35891022",
-      "matchName": "Salem Spartans v Lyca Kovai Kings",
+      "matchId": "35916520",
+      "matchName": "Salem Spartans v Madurai Panthers",
       "competition": "Tamil Nadu Premier League",
-      "actual": "Lyca Kovai Kings",
+      "actual": "Madurai Panthers",
       "predicted": "Salem Spartans",
-      "reason": "Volume Trap — Bookie Fav",
-      "pattern": "VOLUME_TRAP",
+      "reason": "Both Zero Lay — Bookie Fav Underdog",
+      "pattern": "ZERO_LAY_BOTH",
+      "correct": false
+    },
+    {
+      "matchId": "35916620",
+      "matchName": "Trent Rockets W v Southern Brave W",
+      "competition": "The Hundred - Womens",
+      "actual": "Southern Brave W",
+      "predicted": "Trent Rockets W",
+      "reason": "Trap + Tiny Trade Gap — Bookie Fav",
+      "pattern": "TINY_GAP_TRAP",
       "correct": false
     }
   ],
   "all": [
     {
-      "matchId": "35902018",
-      "matchName": "London Spirit W v MI London W",
-      "competition": "The Hundred - Womens",
-      "actual": "London Spirit W",
-      "predicted": "London Spirit W",
-      "reason": "Balanced Market — Bookie Fav",
-      "pattern": "BALANCED_MARKET",
-      "correct": true
-    },
-    {
-      "matchId": "35891022",
-      "matchName": "Salem Spartans v Lyca Kovai Kings",
+      "matchId": "35916520",
+      "matchName": "Salem Spartans v Madurai Panthers",
       "competition": "Tamil Nadu Premier League",
-      "actual": "Lyca Kovai Kings",
+      "actual": "Madurai Panthers",
       "predicted": "Salem Spartans",
-      "reason": "Volume Trap — Bookie Fav",
-      "pattern": "VOLUME_TRAP",
+      "reason": "Both Zero Lay — Bookie Fav Underdog",
+      "pattern": "ZERO_LAY_BOTH",
       "correct": false
     },
     {
-      "matchId": "35902022",
-      "matchName": "London Spirit v MI London",
+      "matchId": "35916620",
+      "matchName": "Trent Rockets W v Southern Brave W",
+      "competition": "The Hundred - Womens",
+      "actual": "Southern Brave W",
+      "predicted": "Trent Rockets W",
+      "reason": "Trap + Tiny Trade Gap — Bookie Fav",
+      "pattern": "TINY_GAP_TRAP",
+      "correct": false
+    },
+    {
+      "matchId": "35916623",
+      "matchName": "Trent Rockets v Southern Brave",
       "competition": "The Hundred",
-      "actual": "MI London",
-      "predicted": "MI London",
+      "actual": "Southern Brave",
+      "predicted": "Southern Brave",
       "reason": "Higher Lay Trades",
       "pattern": "LAY_TRADES",
+      "correct": true
+    },
+    {
+      "matchId": "35920048",
+      "matchName": "Nellai Royal Kings v Ruby Trichy Warriors",
+      "competition": "Tamil Nadu Premier League",
+      "actual": "Nellai Royal Kings",
+      "predicted": "Nellai Royal Kings",
+      "reason": "Zero Lay Trap",
+      "pattern": "ZERO_LAY_TRAP",
       "correct": true
     }
   ]

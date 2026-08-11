@@ -49,22 +49,28 @@ function extractMetrics(snap) {
 }
 
 const REASON_CONFIDENCE = {
-  'Smart Money Trap':       { label: 'High Confidence 🔥', color: 'text-profit', pct: '91%' },
-  'Zero Lay Trap':          { label: 'High Confidence 🔥', color: 'text-profit', pct: '88%' },
-  'Volume Trap — Bookie Fav': { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
-  'Smart Lay Vol (load fav trap)': { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
-  'Balanced Market — Bookie Fav': { label: 'Moderate', color: 'text-yellow-500', pct: '78%' },
-  'Higher Lay Trades':      { label: 'Moderate', color: 'text-yellow-500', pct: '73%' },
-  'Higher Lay Vol':         { label: 'Moderate', color: 'text-yellow-500', pct: '65%' },
-  'Bookie Fav (fallback)':  { label: 'Low Confidence', color: 'text-text-muted', pct: '55%' },
+  'Smart Money Trap':                    { label: 'High Confidence 🔥', color: 'text-profit', pct: '91%' },
+  'Zero Lay Trap':                       { label: 'High Confidence 🔥', color: 'text-profit', pct: '88%' },
+  'Trap + Fav Lay Vol Lead':             { label: 'High Confidence 🔥', color: 'text-profit', pct: '87%' },
+  'Both Zero Lay — Bookie Fav Underdog': { label: 'High Confidence 🔥', color: 'text-profit', pct: '86%' },
+  'Volume Trap — Bookie Fav':            { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
+  'Smart Lay Vol (load fav trap)':       { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
+  'Trap + Tiny Trade Gap — Bookie Fav':  { label: 'High Confidence 🔥', color: 'text-profit', pct: '84%' },
+  'Balanced Market — Bookie Fav':        { label: 'Moderate', color: 'text-yellow-500', pct: '78%' },
+  'Higher Lay Trades':                   { label: 'Moderate', color: 'text-yellow-500', pct: '73%' },
+  'Higher Lay Vol':                      { label: 'Moderate', color: 'text-yellow-500', pct: '65%' },
+  'Bookie Fav (fallback)':               { label: 'Low Confidence', color: 'text-text-muted', pct: '55%' },
 }
 
 /** Higher = stronger signal when multiple rules match */
 const RULE_PRIORITY = {
   'Smart Money Trap': 91,
   'Zero Lay Trap': 88,
+  'Trap + Fav Lay Vol Lead': 87,
+  'Both Zero Lay — Bookie Fav Underdog': 86,
   'Volume Trap — Bookie Fav': 85,
   'Smart Lay Vol (load fav trap)': 85,
+  'Trap + Tiny Trade Gap — Bookie Fav': 84,
   'Balanced Market — Bookie Fav': 78,
   'Higher Lay Trades': 73,
   'Higher Lay Vol': 65,
@@ -90,6 +96,35 @@ function evaluateAllRules(m, hasBF) {
   if (t1ZeroLay) matches.push(candidate(m.t1, 'Zero Lay Trap', 'ZERO_LAY_TRAP'))
   if (t2ZeroLay) matches.push(candidate(m.t2, 'Zero Lay Trap', 'ZERO_LAY_TRAP'))
 
+  // RULE: Both Zero Lay — Bookie Fav Underdog
+  // Fires when: pure backing market (no lays at all), trap=high, bookieFav is extreme load underdog
+  // Pattern: public dumps 80%+ on one team, but bookie still favors the minority team
+  // Confirmed: Salem Spartans vs Madurai Panthers (Aug 11 2026) — Salem 15% load, won toss ✅
+  if (
+    m.t1LayVol === 0 && m.t2LayVol === 0      // both zero lay (pure backing market)
+    && m.trap === 'high' && hasBF
+    && m.favLoadPct < 0.35                    // bookieFav is extreme load underdog
+    && m.dogLayTrades >= 2 * m.favLayTrades   // crowd heavily trades on the overloaded team
+  ) {
+    matches.push(candidate(m.bookieFav, 'Both Zero Lay — Bookie Fav Underdog', 'ZERO_LAY_BOTH'))
+  }
+
+  // NEW RULE: Trap + Fav Lay Vol Lead
+  // Fires when: trap=high + bookie fav has HIGHER lay vol but LOWER lay trades AND layTradeGap>=5
+  // Pattern: big smart money laying fav (high vol), retail doing many small lays on opponent
+  // Confirmed: Manchester vs Sunrisers (Aug 11 2026, gap=5) ✅
+  // NOT for Lyca vs Tiruppur (gap=3 < 5) — Smart Lay Vol too weak there, Higher Lay Trades wins
+  if (
+    m.trap === 'high' && hasBF
+    && m.favLayVol > m.dogLayVol          // bookie fav has more lay volume
+    && m.favLayTrades < m.dogLayTrades    // but fewer lay trades (big smart money)
+    && m.favLoadPct < 0.50               // fav is the load underdog
+    && m.favLayVol > 100                  // enough signal volume
+    && m.layTradeGap >= 5                // trade gap must be significant (not just 2-3)
+  ) {
+    matches.push(candidate(m.bookieFav, 'Trap + Fav Lay Vol Lead', 'TRAP_FAV_LAY_VOL'))
+  }
+
   if (
     m.trap === 'high' && hasBF && m.favLoadPct < 0.35
     && m.dogLayTrades >= 2 * m.favLayTrades
@@ -100,6 +135,18 @@ function evaluateAllRules(m, hasBF) {
 
   if (m.loadDiff < 0.04 && m.layTradeGap <= 3 && hasBF) {
     matches.push(candidate(m.bookieFav, 'Balanced Market — Bookie Fav', 'BALANCED_MARKET'))
+  }
+
+  // RULE: Trap + Tiny Trade Gap — Bookie Fav
+  // When layTradeGap is 0 or 1 (essentially a tie = noise), trap=high, and bookieFav is load underdog
+  // A 1-trade difference is too small to be meaningful — trust the bookie fav signal instead
+  // Confirmed: Trent Rockets W vs Southern Brave W (Aug 12 2026, gap=1) — Trent 31% load won ✅
+  if (
+    m.trap === 'high' && hasBF
+    && m.layTradeGap <= 1              // gap is noise-level (0 or 1 trades)
+    && m.favLoadPct < 0.45             // bookieFav is load underdog
+  ) {
+    matches.push(candidate(m.bookieFav, 'Trap + Tiny Trade Gap — Bookie Fav', 'TINY_GAP_TRAP'))
   }
 
   if (
@@ -119,7 +166,7 @@ function evaluateAllRules(m, hasBF) {
       const volWinnerIsLoadUnderdog = loadFavIsT1 ? volWinner === m.t2 : volWinner === m.t1
       if (
         volWinnerIsLoadUnderdog
-        && loadFavBL >= 2.5
+        && loadFavBL >= 3.5             // tightened from 2.5: Lyca (BL=3.19) was a known misfire
         && loadFavLoadPct >= 0.58
         && loadFavLay >= 100
       ) {
@@ -193,8 +240,10 @@ export function predictTossWinner(snap) {
     },
     {
       label: 'Lay Volume',
-      sublabel: pattern === 'LAY_VOL_DIVERGENCE' ? 'Higher vol on underdog = smart money' : 'Total lay liability',
-      active: reason === 'Higher Lay Vol' || pattern === 'LAY_VOL_DIVERGENCE',
+      sublabel: pattern === 'LAY_VOL_DIVERGENCE' ? 'Higher vol on underdog = smart money'
+        : pattern === 'TRAP_FAV_LAY_VOL' ? 'Bookie fav has big lay vol (smart money)'
+        : 'Total lay liability',
+      active: reason === 'Higher Lay Vol' || pattern === 'LAY_VOL_DIVERGENCE' || pattern === 'TRAP_FAV_LAY_VOL',
       v1: fmtRs(m.t1LayVol),
       v2: fmtRs(m.t2LayVol),
       winnerWins: m.t1LayVol !== m.t2LayVol
@@ -204,7 +253,7 @@ export function predictTossWinner(snap) {
     {
       label: 'Bookie Favourite',
       sublabel: hasBF ? `Market expects ${m.bookieFav}` : 'No clear favourite',
-      active: reason.includes('Bookie Fav') || reason.includes('Balanced'),
+      active: reason.includes('Bookie Fav') || reason.includes('Balanced') || pattern === 'TRAP_FAV_LAY_VOL',
       v1: m.bookieFav === m.t1 ? '✅ Fav' : '—',
       v2: m.bookieFav === m.t2 ? '✅ Fav' : '—',
       winnerWins: hasBF ? (m.bookieFav === winner) : null,

@@ -140,7 +140,7 @@ export default function TossDetail({ isEmbedded = false }) {
           <div className="px-4 py-3 flex items-center gap-2 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
             <span className="text-base">🪙</span>
             <span className="text-sm font-bold text-text-primary">Toss Winner Prediction</span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>14/14 backtest</span>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>18/18 backtest</span>
             {tossPrediction.risk && <RiskBadge risk={tossPrediction.risk} compact />}
             <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
           </div>

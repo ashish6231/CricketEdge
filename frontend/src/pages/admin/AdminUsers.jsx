@@ -5,19 +5,19 @@ import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan, adminGrantTr
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
 const ROLE_CFG = {
-  user:       { label: 'User',       icon: <User size={11} />,   color: '#8e8e93',  bg: 'rgba(142,142,147,0.12)' },
-  admin:      { label: 'Admin',      icon: <Shield size={11} />, color: '#3b82f6',  bg: 'rgba(59,130,246,0.12)' },
-  superadmin: { label: 'Superadmin', icon: <Crown size={11} />,  color: '#a855f7',  bg: 'rgba(168,85,247,0.12)' },
+  user: { label: 'User', icon: <User size={11} />, color: '#8e8e93', bg: 'rgba(142,142,147,0.12)' },
+  admin: { label: 'Admin', icon: <Shield size={11} />, color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+  superadmin: { label: 'Superadmin', icon: <Crown size={11} />, color: '#a855f7', bg: 'rgba(168,85,247,0.12)' },
 }
 const STATUS_CFG = {
-  active:    { label: 'Active',    color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
-  banned:    { label: 'Banned',    color: '#ef4444', bg: 'rgba(239,68,68,0.12)' },
+  active: { label: 'Active', color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+  banned: { label: 'Banned', color: '#ef4444', bg: 'rgba(239,68,68,0.12)' },
   suspended: { label: 'Suspended', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
 }
 const PLAN_CFG = {
-  pro:   { label: '⭐ Pro',   color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
-  trial: { label: 'Trial',    color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
-  free:  { label: 'Free',     color: '#8e8e93', bg: 'rgba(142,142,147,0.10)' },
+  pro: { label: '⭐ Pro', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  trial: { label: 'Trial', color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+  free: { label: 'Free', color: '#8e8e93', bg: 'rgba(142,142,147,0.10)' },
 }
 
 const Chip = ({ cfg }) => (
@@ -38,16 +38,16 @@ const ActionMenuItem = ({ onClick, disabled, color, icon, label, loading }) => (
 )
 
 export default function AdminUsers({ isSuperAdmin }) {
-  const [users, setUsers]         = useState([])
+  const [users, setUsers] = useState([])
   const [pagination, setPagination] = useState({})
-  const [loading, setLoading]     = useState(true)
-  const [search, setSearch]       = useState('')
-  const [role, setRole]           = useState('')
-  const [status, setStatus]       = useState('')
-  const [page, setPage]           = useState(1)
-  const [acting, setActing]       = useState(null)
-  const [expanded, setExpanded]   = useState(null)
-  const [error, setError]         = useState('')
+  const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState('')
+  const [role, setRole] = useState('')
+  const [status, setStatus] = useState('')
+  const [page, setPage] = useState(1)
+  const [acting, setActing] = useState(null)
+  const [expanded, setExpanded] = useState(null)
+  const [error, setError] = useState('')
   const [proMonths, setProMonths] = useState({})
   const [bulkGranting, setBulkGranting] = useState(false)
 
@@ -90,7 +90,7 @@ export default function AdminUsers({ isSuperAdmin }) {
   }
 
   const filterSelect = "px-3 py-2 rounded-xl text-xs font-semibold outline-none text-text-secondary"
-  const filterStyle  = { background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#ebebf5' }
+  const filterStyle = { background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#ebebf5' }
 
   return (
     <div className="space-y-4">
@@ -140,11 +140,11 @@ export default function AdminUsers({ isSuperAdmin }) {
       ) : (
         <div className="space-y-2 relative">
           {users.map(u => {
-            const roleCfg   = ROLE_CFG[u.role] || ROLE_CFG.user
+            const roleCfg = ROLE_CFG[u.role] || ROLE_CFG.user
             const statusCfg = STATUS_CFG[u.status || 'active']
-            const planCfg   = PLAN_CFG[u.subPlanSlug] || PLAN_CFG.free
-            const isOpen    = expanded === u.id
-            const isActing  = acting === u.id
+            const planCfg = PLAN_CFG[u.subPlanSlug] || PLAN_CFG.free
+            const isOpen = expanded === u.id
+            const isActing = acting === u.id
 
             return (
               <div key={u.id} className={`relative rounded-2xl ${isOpen ? 'z-50' : 'z-0'}`} style={{ background: '#111', border: '1px solid #1e1e1e' }}>
@@ -190,7 +190,7 @@ export default function AdminUsers({ isSuperAdmin }) {
                     <div className="fixed inset-0 z-40" onClick={() => setExpanded(null)}></div>
                     <div className="absolute right-4 top-14 z-50 w-52 rounded-2xl border border-[#2c2c2e] p-1 shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-200"
                       style={{ background: 'rgba(20,20,20,0.85)', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
-                      
+
                       <div className="px-3 py-2 text-[10px] font-bold tracking-wider uppercase text-[#555] border-b border-[#2c2c2e] mb-1">
                         Manage User
                       </div>
@@ -225,7 +225,7 @@ export default function AdminUsers({ isSuperAdmin }) {
                               <select value={proMonths[u.id] || 1}
                                 onChange={e => setProMonths(p => ({ ...p, [u.id]: +e.target.value }))}
                                 className="bg-[#1a1a1a] border border-[#333] rounded-lg px-1.5 py-0.5 text-[11px] outline-none text-[#ebebf5]">
-                                {[1,2,3,6,12].map(m => <option key={m} value={m}>{m}mo</option>)}
+                                {[1, 2, 3, 6, 12].map(m => <option key={m} value={m}>{m}mo</option>)}
                               </select>
                             </div>
                             <ActionMenuItem disabled={isActing} loading={isActing} color="#f59e0b" icon={<Crown size={14} />} label="Grant Pro"
