@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown, UserMinus, Receipt, ShieldCheck } from 'lucide-react'
+import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown, UserMinus, Receipt, ShieldCheck, Database } from 'lucide-react'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminUsers from './admin/AdminUsers'
 import AdminProUsers from './admin/AdminProUsers'
@@ -11,6 +11,7 @@ import AdminPlans from './admin/AdminPlans'
 import AdminCoupons from './admin/AdminCoupons'
 import AdminSettings from './admin/AdminSettings'
 import AdminAuditLogs from './admin/AdminAuditLogs'
+import AdminTossDataset from './admin/AdminTossDataset'
 
 const ALL_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -22,6 +23,7 @@ const ALL_TABS = [
   { id: 'plans',     label: 'Plans',     icon: CreditCard, superadminOnly: true },
   { id: 'coupons',   label: 'Coupons',   icon: Tag, superadminOnly: true },
   { id: 'settings',  label: 'Settings',  icon: Settings, superadminOnly: true },
+  { id: 'toss_dataset', label: 'Toss Dataset', icon: Database, superadminOnly: true },
   { id: 'audit',     label: 'Audit Logs',icon: ScrollText },
 ]
 
@@ -39,7 +41,7 @@ export default function AdminPage() {
   }, [isLoggedIn, user, navigate])
 
   useEffect(() => {
-    if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings'].includes(tab)) {
+    if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings', 'toss_dataset'].includes(tab)) {
       setTab('dashboard')
     }
   }, [tab, isSuperAdmin])
@@ -96,6 +98,7 @@ export default function AdminPage() {
       {tab === 'plans'     && <AdminPlans isSuperAdmin={isSuperAdmin} />}
       {tab === 'coupons'   && <AdminCoupons />}
       {tab === 'settings'  && <AdminSettings isSuperAdmin={isSuperAdmin} />}
+      {tab === 'toss_dataset' && isSuperAdmin && <AdminTossDataset />}
       {tab === 'audit'     && <AdminAuditLogs />}
     </div>
   )

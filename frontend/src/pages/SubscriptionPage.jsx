@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { LoaderCircle, CheckCircle, Crown, Calendar, AlertTriangle } from 'lucide-react'
+import { LoaderCircle, CheckCircle, Crown, Calendar } from 'lucide-react'
 import { getPlans, getMySubscription, createOrder, verifyPayment, paymentFailed } from '../api'
+import { useToast } from '../components/ToastProvider'
 import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 
 const fmt = (n) => Number(n).toLocaleString('en-IN')
@@ -9,13 +10,12 @@ const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-dig
 
 export default function SubscriptionPage() {
   const navigate = useNavigate()
+  const toast = useToast()
   const { isLoggedIn, user } = useOutletContext()
   const [plan, setPlan] = useState(null)
   const [mySub, setMySub] = useState(null)
   const [loading, setLoading] = useState(true)
   const [paying, setPaying] = useState(false)
-  const [msg, setMsg] = useState('')
-  const [error, setError] = useState('')
   const [cycle, setCycle] = useState('monthly')
 
   useEffect(() => {
@@ -25,12 +25,12 @@ export default function SubscriptionPage() {
         setPlan(plansRes.data?.[0])
         setMySub(subRes)
       })
-      .catch(() => setError('Failed to load subscription data'))
+      .catch(() => toast.error('Failed to load subscription data'))
       .finally(() => setLoading(false))
   }, [isLoggedIn])
 
   const handleBuy = async () => {
-    setError(''); setMsg(''); setPaying(true)
+    setPaying(true)
     try {
       const order = await createOrder(cycle)
       const options = {
@@ -47,11 +47,11 @@ export default function SubscriptionPage() {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
             })
-            setMsg(res.message || '✅ Pro activated!')
+            toast.success(res.message || 'Pro activated!')
             const subRes = await getMySubscription()
             setMySub(subRes)
           } catch (e) {
-            setError(e.detail || 'Payment verification failed')
+            toast.error(e.detail || 'Payment verification failed')
           } finally {
             setPaying(false)
           }
@@ -68,7 +68,7 @@ export default function SubscriptionPage() {
       const rzp = new window.Razorpay(options)
       rzp.open()
     } catch (e) {
-      setError(e.detail || 'Could not create order')
+      toast.error(e.detail || 'Could not create order')
       setPaying(false)
     }
   }
@@ -90,7 +90,7 @@ export default function SubscriptionPage() {
       {onTrial && (
         <div className="rounded-2xl px-4 py-3 text-sm font-semibold"
           style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
-          🎁 Your free 30-minute trial is active. You have full live match access for {formatTrialTimeLeft(trialMinutesLeft)} more.
+          🎁 Your free trial is active. You have full live match access for {formatTrialTimeLeft(trialMinutesLeft)} more.
           After that you'll move to the Free plan — upgrade to Pro to keep access.
         </div>
       )}
@@ -175,9 +175,6 @@ export default function SubscriptionPage() {
               </div>
             ))}
           </div>
-
-          {msg && <div className="rounded-lg px-3 py-2 mb-3 text-xs text-center text-profit" style={{ background: 'rgba(22,163,74,0.08)', border: '1px solid rgba(22,163,74,0.2)' }}>{msg}</div>}
-          {error && <div className="rounded-lg px-3 py-2 mb-3 text-xs text-primary flex items-center gap-2" style={{ background: 'rgba(220,38,38,0.08)', border: '1px solid #fecaca' }}><AlertTriangle size={14} />{error}</div>}
 
           <button onClick={handleBuy} disabled={paying}
             className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"

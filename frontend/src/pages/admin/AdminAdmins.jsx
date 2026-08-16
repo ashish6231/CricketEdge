@@ -4,6 +4,7 @@ import {
   Check, X, Mail, Lock, User, Search, Crown, Sparkles, Users,
 } from 'lucide-react'
 import { adminGetPermissions, adminGetAdmins, adminCreateAdmin, adminGetUsers, adminUpdateUserRole } from '../../api'
+import { useToast } from '../../components/ToastProvider'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
@@ -49,11 +50,10 @@ const Field = ({ icon: Icon, label, ...props }) => (
 )
 
 export default function AdminAdmins() {
+  const toast = useToast()
   const [permissions, setPermissions] = useState(null)
   const [admins, setAdmins]           = useState([])
   const [loading, setLoading]         = useState(true)
-  const [error, setError]             = useState('')
-  const [success, setSuccess]         = useState('')
   const [acting, setActing]           = useState(null)
   const [creating, setCreating]       = useState(false)
   const [form, setForm]               = useState({ name: '', email: '', password: '' })
@@ -70,7 +70,7 @@ export default function AdminAdmins() {
         setPermissions(perm.data)
         setAdmins(adminRes.data || [])
       })
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }, [])
 
@@ -103,19 +103,16 @@ export default function AdminAdmins() {
     return () => clearTimeout(timer)
   }, [promoteEmail])
 
-  const flash = (msg) => { setSuccess(msg); setTimeout(() => setSuccess(''), 3500) }
-
   const createAdmin = async (e) => {
     e.preventDefault()
     setCreating(true)
-    setError('')
     try {
       await adminCreateAdmin(form)
       setForm({ name: '', email: '', password: '' })
-      flash('Admin account created successfully')
+      toast.success('Admin account created successfully')
       load()
     } catch (err) {
-      setError(err.detail || 'Failed to create admin')
+      toast.error(err.detail || 'Failed to create admin')
     } finally {
       setCreating(false)
     }
@@ -124,15 +121,14 @@ export default function AdminAdmins() {
   const promote = async (userId) => {
     if (!window.confirm('Make this user an Admin? They will NOT get Pro — only admin panel access.')) return
     setActing(userId)
-    setError('')
     try {
       await adminUpdateUserRole(userId, 'admin')
       setPromoteEmail('')
       setPromoteResults([])
-      flash('User promoted to Admin')
+      toast.success('User promoted to Admin')
       load()
     } catch (err) {
-      setError(err.detail || 'Promotion failed')
+      toast.error(err.detail || 'Promotion failed')
     } finally {
       setActing(null)
     }
@@ -141,13 +137,12 @@ export default function AdminAdmins() {
   const demote = async (userId, email) => {
     if (!window.confirm(`Remove admin access from ${email}? Their Pro subscription stays unchanged.`)) return
     setActing(userId)
-    setError('')
     try {
       await adminUpdateUserRole(userId, 'user')
-      flash('Admin demoted to regular user')
+      toast.success('Admin demoted to regular user')
       load()
     } catch (err) {
-      setError(err.detail || 'Demotion failed')
+      toast.error(err.detail || 'Demotion failed')
     } finally {
       setActing(null)
     }
@@ -186,20 +181,6 @@ export default function AdminAdmins() {
           </div>
         </div>
       </div>
-
-      {/* Alerts */}
-      {error && (
-        <div className="flex items-center gap-2 text-xs text-red-400 px-4 py-3 rounded-xl animate-in fade-in"
-          style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-          <X size={14} className="flex-shrink-0" /> {error}
-        </div>
-      )}
-      {success && (
-        <div className="flex items-center gap-2 text-xs text-green-400 px-4 py-3 rounded-xl animate-in fade-in"
-          style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}>
-          <Check size={14} className="flex-shrink-0" /> {success}
-        </div>
-      )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, UserMinus, Ban, CheckCircle, PauseCircle, MoreVertical, Crown, History, ChevronDown, ChevronUp } from 'lucide-react'
 import { adminGetLapsedUsers, adminGetUserSubscriptions, adminUpdateUserStatus, adminUpdateUserPlan } from '../../api'
+import { useToast } from '../../components/ToastProvider'
 import { SubscriptionLogTimeline } from './SubscriptionLogList'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -45,6 +46,7 @@ const ActionMenuItem = ({ onClick, disabled, color, icon, label, loading }) => (
 )
 
 export default function AdminLapsedUsers({ isSuperAdmin }) {
+  const toast = useToast()
   const [users, setUsers]         = useState([])
   const [pagination, setPagination] = useState({})
   const [loading, setLoading]     = useState(true)
@@ -56,14 +58,13 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
   const [historyOpen, setHistoryOpen] = useState(null)
   const [historyLogs, setHistoryLogs] = useState({})
   const [historyLoading, setHistoryLoading] = useState(null)
-  const [error, setError]         = useState('')
   const [proMonths, setProMonths] = useState({})
 
   const load = useCallback(() => {
     setLoading(true)
     adminGetLapsedUsers({ page, limit: 20, search, status })
       .then(res => { setUsers(res.data); setPagination(res.pagination) })
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }, [page, search, status])
 
@@ -72,7 +73,7 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
   const act = async (userId, fn, ...args) => {
     setActing(userId)
     try { await fn(...args); load(); setExpanded(null) }
-    catch (e) { setError(e.detail || 'Action failed') }
+    catch (e) { toast.error(e.detail || 'Action failed') }
     finally { setActing(null) }
   }
 
@@ -88,7 +89,7 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
       const res = await adminGetUserSubscriptions(userId)
       setHistoryLogs(prev => ({ ...prev, [userId]: res.data.subscriptions || [] }))
     } catch (e) {
-      setError(e.detail || 'Failed to load subscription logs')
+      toast.error(e.detail || 'Failed to load subscription logs')
       setHistoryOpen(null)
     } finally {
       setHistoryLoading(null)
@@ -119,8 +120,6 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
           <option value="suspended">Suspended</option>
         </select>
       </div>
-
-      {error && <div className="text-xs text-red-400 px-3 py-2 rounded-xl" style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.2)' }}>{error}</div>}
 
       {!loading && pagination.total > 0 && (
         <div className="flex items-center gap-3 text-xs text-text-muted px-1">

@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { LoaderCircle, ChevronLeft, ChevronRight } from 'lucide-react'
 import { adminGetAuditLogs } from '../../api'
+import { useToast } from '../../components/ToastProvider'
 import {
   AUDIT_ACTIONS,
   getAuditActionColor,
@@ -12,19 +13,19 @@ const fmtDateTime = (d) => d
   : '—'
 
 export default function AdminAuditLogs() {
+  const toast = useToast()
   const [logs, setLogs]         = useState([])
   const [pagination, setPagination] = useState({})
   const [loading, setLoading]   = useState(true)
   const [action, setAction]     = useState('')
   const [page, setPage]         = useState(1)
   const [expanded, setExpanded] = useState(null)
-  const [error, setError]       = useState('')
 
   const load = useCallback(() => {
     setLoading(true)
     adminGetAuditLogs({ page, limit: 50, action })
       .then(res => { setLogs(res.data); setPagination(res.pagination) })
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }, [page, action])
 
@@ -41,8 +42,6 @@ export default function AdminAuditLogs() {
         </select>
         <span className="text-xs text-text-muted">{pagination.total ?? 0} entries</span>
       </div>
-
-      {error && <div className="text-xs text-primary px-3 py-2 rounded-xl" style={{ background: 'rgba(220,38,38,0.08)' }}>{error}</div>}
 
       {loading
         ? <div className="flex justify-center py-10"><LoaderCircle className="animate-spin text-primary" /></div>

@@ -7,11 +7,12 @@ import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, Trend
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
+import { computeFavFlipRisk } from '../utils/favFlipRisk'
 import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
-import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner, ExitAdviceBanner } from '../components/PredictionMeta'
+import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner, ExitAdviceBanner, FavFlipRiskBanner } from '../components/PredictionMeta'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -587,6 +588,7 @@ export default function MatchDetail({ sport }) {
   const t2Data = teams[t2] || {}
 
   const { pl1, pl2 } = getBookiePl(snapshot, t1, t2)
+  const favFlipRisk = computeFavFlipRisk(snapshot, { pl1, pl2 })
   const dpl1 = dp.team1_win
   const dpl2 = dp.team2_win
 
@@ -1006,6 +1008,7 @@ export default function MatchDetail({ sport }) {
                         </div>
                       ))}
                     </div>
+                    <FavFlipRiskBanner risk={favFlipRisk} />
                   </div>
                 )}
               </div>

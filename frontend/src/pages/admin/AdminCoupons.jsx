@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { LoaderCircle, Plus, X } from 'lucide-react'
 import { adminGetCoupons, adminCreateCoupon, adminUpdateCoupon } from '../../api'
+import { useToast } from '../../components/ToastProvider'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
@@ -11,19 +12,18 @@ const EMPTY = {
 }
 
 export default function AdminCoupons() {
+  const toast = useToast()
   const [coupons, setCoupons] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [form, setForm]       = useState(EMPTY)
   const [saving, setSaving]   = useState(false)
-  const [error, setError]     = useState('')
-  const [success, setSuccess] = useState('')
 
   const load = () => {
     setLoading(true)
     adminGetCoupons()
       .then(res => setCoupons(res.data))
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }
 
@@ -32,7 +32,7 @@ export default function AdminCoupons() {
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
   const create = async () => {
-    setSaving(true); setError(''); setSuccess('')
+    setSaving(true)
     try {
       await adminCreateCoupon({
         ...form,
@@ -42,12 +42,12 @@ export default function AdminCoupons() {
         usageLimit: Number(form.usageLimit) || 0,
         perUserLimit: Number(form.perUserLimit) || 1,
       })
-      setSuccess('Coupon created')
+      toast.success('Coupon created')
       setShowForm(false)
       setForm(EMPTY)
       load()
     } catch (e) {
-      setError(e.detail || 'Create failed')
+      toast.error(e.detail || 'Create failed')
     } finally {
       setSaving(false)
     }
@@ -56,9 +56,10 @@ export default function AdminCoupons() {
   const toggle = async (c) => {
     try {
       await adminUpdateCoupon(c.id, { isActive: !c.isActive })
+      toast.success(c.isActive ? 'Coupon deactivated' : 'Coupon activated')
       load()
     } catch (e) {
-      setError(e.detail || 'Update failed')
+      toast.error(e.detail || 'Update failed')
     }
   }
 
@@ -66,16 +67,13 @@ export default function AdminCoupons() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <span className="text-sm text-text-muted">{coupons.length} coupon{coupons.length !== 1 ? 's' : ''}</span>
-        <button onClick={() => { setShowForm(!showForm); setError('') }}
+        <button onClick={() => { setShowForm(!showForm) }}
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-white"
           style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
           {showForm ? <X size={13} /> : <Plus size={13} />}
           {showForm ? 'Cancel' : 'New Coupon'}
         </button>
       </div>
-
-      {error   && <div className="text-xs text-primary px-3 py-2 rounded-xl" style={{ background: 'rgba(220,38,38,0.08)' }}>{error}</div>}
-      {success && <div className="text-xs text-green-700 px-3 py-2 rounded-xl bg-green-50">{success}</div>}
 
       {/* Create Form */}
       {showForm && (

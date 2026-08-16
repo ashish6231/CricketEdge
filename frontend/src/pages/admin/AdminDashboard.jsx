@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { LoaderCircle, Users, Crown, UserCheck, Ban, TrendingUp, UserMinus, Gift } from 'lucide-react'
 import { adminDashboard, adminGetUsers, adminGetPermissions } from '../../api'
+import { useToast } from '../../components/ToastProvider'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
@@ -40,11 +41,11 @@ const StatCard = ({ icon: Icon, label, value, color, sub }) => (
 )
 
 export default function AdminDashboard({ isSuperAdmin }) {
+  const toast = useToast()
   const [data, setData]         = useState(null)
   const [recentUsers, setRecentUsers] = useState([])
   const [permissions, setPermissions] = useState(null)
   const [loading, setLoading]   = useState(true)
-  const [error, setError]       = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -57,12 +58,12 @@ export default function AdminDashboard({ isSuperAdmin }) {
         setRecentUsers(users.data || [])
         setPermissions(perm.data)
       })
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }, [])
 
   if (loading) return <div className="flex justify-center py-16"><LoaderCircle className="animate-spin text-primary" /></div>
-  if (error)   return <div className="text-center text-red-400 py-8 text-sm">{error}</div>
+  if (!data) return <div className="text-center text-text-muted py-8 text-sm">Unable to load dashboard</div>
 
   const { stats } = data
   const proRatio = stats.totalUsers ? Math.round((stats.proSubscribers / stats.totalUsers) * 100) : 0

@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
 import { LoaderCircle, CheckCircle, Edit2, X, Check } from 'lucide-react'
 import { adminGetPlans, adminUpdatePlan } from '../../api'
+import { useToast } from '../../components/ToastProvider'
 
 const fmt = (n) => Number(n).toLocaleString('en-IN')
 
 export default function AdminPlans({ isSuperAdmin }) {
+  const toast = useToast()
   const [plans, setPlans]   = useState([])
   const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState(null) // plan id being edited
   const [form, setForm]     = useState({})
   const [saving, setSaving] = useState(false)
-  const [error, setError]   = useState('')
-  const [success, setSuccess] = useState('')
 
   const load = () => {
     setLoading(true)
     adminGetPlans()
       .then(res => setPlans(res.data))
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }
 
@@ -33,11 +33,10 @@ export default function AdminPlans({ isSuperAdmin }) {
       features: plan.features?.join('\n') || '',
       isActive: plan.isActive,
     })
-    setError(''); setSuccess('')
   }
 
   const save = async () => {
-    setSaving(true); setError(''); setSuccess('')
+    setSaving(true)
     try {
       await adminUpdatePlan(editing, {
         ...form,
@@ -45,11 +44,11 @@ export default function AdminPlans({ isSuperAdmin }) {
         yearlyPrice: Number(form.yearlyPrice),
         features: form.features.split('\n').map(f => f.trim()).filter(Boolean),
       })
-      setSuccess('Plan updated')
+      toast.success('Plan updated')
       setEditing(null)
       load()
     } catch (e) {
-      setError(e.detail || 'Save failed')
+      toast.error(e.detail || 'Save failed')
     } finally {
       setSaving(false)
     }
@@ -59,9 +58,6 @@ export default function AdminPlans({ isSuperAdmin }) {
 
   return (
     <div className="space-y-4">
-      {error   && <div className="text-xs text-red-400 px-3 py-2 rounded-xl" style={{ background: 'rgba(220,38,38,0.12)', border: '1px solid rgba(220,38,38,0.2)' }}>{error}</div>}
-      {success && <div className="text-xs text-green-400 px-3 py-2 rounded-xl" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>{success}</div>}
-
       {plans.map(plan => (
         <div key={plan.id} className="glass-card rounded-2xl p-5">
           {editing === plan.id ? (

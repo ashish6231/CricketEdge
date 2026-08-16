@@ -3,7 +3,11 @@ const router = express.Router();
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
 const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissions');
 const prisma = require('../db/prisma');
-const { grantTrialIfEligible, grantTrialToAllEligible, TRIAL_LABEL } = require('../lib/subscriptionAccess');
+const { grantTrialIfEligible, grantTrialToAllEligible, getTrialConfig } = require('../lib/subscriptionAccess');
+const { validateTrialSetting, validateTrialDuration, TRIAL_SETTING_KEYS } = require('../lib/trialConfig');
+const trialKeys = new Set(Object.values(TRIAL_SETTING_KEYS));
+const { getDefaultStore } = require('../services/tossDatasetStore');
+const { runTossCaptureNow } = require('../services/tossCaptureWorker');
 
 function parseUserId(raw) {
   const id = parseInt(raw, 10);
@@ -310,6 +314,7 @@ router.post('/users/:id/grant-trial', requireAdmin, async (req, res) => {
         trial_active: 'User already has an active trial',
         trial_used: 'User already used their trial. Use force to re-grant.',
         invalid_plan: 'User plan is not eligible for trial',
+        trial_disabled: 'Free trial is disabled in Settings. Enable it to grant trials.',
       };
       return res.status(400).json({ success: false, message: messages[result.reason] || 'Trial not granted', reason: result.reason });
     }
@@ -318,9 +323,10 @@ router.post('/users/:id/grant-trial', requireAdmin, async (req, res) => {
       { before: { planSlug: 'free' }, after: { planSlug: 'trial' } },
       force ? 'Trial re-granted by admin' : 'Trial granted by admin', req);
 
+    const cfg = await getTrialConfig(prisma);
     res.json({
       success: true,
-      message: `${TRIAL_LABEL} trial granted`,
+      message: `${cfg.label} trial granted`,
       data: { id: result.user.id, subPlanSlug: result.user.subPlanSlug, subExpiresAt: result.user.subExpiresAt },
     });
   } catch (err) {
@@ -331,6 +337,16 @@ router.post('/users/:id/grant-trial', requireAdmin, async (req, res) => {
 // ─── GRANT TRIAL TO ALL ELIGIBLE EXISTING USERS ───
 router.post('/grant-trial-all', requireAdmin, async (req, res) => {
   try {
+    const cfg = await getTrialConfig(prisma);
+    if (!cfg.enabled) {
+      return res.status(400).json({
+        success: false,
+        message: 'Free trial is disabled in Settings',
+        reason: 'trial_disabled',
+        data: { eligible: 0, granted: 0 },
+      });
+    }
+
     const { eligible, granted } = await grantTrialToAllEligible(prisma);
     await auditLog(req.user, 'plan_change', 'system', null, null,
       { before: {}, after: { granted, eligible } },
@@ -504,6 +520,29 @@ router.get('/settings', requireAdmin, async (req, res) => {
 
 router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
   try {
+    if (req.params.key === 'allowSignups') {
+      if (typeof req.body.value !== 'boolean') {
+        return res.status(400).json({ success: false, message: 'allowSignups must be boolean' });
+      }
+    }
+
+    if (trialKeys.has(req.params.key)) {
+      const checked = validateTrialSetting(req.params.key, req.body.value);
+      if (!checked.ok) return res.status(400).json({ success: false, message: checked.message });
+      req.body.value = checked.value;
+
+      if (req.params.key === 'trialDurationValue' || req.params.key === 'trialDurationUnit') {
+        const rows = await prisma.siteSettings.findMany({
+          where: { key: { in: ['trialDurationValue', 'trialDurationUnit'] } },
+        });
+        const map = Object.fromEntries(rows.map(r => [r.key, r.value]));
+        const nextValue = req.params.key === 'trialDurationValue' ? checked.value : (map.trialDurationValue ?? 30);
+        const nextUnit = req.params.key === 'trialDurationUnit' ? checked.value : (map.trialDurationUnit ?? 'minutes');
+        const dur = validateTrialDuration(nextValue, nextUnit);
+        if (!dur.ok) return res.status(400).json({ success: false, message: dur.message });
+      }
+    }
+
     const before = await prisma.siteSettings.findUnique({ where: { key: req.params.key } });
     const setting = await prisma.siteSettings.upsert({
       where: { key: req.params.key },
@@ -580,4 +619,82 @@ router.get('/audit-logs', requireAdmin, async (req, res) => {
   }
 });
 
+function sendStoreError(res, err) {
+  const status = err.status || 500;
+  return res.status(status).json({ success: false, message: err.message });
+}
+
+async function getTossDataset(req, res, deps = {}) {
+  const store = deps.store || getDefaultStore();
+  try {
+    const { status = 'all', page = '1', limit = '20', search = '' } = req.query || {};
+    const result = await store.listRecords({
+      status: status || 'all',
+      search: search || undefined,
+      page: Number(page) || 1,
+      limit: Number(limit) || 20,
+    });
+    res.json({ success: true, records: result.records, pagination: result.pagination });
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
+async function patchTossActualWinner(req, res, deps = {}) {
+  const store = deps.store || getDefaultStore();
+  const writeAudit = deps.auditLog || auditLog;
+  try {
+    const matchId = String(req.params.matchId);
+    const actualWinner = req.body?.actualWinner;
+    const admin = req.user;
+    const dataset = await store.load();
+    const existing = dataset.records.find((r) => r.matchId === matchId);
+    const before = existing ? { ...existing } : null;
+    const { record } = await store.confirmActualWinner({ matchId, actualWinner, admin });
+    await writeAudit(
+      admin,
+      'toss_dataset_confirm_winner',
+      'toss_dataset',
+      Number(matchId) || 0,
+      matchId,
+      { before, after: record },
+      'Confirmed toss winner',
+      req,
+    );
+    res.json({ success: true, data: record });
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
+async function postTossDatasetCapture(req, res, deps = {}) {
+  const runNow = deps.runTossCaptureNow || runTossCaptureNow;
+  try {
+    const data = await runNow();
+    res.json({ success: true, data });
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
+async function getTossDatasetExport(req, res, deps = {}) {
+  const store = deps.store || getDefaultStore();
+  try {
+    const payload = await store.buildExport();
+    res.set('Content-Disposition', 'attachment; filename="toss_dataset.json"');
+    res.json(payload);
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
+router.get('/toss-dataset', requireSuperAdmin, (req, res) => getTossDataset(req, res));
+router.patch('/toss-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchTossActualWinner(req, res));
+router.post('/toss-dataset/capture', requireSuperAdmin, (req, res) => postTossDatasetCapture(req, res));
+router.get('/toss-dataset/export', requireSuperAdmin, (req, res) => getTossDatasetExport(req, res));
+
 module.exports = router;
+module.exports.getTossDataset = getTossDataset;
+module.exports.patchTossActualWinner = patchTossActualWinner;
+module.exports.postTossDatasetCapture = postTossDatasetCapture;
+module.exports.getTossDatasetExport = getTossDatasetExport;

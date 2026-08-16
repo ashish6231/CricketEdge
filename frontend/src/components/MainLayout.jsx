@@ -207,7 +207,7 @@ export default function MainLayout() {
       {onTrial && (
         <div className="fixed top-[53px] left-0 right-0 z-30 px-4 py-2 text-center text-xs font-semibold"
           style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(220,38,38,0.1))', borderBottom: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
-          🎁 Free 30-minute trial active — {formatTrialTimeLeft(getTrialMinutesLeft(authUser))} left with full live match access.
+          🎁 Free trial active — {formatTrialTimeLeft(getTrialMinutesLeft(authUser))} left with full live match access.
           {' '}<Link to="/subscription" className="underline text-white">Upgrade to Pro</Link> before trial ends.
         </div>
       )}

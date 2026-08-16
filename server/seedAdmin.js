@@ -30,8 +30,23 @@ const DEFAULT_SETTINGS = [
   { key: 'siteName', value: 'CricketEdge', category: 'general', description: 'Site name displayed across platform', isPublic: true },
   { key: 'maintenanceMode', value: false, category: 'maintenance', description: 'Put site in maintenance mode', isPublic: true },
   { key: 'allowSignups', value: true, category: 'general', description: 'Allow new user registrations', isPublic: true },
-  { key: 'defaultOddsFormat', value: 'decimal', category: 'general', description: 'Default odds format for new users', isPublic: true }
+  { key: 'defaultOddsFormat', value: 'decimal', category: 'general', description: 'Default odds format for new users', isPublic: true },
+  { key: 'trialEnabled', value: true, category: 'trial', description: 'Allow granting free trials to new/eligible users', isPublic: false },
+  { key: 'trialDurationValue', value: 30, category: 'trial', description: 'Free trial duration magnitude', isPublic: false },
+  { key: 'trialDurationUnit', value: 'minutes', category: 'trial', description: 'Free trial duration unit: minutes | hours | days', isPublic: false },
 ];
+
+function settingsUpsertArgs(setting) {
+  return {
+    where: { key: setting.key },
+    create: setting,
+    update: {
+      description: setting.description,
+      category: setting.category,
+      isPublic: setting.isPublic,
+    },
+  };
+}
 
 async function seedDatabase() {
   try {
@@ -41,7 +56,7 @@ async function seedDatabase() {
     console.log('✅ Plans seeded');
 
     for (const setting of DEFAULT_SETTINGS) {
-      await prisma.siteSettings.upsert({ where: { key: setting.key }, update: setting, create: setting });
+      await prisma.siteSettings.upsert(settingsUpsertArgs(setting));
     }
     console.log('✅ Settings seeded');
 
@@ -92,4 +107,4 @@ if (require.main === module) {
   seedDatabase().then(() => process.exit(0));
 }
 
-module.exports = { seedDatabase, DEFAULT_PLANS, DEFAULT_SETTINGS };
+module.exports = { seedDatabase, DEFAULT_PLANS, DEFAULT_SETTINGS, settingsUpsertArgs };

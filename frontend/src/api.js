@@ -1,3 +1,5 @@
+import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
+
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
 const API_TIMEOUT_MS = 12000
 
@@ -117,6 +119,10 @@ export async function register(name, email, password) {
   return res
 }
 
+export async function getSignupStatus() {
+  return fetchAPI('/auth/signup-status')
+}
+
 export async function forgotPassword(email) {
   return fetchAPI('/auth/forgot-password', {
     method: 'POST',
@@ -204,6 +210,62 @@ export async function paymentFailed(razorpay_order_id) {
 
 export async function adminDashboard() {
   return fetchAPI('/admin/dashboard')
+}
+
+export function adminGetTossDataset({
+  status = 'pending',
+  page = 1,
+  limit = 20,
+  search = '',
+} = {}) {
+  const query = buildTossDatasetQuery({ status, page, limit, search })
+  return fetchAPI(`/admin/toss-dataset?${query}`)
+}
+
+export function adminConfirmTossWinner(matchId, actualWinner) {
+  return fetchAPI(`/admin/toss-dataset/${encodeURIComponent(matchId)}/actual-winner`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ actualWinner }),
+  })
+}
+
+export async function adminCaptureTossDataset() {
+  const CAPTURE_TIMEOUT_MS = 120000
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), CAPTURE_TIMEOUT_MS)
+  try {
+    const res = await fetch(`${API_BASE}/admin/toss-dataset/capture`, {
+      method: 'POST',
+      signal: controller.signal,
+      headers: getAuthHeader(),
+    })
+    if (!res.ok) throw await getAPIError(res)
+    return await res.json()
+  } catch (err) {
+    if (err.name === 'AbortError') throw { detail: 'Request timeout — server slow hai, dubara try karo' }
+    if (err.detail) throw err
+    console.error('API Error: /admin/toss-dataset/capture', err)
+    throw { detail: 'Network error' }
+  } finally {
+    clearTimeout(timer)
+  }
+}
+
+export async function adminGetTossDatasetExport() {
+  const res = await fetch(`${API_BASE}/admin/toss-dataset/export`, {
+    headers: getAuthHeader(),
+  })
+  if (!res.ok) throw await getAPIError(res)
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'toss_dataset.json'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
 }
 
 export async function adminGetUsers(params = {}) {

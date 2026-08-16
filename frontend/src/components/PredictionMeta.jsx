@@ -60,6 +60,59 @@ export function ExitAdviceBanner({ advice }) {
   )
 }
 
+const FLIP_TONE = {
+  high: {
+    bg: 'rgba(239,68,68,0.1)',
+    border: 'rgba(239,68,68,0.35)',
+    title: '#ef4444',
+  },
+  medium: {
+    bg: 'rgba(234,179,8,0.1)',
+    border: 'rgba(234,179,8,0.35)',
+    title: '#eab308',
+  },
+  low: {
+    bg: 'rgba(34,197,94,0.08)',
+    border: 'rgba(34,197,94,0.28)',
+    title: '#22c55e',
+  },
+}
+
+export function FavFlipRiskBanner({ risk }) {
+  if (!risk) return null
+  const tone = FLIP_TONE[risk.tier] || FLIP_TONE.medium
+  const isAlert = risk.tier === 'medium' || risk.tier === 'high'
+  return (
+    <div
+      className="mt-2 px-2.5 py-2 rounded-lg"
+      style={{ background: tone.bg, border: `1px solid ${tone.border}` }}
+    >
+      <div
+        className="text-[10px] font-black uppercase tracking-wide text-center"
+        style={{ color: tone.title }}
+      >
+        {risk.title}
+      </div>
+      <div className="mt-1 text-[10px] font-normal normal-case text-[#8e8e93] text-center">
+        {risk.message}
+      </div>
+      {isAlert && risk.reasons?.length > 0 && (
+        <div className="mt-1.5 flex flex-wrap justify-center gap-1">
+          {risk.reasons.slice(0, 4).map((r) => (
+            <span
+              key={r}
+              className="text-[9px] px-1.5 py-0.5 rounded-full text-[#c7c7cc]"
+              style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid #2c2c2e' }}
+            >
+              {r}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function MatchedRulesPanel({ rules, selectedReason }) {
   const [open, setOpen] = useState(false)
   if (!rules?.length) return null

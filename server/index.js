@@ -19,6 +19,7 @@ const prisma = require('./db/prisma');
 const { setIo } = require('./socketInstance');
 const { getAllowedOrigins } = require('./lib/publicUrl');
 const { expireAllTrials } = require('./lib/subscriptionAccess');
+const { startTossCaptureWorker } = require('./services/tossCaptureWorker');
 
 const allowedOrigins = getAllowedOrigins();
 
@@ -166,11 +167,13 @@ if (staticDir) {
 const PORT = process.env.PORT || 5000;
 let shuttingDown = false;
 let shutdownComplete = false;
+let tossCaptureWorker = null;
 
 function shutdown(signal) {
   if (shuttingDown) return;
   shuttingDown = true;
   console.log(`\n${signal} received, shutting down...`);
+  tossCaptureWorker?.stop();
 
   server.close(async closeError => {
     if (shutdownComplete) return;
@@ -210,6 +213,7 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     console.log(`   API: ${getApiPublicUrl()}`);
     console.log(`   Frontend: ${getFrontendUrl()}`);
     console.log(`   CORS: ${allowedOrigins.join(', ')}`);
+    tossCaptureWorker = startTossCaptureWorker({});
   });
 
   server.on('error', (err) => {

@@ -1,9 +1,11 @@
 import { useEffect, useState, useCallback } from 'react'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, Receipt } from 'lucide-react'
 import { adminGetSubscriptionLogs } from '../../api'
+import { useToast } from '../../components/ToastProvider'
 import { SubscriptionLogEntry } from './SubscriptionLogList'
 
 export default function AdminSubscriptionLogs() {
+  const toast = useToast()
   const [logs, setLogs]           = useState([])
   const [pagination, setPagination] = useState({})
   const [loading, setLoading]     = useState(true)
@@ -12,13 +14,12 @@ export default function AdminSubscriptionLogs() {
   const [planSlug, setPlanSlug]   = useState('')
   const [subStatus, setSubStatus] = useState('')
   const [page, setPage]           = useState(1)
-  const [error, setError]         = useState('')
 
   const load = useCallback(() => {
     setLoading(true)
     adminGetSubscriptionLogs({ page, limit: 50, search, paymentStatus, planSlug, status: subStatus })
       .then(res => { setLogs(res.data); setPagination(res.pagination) })
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }, [page, search, paymentStatus, planSlug, subStatus])
 
@@ -60,8 +61,6 @@ export default function AdminSubscriptionLogs() {
           <option value="pending">Pending</option>
         </select>
       </div>
-
-      {error && <div className="text-xs text-red-400 px-3 py-2 rounded-xl" style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.2)' }}>{error}</div>}
 
       {!loading && (
         <div className="flex items-center gap-3 text-xs text-text-muted px-1">

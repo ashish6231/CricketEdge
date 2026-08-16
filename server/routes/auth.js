@@ -6,13 +6,14 @@ const router = express.Router();
 const { generateToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
 const {
-  TRIAL_LABEL,
   grantTrialToNewUser,
+  getTrialConfig,
   getTrialMinutesLeft,
   isActiveTrial,
   syncUserTrialState,
   refreshUserSubscriptionState,
 } = require('../lib/subscriptionAccess');
+const { areSignupsAllowed } = require('../lib/siteSettings');
 
 let emailEnabled = false;
 let transporter = null;
@@ -66,9 +67,23 @@ function sanitizeUser(user) {
   };
 }
 
+// ─── PUBLIC SIGNUP STATUS ───
+router.get('/signup-status', async (_req, res) => {
+  try {
+    const allowSignups = await areSignupsAllowed(prisma);
+    res.json({ success: true, data: { allowSignups } });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // ─── REGISTER ───
 router.post('/register', async (req, res) => {
   try {
+    if (!(await areSignupsAllowed(prisma))) {
+      return res.status(403).json({ success: false, message: 'New signups are currently disabled', code: 'SIGNUPS_DISABLED' });
+    }
+
     const { name, email, password } = req.body;
     if (!name || !email || !password)
       return res.status(400).json({ success: false, message: 'Name, email and password required' });
@@ -89,14 +104,17 @@ router.post('/register', async (req, res) => {
       }
     });
 
-    await grantTrialToNewUser(prisma, user.id, now);
-    const freshUser = await prisma.user.findUnique({ where: { id: user.id } });
+    const cfg = await getTrialConfig(prisma);
+    const result = await grantTrialToNewUser(prisma, user.id, now);
+    const freshUser = result.user || await prisma.user.findUnique({ where: { id: user.id } });
 
     const token = generateToken(freshUser);
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({
       success: true,
-      message: `Account created! ${TRIAL_LABEL} free trial activated.`,
+      message: result.granted
+        ? `Account created! ${cfg.label} free trial activated.`
+        : 'Account created!',
       token,
       user: sanitizeUser(freshUser)
     });
@@ -126,11 +144,12 @@ router.post('/login', async (req, res) => {
       return res.status(403).json({ success: false, message: 'Your account is suspended. Contact support.' });
 
     const { user: freshUser, trialGranted } = await syncUserTrialState(prisma, user.id);
+    const cfg = await getTrialConfig(prisma);
     const token = generateToken(freshUser || user);
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({
       success: true,
-      message: trialGranted ? `Login successful! ${TRIAL_LABEL} free trial activated.` : 'Login successful',
+      message: trialGranted ? `Login successful! ${cfg.label} free trial activated.` : 'Login successful',
       token,
       user: sanitizeUser(freshUser || user),
       trialGranted,
@@ -289,6 +308,9 @@ router.post('/google/verify', async (req, res) => {
           data: { googleId, authProvider: 'google', avatar: user.avatar || avatar, name: name || user.name }
         });
       } else {
+        if (!(await areSignupsAllowed(prisma))) {
+          return res.status(403).json({ success: false, message: 'New signups are currently disabled', code: 'SIGNUPS_DISABLED' });
+        }
         const now = new Date();
         user = await prisma.user.create({
           data: {
@@ -297,8 +319,8 @@ router.post('/google/verify', async (req, res) => {
             role: 'user', subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false
           }
         });
-        await grantTrialToNewUser(prisma, user.id, now);
-        user = await prisma.user.findUnique({ where: { id: user.id } });
+        const result = await grantTrialToNewUser(prisma, user.id, now);
+        user = result.user || await prisma.user.findUnique({ where: { id: user.id } });
       }
     }
 

@@ -1,10 +1,18 @@
-const TRIAL_MINUTES = 30;
+const {
+  parseTrialConfig,
+  getTrialExpiresAt,
+  TRIAL_SETTING_KEYS,
+  TRIAL_DEFAULTS,
+} = require('./trialConfig');
+
+const TRIAL_MINUTES = TRIAL_DEFAULTS.value;
 const TRIAL_LABEL = '30-minute';
 
-function getTrialExpiresAt(from = new Date()) {
-  const expires = new Date(from);
-  expires.setMinutes(expires.getMinutes() + TRIAL_MINUTES);
-  return expires;
+async function getTrialConfig(prisma) {
+  const rows = await prisma.siteSettings.findMany({
+    where: { key: { in: Object.values(TRIAL_SETTING_KEYS) } },
+  });
+  return parseTrialConfig(rows);
 }
 
 function hasProAccess(user, now = new Date()) {
@@ -54,7 +62,8 @@ async function expireTrialForProUpgrade(prisma, userId, now = new Date()) {
 }
 
 async function grantTrial(prisma, userId, now = new Date()) {
-  const trialExpires = getTrialExpiresAt(now);
+  const cfg = await getTrialConfig(prisma);
+  const trialExpires = getTrialExpiresAt(now, cfg.minutes);
   const proPlan = await prisma.subscriptionPlan.findFirst({ where: { slug: 'pro' } });
 
   await expireActiveSubscriptions(prisma, userId, { reason: 'Trial started', now });
@@ -91,7 +100,7 @@ async function grantTrial(prisma, userId, now = new Date()) {
 }
 
 async function grantTrialToNewUser(prisma, userId, now = new Date()) {
-  return grantTrial(prisma, userId, now);
+  return grantTrialIfEligible(prisma, userId, { force: false, now });
 }
 
 async function hasUsedTrial(prisma, userId) {
@@ -99,13 +108,13 @@ async function hasUsedTrial(prisma, userId) {
   return count > 0;
 }
 
-async function grantTrialIfEligible(prisma, userId, { force = false } = {}) {
+async function grantTrialIfEligible(prisma, userId, { force = false, now = new Date() } = {}) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return { granted: false, user: null, reason: 'not_found' };
   if (user.role !== 'user') return { granted: false, user, reason: 'not_user' };
   if (user.status !== 'active') return { granted: false, user, reason: 'inactive' };
   if (user.subPlanSlug === 'pro') return { granted: false, user, reason: 'already_pro' };
-  if (user.subPlanSlug === 'trial' && user.subExpiresAt && new Date(user.subExpiresAt) > new Date()) {
+  if (user.subPlanSlug === 'trial' && user.subExpiresAt && new Date(user.subExpiresAt) > now) {
     return { granted: false, user, reason: 'trial_active' };
   }
   if (!force && await hasUsedTrial(prisma, userId)) {
@@ -115,7 +124,10 @@ async function grantTrialIfEligible(prisma, userId, { force = false } = {}) {
     return { granted: false, user, reason: 'invalid_plan' };
   }
 
-  const updated = await grantTrial(prisma, userId, new Date());
+  const cfg = await getTrialConfig(prisma);
+  if (!cfg.enabled) return { granted: false, user, reason: 'trial_disabled' };
+
+  const updated = await grantTrial(prisma, userId, now);
   return { granted: true, user: updated, reason: null };
 }
 
@@ -235,6 +247,7 @@ module.exports = {
   TRIAL_MINUTES,
   TRIAL_LABEL,
   getTrialExpiresAt,
+  getTrialConfig,
   hasProAccess,
   isActiveTrial,
   isPaidPro,

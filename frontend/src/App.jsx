@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate, useOutletContext } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import MainLayout from './components/MainLayout'
+import { ToastProvider } from './components/ToastProvider'
 import LoginPage from './pages/LoginPage'
 import CricketPage from './pages/CricketPage'
 import TennisPage from './pages/TennisPage'
@@ -53,24 +54,26 @@ function AdminRoute({ children }) {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
+    <ToastProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
 
-        <Route element={<PrivateRoute />}>
-          <Route path="/" element={<Navigate to="/cricket" replace />} />
-          <Route path="/cricket" element={<CricketPage />} />
-          <Route path="/cricket/match/:matchId" element={<CricketPage />} />
-          <Route path="/tennis" element={<TennisPage />} />
-          <Route path="/tennis/match/:matchId" element={<TennisPage />} />
-          <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/subscription" element={<SubscriptionPage />} />
-        </Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/" element={<Navigate to="/cricket" replace />} />
+            <Route path="/cricket" element={<CricketPage />} />
+            <Route path="/cricket/match/:matchId" element={<CricketPage />} />
+            <Route path="/tennis" element={<TennisPage />} />
+            <Route path="/tennis/match/:matchId" element={<TennisPage />} />
+            <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/subscription" element={<SubscriptionPage />} />
+          </Route>
 
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </ToastProvider>
   )
 }
 

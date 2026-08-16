@@ -38,17 +38,14 @@ export const RISK_TIERS = {
 }
 
 const TOSS_REASON_TIER = {
+  'Clear Lay Vol Edge': 'low',
+  'Stronger Support Team': 'medium',
+  'Higher Lay Trades': 'medium',
+  'Bookie Fav (fallback)': 'high',
+  // legacy reasons (older captures / UI)
   'Smart Money Trap': 'low',
   'Zero Lay Trap': 'low',
-  'Trap + Fav Lay Vol Lead': 'low',
-  'Both Zero Lay — Bookie Fav Underdog': 'low',
-  'Volume Trap — Bookie Fav': 'low',
-  'Smart Lay Vol (load fav trap)': 'low',
-  'Trap + Tiny Trade Gap — Bookie Fav': 'low',
-  'Balanced Market — Bookie Fav': 'medium',
-  'Higher Lay Trades': 'medium',
   'Higher Lay Vol': 'high',
-  'Bookie Fav (fallback)': 'high',
 }
 
 const MATCH_START_REASON_TIER = {

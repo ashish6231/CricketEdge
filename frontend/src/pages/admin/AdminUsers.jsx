@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from 'react'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, Shield, User, Crown, Ban, CheckCircle, PauseCircle, MoreVertical, X, Gift } from 'lucide-react'
-import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan, adminGrantTrial, adminGrantTrialAll } from '../../api'
+import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan, adminGrantTrial, adminGrantTrialAll, adminGetSettings } from '../../api'
+import { useToast } from '../../components/ToastProvider'
+import { hydrateTrialForm } from '../../utils/trialSettingsAdmin'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
@@ -38,6 +40,7 @@ const ActionMenuItem = ({ onClick, disabled, color, icon, label, loading }) => (
 )
 
 export default function AdminUsers({ isSuperAdmin }) {
+  const toast = useToast()
   const [users, setUsers] = useState([])
   const [pagination, setPagination] = useState({})
   const [loading, setLoading] = useState(true)
@@ -47,43 +50,48 @@ export default function AdminUsers({ isSuperAdmin }) {
   const [page, setPage] = useState(1)
   const [acting, setActing] = useState(null)
   const [expanded, setExpanded] = useState(null)
-  const [error, setError] = useState('')
   const [proMonths, setProMonths] = useState({})
   const [bulkGranting, setBulkGranting] = useState(false)
+  const [trialEnabled, setTrialEnabled] = useState(true)
 
   const load = useCallback(() => {
     setLoading(true)
     adminGetUsers({ page, limit: 20, search, role, status })
       .then(res => { setUsers(res.data); setPagination(res.pagination) })
-      .catch(e => setError(e.detail || 'Failed to load'))
+      .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
   }, [page, search, role, status])
 
   useEffect(() => { load() }, [load])
 
+  useEffect(() => {
+    adminGetSettings()
+      .then((res) => setTrialEnabled(hydrateTrialForm(res.data).enabled))
+      .catch(() => {})
+  }, [])
+
   const act = async (userId, fn, ...args) => {
     setActing(userId)
-    try { await fn(...args); load(); setExpanded(null) }
-    catch (e) { setError(e.detail || 'Action failed') }
+    try { await fn(...args); load(); setExpanded(null); return true }
+    catch (e) { toast.error(e.detail || 'Action failed'); return false }
     finally { setActing(null) }
   }
 
   const grantTrial = async (userId, force = true) => {
-    if (force && !window.confirm('Grant 30-minute trial to this user?')) return
-    await act(userId, adminGrantTrial, userId, force)
+    if (force && !window.confirm('Grant free trial to this user?')) return
+    const ok = await act(userId, adminGrantTrial, userId, force)
+    if (ok) toast.success('Free trial granted')
   }
 
   const grantTrialAll = async () => {
-    if (!window.confirm('Grant 30-minute trial to all eligible free users who never had trial?')) return
+    if (!window.confirm('Grant free trial to all eligible free users who never had trial?')) return
     setBulkGranting(true)
-    setError('')
     try {
       const res = await adminGrantTrialAll()
-      setError('')
-      alert(res.message || 'Bulk trial grant complete')
+      toast.success(res.message || 'Bulk trial grant complete')
       load()
     } catch (e) {
-      setError(e.detail || 'Bulk grant failed')
+      toast.error(e.detail || 'Bulk grant failed')
     } finally {
       setBulkGranting(false)
     }
@@ -115,15 +123,15 @@ export default function AdminUsers({ isSuperAdmin }) {
           <option value="banned">Banned</option>
           <option value="suspended">Suspended</option>
         </select>
-        <button onClick={grantTrialAll} disabled={bulkGranting}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white disabled:opacity-50"
-          style={{ background: 'linear-gradient(135deg,#059669,#10b981)' }}>
-          {bulkGranting ? <LoaderCircle size={13} className="animate-spin" /> : <Gift size={13} />}
-          Grant Trial to All
-        </button>
+        {trialEnabled && (
+          <button onClick={grantTrialAll} disabled={bulkGranting}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-white disabled:opacity-50"
+            style={{ background: 'linear-gradient(135deg,#059669,#10b981)' }}>
+            {bulkGranting ? <LoaderCircle size={13} className="animate-spin" /> : <Gift size={13} />}
+            Grant Trial to All
+          </button>
+        )}
       </div>
-
-      {error && <div className="text-xs text-red-400 px-3 py-2 rounded-xl" style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.2)' }}>{error}</div>}
 
       {/* ── Stats row ── */}
       {!loading && pagination.total > 0 && (
@@ -214,8 +222,8 @@ export default function AdminUsers({ isSuperAdmin }) {
                       {/* Plan actions */}
                       {u.role === 'user' && (<>
                         <div className="h-px bg-[#2c2c2e] my-1"></div>
-                        {u.subPlanSlug === 'free' && (
-                          <ActionMenuItem disabled={isActing} loading={isActing} color="#10b981" icon={<Gift size={14} />} label="Grant 30-Min Trial"
+                        {trialEnabled && u.subPlanSlug === 'free' && (
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#10b981" icon={<Gift size={14} />} label="Grant Free Trial"
                             onClick={() => grantTrial(u.id, true)} />
                         )}
                         {u.subPlanSlug !== 'pro' ? (

@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Activity, Lock, Mail, Eye, EyeOff, User, LoaderCircle, AlertTriangle } from 'lucide-react'
-import { login, register } from '../api'
+import { login, register, getSignupStatus } from '../api'
 
 export default function LoginPage({ onLoginSuccess }) {
   const navigate = useNavigate()
@@ -13,12 +13,27 @@ export default function LoginPage({ onLoginSuccess }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [allowSignups, setAllowSignups] = useState(true)
 
   const sessionReplaced = new URLSearchParams(window.location.search).get('reason') === 'session_replaced'
 
   const reset = () => { setError(''); setSuccess(''); setName(''); setEmail(''); setPassword('') }
 
-  const switchTab = (t) => { setTab(t); reset() }
+  const switchTab = (t) => {
+    if (t === 'signup' && !allowSignups) return
+    setTab(t)
+    reset()
+  }
+
+  useEffect(() => {
+    getSignupStatus()
+      .then((res) => {
+        const allowed = res?.data?.allowSignups !== false
+        setAllowSignups(allowed)
+        if (!allowed) setTab('login')
+      })
+      .catch(() => setAllowSignups(true))
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -28,10 +43,15 @@ export default function LoginPage({ onLoginSuccess }) {
       if (tab === 'login') {
         res = await login(email, password)
       } else {
+        if (!allowSignups) {
+          setError('New signups are currently disabled')
+          setLoading(false)
+          return
+        }
         if (!name.trim()) { setError('Name required'); setLoading(false); return }
         res = await register(name.trim(), email, password)
       }
-      setSuccess(tab === 'login' ? (res.message ? `✅ ${res.message}` : '✅ Login successful!') : (res.message ? `✅ ${res.message}` : '✅ Account created! 30-minute free trial activated.'))
+      setSuccess(tab === 'login' ? (res.message ? `✅ ${res.message}` : '✅ Login successful!') : (res.message ? `✅ ${res.message}` : '✅ Account created!'))
       if (onLoginSuccess) onLoginSuccess(res.user?.email, res.user)
       setTimeout(() => navigate('/cricket', { replace: true }), 800)
     } catch (err) {
@@ -72,7 +92,7 @@ export default function LoginPage({ onLoginSuccess }) {
           
           {/* Tabs */}
           <div className="flex gap-1 p-1 rounded-lg mb-4 bg-[#0a0a0a] border border-[#2c2c2e]">
-            {['login', 'signup'].map(t => (
+            {(allowSignups ? ['login', 'signup'] : ['login']).map(t => (
               <button key={t} onClick={() => switchTab(t)}
                 className="flex-1 py-1.5 rounded-md text-[13px] font-semibold transition-colors capitalize"
                 style={tab === t
@@ -83,6 +103,12 @@ export default function LoginPage({ onLoginSuccess }) {
               </button>
             ))}
           </div>
+
+          {!allowSignups && (
+            <div className="rounded-lg px-3 py-2 mb-4 text-[11px] text-center text-[#8e8e93] bg-[#0a0a0a] border border-[#2c2c2e]">
+              New signups are currently closed. Existing users can still log in.
+            </div>
+          )}
 
           {/* Alerts */}
           {sessionReplaced && (
@@ -103,7 +129,7 @@ export default function LoginPage({ onLoginSuccess }) {
 
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name — signup only */}
-            {tab === 'signup' && (
+            {tab === 'signup' && allowSignups && (
               <div>
                 <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Full Name</label>
                 <div className="relative">
@@ -153,7 +179,7 @@ export default function LoginPage({ onLoginSuccess }) {
             </button>
           </form>
 
-          {tab === 'login' && (
+          {tab === 'login' && allowSignups && (
             <p className="text-center text-[12px] text-[#8e8e93] mt-4">
               Don't have an account?{' '}
               <button onClick={() => switchTab('signup')} className="text-[#10b981] font-semibold hover:underline">
