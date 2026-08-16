@@ -230,7 +230,12 @@ export default function CricketPage() {
                         key={match.matchId}
                         onClick={() => {
                           sessionStorage.setItem(SCROLL_KEY, scrollRef.current?.scrollTop || 0)
-                          navigate(`/cricket/match/${match.matchId}`)
+                          if (match.startTime != null) {
+                            sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
+                          }
+                          navigate(`/cricket/match/${match.matchId}`, {
+                            state: { startTime: match.startTime ?? null },
+                          })
                         }}
                         className={`glass-card rounded-2xl p-4 transition-all text-left group hover:shadow-md`}
                       >
@@ -239,7 +244,7 @@ export default function CricketPage() {
                           <span className="font-bold text-text-primary text-sm leading-snug">{match.matchName}</span>
                           {getMatchStatusBadge(match)}
                         </div>
-                        {o?.teamNames?.length === 2 && (
+                        {o?.teamNames?.length >= 2 && (
                           <div className="flex gap-2 mb-2">
                             {o.teamNames.map(tn => {
                               const tod = o.odds?.[tn]

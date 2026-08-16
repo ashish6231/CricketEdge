@@ -24,13 +24,32 @@ async function verifyToken(req, res, next) {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded;
 
-    const user = await prisma.user.findUnique({ where: { id: decoded.userId }, select: { status: true, activeToken: true } });
+    const user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        status: true,
+        activeToken: true,
+        subPlanSlug: true,
+      },
+    });
     if (!user || user.status === 'banned')
       return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });
+    if (user.status === 'suspended')
+      return res.status(403).json({ success: false, message: 'Account suspended', code: 'ACCOUNT_SUSPENDED' });
     if (user.activeToken && user.activeToken !== token)
       return res.status(401).json({ success: false, message: 'Logged in on another device', code: 'SESSION_REPLACED' });
+
+    // Always prefer DB role/plan — never trust JWT claims for authorization
+    req.user = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      plan: user.subPlanSlug,
+    };
 
     next();
   } catch (err) {
@@ -63,4 +82,27 @@ function requireProSubscription(req, res, next) {
   });
 }
 
-module.exports = { generateToken, verifyToken, optionalAuth, requireProSubscription, JWT_SECRET };
+/** Strip secrets from a User row before sending to clients. */
+function sanitizeUserRecord(user) {
+  if (!user || typeof user !== 'object') return user;
+  const {
+    password,
+    activeToken,
+    otpCode,
+    otpExpiresAt,
+    otpPurpose,
+    resetToken,
+    resetTokenExpires,
+    ...safe
+  } = user;
+  return safe;
+}
+
+module.exports = {
+  generateToken,
+  verifyToken,
+  optionalAuth,
+  requireProSubscription,
+  sanitizeUserRecord,
+  JWT_SECRET,
+};

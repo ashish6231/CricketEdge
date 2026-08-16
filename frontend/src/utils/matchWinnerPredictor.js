@@ -9,6 +9,8 @@
  * Match-start tricks are in matchStartPredictor.js (Fade Public 84.6%).
  */
 
+import { splitMatchOutcomes } from './bookiePl.js'
+
 function medianPrices(trades) {
   if (!trades.length) return null
   const sorted = trades.map(t => t.price).filter(p => p > 0).sort((a, b) => a - b)
@@ -36,8 +38,7 @@ function getLastOdds(trades, n = 5) {
 }
 
 function extractMetrics(snap) {
-  const t1 = snap.teamNames?.[0] || 'Team 1'
-  const t2 = snap.teamNames?.[1] || 'Team 2'
+  const { t1, t2 } = splitMatchOutcomes(snap.teamNames)
   const t1Trades = snap.teams?.[t1]?.trades || []
   const t2Trades = snap.teams?.[t2]?.trades || []
   const m1 = snap.advancedMetricsV2?.team1 || {}

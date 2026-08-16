@@ -133,7 +133,12 @@ export default function TennisPage() {
                       key={match.matchId}
                       onClick={() => {
                         sessionStorage.setItem(SCROLL_KEY, scrollRef.current?.scrollTop || 0)
-                        navigate(`/tennis/match/${match.matchId}`)
+                        if (match.startTime != null) {
+                          sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
+                        }
+                        navigate(`/tennis/match/${match.matchId}`, {
+                          state: { startTime: match.startTime ?? null },
+                        })
                       }}
                       className={`glass-card rounded-xl p-4 transition-all text-left group hover:bg-bg-card-hover`}
                     >

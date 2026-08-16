@@ -40,10 +40,37 @@ function upstreamUnavailable(res, data) {
   });
 }
 
+function asMatchList(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.matches)) return data.matches;
+  return [];
+}
+
+function findMatchInfo(matchesData, matchId) {
+  const matches = asMatchList(matchesData);
+  const id = String(matchId);
+  return matches.find(m => String(m.matchId) === id || String(m.marketId) === id) || null;
+}
+
+function attachMatchMeta(data, matchInfo) {
+  if (!matchInfo || !data || data.error) return data;
+  data.inPlay = matchInfo.inPlay;
+  data.competitionName = matchInfo.competitionName ?? data.competitionName;
+  data.status = matchInfo.status ?? data.status;
+  const start =
+    matchInfo.startTime ??
+    matchInfo.openDate ??
+    matchInfo.marketStartTime ??
+    matchInfo.eventDate ??
+    null;
+  if (start != null && start !== '') data.startTime = start;
+  return data;
+}
+
 router.get('/cricket/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllCricketMatches();
   if (data?.error) return upstreamUnavailable(res, data);
-  const matches = Array.isArray(data) ? data : [];
+  const matches = asMatchList(data);
   res.json({ total: matches.length, matches });
 });
 
@@ -53,7 +80,7 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
     scraper.getAllCricketMatches(),
     scraper.getCricketSnapshot(matchId),
   ]);
-  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == matchId);
+  const matchInfo = findMatchInfo(matches, matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded) {
     const role = req.user?.role;
@@ -68,12 +95,7 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
       return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
     return upstreamUnavailable(res, data);
   }
-  if (matchInfo && !data.error) {
-    data.inPlay = matchInfo.inPlay;
-    data.competitionName = matchInfo.competitionName;
-    data.status = matchInfo.status;
-  }
-  res.json(data);
+  res.json(attachMatchMeta(data, matchInfo));
 });
 
 router.get('/toss/matches', verifyToken, async (req, res) => {
@@ -82,7 +104,7 @@ router.get('/toss/matches', verifyToken, async (req, res) => {
   res.json({ matches: data });
 });
 
-router.get('/toss/match/:matchId', verifyToken, async (req, res) => {
+router.get('/toss/match/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getTossSnapshot(req.params.matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data' });
   res.json(data);
@@ -95,13 +117,13 @@ router.get('/session/matches', verifyToken, async (req, res) => {
   res.json({ total: matches.length, matches });
 });
 
-router.get('/session/trades/:matchId', verifyToken, async (req, res) => {
+router.get('/session/trades/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getSessionTrades(req.params.matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
   res.json(data);
 });
 
-router.get('/cricket/odds/:matchId', verifyToken, async (req, res) => {
+router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) => {
   const data = await scraper.getCricketSnapshot(req.params.matchId);
   if (data?.error) return res.json({ error: data.error });
   const teams = data.teams || {};
@@ -117,7 +139,7 @@ router.get('/cricket/odds/:matchId', verifyToken, async (req, res) => {
   }
   res.json({ matchId: req.params.matchId, teamNames: data.teamNames || [], odds: result });
 });
-router.get('/cricket/odds-bulk', verifyToken, async (req, res) => {
+router.get('/cricket/odds-bulk', requireProSubscription, async (req, res) => {
   const matchIds = req.query.ids ? req.query.ids.split(',').filter(Boolean) : [];
   if (!matchIds.length) return res.status(400).json({ error: 'No match IDs provided' });
   
@@ -143,7 +165,7 @@ router.get('/cricket/odds-bulk', verifyToken, async (req, res) => {
   res.json(results);
 });
 
-router.get('/cricket/full', verifyToken, async (req, res) => {
+router.get('/cricket/full', requireProSubscription, async (req, res) => {
   const includeSnapshots = req.query.include_snapshots !== 'false';
   res.json(await scraper.getCricketFullData(includeSnapshots));
 });
@@ -153,7 +175,8 @@ router.get('/cricket/full', verifyToken, async (req, res) => {
 router.get('/tennis/matches', verifyToken, async (req, res) => {
   const data = await scraper.getAllTennisMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
-  res.json({ total: data.length, matches: data });
+  const matches = asMatchList(data);
+  res.json({ total: matches.length, matches });
 });
 
 router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
@@ -162,7 +185,7 @@ router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
     scraper.getAllTennisMatches(),
     scraper.getTennisSnapshot(matchId),
   ]);
-  const matchInfo = (Array.isArray(matches) ? matches : []).find(m => m.matchId == matchId);
+  const matchInfo = findMatchInfo(matches, matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded) {
     const role = req.user?.role;
@@ -175,17 +198,12 @@ router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
 
-  if (matchInfo && !data.error) {
-    data.inPlay = matchInfo.inPlay;
-    data.competitionName = matchInfo.competitionName;
-    data.status = matchInfo.status;
-  }
-  res.json(data);
+  res.json(attachMatchMeta(data, matchInfo));
 });
 
 // ──── Live Odds ────
 
-router.get('/live-odds/:matchId', verifyToken, async (req, res) => {
+router.get('/live-odds/:matchId', requireProSubscription, async (req, res) => {
   res.json(await scraper.getLiveOdds(req.params.matchId));
 });
 

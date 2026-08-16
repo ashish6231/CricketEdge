@@ -2,13 +2,13 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, 
 import TossDetail from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo } from 'react'
-import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
+import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
 import { computeFavFlipRisk } from '../utils/favFlipRisk'
-import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime } from '../utils/bookiePl'
+import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime, splitMatchOutcomes } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
@@ -64,6 +64,23 @@ const formatVolTooltip = (val) => {
 const formatOdds = (val) => {
   if (!val) return '—'
   return val.toFixed(2)
+}
+
+/** Match scheduled start — not live clock / serverTime */
+const formatMatchSchedule = (ts) => {
+  if (ts == null || ts === '') return null
+  let d
+  if (typeof ts === 'number' || (/^\d+$/.test(String(ts)))) {
+    const n = Number(ts)
+    // seconds vs milliseconds
+    d = new Date(n < 1e12 ? n * 1000 : n)
+  } else {
+    d = new Date(ts)
+  }
+  if (Number.isNaN(d.getTime())) return null
+  const date = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+  const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
+  return { date, time, label: `${date} • ${time}` }
 }
 
 const processTeamData = (teamName, teamData, timeFilter = 'all') => {
@@ -340,6 +357,7 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
 export default function MatchDetail({ sport }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const { isLoggedIn } = useOutletContext()
   const [snapshot, setSnapshot] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -525,9 +543,6 @@ export default function MatchDetail({ sport }) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
         <div className="rounded-2xl p-8 max-w-md text-center" style={{ background: '#111111', border: '1px solid #2c2c2e', boxShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
-          <div className="text-xs text-text-muted mb-4">
-            📅 {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} &nbsp;⏰ {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-          </div>
           <div className="p-4 rounded-2xl border mb-4 inline-block" style={{ background: 'rgba(220,38,38,0.15)', borderColor: '#3a3a3c' }}><Lock className="h-8 w-8 text-primary" /></div>
           <h2 className="text-xl font-bold text-text-primary mb-2">🔒 Login Zaruri Hai</h2>
           <p className="text-text-secondary mb-4">Live/upcoming match ka data dekhne ke liye login karo.</p>
@@ -564,11 +579,18 @@ export default function MatchDetail({ sport }) {
 
   if (!snapshot) return null
 
-  const t1 = snapshot.teamNames?.[0] || 'Team 1'
-  const t2 = snapshot.teamNames?.[1] || 'Team 2'
+  const cachedStart =
+    location.state?.startTime ??
+    (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`match_start_${matchId}`) : null)
+  const matchSchedule = formatMatchSchedule(
+    snapshot.startTime ?? snapshot.openDate ?? snapshot.marketStartTime ?? cachedStart
+  )
+  const { t1, t2, drawName } = splitMatchOutcomes(snapshot.teamNames)
+  const hasDraw = !!drawName
   const dm = snapshot.deepMetrics || {}
   const t1Trades = (snapshot.teams?.[t1] || {}).trades || []
   const t2Trades = (snapshot.teams?.[t2] || {}).trades || []
+  const drawTrades = hasDraw ? ((snapshot.teams?.[drawName] || {}).trades || []) : []
 
   const getLatestOdds = (trades) => {
     const sorted = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
@@ -578,6 +600,7 @@ export default function MatchDetail({ sport }) {
   }
   const t1Odds = getLatestOdds(t1Trades)
   const t2Odds = getLatestOdds(t2Trades)
+  const drawOdds = hasDraw ? getLatestOdds(drawTrades) : null
   const am1 = snapshot.advancedMetrics?.team1 || {}
   const am2 = snapshot.advancedMetrics?.team2 || {}
   const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snapshot)
@@ -587,7 +610,7 @@ export default function MatchDetail({ sport }) {
   const t1Data = teams[t1] || {}
   const t2Data = teams[t2] || {}
 
-  const { pl1, pl2 } = getBookiePl(snapshot, t1, t2)
+  const { pl1, pl2, plDraw } = getBookiePl(snapshot, t1, t2, drawName)
   const favFlipRisk = computeFavFlipRisk(snapshot, { pl1, pl2 })
   const dpl1 = dp.team1_win
   const dpl2 = dp.team2_win
@@ -794,7 +817,7 @@ export default function MatchDetail({ sport }) {
               </div>
               <div className="text-[#8e8e93] text-[13px] mt-1.5 font-medium tracking-wide">
                 The Hundred - Womens
-                {snapshot.serverTime && ` · ${new Date(snapshot.serverTime).toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} - ${new Date(snapshot.serverTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`}
+                {matchSchedule && ` · ${matchSchedule.label}`}
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -964,9 +987,9 @@ export default function MatchDetail({ sport }) {
               <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
                 {/* Date / Title */}
                 <div className="px-5 pt-4 pb-3" style={{ background: '#111111', borderBottom: '1px solid #2c2c2e' }}>
-                  {snapshot.serverTime && (
+                  {matchSchedule && (
                     <div className="text-xs text-[#8e8e93] mb-1">
-                      📅 {new Date(snapshot.serverTime).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })} &nbsp;⏰ {new Date(snapshot.serverTime).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                      📅 {matchSchedule.date} &nbsp;⏰ {matchSchedule.time}
                     </div>
                   )}
                   <div className="flex items-center justify-between gap-2">
@@ -976,19 +999,26 @@ export default function MatchDetail({ sport }) {
                   {snapshot.competitionName && <div className="text-xs text-[#8e8e93] mt-0.5">{snapshot.competitionName}</div>}
                 </div>
 
-                {/* Odds */}
-                <div className="grid grid-cols-2 divide-x divide-[#2c2c2e]" style={{ borderBottom: '1px solid #2c2c2e' }}>
-                  {[{ name: t1, odds: t1Odds }, { name: t2, odds: t2Odds }].map(({ name, odds }) => (
+                {/* Odds — 2-way or 3-way (Test + Draw) */}
+                <div
+                  className={`grid divide-x divide-[#2c2c2e] ${hasDraw ? 'grid-cols-3' : 'grid-cols-2'}`}
+                  style={{ borderBottom: '1px solid #2c2c2e' }}
+                >
+                  {[
+                    { name: t1, odds: t1Odds },
+                    { name: t2, odds: t2Odds },
+                    ...(hasDraw ? [{ name: drawName, odds: drawOdds }] : []),
+                  ].map(({ name, odds }) => (
                     <div key={name} className="px-3 py-2.5">
                       <div className="text-xs font-semibold text-gray-300 truncate mb-1.5">{name}</div>
                       <div className="flex gap-2">
                         <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                           <div className="text-[10px] text-[#8e8e93]">Back</div>
-                          <div className="text-sm font-bold text-[#3b82f6]">{odds.back ?? '—'}</div>
+                          <div className="text-sm font-bold text-[#3b82f6]">{odds?.back ?? '—'}</div>
                         </div>
                         <div className="flex-1 rounded-lg py-1.5 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                           <div className="text-[10px] text-[#8e8e93]">Lay</div>
-                          <div className="text-sm font-bold text-[#ef4444]">{odds.lay ?? '—'}</div>
+                          <div className="text-sm font-bold text-[#ef4444]">{odds?.lay ?? '—'}</div>
                         </div>
                       </div>
                     </div>
@@ -999,8 +1029,12 @@ export default function MatchDetail({ sport }) {
                 {pl1 != null && pl2 != null && (
                   <div className="p-4">
                     <div className="text-xs font-bold text-[#8e8e93] uppercase tracking-wider mb-2">Bookie P/L</div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {[{ name: t1, pl: pl1 }, { name: t2, pl: pl2 }].map(({ name, pl }) => (
+                    <div className={`grid gap-3 ${hasDraw ? 'grid-cols-3' : 'grid-cols-2'}`}>
+                      {[
+                        { name: t1, pl: pl1 },
+                        { name: t2, pl: pl2 },
+                        ...(hasDraw && plDraw != null ? [{ name: drawName, pl: plDraw }] : []),
+                      ].map(({ name, pl }) => (
                         <div key={name} className="rounded-xl p-3 text-center border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
                           <div className="text-sm font-bold text-gray-300 mb-1 truncate">{name}</div>
                           <div className={`text-lg font-bold tracking-wide ${pnlCls(pl)}`}>{fmtRs(pl)}</div>

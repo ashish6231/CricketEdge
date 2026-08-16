@@ -9,6 +9,8 @@
  *   4. Lay pressure building on the currently "safe" team
  */
 
+import { splitMatchOutcomes } from './bookiePl.js'
+
 function medianPrices(trades) {
   if (!trades?.length) return null
   const sorted = trades.map(t => t.price).filter(p => p > 0).sort((a, b) => a - b)
@@ -76,8 +78,7 @@ function resolveSafeTeam({ t1, t2, pl1, pl2, exp1Net, exp2Net }) {
 export function computeFavFlipRisk(snap, { pl1, pl2 } = {}) {
   if (!snap?.teamNames?.length) return null
 
-  const t1 = snap.teamNames[0]
-  const t2 = snap.teamNames[1]
+  const { t1, t2 } = splitMatchOutcomes(snap.teamNames)
   const t1Trades = snap.teams?.[t1]?.trades || []
   const t2Trades = snap.teams?.[t2]?.trades || []
   const m1 = snap.advancedMetricsV2?.team1 || snap.advancedMetrics?.team1 || {}

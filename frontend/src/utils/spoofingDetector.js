@@ -7,7 +7,7 @@
  * Note: advancedMetrics (v1) equals trades sum only — wrong for spoofing on large matches.
  */
 
-import { getTeamMetrics } from './bookiePl'
+import { getTeamMetrics, splitMatchOutcomes } from './bookiePl'
 
 export function calcFakeVolume(backVol = 0, layVol = 0) {
   const matched = Math.min(backVol, layVol)
@@ -18,8 +18,7 @@ export function calcFakeVolume(backVol = 0, layVol = 0) {
 
 /** Full spoofing breakdown for both teams */
 export function getSpoofingMetrics(snap) {
-  const t1 = snap?.teamNames?.[0] || 'Team 1'
-  const t2 = snap?.teamNames?.[1] || 'Team 2'
+  const { t1, t2 } = splitMatchOutcomes(snap?.teamNames)
   const m1 = getTeamMetrics(snap, 0)
   const m2 = getTeamMetrics(snap, 1)
 

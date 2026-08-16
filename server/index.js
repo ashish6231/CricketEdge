@@ -31,7 +31,7 @@ const io = new (require('socket.io').Server)(server, {
   cors: {
     origin: (origin, cb) => {
       if (!origin || allowedOrigins.includes(origin)) cb(null, true);
-      else cb(new Error('Not allowed'));
+      else cb(null, false);
     },
     credentials: true,
   },
@@ -54,7 +54,8 @@ io.use((socket, next) => {
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
+    // Do not throw — Express would turn this into HTTP 500
+    return cb(null, false);
   },
   credentials: true
 }));
@@ -67,7 +68,12 @@ app.use(session({
   secret: process.env.SESSION_SECRET || (() => { throw new Error('SESSION_SECRET env var not set!'); })(),
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: process.env.NODE_ENV === 'production', maxAge: 24 * 60 * 60 * 1000 }
+    cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'lax' : 'lax',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000,
+  }
 }));
 
 try {

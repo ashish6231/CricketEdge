@@ -1,4 +1,5 @@
 import { computeMatchStartRisk } from './predictionRisk.js'
+import { splitMatchOutcomes } from './bookiePl.js'
 
 /**
  * Match START Predictor — backtested 22/26 (84.6%) on all ended cricket matches.
@@ -36,8 +37,7 @@ export function getPreMatchOdds(trades, n = 5) {
 }
 
 export function extractStartMetrics(snap) {
-  const t1 = snap.teamNames?.[0] || 'Team 1'
-  const t2 = snap.teamNames?.[1] || 'Team 2'
+  const { t1, t2 } = splitMatchOutcomes(snap.teamNames)
   const t1Trades = snap.teams?.[t1]?.trades || []
   const t2Trades = snap.teams?.[t2]?.trades || []
 

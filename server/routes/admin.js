@@ -5,6 +5,7 @@ const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissio
 const prisma = require('../db/prisma');
 const { grantTrialIfEligible, grantTrialToAllEligible, getTrialConfig } = require('../lib/subscriptionAccess');
 const { validateTrialSetting, validateTrialDuration, TRIAL_SETTING_KEYS } = require('../lib/trialConfig');
+const { sanitizeUserRecord } = require('../middleware/auth');
 const trialKeys = new Set(Object.values(TRIAL_SETTING_KEYS));
 const { getDefaultStore } = require('../services/tossDatasetStore');
 const { runTossCaptureNow } = require('../services/tossCaptureWorker');
@@ -207,10 +208,17 @@ router.patch('/users/:id/status', requireAdmin, async (req, res) => {
     if (before.role === 'superadmin') return res.status(403).json({ success: false, message: 'Cannot modify a superadmin' });
     if (before.role === 'admin' && req.user.role !== 'superadmin') return res.status(403).json({ success: false, message: 'Only superadmin can modify an admin' });
 
-    const user = await prisma.user.update({ where: { id: userId }, data: { status } });
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        status,
+        // Force re-login on ban/suspend so JWT role/session cannot linger
+        ...(status === 'banned' || status === 'suspended' ? { activeToken: null } : {}),
+      },
+    });
     const action = status === 'banned' ? 'user_ban' : status === 'suspended' ? 'user_suspend' : 'user_unsuspend';
     await auditLog(req.user, action, 'user', user.id, user.email, { before: { status: before.status }, after: { status } }, reason, req);
-    res.json({ success: true, data: user });
+    res.json({ success: true, data: sanitizeUserRecord(user) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -288,9 +296,16 @@ router.patch('/users/:id/role', requireSuperAdmin, async (req, res) => {
     if (!before) return res.status(404).json({ success: false, message: 'User not found' });
     if (before.role === 'superadmin') return res.status(403).json({ success: false, message: 'Cannot modify a superadmin' });
 
-    const user = await prisma.user.update({ where: { id: userId }, data: { role } });
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        role,
+        // Demotion/promotion must invalidate existing JWT immediately
+        activeToken: null,
+      },
+    });
     await auditLog(req.user, role === 'admin' ? 'admin_create' : 'admin_demote', 'user', user.id, user.email, { before: { role: before.role }, after: { role } }, 'Role changed by superadmin', req);
-    res.json({ success: true, data: user });
+    res.json({ success: true, data: sanitizeUserRecord(user) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -410,7 +425,7 @@ router.patch('/users/:id/plan', requireAdmin, async (req, res) => {
     const io = getIo();
     if (io) io.to(`user:${userId}`).emit('planUpdate', { planSlug, status: 'active', expiresAt: user.subExpiresAt });
 
-    res.json({ success: true, data: user });
+    res.json({ success: true, data: sanitizeUserRecord(user) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

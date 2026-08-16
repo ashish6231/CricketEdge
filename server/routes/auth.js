@@ -67,6 +67,39 @@ function sanitizeUser(user) {
   };
 }
 
+/** In-memory OTP fail counters — clears on success / expiry window */
+const otpFailCounts = new Map();
+const OTP_MAX_FAILS = 5;
+const OTP_LOCK_MS = 15 * 60 * 1000;
+
+function otpFailKey(email) {
+  return String(email || '').toLowerCase();
+}
+
+function isOtpLocked(email) {
+  const entry = otpFailCounts.get(otpFailKey(email));
+  if (!entry) return false;
+  if (Date.now() > entry.lockedUntil) {
+    otpFailCounts.delete(otpFailKey(email));
+    return false;
+  }
+  return entry.count >= OTP_MAX_FAILS;
+}
+
+function recordOtpFail(email) {
+  const key = otpFailKey(email);
+  const entry = otpFailCounts.get(key) || { count: 0, lockedUntil: 0 };
+  entry.count += 1;
+  if (entry.count >= OTP_MAX_FAILS) {
+    entry.lockedUntil = Date.now() + OTP_LOCK_MS;
+  }
+  otpFailCounts.set(key, entry);
+}
+
+function clearOtpFails(email) {
+  otpFailCounts.delete(otpFailKey(email));
+}
+
 // ─── PUBLIC SIGNUP STATUS ───
 router.get('/signup-status', async (_req, res) => {
   try {
@@ -171,7 +204,7 @@ router.post('/forgot-password', async (req, res) => {
     if (!user || user.authProvider !== 'local')
       return res.json({ success: true, message: 'If this email exists, an OTP has been sent' });
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 1000000).toString();
     await prisma.user.update({
       where: { id: user.id },
       data: { otpCode: otp, otpExpiresAt: new Date(Date.now() + 10 * 60 * 1000), otpPurpose: 'reset_password' }
@@ -191,12 +224,22 @@ router.post('/verify-otp', async (req, res) => {
     const { email, otp } = req.body;
     if (!email || !otp)
       return res.status(400).json({ success: false, message: 'Email and OTP required' });
-    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
-    if (!user || user.otpCode !== otp)
-      return res.status(400).json({ success: false, message: 'Invalid OTP' });
-    if (!user.otpExpiresAt || new Date() > user.otpExpiresAt)
-      return res.status(400).json({ success: false, message: 'OTP expired' });
 
+    if (isOtpLocked(email)) {
+      return res.status(429).json({ success: false, message: 'Too many invalid OTP attempts. Try again in 15 minutes.' });
+    }
+
+    const user = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    if (!user || user.otpCode !== otp) {
+      recordOtpFail(email);
+      return res.status(400).json({ success: false, message: 'Invalid OTP' });
+    }
+    if (!user.otpExpiresAt || new Date() > user.otpExpiresAt) {
+      recordOtpFail(email);
+      return res.status(400).json({ success: false, message: 'OTP expired' });
+    }
+
+    clearOtpFails(email);
     const resetToken = crypto.randomBytes(32).toString('hex');
     await prisma.user.update({
       where: { id: user.id },
@@ -342,7 +385,8 @@ router.get('/google', (req, res, next) => {
   const passport = require('passport');
   if (!passport._strategies.google)
     return res.status(503).json({ success: false, message: 'Google OAuth not configured' });
-  req.session.redirectTo = req.query.redirect || getFrontendUrl();
+  // Never trust client redirect — always return to our frontend after OAuth
+  req.session.redirectTo = getFrontendUrl();
   passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
 });
 
@@ -356,12 +400,12 @@ router.get('/google/callback',
   (req, res) => {
     const token = generateToken(req.user);
     prisma.user.update({ where: { id: req.user.id }, data: { activeToken: token, lastLoginAt: new Date() } }).catch(() => {});
-    const redirectTo = req.session.redirectTo || getFrontendUrl();
-    // Token URL mein expose na ho — sessionStorage use karo
-    res.send(`<script>
-sessionStorage.setItem('pending_token','${token}');
-window.location='${redirectTo}';
-</script>`);
+    const redirectTo = getFrontendUrl();
+    // JSON.stringify escapes quotes/newlines so token/URL cannot break out of the script
+    res.type('html').send(`<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>
+sessionStorage.setItem('pending_token', ${JSON.stringify(token)});
+window.location.replace(${JSON.stringify(redirectTo)});
+</script></body></html>`);
   }
 );
 
