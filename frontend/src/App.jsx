@@ -1,54 +1,47 @@
-import { BrowserRouter, Routes, Route, Navigate, useOutletContext } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useOutletContext, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import MainLayout from './components/MainLayout'
 import { ToastProvider } from './components/ToastProvider'
-import LoginPage from './pages/LoginPage'
 import CricketPage from './pages/CricketPage'
 import TennisPage from './pages/TennisPage'
 import AdminPage from './pages/AdminPage'
 import ProfilePage from './pages/ProfilePage'
 import SubscriptionPage from './pages/SubscriptionPage'
-import { getAuthStatus } from './api'
 
-
-//public
-function PrivateRoute() {
-  const [status, setStatus] = useState('loading')
-  const [user, setUser] = useState(null)
-
-  const verify = async () => {
-    // Handle Google OAuth callback token (stored in sessionStorage to avoid URL exposure)
-    const pendingToken = sessionStorage.getItem('pending_token')
-    if (pendingToken) {
-      localStorage.setItem('auth_token', pendingToken)
-      sessionStorage.removeItem('pending_token')
-    }
-    const token = localStorage.getItem('auth_token')
-    if (!token) { setStatus('fail'); return }
-    const res = await getAuthStatus()
-    if (res.isLoggedIn) { setUser(res.user); setStatus('ok') }
-    else setStatus('fail')
-  }
-
-  useEffect(() => {
-    verify()
-    window.addEventListener('focus', verify)
-    document.addEventListener('visibilitychange', verify)
-    return () => {
-      window.removeEventListener('focus', verify)
-      document.removeEventListener('visibilitychange', verify)
-    }
-  }, [])
-
-  if (status === 'loading') return null
-  if (status === 'fail') return <Navigate to="/login" replace />
+function AppShell() {
   return <MainLayout />
+}
+
+function RedirectToCricket() {
+  const location = useLocation()
+  return <Navigate to={`/cricket${location.search}${location.hash}`} replace />
+}
+
+function LoginRedirect() {
+  const location = useLocation()
+  useEffect(() => {
+    sessionStorage.setItem('open_login_modal', '1')
+    window.dispatchEvent(new CustomEvent('open-login-modal'))
+  }, [])
+  return <Navigate to={`/cricket${location.search}${location.hash}`} replace />
+}
+
+function RequireAuth({ children }) {
+  const { isLoggedIn, authReady } = useOutletContext()
+  useEffect(() => {
+    if (authReady && !isLoggedIn) {
+      window.dispatchEvent(new CustomEvent('open-login-modal'))
+    }
+  }, [authReady, isLoggedIn])
+  if (!authReady) return null
+  if (!isLoggedIn) return <Navigate to="/cricket" replace />
+  return children
 }
 
 function AdminRoute({ children }) {
   const { user, isLoggedIn } = useOutletContext()
   if (!isLoggedIn || !user) return null
-  if (!['admin', 'superadmin'].includes(user.role)) return <Navigate to="/" replace />
+  if (!['admin', 'superadmin'].includes(user.role)) return <Navigate to="/cricket" replace />
   return children
 }
 
@@ -57,20 +50,18 @@ function App() {
     <ToastProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-
-          <Route element={<PrivateRoute />}>
-            <Route path="/" element={<Navigate to="/cricket" replace />} />
+          <Route element={<AppShell />}>
+            <Route path="/" element={<RedirectToCricket />} />
+            <Route path="/login" element={<LoginRedirect />} />
             <Route path="/cricket" element={<CricketPage />} />
             <Route path="/cricket/match/:matchId" element={<CricketPage />} />
             <Route path="/tennis" element={<TennisPage />} />
             <Route path="/tennis/match/:matchId" element={<TennisPage />} />
-            <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/subscription" element={<SubscriptionPage />} />
+            <Route path="/admin" element={<RequireAuth><AdminRoute><AdminPage /></AdminRoute></RequireAuth>} />
+            <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
+            <Route path="/subscription" element={<RequireAuth><SubscriptionPage /></RequireAuth>} />
+            <Route path="*" element={<RedirectToCricket />} />
           </Route>
-
-          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </BrowserRouter>
     </ToastProvider>

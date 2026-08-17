@@ -157,7 +157,9 @@ export async function getAuthStatus() {
   } catch (err) {
     if (err.detail !== 'Network error') {
       localStorage.removeItem('auth_token')
-      window.location.href = '/login'
+      if (err.code === 'SESSION_REPLACED' && typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('open-login-modal'))
+      }
     }
     return { isLoggedIn: false }
   }
@@ -331,6 +333,14 @@ export async function adminCreateAdmin(data) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
+  })
+}
+
+export function adminCreateUser({ name, email, password }) {
+  return fetchAPI('/admin/users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, password }),
   })
 }
 

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-17T04:15:53.541Z",
+  "updatedAt": "2026-08-17T05:00:02.076Z",
   "records": [
     {
       "matchId": "35901908",
@@ -4155,6 +4155,574 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Manchester Super Giants"
+    },
+    {
+      "matchId": "35938017",
+      "marketId": "1.261104088",
+      "matchName": "St. Lucia Kings v Barbados Tridents",
+      "competitionName": "Caribbean Premier League",
+      "team1": "St. Lucia Kings",
+      "team2": "Barbados Tridents",
+      "startTime": 1786921200000,
+      "endedAt": "2026-08-17T05:00:02.073Z",
+      "capturedAt": "2026-08-17T05:00:02.073Z",
+      "snapshot": {
+        "serverTime": "2026-08-17T05:00:01.998Z",
+        "matchId": "35938017",
+        "matchName": "St. Lucia Kings v Barbados Tridents",
+        "teamNames": [
+          "St. Lucia Kings",
+          "Barbados Tridents"
+        ],
+        "inPlayPnl": {
+          "team1": 1689.7291,
+          "team2": -1649.9669000000006
+        },
+        "inPlayTotalBets": {
+          "team1": 1300.1320999999998,
+          "team2": 2938.8363
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 366.93,
+            "lay": 1307.87,
+            "total": 1308.32
+          },
+          "team2": {
+            "back": 1754.73,
+            "lay": 941.39,
+            "total": 3062.6
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1689.7291,
+          "team2": -1649.9669000000006
+        },
+        "preMatchTotalBets": {
+          "team1": 1300.1320999999998,
+          "team2": 2938.8363
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 366.93,
+            "lay": 1307.87,
+            "total": 1308.32
+          },
+          "team2": {
+            "back": 1754.73,
+            "lay": 941.39,
+            "total": 3062.6
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1689.7291,
+          "team2": -1649.9669000000006
+        },
+        "threeMinTotalBets": {
+          "team1": 1300.1320999999998,
+          "team2": 2938.8363
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 366.93,
+            "lay": 1307.87,
+            "total": 1308.32
+          },
+          "team2": {
+            "back": 1754.73,
+            "lay": 941.39,
+            "total": 3062.6
+          }
+        },
+        "matchLoadV2": {
+          "team1": 10,
+          "team2": 21
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 366.93,
+            "lay": 1307.87,
+            "totalVolume": 1674.8,
+            "backPercentage": 21.908884642942443
+          },
+          "team2": {
+            "back": 1754.73,
+            "lay": 941.39,
+            "totalVolume": 2696.12,
+            "backPercentage": 65.08352743943149
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 358.74209999999994,
+            "lay": 1235.1312,
+            "totalBet": 1593.8733
+          },
+          "team2": {
+            "back": 1630.9663,
+            "lay": 921.9394,
+            "totalBet": 2552.9057000000003
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1308.32,
+            "support": 29.932371217043553
+          },
+          "team2": {
+            "supportMoney": 3062.6,
+            "support": 70.06762878295645
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Barbados Tridents",
+          "bookieFavouriteOutcome": "St. Lucia Kings",
+          "riskTeam": "Barbados Tridents",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 40.135257565912895,
+          "mostBettedTeam": "Barbados Tridents",
+          "prediction": {
+            "team1TrueSupport": 1280.6815,
+            "team2TrueSupport": 2823.9249,
+            "ratio": 2.205017328664465,
+            "bookiePnlTeam1": 804.9878999999999,
+            "bookiePnlTeam2": -689.5763000000001,
+            "prediction": "St. Lucia Kings",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.21) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -834.2165000000002,
+            "backExposure": 358.74209999999994,
+            "layExposure": 1192.9586000000002,
+            "teamName": "St. Lucia Kings"
+          },
+          "team2": {
+            "netExposure": 709.0269000000001,
+            "backExposure": 1630.9663,
+            "layExposure": 921.9394,
+            "teamName": "Barbados Tridents"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 358.74209999999994,
+            "A_lay_stake": 1307.87,
+            "B_back_expo": 1630.9663,
+            "B_lay_stake": 941.39
+          },
+          "totals": {
+            "totalBetTeam1": 1300.1320999999998,
+            "totalBetTeam2": 2938.8363
+          },
+          "simplePL": {
+            "team1_win": 949.1279,
+            "team2_win": -689.5763000000001
+          },
+          "derivedPL": {
+            "team1_win": 1638.7042000000001,
+            "team2_win": -1638.7042000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 366.93,
+              "totalLayVol": 1307.87,
+              "totalBet": 1308.32,
+              "profitLoss": 1754.28
+            },
+            "team2": {
+              "totalBackVol": 1754.73,
+              "totalLayVol": 941.39,
+              "totalBet": 3062.6,
+              "profitLoss": -1754.28
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 358.74209999999994,
+              "totalLayVol": 1307.87,
+              "totalBet": 1300.1320999999998,
+              "profitLoss": 1689.7291000000005
+            },
+            "team2": {
+              "totalBackExpo": 1630.9663,
+              "totalLayVol": 941.39,
+              "totalBet": 2938.8363,
+              "profitLoss": -1649.9669
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 358.74209999999994,
+              "totalLayNetVol": 1235.1312,
+              "totalBet": 1280.6815,
+              "profitLoss": 1585.416
+            },
+            "team2": {
+              "totalBackNetVol": 1630.9663,
+              "totalLayNetVol": 921.9394,
+              "totalBet": 2866.0975,
+              "profitLoss": -1585.416
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 10,
+            "averageOdds": 1.9629999999999999,
+            "averageSize": 130.83200000000002,
+            "supportProduct": 256.823216
+          },
+          "teamB": {
+            "tradeCount": 21,
+            "averageOdds": 1.9057142857142855,
+            "averageSize": 145.83809523809526,
+            "supportProduct": 277.9257414965987
+          },
+          "strongerTeam": "Barbados Tridents",
+          "supportRatio": 1.0821675151696515
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 366.93,
+            "oppoLayVolume": 941.39,
+            "layExposure": 1235.1312,
+            "netSupportValue": 73.1887999999999
+          },
+          "teamB": {
+            "totalBackVolume": 1754.73,
+            "oppoLayVolume": 1307.87,
+            "layExposure": 921.9394,
+            "netSupportValue": 2140.6606
+          },
+          "strongerTeam": "Barbados Tridents",
+          "netSupportDifference": 2067.4718000000003,
+          "percentageA": 3.30595206701955,
+          "percentageB": 96.69404793298045
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -940.9399999999998,
+            "syntheticSupport": 941.39,
+            "opponentLiabilityRejection": 921.9394,
+            "sentimentScore": -921.4893999999998
+          },
+          "teamB": {
+            "directNetSupport": 813.34,
+            "syntheticSupport": 1307.87,
+            "opponentLiabilityRejection": 1235.1312,
+            "sentimentScore": 886.0788
+          },
+          "strongerTeam": "Barbados Tridents",
+          "scoreDifference": 1807.5681999999997,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "St. Lucia Kings",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Barbados Tridents",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "St. Lucia Kings"
+        },
+        "teams": {
+          "St. Lucia Kings": {
+            "trades": [
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.25,
+                "type": "lay",
+                "size": 56.46,
+                "updatedAt": 1786919070545
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.32,
+                "type": "lay",
+                "size": 87.68,
+                "updatedAt": 1786918993964
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.8,
+                "type": "lay",
+                "size": 70.27,
+                "updatedAt": 1786918919375
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.02,
+                "type": "lay",
+                "size": 388.4,
+                "updatedAt": 1786918758470
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.12,
+                "type": "lay",
+                "size": 70.58,
+                "updatedAt": 1786917677291
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.02,
+                "type": "back",
+                "size": 84.63,
+                "updatedAt": 1786917677291
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.1,
+                "type": "lay",
+                "size": 70.58,
+                "updatedAt": 1786917224209
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.08,
+                "type": "lay",
+                "size": 73.4,
+                "updatedAt": 1786914111419
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.06,
+                "type": "lay",
+                "size": 141.15,
+                "updatedAt": 1786913847874
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.04,
+                "type": "lay",
+                "size": 141.15,
+                "updatedAt": 1786913837282
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2,
+                "type": "lay",
+                "size": 208.2,
+                "updatedAt": 1786912521275
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.97,
+                "type": "back",
+                "size": 141.15,
+                "updatedAt": 1786909898344
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.96,
+                "type": "back",
+                "size": 141.15,
+                "updatedAt": 1786909898344
+              }
+            ],
+            "pnlIfWins": 1689.7291,
+            "totalBet": 1300.1320999999998
+          },
+          "Barbados Tridents": {
+            "trades": [
+              {
+                "team": "Barbados Tridents",
+                "price": 2,
+                "type": "lay",
+                "size": 288.02,
+                "updatedAt": 1786918758485
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.98,
+                "type": "lay",
+                "size": 445.4,
+                "updatedAt": 1786918758485
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.97,
+                "type": "lay",
+                "size": 31.860000000000014,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.96,
+                "type": "lay",
+                "size": 133.7,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "lay",
+                "size": 0.040000000000020464,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.93,
+                "type": "lay",
+                "size": 0.01999999999998181,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.92,
+                "type": "back",
+                "size": 214.59,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.91,
+                "type": "back",
+                "size": 304.55,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.89,
+                "type": "back",
+                "size": 135.63,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.88,
+                "type": "back",
+                "size": 54.71,
+                "updatedAt": 1786917677318
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.9,
+                "type": "back",
+                "size": 92.11,
+                "updatedAt": 1786917224178
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.9,
+                "type": "lay",
+                "size": 42.35000000000001,
+                "updatedAt": 1786916537940
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.93,
+                "type": "back",
+                "size": 141.15,
+                "updatedAt": 1786914111419
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "back",
+                "size": 291.04,
+                "updatedAt": 1786913847874
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.97,
+                "type": "back",
+                "size": 58.43000000000001,
+                "updatedAt": 1786913827037
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.96,
+                "type": "back",
+                "size": 295.54,
+                "updatedAt": 1786912543147
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.98,
+                "type": "back",
+                "size": 25.83,
+                "updatedAt": 1786912521288
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.95,
+                "type": "back",
+                "size": 141.15,
+                "updatedAt": 1786910933958
+              }
+            ],
+            "pnlIfWins": -1649.9669000000006,
+            "totalBet": 2938.8363
+          }
+        }
+      },
+      "predictedWinner": "St. Lucia Kings",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "St. Lucia Kings",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "St. Lucia Kings",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Barbados Tridents",
+          "priority": 40,
+          "selected": false
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Barbados Tridents",
+          "priority": 40,
+          "selected": false
+        }
+      ],
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
     }
   ]
 }

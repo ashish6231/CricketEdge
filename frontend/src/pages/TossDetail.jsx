@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, Lock, BarChart3 } from 'lucide-react'
+import { ArrowLeft, LoaderCircle, BarChart3 } from 'lucide-react'
 import { getTossSnapshot } from '../api'
+import { isLoginRequiredError } from '../utils/publicAuth'
+import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { getBookiePl, getTeamMetrics } from '../utils/bookiePl'
@@ -24,11 +26,12 @@ export default function TossDetail({ isEmbedded = false }) {
     const fetch = (isInitial = false) => {
       if (isInitial) { setLoading(true); setRequiresLogin(false); setRequiresPro(false); setSnap(null) }
       getTossSnapshot(matchId).then(res => {
-        if (res?.error === 'login_required') setRequiresLogin(true)
+        if (isLoginRequiredError(res)) setRequiresLogin(true)
         else if (res && !res.error) setSnap(res)
         if (isInitial) setLoading(false)
       }).catch(err => {
-        if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)
+        if (isLoginRequiredError(err)) setRequiresLogin(true)
+        else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)
         if (isInitial) setLoading(false)
       })
     }
@@ -61,21 +64,13 @@ export default function TossDetail({ isEmbedded = false }) {
     </div>
   )
 
-  if (requiresLogin) return (
-    <div className="flex h-[80vh] items-center justify-center px-4">
-      <div className="glass-card rounded-2xl p-8 w-full max-w-sm text-center">
-        <div className="inline-flex p-4 rounded-2xl mb-4" style={{ background: '#fee2e2', border: '1px solid #fca5a5' }}>
-          <Lock className="h-8 w-8 text-primary" />
-        </div>
-        <h2 className="text-xl font-bold text-text-primary mb-2">🔒 Login Zaruri Hai</h2>
-        <p className="text-text-secondary text-sm mb-6">Live/upcoming toss data dekhne ke liye login karo.</p>
-        <div className="flex gap-3 justify-center">
-          <button onClick={() => navigate(-1)} className="px-4 py-2 rounded-xl text-sm font-medium text-text-secondary" style={{ background: '#fff0f0', border: '1px solid #fecaca' }}>← Wapas</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent('open-login-modal'))} className="px-6 py-2 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>🔑 Login karo</button>
-        </div>
-      </div>
-    </div>
-  )
+  if (requiresLogin) {
+    return (
+      <LoginRequiredGate
+        description="Sign in to view live and upcoming toss data."
+      />
+    )
+  }
 
   if (!snap) return null
 

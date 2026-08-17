@@ -13,7 +13,7 @@ const {
   syncUserTrialState,
   refreshUserSubscriptionState,
 } = require('../lib/subscriptionAccess');
-const { areSignupsAllowed } = require('../lib/siteSettings');
+const { areSignupsAllowed, getSignupMode, isPublicSignupAllowed, getSiteName } = require('../lib/siteSettings');
 
 let emailEnabled = false;
 let transporter = null;
@@ -103,8 +103,15 @@ function clearOtpFails(email) {
 // ─── PUBLIC SIGNUP STATUS ───
 router.get('/signup-status', async (_req, res) => {
   try {
-    const allowSignups = await areSignupsAllowed(prisma);
-    res.json({ success: true, data: { allowSignups } });
+    const [mode, siteName] = await Promise.all([getSignupMode(prisma), getSiteName(prisma)]);
+    res.json({
+      success: true,
+      data: {
+        signupMode: mode,
+        allowSignups: isPublicSignupAllowed(mode),
+        siteName,
+      },
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -393,9 +400,19 @@ router.get('/google', (req, res, next) => {
 router.get('/google/callback',
   (req, res, next) => {
     const passport = require('passport');
+    const frontend = getFrontendUrl();
     if (!passport._strategies.google)
-      return res.redirect(`${getFrontendUrl()}/?error=google_auth_not_configured`);
-    passport.authenticate('google', { failureRedirect: `${getFrontendUrl()}/?error=google_auth_failed` })(req, res, next);
+      return res.redirect(`${frontend}/cricket?error=google_auth_not_configured`);
+    passport.authenticate('google', (err, user, info) => {
+      if (err) return res.redirect(`${frontend}/cricket?error=google_auth_failed`);
+      if (!user) {
+        const message = (info && info.message) || '';
+        const code = /signups are currently disabled/i.test(message) ? 'signups_disabled' : 'google_auth_failed';
+        return res.redirect(`${frontend}/cricket?error=${code}`);
+      }
+      req.user = user;
+      next();
+    })(req, res, next);
   },
   (req, res) => {
     const token = generateToken(req.user);

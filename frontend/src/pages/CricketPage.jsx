@@ -17,7 +17,7 @@ const fmtDateTime = (ts) => {
 
 export default function CricketPage() {
   const navigate = useNavigate()
-  const { isLoggedIn, user, mobileMenu, setMobileMenu } = useOutletContext()
+  const { isLoggedIn, authReady, user, mobileMenu, setMobileMenu } = useOutletContext()
   const isPro = hasProAccess(user)
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
@@ -31,6 +31,8 @@ export default function CricketPage() {
   const SCROLL_KEY = 'cricket_scroll_pos'
 
   useEffect(() => {
+    if (!authReady) return
+    setLoading(true)
     Promise.all([
       getCricketMatches(),
       getTossMatches().catch(() => ({ matches: [] }))
@@ -66,11 +68,13 @@ export default function CricketPage() {
       setLoadError(err?.detail || 'Live matches load nahi ho paaye. Thodi der baad dubara try karo.')
       setLoading(false)
     })
-  }, [])
+  }, [isLoggedIn, authReady])
 
   useEffect(() => {
     // Match detail open hone par bulk odds band — server match detail ke liye free
     if (matchId) return
+    // Live odds Pro-only — guests / free users pe "No token" spam mat karo
+    if (!isPro) return
 
     const matches = competitions[selectedComp] || []
     if (!matches.length) return
@@ -95,7 +99,7 @@ export default function CricketPage() {
     fetchOdds()
     const interval = setInterval(fetchOdds, 3000)
     return () => clearInterval(interval)
-  }, [selectedComp, competitions, matchId])
+  }, [selectedComp, competitions, matchId, isPro])
 
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)

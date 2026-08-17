@@ -3,10 +3,15 @@ const router = express.Router();
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
 const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissions');
 const prisma = require('../db/prisma');
-const { grantTrialIfEligible, grantTrialToAllEligible, getTrialConfig } = require('../lib/subscriptionAccess');
+const { grantTrialIfEligible, grantTrialToAllEligible, grantTrialToNewUser, getTrialConfig } = require('../lib/subscriptionAccess');
 const { validateTrialSetting, validateTrialDuration, TRIAL_SETTING_KEYS } = require('../lib/trialConfig');
 const { sanitizeUserRecord } = require('../middleware/auth');
 const trialKeys = new Set(Object.values(TRIAL_SETTING_KEYS));
+const {
+  SIGNUP_MODE_KEY,
+  LEGACY_SIGNUP_KEY,
+  validateSignupModeValue,
+} = require('../lib/siteSettings');
 const { getDefaultStore } = require('../services/tossDatasetStore');
 const { runTossCaptureNow } = require('../services/tossCaptureWorker');
 
@@ -143,6 +148,39 @@ router.get('/users', requireAdmin, async (req, res) => {
       prisma.user.count({ where })
     ]);
     res.json({ success: true, data: users, pagination: { page: +page, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.post('/users', requireSuperAdmin, async (req, res) => {
+  try {
+    const bcrypt = require('bcryptjs');
+    const { name, email, password } = req.body;
+    if (!name || !email || !password)
+      return res.status(400).json({ success: false, message: 'name, email and password required' });
+    if (password.length < 6)
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+
+    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    if (existing) return res.status(409).json({ success: false, message: 'Email already registered' });
+
+    const now = new Date();
+    const hashed = await bcrypt.hash(password, 12);
+
+    const user = await prisma.user.create({
+      data: {
+        name, email: email.toLowerCase(), password: hashed,
+        authProvider: 'local', isVerified: true, role: 'user', status: 'active',
+        subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false,
+      },
+    });
+
+    const result = await grantTrialToNewUser(prisma, user.id, now);
+    const freshUser = result.user || user;
+
+    await auditLog(req.user, 'user_create', 'user', freshUser.id, freshUser.email, { after: { role: 'user' } }, 'User account created by superadmin', req);
+    res.json({ success: true, data: sanitizeUserRecord(freshUser) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -535,16 +573,28 @@ router.get('/settings', requireAdmin, async (req, res) => {
 
 router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
   try {
-    if (req.params.key === 'allowSignups') {
-      if (typeof req.body.value !== 'boolean') {
+    let settingKey = req.params.key;
+    let settingValue = req.body.value;
+
+    if (settingKey === LEGACY_SIGNUP_KEY) {
+      if (typeof settingValue !== 'boolean') {
         return res.status(400).json({ success: false, message: 'allowSignups must be boolean' });
       }
+      settingKey = SIGNUP_MODE_KEY;
+      settingValue = settingValue ? 'both' : 'admin_only';
+    }
+
+    if (settingKey === SIGNUP_MODE_KEY) {
+      const v = validateSignupModeValue(settingValue);
+      if (!v.ok) return res.status(400).json({ success: false, message: v.message });
+      settingValue = v.value;
     }
 
     if (trialKeys.has(req.params.key)) {
       const checked = validateTrialSetting(req.params.key, req.body.value);
       if (!checked.ok) return res.status(400).json({ success: false, message: checked.message });
       req.body.value = checked.value;
+      settingValue = checked.value;
 
       if (req.params.key === 'trialDurationValue' || req.params.key === 'trialDurationUnit') {
         const rows = await prisma.siteSettings.findMany({
@@ -558,11 +608,11 @@ router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
       }
     }
 
-    const before = await prisma.siteSettings.findUnique({ where: { key: req.params.key } });
+    const before = await prisma.siteSettings.findUnique({ where: { key: settingKey } });
     const setting = await prisma.siteSettings.upsert({
-      where: { key: req.params.key },
-      update: { value: req.body.value, updatedBy: req.user.userId },
-      create: { key: req.params.key, value: req.body.value, updatedBy: req.user.userId }
+      where: { key: settingKey },
+      update: { value: settingValue, updatedBy: req.user.userId },
+      create: { key: settingKey, value: settingValue, updatedBy: req.user.userId }
     });
     await auditLog(req.user, 'settings_update', 'settings', setting.id, setting.key, { before, after: setting }, req.body.reason, req);
     res.json({ success: true, data: setting });

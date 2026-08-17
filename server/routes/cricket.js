@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
-const { verifyToken, requireProSubscription } = require('../middleware/auth');
+const { optionalAuth, requireProSubscription } = require('../middleware/auth');
 const { requireAdmin } = require('../middleware/admin');
 const { hasProAccess } = require('../lib/subscriptionAccess');
+const { filterMatchesForViewer, guestMayViewMatch } = require('../lib/guestMatchAccess');
 
 // ──── Auth (admin only — scraper login control) ────
 
@@ -67,20 +68,22 @@ function attachMatchMeta(data, matchInfo) {
   return data;
 }
 
-router.get('/cricket/matches', verifyToken, async (req, res) => {
+router.get('/cricket/matches', optionalAuth, async (req, res) => {
   const data = await scraper.getAllCricketMatches();
   if (data?.error) return upstreamUnavailable(res, data);
   const matches = asMatchList(data);
-  res.json({ total: matches.length, matches });
+  const filtered = filterMatchesForViewer(matches, req.user);
+  res.json({ total: filtered.length, matches: filtered });
 });
 
-router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
+router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  const [matches, data] = await Promise.all([
-    scraper.getAllCricketMatches(),
-    scraper.getCricketSnapshot(matchId),
-  ]);
+  const matches = await scraper.getAllCricketMatches();
   const matchInfo = findMatchInfo(matches, matchId);
+  if (!guestMayViewMatch(matchInfo, req.user)) {
+    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+  }
+  const data = await scraper.getCricketSnapshot(matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded) {
     const role = req.user?.role;
@@ -98,27 +101,50 @@ router.get('/cricket/match/:matchId', verifyToken, async (req, res) => {
   res.json(attachMatchMeta(data, matchInfo));
 });
 
-router.get('/toss/matches', verifyToken, async (req, res) => {
+router.get('/toss/matches', optionalAuth, async (req, res) => {
   const data = await scraper.getAllTossMatches();
   if (!data || data.error) return upstreamUnavailable(res, data || { error: 'No toss matches data' });
-  res.json({ matches: data });
+  const list = Array.isArray(data) ? data : [];
+  const filtered = filterMatchesForViewer(list, req.user);
+  res.json({ matches: filtered });
 });
 
-router.get('/toss/match/:matchId', requireProSubscription, async (req, res) => {
-  const data = await scraper.getTossSnapshot(req.params.matchId);
+router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
+  const matchId = req.params.matchId;
+  if (!req.user) {
+    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+  }
+  const role = req.user?.role;
+  if (role !== 'admin' && role !== 'superadmin') {
+    const prisma = require('../db/prisma');
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
+    if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+  }
+  const data = await scraper.getTossSnapshot(matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data' });
   res.json(data);
 });
 
-router.get('/session/matches', verifyToken, async (req, res) => {
+router.get('/session/matches', optionalAuth, async (req, res) => {
   const data = await scraper.getAllSessionMatches();
   if (data?.error) return res.status(502).json({ error: data.error });
   const matches = Array.isArray(data) ? data : [];
-  res.json({ total: matches.length, matches });
+  const filtered = filterMatchesForViewer(matches, req.user);
+  res.json({ total: filtered.length, matches: filtered });
 });
 
-router.get('/session/trades/:matchId', requireProSubscription, async (req, res) => {
-  const data = await scraper.getSessionTrades(req.params.matchId);
+router.get('/session/trades/:matchId', optionalAuth, async (req, res) => {
+  const matchId = req.params.matchId;
+  if (!req.user) {
+    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+  }
+  const role = req.user?.role;
+  if (role !== 'admin' && role !== 'superadmin') {
+    const prisma = require('../db/prisma');
+    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
+    if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+  }
+  const data = await scraper.getSessionTrades(matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
   res.json(data);
 });
@@ -172,20 +198,22 @@ router.get('/cricket/full', requireProSubscription, async (req, res) => {
 
 // ──── Tennis ────
 
-router.get('/tennis/matches', verifyToken, async (req, res) => {
+router.get('/tennis/matches', optionalAuth, async (req, res) => {
   const data = await scraper.getAllTennisMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   const matches = asMatchList(data);
-  res.json({ total: matches.length, matches });
+  const filtered = filterMatchesForViewer(matches, req.user);
+  res.json({ total: filtered.length, matches: filtered });
 });
 
-router.get('/tennis/match/:matchId', verifyToken, async (req, res) => {
+router.get('/tennis/match/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  const [matches, data] = await Promise.all([
-    scraper.getAllTennisMatches(),
-    scraper.getTennisSnapshot(matchId),
-  ]);
+  const matches = await scraper.getAllTennisMatches();
   const matchInfo = findMatchInfo(matches, matchId);
+  if (!guestMayViewMatch(matchInfo, req.user)) {
+    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+  }
+  const data = await scraper.getTennisSnapshot(matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded) {
     const role = req.user?.role;

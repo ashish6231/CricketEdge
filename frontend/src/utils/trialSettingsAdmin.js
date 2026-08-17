@@ -1,6 +1,9 @@
 export const TRIAL_KEYS = new Set(['trialEnabled', 'trialDurationValue', 'trialDurationUnit'])
+export const SIGNUP_MODE_KEY = 'signupMode'
 export const SIGNUP_SETTING_KEY = 'allowSignups'
-export const CARD_SETTING_KEYS = new Set([...TRIAL_KEYS, SIGNUP_SETTING_KEY])
+export const SIGNUP_MODES = ['admin_only', 'public', 'both']
+export const DEFAULT_SIGNUP_MODE = 'admin_only'
+export const CARD_SETTING_KEYS = new Set([...TRIAL_KEYS, SIGNUP_MODE_KEY, SIGNUP_SETTING_KEY])
 export const TRIAL_UNITS = ['minutes', 'hours', 'days']
 export const TRIAL_FORM_DEFAULTS = { enabled: true, value: 30, unit: 'minutes' }
 
@@ -29,10 +32,30 @@ export function hydrateTrialForm(rows = []) {
   return { enabled, value, unit }
 }
 
-export function hydrateAllowSignups(rows = []) {
-  const row = findRow(rows, SIGNUP_SETTING_KEY)
-  if (row == null || row.value == null) return true
-  return Boolean(row.value)
+export const SIGNUP_MODE_LABELS = {
+  admin_only: { label: 'Admin only', description: 'Superadmin creates accounts' },
+  public: { label: 'Public', description: 'Anyone can register' },
+  both: { label: 'Both', description: 'Public register + admin create' },
+}
+
+export const SIGNUP_MODE_OPTIONS = SIGNUP_MODES.map((value) => ({
+  value,
+  ...SIGNUP_MODE_LABELS[value],
+}))
+
+export function hydrateSignupMode(rows = []) {
+  const signupModeRow = findRow(rows, SIGNUP_MODE_KEY)
+  if (signupModeRow) {
+    const raw = signupModeRow.value
+    if (typeof raw === 'string' && SIGNUP_MODES.includes(raw)) return raw
+    return DEFAULT_SIGNUP_MODE
+  }
+
+  const allowSignupsRow = findRow(rows, SIGNUP_SETTING_KEY)
+  if (allowSignupsRow != null && allowSignupsRow.value != null) {
+    return Boolean(allowSignupsRow.value) ? 'both' : 'admin_only'
+  }
+  return DEFAULT_SIGNUP_MODE
 }
 
 export function filterTrialSettings(rows = []) {
@@ -57,8 +80,14 @@ export function formatTrialSaveMessage({ enabled, value, unit }) {
   return `Free trial enabled for ${amount} ${safeUnit} — new grants will use this duration. Active trials keep their current end time.`
 }
 
-export function formatAllowSignupsMessage(enabled) {
-  return enabled
-    ? 'Signups enabled — new users can register.'
-    : 'Signups disabled — new registrations and Google first-time signup are blocked.'
+export function formatSignupModeMessage(mode) {
+  switch (mode) {
+    case 'public':
+      return 'Signup mode: Public — anyone can register via email or Google.'
+    case 'both':
+      return 'Signup mode: Both — public registration and Superadmin user creation are allowed.'
+    case 'admin_only':
+    default:
+      return 'Signup mode: Admin only — new accounts are created by Superadmin only.'
+  }
 }

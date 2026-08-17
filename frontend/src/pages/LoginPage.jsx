@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Activity, Lock, Mail, Eye, EyeOff, User, LoaderCircle, AlertTriangle } from 'lucide-react'
+import { Activity, Lock, Mail, Eye, EyeOff, User, LoaderCircle, AlertTriangle, X } from 'lucide-react'
 import { login, register, getSignupStatus } from '../api'
+import { resolveAllowSignups, shouldNavigateAfterAuth, resolveSiteName, splitSiteName } from '../utils/publicAuth'
 
-export default function LoginPage({ onLoginSuccess }) {
+const TELEGRAM_URL = 'https://t.me/cricedgeonline'
+
+export default function LoginPage({ onLoginSuccess, isModal = false, onClose, siteName: siteNameProp }) {
   const navigate = useNavigate()
   const [tab, setTab] = useState('login')
   const [name, setName] = useState('')
@@ -13,27 +16,31 @@ export default function LoginPage({ onLoginSuccess }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-  const [allowSignups, setAllowSignups] = useState(true)
+  const [allowSignups, setAllowSignups] = useState(false)
+  const [siteName, setSiteName] = useState(siteNameProp || 'CricketEdge')
 
   const sessionReplaced = new URLSearchParams(window.location.search).get('reason') === 'session_replaced'
+  const signupsDisabledRedirect = new URLSearchParams(window.location.search).get('error') === 'signups_disabled'
 
   const reset = () => { setError(''); setSuccess(''); setName(''); setEmail(''); setPassword('') }
 
   const switchTab = (t) => {
-    if (t === 'signup' && !allowSignups) return
     setTab(t)
     reset()
   }
 
   useEffect(() => {
+    if (siteNameProp) setSiteName(siteNameProp)
+  }, [siteNameProp])
+
+  useEffect(() => {
     getSignupStatus()
       .then((res) => {
-        const allowed = res?.data?.allowSignups !== false
-        setAllowSignups(allowed)
-        if (!allowed) setTab('login')
+        setAllowSignups(resolveAllowSignups(res))
+        setSiteName(resolveSiteName(res, siteNameProp || 'CricketEdge'))
       })
-      .catch(() => setAllowSignups(true))
-  }, [])
+      .catch(() => setAllowSignups(false))
+  }, [siteNameProp])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -53,7 +60,9 @@ export default function LoginPage({ onLoginSuccess }) {
       }
       setSuccess(tab === 'login' ? (res.message ? `✅ ${res.message}` : '✅ Login successful!') : (res.message ? `✅ ${res.message}` : '✅ Account created!'))
       if (onLoginSuccess) onLoginSuccess(res.user?.email, res.user)
-      setTimeout(() => navigate('/cricket', { replace: true }), 800)
+      if (shouldNavigateAfterAuth(isModal)) {
+        setTimeout(() => navigate('/cricket', { replace: true }), 800)
+      }
     } catch (err) {
       setError(err.detail || (tab === 'login' ? 'Login failed. Check credentials.' : 'Registration failed.'))
     } finally {
@@ -61,13 +70,28 @@ export default function LoginPage({ onLoginSuccess }) {
     }
   }
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4" style={{ background: '#0a0a0a' }}>
-      
-      {/* Top accent line */}
-      <div className="fixed top-0 left-0 right-0 h-[2px]" style={{ background: '#10b981' }} />
+  const shellClass = isModal
+    ? 'relative flex flex-col items-center px-4 py-6 rounded-2xl'
+    : 'min-h-screen flex flex-col items-center justify-center px-4'
 
-      <div className="w-full max-w-[320px]">
+  return (
+    <div className={shellClass} style={{ background: '#0a0a0a', ...(isModal ? { border: '1px solid #2c2c2e' } : {}) }}>
+      
+      {!isModal && (
+        <div className="fixed top-0 left-0 right-0 h-[2px]" style={{ background: '#10b981' }} />
+      )}
+
+      <div className="w-full max-w-[320px] relative">
+        {isModal && onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close login"
+            className="absolute -top-1 right-0 z-10 p-1.5 rounded-lg text-[#8e8e93] hover:text-white hover:bg-[#1c1c1e]"
+          >
+            <X size={16} />
+          </button>
+        )}
         
         {/* Simple VPN Banner */}
         <div className="w-full mb-6 bg-yellow-500/10 border border-yellow-500/20 py-2 rounded-lg text-center">
@@ -83,7 +107,10 @@ export default function LoginPage({ onLoginSuccess }) {
             <Activity className="h-5 w-5 text-white" />
           </div>
           <h1 className="text-xl font-bold text-white tracking-tight">
-            Cricket<span className="text-[#10b981]">Edge</span>
+            {(() => {
+              const { prefix, suffix } = splitSiteName(siteName)
+              return suffix ? <>{prefix}<span className="text-[#10b981]">{suffix}</span></> : prefix
+            })()}
           </h1>
         </div>
 
@@ -92,7 +119,7 @@ export default function LoginPage({ onLoginSuccess }) {
           
           {/* Tabs */}
           <div className="flex gap-1 p-1 rounded-lg mb-4 bg-[#0a0a0a] border border-[#2c2c2e]">
-            {(allowSignups ? ['login', 'signup'] : ['login']).map(t => (
+            {['login', 'signup'].map(t => (
               <button key={t} onClick={() => switchTab(t)}
                 className="flex-1 py-1.5 rounded-md text-[13px] font-semibold transition-colors capitalize"
                 style={tab === t
@@ -104,16 +131,15 @@ export default function LoginPage({ onLoginSuccess }) {
             ))}
           </div>
 
-          {!allowSignups && (
-            <div className="rounded-lg px-3 py-2 mb-4 text-[11px] text-center text-[#8e8e93] bg-[#0a0a0a] border border-[#2c2c2e]">
-              New signups are currently closed. Existing users can still log in.
-            </div>
-          )}
-
           {/* Alerts */}
           {sessionReplaced && (
             <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4 text-[11px] text-orange-400 bg-orange-500/10 border border-orange-500/20">
               <AlertTriangle size={14} className="flex-shrink-0" /> Aapka session hat gaya.
+            </div>
+          )}
+          {signupsDisabledRedirect && (
+            <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4 text-[11px] text-red-400 bg-red-500/10 border border-red-500/20">
+              <AlertTriangle size={14} className="flex-shrink-0" /> New signups are currently disabled
             </div>
           )}
           {error && (
@@ -127,9 +153,43 @@ export default function LoginPage({ onLoginSuccess }) {
             </div>
           )}
 
+          {tab === 'signup' && !allowSignups ? (
+            <div className="text-center py-2">
+              <p className="text-[13px] text-[#8e8e93] mb-1">Signups are currently closed.</p>
+              <p className="text-[12px] text-[#8e8e93] mb-4">
+                Contact{' '}
+                <a
+                  href={TELEGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold hover:underline"
+                  style={{ color: '#229ED9' }}
+                >
+                  @cricedgeonline
+                </a>
+                {' '}on Telegram for a new account.
+              </p>
+              <a
+                href={TELEGRAM_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-2 rounded-lg text-[13px] font-semibold text-white"
+                style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
+              >
+                New Account
+              </a>
+              <p className="text-center text-[12px] text-[#8e8e93] mt-4">
+                Already have an account?{' '}
+                <button type="button" onClick={() => switchTab('login')} className="text-[#10b981] font-semibold hover:underline">
+                  Sign In
+                </button>
+              </p>
+            </div>
+          ) : (
+            <>
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Name — signup only */}
-            {tab === 'signup' && allowSignups && (
+            {tab === 'signup' && (
               <div>
                 <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Full Name</label>
                 <div className="relative">
@@ -179,10 +239,10 @@ export default function LoginPage({ onLoginSuccess }) {
             </button>
           </form>
 
-          {tab === 'login' && allowSignups && (
+          {tab === 'login' && (
             <p className="text-center text-[12px] text-[#8e8e93] mt-4">
               Don't have an account?{' '}
-              <button onClick={() => switchTab('signup')} className="text-[#10b981] font-semibold hover:underline">
+              <button type="button" onClick={() => switchTab('signup')} className="text-[#10b981] font-semibold hover:underline">
                 Sign Up
               </button>
             </p>
@@ -190,10 +250,12 @@ export default function LoginPage({ onLoginSuccess }) {
           {tab === 'signup' && (
             <p className="text-center text-[12px] text-[#8e8e93] mt-4">
               Already have an account?{' '}
-              <button onClick={() => switchTab('login')} className="text-[#10b981] font-semibold hover:underline">
+              <button type="button" onClick={() => switchTab('login')} className="text-[#10b981] font-semibold hover:underline">
                 Sign In
               </button>
             </p>
+          )}
+            </>
           )}
         </div>
       </div>

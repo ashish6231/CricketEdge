@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import {
-  ArrowLeft, LoaderCircle, Lock, ChevronDown, ChevronUp,
+  ArrowLeft, LoaderCircle, ChevronDown, ChevronUp,
   BarChart3, TrendingUp, Activity, Zap, Info,
 } from 'lucide-react'
 import {
@@ -9,6 +9,8 @@ import {
   CartesianGrid, Cell, ReferenceLine,
 } from 'recharts'
 import { getSessionTrades } from '../api'
+import { isLoginRequiredError } from '../utils/publicAuth'
+import LoginRequiredGate from '../components/LoginRequiredGate'
 import { buildAllSessions, fmtRs, formatVolStr, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPickBanner from '../components/SessionPickBanner'
 
@@ -306,7 +308,7 @@ export default function SessionDetail() {
     const fetch = (isInitial = false) => {
       if (isInitial) { setLoading(true); setRequiresLogin(false); setRequiresPro(false) }
       getSessionTrades(matchId).then(res => {
-        if (res?.error === 'login_required') setRequiresLogin(true)
+        if (isLoginRequiredError(res)) setRequiresLogin(true)
         else if (res) {
           setData(prev => {
             if (prev && sessionDataFingerprint(prev) === sessionDataFingerprint(res)) return prev
@@ -316,7 +318,8 @@ export default function SessionDetail() {
         }
         if (isInitial) setLoading(false)
       }).catch(err => {
-        if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)
+        if (isLoginRequiredError(err)) setRequiresLogin(true)
+        else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)
         if (isInitial) setLoading(false)
       })
     }
@@ -366,21 +369,13 @@ export default function SessionDetail() {
     </div>
   )
 
-  if (requiresLogin) return (
-    <div className="flex h-[80vh] items-center justify-center px-4">
-      <div className="rounded-2xl p-8 w-full max-w-sm text-center" style={{ background: '#111', border: '1px solid #2c2c2e' }}>
-        <div className="inline-flex p-4 rounded-2xl mb-4" style={{ background: 'rgba(220,38,38,0.1)', border: '1px solid rgba(220,38,38,0.3)' }}>
-          <Lock className="h-8 w-8 text-primary" />
-        </div>
-        <h2 className="text-xl font-bold text-white mb-2">Login Zaruri Hai</h2>
-        <p className="text-[#8e8e93] text-sm mb-6">Session data dekhne ke liye login karo.</p>
-        <div className="flex gap-3 justify-center">
-          <button onClick={() => navigate(-1)} className="px-4 py-2 rounded-xl text-sm text-[#8e8e93]" style={{ border: '1px solid #2c2c2e' }}>Wapas</button>
-          <button onClick={() => window.dispatchEvent(new CustomEvent('open-login-modal'))} className="px-6 py-2 rounded-xl text-sm font-semibold text-white" style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>Login</button>
-        </div>
-      </div>
-    </div>
-  )
+  if (requiresLogin) {
+    return (
+      <LoginRequiredGate
+        description="Sign in to view live session data."
+      />
+    )
+  }
 
   if (!data) return null
 

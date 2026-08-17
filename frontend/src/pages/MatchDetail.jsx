@@ -3,8 +3,10 @@ import TossDetail from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
+import { ArrowLeft, LoaderCircle, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
+import { isLoginRequiredError } from '../utils/publicAuth'
+import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime, splitMatchOutcomes } from '../utils/bookiePl'
 import { predictGatedFade } from '../utils/gatedFadePredictor'
@@ -469,7 +471,7 @@ export default function MatchDetail({ sport }) {
       apiFn(matchId)
         .then(data => {
           if (cancelled) return
-          if (data?.error === 'login_required') {
+          if (isLoginRequiredError(data)) {
             setRequiresLogin(true)
           } else if (data && !data.error) {
             setSnapshot(data)
@@ -484,7 +486,9 @@ export default function MatchDetail({ sport }) {
         })
         .catch(err => {
           if (cancelled) return
-          if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) {
+          if (isLoginRequiredError(err)) {
+            setRequiresLogin(true)
+          } else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) {
             setRequiresPro(true)
           } else if (isInitial) {
             setFetchError(err?.detail || 'Network error — dubara try karo')
@@ -527,22 +531,7 @@ export default function MatchDetail({ sport }) {
   }
 
   if (requiresLogin) {
-    return (
-      <div className="flex h-[80vh] items-center justify-center">
-        <div className="rounded-2xl p-8 max-w-md text-center" style={{ background: '#111111', border: '1px solid #2c2c2e', boxShadow: '0 4px 24px rgba(0,0,0,0.4)' }}>
-          <div className="p-4 rounded-2xl border mb-4 inline-block" style={{ background: 'rgba(220,38,38,0.15)', borderColor: '#3a3a3c' }}><Lock className="h-8 w-8 text-primary" /></div>
-          <h2 className="text-xl font-bold text-text-primary mb-2">🔒 Login Zaruri Hai</h2>
-          <p className="text-text-secondary mb-4">Live/upcoming match ka data dekhne ke liye login karo.</p>
-          <p className="text-text-muted text-xs mb-6">Account ke liye Telegram: <span className="text-[#229ED9]">@CricketMan2026</span></p>
-          <div className="flex gap-3">
-            <button onClick={() => navigate(-1)} className="px-4 py-2 rounded-xl text-text-secondary text-sm font-medium" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>← Wapas</button>
-            <button onClick={() => {
-              window.dispatchEvent(new CustomEvent('open-login-modal'))
-            }} className="px-6 py-2 text-white rounded-xl font-semibold text-sm" style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>🔑 Login karo</button>
-          </div>
-        </div>
-      </div>
-    )
+    return <LoginRequiredGate />
   }
 
   if (fetchError && !snapshot) {

@@ -3,11 +3,11 @@ import assert from 'node:assert/strict'
 import {
   TRIAL_KEYS,
   hydrateTrialForm,
-  hydrateAllowSignups,
+  hydrateSignupMode,
   filterTrialSettings,
   trialSavePatches,
   formatTrialSaveMessage,
-  formatAllowSignupsMessage,
+  formatSignupModeMessage,
 } from './trialSettingsAdmin.js'
 
 test('hydrateTrialForm uses defaults when rows are missing', () => {
@@ -41,11 +41,12 @@ test('hydrateTrialForm keeps defaults for keys that are absent', () => {
   })
 })
 
-test('filterTrialSettings removes trial and allowSignups keys from the generic list', () => {
+test('filterTrialSettings removes trial and signup keys from the generic list', () => {
   const filtered = filterTrialSettings([
     { key: 'trialEnabled', value: true },
     { key: 'siteName', value: 'Odds' },
     { key: 'allowSignups', value: false },
+    { key: 'signupMode', value: 'admin_only' },
     { key: 'trialDurationValue', value: 30 },
     { key: 'trialDurationUnit', value: 'minutes' },
   ])
@@ -74,12 +75,46 @@ test('formatTrialSaveMessage describes disable vs duration', () => {
   )
 })
 
-test('hydrateAllowSignups defaults true and reads false', () => {
-  assert.equal(hydrateAllowSignups([]), true)
-  assert.equal(hydrateAllowSignups([{ key: 'allowSignups', value: false }]), false)
+test('hydrateSignupMode reads signupMode', () => {
+  assert.equal(hydrateSignupMode([{ key: 'signupMode', value: 'public' }]), 'public')
 })
 
-test('formatAllowSignupsMessage describes enable vs disable', () => {
-  assert.match(formatAllowSignupsMessage(true), /enabled/i)
-  assert.match(formatAllowSignupsMessage(false), /disabled/i)
+test('hydrateSignupMode defaults admin_only', () => {
+  assert.equal(hydrateSignupMode([]), 'admin_only')
+})
+
+test('hydrateSignupMode prefers signupMode over legacy allowSignups', () => {
+  assert.equal(hydrateSignupMode([
+    { key: 'signupMode', value: 'admin_only' },
+    { key: 'allowSignups', value: true },
+  ]), 'admin_only')
+})
+
+test('hydrateSignupMode invalid present mode does not fall through to legacy true', () => {
+  assert.equal(hydrateSignupMode([
+    { key: 'signupMode', value: 'garbage' },
+    { key: 'allowSignups', value: true },
+  ]), 'admin_only')
+  assert.equal(hydrateSignupMode([
+    { key: 'signupMode', value: '' },
+    { key: 'allowSignups', value: true },
+  ]), 'admin_only')
+  assert.equal(hydrateSignupMode([
+    { key: 'signupMode', value: null },
+    { key: 'allowSignups', value: true },
+  ]), 'admin_only')
+})
+
+test('hydrateSignupMode migrates legacy allowSignups true to both', () => {
+  assert.equal(hydrateSignupMode([{ key: 'allowSignups', value: true }]), 'both')
+})
+
+test('hydrateSignupMode migrates legacy allowSignups false to admin_only', () => {
+  assert.equal(hydrateSignupMode([{ key: 'allowSignups', value: false }]), 'admin_only')
+})
+
+test('formatSignupModeMessage describes each mode', () => {
+  assert.match(formatSignupModeMessage('admin_only'), /admin only/i)
+  assert.match(formatSignupModeMessage('public'), /public/i)
+  assert.match(formatSignupModeMessage('both'), /both/i)
 })

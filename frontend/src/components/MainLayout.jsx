@@ -1,8 +1,10 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Activity, Menu, X, Shield, LogOut, User, ChevronDown } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
-import { getAuthStatus, logout } from '../api'
+import { getAuthStatus, logout, getSignupStatus } from '../api'
 import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
+import { guestPathAfterLogout, resolveSiteName, splitSiteName } from '../utils/publicAuth'
+import LoginPage from '../pages/LoginPage'
 
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
@@ -15,16 +17,27 @@ export default function MainLayout() {
   const [mobileMenu, setMobileMenu] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [authUser, setAuthUser]     = useState(null)
+  const [authReady, setAuthReady]   = useState(false)
+  const [loginOpen, setLoginOpen]   = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [dropdown, setDropdown]     = useState(false)
+  const [siteName, setSiteName]     = useState('CricketEdge')
   const dropRef = useRef(null)
 
   useEffect(() => {
     const refresh = () => {
+      const pendingToken = sessionStorage.getItem('pending_token')
+      if (pendingToken) {
+        localStorage.setItem('auth_token', pendingToken)
+        sessionStorage.removeItem('pending_token')
+      }
       getAuthStatus().then(data => {
         setIsLoggedIn(data.isLoggedIn || false)
         setAuthUser(data.user || null)
-      }).catch(() => {})
+      }).catch(() => {
+        setIsLoggedIn(false)
+        setAuthUser(null)
+      }).finally(() => setAuthReady(true))
     }
     refresh()
     window.addEventListener('focus', refresh)
@@ -34,6 +47,33 @@ export default function MainLayout() {
       document.removeEventListener('visibilitychange', refresh)
     }
   }, [])
+
+  useEffect(() => {
+    getSignupStatus()
+      .then((res) => {
+        const name = resolveSiteName(res)
+        setSiteName(name)
+        document.title = `${name} — Live Cricket Analytics`
+      })
+      .catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    const open = () => {
+      sessionStorage.removeItem('open_login_modal')
+      setLoginOpen(true)
+    }
+    window.addEventListener('open-login-modal', open)
+    if (sessionStorage.getItem('open_login_modal')) {
+      sessionStorage.removeItem('open_login_modal')
+      setLoginOpen(true)
+    }
+    const err = new URLSearchParams(location.search).get('error')
+    if (err === 'signups_disabled' || err === 'google_auth_failed') {
+      setLoginOpen(true)
+    }
+    return () => window.removeEventListener('open-login-modal', open)
+  }, [location.search])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -51,6 +91,7 @@ export default function MainLayout() {
   const handleLoginSuccess = (email, user) => {
     setIsLoggedIn(true)
     setAuthUser(user || null)
+    setLoginOpen(false)
   }
 
   const handleLogout = async () => {
@@ -58,7 +99,8 @@ export default function MainLayout() {
     setIsLoggedIn(false)
     setAuthUser(null)
     setDropdown(false)
-    navigate('/login', { replace: true })
+    setLoginOpen(false)
+    navigate(guestPathAfterLogout(location.pathname), { replace: true })
   }
 
   const isAdmin = authUser?.role === 'admin' || authUser?.role === 'superadmin'
@@ -89,7 +131,10 @@ export default function MainLayout() {
               <Activity className="h-4 w-4 text-white" />
             </div>
             <span className="font-black text-lg tracking-tight text-text-primary">
-              Cricket<span className="text-primary">Edge</span>
+              {(() => {
+                const { prefix, suffix } = splitSiteName(siteName)
+                return suffix ? <>{prefix}<span className="text-primary">{suffix}</span></> : prefix
+              })()}
             </span>
           </Link>
 
@@ -128,7 +173,7 @@ export default function MainLayout() {
               </div>
             )}
 
-            {isLoggedIn && authUser ? (
+            {authReady && isLoggedIn && authUser ? (
               /* ── Profile dropdown ── */
               <div className="relative" ref={dropRef}>
                 <button onClick={() => setDropdown(d => !d)}
@@ -191,14 +236,14 @@ export default function MainLayout() {
                   </div>
                 )}
               </div>
-            ) : (
+            ) : authReady ? (
               /* ── Login button ── */
-              <Link to="/login"
+              <button type="button" onClick={() => setLoginOpen(true)}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
                 Login
-              </Link>
-            )}
+              </button>
+            ) : null}
           </div>
         </div>
       </header>
@@ -214,8 +259,28 @@ export default function MainLayout() {
 
       {/* Content */}
       <main className={`flex-1 w-full ${onTrial ? 'pt-[88px]' : 'pt-14'}`}>
-        <Outlet context={{ isLoggedIn, user: authUser, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
+        <Outlet context={{ isLoggedIn, user: authUser, authReady, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
       </main>
+
+      {loginOpen && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.72)' }}
+          onClick={() => setLoginOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Login"
+        >
+          <div className="relative w-full max-w-[360px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <LoginPage
+              isModal
+              siteName={siteName}
+              onLoginSuccess={handleLoginSuccess}
+              onClose={() => setLoginOpen(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

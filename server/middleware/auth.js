@@ -16,6 +16,43 @@ function generateToken(user) {
   );
 }
 
+async function resolveBearerUser(token) {
+  const decoded = jwt.verify(token, JWT_SECRET);
+  const user = await prisma.user.findUnique({
+    where: { id: decoded.userId },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      status: true,
+      activeToken: true,
+      subPlanSlug: true,
+    },
+  });
+  if (!user || user.status === 'banned') {
+    return { errorStatus: 403, errorBody: { success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' } };
+  }
+  if (user.status === 'suspended') {
+    return { errorStatus: 403, errorBody: { success: false, message: 'Account suspended', code: 'ACCOUNT_SUSPENDED' } };
+  }
+  if (user.activeToken && user.activeToken !== token) {
+    return {
+      errorStatus: 401,
+      errorBody: { success: false, message: 'Logged in on another device', code: 'SESSION_REPLACED' },
+      sessionReplaced: true,
+    };
+  }
+  // Always prefer DB role/plan — never trust JWT claims for authorization
+  return {
+    user: {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      plan: user.subPlanSlug,
+    },
+  };
+}
+
 async function verifyToken(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer '))
@@ -23,47 +60,33 @@ async function verifyToken(req, res, next) {
 
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-        status: true,
-        activeToken: true,
-        subPlanSlug: true,
-      },
-    });
-    if (!user || user.status === 'banned')
-      return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });
-    if (user.status === 'suspended')
-      return res.status(403).json({ success: false, message: 'Account suspended', code: 'ACCOUNT_SUSPENDED' });
-    if (user.activeToken && user.activeToken !== token)
-      return res.status(401).json({ success: false, message: 'Logged in on another device', code: 'SESSION_REPLACED' });
-
-    // Always prefer DB role/plan — never trust JWT claims for authorization
-    req.user = {
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-      plan: user.subPlanSlug,
-    };
-
-    next();
+    const result = await resolveBearerUser(token);
+    if (result.user) {
+      req.user = result.user;
+      return next();
+    }
+    return res.status(result.errorStatus).json(result.errorBody);
   } catch (err) {
     return res.status(401).json({ success: false, message: 'Invalid or expired token' });
   }
 }
 
-function optionalAuth(req, res, next) {
+async function optionalAuth(req, res, next) {
   const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    const token = authHeader.split(' ')[1];
-    try { req.user = jwt.verify(token, JWT_SECRET); } catch { /* ignore */ }
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return next();
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const result = await resolveBearerUser(token);
+    if (result.user) {
+      req.user = result.user;
+      return next();
+    }
+    if (result.sessionReplaced) return next();
+    return res.status(result.errorStatus).json(result.errorBody);
+  } catch {
+    return next();
   }
-  next();
 }
 
 function requireProSubscription(req, res, next) {

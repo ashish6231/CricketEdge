@@ -5,12 +5,14 @@ import { useToast } from '../../components/ToastProvider'
 import {
   filterTrialSettings,
   hydrateTrialForm,
-  hydrateAllowSignups,
+  hydrateSignupMode,
   trialSavePatches,
   formatTrialSaveMessage,
-  formatAllowSignupsMessage,
+  formatSignupModeMessage,
   TRIAL_UNITS,
-  SIGNUP_SETTING_KEY,
+  SIGNUP_MODE_KEY,
+  SIGNUP_MODES,
+  SIGNUP_MODE_OPTIONS,
 } from '../../utils/trialSettingsAdmin'
 
 export default function AdminSettings({ isSuperAdmin }) {
@@ -24,8 +26,8 @@ export default function AdminSettings({ isSuperAdmin }) {
   const [trialValue, setTrialValue] = useState(30)
   const [trialUnit, setTrialUnit] = useState('minutes')
   const [trialSaving, setTrialSaving] = useState(false)
-  const [allowSignups, setAllowSignups] = useState(true)
-  const [signupsSaving, setSignupsSaving] = useState(false)
+  const [signupMode, setSignupMode] = useState('admin_only')
+  const [signupModeSaving, setSignupModeSaving] = useState(false)
 
   const applySettings = (rows) => {
     const list = Array.isArray(rows) ? rows : []
@@ -34,7 +36,7 @@ export default function AdminSettings({ isSuperAdmin }) {
     setTrialEnabled(trial.enabled)
     setTrialValue(trial.value)
     setTrialUnit(trial.unit)
-    setAllowSignups(hydrateAllowSignups(list))
+    setSignupMode(hydrateSignupMode(list))
   }
 
   const load = ({ quiet = false } = {}) => {
@@ -76,16 +78,16 @@ export default function AdminSettings({ isSuperAdmin }) {
     }
   }
 
-  const saveAllowSignups = async () => {
-    setSignupsSaving(true)
+  const saveSignupMode = async () => {
+    setSignupModeSaving(true)
     try {
-      await adminUpdateSetting(SIGNUP_SETTING_KEY, allowSignups, 'Update allow signups')
-      toast.success(formatAllowSignupsMessage(allowSignups))
+      await adminUpdateSetting(SIGNUP_MODE_KEY, signupMode, 'Update signup mode')
+      toast.success(formatSignupModeMessage(signupMode))
       load({ quiet: true })
     } catch (e) {
-      toast.error(e.detail || 'Failed to update signups setting')
+      toast.error(e.detail || 'Failed to update signup mode')
     } finally {
-      setSignupsSaving(false)
+      setSignupModeSaving(false)
     }
   }
 
@@ -109,32 +111,46 @@ export default function AdminSettings({ isSuperAdmin }) {
 
       <div className="glass-card rounded-2xl overflow-hidden">
         <div className="px-5 py-3 border-b border-border bg-red-50/40">
-          <span className="font-bold text-text-primary">Allow Signups</span>
+          <span className="font-bold text-text-primary">Signup Mode</span>
         </div>
         <div className="px-5 py-4 space-y-3">
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={allowSignups}
-              onChange={e => setAllowSignups(e.target.checked)}
-              disabled={!isSuperAdmin || signupsSaving}
-              className="accent-green-500"
-            />
-            <span className="text-sm font-medium text-text-primary">Allow new user registrations</span>
-          </label>
+          <div className="grid gap-2 sm:grid-cols-3">
+            {SIGNUP_MODE_OPTIONS.map(option => (
+              <label
+                key={option.value}
+                className={`flex cursor-pointer flex-col rounded-xl border px-3 py-2.5 transition-colors ${
+                  signupMode === option.value
+                    ? 'border-primary bg-red-50/60'
+                    : 'border-border bg-white hover:border-primary/40'
+                } ${!isSuperAdmin || signupModeSaving ? 'cursor-not-allowed opacity-60' : ''}`}
+              >
+                <span className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="signupMode"
+                    value={option.value}
+                    checked={signupMode === option.value}
+                    onChange={e => setSignupMode(e.target.value)}
+                    disabled={!isSuperAdmin || signupModeSaving}
+                    className="accent-green-500"
+                  />
+                  <span className="text-sm font-semibold text-text-primary">{option.label}</span>
+                </span>
+                <span className="mt-1 pl-5 text-xs text-text-muted">{option.description}</span>
+              </label>
+            ))}
+          </div>
           <p className="text-xs text-text-muted">
-            {allowSignups
-              ? 'Email/password signup and first-time Google signup are allowed.'
-              : 'New accounts cannot be created. Existing users can still log in.'}
+            {formatSignupModeMessage(signupMode)}
           </p>
           {isSuperAdmin && (
             <button
-              onClick={saveAllowSignups}
-              disabled={signupsSaving}
+              onClick={saveSignupMode}
+              disabled={signupModeSaving || !SIGNUP_MODES.includes(signupMode)}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50"
               style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
             >
-              {signupsSaving ? <LoaderCircle size={14} className="animate-spin" /> : <Check size={14} />}
+              {signupModeSaving ? <LoaderCircle size={14} className="animate-spin" /> : <Check size={14} />}
               Save
             </button>
           )}

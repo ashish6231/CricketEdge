@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-import { useNavigate, useOutletContext, Link } from 'react-router-dom'
+import { useOutletContext, Link } from 'react-router-dom'
 import { LoaderCircle, Crown, LogOut, Shield } from 'lucide-react'
 import { logout } from '../api'
 import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
@@ -7,17 +6,11 @@ import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } fr
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
 export default function ProfilePage() {
-  const navigate = useNavigate()
-  const { isLoggedIn, user, onLogout } = useOutletContext()
-
-  useEffect(() => {
-    if (!isLoggedIn) navigate('/login', { replace: true })
-  }, [isLoggedIn])
+  const { user, onLogout } = useOutletContext()
 
   const handleLogout = async () => {
     await logout()
     if (onLogout) onLogout()
-    navigate('/login', { replace: true })
   }
 
   if (!user) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
