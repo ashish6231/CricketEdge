@@ -884,7 +884,7 @@ export default function MatchDetail({ sport }) {
                   {snapshot.competitionName && <div className="text-xs text-[#8e8e93] mt-0.5">{snapshot.competitionName}</div>}
                   {(marketBetTotal > 0 || marketVol > 0) && (() => {
                     const leaderAmt = Math.max(marketBet1, marketBet2, hasDraw ? marketBetDraw : 0)
-                    const colorFor = (amt) => amt === leaderAmt && leaderAmt > 0 ? '#ef4444' : '#3b82f6'
+                    const colorFor = (amt) => amt === leaderAmt && leaderAmt > 0 ? '#ef4444' : '#10b981'
                     const c1 = colorFor(marketBet1)
                     const c2 = colorFor(marketBet2)
                     const cDraw = colorFor(marketBetDraw)
@@ -920,7 +920,7 @@ export default function MatchDetail({ sport }) {
                         const vol1 = t1GraphData?.totalBet || 0
                         const vol2 = t2GraphData?.totalBet || 0
                         const moneyLeader = Math.max(vol1, vol2)
-                        const moneyColor = (amt) => (amt === moneyLeader && moneyLeader > 0 ? '#3b82f6' : '#ef4444')
+                        const moneyColor = (amt) => (amt === moneyLeader && moneyLeader > 0 ? '#10b981' : '#ef4444')
                         const mc1 = moneyColor(vol1)
                         const mc2 = moneyColor(vol2)
                         return (
@@ -1029,10 +1029,13 @@ export default function MatchDetail({ sport }) {
                         <div
                           key={side.name}
                           className="rounded-xl p-3 text-center border"
-                          style={{
-                            background: '#1a1a1a',
-                            borderColor: side.isFade && gatedFade.status === 'take' ? 'rgba(16,185,129,0.4)' : '#2c2c2e',
-                          }}
+                          style={
+                            side.isFade
+                              ? { background: 'rgba(16,185,129,0.14)', borderColor: 'rgba(16,185,129,0.45)' }
+                              : side.isPublic
+                                ? { background: 'rgba(239,68,68,0.14)', borderColor: 'rgba(239,68,68,0.45)' }
+                                : { background: '#1a1a1a', borderColor: '#2c2c2e' }
+                          }
                         >
                           <div className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: side.isPublic ? '#ef4444' : side.isFade ? '#10b981' : '#8e8e93' }}>
                             {side.role}
