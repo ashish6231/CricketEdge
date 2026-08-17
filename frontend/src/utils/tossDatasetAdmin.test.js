@@ -5,6 +5,7 @@ import {
   parseTossDatasetList,
   formatCaptureSummary,
   hasUsableSnapshot,
+  isPredictionHit,
 } from './tossDatasetAdmin.js'
 
 test('buildTossDatasetQuery encodes filters', () => {
@@ -45,4 +46,10 @@ test('formatCaptureSummary shows captured/skipped/failed counts', () => {
     formatCaptureSummary({ scanned: 10, captured: 2, skipped: 7, failed: 1 }),
     '2 captured / 7 skipped / 1 failed',
   )
+})
+
+test('isPredictionHit matches team names loosely', () => {
+  assert.equal(isPredictionHit('India', 'India'), true)
+  assert.equal(isPredictionHit('Ireland', 'Afghanistan'), false)
+  assert.equal(isPredictionHit(null, 'India'), null)
 })

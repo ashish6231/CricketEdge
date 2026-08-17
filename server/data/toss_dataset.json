@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-16T19:28:59.136Z",
+  "updatedAt": "2026-08-17T04:15:53.541Z",
   "records": [
     {
       "matchId": "35901908",
@@ -424,8 +424,8 @@
           }
         }
       },
-      "predictedWinner": "Jamaica Kingsmen",
-      "predictionReason": "Smart Lay Vol (load fav trap)",
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictionReason": "Stronger Support Team",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -436,41 +436,29 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Lay Vol (load fav trap)"
+        "reason": "Stronger Support Team"
       },
       "matchedRules": [
         {
-          "reason": "Trap + Tiny Trade Gap — Bookie Fav",
-          "winner": "Jamaica Kingsmen",
-          "priority": 84,
-          "selected": false
-        },
-        {
-          "reason": "Smart Lay Vol (load fav trap)",
-          "winner": "Jamaica Kingsmen",
-          "priority": 85,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
+          "reason": "Stronger Support Team",
           "winner": "Guyana Amazon Warriors",
-          "priority": 73,
-          "selected": false
+          "priority": 100,
+          "selected": true
         },
         {
           "reason": "Higher Lay Vol",
           "winner": "Jamaica Kingsmen",
-          "priority": 65,
+          "priority": 40,
           "selected": false
         },
         {
-          "reason": "Bookie Fav (fallback)",
-          "winner": "Jamaica Kingsmen",
-          "priority": 55,
-          "selected": false
+          "reason": "Higher Lay Trades",
+          "winner": "Guyana Amazon Warriors",
+          "priority": 80,
+          "selected": true
         }
       ],
-      "predictorVersion": "production",
+      "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
       "confirmedAt": "2026-08-15T03:02:34.339Z",
       "confirmedByEmail": "admin@cricketedge.com",
@@ -872,8 +860,8 @@
           }
         }
       },
-      "predictedWinner": "Southern Brave W",
-      "predictionReason": "Higher Lay Trades",
+      "predictedWinner": "Sunrisers Leeds W",
+      "predictionReason": "Stronger Support Team",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -884,29 +872,29 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Higher Lay Trades"
+        "reason": "Stronger Support Team"
       },
       "matchedRules": [
         {
-          "reason": "Higher Lay Trades",
-          "winner": "Southern Brave W",
-          "priority": 73,
+          "reason": "Stronger Support Team",
+          "winner": "Sunrisers Leeds W",
+          "priority": 100,
           "selected": true
         },
         {
           "reason": "Higher Lay Vol",
           "winner": "Southern Brave W",
-          "priority": 65,
+          "priority": 40,
           "selected": false
         },
         {
-          "reason": "Bookie Fav (fallback)",
-          "winner": "Sunrisers Leeds W",
-          "priority": 55,
+          "reason": "Higher Lay Trades",
+          "winner": "Southern Brave W",
+          "priority": 40,
           "selected": false
         }
       ],
-      "predictorVersion": "production",
+      "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
       "confirmedAt": "2026-08-15T03:02:38.532Z",
       "confirmedByEmail": "admin@cricketedge.com",
@@ -1365,7 +1353,7 @@
         }
       },
       "predictedWinner": "Sunrisers Leeds",
-      "predictionReason": "Smart Money Trap",
+      "predictionReason": "Clear Lay Vol Edge",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -1376,41 +1364,35 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Trap"
+        "reason": "Clear Lay Vol Edge"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Trap",
+          "reason": "Clear Lay Vol Edge",
           "winner": "Sunrisers Leeds",
-          "priority": 91,
+          "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Smart Lay Vol (load fav trap)",
-          "winner": "Sunrisers Leeds",
-          "priority": 85,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Manchester Super Giants",
-          "priority": 73,
-          "selected": false
         },
         {
           "reason": "Higher Lay Vol",
           "winner": "Sunrisers Leeds",
-          "priority": 65,
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Manchester Super Giants",
+          "priority": 40,
           "selected": false
         },
         {
-          "reason": "Bookie Fav (fallback)",
-          "winner": "Sunrisers Leeds",
-          "priority": 55,
+          "reason": "Stronger Support Team",
+          "winner": "Manchester Super Giants",
+          "priority": 40,
           "selected": false
         }
       ],
-      "predictorVersion": "production",
+      "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
       "confirmedAt": "2026-08-15T03:02:56.458Z",
       "confirmedByEmail": "admin@cricketedge.com",
@@ -1844,23 +1826,23 @@
         {
           "reason": "Higher Lay Trades",
           "winner": "St. Lucia Kings",
-          "priority": 73,
+          "priority": 100,
           "selected": true
         },
         {
           "reason": "Higher Lay Vol",
           "winner": "St. Lucia Kings",
-          "priority": 65,
-          "selected": false
+          "priority": 90,
+          "selected": true
         },
         {
-          "reason": "Bookie Fav (fallback)",
+          "reason": "Stronger Support Team",
           "winner": "Antigua & Barbuda Falcons",
-          "priority": 55,
+          "priority": 40,
           "selected": false
         }
       ],
-      "predictorVersion": "production",
+      "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
       "confirmedAt": "2026-08-15T18:30:07.911Z",
       "confirmedByEmail": "admin@cricketedge.com",
@@ -2242,35 +2224,40 @@
         }
       },
       "predictedWinner": "India",
-      "predictionReason": "Higher Lay Vol",
+      "predictionReason": "Clear Lay Vol Edge",
       "predictionRisk": {
-        "tier": "high",
-        "label": "High Risk",
-        "shortLabel": "High",
-        "color": "text-[#ef4444]",
-        "hex": "#ef4444",
-        "bg": "rgba(239,68,68,0.12)",
-        "border": "rgba(239,68,68,0.35)",
-        "emoji": "🔴",
-        "wrongPct": "~35–45%",
-        "avoidEntry": true,
-        "reason": "Higher Lay Vol"
+        "tier": "low",
+        "label": "Low Risk",
+        "shortLabel": "Low",
+        "color": "text-[#22c55e]",
+        "hex": "#22c55e",
+        "bg": "rgba(34,197,94,0.12)",
+        "border": "rgba(34,197,94,0.35)",
+        "emoji": "🟢",
+        "wrongPct": "~10–15%",
+        "reason": "Clear Lay Vol Edge"
       },
       "matchedRules": [
         {
-          "reason": "Higher Lay Vol",
+          "reason": "Clear Lay Vol Edge",
           "winner": "India",
-          "priority": 65,
+          "priority": 100,
           "selected": true
         },
         {
-          "reason": "Bookie Fav (fallback)",
-          "winner": "Sri Lanka",
-          "priority": 55,
-          "selected": false
+          "reason": "Higher Lay Vol",
+          "winner": "India",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "India",
+          "priority": 85,
+          "selected": true
         }
       ],
-      "predictorVersion": "production",
+      "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
       "confirmedAt": "2026-08-15T18:30:17.845Z",
       "confirmedByEmail": "admin@cricketedge.com",
@@ -2728,8 +2715,8 @@
           }
         }
       },
-      "predictedWinner": "Ireland",
-      "predictionReason": "Trap + Tiny Trade Gap — Bookie Fav",
+      "predictedWinner": "Afghanistan",
+      "predictionReason": "Stronger Support Team",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -2740,35 +2727,29 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Trap + Tiny Trade Gap — Bookie Fav"
+        "reason": "Stronger Support Team"
       },
       "matchedRules": [
         {
-          "reason": "Trap + Tiny Trade Gap — Bookie Fav",
-          "winner": "Ireland",
-          "priority": 84,
+          "reason": "Stronger Support Team",
+          "winner": "Afghanistan",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Afghanistan",
+          "priority": 90,
           "selected": true
         },
         {
           "reason": "Higher Lay Trades",
           "winner": "Afghanistan",
-          "priority": 73,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Afghanistan",
-          "priority": 65,
-          "selected": false
-        },
-        {
-          "reason": "Bookie Fav (fallback)",
-          "winner": "Ireland",
-          "priority": 55,
-          "selected": false
+          "priority": 80,
+          "selected": true
         }
       ],
-      "predictorVersion": "production",
+      "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
       "confirmedAt": "2026-08-15T18:30:12.968Z",
       "confirmedByEmail": "admin@cricketedge.com",
@@ -3696,6 +3677,484 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Trent Rockets W"
+    },
+    {
+      "matchId": "35941131",
+      "marketId": "1.261132389",
+      "matchName": "Trent Rockets v Manchester Super Giants",
+      "competitionName": "The Hundred",
+      "team1": "Trent Rockets",
+      "team2": "Manchester Super Giants",
+      "startTime": 1786899600000,
+      "endedAt": "2026-08-17T02:18:01.472Z",
+      "capturedAt": "2026-08-17T02:18:01.472Z",
+      "snapshot": {
+        "serverTime": "2026-08-17T02:18:01.393Z",
+        "matchId": "35941131",
+        "matchName": "Trent Rockets v Manchester Super Giants",
+        "teamNames": [
+          "Trent Rockets",
+          "Manchester Super Giants"
+        ],
+        "inPlayPnl": {
+          "team1": 1441.4198,
+          "team2": -1354.1245
+        },
+        "inPlayTotalBets": {
+          "team1": 1977.7504,
+          "team2": 3355.6834
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1163.1799999999998,
+            "lay": 808.3900000000001,
+            "total": 1990.1599999999999
+          },
+          "team2": {
+            "back": 2617.81,
+            "lay": 826.98,
+            "total": 3426.2
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1441.4198,
+          "team2": -1354.1245
+        },
+        "preMatchTotalBets": {
+          "team1": 1977.7504,
+          "team2": 3355.6834
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1163.1799999999998,
+            "lay": 808.3900000000001,
+            "total": 1990.1599999999999
+          },
+          "team2": {
+            "back": 2617.81,
+            "lay": 826.98,
+            "total": 3426.2
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1441.4198,
+          "team2": -1354.1245
+        },
+        "threeMinTotalBets": {
+          "team1": 1977.7504,
+          "team2": 3355.6834
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1163.1799999999998,
+            "lay": 808.3900000000001,
+            "total": 1990.1599999999999
+          },
+          "team2": {
+            "back": 2617.81,
+            "lay": 826.98,
+            "total": 3426.2
+          }
+        },
+        "matchLoadV2": {
+          "team1": 8,
+          "team2": 11
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1163.1799999999998,
+            "lay": 808.3900000000001,
+            "totalVolume": 1971.57,
+            "backPercentage": 58.99765161774626
+          },
+          "team2": {
+            "back": 2617.81,
+            "lay": 826.98,
+            "totalVolume": 3444.79,
+            "backPercentage": 75.99331163873559
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1150.7703999999999,
+            "lay": 801.3602,
+            "totalBet": 1952.1306
+          },
+          "team2": {
+            "back": 2547.2934,
+            "lay": 838.3788999999999,
+            "totalBet": 3385.6723
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1990.1599999999999,
+            "support": 36.74349563175269
+          },
+          "team2": {
+            "supportMoney": 3426.2,
+            "support": 63.25650436824731
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Manchester Super Giants",
+          "bookieFavouriteOutcome": "Trent Rockets",
+          "riskTeam": "Manchester Super Giants",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 26.513008736494626,
+          "mostBettedTeam": "Manchester Super Giants",
+          "prediction": {
+            "team1TrueSupport": 1989.1492999999998,
+            "team2TrueSupport": 3348.6536,
+            "ratio": 1.683460160582215,
+            "bookiePnlTeam1": -342.3803999999998,
+            "bookiePnlTeam2": -1720.3134,
+            "prediction": "Trent Rockets",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.68) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 349.4101999999999,
+            "backExposure": 1150.7703999999999,
+            "layExposure": 801.3602,
+            "teamName": "Trent Rockets"
+          },
+          "team2": {
+            "netExposure": 1708.9145,
+            "backExposure": 2547.2934,
+            "layExposure": 838.3788999999999,
+            "teamName": "Manchester Super Giants"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1150.7703999999999,
+            "A_lay_stake": 808.3900000000001,
+            "B_back_expo": 2547.2934,
+            "B_lay_stake": 826.98
+          },
+          "totals": {
+            "totalBetTeam1": 1977.7504,
+            "totalBetTeam2": 3355.6834
+          },
+          "simplePL": {
+            "team1_win": -342.3803999999998,
+            "team2_win": -1720.3134
+          },
+          "derivedPL": {
+            "team1_win": 1377.933,
+            "team2_win": -1377.933
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1163.1799999999998,
+              "totalLayVol": 808.3900000000001,
+              "totalBet": 1990.1599999999999,
+              "profitLoss": 1436.04
+            },
+            "team2": {
+              "totalBackVol": 2617.81,
+              "totalLayVol": 826.98,
+              "totalBet": 3426.2,
+              "profitLoss": -1436.04
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1150.7703999999999,
+              "totalLayVol": 808.3900000000001,
+              "totalBet": 1977.7504,
+              "profitLoss": 1441.4198000000001
+            },
+            "team2": {
+              "totalBackExpo": 2547.2934,
+              "totalLayVol": 826.98,
+              "totalBet": 3355.6834,
+              "profitLoss": -1354.1245000000001
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1150.7703999999999,
+              "totalLayNetVol": 801.3602,
+              "totalBet": 1989.1492999999998,
+              "profitLoss": 1359.5043000000003
+            },
+            "team2": {
+              "totalBackNetVol": 2547.2934,
+              "totalLayNetVol": 838.3788999999999,
+              "totalBet": 3348.6536,
+              "profitLoss": -1359.5043000000003
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 8,
+            "averageOdds": 1.9962500000000003,
+            "averageSize": 248.76999999999998,
+            "supportProduct": 496.6071125
+          },
+          "teamB": {
+            "tradeCount": 11,
+            "averageOdds": 1.9845454545454544,
+            "averageSize": 311.4727272727273,
+            "supportProduct": 618.1317851239669
+          },
+          "strongerTeam": "Manchester Super Giants",
+          "supportRatio": 1.2447098915120087
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1163.1799999999998,
+            "oppoLayVolume": 826.98,
+            "layExposure": 801.3602,
+            "netSupportValue": 1188.7997999999998
+          },
+          "teamB": {
+            "totalBackVolume": 2617.81,
+            "oppoLayVolume": 808.3900000000001,
+            "layExposure": 838.3788999999999,
+            "netSupportValue": 2587.8211
+          },
+          "strongerTeam": "Manchester Super Giants",
+          "netSupportDifference": 1399.0213000000003,
+          "percentageA": 31.477869542055437,
+          "percentageB": 68.52213045794457
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 354.78999999999974,
+            "syntheticSupport": 826.98,
+            "opponentLiabilityRejection": 838.3788999999999,
+            "sentimentScore": 343.3910999999998
+          },
+          "teamB": {
+            "directNetSupport": 1790.83,
+            "syntheticSupport": 808.3900000000001,
+            "opponentLiabilityRejection": 801.3602,
+            "sentimentScore": 1797.8598000000002
+          },
+          "strongerTeam": "Manchester Super Giants",
+          "scoreDifference": 1454.4687000000004,
+          "percentageA": 16.036938968712157,
+          "percentageB": 83.96306103128785
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Trent Rockets",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Manchester Super Giants",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Trent Rockets"
+        },
+        "teams": {
+          "Trent Rockets": {
+            "trades": [
+              {
+                "team": "Trent Rockets",
+                "price": 2,
+                "type": "back",
+                "size": 320.38,
+                "updatedAt": 1786896415120
+              },
+              {
+                "team": "Trent Rockets",
+                "price": 2.04,
+                "type": "lay",
+                "size": 141.15,
+                "updatedAt": 1786896076481
+              },
+              {
+                "team": "Trent Rockets",
+                "price": 2.02,
+                "type": "lay",
+                "size": 2.82,
+                "updatedAt": 1786896073598
+              },
+              {
+                "team": "Trent Rockets",
+                "price": 2,
+                "type": "lay",
+                "size": 27.810000000000002,
+                "updatedAt": 1786896038824
+              },
+              {
+                "team": "Trent Rockets",
+                "price": 1.98,
+                "type": "back",
+                "size": 285.24,
+                "updatedAt": 1786895971330
+              },
+              {
+                "team": "Trent Rockets",
+                "price": 1.97,
+                "type": "back",
+                "size": 56.46,
+                "updatedAt": 1786895216540
+              },
+              {
+                "team": "Trent Rockets",
+                "price": 1.99,
+                "type": "back",
+                "size": 501.09999999999997,
+                "updatedAt": 1786895184524
+              },
+              {
+                "team": "Trent Rockets",
+                "price": 1.98,
+                "type": "lay",
+                "size": 636.61,
+                "updatedAt": 1786892841804
+              }
+            ],
+            "pnlIfWins": 1441.4198,
+            "totalBet": 1977.7504
+          },
+          "Manchester Super Giants": {
+            "trades": [
+              {
+                "team": "Manchester Super Giants",
+                "price": 1.96,
+                "type": "back",
+                "size": 866.78,
+                "updatedAt": 1786896618845
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 1.97,
+                "type": "back",
+                "size": 578.73,
+                "updatedAt": 1786896440399
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 1.94,
+                "type": "back",
+                "size": 5.9,
+                "updatedAt": 1786896119663
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 1.95,
+                "type": "back",
+                "size": 141.15,
+                "updatedAt": 1786896089837
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 1.97,
+                "type": "lay",
+                "size": 2.8899999999999864,
+                "updatedAt": 1786896072500
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 1.98,
+                "type": "back",
+                "size": 267.91,
+                "updatedAt": 1786896065767
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 2,
+                "type": "back",
+                "size": 185.95999999999998,
+                "updatedAt": 1786896038840
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 2.04,
+                "type": "lay",
+                "size": 2.82,
+                "updatedAt": 1786896030199
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 2,
+                "type": "lay",
+                "size": 252.63,
+                "updatedAt": 1786895079523
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 2.02,
+                "type": "lay",
+                "size": 568.64,
+                "updatedAt": 1786892841711
+              },
+              {
+                "team": "Manchester Super Giants",
+                "price": 1.99,
+                "type": "back",
+                "size": 571.38,
+                "updatedAt": 1786888641095
+              }
+            ],
+            "pnlIfWins": -1354.1245,
+            "totalBet": 3355.6834
+          }
+        }
+      },
+      "predictedWinner": "Manchester Super Giants",
+      "predictionReason": "Stronger Support Team",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Stronger Support Team"
+      },
+      "matchedRules": [
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Manchester Super Giants",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Manchester Super Giants",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Manchester Super Giants",
+          "priority": 80,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-17T04:12:33.686Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Manchester Super Giants"
     }
   ]
 }

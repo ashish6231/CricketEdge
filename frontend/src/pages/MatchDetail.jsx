@@ -6,13 +6,12 @@ import { useParams, useNavigate, useOutletContext, useLocation } from 'react-rou
 import { ArrowLeft, LoaderCircle, Lock, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
 import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { predictTossWinner } from '../utils/tossPredictor'
-import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
-import { computeFavFlipRisk } from '../utils/favFlipRisk'
 import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime, splitMatchOutcomes } from '../utils/bookiePl'
+import { predictGatedFade } from '../utils/gatedFadePredictor'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
-import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner, ExitAdviceBanner, FavFlipRiskBanner } from '../components/PredictionMeta'
+import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -379,7 +378,6 @@ export default function MatchDetail({ sport }) {
   const [sessionTrades, setSessionTrades] = useState([])
   const [sessionOdds, setSessionOdds] = useState([])
   const [activeSessions, setActiveSessions] = useState([])
-  const [lockedMatchStartPick, setLockedMatchStartPick] = useState(null)
 
   const isSessionMarket = marketType.startsWith('session_')
   const selectedSessionName = isSessionMarket ? marketType.replace('session_', '') : ''
@@ -421,17 +419,6 @@ export default function MatchDetail({ sport }) {
     }
     return scores
   }, [sessionOrderBook, isSessionMarket])
-
-  useEffect(() => {
-    setLockedMatchStartPick(null)
-  }, [matchId])
-
-  useEffect(() => {
-    if (!snapshot) return
-    const next = predictMatchStart(snapshot)
-    const inPlay = snapshot.inPlay || snapshot.status === 'in-play'
-    setLockedMatchStartPick(prev => lockMatchStartPrediction(next, prev, { inPlay }))
-  }, [snapshot])
 
   useEffect(() => {
     const apiFn = API_MAP[sport] || getCricketSnapshot
@@ -611,47 +598,34 @@ export default function MatchDetail({ sport }) {
   const t2Data = teams[t2] || {}
 
   const { pl1, pl2, plDraw } = getBookiePl(snapshot, t1, t2, drawName)
-  const favFlipRisk = computeFavFlipRisk(snapshot, { pl1, pl2 })
+  const gatedFade = predictGatedFade(snapshot)
   const dpl1 = dp.team1_win
   const dpl2 = dp.team2_win
 
+  const marketBet1 = dm.totals?.totalBetTeam1 ?? t1Data.totalBet ?? 0
+  const marketBet2 = dm.totals?.totalBetTeam2 ?? t2Data.totalBet ?? 0
+  const marketBetDraw = hasDraw ? (teams[drawName]?.totalBet ?? 0) : 0
+  const marketBetTotal = marketBet1 + marketBet2 + marketBetDraw
+  const marketBetPct1 = marketBetTotal > 0 ? (marketBet1 / marketBetTotal) * 100 : 50
+  const marketBetPct2 = marketBetTotal > 0 ? (marketBet2 / marketBetTotal) * 100 : 50
+  const marketBetPctDraw = marketBetTotal > 0 ? (marketBetDraw / marketBetTotal) * 100 : 0
+
   // ━━━━━━━━━━ BACK/LAY RATIO BASED PREDICTION ━━━━━━━━━━
-  const raw = dm.raw || {}
   const aBack = am1.back || 0
   const aLay = am1.lay || 0
   const bBack = am2.back || 0
   const bLay = am2.lay || 0
 
   // lay/back ratio — >1 means lay dominant = bookie team (predicted winner)
-  const aRatio = aLay > 0 ? aBack / aLay : 0
-  const bRatio = bLay > 0 ? bBack / bLay : 0
-  // back/lay < 1 means lay dominant = bookie team
-  const bookieTeam = aRatio <= bRatio ? t1 : t2
-  const publicTeam = aRatio <= bRatio ? t2 : t1
-  const bookieRatioVal = Math.min(aRatio || 999, bRatio || 999)
-  const bookieRatio = bookieRatioVal === 999 ? 0 : bookieRatioVal
-  const signalStrength = bookieRatio < 0.5 ? 'Strong 🔥' : bookieRatio < 0.8 ? 'Moderate' : 'Weak'
-  const signalColor = bookieRatio < 0.5 ? 'text-profit' : bookieRatio < 0.8 ? 'text-yellow-500' : 'text-text-muted'
-  const aTotal = aBack + aLay
-  const bTotal = bBack + bLay
-  const aBackPct = aTotal > 0 ? (aBack / aTotal * 100) : 50
-  const bBackPct = bTotal > 0 ? (bBack / bTotal * 100) : 50
-
-  const primaryPrediction = lockedMatchStartPick
-  const isLive = snapshot.inPlay || snapshot.status === 'in-play'
-  const predictedMatchWinner = primaryPrediction?.winnerName
-  const matchWinnerReason = primaryPrediction?.reason
-  const predictionAccuracy = primaryPrediction?.confidence?.pct
-  const publicMoneyTeam = primaryPrediction?.moreBetted || snapshot.marketSignals?.moreBettedTeam
-  const hasMatchStartPick = !!primaryPrediction?.winnerName
-  const pickBackOdds = predictedMatchWinner === t1 ? t1Odds.back : predictedMatchWinner === t2 ? t2Odds.back : null
-  const opponentBackOdds = predictedMatchWinner === t1 ? t2Odds.back : predictedMatchWinner === t2 ? t1Odds.back : null
-  const matchStartExitAdvice = getMatchStartExitAdvice({
-    lockedPick: primaryPrediction,
-    inPlay: isLive,
-    pickBackOdds,
-    opponentBackOdds,
-  })
+  const aRatio = aLay > 0 ? aBack / aLay : null
+  const bRatio = bLay > 0 ? bBack / bLay : null
+  const aTotalBL = aBack + aLay
+  const bTotalBL = bBack + bLay
+  const aBackPct = aTotalBL > 0 ? (aBack / aTotalBL) * 100 : 50
+  const bBackPct = bTotalBL > 0 ? (bBack / bTotalBL) * 100 : 50
+  const lowerRatioTeam = aRatio != null && bRatio != null && aRatio !== bRatio
+    ? (aRatio < bRatio ? t1 : t2)
+    : null
 
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
@@ -659,76 +633,11 @@ export default function MatchDetail({ sport }) {
   const pb = snapshot.preMatchTotalBets || {}
   const iv = snapshot.inPlayVolume || {}
   const pv = snapshot.preMatchVolume || {}
-  const sup = snapshot.supportMetrics || {}
-  const ml = snapshot.matchLoadV2 || {}
-  const am = snapshot.advancedMetrics || {}
-  const sig = snapshot.marketSignals || {}
-  const trap = sig.trap || {}
   const exp = snapshot.bookmakerExposure || {}
   const exp1 = exp.team1 || {}
   const exp2 = exp.team2 || {}
   const sent = snapshot.sentimentScore || {}
   const ns = snapshot.netSupport || {}
-
-  // ━━━━━━━━━━ 5-RULE BOOKIE FINGERPRINT ━━━━━━━━━━
-  const bkp = (() => {
-    const totalBets1 = dm.totals?.totalBetTeam1 ?? ((ib.team1 || 0) + (pb.team1 || 0))
-    const totalBets2 = dm.totals?.totalBetTeam2 ?? ((ib.team2 || 0) + (pb.team2 || 0))
-    const sent1 = ns.percentageA ?? (sup.team1?.support ?? 50)
-    const sent2 = ns.percentageB ?? (sup.team2?.support ?? 50)
-    const netExp1 = Math.abs(exp1.netExposure || 0)
-    const netExp2 = Math.abs(exp2.netExposure || 0)
-    const isWomens = /women/i.test(snapshot.competitionName || '') ||
-      [t1, t2].some(name => /\bW\b/.test(name) || /\(W\)/i.test(name))
-
-    // Exposure override: agar exposure negative hai BUT ratio 2x+ aur bets 1.5x+ hain
-    // toh yeh public noise hai, bookie signal nahi — exposure weight 0 karo
-    const exp1Net = exp1.netExposure || 0
-    const exp2Net = exp2.netExposure || 0
-    const t1HasMoreNegExp = exp1Net < exp2Net  // t1 zyada negative
-    const t2HasMoreNegExp = exp2Net < exp1Net  // t2 zyada negative
-    const exposedTeamRatio = t1HasMoreNegExp ? aRatio : bRatio
-    const nonExposedTeamRatio = t1HasMoreNegExp ? bRatio : aRatio
-    const exposedTeamBets = t1HasMoreNegExp ? totalBets1 : totalBets2
-    const nonExposedTeamBets = t1HasMoreNegExp ? totalBets2 : totalBets1
-    const noExposureData = exp1Net === 0 && exp2Net === 0
-    const isExposureMisleading =
-      noExposureData || (
-        (t1HasMoreNegExp || t2HasMoreNegExp) &&
-        nonExposedTeamRatio > 0 &&
-        exposedTeamRatio / (nonExposedTeamRatio || 1) >= 2 &&
-        exposedTeamBets / (nonExposedTeamBets || 1) >= 1.5
-      )
-
-    // Weighted scoring: exposure=3, ratio=1.5, total bets=1
-    const rules = [
-      { label: 'Zyada Negative Exposure', weight: isExposureMisleading ? 0 : 3, t1wins: exp1Net < exp2Net, v1: fmtRs(exp1Net), v2: fmtRs(exp2Net), overridden: isExposureMisleading },
-      { label: 'Kam Back/Lay Ratio', weight: 1.5, t1wins: aRatio < bRatio, v1: `${aRatio.toFixed(2)}x`, v2: `${bRatio.toFixed(2)}x` },
-      { label: 'Kam Total Bets', weight: 1, t1wins: totalBets1 < totalBets2, v1: `₹${fmt(totalBets1)}`, v2: `₹${fmt(totalBets2)}` },
-    ]
-
-    const maxScore = rules.reduce((s, r) => s + r.weight, 0)
-    const t1Score = rules.reduce((s, r) => s + (r.t1wins ? r.weight : 0), 0)
-    const t2Score = rules.reduce((s, r) => s + (!r.t1wins ? r.weight : 0), 0)
-    const bookieIdx = t1Score >= t2Score ? 0 : 1
-    const matchedRules = rules.filter((r, _) => bookieIdx === 0 ? r.t1wins : !r.t1wins).length
-    const totalRules = rules.filter(r => r.weight > 0).length
-    const matchScore = matchedRules
-    const confidence = matchedRules === totalRules ? { label: '99% Confirmed 🔥', color: 'text-profit' }
-      : matchedRules >= totalRules * 0.7 ? { label: '90% Strong ⚡', color: 'text-profit' }
-        : matchedRules >= totalRules * 0.4 ? { label: '70% Moderate', color: 'text-yellow-500' }
-          : { label: 'Weak Signal', color: 'text-text-muted' }
-    return {
-      bookieName: bookieIdx === 0 ? t1 : t2,
-      matchScore,
-      maxScore,
-      totalRules,
-      confidence,
-      bookieIdx,
-      isWomens,
-      rules: rules.map(r => ({ ...r, bookieWins: bookieIdx === 0 ? r.t1wins : !r.t1wins }))
-    }
-  })()
 
   const graphSnap = snapshot
   const graphT1 = t1
@@ -866,23 +775,10 @@ export default function MatchDetail({ sport }) {
             </div>
           ) : (
             <>
-              {/* Match Odds Total Bar */}
               <div className="mb-6 mt-6">
-                <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-white font-bold text-base tracking-wide">Match Odds</h2>
-                </div>
-
-                {/* Progress Bar (White vs Dark Grey) */}
-                <div className="h-[6px] w-full bg-[#2c2c2e] mb-3 flex rounded-sm">
-                  <div className="bg-white h-full transition-all duration-500 rounded-l-sm" style={{ width: `${t1PctVol}%` }} />
-                </div>
-                <div className="flex justify-between text-[11px] font-bold text-[#8e8e93] tracking-wide">
-                  <span>{t1GraphData?.name} <span className="text-white ml-1">{t1PctVol.toFixed(0)}%</span></span>
-                  <span>{t2GraphData?.name} <span className="text-white ml-1">{t2PctVol.toFixed(0)}%</span></span>
-                </div>
+                <h2 className="text-white font-bold text-base tracking-wide">Match Odds</h2>
               </div>
 
-              {/* Side by Side Grid for Team Cards */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-8">
                 <TeamCard teamData={t1GraphData} isToss={false} marketVol={marketVol} />
                 <TeamCard teamData={t2GraphData} isToss={false} marketVol={marketVol} />
@@ -997,6 +893,68 @@ export default function MatchDetail({ sport }) {
                     {snapshot.inPlay && <span className="text-[#3b82f6] text-xs font-bold flex items-center gap-1 shrink-0"><span className="pulse-dot h-2 w-2 rounded-full bg-[#3b82f6]" /> LIVE</span>}
                   </div>
                   {snapshot.competitionName && <div className="text-xs text-[#8e8e93] mt-0.5">{snapshot.competitionName}</div>}
+                  {(marketBetTotal > 0 || marketVol > 0) && (() => {
+                    const leaderAmt = Math.max(marketBet1, marketBet2, hasDraw ? marketBetDraw : 0)
+                    const colorFor = (amt) => amt === leaderAmt && leaderAmt > 0 ? '#ef4444' : '#3b82f6'
+                    const c1 = colorFor(marketBet1)
+                    const c2 = colorFor(marketBet2)
+                    const cDraw = colorFor(marketBetDraw)
+                    return (
+                    <div className="mt-3 space-y-3">
+                      {marketBetTotal > 0 && (
+                        <div>
+                          <div className="text-[10px] font-bold text-[#8e8e93] uppercase tracking-wider mb-1.5">Total bets</div>
+                          <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e] mb-1.5">
+                            <div className="transition-all" style={{ width: `${marketBetPct1}%`, background: c1 }} />
+                            {hasDraw && <div className="transition-all" style={{ width: `${marketBetPctDraw}%`, background: cDraw }} />}
+                            <div className="transition-all" style={{ width: `${marketBetPct2}%`, background: c2 }} />
+                          </div>
+                          <div className="flex justify-between gap-2 text-[10px] font-semibold">
+                            <span className="truncate" style={{ color: c1 }}>
+                              {t1} {marketBetPct1.toFixed(0)}%
+                              <span className="text-[#636366] font-normal"> · ₹{fmt(marketBet1)}</span>
+                            </span>
+                            {hasDraw && (
+                              <span className="truncate" style={{ color: cDraw }}>
+                                {drawName} {marketBetPctDraw.toFixed(0)}%
+                                <span className="text-[#636366] font-normal"> · ₹{fmt(marketBetDraw)}</span>
+                              </span>
+                            )}
+                            <span className="truncate text-right" style={{ color: c2 }}>
+                              {t2} {marketBetPct2.toFixed(0)}%
+                              <span className="text-[#636366] font-normal"> · ₹{fmt(marketBet2)}</span>
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                      {marketVol > 0 && (() => {
+                        const vol1 = t1GraphData?.totalBet || 0
+                        const vol2 = t2GraphData?.totalBet || 0
+                        const moneyLeader = Math.max(vol1, vol2)
+                        const moneyColor = (amt) => (amt === moneyLeader && moneyLeader > 0 ? '#3b82f6' : '#ef4444')
+                        const mc1 = moneyColor(vol1)
+                        const mc2 = moneyColor(vol2)
+                        return (
+                        <div>
+                          <div className="text-[10px] font-bold text-[#8e8e93] uppercase tracking-wider mb-1.5">Money</div>
+                          <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e] mb-1.5">
+                            <div className="transition-all" style={{ width: `${t1PctVol}%`, background: mc1 }} />
+                            <div className="transition-all" style={{ width: `${t2PctVol}%`, background: mc2 }} />
+                          </div>
+                          <div className="flex justify-between gap-2 text-[10px] font-semibold">
+                            <span className="truncate" style={{ color: mc1 }}>
+                              {t1} {t1PctVol.toFixed(0)}%
+                            </span>
+                            <span className="truncate text-right" style={{ color: mc2 }}>
+                              {t2} {t2PctVol.toFixed(0)}%
+                            </span>
+                          </div>
+                        </div>
+                        )
+                      })()}
+                    </div>
+                    )
+                  })()}
                 </div>
 
                 {/* Odds — 2-way or 3-way (Test + Draw) */}
@@ -1042,103 +1000,77 @@ export default function MatchDetail({ sport }) {
                         </div>
                       ))}
                     </div>
-                    <FavFlipRiskBanner risk={favFlipRisk} />
                   </div>
                 )}
               </div>
 
-              {/* ━━━━━━━━━━ 1b. MATCH WINNER PREDICTION ━━━━━━━━━━ */}
-              {hasMatchStartPick && (
-                <div className="rounded-2xl p-5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                  <div className="text-sm font-bold text-white mb-3 flex items-center gap-2 flex-wrap">
-                    <TrendingUp size={16} className="text-[#3b82f6]" /> Match Start Pick
-                    <div className="ml-auto flex items-center gap-2 flex-wrap justify-end">
-                      {primaryPrediction?.risk && <RiskBadge risk={primaryPrediction.risk} compact />}
-                      {primaryPrediction?.confidence && (
-                        <span className={`text-[10px] font-semibold ${primaryPrediction.confidence.color}`}>
-                          {primaryPrediction.confidence.label}
-                        </span>
-                      )}
-                    </div>
+              {/* ━━━━━━━━━━ 1b. GATED FADE PICK ━━━━━━━━━━ */}
+              {gatedFade && (
+                <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+                  <div className="px-4 py-3 flex items-center gap-2 border-b border-[#2c2c2e]">
+                    <span className="text-sm font-bold text-white">Gated Fade Pick</span>
+                    <span
+                      className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded border"
+                      style={gatedFade.status === 'take'
+                        ? { color: '#10b981', borderColor: 'rgba(16,185,129,0.35)' }
+                        : { color: '#ef4444', borderColor: 'rgba(239,68,68,0.35)' }}
+                    >
+                      {gatedFade.status === 'take' ? 'TAKE' : 'NO PICK'}
+                    </span>
                   </div>
-
-                  {/* Predicted Winner Banner — fixed at match open, odds change se pick nahi badlegi */}
-                  <div className="rounded-xl p-4 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                    <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-1">Match Start Pick</div>
-                    <div className="text-xl font-bold text-white">{predictedMatchWinner}</div>
-                    <div className="text-xs mt-1 text-[#8e8e93]">{matchWinnerReason} • {predictionAccuracy} backtest (20 matches)</div>
-                    {primaryPrediction?.risk && (
-                      <div className="mt-2 flex justify-center">
-                        <RiskBadge risk={primaryPrediction.risk} />
+                  <div className="p-4">
+                    {gatedFade.status === 'skip' && (
+                      <div className="rounded-xl px-3 py-2 text-center mb-3 border border-[#ef4444]/30" style={{ background: 'rgba(239,68,68,0.08)' }}>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-[#ef4444]">Avoid entry · {gatedFade.reason}</div>
+                        <div className="text-[10px] text-[#8e8e93] mt-0.5">Trap: {gatedFade.trap}</div>
                       </div>
                     )}
-                    <AvoidEntryBanner risk={primaryPrediction?.risk} />
-                    <ExitAdviceBanner advice={matchStartExitAdvice} />
-                    {matchWinnerReason === 'Fade Public Money' && publicMoneyTeam && (
-                      <div className="text-[10px] mt-2 px-2 py-1.5 rounded-lg border border-[#2c2c2e]" style={{ background: '#0a0a0a' }}>
-                        <span className="text-[#ef4444] font-semibold">Public:</span>{' '}
-                        <span className="text-white font-bold">{publicMoneyTeam}</span>
-                        <span className="text-[#636366] mx-1">→</span>
-                        <span className="text-[#22c55e] font-semibold">Fade pick:</span>{' '}
-                        <span className="text-white font-bold">{predictedMatchWinner}</span>
-                        {primaryPrediction?.publicOverridden && (
-                          <div className="text-[9px] text-[#636366] mt-1">Pre-match odds se public fix (API galat tha)</div>
-                        )}
-                      </div>
-                    )}
-                    {isLive ? (
-                      <div className="text-[10px] mt-1 text-[#636366]">
-                        Match-start pick locked — live odds se team change nahi hogi
-                      </div>
-                    ) : (
-                      <div className="text-[10px] mt-1 text-[#636366]">
-                        Pehli pick lock — refresh/polling se team flip nahi hogi
-                      </div>
-                    )}
-                    {primaryPrediction?.preOdds && (
-                      <div className="flex justify-center gap-4 mt-2 text-[10px] text-[#8e8e93]">
-                        <span>{t1}: {primaryPrediction.preOdds.t1?.toFixed(2) ?? '—'} <span className="text-[#636366]">(pre-match)</span></span>
-                        <span>{t2}: {primaryPrediction.preOdds.t2?.toFixed(2) ?? '—'} <span className="text-[#636366]">(pre-match)</span></span>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Back/Lay ratio bars — both teams */}
-                  <div className="space-y-3 mb-4">
-                    {[{ team: t1, backPct: aBackPct, ratio: aRatio, isBookie: aRatio <= bRatio },
-                    { team: t2, backPct: bBackPct, ratio: bRatio, isBookie: bRatio < aRatio }]
-                      .map(({ team, backPct, ratio, isBookie }) => (
-                        <div key={team}>
-                          <div className="flex justify-between items-center mb-1">
-                            <span className="text-xs font-semibold text-gray-300">{team}</span>
-                            <div className="flex items-center gap-2">
-                              {isBookie && <span className="text-[10px] font-bold text-[#10b981] border border-[#10b981]/30 px-1.5 py-0.5 rounded">Bookie</span>}
-                              <span className="text-xs text-[#8e8e93]">B/L: <b className="text-white">{ratio.toFixed(2)}x</b></span>
-                            </div>
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {[{
+                        name: gatedFade.t1,
+                        role: gatedFade.publicTeam === gatedFade.t1 ? 'Public' : gatedFade.winnerName === gatedFade.t1 ? 'Fade' : 'Team',
+                        isFade: gatedFade.winnerName === gatedFade.t1,
+                        isPublic: gatedFade.publicTeam === gatedFade.t1,
+                      }, {
+                        name: gatedFade.t2,
+                        role: gatedFade.publicTeam === gatedFade.t2 ? 'Public' : gatedFade.winnerName === gatedFade.t2 ? 'Fade' : 'Team',
+                        isFade: gatedFade.winnerName === gatedFade.t2,
+                        isPublic: gatedFade.publicTeam === gatedFade.t2,
+                      }].map((side) => (
+                        <div
+                          key={side.name}
+                          className="rounded-xl p-3 text-center border"
+                          style={{
+                            background: '#1a1a1a',
+                            borderColor: side.isFade && gatedFade.status === 'take' ? 'rgba(16,185,129,0.4)' : '#2c2c2e',
+                          }}
+                        >
+                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: side.isPublic ? '#ef4444' : side.isFade ? '#10b981' : '#8e8e93' }}>
+                            {side.role}
                           </div>
-                          <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e]">
-                            <div className="bg-[#3b82f6] transition-all" style={{ width: `${backPct}%` }} />
-                            <div className="bg-[#ef4444] transition-all" style={{ width: `${100 - backPct}%` }} />
-                          </div>
-                          <div className="flex justify-between text-[10px] text-[#8e8e93] mt-1">
-                            <span className="text-[#3b82f6]">Back {backPct.toFixed(0)}%</span>
-                            <span className="text-[#ef4444]">Lay {(100 - backPct).toFixed(0)}%</span>
-                          </div>
+                          <div className="text-sm font-bold text-white truncate">{side.name}</div>
                         </div>
                       ))}
-                  </div>
-
-                  {/* Signal strength + logic */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-xs text-[#8e8e93] mb-1">Signal Strength</div>
-                      <div className="text-sm font-bold text-white">{signalStrength}</div>
-                      <div className="text-xs text-[#8e8e93] mt-0.5">Ratio: {bookieRatio.toFixed(2)}x</div>
                     </div>
-                    <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                      <div className="text-xs text-[#8e8e93] mb-1">Public Money</div>
-                      <div className="text-sm font-bold text-white">{publicMoneyTeam}</div>
-                      <div className="text-[10px] text-[#8e8e93] mt-0.5">Fade iske opposite</div>
+                    {gatedFade.status === 'take' && (
+                      <div className="text-center text-xs text-[#8e8e93] mb-3">
+                        {gatedFade.backtest.pct} backtest · {gatedFade.backtest.sample}
+                      </div>
+                    )}
+                    <div className="space-y-1.5">
+                      {[
+                        { ok: gatedFade.trap === 'none', label: 'Trap = none', val: gatedFade.trap },
+                        { ok: gatedFade.confirms.plGreen, label: 'P/L green agrees', val: gatedFade.plGreenTeam || '—' },
+                        { ok: gatedFade.confirms.lowerRatio, label: 'Lower B/L agrees', val: gatedFade.lowerRatioTeam || '—' },
+                        { ok: gatedFade.confirms.totGap, label: 'Total-bet gap ≥ 15%', val: gatedFade.totGapPct != null ? `${(gatedFade.totGapPct * 100).toFixed(0)}%` : '—' },
+                      ].map((row) => (
+                        <div key={row.label} className="flex items-center justify-between rounded-lg px-3 py-2 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                          <span className="text-xs font-semibold" style={{ color: row.ok ? '#10b981' : '#8e8e93' }}>
+                            {row.ok ? '✓' : '·'} {row.label}
+                          </span>
+                          <span className="text-xs font-bold text-white truncate ml-2">{row.val}</span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
@@ -1147,38 +1079,77 @@ export default function MatchDetail({ sport }) {
             </>
           )}
 
-          {/* ━━━━━━━━━━ 1b. BOOKIE FINGERPRINT (5 RULES) ━━━━━━━━━━ */}
+          {/* ━━━━━━━━━━ B/L RATIO ━━━━━━━━━━ */}
           <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-            <div className="px-4 py-3 flex items-center gap-2 border-b border-[#2c2c2e]" style={{ background: '#111111' }}>
-              <span className="text-sm font-bold text-white">Bookie Fingerprint</span>
-              {bkp.isWomens && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded border border-[#f472b6]/30 text-[#f472b6]">Women's</span>}
-              <span className={`ml-auto text-xs font-bold ${bkp.confidence.color}`}>{bkp.confidence.label}</span>
+            <div className="px-4 py-3 border-b border-[#2c2c2e] flex items-center justify-between">
+              <span className="text-sm font-bold text-white">Back / Lay Ratio</span>
+              {lowerRatioTeam && (
+                <span className="text-[10px] font-bold text-[#10b981]">Lower: {lowerRatioTeam}</span>
+              )}
             </div>
-
-            <div className="p-4">
-              {/* Winner banner */}
-              <div className="rounded-xl p-3 text-center mb-4 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                <div className="text-xs text-[#8e8e93] uppercase tracking-widest mb-0.5">Predicted Team</div>
-                <div className="text-xl font-bold text-white">{bkp.bookieName}</div>
-                <div className="text-xs text-[#8e8e93] mt-0.5">{bkp.matchScore}/{bkp.totalRules} rules match</div>
-              </div>
-
-              {/* Rules checklist */}
-              <div className="space-y-2">
-                {bkp.rules.map((r, idx) => (
-                  <div key={r.label} className="flex items-center gap-2 rounded-xl px-3 py-2 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                    <span className="text-xs font-bold shrink-0" style={{ color: r.bookieWins ? '#10b981' : '#ef4444' }}>{r.bookieWins ? '✓' : '✗'} {r.label}{r.overridden ? ' ⚠️' : ''}</span>
-                    <div className="flex-1 text-right">
-                      <span className={`text-xs font-bold ${bkp.bookieIdx === 0 ? 'text-white' : 'text-[#8e8e93]'}`}>{r.v1}</span>
-                      <span className="text-xs text-[#8e8e93] mx-1">vs</span>
-                      <span className={`text-xs font-bold ${bkp.bookieIdx === 1 ? 'text-white' : 'text-[#8e8e93]'}`}>{r.v2}</span>
+            <div className="p-4 grid grid-cols-2 gap-3">
+              {[{ name: t1, ratio: aRatio, back: aBack, lay: aLay, backPct: aBackPct },
+                { name: t2, ratio: bRatio, back: bBack, lay: bLay, backPct: bBackPct }].map((side) => {
+                const isLower = lowerRatioTeam === side.name
+                return (
+                  <div
+                    key={side.name}
+                    className="rounded-xl p-3 border"
+                    style={{
+                      background: '#1a1a1a',
+                      borderColor: isLower ? 'rgba(16,185,129,0.4)' : '#2c2c2e',
+                    }}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="text-xs font-bold text-white truncate">{side.name}</div>
+                      {isLower && (
+                        <span className="text-[9px] font-bold text-[#10b981] border border-[#10b981]/30 px-1.5 py-0.5 rounded shrink-0">LOWER</span>
+                      )}
+                    </div>
+                    <div className="text-2xl font-black tracking-tight text-white mb-1">
+                      {side.ratio != null ? `${side.ratio.toFixed(2)}x` : '—'}
+                    </div>
+                    <div className="text-[10px] text-[#8e8e93] mb-2">B / L</div>
+                    <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e] mb-1.5">
+                      <div className="bg-[#3b82f6]" style={{ width: `${side.backPct}%` }} />
+                      <div className="bg-[#ef4444]" style={{ width: `${100 - side.backPct}%` }} />
+                    </div>
+                    <div className="flex justify-between text-[10px]">
+                      <span className="text-[#3b82f6]">Back {side.backPct.toFixed(0)}%</span>
+                      <span className="text-[#ef4444]">Lay {(100 - side.backPct).toFixed(0)}%</span>
+                    </div>
+                    <div className="flex justify-between text-[10px] text-[#8e8e93] mt-2 pt-2 border-t border-[#2c2c2e]">
+                      <span>₹{fmt(side.back)}</span>
+                      <span>₹{fmt(side.lay)}</span>
                     </div>
                   </div>
-                ))}
-              </div>
+                )
+              })}
             </div>
           </div>
 
+          {/* ━━━━━━━━━━ 8. BOOKMAKER EXPOSURE ━━━━━━━━━━ */}
+          <div className="rounded-2xl p-4" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+            <div className="text-sm font-bold text-gray-300 mb-3">Bookie Exposure</div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                <div className="text-sm font-medium mb-2 text-white">{exp1.teamName || t1}</div>
+                <div className="text-xs space-y-1">
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Net Exp</span><span className={`font-bold ${pnlCls(exp1.netExposure)}`}>{fmtRs(exp1.netExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Back</span><span className="text-[#3b82f6]">₹{fmt(exp1.backExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Lay</span><span className="text-[#ef4444]">₹{fmt(exp1.layExposure)}</span></div>
+                </div>
+              </div>
+              <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
+                <div className="text-sm font-medium mb-2 text-white">{exp2.teamName || t2}</div>
+                <div className="text-xs space-y-1">
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Net Exp</span><span className={`font-bold ${pnlCls(exp2.netExposure)}`}>{fmtRs(exp2.netExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Back</span><span className="text-[#3b82f6]">₹{fmt(exp2.backExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-[#8e8e93]">Lay</span><span className="text-[#ef4444]">₹{fmt(exp2.layExposure)}</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* ━━━━━━━━━━ 4. DEEP BETTING METRICS ━━━━━━━━━━ */}
           {(dm.raw || dm.totals) && (
@@ -1232,29 +1203,6 @@ export default function MatchDetail({ sport }) {
               </div>
             </div>
           )}
-
-          {/* ━━━━━━━━━━ 8. BOOKMAKER EXPOSURE ━━━━━━━━━━ */}
-          <div className="rounded-2xl p-4" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-            <div className="text-sm font-bold text-gray-300 mb-3">Bookie Exposure</div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                <div className="text-sm font-medium mb-2 text-white">{exp1.teamName || t1}</div>
-                <div className="text-xs space-y-1">
-                  <div className="flex justify-between"><span className="text-[#8e8e93]">Net Exp</span><span className={`font-bold ${pnlCls(exp1.netExposure)}`}>{fmtRs(exp1.netExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-[#8e8e93]">Back</span><span className="text-[#3b82f6]">₹{fmt(exp1.backExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-[#8e8e93]">Lay</span><span className="text-[#ef4444]">₹{fmt(exp1.layExposure)}</span></div>
-                </div>
-              </div>
-              <div className="rounded-xl p-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                <div className="text-sm font-medium mb-2 text-white">{exp2.teamName || t2}</div>
-                <div className="text-xs space-y-1">
-                  <div className="flex justify-between"><span className="text-[#8e8e93]">Net Exp</span><span className={`font-bold ${pnlCls(exp2.netExposure)}`}>{fmtRs(exp2.netExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-[#8e8e93]">Back</span><span className="text-[#3b82f6]">₹{fmt(exp2.backExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-[#8e8e93]">Lay</span><span className="text-[#ef4444]">₹{fmt(exp2.layExposure)}</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* ━━━━━━━━━━ 9. NET SUPPORT & SENTIMENT ━━━━━━━━━━ */}
           {ns.teamA && sent.teamA && (
