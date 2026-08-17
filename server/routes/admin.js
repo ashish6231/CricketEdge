@@ -6,6 +6,7 @@ const prisma = require('../db/prisma');
 const { grantTrialIfEligible, grantTrialToAllEligible, grantTrialToNewUser, getTrialConfig } = require('../lib/subscriptionAccess');
 const { validateTrialSetting, validateTrialDuration, TRIAL_SETTING_KEYS } = require('../lib/trialConfig');
 const { sanitizeUserRecord } = require('../middleware/auth');
+const { validateAdminPasswordChange } = require('../lib/adminUserPassword');
 const trialKeys = new Set(Object.values(TRIAL_SETTING_KEYS));
 const {
   SIGNUP_MODE_KEY,
@@ -143,7 +144,7 @@ router.get('/users', requireAdmin, async (req, res) => {
       prisma.user.findMany({
         where, orderBy,
         skip: (+page - 1) * safeLimit, take: safeLimit,
-        select: { id: true, name: true, email: true, role: true, status: true, subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true }
+        select: { id: true, name: true, email: true, role: true, status: true, authProvider: true, subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true }
       }),
       prisma.user.count({ where })
     ]);
@@ -256,6 +257,41 @@ router.patch('/users/:id/status', requireAdmin, async (req, res) => {
     });
     const action = status === 'banned' ? 'user_ban' : status === 'suspended' ? 'user_suspend' : 'user_unsuspend';
     await auditLog(req.user, action, 'user', user.id, user.email, { before: { status: before.status }, after: { status } }, reason, req);
+    res.json({ success: true, data: sanitizeUserRecord(user) });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+router.patch('/users/:id/password', requireSuperAdmin, async (req, res) => {
+  try {
+    const bcrypt = require('bcryptjs');
+    const userId = parseUserId(req.params.id);
+    if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
+
+    const target = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, role: true, authProvider: true },
+    });
+    const checked = validateAdminPasswordChange({ password: req.body?.password, target });
+    if (!checked.ok) return res.status(checked.status).json({ success: false, message: checked.message });
+
+    const hashed = await bcrypt.hash(req.body.password, 12);
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashed, activeToken: null },
+    });
+
+    await auditLog(
+      req.user,
+      'user_password_change',
+      'user',
+      user.id,
+      user.email,
+      { after: { passwordSet: true } },
+      'Password set by superadmin',
+      req,
+    );
     res.json({ success: true, data: sanitizeUserRecord(user) });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

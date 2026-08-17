@@ -9,6 +9,7 @@ const PERMISSION_MATRIX = [
   { feature: 'Plans & pricing', admin: false, superadmin: true },
   { feature: 'Site settings', admin: false, superadmin: true },
   { feature: 'Create / manage admins', admin: false, superadmin: true },
+  { feature: 'Set user password', admin: false, superadmin: true },
   { feature: 'Promote / demote roles', admin: false, superadmin: true },
 ];
 

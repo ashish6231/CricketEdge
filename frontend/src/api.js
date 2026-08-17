@@ -344,6 +344,14 @@ export function adminCreateUser({ name, email, password }) {
   })
 }
 
+export function adminUpdateUserPassword(id, password) {
+  return fetchAPI(`/admin/users/${id}/password`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+}
+
 export async function adminGetAdmins() {
   return fetchAPI('/admin/admins')
 }

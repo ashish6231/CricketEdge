@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { LoaderCircle, Search, ChevronLeft, ChevronRight, Shield, User, Crown, Ban, CheckCircle, PauseCircle, MoreVertical, X, Gift, UserPlus, Mail, Lock, Eye, EyeOff } from 'lucide-react'
-import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan, adminGrantTrial, adminGrantTrialAll, adminGetSettings, adminCreateUser } from '../../api'
+import { LoaderCircle, Search, ChevronLeft, ChevronRight, Shield, User, Crown, Ban, CheckCircle, PauseCircle, MoreVertical, X, Gift, UserPlus, Mail, Lock, Eye, EyeOff, KeyRound } from 'lucide-react'
+import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan, adminGrantTrial, adminGrantTrialAll, adminGetSettings, adminCreateUser, adminUpdateUserPassword } from '../../api'
 import { useToast } from '../../components/ToastProvider'
 import { hydrateTrialForm } from '../../utils/trialSettingsAdmin'
 
@@ -85,6 +85,9 @@ export default function AdminUsers({ isSuperAdmin }) {
   const [showCreate, setShowCreate] = useState(false)
   const [creating, setCreating] = useState(false)
   const [createForm, setCreateForm] = useState({ name: '', email: '', password: '' })
+  const [passwordUser, setPasswordUser] = useState(null)
+  const [passwordValue, setPasswordValue] = useState('')
+  const [savingPassword, setSavingPassword] = useState(false)
 
   const load = useCallback(() => {
     setLoading(true)
@@ -128,6 +131,34 @@ export default function AdminUsers({ isSuperAdmin }) {
       toast.error(err.detail || 'Failed to create user')
     } finally {
       setCreating(false)
+    }
+  }
+
+  const openPassword = (user) => {
+    setExpanded(null)
+    setPasswordUser(user)
+    setPasswordValue('')
+  }
+
+  const closePassword = () => {
+    if (savingPassword) return
+    setPasswordUser(null)
+    setPasswordValue('')
+  }
+
+  const changePassword = async (e) => {
+    e.preventDefault()
+    if (!passwordUser) return
+    setSavingPassword(true)
+    try {
+      await adminUpdateUserPassword(passwordUser.id, passwordValue)
+      setPasswordUser(null)
+      setPasswordValue('')
+      toast.success('Password updated. User must log in again.')
+    } catch (err) {
+      toast.error(err.detail || 'Failed to update password')
+    } finally {
+      setSavingPassword(false)
     }
   }
 
@@ -234,6 +265,49 @@ export default function AdminUsers({ isSuperAdmin }) {
         document.body
       )}
 
+      {passwordUser && createPortal(
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.72)' }}
+          onClick={closePassword}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Change password"
+        >
+          <div
+            className="w-full max-w-md rounded-2xl p-5 shadow-2xl"
+            style={{ background: 'rgba(20,20,20,0.95)', border: '1px solid #2c2c2e', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <KeyRound size={18} className="text-[#8b5cf6]" />
+                <h3 className="font-black text-sm text-text-primary">Change Password</h3>
+              </div>
+              <button type="button" onClick={closePassword} disabled={savingPassword}
+                className="p-1.5 rounded-xl hover:bg-white/10 disabled:opacity-40">
+                <X size={16} className="text-text-muted" />
+              </button>
+            </div>
+            <p className="text-xs text-[#888] mb-3 truncate">{passwordUser.name} · {passwordUser.email}</p>
+            <form onSubmit={changePassword} className="space-y-3">
+              <CreateField icon={Lock} label="New Password" required type="password" minLength={6} placeholder="Minimum 6 characters"
+                value={passwordValue} onChange={e => setPasswordValue(e.target.value)} autoComplete="new-password" />
+              <button type="submit" disabled={savingPassword}
+                className="w-full py-3 rounded-xl text-sm font-black text-white disabled:opacity-50 transition-all active:scale-[0.98] mt-2"
+                style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', boxShadow: '0 4px 16px rgba(99,102,241,0.25)' }}>
+                {savingPassword ? (
+                  <span className="flex items-center justify-center gap-2"><LoaderCircle size={16} className="animate-spin" /> Saving…</span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2"><KeyRound size={16} /> Save Password</span>
+                )}
+              </button>
+            </form>
+          </div>
+        </div>,
+        document.body
+      )}
+
       {/* ── Stats row ── */}
       {!loading && pagination.total > 0 && (
         <div className="flex items-center gap-3 text-xs text-text-muted px-1">
@@ -303,6 +377,11 @@ export default function AdminUsers({ isSuperAdmin }) {
                       <div className="px-3 py-2 text-[10px] font-bold tracking-wider uppercase text-[#555] border-b border-[#2c2c2e] mb-1">
                         Manage User
                       </div>
+
+                      {isSuperAdmin && u.role !== 'superadmin' && u.authProvider !== 'google' && (
+                        <ActionMenuItem disabled={isActing} color="#a855f7" icon={<KeyRound size={14} />} label="Change Password"
+                          onClick={() => openPassword(u)} />
+                      )}
 
                       {/* Status actions */}
                       {(u.role === 'user' || (isSuperAdmin && u.role === 'admin')) && (<>
