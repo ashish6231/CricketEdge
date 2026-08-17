@@ -4,7 +4,7 @@ const scraper = require('../services/scraper');
 const { optionalAuth, requireProSubscription } = require('../middleware/auth');
 const { requireAdmin } = require('../middleware/admin');
 const { hasProAccess } = require('../lib/subscriptionAccess');
-const { filterMatchesForViewer, guestMayViewMatch } = require('../lib/guestMatchAccess');
+const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 
 // ──── Auth (admin only — scraper login control) ────
 
@@ -111,18 +111,27 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
 
 router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  if (!req.user) {
+  const [tossMatches, cricketMatches] = await Promise.all([
+    scraper.getAllTossMatches(),
+    scraper.getAllCricketMatches(),
+  ]);
+  const tossInfo = findMatchInfo(tossMatches, matchId);
+  const cricketInfo = findMatchInfo(cricketMatches, matchId);
+  if (!guestMayViewFromInfos(req.user, [tossInfo, cricketInfo])) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
-  const role = req.user?.role;
-  if (role !== 'admin' && role !== 'superadmin') {
-    const prisma = require('../db/prisma');
-    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-    if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+  const isEnded = isEndedMatch(tossInfo) || isEndedMatch(cricketInfo);
+  if (!isEnded) {
+    const role = req.user?.role;
+    if (role !== 'admin' && role !== 'superadmin') {
+      const prisma = require('../db/prisma');
+      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
+      if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+    }
   }
   const data = await scraper.getTossSnapshot(matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data' });
-  res.json(data);
+  res.json(attachMatchMeta(data, tossInfo || cricketInfo));
 });
 
 router.get('/session/matches', optionalAuth, async (req, res) => {

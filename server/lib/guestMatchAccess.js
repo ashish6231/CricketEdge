@@ -13,4 +13,10 @@ function guestMayViewMatch(matchInfo, user) {
   return isEndedMatch(matchInfo);
 }
 
-module.exports = { isEndedMatch, filterMatchesForViewer, guestMayViewMatch };
+/** Toss/session snapshots are keyed by cricket or market id — allow guest if any related row is ended. */
+function guestMayViewFromInfos(user, infos) {
+  if (user) return true;
+  return (Array.isArray(infos) ? infos : []).some(isEndedMatch);
+}
+
+module.exports = { isEndedMatch, filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos };

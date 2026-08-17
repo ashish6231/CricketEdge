@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { filterMatchesForViewer, guestMayViewMatch } = require('../lib/guestMatchAccess');
+const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos } = require('../lib/guestMatchAccess');
 
 test('guest list includes live and ended matches', () => {
   const all = [
@@ -20,4 +20,10 @@ test('guestMayViewMatch — ended free, live needs login', () => {
   assert.equal(guestMayViewMatch({ status: 'ended' }, null), true);
   assert.equal(guestMayViewMatch({ status: 'open' }, null), false);
   assert.equal(guestMayViewMatch({ status: 'open' }, { userId: 1 }), true);
+});
+
+test('guestMayViewFromInfos — allow if cricket or toss market ended', () => {
+  assert.equal(guestMayViewFromInfos(null, [{ status: 'open' }, { status: 'ended' }]), true);
+  assert.equal(guestMayViewFromInfos(null, [{ status: 'open' }, null]), false);
+  assert.equal(guestMayViewFromInfos({ userId: 1 }, [{ status: 'open' }]), true);
 });
