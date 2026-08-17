@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from 'react'
-import { LoaderCircle, Search, ChevronLeft, ChevronRight, Shield, User, Crown, Ban, CheckCircle, PauseCircle, MoreVertical, X, Gift, UserPlus, Mail, Lock } from 'lucide-react'
+import { createPortal } from 'react-dom'
+import { LoaderCircle, Search, ChevronLeft, ChevronRight, Shield, User, Crown, Ban, CheckCircle, PauseCircle, MoreVertical, X, Gift, UserPlus, Mail, Lock, Eye, EyeOff } from 'lucide-react'
 import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan, adminGrantTrial, adminGrantTrialAll, adminGetSettings, adminCreateUser } from '../../api'
 import { useToast } from '../../components/ToastProvider'
 import { hydrateTrialForm } from '../../utils/trialSettingsAdmin'
@@ -28,15 +29,33 @@ const Chip = ({ cfg }) => (
   </span>
 )
 
-const CreateField = ({ icon: Icon, label, ...props }) => (
-  <div className="space-y-1.5">
-    <label className="text-[11px] font-bold text-[#666] uppercase tracking-wide">{label}</label>
-    <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: '#0a0a0a', border: '1px solid #2c2c2e' }}>
-      <Icon size={14} className="text-[#555] flex-shrink-0" />
-      <input {...props} className="bg-transparent text-sm outline-none w-full text-text-primary placeholder:text-[#444]" />
+const CreateField = ({ icon: Icon, label, type, ...props }) => {
+  const [showPassword, setShowPassword] = useState(false)
+  const isPassword = type === 'password'
+  return (
+    <div className="space-y-1.5">
+      <label className="text-[11px] font-bold text-[#666] uppercase tracking-wide">{label}</label>
+      <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: '#0a0a0a', border: '1px solid #2c2c2e' }}>
+        <Icon size={14} className="text-[#555] flex-shrink-0" />
+        <input
+          {...props}
+          type={isPassword && showPassword ? 'text' : type}
+          className="bg-transparent text-sm outline-none w-full text-text-primary placeholder:text-[#444]"
+        />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(v => !v)}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            className="text-[#8e8e93] hover:text-white flex-shrink-0 p-0.5"
+          >
+            {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+          </button>
+        )}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 const ActionMenuItem = ({ onClick, disabled, color, icon, label, loading }) => (
   <button onClick={onClick} disabled={disabled || loading}
@@ -169,42 +188,50 @@ export default function AdminUsers({ isSuperAdmin }) {
         )}
       </div>
 
-      {showCreate && (
-        <>
-          <div className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm" onClick={() => !creating && setShowCreate(false)} />
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-            <div className="w-full max-w-md rounded-2xl p-5 pointer-events-auto shadow-2xl backdrop-blur-2xl animate-in fade-in zoom-in-95 duration-200"
-              style={{ background: 'rgba(20,20,20,0.95)', border: '1px solid #2c2c2e', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <UserPlus size={18} className="text-[#8b5cf6]" />
-                  <h3 className="font-black text-sm text-text-primary">Create User Account</h3>
-                </div>
-                <button onClick={() => !creating && setShowCreate(false)} disabled={creating}
-                  className="p-1.5 rounded-xl hover:bg-white/10 disabled:opacity-40">
-                  <X size={16} className="text-text-muted" />
-                </button>
+      {showCreate && createPortal(
+        <div
+          className="fixed inset-0 z-[70] flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.72)' }}
+          onClick={() => !creating && setShowCreate(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Create user"
+        >
+          <div
+            className="w-full max-w-md rounded-2xl p-5 shadow-2xl"
+            style={{ background: 'rgba(20,20,20,0.95)', border: '1px solid #2c2c2e', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <UserPlus size={18} className="text-[#8b5cf6]" />
+                <h3 className="font-black text-sm text-text-primary">Create User Account</h3>
               </div>
-              <form onSubmit={createUser} className="space-y-3">
-                <CreateField icon={User} label="Full Name" required placeholder="Rahul Sharma"
-                  value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} />
-                <CreateField icon={Mail} label="Email Address" required type="email" placeholder="user@example.com"
-                  value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} />
-                <CreateField icon={Lock} label="Password" required type="password" minLength={6} placeholder="Minimum 6 characters"
-                  value={createForm.password} onChange={e => setCreateForm(f => ({ ...f, password: e.target.value }))} />
-                <button type="submit" disabled={creating}
-                  className="w-full py-3 rounded-xl text-sm font-black text-white disabled:opacity-50 transition-all active:scale-[0.98] mt-2"
-                  style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', boxShadow: '0 4px 16px rgba(99,102,241,0.25)' }}>
-                  {creating ? (
-                    <span className="flex items-center justify-center gap-2"><LoaderCircle size={16} className="animate-spin" /> Creating…</span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-2"><UserPlus size={16} /> Create User</span>
-                  )}
-                </button>
-              </form>
+              <button type="button" onClick={() => !creating && setShowCreate(false)} disabled={creating}
+                className="p-1.5 rounded-xl hover:bg-white/10 disabled:opacity-40">
+                <X size={16} className="text-text-muted" />
+              </button>
             </div>
+            <form onSubmit={createUser} className="space-y-3">
+              <CreateField icon={User} label="Full Name" required placeholder="Rahul Sharma"
+                value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} />
+              <CreateField icon={Mail} label="Email Address" required type="email" placeholder="user@example.com"
+                value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} />
+              <CreateField icon={Lock} label="Password" required type="password" minLength={6} placeholder="Minimum 6 characters"
+                value={createForm.password} onChange={e => setCreateForm(f => ({ ...f, password: e.target.value }))} />
+              <button type="submit" disabled={creating}
+                className="w-full py-3 rounded-xl text-sm font-black text-white disabled:opacity-50 transition-all active:scale-[0.98] mt-2"
+                style={{ background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', boxShadow: '0 4px 16px rgba(99,102,241,0.25)' }}>
+                {creating ? (
+                  <span className="flex items-center justify-center gap-2"><LoaderCircle size={16} className="animate-spin" /> Creating…</span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2"><UserPlus size={16} /> Create User</span>
+                )}
+              </button>
+            </form>
           </div>
-        </>
+        </div>,
+        document.body
       )}
 
       {/* ── Stats row ── */}

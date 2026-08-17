@@ -224,8 +224,9 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
                   className="w-full rounded-lg pl-9 pr-9 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
                   style={{ border: '1px solid #2c2c2e' }} />
                 <button type="button" onClick={() => setShowPass(p => !p)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#636366] hover:text-white">
-                  {showPass ? <EyeOff size={14} /> : <Eye size={14} />}
+                  aria-label={showPass ? 'Hide password' : 'Show password'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8e8e93] hover:text-white">
+                  {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>

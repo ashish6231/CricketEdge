@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import {
   LoaderCircle, Shield, ShieldCheck, UserPlus, ArrowDownCircle,
-  Check, X, Mail, Lock, User, Search, Crown, Sparkles, Users,
+  Check, X, Mail, Lock, User, Search, Crown, Sparkles, Users, Eye, EyeOff,
 } from 'lucide-react'
 import { adminGetPermissions, adminGetAdmins, adminCreateAdmin, adminGetUsers, adminUpdateUserRole } from '../../api'
 import { useToast } from '../../components/ToastProvider'
@@ -37,17 +37,33 @@ const StatPill = ({ icon: Icon, label, value, color }) => (
   </div>
 )
 
-const Field = ({ icon: Icon, label, ...props }) => (
-  <div className="space-y-1.5">
-    <label className="text-[11px] font-bold text-[#666] uppercase tracking-wide">{label}</label>
-    <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: '#0a0a0a', border: '1px solid #2c2c2e' }}>
-      <Icon size={14} className="text-[#555] flex-shrink-0" />
-      <input {...props}
-        className="bg-transparent text-sm outline-none w-full text-text-primary placeholder:text-[#444]"
-      />
+const Field = ({ icon: Icon, label, type, ...props }) => {
+  const [showPassword, setShowPassword] = useState(false)
+  const isPassword = type === 'password'
+  return (
+    <div className="space-y-1.5">
+      <label className="text-[11px] font-bold text-[#666] uppercase tracking-wide">{label}</label>
+      <div className="flex items-center gap-2 rounded-xl px-3 py-2.5" style={{ background: '#0a0a0a', border: '1px solid #2c2c2e' }}>
+        <Icon size={14} className="text-[#555] flex-shrink-0" />
+        <input
+          {...props}
+          type={isPassword && showPassword ? 'text' : type}
+          className="bg-transparent text-sm outline-none w-full text-text-primary placeholder:text-[#444]"
+        />
+        {isPassword && (
+          <button
+            type="button"
+            onClick={() => setShowPassword(v => !v)}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            className="text-[#8e8e93] hover:text-white flex-shrink-0 p-0.5"
+          >
+            {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+          </button>
+        )}
+      </div>
     </div>
-  </div>
-)
+  )
+}
 
 export default function AdminAdmins() {
   const toast = useToast()
