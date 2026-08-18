@@ -901,17 +901,17 @@ export default function MatchDetail({ sport }) {
                           <div className="flex justify-between gap-2 text-[10px] font-semibold">
                             <span className="truncate" style={{ color: c1 }}>
                               {t1} {marketBetPct1.toFixed(0)}%
-                              <span className="text-[#636366] font-normal"> · ₹{fmt(marketBet1)}</span>
+                              <span className="text-[#636366] font-normal"> · {fmt(marketBet1)}</span>
                             </span>
                             {hasDraw && (
                               <span className="truncate" style={{ color: cDraw }}>
                                 {drawName} {marketBetPctDraw.toFixed(0)}%
-                                <span className="text-[#636366] font-normal"> · ₹{fmt(marketBetDraw)}</span>
+                                <span className="text-[#636366] font-normal"> · {fmt(marketBetDraw)}</span>
                               </span>
                             )}
                             <span className="truncate text-right" style={{ color: c2 }}>
                               {t2} {marketBetPct2.toFixed(0)}%
-                              <span className="text-[#636366] font-normal"> · ₹{fmt(marketBet2)}</span>
+                              <span className="text-[#636366] font-normal"> · {fmt(marketBet2)}</span>
                             </span>
                           </div>
                         </div>
@@ -998,61 +998,49 @@ export default function MatchDetail({ sport }) {
                 <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
                   <div className="px-4 py-3 flex items-center gap-2 border-b border-[#2c2c2e]">
                     <span className="text-sm font-bold text-white">Gated Fade Pick</span>
-                    <span
-                      className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded border"
-                      style={gatedFade.status === 'take'
-                        ? { color: '#10b981', borderColor: 'rgba(16,185,129,0.35)' }
-                        : { color: '#ef4444', borderColor: 'rgba(239,68,68,0.35)' }}
-                    >
-                      {gatedFade.status === 'take' ? 'TAKE' : 'NO PICK'}
-                    </span>
                   </div>
                   <div className="p-4">
-                    {gatedFade.status === 'skip' && (
-                      <div className="rounded-xl px-3 py-2 text-center mb-3 border border-[#ef4444]/30" style={{ background: 'rgba(239,68,68,0.08)' }}>
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-[#ef4444]">Avoid entry · {gatedFade.reason}</div>
-                        <div className="text-[10px] text-[#8e8e93] mt-0.5">Trap: {gatedFade.trap}</div>
-                      </div>
-                    )}
                     <div className="grid grid-cols-2 gap-3 mb-3">
                       {[{
                         name: gatedFade.t1,
-                        role: gatedFade.publicTeam === gatedFade.t1 ? 'Public' : gatedFade.winnerName === gatedFade.t1 ? 'Fade' : 'Team',
                         isFade: gatedFade.winnerName === gatedFade.t1,
-                        isPublic: gatedFade.publicTeam === gatedFade.t1,
+                        exposure: gatedFade.t1Exposure,
                       }, {
                         name: gatedFade.t2,
-                        role: gatedFade.publicTeam === gatedFade.t2 ? 'Public' : gatedFade.winnerName === gatedFade.t2 ? 'Fade' : 'Team',
                         isFade: gatedFade.winnerName === gatedFade.t2,
-                        isPublic: gatedFade.publicTeam === gatedFade.t2,
-                      }].map((side) => (
+                        exposure: gatedFade.t2Exposure,
+                      }].map((side) => {
+                        const hasPick = !!gatedFade.winnerName
+                        const isOther = hasPick && !side.isFade
+                        const role = side.isFade ? 'Fade' : isOther ? 'Public' : 'Team'
+                        return (
                         <div
                           key={side.name}
                           className="rounded-xl p-3 text-center border"
                           style={
                             side.isFade
                               ? { background: 'rgba(16,185,129,0.14)', borderColor: 'rgba(16,185,129,0.45)' }
-                              : side.isPublic
+                              : isOther
                                 ? { background: 'rgba(239,68,68,0.14)', borderColor: 'rgba(239,68,68,0.45)' }
                                 : { background: '#1a1a1a', borderColor: '#2c2c2e' }
                           }
                         >
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: side.isPublic ? '#ef4444' : side.isFade ? '#10b981' : '#8e8e93' }}>
-                            {side.role}
+                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: isOther ? '#ef4444' : side.isFade ? '#10b981' : '#8e8e93' }}>
+                            {role}
                           </div>
                           <div className="text-sm font-bold text-white truncate">{side.name}</div>
+                          <div className={`text-[11px] font-bold mt-1 ${typeof side.exposure === 'number' ? pnlCls(side.exposure) : 'text-[#8e8e93]'}`}>
+                            {typeof side.exposure === 'number' ? fmtRs(side.exposure) : 'Exp —'}
+                          </div>
                         </div>
-                      ))}
+                        )
+                      })}
                     </div>
-                    {gatedFade.status === 'take' && (
-                      <div className="text-center text-xs text-[#8e8e93] mb-3">
-                        {gatedFade.backtest.pct} backtest · {gatedFade.backtest.sample}
-                      </div>
-                    )}
                     <div className="space-y-1.5">
                       {[
+                        { ok: gatedFade.confirms.negExposure, label: 'Pick net exp < 0', val: gatedFade.fadeExposure != null ? fmtRs(gatedFade.fadeExposure) : '—' },
                         { ok: gatedFade.trap === 'none', label: 'Trap = none', val: gatedFade.trap },
-                        { ok: gatedFade.confirms.plGreen, label: 'P/L green agrees', val: gatedFade.plGreenTeam || '—' },
+                        { ok: gatedFade.confirms.plGreen, label: 'Neg exp + P/L > 0', val: gatedFade.plGreenTeam || '—' },
                         { ok: gatedFade.confirms.lowerRatio, label: 'Lower B/L agrees', val: gatedFade.lowerRatioTeam || '—' },
                         { ok: gatedFade.confirms.totGap, label: 'Total-bet gap ≥ 15%', val: gatedFade.totGapPct != null ? `${(gatedFade.totGapPct * 100).toFixed(0)}%` : '—' },
                       ].map((row) => (
@@ -1238,7 +1226,7 @@ export default function MatchDetail({ sport }) {
                   </div>
                   {[
                     { label: 'P/L', v1: <span className={`font-bold text-xs ${pnlCls(pnl.team1)}`}>{fmtRs(pnl.team1)}</span>, v2: <span className={`font-bold text-xs ${pnlCls(pnl.team2)}`}>{fmtRs(pnl.team2)}</span> },
-                    { label: 'Bets', v1: <span className="text-[11px] text-[#8e8e93]">₹{fmt(bets.team1)}</span>, v2: <span className="text-[11px] text-[#8e8e93]">₹{fmt(bets.team2)}</span> },
+                    { label: 'Bets', v1: <span className="text-[11px] text-[#8e8e93]">{fmt(bets.team1)}</span>, v2: <span className="text-[11px] text-[#8e8e93]">{fmt(bets.team2)}</span> },
                     { label: 'Back', v1: <span className="text-[11px] text-[#3b82f6]">₹{fmt(vol.team1?.back)}</span>, v2: <span className="text-[11px] text-[#3b82f6]">₹{fmt(vol.team2?.back)}</span> },
                     { label: 'Lay', v1: <span className="text-[11px] text-[#ef4444]">₹{fmt(vol.team1?.lay)}</span>, v2: <span className="text-[11px] text-[#ef4444]">₹{fmt(vol.team2?.lay)}</span> },
                   ].map(({ label, v1, v2 }, i) => (
