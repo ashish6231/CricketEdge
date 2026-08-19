@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-17T05:00:02.076Z",
+  "updatedAt": "2026-08-19T16:44:56.368Z",
   "records": [
     {
       "matchId": "35901908",
@@ -4712,6 +4712,1059 @@
         {
           "reason": "Stronger Support Team",
           "winner": "Barbados Tridents",
+          "priority": 40,
+          "selected": false
+        }
+      ],
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35946930",
+      "marketId": "1.261175564",
+      "matchName": "Jamaica Kingsmen v St. Kitts and Nevis Patriots",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Jamaica Kingsmen",
+      "team2": "St. Kitts and Nevis Patriots",
+      "startTime": 1787097600000,
+      "endedAt": "2026-08-19T05:50:01.745Z",
+      "capturedAt": "2026-08-19T05:50:01.745Z",
+      "snapshot": {
+        "serverTime": "2026-08-19T05:50:01.707Z",
+        "matchId": "35946930",
+        "matchName": "Jamaica Kingsmen v St. Kitts and Nevis Patriots",
+        "teamNames": [
+          "Jamaica Kingsmen",
+          "St. Kitts and Nevis Patriots"
+        ],
+        "inPlayPnl": {
+          "team1": 4280.4284,
+          "team2": -1729.6010999999994
+        },
+        "inPlayTotalBets": {
+          "team1": 1565.3429999999998,
+          "team2": 3160.7394999999997
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 537.38,
+            "lay": 905.6600000000001,
+            "total": 1560.04
+          },
+          "team2": {
+            "back": 4887.349999999999,
+            "lay": 1022.66,
+            "total": 5793.009999999999
+          }
+        },
+        "preMatchPnl": {
+          "team1": 4280.4284,
+          "team2": -1729.6010999999994
+        },
+        "preMatchTotalBets": {
+          "team1": 1565.3429999999998,
+          "team2": 3160.7394999999997
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 537.38,
+            "lay": 905.6600000000001,
+            "total": 1560.04
+          },
+          "team2": {
+            "back": 4887.349999999999,
+            "lay": 1022.66,
+            "total": 5793.009999999999
+          }
+        },
+        "threeMinPnl": {
+          "team1": 4280.4284,
+          "team2": -1729.6010999999994
+        },
+        "threeMinTotalBets": {
+          "team1": 1565.3429999999998,
+          "team2": 3160.7394999999997
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 537.38,
+            "lay": 905.6600000000001,
+            "total": 1560.04
+          },
+          "team2": {
+            "back": 4887.349999999999,
+            "lay": 1022.66,
+            "total": 5793.009999999999
+          }
+        },
+        "matchLoadV2": {
+          "team1": 13,
+          "team2": 17
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 537.38,
+            "lay": 905.6600000000001,
+            "totalVolume": 1443.04,
+            "backPercentage": 37.23943896219093
+          },
+          "team2": {
+            "back": 4887.349999999999,
+            "lay": 1022.66,
+            "totalVolume": 5910.009999999999,
+            "backPercentage": 82.6961375699872
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 542.683,
+            "lay": 958.4214000000001,
+            "totalBet": 1501.1044000000002
+          },
+          "team2": {
+            "back": 2255.0795,
+            "lay": 893.7583999999998,
+            "totalBet": 3148.8378999999995
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1560.04,
+            "support": 21.216229999796006
+          },
+          "team2": {
+            "supportMoney": 5793.009999999999,
+            "support": 78.783770000204
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "St. Kitts and Nevis Patriots",
+          "bookieFavouriteOutcome": "Jamaica Kingsmen",
+          "riskTeam": "St. Kitts and Nevis Patriots",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 57.567540000407995,
+          "mostBettedTeam": "St. Kitts and Nevis Patriots",
+          "prediction": {
+            "team1TrueSupport": 1427.7923999999998,
+            "team2TrueSupport": 3188.0998,
+            "ratio": 2.2328874982105242,
+            "bookiePnlTeam1": 362.9770000000001,
+            "bookiePnlTeam2": -1311.1483999999998,
+            "prediction": "Jamaica Kingsmen",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.23) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -415.73840000000007,
+            "backExposure": 542.683,
+            "layExposure": 958.4214000000001,
+            "teamName": "Jamaica Kingsmen"
+          },
+          "team2": {
+            "netExposure": 1344.569,
+            "backExposure": 2229.6784,
+            "layExposure": 885.1093999999998,
+            "teamName": "St. Kitts and Nevis Patriots"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 542.683,
+            "A_lay_stake": 905.6600000000001,
+            "B_back_expo": 2255.0795,
+            "B_lay_stake": 1022.66
+          },
+          "totals": {
+            "totalBetTeam1": 1565.3429999999998,
+            "totalBetTeam2": 3160.7394999999997
+          },
+          "simplePL": {
+            "team1_win": 362.9770000000001,
+            "team2_win": -1232.4195
+          },
+          "derivedPL": {
+            "team1_win": 1595.3964999999998,
+            "team2_win": -1595.3964999999998
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 537.38,
+              "totalLayVol": 905.6600000000001,
+              "totalBet": 1560.04,
+              "profitLoss": 4232.969999999999
+            },
+            "team2": {
+              "totalBackVol": 4887.349999999999,
+              "totalLayVol": 1022.66,
+              "totalBet": 5793.009999999999,
+              "profitLoss": -4232.969999999999
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 542.683,
+              "totalLayVol": 905.6600000000001,
+              "totalBet": 1565.3429999999998,
+              "profitLoss": 4280.4284
+            },
+            "team2": {
+              "totalBackExpo": 2255.0795,
+              "totalLayVol": 1022.66,
+              "totalBet": 3160.7394999999997,
+              "profitLoss": -1729.6010999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 542.683,
+              "totalLayNetVol": 958.4214000000001,
+              "totalBet": 1436.4413999999997,
+              "profitLoss": 1777.0595000000003
+            },
+            "team2": {
+              "totalBackNetVol": 2255.0795,
+              "totalLayNetVol": 893.7583999999998,
+              "totalBet": 3213.5009,
+              "profitLoss": -1777.0595000000003
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 13,
+            "averageOdds": 1.8515384615384614,
+            "averageSize": 120.00307692307692,
+            "supportProduct": 222.19031242603546
+          },
+          "teamB": {
+            "tradeCount": 17,
+            "averageOdds": 1.9270588235294117,
+            "averageSize": 340.76529411764704,
+            "supportProduct": 656.6747667820068
+          },
+          "strongerTeam": "St. Kitts and Nevis Patriots",
+          "supportRatio": 2.9554608372073203
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 537.38,
+            "oppoLayVolume": 1022.66,
+            "layExposure": 958.4214000000001,
+            "netSupportValue": 601.6185999999999
+          },
+          "teamB": {
+            "totalBackVolume": 4887.349999999999,
+            "oppoLayVolume": 905.6600000000001,
+            "layExposure": 893.7583999999998,
+            "netSupportValue": 4899.2516
+          },
+          "strongerTeam": "St. Kitts and Nevis Patriots",
+          "netSupportDifference": 4297.633,
+          "percentageA": 10.936789601034395,
+          "percentageB": 89.06321039896561
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -368.2800000000001,
+            "syntheticSupport": 1022.66,
+            "opponentLiabilityRejection": 893.7583999999998,
+            "sentimentScore": -239.37839999999994
+          },
+          "teamB": {
+            "directNetSupport": 3864.6899999999996,
+            "syntheticSupport": 905.6600000000001,
+            "opponentLiabilityRejection": 958.4214000000001,
+            "sentimentScore": 3811.9285999999993
+          },
+          "strongerTeam": "St. Kitts and Nevis Patriots",
+          "scoreDifference": 4051.3069999999993,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Jamaica Kingsmen",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "St. Kitts and Nevis Patriots",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Jamaica Kingsmen"
+        },
+        "teams": {
+          "Jamaica Kingsmen": {
+            "trades": [
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.98,
+                "type": "lay",
+                "size": 2.88,
+                "updatedAt": 1787094947678
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2,
+                "type": "lay",
+                "size": 4.230000000000018,
+                "updatedAt": 1787094905877
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2,
+                "type": "back",
+                "size": 241.16,
+                "updatedAt": 1787094525744
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.1,
+                "type": "lay",
+                "size": 67.06,
+                "updatedAt": 1787093004038
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.06,
+                "type": "lay",
+                "size": 519.13,
+                "updatedAt": 1787092177111
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.02,
+                "type": "back",
+                "size": 64.62,
+                "updatedAt": 1787092177111
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.06,
+                "type": "back",
+                "size": 90.38,
+                "updatedAt": 1787090249784
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.61,
+                "updatedAt": 1787089681382
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.04,
+                "type": "lay",
+                "size": 224.07,
+                "updatedAt": 1787088700760
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.02,
+                "type": "lay",
+                "size": 17.68,
+                "updatedAt": 1787087093331
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.99,
+                "type": "back",
+                "size": 141.22,
+                "updatedAt": 1787074738919
+              }
+            ],
+            "pnlIfWins": 4280.4284,
+            "totalBet": 1565.3429999999998
+          },
+          "St. Kitts and Nevis Patriots": {
+            "trades": [
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.08,
+                "type": "lay",
+                "size": 88.2,
+                "updatedAt": 1787095486159
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.1,
+                "type": "lay",
+                "size": 15.93,
+                "updatedAt": 1787095466809
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.01,
+                "type": "back",
+                "size": 2540.11,
+                "updatedAt": 1787095224075
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 2.02,
+                "type": "lay",
+                "size": 2.82,
+                "updatedAt": 1787094947662
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 2,
+                "type": "lay",
+                "size": 210.14000000000001,
+                "updatedAt": 1787094905909
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.99,
+                "type": "lay",
+                "size": 35.450000000000045,
+                "updatedAt": 1787094107032
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.98,
+                "type": "lay",
+                "size": 181.42999999999998,
+                "updatedAt": 1787094011066
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.9,
+                "type": "back",
+                "size": 130.53,
+                "updatedAt": 1787093003960
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.94,
+                "type": "lay",
+                "size": 424.87999999999994,
+                "updatedAt": 1787092177330
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.91,
+                "type": "back",
+                "size": 155.91,
+                "updatedAt": 1787090402502
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.92,
+                "type": "back",
+                "size": 266.1,
+                "updatedAt": 1787090378384
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.93,
+                "type": "back",
+                "size": 189.41,
+                "updatedAt": 1787090330705
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.93,
+                "type": "lay",
+                "size": 48.28999999999999,
+                "updatedAt": 1787090249879
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.94,
+                "type": "back",
+                "size": 290.97,
+                "updatedAt": 1787088720443
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.95,
+                "type": "back",
+                "size": 175.83,
+                "updatedAt": 1787088712900
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.96,
+                "type": "back",
+                "size": 389.78,
+                "updatedAt": 1787088700839
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.96,
+                "type": "lay",
+                "size": 15.519999999999982,
+                "updatedAt": 1787088111046
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.97,
+                "type": "back",
+                "size": 330.1,
+                "updatedAt": 1787085833572
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.99,
+                "type": "back",
+                "size": 418.61,
+                "updatedAt": 1787083762138
+              }
+            ],
+            "pnlIfWins": -1729.6010999999994,
+            "totalBet": 3160.7394999999997
+          }
+        }
+      },
+      "predictedWinner": "St. Kitts and Nevis Patriots",
+      "predictionReason": "Stronger Support Team",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Stronger Support Team"
+      },
+      "matchedRules": [
+        {
+          "reason": "Stronger Support Team",
+          "winner": "St. Kitts and Nevis Patriots",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Jamaica Kingsmen",
+          "priority": 40,
+          "selected": false
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "St. Kitts and Nevis Patriots",
+          "priority": 80,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35913612",
+      "marketId": "1.260870109",
+      "matchName": "England v Pakistan",
+      "competitionName": "Test Matches",
+      "team1": "England",
+      "team2": "Pakistan",
+      "startTime": 1787133600000,
+      "endedAt": "2026-08-19T16:44:56.355Z",
+      "capturedAt": "2026-08-19T16:44:56.355Z",
+      "snapshot": {
+        "serverTime": "2026-08-19T16:44:56.291Z",
+        "matchId": "35913612",
+        "matchName": "England v Pakistan",
+        "teamNames": [
+          "England",
+          "Pakistan"
+        ],
+        "inPlayPnl": {
+          "team1": -1571.6135000000002,
+          "team2": 1713.7648000000004
+        },
+        "inPlayTotalBets": {
+          "team1": 4256.5773,
+          "team2": 2654.9981
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 3079.51,
+            "lay": 1054.2299999999998,
+            "total": 4335.68
+          },
+          "team2": {
+            "back": 1621.13,
+            "lay": 1256.1699999999998,
+            "total": 2675.3599999999997
+          }
+        },
+        "preMatchPnl": {
+          "team1": -1571.6135000000002,
+          "team2": 1713.7648000000004
+        },
+        "preMatchTotalBets": {
+          "team1": 4256.5773,
+          "team2": 2654.9981
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 3079.51,
+            "lay": 1054.2299999999998,
+            "total": 4335.68
+          },
+          "team2": {
+            "back": 1621.13,
+            "lay": 1256.1699999999998,
+            "total": 2675.3599999999997
+          }
+        },
+        "threeMinPnl": {
+          "team1": -1571.6135000000002,
+          "team2": 1713.7648000000004
+        },
+        "threeMinTotalBets": {
+          "team1": 4256.5773,
+          "team2": 2654.9981
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 3079.51,
+            "lay": 1054.2299999999998,
+            "total": 4335.68
+          },
+          "team2": {
+            "back": 1621.13,
+            "lay": 1256.1699999999998,
+            "total": 2675.3599999999997
+          }
+        },
+        "matchLoadV2": {
+          "team1": 9,
+          "team2": 12
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 3079.51,
+            "lay": 1054.2299999999998,
+            "totalVolume": 4133.74,
+            "backPercentage": 74.49694465544519
+          },
+          "team2": {
+            "back": 1621.13,
+            "lay": 1256.1699999999998,
+            "totalVolume": 2877.3,
+            "backPercentage": 56.342056789351126
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 3000.4073000000003,
+            "lay": 1063.8337999999999,
+            "totalBet": 4064.2411
+          },
+          "team2": {
+            "back": 1600.7681,
+            "lay": 1289.2529,
+            "totalBet": 2890.0209999999997
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 4335.68,
+            "support": 61.840754010817236
+          },
+          "team2": {
+            "supportMoney": 2675.3599999999997,
+            "support": 38.15924598918277
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "England",
+          "bookieFavouriteOutcome": "Pakistan",
+          "riskTeam": "England",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 23.681508021634464,
+          "mostBettedTeam": "England",
+          "prediction": {
+            "team1TrueSupport": 4289.6602,
+            "team2TrueSupport": 2664.6018999999997,
+            "ratio": 1.6098690765025727,
+            "bookiePnlTeam1": -1946.1773000000005,
+            "bookiePnlTeam2": -344.59810000000016,
+            "prediction": "Pakistan",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.61) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1936.5735000000004,
+            "backExposure": 3000.4073000000003,
+            "layExposure": 1063.8337999999999,
+            "teamName": "England"
+          },
+          "team2": {
+            "netExposure": 311.51520000000005,
+            "backExposure": 1600.7681,
+            "layExposure": 1289.2529,
+            "teamName": "Pakistan"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 3000.4073000000003,
+            "A_lay_stake": 1054.2299999999998,
+            "B_back_expo": 1600.7681,
+            "B_lay_stake": 1256.1699999999998
+          },
+          "totals": {
+            "totalBetTeam1": 4256.5773,
+            "totalBetTeam2": 2654.9981
+          },
+          "simplePL": {
+            "team1_win": -1946.1773000000005,
+            "team2_win": -344.59810000000016
+          },
+          "derivedPL": {
+            "team1_win": -1601.5792000000001,
+            "team2_win": 1601.5792000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 3079.51,
+              "totalLayVol": 1054.2299999999998,
+              "totalBet": 4335.68,
+              "profitLoss": -1660.3200000000006
+            },
+            "team2": {
+              "totalBackVol": 1621.13,
+              "totalLayVol": 1256.1699999999998,
+              "totalBet": 2675.3599999999997,
+              "profitLoss": 1660.3200000000006
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 3000.4073000000003,
+              "totalLayVol": 1054.2299999999998,
+              "totalBet": 4256.5773,
+              "profitLoss": -1571.6135
+            },
+            "team2": {
+              "totalBackExpo": 1600.7681,
+              "totalLayVol": 1256.1699999999998,
+              "totalBet": 2654.9981,
+              "profitLoss": 1713.7648
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 3000.4073000000003,
+              "totalLayNetVol": 1063.8337999999999,
+              "totalBet": 4289.6602,
+              "profitLoss": -1625.0583000000006
+            },
+            "team2": {
+              "totalBackNetVol": 1600.7681,
+              "totalLayNetVol": 1289.2529,
+              "totalBet": 2664.6018999999997,
+              "profitLoss": 1625.0583000000006
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 9,
+            "averageOdds": 1.98,
+            "averageSize": 481.74222222222227,
+            "supportProduct": 953.8496000000001
+          },
+          "teamB": {
+            "tradeCount": 12,
+            "averageOdds": 1.9883333333333333,
+            "averageSize": 222.94666666666663,
+            "supportProduct": 443.2922888888888
+          },
+          "strongerTeam": "England",
+          "supportRatio": 2.1517396623135996
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 3079.51,
+            "oppoLayVolume": 1256.1699999999998,
+            "layExposure": 1063.8337999999999,
+            "netSupportValue": 3271.8462000000004
+          },
+          "teamB": {
+            "totalBackVolume": 1621.13,
+            "oppoLayVolume": 1054.2299999999998,
+            "layExposure": 1289.2529,
+            "netSupportValue": 1386.1070999999997
+          },
+          "strongerTeam": "England",
+          "netSupportDifference": 1885.7391000000007,
+          "percentageA": 70.24214261658656,
+          "percentageB": 29.757857383413434
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 2025.2800000000004,
+            "syntheticSupport": 1256.1699999999998,
+            "opponentLiabilityRejection": 1289.2529,
+            "sentimentScore": 1992.1971000000003
+          },
+          "teamB": {
+            "directNetSupport": 364.96000000000026,
+            "syntheticSupport": 1054.2299999999998,
+            "opponentLiabilityRejection": 1063.8337999999999,
+            "sentimentScore": 355.3562000000002
+          },
+          "strongerTeam": "England",
+          "scoreDifference": 1636.8409000000001,
+          "percentageA": 84.86269939004153,
+          "percentageB": 15.137300609958466
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "England",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Pakistan",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "England"
+        },
+        "teams": {
+          "England": {
+            "trades": [
+              {
+                "team": "England",
+                "price": 2,
+                "type": "lay",
+                "size": 258.46000000000004,
+                "updatedAt": 1787131360391
+              },
+              {
+                "team": "England",
+                "price": 1.93,
+                "type": "back",
+                "size": 205.18,
+                "updatedAt": 1787131197919
+              },
+              {
+                "team": "England",
+                "price": 1.94,
+                "type": "back",
+                "size": 28.22,
+                "updatedAt": 1787131120581
+              },
+              {
+                "team": "England",
+                "price": 2.04,
+                "type": "lay",
+                "size": 6.31,
+                "updatedAt": 1787131042297
+              },
+              {
+                "team": "England",
+                "price": 1.99,
+                "type": "lay",
+                "size": 98.86999999999989,
+                "updatedAt": 1787131042297
+              },
+              {
+                "team": "England",
+                "price": 1.96,
+                "type": "lay",
+                "size": 0.42999999999995,
+                "updatedAt": 1787131009145
+              },
+              {
+                "team": "England",
+                "price": 1.98,
+                "type": "lay",
+                "size": 18.65999999999999,
+                "updatedAt": 1787130817615
+              },
+              {
+                "team": "England",
+                "price": 1.96,
+                "type": "back",
+                "size": 646.75,
+                "updatedAt": 1787130817615
+              },
+              {
+                "team": "England",
+                "price": 1.98,
+                "type": "back",
+                "size": 783.4300000000001,
+                "updatedAt": 1787130441297
+              },
+              {
+                "team": "England",
+                "price": 2.02,
+                "type": "lay",
+                "size": 617.51,
+                "updatedAt": 1787130130539
+              },
+              {
+                "team": "England",
+                "price": 1.97,
+                "type": "back",
+                "size": 367.45000000000005,
+                "updatedAt": 1787130130539
+              },
+              {
+                "team": "England",
+                "price": 1.99,
+                "type": "back",
+                "size": 1048.48,
+                "updatedAt": 1787129885114
+              },
+              {
+                "team": "England",
+                "price": 1.97,
+                "type": "lay",
+                "size": 53.99000000000001,
+                "updatedAt": 1787125172270
+              }
+            ],
+            "pnlIfWins": -1571.6135000000002,
+            "totalBet": 4256.5773
+          },
+          "Pakistan": {
+            "trades": [
+              {
+                "team": "Pakistan",
+                "price": 1.97,
+                "type": "back",
+                "size": 157.84,
+                "updatedAt": 1787131117586
+              },
+              {
+                "team": "Pakistan",
+                "price": 2,
+                "type": "back",
+                "size": 530,
+                "updatedAt": 1787131042297
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.98,
+                "type": "back",
+                "size": 609.7,
+                "updatedAt": 1787131042297
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.96,
+                "type": "back",
+                "size": 6.56,
+                "updatedAt": 1787131042297
+              },
+              {
+                "team": "Pakistan",
+                "price": 2.04,
+                "type": "lay",
+                "size": 438.7,
+                "updatedAt": 1787131009145
+              },
+              {
+                "team": "Pakistan",
+                "price": 2.02,
+                "type": "lay",
+                "size": 790.3199999999999,
+                "updatedAt": 1787130817619
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.99,
+                "type": "back",
+                "size": 317.03,
+                "updatedAt": 1787130130539
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.99,
+                "type": "lay",
+                "size": 27.15,
+                "updatedAt": 1787126697687
+              }
+            ],
+            "pnlIfWins": 1713.7648000000004,
+            "totalBet": 2654.9981
+          }
+        }
+      },
+      "predictedWinner": "Pakistan",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "Pakistan",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Pakistan",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Pakistan",
+          "priority": 80,
+          "selected": true
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "England",
           "priority": 40,
           "selected": false
         }
