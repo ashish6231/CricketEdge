@@ -4,6 +4,7 @@ import {
   splitMatchOutcomes,
   isDrawOutcomeName,
   calcBookiePlMulti,
+  calcBookiePlFromTrades,
   getBookiePl,
 } from './bookiePl.js'
 
@@ -30,6 +31,26 @@ test('calcBookiePlMulti returns three outcomes', () => {
   assert.ok(Object.prototype.hasOwnProperty.call(byName, 'A'))
   assert.ok(Object.prototype.hasOwnProperty.call(byName, 'B'))
   assert.ok(Object.prototype.hasOwnProperty.call(byName, 'The Draw'))
+})
+
+test('bookie P/L if a backed team wins is negative — bookie laid that back', () => {
+  const { team1Win, team2Win } = calcBookiePlFromTrades(
+    [{ type: 'back', size: 100, price: 2 }],
+    [],
+  )
+  // Customer backed A 100 at 2.0. Bookie laid A. A wins → bookie pays 100.
+  assert.equal(team1Win, -100)
+  // A loses → bookie keeps the 100 stake.
+  assert.equal(team2Win, 100)
+})
+
+test('calcBookiePlMulti matches two-way bookie sign', () => {
+  const byName = calcBookiePlMulti({
+    A: [{ type: 'back', size: 100, price: 2 }],
+    B: [],
+  })
+  assert.equal(byName.A, -100)
+  assert.equal(byName.B, 100)
 })
 
 test('getBookiePl includes plDraw from pnlIfWins', () => {

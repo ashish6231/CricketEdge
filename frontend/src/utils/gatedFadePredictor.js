@@ -1,10 +1,12 @@
 /**
- * Gated fade pick — exposure first, then P/L when both sides are negative.
+ * Gated fade pick — P/L profit first, then exposure.
  *
- * 1. One team clearly negative exposure, the other positive → pick the negative team.
- * 2. Both negative → pick higher bookie P/L (more profit); tie-break with more-negative exposure.
- * 3. Both positive → fade the lower-exposure team (no skip banner).
- * Trap ≠ none still skips the take.
+ * 1. Team with more money → pick that team (beats fewer-bets if they disagree).
+ * 2. Exactly one team in bookie P/L profit → pick that team.
+ * 3. Both profit or both loss: one negative exposure, one positive → pick the negative team.
+ * 4. Both negative → higher P/L; tie-break more-negative exposure.
+ * 5. Both positive → fade the lower-exposure team.
+ * Trap ≠ none still marks skip internally (UI no longer shows avoid-entry).
  */
 
 import { getBookiePl, getTeamMetrics, splitMatchOutcomes } from './bookiePl.js'
@@ -53,9 +55,53 @@ function plGreenFromNegExp(t1, t2, e1, e2, pl1, pl2) {
   return null
 }
 
-function pickFromExposureAndPl(t1, t2, e1, e2, pl1, pl2) {
+function tradeMoney(teamData) {
+  const trades = teamData?.trades
+  if (!trades?.length) return null
+  let sum = 0
+  for (const t of trades) sum += t.size || 0
+  return sum
+}
+
+function betsAndMoney(snap, t1, t2) {
+  const tot = snap?.deepMetrics?.totals || {}
+  const t1Data = snap?.teams?.[t1] || {}
+  const t2Data = snap?.teams?.[t2] || {}
+  const iv = snap?.inPlayVolume || {}
+  const bets1 = tot.totalBetTeam1 ?? t1Data.totalBet
+  const bets2 = tot.totalBetTeam2 ?? t2Data.totalBet
+  const money1 = tradeMoney(t1Data) ?? iv.team1?.total
+  const money2 = tradeMoney(t2Data) ?? iv.team2?.total
+  return { bets1, bets2, money1, money2 }
+}
+
+function moreMoneyTeamOf(t1, t2, money1, money2) {
+  if (!(money1 > 0 && money2 > 0) || money1 === money2) return null
+  return money1 > money2 ? t1 : t2
+}
+
+function fewerBetsTeamOf(t1, t2, bets1, bets2) {
+  if (!(bets1 > 0 && bets2 > 0) || bets1 === bets2) return null
+  return bets1 < bets2 ? t1 : t2
+}
+
+function pickFromExposureAndPl(t1, t2, e1, e2, pl1, pl2, moreMoneyTeam) {
   if (typeof e1 !== 'number' || typeof e2 !== 'number') {
     return { pick: null, reason: 'Need both net exposures' }
+  }
+
+  const t1Profit = typeof pl1 === 'number' && pl1 > 0
+  const t2Profit = typeof pl2 === 'number' && pl2 > 0
+
+  if (moreMoneyTeam) {
+    return { pick: moreMoneyTeam, reason: 'More money' }
+  }
+
+  if (t1Profit !== t2Profit) {
+    return {
+      pick: t1Profit ? t1 : t2,
+      reason: t1Profit ? 'Only T1 in P/L profit' : 'Only T2 in P/L profit',
+    }
   }
 
   const t1Neg = e1 < 0
@@ -120,7 +166,12 @@ export function predictGatedFade(snap) {
   const e1 = netExposureFor(snap, t1)
   const e2 = netExposureFor(snap, t2)
   const { pl1, pl2 } = getBookiePl(snap, t1, t2)
-  const { pick: winnerName, reason: pickReason } = pickFromExposureAndPl(t1, t2, e1, e2, pl1, pl2)
+  const { bets1, bets2, money1, money2 } = betsAndMoney(snap, t1, t2)
+  const moreMoneyTeam = moreMoneyTeamOf(t1, t2, money1, money2)
+  const fewerBetsTeam = fewerBetsTeamOf(t1, t2, bets1, bets2)
+  const { pick: winnerName, reason: pickReason } = pickFromExposureAndPl(
+    t1, t2, e1, e2, pl1, pl2, moreMoneyTeam,
+  )
 
   const fadeExposure = winnerName ? netExposureFor(snap, winnerName) : null
   const publicExposure = netExposureFor(snap, publicTeam)
@@ -141,11 +192,16 @@ export function predictGatedFade(snap) {
     ? Math.abs((m1.totalBet || 0) - (m2.totalBet || 0)) / totSum
     : null
 
+  const pickPl = teamEq(winnerName, t1) ? pl1 : teamEq(winnerName, t2) ? pl2 : null
   const confirms = {
     negExposure,
     plGreen: !!(winnerName && plGreenTeam && teamEq(winnerName, plGreenTeam)),
+    plProfit: typeof pickPl === 'number' && pickPl > 0,
     lowerRatio: !!(winnerName && lowerRatioTeam && teamEq(winnerName, lowerRatioTeam)),
     totGap: totGapPct != null && totGapPct >= 0.15,
+    fewerBetsMoreMoney: !!(winnerName && moreMoneyTeam && fewerBetsTeam && teamEq(winnerName, moreMoneyTeam) && teamEq(winnerName, fewerBetsTeam)),
+    moreMoney: !!(winnerName && moreMoneyTeam && teamEq(winnerName, moreMoneyTeam)),
+    fewerBets: !!(winnerName && fewerBetsTeam && teamEq(winnerName, fewerBetsTeam)),
   }
 
   const shared = {
@@ -162,6 +218,9 @@ export function predictGatedFade(snap) {
     publicExposure,
     t1Exposure: e1,
     t2Exposure: e2,
+    fewerBetsMoreMoneyTeam: moreMoneyTeam && fewerBetsTeam && teamEq(moreMoneyTeam, fewerBetsTeam) ? moreMoneyTeam : null,
+    moreMoneyTeam,
+    fewerBetsTeam,
   }
 
   if (!winnerName) {

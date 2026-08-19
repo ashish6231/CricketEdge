@@ -14,10 +14,23 @@ function snap({
   r2 = { back: 80, lay: 120 },
   exp1 = 80,
   exp2 = -40,
+  bets1 = null,
+  bets2 = null,
+  money1 = null,
+  money2 = null,
 } = {}) {
   const bookmakerExposure = {}
   if (typeof exp1 === 'number') bookmakerExposure.team1 = { teamName: t1, netExposure: exp1 }
   if (typeof exp2 === 'number') bookmakerExposure.team2 = { teamName: t2, netExposure: exp2 }
+  const t1Trades = typeof money1 === 'number' ? [{ type: 'back', size: money1, price: 2 }] : []
+  const t2Trades = typeof money2 === 'number' ? [{ type: 'back', size: money2, price: 2 }] : []
+  const deepMetrics = {}
+  if (typeof bets1 === 'number' || typeof bets2 === 'number') {
+    deepMetrics.totals = {
+      ...(typeof bets1 === 'number' ? { totalBetTeam1: bets1 } : {}),
+      ...(typeof bets2 === 'number' ? { totalBetTeam2: bets2 } : {}),
+    }
+  }
   return {
     teamNames: [t1, t2],
     marketSignals: {
@@ -25,16 +38,72 @@ function snap({
       trap: { level: trap },
     },
     teams: {
-      [t1]: { pnlIfWins: pl1, trades: [] },
-      [t2]: { pnlIfWins: pl2, trades: [] },
+      [t1]: { pnlIfWins: pl1, totalBet: bets1 ?? 0, trades: t1Trades },
+      [t2]: { pnlIfWins: pl2, totalBet: bets2 ?? 0, trades: t2Trades },
     },
     advancedMetricsV2: {
       team1: { ...r1, totalBet: (r1.back || 0) + (r1.lay || 0) },
       team2: { ...r2, totalBet: (r2.back || 0) + (r2.lay || 0) },
     },
     bookmakerExposure,
+    ...(Object.keys(deepMetrics).length ? { deepMetrics } : {}),
   }
 }
+
+test('more money beats fewer bets when those signals disagree', () => {
+  const p = predictGatedFade(snap({
+    exp1: 30,
+    exp2: 90,
+    pl1: 100,
+    pl2: 80,
+    bets1: 3000,
+    bets2: 6662,
+    money1: 18,
+    money2: 82,
+  }))
+  assert.equal(p.status, 'take')
+  assert.equal(p.winnerName, t2)
+  assert.equal(p.moreMoneyTeam, t2)
+  assert.equal(p.fewerBetsTeam, t1)
+  assert.equal(p.confirms.moreMoney, true)
+  assert.equal(p.confirms.fewerBets, false)
+  assert.match(p.reason, /money/i)
+})
+
+test('picks the team with fewer total bets and more money', () => {
+  const p = predictGatedFade(snap({
+    exp1: 30,
+    exp2: 90,
+    pl1: 100,
+    pl2: 80,
+    bets1: 6662,
+    bets2: 3000,
+    money1: 18,
+    money2: 82,
+  }))
+  assert.equal(p.status, 'take')
+  assert.equal(p.winnerName, t2)
+  assert.equal(p.moreMoneyTeam, t2)
+  assert.equal(p.fewerBetsTeam, t2)
+  assert.equal(p.confirms.moreMoney, true)
+  assert.equal(p.confirms.fewerBets, true)
+  assert.match(p.reason, /money/i)
+})
+
+test('does not pick neg-exp team when they are in P/L loss and the other is in profit', () => {
+  const p = predictGatedFade(snap({
+    exp1: -79,
+    exp2: 672,
+    pl1: -496,
+    pl2: 3165,
+    moreBetted: t1,
+  }))
+  assert.equal(p.status, 'take')
+  assert.equal(p.winnerName, t2)
+  assert.equal(p.plGreenTeam, null)
+  assert.equal(p.confirms.plProfit, true)
+  assert.match(p.reason, /profit/i)
+})
 
 test('picks the negative-exposure team when the other is positive', () => {
   const p = predictGatedFade(snap())
@@ -97,7 +166,7 @@ test('when both exposures are positive, fades the lower-exposure team', () => {
 })
 
 test('when both exposures are positive, lower exposure wins even if that is team 1', () => {
-  const p = predictGatedFade(snap({ exp1: 30, exp2: 90 }))
+  const p = predictGatedFade(snap({ exp1: 30, exp2: 90, pl1: -10, pl2: -20 }))
   assert.equal(p.status, 'take')
   assert.equal(p.winnerName, t1)
 })
@@ -143,7 +212,7 @@ test('P/L green is null when the negative-exposure team is not in profit', () =>
     pl1: 800,
     pl2: -50,
   }))
-  assert.equal(p.winnerName, t2)
+  assert.equal(p.winnerName, t1)
   assert.equal(p.plGreenTeam, null)
   assert.equal(p.confirms.plGreen, false)
 })

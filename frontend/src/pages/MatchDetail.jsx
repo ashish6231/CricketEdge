@@ -8,8 +8,8 @@ import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrade
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
-import { getBookiePl, calcBookiePlFromTrades, filterTradesByTime, splitMatchOutcomes } from '../utils/bookiePl'
-import { predictGatedFade } from '../utils/gatedFadePredictor'
+import { getBookiePl, splitMatchOutcomes } from '../utils/bookiePl'
+import { predictGatedFade, teamEq } from '../utils/gatedFadePredictor'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
@@ -657,14 +657,9 @@ export default function MatchDetail({ sport }) {
   const predictedTossWinner = tossPrediction?.winnerName || 'Waiting for more data...'
   const tossPredictionReason = tossPrediction?.reason || ''
 
-  // Bookie P/L on graph — from trades (respects time filter)
-  if (t1GraphData && t2GraphData) {
-    const t1Filtered = filterTradesByTime(snapshot?.teams?.[t1]?.trades || [], effectiveTimeFilter)
-    const t2Filtered = filterTradesByTime(snapshot?.teams?.[t2]?.trades || [], effectiveTimeFilter)
-    const calc = calcBookiePlFromTrades(t1Filtered, t2Filtered)
-    t1GraphData.bookieProfitIfWins = calc.team1Win
-    t2GraphData.bookieProfitIfWins = calc.team2Win
-  }
+  // Bookie P/L on graph — same source as Simple Book (simplePL), not sampled-trade pnlIfWins
+  if (t1GraphData) t1GraphData.bookieProfitIfWins = pl1
+  if (t2GraphData) t2GraphData.bookieProfitIfWins = pl2
   const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
   const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
   const t2PctVol = marketVol > 0 ? ((t2GraphData?.totalBet || 0) / marketVol) * 100 : 50
@@ -996,18 +991,23 @@ export default function MatchDetail({ sport }) {
               {/* ━━━━━━━━━━ 1b. GATED FADE PICK ━━━━━━━━━━ */}
               {gatedFade && (
                 <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                  <div className="px-4 py-3 flex items-center gap-2 border-b border-[#2c2c2e]">
+                  <div className="px-3 py-2 flex items-center gap-2 border-b border-[#2c2c2e]">
                     <span className="text-sm font-bold text-white">Gated Fade Pick</span>
+                    {gatedFade.winnerName && (
+                      <span className="ml-auto text-[11px] font-bold truncate" style={{ color: '#10b981' }}>
+                        {gatedFade.winnerName}
+                      </span>
+                    )}
                   </div>
-                  <div className="p-4">
-                    <div className="grid grid-cols-2 gap-3 mb-3">
+                  <div className="p-3">
+                    <div className="grid grid-cols-2 gap-2 mb-2">
                       {[{
                         name: gatedFade.t1,
-                        isFade: gatedFade.winnerName === gatedFade.t1,
+                        isFade: teamEq(gatedFade.winnerName, gatedFade.t1),
                         exposure: gatedFade.t1Exposure,
                       }, {
                         name: gatedFade.t2,
-                        isFade: gatedFade.winnerName === gatedFade.t2,
+                        isFade: teamEq(gatedFade.winnerName, gatedFade.t2),
                         exposure: gatedFade.t2Exposure,
                       }].map((side) => {
                         const hasPick = !!gatedFade.winnerName
@@ -1036,20 +1036,25 @@ export default function MatchDetail({ sport }) {
                         )
                       })}
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-wrap gap-1.5">
                       {[
-                        { ok: gatedFade.confirms.negExposure, label: 'Pick net exp < 0', val: gatedFade.fadeExposure != null ? fmtRs(gatedFade.fadeExposure) : '—' },
-                        { ok: gatedFade.trap === 'none', label: 'Trap = none', val: gatedFade.trap },
-                        { ok: gatedFade.confirms.plGreen, label: 'Neg exp + P/L > 0', val: gatedFade.plGreenTeam || '—' },
-                        { ok: gatedFade.confirms.lowerRatio, label: 'Lower B/L agrees', val: gatedFade.lowerRatioTeam || '—' },
-                        { ok: gatedFade.confirms.totGap, label: 'Total-bet gap ≥ 15%', val: gatedFade.totGapPct != null ? `${(gatedFade.totGapPct * 100).toFixed(0)}%` : '—' },
-                      ].map((row) => (
-                        <div key={row.label} className="flex items-center justify-between rounded-lg px-3 py-2 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                          <span className="text-xs font-semibold" style={{ color: row.ok ? '#10b981' : '#8e8e93' }}>
-                            {row.ok ? '✓' : '·'} {row.label}
-                          </span>
-                          <span className="text-xs font-bold text-white truncate ml-2">{row.val}</span>
-                        </div>
+                        { ok: gatedFade.confirms.plProfit, label: 'P/L' },
+                        { ok: gatedFade.confirms.moreMoney, label: 'Money' },
+                        { ok: gatedFade.confirms.fewerBets, label: 'Bets' },
+                        { ok: gatedFade.trap === 'none', label: `Trap ${gatedFade.trap || '—'}` },
+                        { ok: gatedFade.fadeExposure != null, label: gatedFade.fadeExposure != null ? `Exp ${fmtRs(gatedFade.fadeExposure)}` : 'Exp' },
+                        { ok: gatedFade.confirms.lowerRatio, label: 'B/L' },
+                        { ok: gatedFade.confirms.totGap, label: gatedFade.totGapPct != null ? `Gap ${(gatedFade.totGapPct * 100).toFixed(0)}%` : 'Gap' },
+                      ].map((chip) => (
+                        <span
+                          key={chip.label}
+                          className="text-[10px] font-bold px-2 py-1 rounded-md border"
+                          style={chip.ok
+                            ? { color: '#10b981', borderColor: 'rgba(16,185,129,0.35)', background: 'rgba(16,185,129,0.08)' }
+                            : { color: '#8e8e93', borderColor: '#2c2c2e', background: '#1a1a1a' }}
+                        >
+                          {chip.ok ? '✓' : '·'} {chip.label}
+                        </span>
                       ))}
                     </div>
                   </div>

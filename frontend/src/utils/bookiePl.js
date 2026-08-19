@@ -1,9 +1,10 @@
 /**
  * Shared bookie P/L helpers — single source of truth for MatchDetail & TossDetail.
  *
- * Betfair bookie P/L if Team A wins:
- *   PL = BackLiab_A − LayLiab_A − BackStake_B + LayStake_B
- * (and similarly for other runners in a multi-way market, e.g. Test + Draw)
+ * Bookie takes the other side of every customer bet.
+ * If Team A wins:
+ *   PL = −BackLiab_A + LayLiab_A + BackStake_B − LayStake_B
+ * (same for other runners in a multi-way market, e.g. Test + Draw)
  *
  * Prefer API deepMetrics.simplePL (server-side aggregation).
  * Fall back to trade-based calc only when API value is missing.
@@ -53,8 +54,8 @@ export function calcBookiePlFromTrades(t1Trades, t2Trades) {
   const s1 = getTradeStats(t1Trades)
   const s2 = getTradeStats(t2Trades)
   return {
-    team1Win: s1.tBackLiab - s1.tLayLiab - s2.tBack + s2.tLay,
-    team2Win: s2.tBackLiab - s2.tLayLiab - s1.tBack + s1.tLay,
+    team1Win: -s1.tBackLiab + s1.tLayLiab + s2.tBack - s2.tLay,
+    team2Win: -s2.tBackLiab + s2.tLayLiab + s1.tBack - s1.tLay,
     s1, s2,
   }
 }
@@ -68,8 +69,8 @@ export function calcBookiePlMulti(tradeMap = {}) {
     let pl = 0
     for (const name of names) {
       const s = stats[name]
-      if (name === winner) pl += s.tBackLiab - s.tLayLiab
-      else pl += -s.tBack + s.tLay
+      if (name === winner) pl += -s.tBackLiab + s.tLayLiab
+      else pl += s.tBack - s.tLay
     }
     byName[winner] = pl
   }
