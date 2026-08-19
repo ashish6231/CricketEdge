@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-19T16:44:56.368Z",
+  "updatedAt": "2026-08-19T17:00:26.538Z",
   "records": [
     {
       "matchId": "35901908",
@@ -4718,11 +4718,11 @@
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-19T17:00:26.538Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "St. Lucia Kings"
     },
     {
       "matchId": "35946930",
@@ -5273,11 +5273,11 @@
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-19T17:00:17.973Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "St. Kitts and Nevis Patriots"
     },
     {
       "matchId": "35913612",
@@ -5771,11 +5771,11 @@
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-19T17:00:02.517Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "England"
     }
   ]
 }

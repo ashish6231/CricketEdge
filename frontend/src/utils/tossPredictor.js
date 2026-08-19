@@ -1,21 +1,20 @@
 /**
- * Toss winner predictor v7 — LayVol / StrongerTeam / LayTrades waterfall.
+ * Toss winner predictor v8 — LayVol / StrongerTeam / LayTrades waterfall.
  *
- * Derived from verified toss_dataset.json (6/6 on labeled ended snapshots):
- *   1. Clear lay-vol edge → higher lay volume
- *   2. Trap / close trade conflict → synthetic StrongerTeam (supportProduct)
- *   3. Else higher lay trades
- *   4. Bookie fav fallback
+ * Clear lay-vol needs a real share edge, not just a rupee gap:
+ *   ratio ≥ 1.5, or gap ≥ 150 AND ratio ≥ 1.25
+ * Weak-ratio gaps (England v Pakistan 1.21×) fall through to trap/stronger.
  *
  * After ANY rule change: replay against server/data/toss_dataset.json
  */
 
 import { computeTossRisk } from './predictionRisk.js'
 
-export const PREDICTOR_VERSION = 'toss-v7-layvol-stronger'
+export const PREDICTOR_VERSION = 'toss-v8-layvol-ratio-gate'
 
 const LAY_VOL_GAP_MIN = 150
 const LAY_VOL_RATIO_MIN = 1.5
+const LAY_VOL_RATIO_SOFT = 1.25
 const CLOSE_TRADE_GAP_MAX = 3
 
 function extractMetrics(snap) {
@@ -98,12 +97,14 @@ function resolveStronger(m) {
 
 /**
  * Waterfall — first match wins.
- * Encodes LayVol → Stronger → LayTrades (the union that covered 6/6 winners).
+ * Encodes LayVol → Stronger → LayTrades. Weak-ratio rupee gaps fall through.
  */
 function pickWinner(m, hasBF) {
   const matched = []
 
-  const clearLayVol = m.layVolGap >= LAY_VOL_GAP_MIN || m.layVolRatio >= LAY_VOL_RATIO_MIN
+  const clearLayVol =
+    m.layVolRatio >= LAY_VOL_RATIO_MIN
+    || (m.layVolGap >= LAY_VOL_GAP_MIN && m.layVolRatio >= LAY_VOL_RATIO_SOFT)
   if (clearLayVol && m.t1LayVol !== m.t2LayVol) {
     const winner = m.t1LayVol > m.t2LayVol ? m.t1 : m.t2
     matched.push({ winner, reason: 'Clear Lay Vol Edge', pattern: 'CLEAR_LAY_VOL', selected: true })
