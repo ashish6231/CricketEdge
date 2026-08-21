@@ -751,15 +751,15 @@ async function patchTossActualWinner(req, res, deps = {}) {
     const dataset = await store.load();
     const existing = dataset.records.find((r) => r.matchId === matchId);
     const before = existing ? { ...existing } : null;
-    const { record } = await store.confirmActualWinner({ matchId, actualWinner, admin });
+    const { record, edited } = await store.confirmActualWinner({ matchId, actualWinner, admin });
     await writeAudit(
       admin,
-      'toss_dataset_confirm_winner',
+      edited ? 'toss_dataset_edit_winner' : 'toss_dataset_confirm_winner',
       'toss_dataset',
       Number(matchId) || 0,
       matchId,
       { before, after: record },
-      'Confirmed toss winner',
+      edited ? 'Corrected toss winner' : 'Confirmed toss winner',
       req,
     );
     res.json({ success: true, data: record });

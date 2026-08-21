@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { CheckCircle2, ChevronLeft, ChevronRight, Download, LoaderCircle, Search, XCircle } from 'lucide-react'
+import { CheckCircle2, ChevronLeft, ChevronRight, Download, LoaderCircle, Pencil, Search, X, XCircle } from 'lucide-react'
 import {
   adminCaptureTossDataset,
   adminConfirmTossWinner,
@@ -58,6 +58,31 @@ function ResultCell({ label, value, tone }) {
   )
 }
 
+function WinnerPickButtons({ row, confirming, onPick, highlightActual }) {
+  return (
+    <div className="flex flex-col sm:flex-row gap-1.5 mt-3">
+      {[row.team1, row.team2].filter(Boolean).map((team) => {
+        const isCurrent = highlightActual && team === row.actualWinner
+        return (
+          <button
+            key={team}
+            onClick={() => onPick(row.matchId, team)}
+            disabled={confirming || (highlightActual && isCurrent)}
+            className="flex-1 px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-40"
+            style={
+              isCurrent
+                ? { background: 'rgba(16,185,129,0.14)', border: '1px solid rgba(16,185,129,0.45)', color: '#10b981' }
+                : { background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#e5e5ea' }
+            }
+          >
+            {confirming ? <LoaderCircle size={12} className="animate-spin mx-auto" /> : team}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 export default function AdminTossDataset() {
   const toast = useToast()
   const [records, setRecords] = useState([])
@@ -69,6 +94,7 @@ export default function AdminTossDataset() {
   const [capturing, setCapturing] = useState(false)
   const [exporting, setExporting] = useState(false)
   const [confirmingId, setConfirmingId] = useState(null)
+  const [editingId, setEditingId] = useState(null)
 
   const load = useCallback(() => {
     setLoading(true)
@@ -125,14 +151,15 @@ export default function AdminTossDataset() {
     }
   }
 
-  const confirmWinner = async (matchId, actualWinner) => {
+  const confirmWinner = async (matchId, actualWinner, { editing = false } = {}) => {
     setConfirmingId(matchId)
     try {
       await adminConfirmTossWinner(matchId, actualWinner)
-      toast.success('Winner confirmed')
+      toast.success(editing ? 'Winner updated' : 'Winner confirmed')
+      setEditingId(null)
       load()
     } catch (e) {
-      toast.error(e.detail || 'Confirm failed')
+      toast.error(e.detail || (editing ? 'Update failed' : 'Confirm failed'))
     } finally {
       setConfirmingId(null)
     }
@@ -141,6 +168,7 @@ export default function AdminTossDataset() {
   const toggle = (nextStatus) => {
     setStatus(nextStatus)
     setPage(1)
+    setEditingId(null)
   }
 
   return (
@@ -222,6 +250,7 @@ export default function AdminTossDataset() {
               {records.map((row) => {
                 const confirming = confirmingId === row.matchId
                 const canConfirm = hasUsableSnapshot(row.snapshot)
+                const editing = editingId === row.matchId
                 const hit = row.status === 'verified'
                   ? isPredictionHit(row.predictedWinner, row.actualWinner)
                   : null
@@ -244,7 +273,20 @@ export default function AdminTossDataset() {
                           <div className="text-[11px] text-text-muted mt-0.5 truncate">{row.competitionName}</div>
                         )}
                       </div>
-                      {row.status === 'verified' && <HitBadge hit={hit} />}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {row.status === 'verified' && <HitBadge hit={hit} />}
+                        {row.status === 'verified' && (
+                          <button
+                            type="button"
+                            onClick={() => setEditingId(editing ? null : row.matchId)}
+                            className="inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-semibold"
+                            style={{ background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#a1a1a6' }}
+                          >
+                            {editing ? <X size={12} /> : <Pencil size={12} />}
+                            {editing ? 'Cancel' : 'Edit'}
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {row.status === 'verified' ? (
@@ -300,24 +342,25 @@ export default function AdminTossDataset() {
                     )}
 
                     {row.status !== 'verified' && (
-                      <div className="flex flex-col sm:flex-row gap-1.5 mt-3">
-                        <button
-                          onClick={() => confirmWinner(row.matchId, row.team1)}
-                          disabled={confirming || !row.team1 || !canConfirm}
-                          className="flex-1 px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-40"
-                          style={{ background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#e5e5ea' }}
-                        >
-                          {confirming ? <LoaderCircle size={12} className="animate-spin mx-auto" /> : row.team1}
-                        </button>
-                        <button
-                          onClick={() => confirmWinner(row.matchId, row.team2)}
-                          disabled={confirming || !row.team2 || !canConfirm}
-                          className="flex-1 px-3 py-2 rounded-xl text-xs font-semibold disabled:opacity-40"
-                          style={{ background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#e5e5ea' }}
-                        >
-                          {confirming ? <LoaderCircle size={12} className="animate-spin mx-auto" /> : row.team2}
-                        </button>
-                      </div>
+                      <WinnerPickButtons
+                        row={row}
+                        confirming={confirming}
+                        onPick={(matchId, team) => confirmWinner(matchId, team)}
+                      />
+                    )}
+
+                    {row.status === 'verified' && editing && (
+                      <>
+                        <div className="text-[11px] text-text-muted mt-2">
+                          Select the correct toss winner
+                        </div>
+                        <WinnerPickButtons
+                          row={row}
+                          confirming={confirming}
+                          highlightActual
+                          onPick={(matchId, team) => confirmWinner(matchId, team, { editing: true })}
+                        />
+                      </>
                     )}
                   </div>
                 )

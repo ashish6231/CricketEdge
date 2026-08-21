@@ -6,7 +6,7 @@ import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { predictTossWinner } from '../frontend/src/utils/tossPredictor.js';
+import { predictTossWinner } from './utils/tossPredictor.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const BASE = process.env.SCRAPER_BASE || 'https://tennisliveload.com';

@@ -1,7 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+const { pathToFileURL } = require('url');
 const { getDefaultStore } = require('./tossDatasetStore');
 const scraperModule = require('./scraper');
 
-let cachedPredictorVersion = 'toss-v7-layvol-stronger';
+let cachedPredictorVersion = 'toss-v8-layvol-ratio-gate';
+let cachedPredictorModule = null;
 
 function sanitizeError(message) {
   if (!message) return 'Capture failed';
@@ -32,10 +36,34 @@ function extractTeams(snapshot, match) {
   return parseTeamsFromMatchName(match.matchName);
 }
 
+function predictorCandidates() {
+  return [
+    // Bundled with server (Docker / production: WORKDIR=/app)
+    path.join(__dirname, '../utils/tossPredictor.js'),
+    // Local monorepo checkout (server + frontend siblings)
+    path.join(__dirname, '../../frontend/src/utils/tossPredictor.js'),
+  ];
+}
+
 async function loadPredictorModule() {
-  const mod = await import('../../frontend/src/utils/tossPredictor.js');
-  if (mod.PREDICTOR_VERSION) cachedPredictorVersion = mod.PREDICTOR_VERSION;
-  return mod;
+  if (cachedPredictorModule) return cachedPredictorModule;
+
+  const errors = [];
+  for (const file of predictorCandidates()) {
+    if (!fs.existsSync(file)) {
+      errors.push(`missing: ${file}`);
+      continue;
+    }
+    try {
+      const mod = await import(pathToFileURL(file).href);
+      if (mod.PREDICTOR_VERSION) cachedPredictorVersion = mod.PREDICTOR_VERSION;
+      cachedPredictorModule = mod;
+      return mod;
+    } catch (err) {
+      errors.push(`${file}: ${err.message}`);
+    }
+  }
+  throw new Error(`tossPredictor not found (${errors.join('; ')})`);
 }
 
 async function defaultPredictTossWinner(snapshot) {
@@ -169,6 +197,7 @@ module.exports = {
     return cachedPredictorVersion;
   },
   captureEndedTosses,
+  loadPredictorModule,
   sanitizeError,
   hasSuccessfulSnapshot,
   shouldSkipExisting,

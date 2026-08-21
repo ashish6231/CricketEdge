@@ -138,7 +138,7 @@ test('matchId is coerced to string; numeric id confirms via string param', async
   assert.equal(ok.record.status, 'verified');
 });
 
-test('idempotent confirm same winner succeeds; different winner is 409', async () => {
+test('idempotent confirm same winner succeeds; different winner can be edited', async () => {
   const store = createStore({ filePath: tempPath() });
   await store.upsertPendingCapture(baseRecord());
   await store.confirmActualWinner({
@@ -152,12 +152,13 @@ test('idempotent confirm same winner succeeds; different winner is 409', async (
     admin: { userId: 1, email: 'a@b.com' },
   });
   assert.equal(same.record.actualWinner, 'Salem Spartans');
-  await assert.rejects(
-    () => store.confirmActualWinner({
-      matchId: 'm1',
-      actualWinner: 'Madurai Panthers',
-      admin: { userId: 1, email: 'a@b.com' },
-    }),
-    (err) => err.status === 409,
-  );
+  assert.equal(same.changed, false);
+  const edited = await store.confirmActualWinner({
+    matchId: 'm1',
+    actualWinner: 'Madurai Panthers',
+    admin: { userId: 2, email: 'edit@b.com' },
+  });
+  assert.equal(edited.record.actualWinner, 'Madurai Panthers');
+  assert.equal(edited.edited, true);
+  assert.equal(edited.record.confirmedByEmail, 'edit@b.com');
 });

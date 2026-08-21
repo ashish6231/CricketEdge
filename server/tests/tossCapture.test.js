@@ -112,6 +112,51 @@ test('counts snapshot failures', async () => {
   assert.equal(summary.failed, 1);
 });
 
+test('loads bundled tossPredictor without frontend sibling', async () => {
+  const { loadPredictorModule } = require('../services/tossCapture');
+  const mod = await loadPredictorModule();
+  assert.equal(typeof mod.predictTossWinner, 'function');
+  assert.ok(String(mod.PREDICTOR_VERSION || '').startsWith('toss-'));
+});
+
+test('default capture uses bundled predictor when no inject', async () => {
+  const store = tempStore();
+  const summary = await captureEndedTosses({
+    store,
+    scraper: {
+      async getAllTossMatches() {
+        return [{ matchId: '42', matchName: 'Alpha v Beta', status: 'ended', totalMatched: 10 }];
+      },
+      async getTossSnapshot() {
+        return {
+          teamNames: ['Alpha', 'Beta'],
+          marketId: 'm1',
+          advancedMetricsV2: {
+            team1: { back: 100, lay: 400, totalBet: 500 },
+            team2: { back: 100, lay: 100, totalBet: 200 },
+          },
+          syntheticSupport: {
+            teamA: { tradeCount: 8 },
+            teamB: { tradeCount: 3 },
+            strongerTeam: 'Alpha',
+            supportRatio: 2,
+          },
+          marketSignals: {
+            bookieFavouriteOutcome: 'Alpha',
+            trap: { level: 'none' },
+          },
+          teams: { Alpha: { trades: [] }, Beta: { trades: [] } },
+        };
+      },
+    },
+  });
+  assert.equal(summary.failed, 0);
+  assert.equal(summary.captured, 1);
+  const listed = await store.listRecords({ status: 'pending', page: 1, limit: 5 });
+  assert.equal(listed.records[0].predictedWinner, 'Alpha');
+  assert.ok(listed.records[0].predictorVersion);
+});
+
 test('worker overlap guard skips concurrent ticks', async () => {
   let runs = 0;
   let release;

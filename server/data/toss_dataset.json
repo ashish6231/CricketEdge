@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-19T17:00:26.538Z",
+  "updatedAt": "2026-08-21T08:04:13.479Z",
   "records": [
     {
       "matchId": "35901908",
@@ -5776,6 +5776,2330 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "England"
+    },
+    {
+      "matchId": "35948552",
+      "marketId": "1.261296752",
+      "matchName": "Dindigul Dragons v Ruby Trichy Warriors",
+      "competitionName": "Tamil Nadu Premier League",
+      "team1": "Dindigul Dragons",
+      "team2": "Ruby Trichy Warriors",
+      "startTime": 1787148000000,
+      "endedAt": "2026-08-20T03:34:28.870Z",
+      "capturedAt": "2026-08-20T03:34:28.870Z",
+      "snapshot": {
+        "serverTime": "2026-08-20T03:34:28.890Z",
+        "matchId": "35948552",
+        "matchName": "Dindigul Dragons v Ruby Trichy Warriors",
+        "teamNames": [
+          "Dindigul Dragons",
+          "Ruby Trichy Warriors"
+        ],
+        "inPlayPnl": {
+          "team1": 534.6443,
+          "team2": -512.5930000000001
+        },
+        "inPlayTotalBets": {
+          "team1": 63.0789,
+          "team2": 576.733
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 35.37,
+            "lay": 62.26,
+            "total": 64.14
+          },
+          "team2": {
+            "back": 534.0600000000001,
+            "lay": 28.770000000000003,
+            "total": 596.32
+          }
+        },
+        "preMatchPnl": {
+          "team1": 534.6443,
+          "team2": -512.5930000000001
+        },
+        "preMatchTotalBets": {
+          "team1": 63.0789,
+          "team2": 576.733
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 35.37,
+            "lay": 62.26,
+            "total": 64.14
+          },
+          "team2": {
+            "back": 534.0600000000001,
+            "lay": 28.770000000000003,
+            "total": 596.32
+          }
+        },
+        "threeMinPnl": {
+          "team1": 534.6443,
+          "team2": -512.5930000000001
+        },
+        "threeMinTotalBets": {
+          "team1": 63.0789,
+          "team2": 576.733
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 35.37,
+            "lay": 62.26,
+            "total": 64.14
+          },
+          "team2": {
+            "back": 534.0600000000001,
+            "lay": 28.770000000000003,
+            "total": 596.32
+          }
+        },
+        "matchLoadV2": {
+          "team1": 2,
+          "team2": 6
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 35.37,
+            "lay": 62.26,
+            "totalVolume": 97.63,
+            "backPercentage": 36.228618252586294
+          },
+          "team2": {
+            "back": 534.0600000000001,
+            "lay": 28.770000000000003,
+            "totalVolume": 562.83,
+            "backPercentage": 94.88833217845531
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 34.308899999999994,
+            "lay": 63.663199999999996,
+            "totalBet": 97.97209999999998
+          },
+          "team2": {
+            "back": 514.473,
+            "lay": 28.770000000000003,
+            "totalBet": 543.2429999999999
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 64.14,
+            "support": 9.711413257426642
+          },
+          "team2": {
+            "supportMoney": 596.32,
+            "support": 90.28858674257336
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Ruby Trichy Warriors",
+          "bookieFavouriteOutcome": "Dindigul Dragons",
+          "riskTeam": "Ruby Trichy Warriors",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 80.57717348514672,
+          "mostBettedTeam": "Ruby Trichy Warriors",
+          "prediction": {
+            "team1TrueSupport": 63.0789,
+            "team2TrueSupport": 578.1361999999999,
+            "ratio": 9.16528664894283,
+            "bookiePnlTeam1": 27.951100000000004,
+            "bookiePnlTeam2": -485.703,
+            "prediction": "Dindigul Dragons",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (9.17) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -29.354300000000002,
+            "backExposure": 34.308899999999994,
+            "layExposure": 63.663199999999996,
+            "teamName": "Dindigul Dragons"
+          },
+          "team2": {
+            "netExposure": 485.703,
+            "backExposure": 514.473,
+            "layExposure": 28.770000000000003,
+            "teamName": "Ruby Trichy Warriors"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 34.308899999999994,
+            "A_lay_stake": 62.26,
+            "B_back_expo": 514.473,
+            "B_lay_stake": 28.770000000000003
+          },
+          "totals": {
+            "totalBetTeam1": 63.0789,
+            "totalBetTeam2": 576.733
+          },
+          "simplePL": {
+            "team1_win": 27.951100000000004,
+            "team2_win": -485.703
+          },
+          "derivedPL": {
+            "team1_win": 513.6541,
+            "team2_win": -513.6541
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 35.37,
+              "totalLayVol": 62.26,
+              "totalBet": 64.14,
+              "profitLoss": 532.1800000000001
+            },
+            "team2": {
+              "totalBackVol": 534.0600000000001,
+              "totalLayVol": 28.770000000000003,
+              "totalBet": 596.32,
+              "profitLoss": -532.1800000000001
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 34.308899999999994,
+              "totalLayVol": 62.26,
+              "totalBet": 63.0789,
+              "profitLoss": 534.6443
+            },
+            "team2": {
+              "totalBackExpo": 514.473,
+              "totalLayVol": 28.770000000000003,
+              "totalBet": 576.733,
+              "profitLoss": -512.593
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 34.308899999999994,
+              "totalLayNetVol": 63.663199999999996,
+              "totalBet": 63.0789,
+              "profitLoss": 515.0572999999999
+            },
+            "team2": {
+              "totalBackNetVol": 514.473,
+              "totalLayNetVol": 28.770000000000003,
+              "totalBet": 578.1361999999999,
+              "profitLoss": -515.0572999999999
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 2,
+            "averageOdds": 1.9849999999999999,
+            "averageSize": 32.07,
+            "supportProduct": 63.65895
+          },
+          "teamB": {
+            "tradeCount": 6,
+            "averageOdds": 1.9800000000000002,
+            "averageSize": 99.38666666666667,
+            "supportProduct": 196.78560000000002
+          },
+          "strongerTeam": "Ruby Trichy Warriors",
+          "supportRatio": 3.0912479706309957
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 35.37,
+            "oppoLayVolume": 28.770000000000003,
+            "layExposure": 63.663199999999996,
+            "netSupportValue": 0.47680000000000433
+          },
+          "teamB": {
+            "totalBackVolume": 534.0600000000001,
+            "oppoLayVolume": 62.26,
+            "layExposure": 28.770000000000003,
+            "netSupportValue": 567.5500000000001
+          },
+          "strongerTeam": "Ruby Trichy Warriors",
+          "netSupportDifference": 567.0732,
+          "percentageA": 0.0839397014366231,
+          "percentageB": 99.91606029856337
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -26.89,
+            "syntheticSupport": 28.770000000000003,
+            "opponentLiabilityRejection": 28.770000000000003,
+            "sentimentScore": -26.89
+          },
+          "teamB": {
+            "directNetSupport": 505.2900000000001,
+            "syntheticSupport": 62.26,
+            "opponentLiabilityRejection": 63.663199999999996,
+            "sentimentScore": 503.88680000000005
+          },
+          "strongerTeam": "Ruby Trichy Warriors",
+          "scoreDifference": 530.7768000000001,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Dindigul Dragons",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Ruby Trichy Warriors",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Dindigul Dragons"
+        },
+        "teams": {
+          "Dindigul Dragons": {
+            "trades": [
+              {
+                "team": "Dindigul Dragons",
+                "price": 2.04,
+                "type": "lay",
+                "size": 35.08,
+                "updatedAt": 1787144788810
+              },
+              {
+                "team": "Dindigul Dragons",
+                "price": 2,
+                "type": "lay",
+                "size": 27.18,
+                "updatedAt": 1787144130383
+              },
+              {
+                "team": "Dindigul Dragons",
+                "price": 1.97,
+                "type": "back",
+                "size": 35.37,
+                "updatedAt": 1787141449770
+              }
+            ],
+            "pnlIfWins": 534.6443,
+            "totalBet": 63.0789
+          },
+          "Ruby Trichy Warriors": {
+            "trades": [
+              {
+                "team": "Ruby Trichy Warriors",
+                "price": 2,
+                "type": "lay",
+                "size": 28.770000000000003,
+                "updatedAt": 1787145619737
+              },
+              {
+                "team": "Ruby Trichy Warriors",
+                "price": 2,
+                "type": "back",
+                "size": 16.94,
+                "updatedAt": 1787145305004
+              },
+              {
+                "team": "Ruby Trichy Warriors",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.74,
+                "updatedAt": 1787145267235
+              },
+              {
+                "team": "Ruby Trichy Warriors",
+                "price": 1.96,
+                "type": "back",
+                "size": 318.9,
+                "updatedAt": 1787144788998
+              },
+              {
+                "team": "Ruby Trichy Warriors",
+                "price": 1.97,
+                "type": "back",
+                "size": 183.48,
+                "updatedAt": 1787144130792
+              }
+            ],
+            "pnlIfWins": -512.5930000000001,
+            "totalBet": 576.733
+          }
+        }
+      },
+      "predictedWinner": "Dindigul Dragons",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "Dindigul Dragons",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Dindigul Dragons",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Ruby Trichy Warriors",
+          "priority": 40,
+          "selected": false
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Ruby Trichy Warriors",
+          "priority": 40,
+          "selected": false
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-21T08:04:13.479Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Dindigul Dragons"
+    },
+    {
+      "matchId": "35946931",
+      "marketId": "1.261175635",
+      "matchName": "St. Lucia Kings v Guyana Amazon Warriors",
+      "competitionName": "Caribbean Premier League",
+      "team1": "St. Lucia Kings",
+      "team2": "Guyana Amazon Warriors",
+      "startTime": 1787180400000,
+      "endedAt": "2026-08-20T04:17:44.769Z",
+      "capturedAt": "2026-08-20T04:17:44.769Z",
+      "snapshot": {
+        "serverTime": "2026-08-20T04:17:44.793Z",
+        "matchId": "35946931",
+        "matchName": "St. Lucia Kings v Guyana Amazon Warriors",
+        "teamNames": [
+          "St. Lucia Kings",
+          "Guyana Amazon Warriors"
+        ],
+        "inPlayPnl": {
+          "team1": 458.0281000000003,
+          "team2": -362.34220000000005
+        },
+        "inPlayTotalBets": {
+          "team1": 1338.2006000000001,
+          "team2": 1751.5578
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1130.1100000000001,
+            "lay": 200.75,
+            "total": 1381.52
+          },
+          "team2": {
+            "back": 1593.22,
+            "lay": 251.40999999999997,
+            "total": 1793.97
+          }
+        },
+        "preMatchPnl": {
+          "team1": 458.0281000000003,
+          "team2": -362.34220000000005
+        },
+        "preMatchTotalBets": {
+          "team1": 1338.2006000000001,
+          "team2": 1751.5578
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1130.1100000000001,
+            "lay": 200.75,
+            "total": 1381.52
+          },
+          "team2": {
+            "back": 1593.22,
+            "lay": 251.40999999999997,
+            "total": 1793.97
+          }
+        },
+        "threeMinPnl": {
+          "team1": 458.0281000000003,
+          "team2": -362.34220000000005
+        },
+        "threeMinTotalBets": {
+          "team1": 1338.2006000000001,
+          "team2": 1751.5578
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1130.1100000000001,
+            "lay": 200.75,
+            "total": 1381.52
+          },
+          "team2": {
+            "back": 1593.22,
+            "lay": 251.40999999999997,
+            "total": 1793.97
+          }
+        },
+        "matchLoadV2": {
+          "team1": 11,
+          "team2": 8
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1130.1100000000001,
+            "lay": 200.75,
+            "totalVolume": 1330.8600000000001,
+            "backPercentage": 84.91576875103317
+          },
+          "team2": {
+            "back": 1593.22,
+            "lay": 251.40999999999997,
+            "totalVolume": 1844.63,
+            "backPercentage": 86.37070848896526
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1086.7906,
+            "lay": 203.00869999999998,
+            "totalBet": 1289.7993000000001
+          },
+          "team2": {
+            "back": 1550.8078,
+            "lay": 259.10560000000004,
+            "totalBet": 1809.9134000000001
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1381.52,
+            "support": 43.50572667525327
+          },
+          "team2": {
+            "supportMoney": 1793.97,
+            "support": 56.494273324746736
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Guyana Amazon Warriors",
+          "bookieFavouriteOutcome": "St. Lucia Kings",
+          "riskTeam": "Guyana Amazon Warriors",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 12.988546649493465,
+          "mostBettedTeam": "Guyana Amazon Warriors",
+          "prediction": {
+            "team1TrueSupport": 1345.8962000000001,
+            "team2TrueSupport": 1753.8165,
+            "ratio": 1.303084517216112,
+            "bookiePnlTeam1": -886.0406,
+            "bookiePnlTeam2": -1299.3978000000002,
+            "prediction": "St. Lucia Kings",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.30) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 883.7819000000001,
+            "backExposure": 1086.7906,
+            "layExposure": 203.00869999999998,
+            "teamName": "St. Lucia Kings"
+          },
+          "team2": {
+            "netExposure": 1291.7022,
+            "backExposure": 1550.8078,
+            "layExposure": 259.10560000000004,
+            "teamName": "Guyana Amazon Warriors"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1086.7906,
+            "A_lay_stake": 200.75,
+            "B_back_expo": 1550.8078,
+            "B_lay_stake": 251.40999999999997
+          },
+          "totals": {
+            "totalBetTeam1": 1338.2006000000001,
+            "totalBetTeam2": 1751.5578
+          },
+          "simplePL": {
+            "team1_win": -886.0406,
+            "team2_win": -1299.3978000000002
+          },
+          "derivedPL": {
+            "team1_win": 413.3571999999999,
+            "team2_win": -413.3571999999999
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1130.1100000000001,
+              "totalLayVol": 200.75,
+              "totalBet": 1381.52,
+              "profitLoss": 412.45000000000005
+            },
+            "team2": {
+              "totalBackVol": 1593.22,
+              "totalLayVol": 251.40999999999997,
+              "totalBet": 1793.97,
+              "profitLoss": -412.45000000000005
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1086.7906,
+              "totalLayVol": 200.75,
+              "totalBet": 1338.2006000000001,
+              "profitLoss": 458.0281
+            },
+            "team2": {
+              "totalBackExpo": 1550.8078,
+              "totalLayVol": 251.40999999999997,
+              "totalBet": 1751.5578,
+              "profitLoss": -362.3421999999998
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1086.7906,
+              "totalLayNetVol": 203.00869999999998,
+              "totalBet": 1345.8962000000001,
+              "profitLoss": 407.92029999999977
+            },
+            "team2": {
+              "totalBackNetVol": 1550.8078,
+              "totalLayNetVol": 259.10560000000004,
+              "totalBet": 1753.8165,
+              "profitLoss": -407.92029999999977
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 11,
+            "averageOdds": 1.9909090909090905,
+            "averageSize": 125.59272727272729,
+            "supportProduct": 250.04370247933883
+          },
+          "teamB": {
+            "tradeCount": 8,
+            "averageOdds": 1.9649999999999999,
+            "averageSize": 224.24625000000003,
+            "supportProduct": 440.64388125000005
+          },
+          "strongerTeam": "Guyana Amazon Warriors",
+          "supportRatio": 1.7622674631704054
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1130.1100000000001,
+            "oppoLayVolume": 251.40999999999997,
+            "layExposure": 203.00869999999998,
+            "netSupportValue": 1178.5113000000001
+          },
+          "teamB": {
+            "totalBackVolume": 1593.22,
+            "oppoLayVolume": 200.75,
+            "layExposure": 259.10560000000004,
+            "netSupportValue": 1534.8644
+          },
+          "strongerTeam": "Guyana Amazon Warriors",
+          "netSupportDifference": 356.3530999999998,
+          "percentageA": 43.43339921559702,
+          "percentageB": 56.566600784402986
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 929.3600000000001,
+            "syntheticSupport": 251.40999999999997,
+            "opponentLiabilityRejection": 259.10560000000004,
+            "sentimentScore": 921.6643999999999
+          },
+          "teamB": {
+            "directNetSupport": 1341.81,
+            "syntheticSupport": 200.75,
+            "opponentLiabilityRejection": 203.00869999999998,
+            "sentimentScore": 1339.5513
+          },
+          "strongerTeam": "Guyana Amazon Warriors",
+          "scoreDifference": 417.8869000000002,
+          "percentageA": 40.75968515520213,
+          "percentageB": 59.24031484479788
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "St. Lucia Kings",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Guyana Amazon Warriors",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "St. Lucia Kings"
+        },
+        "teams": {
+          "St. Lucia Kings": {
+            "trades": [
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.91,
+                "type": "lay",
+                "size": 20.93,
+                "updatedAt": 1787177728696
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.82,
+                "updatedAt": 1787177707149
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.94,
+                "type": "back",
+                "size": 144.52,
+                "updatedAt": 1787176861103
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.96,
+                "type": "lay",
+                "size": 38.129999999999995,
+                "updatedAt": 1787176665540
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.95,
+                "type": "back",
+                "size": 141.69,
+                "updatedAt": 1787176634882
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.96,
+                "type": "back",
+                "size": 430.85,
+                "updatedAt": 1787176276201
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.97,
+                "type": "back",
+                "size": 283.38,
+                "updatedAt": 1787176270726
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.04,
+                "type": "lay",
+                "size": 141.69,
+                "updatedAt": 1787175403521
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2,
+                "type": "back",
+                "size": 65.39999999999999,
+                "updatedAt": 1787174203214
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.99,
+                "type": "back",
+                "size": 49.45,
+                "updatedAt": 1787174203214
+              }
+            ],
+            "pnlIfWins": 458.0281000000003,
+            "totalBet": 1338.2006000000001
+          },
+          "Guyana Amazon Warriors": {
+            "trades": [
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 2.08,
+                "type": "lay",
+                "size": 5.040000000000001,
+                "updatedAt": 1787177728649
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.94,
+                "type": "back",
+                "size": 85.01,
+                "updatedAt": 1787177101090
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 2.06,
+                "type": "lay",
+                "size": 2.66,
+                "updatedAt": 1787176861088
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 2.04,
+                "type": "lay",
+                "size": 178.32,
+                "updatedAt": 1787176665509
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.95,
+                "type": "back",
+                "size": 141.69,
+                "updatedAt": 1787175990767
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.96,
+                "type": "back",
+                "size": 430.85,
+                "updatedAt": 1787175403552
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.97,
+                "type": "back",
+                "size": 181.82,
+                "updatedAt": 1787174249054
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 2,
+                "type": "lay",
+                "size": 65.39,
+                "updatedAt": 1787174203214
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.99,
+                "type": "back",
+                "size": 753.8500000000001,
+                "updatedAt": 1787173210607
+              }
+            ],
+            "pnlIfWins": -362.34220000000005,
+            "totalBet": 1751.5578
+          }
+        }
+      },
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictionReason": "Stronger Support Team",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Stronger Support Team"
+      },
+      "matchedRules": [
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Guyana Amazon Warriors",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Guyana Amazon Warriors",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "St. Lucia Kings",
+          "priority": 40,
+          "selected": false
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-21T07:57:44.689Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors"
+    },
+    {
+      "matchId": "35955958",
+      "marketId": "1.261296841",
+      "matchName": "Madurai Panthers v Tiruppur Tamizhans",
+      "competitionName": "Tamil Nadu Premier League",
+      "team1": "Madurai Panthers",
+      "team2": "Tiruppur Tamizhans",
+      "startTime": 1787220000000,
+      "endedAt": "2026-08-20T15:18:04.962Z",
+      "capturedAt": "2026-08-20T15:18:04.962Z",
+      "snapshot": {
+        "serverTime": "2026-08-20T15:18:04.733Z",
+        "matchId": "35955958",
+        "matchName": "Madurai Panthers v Tiruppur Tamizhans",
+        "teamNames": [
+          "Madurai Panthers",
+          "Tiruppur Tamizhans"
+        ],
+        "inPlayPnl": {
+          "team1": 418.3979,
+          "team2": -386.70689999999996
+        },
+        "inPlayTotalBets": {
+          "team1": 220.3621,
+          "team2": 613.9128999999999
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 223.93,
+            "lay": 0,
+            "total": 227.08
+          },
+          "team2": {
+            "back": 638.76,
+            "lay": 3.15,
+            "total": 638.76
+          }
+        },
+        "preMatchPnl": {
+          "team1": 418.3979,
+          "team2": -386.70689999999996
+        },
+        "preMatchTotalBets": {
+          "team1": 220.3621,
+          "team2": 613.9128999999999
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 223.93,
+            "lay": 0,
+            "total": 227.08
+          },
+          "team2": {
+            "back": 638.76,
+            "lay": 3.15,
+            "total": 638.76
+          }
+        },
+        "threeMinPnl": {
+          "team1": 418.3979,
+          "team2": -386.70689999999996
+        },
+        "threeMinTotalBets": {
+          "team1": 220.3621,
+          "team2": 613.9128999999999
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 223.93,
+            "lay": 0,
+            "total": 227.08
+          },
+          "team2": {
+            "back": 638.76,
+            "lay": 3.15,
+            "total": 638.76
+          }
+        },
+        "matchLoadV2": {
+          "team1": 2,
+          "team2": 4
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 223.93,
+            "lay": 0,
+            "totalVolume": 223.93,
+            "backPercentage": 100
+          },
+          "team2": {
+            "back": 638.76,
+            "lay": 3.15,
+            "totalVolume": 641.91,
+            "backPercentage": 99.50927700144881
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 217.2121,
+            "lay": 0,
+            "totalBet": 217.2121
+          },
+          "team2": {
+            "back": 613.9128999999999,
+            "lay": 3.276,
+            "totalBet": 617.1888999999999
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 227.08,
+            "support": 26.2265545597339
+          },
+          "team2": {
+            "supportMoney": 638.76,
+            "support": 73.7734454402661
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Tiruppur Tamizhans",
+          "bookieFavouriteOutcome": "Madurai Panthers",
+          "riskTeam": "Tiruppur Tamizhans",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 47.5468908805322,
+          "mostBettedTeam": "Tiruppur Tamizhans",
+          "prediction": {
+            "team1TrueSupport": 220.4881,
+            "team2TrueSupport": 613.9128999999999,
+            "ratio": 2.7843357532674093,
+            "bookiePnlTeam1": -217.2121,
+            "bookiePnlTeam2": -610.7629,
+            "prediction": "Madurai Panthers",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.78) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 217.2121,
+            "backExposure": 217.2121,
+            "layExposure": 0,
+            "teamName": "Madurai Panthers"
+          },
+          "team2": {
+            "netExposure": 610.6369,
+            "backExposure": 613.9128999999999,
+            "layExposure": 3.276,
+            "teamName": "Tiruppur Tamizhans"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 217.2121,
+            "A_lay_stake": 0,
+            "B_back_expo": 613.9128999999999,
+            "B_lay_stake": 3.15
+          },
+          "totals": {
+            "totalBetTeam1": 220.3621,
+            "totalBetTeam2": 613.9128999999999
+          },
+          "simplePL": {
+            "team1_win": -217.2121,
+            "team2_win": -610.7629
+          },
+          "derivedPL": {
+            "team1_win": 393.5507999999999,
+            "team2_win": -393.5507999999999
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 223.93,
+              "totalLayVol": 0,
+              "totalBet": 227.08,
+              "profitLoss": 411.67999999999995
+            },
+            "team2": {
+              "totalBackVol": 638.76,
+              "totalLayVol": 3.15,
+              "totalBet": 638.76,
+              "profitLoss": -411.67999999999995
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 217.2121,
+              "totalLayVol": 0,
+              "totalBet": 220.3621,
+              "profitLoss": 418.3979
+            },
+            "team2": {
+              "totalBackExpo": 613.9128999999999,
+              "totalLayVol": 3.15,
+              "totalBet": 613.9128999999999,
+              "profitLoss": -386.7068999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 217.2121,
+              "totalLayNetVol": 0,
+              "totalBet": 220.4881,
+              "profitLoss": 393.4247999999999
+            },
+            "team2": {
+              "totalBackNetVol": 613.9128999999999,
+              "totalLayNetVol": 3.276,
+              "totalBet": 613.9128999999999,
+              "profitLoss": -393.4247999999999
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 2,
+            "averageOdds": 2.005,
+            "averageSize": 113.54,
+            "supportProduct": 227.64770000000001
+          },
+          "teamB": {
+            "tradeCount": 4,
+            "averageOdds": 1.9475,
+            "averageSize": 159.69,
+            "supportProduct": 310.99627499999997
+          },
+          "strongerTeam": "Tiruppur Tamizhans",
+          "supportRatio": 1.3661296599965647
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 223.93,
+            "oppoLayVolume": 3.15,
+            "layExposure": 0,
+            "netSupportValue": 227.08
+          },
+          "teamB": {
+            "totalBackVolume": 638.76,
+            "oppoLayVolume": 0,
+            "layExposure": 3.276,
+            "netSupportValue": 635.484
+          },
+          "strongerTeam": "Tiruppur Tamizhans",
+          "netSupportDifference": 408.404,
+          "percentageA": 26.326162464466403,
+          "percentageB": 73.6738375355336
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 223.93,
+            "syntheticSupport": 3.15,
+            "opponentLiabilityRejection": 3.276,
+            "sentimentScore": 223.804
+          },
+          "teamB": {
+            "directNetSupport": 635.61,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 635.61
+          },
+          "strongerTeam": "Tiruppur Tamizhans",
+          "scoreDifference": 411.80600000000004,
+          "percentageA": 26.04146546367641,
+          "percentageB": 73.9585345363236
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Madurai Panthers",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Tiruppur Tamizhans",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Madurai Panthers"
+        },
+        "teams": {
+          "Madurai Panthers": {
+            "trades": [
+              {
+                "team": "Madurai Panthers",
+                "price": 1.97,
+                "type": "back",
+                "size": 223.93,
+                "updatedAt": 1787216053324
+              }
+            ],
+            "pnlIfWins": 418.3979,
+            "totalBet": 220.3621
+          },
+          "Tiruppur Tamizhans": {
+            "trades": [
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 2.04,
+                "type": "lay",
+                "size": 3.15,
+                "updatedAt": 1787217821541
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.91,
+                "type": "back",
+                "size": 19.7,
+                "updatedAt": 1787217294214
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.95,
+                "type": "back",
+                "size": 84.42,
+                "updatedAt": 1787216948113
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.96,
+                "type": "back",
+                "size": 281.39,
+                "updatedAt": 1787216785659
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.97,
+                "type": "back",
+                "size": 253.25,
+                "updatedAt": 1787216411884
+              }
+            ],
+            "pnlIfWins": -386.70689999999996,
+            "totalBet": 613.9128999999999
+          }
+        }
+      },
+      "predictedWinner": "Tiruppur Tamizhans",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "low",
+        "label": "Low Risk",
+        "shortLabel": "Low",
+        "color": "text-[#22c55e]",
+        "hex": "#22c55e",
+        "bg": "rgba(34,197,94,0.12)",
+        "border": "rgba(34,197,94,0.35)",
+        "emoji": "🟢",
+        "wrongPct": "~10–15%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "Tiruppur Tamizhans",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Tiruppur Tamizhans",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Tiruppur Tamizhans",
+          "priority": 80,
+          "selected": true
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Tiruppur Tamizhans",
+          "priority": 85,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-21T08:01:12.935Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Tiruppur Tamizhans"
+    },
+    {
+      "matchId": "35950773",
+      "marketId": "1.261296909",
+      "matchName": "Nellai Royal Kings v Salem Spartans",
+      "competitionName": "Tamil Nadu Premier League",
+      "team1": "Nellai Royal Kings",
+      "team2": "Salem Spartans",
+      "startTime": 1787234400000,
+      "endedAt": "2026-08-21T02:37:12.243Z",
+      "capturedAt": "2026-08-21T02:37:12.243Z",
+      "snapshot": {
+        "serverTime": "2026-08-21T02:37:12.211Z",
+        "matchId": "35950773",
+        "matchName": "Nellai Royal Kings v Salem Spartans",
+        "teamNames": [
+          "Nellai Royal Kings",
+          "Salem Spartans"
+        ],
+        "inPlayPnl": {
+          "team1": 540.0856,
+          "team2": -384.00149999999985
+        },
+        "inPlayTotalBets": {
+          "team1": 1648.8726,
+          "team2": 2077.5110999999997
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1076.18,
+            "lay": 529.9799999999999,
+            "total": 1701
+          },
+          "team2": {
+            "back": 1659.6499999999999,
+            "lay": 624.8199999999999,
+            "total": 2189.6299999999997
+          }
+        },
+        "preMatchPnl": {
+          "team1": 540.0856,
+          "team2": -384.00149999999985
+        },
+        "preMatchTotalBets": {
+          "team1": 1648.8726,
+          "team2": 2077.5110999999997
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1076.18,
+            "lay": 529.9799999999999,
+            "total": 1701
+          },
+          "team2": {
+            "back": 1659.6499999999999,
+            "lay": 624.8199999999999,
+            "total": 2189.6299999999997
+          }
+        },
+        "threeMinPnl": {
+          "team1": 540.0856,
+          "team2": -384.00149999999985
+        },
+        "threeMinTotalBets": {
+          "team1": 1648.8726,
+          "team2": 2077.5110999999997
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1076.18,
+            "lay": 529.9799999999999,
+            "total": 1701
+          },
+          "team2": {
+            "back": 1659.6499999999999,
+            "lay": 624.8199999999999,
+            "total": 2189.6299999999997
+          }
+        },
+        "matchLoadV2": {
+          "team1": 8,
+          "team2": 15
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1076.18,
+            "lay": 529.9799999999999,
+            "totalVolume": 1606.1599999999999,
+            "backPercentage": 67.00328734372665
+          },
+          "team2": {
+            "back": 1659.6499999999999,
+            "lay": 624.8199999999999,
+            "totalVolume": 2284.47,
+            "backPercentage": 72.64923592780819
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1024.0526,
+            "lay": 529.3081999999999,
+            "totalBet": 1553.3608
+          },
+          "team2": {
+            "back": 1547.5310999999997,
+            "lay": 617.3295999999999,
+            "totalBet": 2164.8606999999997
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1701,
+            "support": 43.72042574081833
+          },
+          "team2": {
+            "supportMoney": 2189.6299999999997,
+            "support": 56.27957425918167
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Salem Spartans",
+          "bookieFavouriteOutcome": "Nellai Royal Kings",
+          "riskTeam": "Salem Spartans",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 12.559148518363344,
+          "mostBettedTeam": "Salem Spartans",
+          "prediction": {
+            "team1TrueSupport": 1641.3822,
+            "team2TrueSupport": 2076.8392999999996,
+            "ratio": 1.2652990266374278,
+            "bookiePnlTeam1": -494.0726000000001,
+            "bookiePnlTeam2": -922.7110999999998,
+            "prediction": "Nellai Royal Kings",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.27) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 494.74440000000004,
+            "backExposure": 1024.0526,
+            "layExposure": 529.3081999999999,
+            "teamName": "Nellai Royal Kings"
+          },
+          "team2": {
+            "netExposure": 930.2014999999998,
+            "backExposure": 1547.5310999999997,
+            "layExposure": 617.3295999999999,
+            "teamName": "Salem Spartans"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1024.0526,
+            "A_lay_stake": 529.9799999999999,
+            "B_back_expo": 1547.5310999999997,
+            "B_lay_stake": 624.8199999999999
+          },
+          "totals": {
+            "totalBetTeam1": 1648.8726,
+            "totalBetTeam2": 2077.5110999999997
+          },
+          "simplePL": {
+            "team1_win": -494.0726000000001,
+            "team2_win": -922.7110999999998
+          },
+          "derivedPL": {
+            "team1_win": 428.6384999999998,
+            "team2_win": -428.6384999999998
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1076.18,
+              "totalLayVol": 529.9799999999999,
+              "totalBet": 1701,
+              "profitLoss": 488.62999999999965
+            },
+            "team2": {
+              "totalBackVol": 1659.6499999999999,
+              "totalLayVol": 624.8199999999999,
+              "totalBet": 2189.6299999999997,
+              "profitLoss": -488.62999999999965
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1024.0526,
+              "totalLayVol": 529.9799999999999,
+              "totalBet": 1648.8726,
+              "profitLoss": 540.0856000000001
+            },
+            "team2": {
+              "totalBackExpo": 1547.5310999999997,
+              "totalLayVol": 624.8199999999999,
+              "totalBet": 2077.5110999999997,
+              "profitLoss": -384.00149999999985
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1024.0526,
+              "totalLayNetVol": 529.3081999999999,
+              "totalBet": 1641.3822,
+              "profitLoss": 435.4570999999996
+            },
+            "team2": {
+              "totalBackNetVol": 1547.5310999999997,
+              "totalLayNetVol": 617.3295999999999,
+              "totalBet": 2076.8392999999996,
+              "profitLoss": -435.4570999999996
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 8,
+            "averageOdds": 1.94875,
+            "averageSize": 212.625,
+            "supportProduct": 414.35296875
+          },
+          "teamB": {
+            "tradeCount": 15,
+            "averageOdds": 1.9333333333333333,
+            "averageSize": 145.9753333333333,
+            "supportProduct": 282.21897777777775
+          },
+          "strongerTeam": "Nellai Royal Kings",
+          "supportRatio": 1.468196689013118
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1076.18,
+            "oppoLayVolume": 624.8199999999999,
+            "layExposure": 529.3081999999999,
+            "netSupportValue": 1171.6918
+          },
+          "teamB": {
+            "totalBackVolume": 1659.6499999999999,
+            "oppoLayVolume": 529.9799999999999,
+            "layExposure": 617.3295999999999,
+            "netSupportValue": 1572.3003999999996
+          },
+          "strongerTeam": "Salem Spartans",
+          "netSupportDifference": 400.60859999999957,
+          "percentageA": 42.70025986225472,
+          "percentageB": 57.29974013774528
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 546.2000000000002,
+            "syntheticSupport": 624.8199999999999,
+            "opponentLiabilityRejection": 617.3295999999999,
+            "sentimentScore": 553.6904000000001
+          },
+          "teamB": {
+            "directNetSupport": 1034.83,
+            "syntheticSupport": 529.9799999999999,
+            "opponentLiabilityRejection": 529.3081999999999,
+            "sentimentScore": 1035.5018
+          },
+          "strongerTeam": "Salem Spartans",
+          "scoreDifference": 481.81139999999994,
+          "percentageA": 34.84099657675139,
+          "percentageB": 65.15900342324862
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Nellai Royal Kings",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Salem Spartans",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Nellai Royal Kings"
+        },
+        "teams": {
+          "Nellai Royal Kings": {
+            "trades": [
+              {
+                "team": "Nellai Royal Kings",
+                "price": 2,
+                "type": "lay",
+                "size": 516.52,
+                "updatedAt": 1787232021287
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.97,
+                "type": "lay",
+                "size": 0.03999999999996362,
+                "updatedAt": 1787230863837
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.96,
+                "type": "lay",
+                "size": 0.03999999999996362,
+                "updatedAt": 1787230863837
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.95,
+                "type": "back",
+                "size": 140.96,
+                "updatedAt": 1787230863837
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.92,
+                "type": "back",
+                "size": 43.72,
+                "updatedAt": 1787230188736
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.93,
+                "type": "back",
+                "size": 194.76,
+                "updatedAt": 1787230014764
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.93,
+                "updatedAt": 1787230000645
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.95,
+                "type": "lay",
+                "size": 13.379999999999995,
+                "updatedAt": 1787228876679
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.96,
+                "type": "back",
+                "size": 281.85,
+                "updatedAt": 1787228357288
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.97,
+                "type": "back",
+                "size": 273.96,
+                "updatedAt": 1787228341692
+              }
+            ],
+            "pnlIfWins": 540.0856,
+            "totalBet": 1648.8726
+          },
+          "Salem Spartans": {
+            "trades": [
+              {
+                "team": "Salem Spartans",
+                "price": 1.87,
+                "type": "back",
+                "size": 47.91,
+                "updatedAt": 1787231240702
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.88,
+                "type": "back",
+                "size": 83.99,
+                "updatedAt": 1787231225574
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.89,
+                "type": "back",
+                "size": 108.4,
+                "updatedAt": 1787231206443
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.9,
+                "type": "back",
+                "size": 56.36999999999999,
+                "updatedAt": 1787231184202
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 2,
+                "type": "lay",
+                "size": 531.1899999999999,
+                "updatedAt": 1787231047115
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.91,
+                "type": "back",
+                "size": 225.5,
+                "updatedAt": 1787230863837
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.92,
+                "type": "lay",
+                "size": 93.63,
+                "updatedAt": 1787230402330
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.92,
+                "type": "back",
+                "size": 140.93,
+                "updatedAt": 1787230401840
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.93,
+                "type": "back",
+                "size": 168.89,
+                "updatedAt": 1787230380730
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.94,
+                "type": "back",
+                "size": 144,
+                "updatedAt": 1787230361132
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.95,
+                "type": "back",
+                "size": 140.93,
+                "updatedAt": 1787228087126
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.96,
+                "type": "back",
+                "size": 289.07,
+                "updatedAt": 1787228075559
+              },
+              {
+                "team": "Salem Spartans",
+                "price": 1.97,
+                "type": "back",
+                "size": 253.66,
+                "updatedAt": 1787227421678
+              }
+            ],
+            "pnlIfWins": -384.00149999999985,
+            "totalBet": 2077.5110999999997
+          }
+        }
+      },
+      "predictedWinner": "Nellai Royal Kings",
+      "predictionReason": "Stronger Support Team",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Stronger Support Team"
+      },
+      "matchedRules": [
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Nellai Royal Kings",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Salem Spartans",
+          "priority": 40,
+          "selected": false
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Salem Spartans",
+          "priority": 40,
+          "selected": false
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-21T08:01:24.316Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Salem Spartans"
+    },
+    {
+      "matchId": "35954424",
+      "marketId": "1.261323113",
+      "matchName": "Antigua & Barbuda Falco v St. Kitts and Nevis Pat",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Antigua & Barbuda Falco",
+      "team2": "St. Kitts and Nevis Pat",
+      "startTime": 1787266800000,
+      "endedAt": "2026-08-21T05:14:06.565Z",
+      "capturedAt": "2026-08-21T05:14:06.565Z",
+      "snapshot": {
+        "serverTime": "2026-08-21T05:14:06.491Z",
+        "matchId": "35954424",
+        "matchName": "Antigua & Barbuda Falco v St. Kitts and Nevis Pat",
+        "teamNames": [
+          "Antigua & Barbuda Falco",
+          "St. Kitts and Nevis Pat"
+        ],
+        "inPlayPnl": {
+          "team1": 5290.5723,
+          "team2": -5283.168399999999
+        },
+        "inPlayTotalBets": {
+          "team1": 970.7526,
+          "team2": 9618.324499999999
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 2329.02,
+            "lay": 8354.349999999999,
+            "total": 2769.12
+          },
+          "team2": {
+            "back": 1319.38,
+            "lay": 440.09999999999997,
+            "total": 9673.73
+          }
+        },
+        "preMatchPnl": {
+          "team1": 5290.5723,
+          "team2": -5283.168399999999
+        },
+        "preMatchTotalBets": {
+          "team1": 970.7526,
+          "team2": 9618.324499999999
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 2329.02,
+            "lay": 8354.349999999999,
+            "total": 2769.12
+          },
+          "team2": {
+            "back": 1319.38,
+            "lay": 440.09999999999997,
+            "total": 9673.73
+          }
+        },
+        "threeMinPnl": {
+          "team1": 5290.5723,
+          "team2": -5283.168399999999
+        },
+        "threeMinTotalBets": {
+          "team1": 970.7526,
+          "team2": 9618.324499999999
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 2329.02,
+            "lay": 8354.349999999999,
+            "total": 2769.12
+          },
+          "team2": {
+            "back": 1319.38,
+            "lay": 440.09999999999997,
+            "total": 9673.73
+          }
+        },
+        "matchLoadV2": {
+          "team1": 9,
+          "team2": 18
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 2329.02,
+            "lay": 8354.349999999999,
+            "totalVolume": 10683.369999999999,
+            "backPercentage": 21.800424397919386
+          },
+          "team2": {
+            "back": 1319.38,
+            "lay": 440.09999999999997,
+            "totalVolume": 1759.48,
+            "backPercentage": 74.986927955987
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 530.6526000000001,
+            "lay": 4941.944900000001,
+            "totalBet": 5472.597500000002
+          },
+          "team2": {
+            "back": 1263.9744999999998,
+            "lay": 2006.1361,
+            "totalBet": 3270.1106
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 2769.12,
+            "support": 22.254708527387216
+          },
+          "team2": {
+            "supportMoney": 9673.73,
+            "support": 77.74529147261279
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "St. Kitts and Nevis Pat",
+          "bookieFavouriteOutcome": "Antigua & Barbuda Falco",
+          "riskTeam": "St. Kitts and Nevis Pat",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 55.490582945225576,
+          "mostBettedTeam": "St. Kitts and Nevis Pat",
+          "prediction": {
+            "team1TrueSupport": 891.1999,
+            "team2TrueSupport": 5758.644100000001,
+            "ratio": 6.461674984478793,
+            "bookiePnlTeam1": 6179.896199999998,
+            "bookiePnlTeam2": -856.5744999999998,
+            "prediction": "Antigua & Barbuda Falco",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (6.46) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -3838.1503000000007,
+            "backExposure": 487.0838,
+            "layExposure": 4325.234100000001,
+            "teamName": "Antigua & Barbuda Falco"
+          },
+          "team2": {
+            "netExposure": 859.8583999999998,
+            "backExposure": 1263.9744999999998,
+            "layExposure": 404.11609999999996,
+            "teamName": "St. Kitts and Nevis Pat"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 530.6526000000001,
+            "A_lay_stake": 8354.349999999999,
+            "B_back_expo": 1263.9744999999998,
+            "B_lay_stake": 440.09999999999997
+          },
+          "totals": {
+            "totalBetTeam1": 970.7526,
+            "totalBetTeam2": 9618.324499999999
+          },
+          "simplePL": {
+            "team1_win": 7823.697399999998,
+            "team2_win": -823.8744999999999
+          },
+          "derivedPL": {
+            "team1_win": 8647.571899999999,
+            "team2_win": -8647.571899999999
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 2329.02,
+              "totalLayVol": 8354.349999999999,
+              "totalBet": 2769.12,
+              "profitLoss": 6904.61
+            },
+            "team2": {
+              "totalBackVol": 1319.38,
+              "totalLayVol": 440.09999999999997,
+              "totalBet": 9673.73,
+              "profitLoss": -6904.61
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 530.6526000000001,
+              "totalLayVol": 8354.349999999999,
+              "totalBet": 970.7526,
+              "profitLoss": 5290.572300000002
+            },
+            "team2": {
+              "totalBackExpo": 1263.9744999999998,
+              "totalLayVol": 440.09999999999997,
+              "totalBet": 9618.324499999999,
+              "profitLoss": -5283.168399999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 530.6526000000001,
+              "totalLayNetVol": 4941.944900000001,
+              "totalBet": 2536.7887,
+              "profitLoss": 3669.1307000000006
+            },
+            "team2": {
+              "totalBackNetVol": 1263.9744999999998,
+              "totalLayNetVol": 2006.1361,
+              "totalBet": 6205.919400000001,
+              "profitLoss": -3669.1307000000006
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 9,
+            "averageOdds": 12.227777777777778,
+            "averageSize": 307.68,
+            "supportProduct": 3762.242666666667
+          },
+          "teamB": {
+            "tradeCount": 18,
+            "averageOdds": 1.7055555555555553,
+            "averageSize": 537.4294444444445,
+            "supportProduct": 916.615774691358
+          },
+          "strongerTeam": "Antigua & Barbuda Falco",
+          "supportRatio": 4.104492602621296
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 2329.02,
+            "oppoLayVolume": 440.09999999999997,
+            "layExposure": 4941.944900000001,
+            "netSupportValue": -2172.8249000000014
+          },
+          "teamB": {
+            "totalBackVolume": 1319.38,
+            "oppoLayVolume": 8354.349999999999,
+            "layExposure": 2006.1361,
+            "netSupportValue": 7667.5939
+          },
+          "strongerTeam": "St. Kitts and Nevis Pat",
+          "netSupportDifference": 9840.418800000001,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -6025.329999999998,
+            "syntheticSupport": 440.09999999999997,
+            "opponentLiabilityRejection": 2006.1361,
+            "sentimentScore": -7591.3660999999975
+          },
+          "teamB": {
+            "directNetSupport": 879.2800000000002,
+            "syntheticSupport": 8354.349999999999,
+            "opponentLiabilityRejection": 4941.944900000001,
+            "sentimentScore": 4291.685099999998
+          },
+          "strongerTeam": "St. Kitts and Nevis Pat",
+          "scoreDifference": 11883.051199999994,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Antigua & Barbuda Falco",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "St. Kitts and Nevis Pat",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Antigua & Barbuda Falco"
+        },
+        "teams": {
+          "Antigua & Barbuda Falco": {
+            "trades": [
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.14,
+                "type": "lay",
+                "size": 49.44,
+                "updatedAt": 1787264682301
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.14,
+                "type": "back",
+                "size": 56.33,
+                "updatedAt": 1787264626406
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.39,
+                "type": "lay",
+                "size": 434.45,
+                "updatedAt": 1787264620075
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.4,
+                "type": "lay",
+                "size": 557.97,
+                "updatedAt": 1787264603237
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.27,
+                "type": "lay",
+                "size": 1549.2,
+                "updatedAt": 1787264594161
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.69,
+                "type": "lay",
+                "size": 1461.03,
+                "updatedAt": 1787264515003
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.09,
+                "type": "lay",
+                "size": 18.31,
+                "updatedAt": 1787264482838
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.7,
+                "type": "lay",
+                "size": 3761.69,
+                "updatedAt": 1787264461546
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.29,
+                "type": "lay",
+                "size": 70.42,
+                "updatedAt": 1787264401062
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.02,
+                "type": "back",
+                "size": 1784.13,
+                "updatedAt": 1787264234161
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 2,
+                "type": "lay",
+                "size": 123.08999999999997,
+                "updatedAt": 1787264129226
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.99,
+                "type": "lay",
+                "size": 39.43999999999998,
+                "updatedAt": 1787264042794
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.91,
+                "type": "lay",
+                "size": 34.900000000000006,
+                "updatedAt": 1787264042794
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.7,
+                "updatedAt": 1787264041299
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 1.99,
+                "type": "back",
+                "size": 15.320000000000007,
+                "updatedAt": 1787264021610
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 2,
+                "type": "back",
+                "size": 458.54,
+                "updatedAt": 1787263976191
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 2.06,
+                "type": "lay",
+                "size": 113.57,
+                "updatedAt": 1787262792034
+              },
+              {
+                "team": "Antigua & Barbuda Falco",
+                "price": 2.04,
+                "type": "lay",
+                "size": 140.84,
+                "updatedAt": 1787261573887
+              }
+            ],
+            "pnlIfWins": 5290.5723,
+            "totalBet": 970.7526
+          },
+          "St. Kitts and Nevis Pat": {
+            "trades": [
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 48,
+                "type": "lay",
+                "size": 0.14,
+                "updatedAt": 1787264393992
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 50,
+                "type": "lay",
+                "size": 32.56,
+                "updatedAt": 1787264235683
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 2,
+                "type": "lay",
+                "size": 79.00999999999999,
+                "updatedAt": 1787263976206
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.69,
+                "updatedAt": 1787263880301
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 1.94,
+                "type": "back",
+                "size": 261.44,
+                "updatedAt": 1787262792018
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 1.95,
+                "type": "back",
+                "size": 140.84,
+                "updatedAt": 1787262523323
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 1.96,
+                "type": "back",
+                "size": 428.27,
+                "updatedAt": 1787261573871
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 1.97,
+                "type": "back",
+                "size": 474.14,
+                "updatedAt": 1787261452115
+              },
+              {
+                "team": "St. Kitts and Nevis Pat",
+                "price": 1.99,
+                "type": "lay",
+                "size": 328.39,
+                "updatedAt": 1787259938355
+              }
+            ],
+            "pnlIfWins": -5283.168399999999,
+            "totalBet": 9618.324499999999
+          }
+        }
+      },
+      "predictedWinner": "Antigua & Barbuda Falco",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "Antigua & Barbuda Falco",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Antigua & Barbuda Falco",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "St. Kitts and Nevis Pat",
+          "priority": 40,
+          "selected": false
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Antigua & Barbuda Falco",
+          "priority": 85,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-21T08:01:39.413Z",
+      "confirmedByEmail": "admin@cricketedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Antigua & Barbuda Falco"
     }
   ]
 }

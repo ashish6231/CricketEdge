@@ -10,6 +10,7 @@ export const AUDIT_ACTION_COLORS = {
   toss_actual_confirmed: 'bg-green-100 text-green-700',
   toss_actual_corrected: 'bg-yellow-100 text-yellow-700',
   toss_dataset_confirm_winner: 'bg-emerald-100 text-emerald-700',
+  toss_dataset_edit_winner: 'bg-yellow-100 text-yellow-700',
 }
 
 export const AUDIT_ACTIONS = Object.keys(AUDIT_ACTION_COLORS)

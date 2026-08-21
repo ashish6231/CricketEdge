@@ -141,13 +141,11 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
         throw httpError(400, 'actualWinner must be team1 or team2');
       }
 
-      if (existing.status === 'verified') {
-        if (existing.actualWinner === actualWinner) {
-          return { record: existing };
-        }
-        throw httpError(409, 'Match already verified with a different winner');
+      if (existing.status === 'verified' && existing.actualWinner === actualWinner) {
+        return { record: existing, changed: false };
       }
 
+      const wasVerified = existing.status === 'verified';
       existing.status = 'verified';
       existing.actualWinner = actualWinner;
       existing.confirmedAt = new Date().toISOString();
@@ -155,7 +153,7 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
       existing.confirmedById = admin.userId;
 
       await writeDatasetToDisk(data);
-      return { record: existing };
+      return { record: existing, changed: true, edited: wasVerified };
     });
   }
 
