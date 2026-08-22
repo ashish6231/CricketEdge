@@ -136,7 +136,7 @@ export default function TennisPage() {
         {matchId ? (
           <MatchDetail sport="tennis" />
         ) : (
-          <div className="p-4 fade-in" ref={el => { if (el) { const s = sessionStorage.getItem(SCROLL_KEY); if (s) { scrollRef.current.scrollTop = Number(s); sessionStorage.removeItem(SCROLL_KEY) } }}}>
+          <div className="p-4 fade-in" ref={el => { if (el) { const s = sessionStorage.getItem(SCROLL_KEY); if (s && scrollRef.current) { scrollRef.current.scrollTop = Number(s); sessionStorage.removeItem(SCROLL_KEY) } }}}>
             {selectedComp && currentMatches.length > 0 ? (
               <>
                 <div className="flex items-center justify-between mb-3">
