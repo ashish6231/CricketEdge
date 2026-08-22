@@ -2,7 +2,8 @@ import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
 const API_TIMEOUT_MS = 22000
-const AUTH_TIMEOUT_MS = 5000
+const AUTH_TIMEOUT_MS = 12000
+const AUTH_HARD_FAIL_CODES = new Set(['SESSION_REPLACED', 'ACCOUNT_BANNED', 'ACCOUNT_SUSPENDED'])
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('auth_token')
@@ -154,16 +155,23 @@ export async function getAuthStatus() {
   if (!token) return { isLoggedIn: false }
   try {
     const res = await fetchAPI('/auth/me', { timeoutMs: AUTH_TIMEOUT_MS })
-    if (!res) return { isLoggedIn: false }
+    if (!res) return { isLoggedIn: true, softFail: true }
     return { isLoggedIn: true, email: res.user?.email, user: res.user }
   } catch (err) {
-    if (err.detail !== 'Network error') {
+    // Only clear session on real auth rejection — never on timeout/network blips
+    // (tab background → focus often times out and was logging users out)
+    const hardFail =
+      err.status === 401 ||
+      err.status === 403 ||
+      AUTH_HARD_FAIL_CODES.has(err.code)
+    if (hardFail) {
       localStorage.removeItem('auth_token')
       if (err.code === 'SESSION_REPLACED' && typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('open-login-modal'))
       }
+      return { isLoggedIn: false }
     }
-    return { isLoggedIn: false }
+    return { isLoggedIn: true, softFail: true }
   }
 }
 

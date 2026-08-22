@@ -25,6 +25,7 @@ export default function MainLayout() {
   const dropRef = useRef(null)
 
   useEffect(() => {
+    let cancelled = false
     const refresh = () => {
       const pendingToken = sessionStorage.getItem('pending_token')
       if (pendingToken) {
@@ -32,19 +33,31 @@ export default function MainLayout() {
         sessionStorage.removeItem('pending_token')
       }
       getAuthStatus().then(data => {
+        if (cancelled) return
+        // softFail = timeout/network — keep current session, don't force logout
+        if (data.softFail) {
+          if (localStorage.getItem('auth_token')) setIsLoggedIn(true)
+          return
+        }
         setIsLoggedIn(data.isLoggedIn || false)
         setAuthUser(data.user || null)
       }).catch(() => {
-        setIsLoggedIn(false)
-        setAuthUser(null)
-      }).finally(() => setAuthReady(true))
+        // Never wipe login on transient refresh errors
+        if (!cancelled && localStorage.getItem('auth_token')) setIsLoggedIn(true)
+      }).finally(() => {
+        if (!cancelled) setAuthReady(true)
+      })
+    }
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') refresh()
     }
     refresh()
     window.addEventListener('focus', refresh)
-    document.addEventListener('visibilitychange', refresh)
+    document.addEventListener('visibilitychange', onVisible)
     return () => {
+      cancelled = true
       window.removeEventListener('focus', refresh)
-      document.removeEventListener('visibilitychange', refresh)
+      document.removeEventListener('visibilitychange', onVisible)
     }
   }, [])
 
