@@ -131,3 +131,57 @@ button:active {
   to   { opacity: 1; transform: translateX(0); }
 }
 
+/* ── Live Desk mode ── */
+.live-desk {
+  position: relative;
+  isolation: isolate;
+}
+
+.live-desk-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 220px;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(220, 38, 38, 0.18), transparent 70%),
+    radial-gradient(ellipse 40% 40% at 90% 20%, rgba(239, 68, 68, 0.08), transparent 60%);
+  z-index: 0;
+}
+
+.live-desk-filters {
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(44, 44, 46, 0.85);
+}
+
+.live-desk-row {
+  border-radius: 16px;
+  padding: 14px 14px 14px 12px;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.live-desk-row--live {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.12), rgba(17, 17, 17, 0.95) 42%);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  box-shadow: 0 4px 24px rgba(220, 38, 38, 0.08);
+}
+
+.live-desk-row--live:hover {
+  border-color: rgba(239, 68, 68, 0.55);
+  box-shadow: 0 8px 28px rgba(220, 38, 38, 0.16);
+  transform: translateY(-1px);
+}
+
+.live-desk-row--up {
+  background: #111111;
+  border: 1px solid #2c2c2e;
+}
+
+.live-desk-row--up:hover {
+  background: #161616;
+  border-color: #3a3a3c;
+}
+
+

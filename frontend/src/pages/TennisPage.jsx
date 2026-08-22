@@ -17,9 +17,10 @@ const fmtDateTime = (ts) => {
 
 export default function TennisPage() {
   const navigate = useNavigate()
-  const { isLoggedIn, authReady, user, mobileMenu, setMobileMenu } = useOutletContext()
+  const { isLoggedIn, authReady, user, mobileMenu, setMobileMenu, liveMode } = useOutletContext()
   const isPro = hasProAccess(user)
   const { matchId } = useParams()
+  const liveShell = Boolean(liveMode && matchId)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [competitions, setCompetitions] = useState({})
@@ -72,7 +73,8 @@ export default function TennisPage() {
   return (
     <div className="flex h-[calc(100vh-57px)] overflow-hidden">
 
-      {/* ── Sidebar — always visible ── */}
+      {/* ── Sidebar — classic mode only ── */}
+      {!liveShell && (
       <div className="hidden md:flex w-60 border-r border-border flex-col overflow-y-auto flex-shrink-0" style={{ background: '#0a0a0a' }}>
         <div className="px-3 py-2.5 text-xs font-black uppercase tracking-wider text-text-muted border-b border-border">🎾 Tennis</div>
         {Object.entries(competitions).map(([comp, compMatches]) => (
@@ -95,8 +97,10 @@ export default function TennisPage() {
           </button>
         ))}
       </div>
+      )}
 
       {/* ── Mobile drawer ── */}
+      {!liveShell && (
       <div className="md:hidden fixed inset-0 z-50 flex pointer-events-none">
         <div
           className="absolute inset-0 bg-black/60 transition-opacity duration-300"
@@ -130,6 +134,7 @@ export default function TennisPage() {
           ))}
         </div>
       </div>
+      )}
 
       {/* ── Main content ── */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">

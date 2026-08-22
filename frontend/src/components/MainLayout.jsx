@@ -1,10 +1,11 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { Activity, Menu, X, Shield, LogOut, User, ChevronDown } from 'lucide-react'
+import { Activity, Menu, X, Shield, LogOut, User, ChevronDown, Radio } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout, getSignupStatus } from '../api'
 import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 import { guestPathAfterLogout, resolveSiteName, splitSiteName } from '../utils/publicAuth'
 import LoginPage from '../pages/LoginPage'
+import LiveDesk from '../pages/LiveDesk'
 
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
@@ -22,7 +23,14 @@ export default function MainLayout() {
   const [lastUpdated, setLastUpdated] = useState(null)
   const [dropdown, setDropdown]     = useState(false)
   const [siteName, setSiteName]     = useState('CricketEdge')
+  const [liveMode, setLiveMode]     = useState(() => {
+    try { return localStorage.getItem('live_desk_mode') === '1' } catch { return false }
+  })
   const dropRef = useRef(null)
+
+  useEffect(() => {
+    try { localStorage.setItem('live_desk_mode', liveMode ? '1' : '0') } catch { /* ignore */ }
+  }, [liveMode])
 
   useEffect(() => {
     let cancelled = false
@@ -127,23 +135,35 @@ export default function MainLayout() {
   const planLabel = getPlanLabel(authUser)
   const initials = authUser?.name?.[0]?.toUpperCase() || '?'
 
+  const isMatchDetail = /\/(cricket|tennis)\/match\//.test(location.pathname)
+  const isShellBypass =
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/profile') ||
+    location.pathname.startsWith('/subscription')
+  const showLiveDesk = liveMode && !isShellBypass && !isMatchDetail
+  const hideSportNav = liveMode && !isShellBypass
+
   return (
     <div className="flex min-h-screen bg-[#000000]">
       {/* Top accent */}
       <div className="fixed top-0 left-0 right-0 h-1 z-50"
-        style={{ background: 'linear-gradient(90deg,#dc2626,#10b981,#dc2626)' }} />
+        style={{ background: liveMode
+          ? 'linear-gradient(90deg,#dc2626,#ef4444,#dc2626)'
+          : 'linear-gradient(90deg,#dc2626,#10b981,#dc2626)' }} />
 
       {/* Header */}
       <header className="fixed top-1 left-0 right-0 z-40 border-b border-[#2c2c2e]"
         style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(20px)', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
         <div className="flex items-center h-13 px-4 gap-3">
-          {/* Mobile toggle */}
-          <button className="md:hidden text-text-muted hover:text-primary" onClick={() => setMobileMenu(m => !m)}>
-            {mobileMenu ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Mobile toggle — league drawer only in classic mode */}
+          {!hideSportNav && (
+            <button className="md:hidden text-text-muted hover:text-primary" onClick={() => setMobileMenu(m => !m)}>
+              {mobileMenu ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          )}
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
+          <Link to="/" className="flex items-center gap-2 flex-shrink-0" onClick={() => { if (liveMode) setLiveMode(false) }}>
             <div className="w-7 h-7 rounded-lg flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
               <Activity className="h-4 w-4 text-white" />
@@ -156,24 +176,68 @@ export default function MainLayout() {
             </span>
           </Link>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-1.5 ml-2 overflow-x-auto no-scrollbar">
-            {NAV_ITEMS.map(item => (
-              <Link key={item.path} to={item.path}
-                className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[13px] font-semibold tracking-wide transition-all ${
-                  location.pathname.startsWith(item.path) ? 'text-white shadow-sm' : 'text-text-secondary hover:text-primary'
-                }`}
-                style={location.pathname.startsWith(item.path)
-                  ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' }
-                  : { background: 'rgba(255,255,255,0.05)' }
-                }>
-                {item.icon} {item.label}
-              </Link>
-            ))}
-          </nav>
+          {/* Nav — hidden in Live Mode */}
+          {!hideSportNav && (
+            <nav className="flex items-center gap-1.5 ml-2 overflow-x-auto no-scrollbar">
+              {NAV_ITEMS.map(item => (
+                <Link key={item.path} to={item.path}
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[13px] font-semibold tracking-wide transition-all ${
+                    location.pathname.startsWith(item.path) ? 'text-white shadow-sm' : 'text-text-secondary hover:text-primary'
+                  }`}
+                  style={location.pathname.startsWith(item.path)
+                    ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' }
+                    : { background: 'rgba(255,255,255,0.05)' }
+                  }>
+                  {item.icon} {item.label}
+                </Link>
+              ))}
+            </nav>
+          )}
+
+          {hideSportNav && (
+            <div className="ml-2 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-red-400"
+              style={{ background: 'rgba(220,38,38,0.12)', border: '1px solid rgba(220,38,38,0.25)' }}>
+              <span className="pulse-dot h-1.5 w-1.5 rounded-full" style={{ background: '#ef4444' }} />
+              Live desk
+            </div>
+          )}
 
           {/* Right side */}
           <div className="ml-auto flex items-center gap-2">
+            {/* Live Mode toggle — persisted in localStorage */}
+            {!isShellBypass && (
+              <button
+                type="button"
+                role="switch"
+                aria-checked={liveMode}
+                aria-label="Live desk mode"
+                onClick={() => {
+                  setLiveMode((on) => {
+                    const next = !on
+                    if (next) setMobileMenu(false)
+                    return next
+                  })
+                }}
+                className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold transition-all flex-shrink-0"
+                style={liveMode
+                  ? { background: 'rgba(220,38,38,0.2)', color: '#f87171', border: '1px solid rgba(220,38,38,0.45)', boxShadow: '0 0 16px rgba(220,38,38,0.2)' }
+                  : { background: 'rgba(255,255,255,0.05)', color: '#8e8e93', border: '1px solid #2c2c2e' }
+                }
+              >
+                <Radio size={12} className={liveMode ? 'animate-pulse' : ''} />
+                <span className="hidden xs:inline sm:inline">Live</span>
+                <span
+                  className="relative inline-block h-4 w-7 rounded-full transition-colors"
+                  style={{ background: liveMode ? '#dc2626' : '#3a3a3c' }}
+                >
+                  <span
+                    className="absolute top-0.5 h-3 w-3 rounded-full bg-white transition-transform"
+                    style={{ left: liveMode ? '14px' : '2px' }}
+                  />
+                </span>
+              </button>
+            )}
+
             {/* Admin button — navbar me */}
             {isAdmin && (
               <Link to="/admin"
@@ -277,7 +341,16 @@ export default function MainLayout() {
 
       {/* Content */}
       <main className={`flex-1 w-full ${onTrial ? 'pt-[88px]' : 'pt-14'}`}>
-        <Outlet context={{ isLoggedIn, user: authUser, authReady, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
+        {showLiveDesk ? (
+          <LiveDesk
+            isLoggedIn={isLoggedIn}
+            authReady={authReady}
+            user={authUser}
+            stickyTop={onTrial ? 88 : 56}
+          />
+        ) : (
+          <Outlet context={{ isLoggedIn, user: authUser, authReady, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu, liveMode }} />
+        )}
       </main>
 
       {loginOpen && (
