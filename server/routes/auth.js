@@ -3,7 +3,7 @@ const { getFrontendUrl } = require('../lib/publicUrl');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const router = express.Router();
-const { generateToken } = require('../middleware/auth');
+const { generateToken, clearAuthCache } = require('../middleware/auth');
 const prisma = require('../db/prisma');
 const {
   grantTrialToNewUser,
@@ -149,6 +149,7 @@ router.post('/register', async (req, res) => {
     const freshUser = result.user || await prisma.user.findUnique({ where: { id: user.id } });
 
     const token = generateToken(freshUser);
+    clearAuthCache();
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({
       success: true,
@@ -186,6 +187,7 @@ router.post('/login', async (req, res) => {
     const { user: freshUser, trialGranted } = await syncUserTrialState(prisma, user.id);
     const cfg = await getTrialConfig(prisma);
     const token = generateToken(freshUser || user);
+    clearAuthCache();
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
     res.json({
       success: true,
@@ -379,6 +381,7 @@ router.post('/google/verify', async (req, res) => {
 
     const { user: freshUser } = await syncUserTrialState(prisma, user.id);
     const token = generateToken(freshUser || user);
+    clearAuthCache();
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token } });
     res.json({ success: true, token, user: sanitizeUser(freshUser || user) });
   } catch (err) {
@@ -416,6 +419,7 @@ router.get('/google/callback',
   },
   (req, res) => {
     const token = generateToken(req.user);
+    clearAuthCache();
     prisma.user.update({ where: { id: req.user.id }, data: { activeToken: token, lastLoginAt: new Date() } }).catch(() => {});
     const redirectTo = getFrontendUrl();
     // JSON.stringify escapes quotes/newlines so token/URL cannot break out of the script

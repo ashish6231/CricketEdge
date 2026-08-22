@@ -26,7 +26,14 @@ export default function MainLayout() {
 
   useEffect(() => {
     let cancelled = false
-    const refresh = () => {
+    let lastRefreshAt = 0
+    const AUTH_REFRESH_MIN_MS = 60 * 1000
+
+    const refresh = (force = false) => {
+      const now = Date.now()
+      if (!force && now - lastRefreshAt < AUTH_REFRESH_MIN_MS) return
+      lastRefreshAt = now
+
       const pendingToken = sessionStorage.getItem('pending_token')
       if (pendingToken) {
         localStorage.setItem('auth_token', pendingToken)
@@ -49,14 +56,12 @@ export default function MainLayout() {
       })
     }
     const onVisible = () => {
-      if (document.visibilityState === 'visible') refresh()
+      if (document.visibilityState === 'visible') refresh(false)
     }
-    refresh()
-    window.addEventListener('focus', refresh)
+    refresh(true)
     document.addEventListener('visibilitychange', onVisible)
     return () => {
       cancelled = true
-      window.removeEventListener('focus', refresh)
       document.removeEventListener('visibilitychange', onVisible)
     }
   }, [])

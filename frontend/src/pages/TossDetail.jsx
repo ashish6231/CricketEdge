@@ -8,6 +8,7 @@ import { predictTossWinner } from '../utils/tossPredictor'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { getBookiePl, getTeamMetrics } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
+import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 
 const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs  = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
@@ -36,8 +37,7 @@ export default function TossDetail({ isEmbedded = false }) {
       })
     }
     fetch(true)
-    const interval = setInterval(() => fetch(false), 3000)
-    return () => clearInterval(interval)
+    return startVisibleInterval(() => fetch(false), LIVE_POLL_MS)
   }, [matchId, isLoggedIn])
 
   if (loading) return (

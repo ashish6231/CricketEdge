@@ -4,6 +4,7 @@ import { Activity, LoaderCircle, ChevronRight, Lock } from 'lucide-react'
 import { getCricketMatches, getCricketOddsBulk, getTossMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
+import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 
 const STORAGE_KEY = 'cricket_selected_comp'
 
@@ -85,6 +86,7 @@ export default function CricketPage() {
     if (!activeIds.length) return
 
     const fetchOdds = () => {
+      if (typeof document !== 'undefined' && document.hidden) return
       getCricketOddsBulk(activeIds)
         .then(data => {
           if (data && !data.error) {
@@ -97,8 +99,7 @@ export default function CricketPage() {
     }
 
     fetchOdds()
-    const interval = setInterval(fetchOdds, 3000)
-    return () => clearInterval(interval)
+    return startVisibleInterval(fetchOdds, LIVE_POLL_MS)
   }, [selectedComp, competitions, matchId, isPro])
 
   const handleCompSelect = (comp) => {

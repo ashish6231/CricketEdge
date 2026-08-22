@@ -1,9 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
-const { optionalAuth, requireProSubscription } = require('../middleware/auth');
+const { optionalAuth, requireProSubscription, assertProAccess } = require('../middleware/auth');
 const { requireAdmin } = require('../middleware/admin');
-const { hasProAccess } = require('../lib/subscriptionAccess');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 
 // ──── Auth (admin only — scraper login control) ────
@@ -85,20 +84,49 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   }
   const data = await scraper.getCricketSnapshot(matchId);
   const isEnded = matchInfo?.status === 'ended';
-  if (!isEnded) {
-    const role = req.user?.role;
-    if (role !== 'admin' && role !== 'superadmin') {
-      const prisma = require('../db/prisma');
-      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-      if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
-    }
-  }
+  if (!isEnded && !assertProAccess(req, res)) return;
   if (data?.error) {
     if (String(data.error).includes('401'))
       return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
     return upstreamUnavailable(res, data);
   }
   res.json(attachMatchMeta(data, matchInfo));
+});
+
+/** One request for MatchDetail poll — cricket + toss + session (single auth). */
+router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
+  const matchId = req.params.matchId;
+  const [cricketMatches, tossMatches] = await Promise.all([
+    scraper.getAllCricketMatches(),
+    scraper.getAllTossMatches(),
+  ]);
+  const matchInfo = findMatchInfo(cricketMatches, matchId);
+  const tossInfo = findMatchInfo(tossMatches, matchId);
+
+  if (!guestMayViewMatch(matchInfo, req.user) && !guestMayViewFromInfos(req.user, [tossInfo, matchInfo])) {
+    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+  }
+
+  const isEnded = isEndedMatch(matchInfo) || isEndedMatch(tossInfo);
+  if (!isEnded && !assertProAccess(req, res)) return;
+
+  const [cricketRaw, tossRaw, sessionRaw] = await Promise.all([
+    scraper.getCricketSnapshot(matchId),
+    scraper.getTossSnapshot(matchId).catch(() => null),
+    scraper.getSessionTrades(matchId).catch(() => null),
+  ]);
+
+  const cricket = cricketRaw?.error
+    ? { error: cricketRaw.error }
+    : attachMatchMeta(cricketRaw, matchInfo);
+
+  const toss = !tossRaw || tossRaw.error
+    ? null
+    : attachMatchMeta(tossRaw, tossInfo || matchInfo);
+
+  const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
+
+  res.json({ matchId, cricket, toss, session });
 });
 
 router.get('/toss/matches', optionalAuth, async (req, res) => {
@@ -121,14 +149,7 @@ router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
   const isEnded = isEndedMatch(tossInfo) || isEndedMatch(cricketInfo);
-  if (!isEnded) {
-    const role = req.user?.role;
-    if (role !== 'admin' && role !== 'superadmin') {
-      const prisma = require('../db/prisma');
-      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-      if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
-    }
-  }
+  if (!isEnded && !assertProAccess(req, res)) return;
   const data = await scraper.getTossSnapshot(matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data' });
   res.json(attachMatchMeta(data, tossInfo || cricketInfo));
@@ -144,15 +165,7 @@ router.get('/session/matches', optionalAuth, async (req, res) => {
 
 router.get('/session/trades/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  if (!req.user) {
-    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
-  }
-  const role = req.user?.role;
-  if (role !== 'admin' && role !== 'superadmin') {
-    const prisma = require('../db/prisma');
-    const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-    if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
-  }
+  if (!assertProAccess(req, res)) return;
   const data = await scraper.getSessionTrades(matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
   res.json(data);
@@ -224,14 +237,7 @@ router.get('/tennis/match/:matchId', optionalAuth, async (req, res) => {
   }
   const data = await scraper.getTennisSnapshot(matchId);
   const isEnded = matchInfo?.status === 'ended';
-  if (!isEnded) {
-    const role = req.user?.role;
-    if (role !== 'admin' && role !== 'superadmin') {
-      const prisma = require('../db/prisma');
-      const user = await prisma.user.findUnique({ where: { id: req.user.userId }, select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true } });
-      if (!hasProAccess(user)) return res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
-    }
-  }
+  if (!isEnded && !assertProAccess(req, res)) return;
   if (data?.error === 'Login required for live matches')
     return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
 

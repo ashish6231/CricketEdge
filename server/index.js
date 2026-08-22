@@ -150,7 +150,7 @@ setInterval(async () => {
   } catch (err) {
     console.error('❌ Subscription auto-activation error:', err.message);
   }
-}, 5 * 60 * 1000);
+}, 60 * 60 * 1000);
 
 // Serve frontend only if dist exists (API-only Railway deploy is OK)
 const distCandidates = [

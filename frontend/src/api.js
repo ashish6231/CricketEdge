@@ -59,6 +59,11 @@ export async function getCricketSnapshot(matchId) {
   return fetchAPI(`/cricket/match/${matchId}`)
 }
 
+/** Cricket + toss + session in one request (MatchDetail poll). */
+export async function getCricketMatchBundle(matchId) {
+  return fetchAPI(`/cricket/match/${matchId}/bundle`)
+}
+
 export async function getCricketOdds(matchId) {
   return fetchAPI(`/cricket/odds/${matchId}`)
 }

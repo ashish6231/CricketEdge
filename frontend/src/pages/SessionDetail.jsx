@@ -13,6 +13,7 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { buildAllSessions, fmtRs, formatVolStr, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPickBanner from '../components/SessionPickBanner'
+import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 
 function RangeBar({ bestYes, bestNo, predicted }) {
   if (bestYes == null || bestNo == null) return null
@@ -324,8 +325,7 @@ export default function SessionDetail() {
       })
     }
     fetch(true)
-    const interval = setInterval(() => fetch(false), 3000)
-    return () => clearInterval(interval)
+    return startVisibleInterval(() => fetch(false), LIVE_POLL_MS)
   }, [matchId, isLoggedIn])
 
   const sessions = useMemo(

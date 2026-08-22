@@ -4,7 +4,7 @@ import TossDetail from './TossDetail'
 import { useEffect, useState, useContext, useMemo } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
-import { getCricketSnapshot, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
+import { getCricketSnapshot, getCricketMatchBundle, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
@@ -14,6 +14,7 @@ import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
+import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -458,6 +459,7 @@ export default function MatchDetail({ sport }) {
     }
 
     const fetchData = (isInitial = false) => {
+      if (typeof document !== 'undefined' && document.hidden && !isInitial) return
       if (isInitial) {
         setLoading(true)
         setFetchError(null)
@@ -467,7 +469,41 @@ export default function MatchDetail({ sport }) {
         setTossSnapshot(null)
       }
 
-      // Main snapshot first — don't wait for toss/session (they load in background)
+      if (sport === 'cricket') {
+        getCricketMatchBundle(matchId)
+          .then(bundle => {
+            if (cancelled) return
+            const data = bundle?.cricket
+            if (isLoginRequiredError(data) || isLoginRequiredError(bundle)) {
+              setRequiresLogin(true)
+            } else if (data && !data.error) {
+              setSnapshot(data)
+              setFetchError(null)
+              const now = new Date()
+              setLastUpdated(now)
+              window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: now } }))
+            } else if (isInitial) {
+              setFetchError(data?.error || data?.message || 'Match data load nahi ho paya')
+            }
+            if (bundle?.toss && !bundle.toss.error) setTossSnapshot(bundle.toss)
+            if (bundle?.session) applySessionData(bundle.session)
+            if (isInitial) setLoading(false)
+          })
+          .catch(err => {
+            if (cancelled) return
+            if (isLoginRequiredError(err)) {
+              setRequiresLogin(true)
+            } else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) {
+              setRequiresPro(true)
+            } else if (isInitial) {
+              setFetchError(err?.detail || 'Network error — dubara try karo')
+            }
+            if (isInitial) setLoading(false)
+          })
+        return
+      }
+
+      // Tennis / other — single snapshot + optional secondary
       apiFn(matchId)
         .then(data => {
           if (cancelled) return
@@ -500,8 +536,8 @@ export default function MatchDetail({ sport }) {
     }
 
     fetchData(true)
-    const interval = setInterval(() => fetchData(false), 3000)
-    return () => { cancelled = true; clearInterval(interval) }
+    const stopPoll = startVisibleInterval(() => fetchData(false), LIVE_POLL_MS)
+    return () => { cancelled = true; stopPoll() }
   }, [matchId, sport, isLoggedIn])
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>

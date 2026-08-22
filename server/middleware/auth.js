@@ -8,6 +8,40 @@ if (!JWT_SECRET) {
   process.exit(1);
 }
 
+/** In-memory auth cache — cuts Neon hits from 3s frontend polls. */
+const AUTH_CACHE_TTL_MS = 45 * 1000;
+const authCache = new Map(); // token -> { expiresAt, result }
+
+function getCachedAuth(token) {
+  const entry = authCache.get(token);
+  if (!entry) return null;
+  if (Date.now() > entry.expiresAt) {
+    authCache.delete(token);
+    return null;
+  }
+  return entry.result;
+}
+
+function setCachedAuth(token, result) {
+  authCache.set(token, { expiresAt: Date.now() + AUTH_CACHE_TTL_MS, result });
+  // opportunistic cleanup
+  if (authCache.size > 500) {
+    const now = Date.now();
+    for (const [k, v] of authCache) {
+      if (now > v.expiresAt) authCache.delete(k);
+    }
+  }
+}
+
+/** Invalidate after login / logout / password change / session replace. */
+function invalidateAuthCache(token) {
+  if (token) authCache.delete(token);
+}
+
+function clearAuthCache() {
+  authCache.clear();
+}
+
 function generateToken(user) {
   return jwt.sign(
     { userId: user.id, email: user.email, role: user.role, plan: user.subPlanSlug },
@@ -17,6 +51,9 @@ function generateToken(user) {
 }
 
 async function resolveBearerUser(token) {
+  const cached = getCachedAuth(token);
+  if (cached) return cached;
+
   const decoded = jwt.verify(token, JWT_SECRET);
   const user = await prisma.user.findUnique({
     where: { id: decoded.userId },
@@ -27,30 +64,44 @@ async function resolveBearerUser(token) {
       status: true,
       activeToken: true,
       subPlanSlug: true,
+      subStatus: true,
+      subExpiresAt: true,
     },
   });
   if (!user || user.status === 'banned') {
-    return { errorStatus: 403, errorBody: { success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' } };
+    const result = { errorStatus: 403, errorBody: { success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' } };
+    setCachedAuth(token, result);
+    return result;
   }
   if (user.status === 'suspended') {
-    return { errorStatus: 403, errorBody: { success: false, message: 'Account suspended', code: 'ACCOUNT_SUSPENDED' } };
+    const result = { errorStatus: 403, errorBody: { success: false, message: 'Account suspended', code: 'ACCOUNT_SUSPENDED' } };
+    setCachedAuth(token, result);
+    return result;
   }
   if (user.activeToken && user.activeToken !== token) {
-    return {
+    const result = {
       errorStatus: 401,
       errorBody: { success: false, message: 'Logged in on another device', code: 'SESSION_REPLACED' },
       sessionReplaced: true,
     };
+    // Don't cache session-replaced long — user may re-login; short cache still ok
+    setCachedAuth(token, result);
+    return result;
   }
   // Always prefer DB role/plan — never trust JWT claims for authorization
-  return {
+  const result = {
     user: {
       userId: user.id,
       email: user.email,
       role: user.role,
       plan: user.subPlanSlug,
+      subPlanSlug: user.subPlanSlug,
+      subStatus: user.subStatus,
+      subExpiresAt: user.subExpiresAt,
     },
   };
+  setCachedAuth(token, result);
+  return result;
 }
 
 async function verifyToken(req, res, next) {
@@ -98,19 +149,26 @@ async function optionalAuth(req, res, next) {
 }
 
 function requireProSubscription(req, res, next) {
-  verifyToken(req, res, async () => {
-    try {
-      const user = await prisma.user.findUnique({
-        where: { id: req.user.userId },
-        select: { role: true, subPlanSlug: true, subStatus: true, subExpiresAt: true }
-      });
-      if (hasProAccess(user)) return next();
-    } catch { /* fall through */ }
+  verifyToken(req, res, () => {
+    if (hasProAccess(req.user)) return next();
     return res.status(403).json({
       success: false, message: 'Pro subscription required',
       code: 'SUBSCRIPTION_REQUIRED', upgradeUrl: '/subscription'
     });
   });
+}
+
+/** Use after optionalAuth — no second DB hit when req.user already has sub fields. */
+function assertProAccess(req, res) {
+  const role = req.user?.role;
+  if (role === 'admin' || role === 'superadmin') return true;
+  if (!req.user) {
+    res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.' });
+    return false;
+  }
+  if (hasProAccess(req.user)) return true;
+  res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+  return false;
 }
 
 /** Strip secrets from a User row before sending to clients. */
@@ -134,6 +192,9 @@ module.exports = {
   verifyToken,
   optionalAuth,
   requireProSubscription,
+  assertProAccess,
   sanitizeUserRecord,
+  invalidateAuthCache,
+  clearAuthCache,
   JWT_SECRET,
 };
