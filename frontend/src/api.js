@@ -1,7 +1,8 @@
 import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
-const API_TIMEOUT_MS = 12000
+const API_TIMEOUT_MS = 22000
+const AUTH_TIMEOUT_MS = 5000
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('auth_token')
@@ -20,13 +21,14 @@ async function getAPIError(res) {
 }
 
 async function fetchAPI(endpoint, options = {}) {
+  const { timeoutMs = API_TIMEOUT_MS, ...fetchOptions } = options
   const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), API_TIMEOUT_MS)
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
   try {
     const res = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
+      ...fetchOptions,
       signal: controller.signal,
-      headers: { ...getAuthHeader(), ...options.headers }
+      headers: { ...getAuthHeader(), ...fetchOptions.headers }
     })
     if (!res.ok) {
       throw await getAPIError(res)
@@ -151,7 +153,7 @@ export async function getAuthStatus() {
   const token = localStorage.getItem('auth_token')
   if (!token) return { isLoggedIn: false }
   try {
-    const res = await fetchAPI('/auth/me')
+    const res = await fetchAPI('/auth/me', { timeoutMs: AUTH_TIMEOUT_MS })
     if (!res) return { isLoggedIn: false }
     return { isLoggedIn: true, email: res.user?.email, user: res.user }
   } catch (err) {

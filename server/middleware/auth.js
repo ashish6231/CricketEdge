@@ -71,13 +71,20 @@ async function verifyToken(req, res, next) {
   }
 }
 
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('AUTH_DB_TIMEOUT')), ms)),
+  ]);
+}
+
 async function optionalAuth(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) return next();
 
   const token = authHeader.split(' ')[1];
   try {
-    const result = await resolveBearerUser(token);
+    const result = await withTimeout(resolveBearerUser(token), 4000);
     if (result.user) {
       req.user = result.user;
       return next();
@@ -85,6 +92,7 @@ async function optionalAuth(req, res, next) {
     if (result.sessionReplaced) return next();
     return res.status(result.errorStatus).json(result.errorBody);
   } catch {
+    // DB slow/unavailable — don't block public match lists
     return next();
   }
 }
