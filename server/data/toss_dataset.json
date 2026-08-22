@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-22T15:38:51.746Z",
+  "updatedAt": "2026-08-22T19:32:26.346Z",
   "records": [
     {
       "matchId": "35901908",
@@ -3323,12 +3323,12 @@
           "team2": 1194.1208000000001
         },
         "threeMinVolume": {
-            "team1": {
+          "team1": {
             "back": 2014.05,
             "lay": 236.18000000000006,
             "total": 2278.56
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 946.49,
             "lay": 264.51,
             "total": 1182.67
@@ -3339,13 +3339,13 @@
           "team2": 5
         },
         "advancedMetrics": {
-            "team1": {
+          "team1": {
             "back": 2014.05,
             "lay": 236.18000000000006,
             "totalVolume": 2250.23,
             "backPercentage": 89.50418401674494
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 946.49,
             "lay": 264.51,
             "totalVolume": 1211,
@@ -3353,12 +3353,12 @@
           }
         },
         "advancedMetricsV2": {
-            "team1": {
+          "team1": {
             "back": 1964.0908,
             "lay": 227.84550000000004,
             "totalBet": 2191.9363
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 957.9408000000001,
             "lay": 271.8968,
             "totalBet": 1229.8376
@@ -3431,13 +3431,13 @@
         },
         "marketAnalysis": {
           "totalVolume": {
-          "team1": {
+            "team1": {
               "totalBackVol": 2014.05,
               "totalLayVol": 236.18000000000006,
               "totalBet": 2278.56,
               "profitLoss": -1095.8899999999999
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackVol": 946.49,
               "totalLayVol": 264.51,
               "totalBet": 1182.67,
@@ -3445,13 +3445,13 @@
             }
           },
           "normalTotalBet": {
-          "team1": {
+            "team1": {
               "totalBackExpo": 1964.0908,
               "totalLayVol": 236.18000000000006,
               "totalBet": 2228.6008,
               "profitLoss": -1054.2653
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackExpo": 957.9408000000001,
               "totalLayVol": 264.51,
               "totalBet": 1194.1208000000001,
@@ -3459,13 +3459,13 @@
             }
           },
           "totalNetVolume": {
-          "team1": {
+            "team1": {
               "totalBackNetVol": 1964.0908,
               "totalLayNetVol": 227.84550000000004,
               "totalBet": 2235.9876,
               "profitLoss": -1050.2012999999997
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackNetVol": 957.9408000000001,
               "totalLayNetVol": 271.8968,
               "totalBet": 1185.7863000000002,
@@ -3745,12 +3745,12 @@
           "team2": 3355.6834
         },
         "threeMinVolume": {
-            "team1": {
+          "team1": {
             "back": 1163.1799999999998,
             "lay": 808.3900000000001,
             "total": 1990.1599999999999
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 2617.81,
             "lay": 826.98,
             "total": 3426.2
@@ -3761,13 +3761,13 @@
           "team2": 11
         },
         "advancedMetrics": {
-            "team1": {
+          "team1": {
             "back": 1163.1799999999998,
             "lay": 808.3900000000001,
             "totalVolume": 1971.57,
             "backPercentage": 58.99765161774626
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 2617.81,
             "lay": 826.98,
             "totalVolume": 3444.79,
@@ -3775,12 +3775,12 @@
           }
         },
         "advancedMetricsV2": {
-            "team1": {
+          "team1": {
             "back": 1150.7703999999999,
             "lay": 801.3602,
             "totalBet": 1952.1306
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 2547.2934,
             "lay": 838.3788999999999,
             "totalBet": 3385.6723
@@ -3853,13 +3853,13 @@
         },
         "marketAnalysis": {
           "totalVolume": {
-          "team1": {
+            "team1": {
               "totalBackVol": 1163.1799999999998,
               "totalLayVol": 808.3900000000001,
               "totalBet": 1990.1599999999999,
               "profitLoss": 1436.04
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackVol": 2617.81,
               "totalLayVol": 826.98,
               "totalBet": 3426.2,
@@ -3867,13 +3867,13 @@
             }
           },
           "normalTotalBet": {
-          "team1": {
+            "team1": {
               "totalBackExpo": 1150.7703999999999,
               "totalLayVol": 808.3900000000001,
               "totalBet": 1977.7504,
               "profitLoss": 1441.4198000000001
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackExpo": 2547.2934,
               "totalLayVol": 826.98,
               "totalBet": 3355.6834,
@@ -3881,13 +3881,13 @@
             }
           },
           "totalNetVolume": {
-          "team1": {
+            "team1": {
               "totalBackNetVol": 1150.7703999999999,
               "totalLayNetVol": 801.3602,
               "totalBet": 1989.1492999999998,
               "profitLoss": 1359.5043000000003
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackNetVol": 2547.2934,
               "totalLayNetVol": 838.3788999999999,
               "totalBet": 3348.6536,
@@ -5346,12 +5346,12 @@
           "team2": 2654.9981
         },
         "threeMinVolume": {
-            "team1": {
+          "team1": {
             "back": 3079.51,
             "lay": 1054.2299999999998,
             "total": 4335.68
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 1621.13,
             "lay": 1256.1699999999998,
             "total": 2675.3599999999997
@@ -5362,13 +5362,13 @@
           "team2": 12
         },
         "advancedMetrics": {
-            "team1": {
+          "team1": {
             "back": 3079.51,
             "lay": 1054.2299999999998,
             "totalVolume": 4133.74,
             "backPercentage": 74.49694465544519
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 1621.13,
             "lay": 1256.1699999999998,
             "totalVolume": 2877.3,
@@ -5376,12 +5376,12 @@
           }
         },
         "advancedMetricsV2": {
-            "team1": {
+          "team1": {
             "back": 3000.4073000000003,
             "lay": 1063.8337999999999,
             "totalBet": 4064.2411
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 1600.7681,
             "lay": 1289.2529,
             "totalBet": 2890.0209999999997
@@ -5454,13 +5454,13 @@
         },
         "marketAnalysis": {
           "totalVolume": {
-          "team1": {
+            "team1": {
               "totalBackVol": 3079.51,
               "totalLayVol": 1054.2299999999998,
               "totalBet": 4335.68,
               "profitLoss": -1660.3200000000006
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackVol": 1621.13,
               "totalLayVol": 1256.1699999999998,
               "totalBet": 2675.3599999999997,
@@ -5468,13 +5468,13 @@
             }
           },
           "normalTotalBet": {
-          "team1": {
+            "team1": {
               "totalBackExpo": 3000.4073000000003,
               "totalLayVol": 1054.2299999999998,
               "totalBet": 4256.5773,
               "profitLoss": -1571.6135
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackExpo": 1600.7681,
               "totalLayVol": 1256.1699999999998,
               "totalBet": 2654.9981,
@@ -5482,13 +5482,13 @@
             }
           },
           "totalNetVolume": {
-          "team1": {
+            "team1": {
               "totalBackNetVol": 3000.4073000000003,
               "totalLayNetVol": 1063.8337999999999,
               "totalBet": 4289.6602,
               "profitLoss": -1625.0583000000006
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackNetVol": 1600.7681,
               "totalLayNetVol": 1289.2529,
               "totalBet": 2664.6018999999997,
@@ -7644,13 +7644,13 @@
           "team2": 18
         },
         "advancedMetrics": {
-            "team1": {
+          "team1": {
             "back": 2329.02,
             "lay": 8354.349999999999,
             "totalVolume": 10683.369999999999,
             "backPercentage": 21.800424397919386
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 1319.38,
             "lay": 440.09999999999997,
             "totalVolume": 1759.48,
@@ -7658,23 +7658,23 @@
           }
         },
         "advancedMetricsV2": {
-            "team1": {
+          "team1": {
             "back": 530.6526000000001,
             "lay": 4941.944900000001,
             "totalBet": 5472.597500000002
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 1263.9744999999998,
             "lay": 2006.1361,
             "totalBet": 3270.1106
           }
         },
         "supportMetrics": {
-            "team1": {
+          "team1": {
             "supportMoney": 2769.12,
             "support": 22.254708527387216
-            },
-            "team2": {
+          },
+          "team2": {
             "supportMoney": 9673.73,
             "support": 77.74529147261279
           }
@@ -7736,13 +7736,13 @@
         },
         "marketAnalysis": {
           "totalVolume": {
-          "team1": {
+            "team1": {
               "totalBackVol": 2329.02,
               "totalLayVol": 8354.349999999999,
               "totalBet": 2769.12,
               "profitLoss": 6904.61
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackVol": 1319.38,
               "totalLayVol": 440.09999999999997,
               "totalBet": 9673.73,
@@ -7750,13 +7750,13 @@
             }
           },
           "normalTotalBet": {
-          "team1": {
+            "team1": {
               "totalBackExpo": 530.6526000000001,
               "totalLayVol": 8354.349999999999,
               "totalBet": 970.7526,
               "profitLoss": 5290.572300000002
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackExpo": 1263.9744999999998,
               "totalLayVol": 440.09999999999997,
               "totalBet": 9618.324499999999,
@@ -7764,13 +7764,13 @@
             }
           },
           "totalNetVolume": {
-          "team1": {
+            "team1": {
               "totalBackNetVol": 530.6526000000001,
               "totalLayNetVol": 4941.944900000001,
               "totalBet": 2536.7887,
               "profitLoss": 3669.1307000000006
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackNetVol": 1263.9744999999998,
               "totalLayNetVol": 2006.1361,
               "totalBet": 6205.919400000001,
@@ -9031,12 +9031,12 @@
           "team2": 697.5847000000001
         },
         "threeMinVolume": {
-            "team1": {
+          "team1": {
             "back": 1979.6100000000001,
             "lay": 333.89000000000004,
             "total": 2460.31
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 374.02000000000004,
             "lay": 480.69999999999993,
             "total": 707.9100000000001
@@ -9047,13 +9047,13 @@
           "team2": 20
         },
         "advancedMetrics": {
-            "team1": {
+          "team1": {
             "back": 1979.6100000000001,
             "lay": 333.89000000000004,
             "totalVolume": 2313.5,
             "backPercentage": 85.56775448454724
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 374.02000000000004,
             "lay": 480.69999999999993,
             "totalVolume": 854.72,
@@ -9061,12 +9061,12 @@
           }
         },
         "advancedMetricsV2": {
-            "team1": {
+          "team1": {
             "back": 1900.4103999999998,
             "lay": 259.15960000000007,
             "totalBet": 2159.5699999999997
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 363.6947,
             "lay": 490.7698,
             "totalBet": 854.4645
@@ -9139,13 +9139,13 @@
         },
         "marketAnalysis": {
           "totalVolume": {
-          "team1": {
+            "team1": {
               "totalBackVol": 1979.6100000000001,
               "totalLayVol": 333.89000000000004,
               "totalBet": 2460.31,
               "profitLoss": -1752.3999999999999
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackVol": 374.02000000000004,
               "totalLayVol": 480.69999999999993,
               "totalBet": 707.9100000000001,
@@ -9153,13 +9153,13 @@
             }
           },
           "normalTotalBet": {
-          "team1": {
+            "team1": {
               "totalBackExpo": 1900.4103999999998,
               "totalLayVol": 333.89000000000004,
               "totalBet": 2381.1103999999996,
               "profitLoss": -1747.9307999999994
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackExpo": 363.6947,
               "totalLayVol": 480.69999999999993,
               "totalBet": 697.5847000000001,
@@ -9167,13 +9167,13 @@
             }
           },
           "totalNetVolume": {
-          "team1": {
+            "team1": {
               "totalBackNetVol": 1900.4103999999998,
               "totalLayNetVol": 259.15960000000007,
               "totalBet": 2391.1802,
               "profitLoss": -1768.3258999999998
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackNetVol": 363.6947,
               "totalLayNetVol": 490.7698,
               "totalBet": 622.8543000000001,
@@ -10175,12 +10175,12 @@
           "team2": 101.50380000000001
         },
         "threeMinVolume": {
-            "team1": {
+          "team1": {
             "back": 314.16999999999996,
             "lay": 2.8100000000000023,
             "total": 342.34
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 105.32000000000001,
             "lay": 28.169999999999998,
             "total": 108.13000000000001
@@ -10191,13 +10191,13 @@
           "team2": 4
         },
         "advancedMetrics": {
-            "team1": {
+          "team1": {
             "back": 314.16999999999996,
             "lay": 2.8100000000000023,
             "totalVolume": 316.97999999999996,
             "backPercentage": 99.11350873872169
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 105.32000000000001,
             "lay": 28.169999999999998,
             "totalVolume": 133.49,
@@ -10205,12 +10205,12 @@
           }
         },
         "advancedMetricsV2": {
-            "team1": {
+          "team1": {
             "back": 314.1097,
             "lay": 2.8100000000000023,
             "totalBet": 316.9197
-            },
-            "team2": {
+          },
+          "team2": {
             "back": 98.69380000000001,
             "lay": 27.606599999999997,
             "totalBet": 126.30040000000001
@@ -10283,13 +10283,13 @@
         },
         "marketAnalysis": {
           "totalVolume": {
-          "team1": {
+            "team1": {
               "totalBackVol": 314.16999999999996,
               "totalLayVol": 2.8100000000000023,
               "totalBet": 342.34,
               "profitLoss": -234.20999999999998
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackVol": 105.32000000000001,
               "totalLayVol": 28.169999999999998,
               "totalBet": 108.13000000000001,
@@ -10297,13 +10297,13 @@
             }
           },
           "normalTotalBet": {
-          "team1": {
+            "team1": {
               "totalBackExpo": 314.1097,
               "totalLayVol": 2.8100000000000023,
               "totalBet": 342.2797,
               "profitLoss": -234.1497
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackExpo": 98.69380000000001,
               "totalLayVol": 28.169999999999998,
               "totalBet": 101.50380000000001,
@@ -10311,13 +10311,13 @@
             }
           },
           "totalNetVolume": {
-          "team1": {
+            "team1": {
               "totalBackNetVol": 314.1097,
               "totalLayNetVol": 2.8100000000000023,
               "totalBet": 341.7163,
               "profitLoss": -240.21249999999998
-          },
-          "team2": {
+            },
+            "team2": {
               "totalBackNetVol": 98.69380000000001,
               "totalLayNetVol": 27.606599999999997,
               "totalBet": 101.50380000000001,
@@ -10498,6 +10498,427 @@
           "winner": "Tiruppur Tamizhans",
           "priority": 40,
           "selected": false
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35962407",
+      "marketId": "1.261336716",
+      "matchName": "Nellai Royal Kings v Madurai Panthers",
+      "competitionName": "Tamil Nadu Premier League",
+      "team1": "Nellai Royal Kings",
+      "team2": "Madurai Panthers",
+      "startTime": 1787407200000,
+      "endedAt": "2026-08-22T19:32:26.321Z",
+      "capturedAt": "2026-08-22T19:32:26.321Z",
+      "snapshot": {
+        "serverTime": "2026-08-22T19:32:26.264Z",
+        "matchId": "35962407",
+        "matchName": "Nellai Royal Kings v Madurai Panthers",
+        "teamNames": [
+          "Nellai Royal Kings",
+          "Madurai Panthers"
+        ],
+        "inPlayPnl": {
+          "team1": -576.8123,
+          "team2": 580.9176
+        },
+        "inPlayTotalBets": {
+          "team1": 1176.941,
+          "team2": 593.63
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 732.8499999999999,
+            "lay": 593.63,
+            "total": 1187.37
+          },
+          "team2": {
+            "back": 0,
+            "lay": 454.52000000000004,
+            "total": 593.63
+          }
+        },
+        "preMatchPnl": {
+          "team1": -576.8123,
+          "team2": 580.9176
+        },
+        "preMatchTotalBets": {
+          "team1": 1176.941,
+          "team2": 593.63
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 732.8499999999999,
+            "lay": 593.63,
+            "total": 1187.37
+          },
+          "team2": {
+            "back": 0,
+            "lay": 454.52000000000004,
+            "total": 593.63
+          }
+        },
+        "threeMinPnl": {
+          "team1": -576.8123,
+          "team2": 580.9176
+        },
+        "threeMinTotalBets": {
+          "team1": 1176.941,
+          "team2": 593.63
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 732.8499999999999,
+            "lay": 593.63,
+            "total": 1187.37
+          },
+          "team2": {
+            "back": 0,
+            "lay": 454.52000000000004,
+            "total": 593.63
+          }
+        },
+        "matchLoadV2": {
+          "team1": 6,
+          "team2": 4
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 732.8499999999999,
+            "lay": 593.63,
+            "totalVolume": 1326.48,
+            "backPercentage": 55.247723297750426
+          },
+          "team2": {
+            "back": 0,
+            "lay": 454.52000000000004,
+            "totalVolume": 454.52000000000004,
+            "backPercentage": 0
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 722.4209999999999,
+            "lay": 600.1287,
+            "totalBet": 1322.5497
+          },
+          "team2": {
+            "back": 0,
+            "lay": 441.6976,
+            "totalBet": 441.6976
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1187.37,
+            "support": 66.66872543514879
+          },
+          "team2": {
+            "supportMoney": 593.63,
+            "support": 33.331274564851206
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Nellai Royal Kings",
+          "bookieFavouriteOutcome": "Madurai Panthers",
+          "riskTeam": "Nellai Royal Kings",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 33.33745087029758,
+          "mostBettedTeam": "Nellai Royal Kings",
+          "prediction": {
+            "team1TrueSupport": 1164.1186,
+            "team2TrueSupport": 600.1287,
+            "ratio": 1.9397815835170023,
+            "bookiePnlTeam1": -128.79099999999994,
+            "bookiePnlTeam2": 454.52000000000004,
+            "prediction": "Madurai Panthers",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.94) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 122.29229999999995,
+            "backExposure": 722.4209999999999,
+            "layExposure": 600.1287,
+            "teamName": "Nellai Royal Kings"
+          },
+          "team2": {
+            "netExposure": -441.6976,
+            "backExposure": 0,
+            "layExposure": 441.6976,
+            "teamName": "Madurai Panthers"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 722.4209999999999,
+            "A_lay_stake": 593.63,
+            "B_back_expo": 0,
+            "B_lay_stake": 454.52000000000004
+          },
+          "totals": {
+            "totalBetTeam1": 1176.941,
+            "totalBetTeam2": 593.63
+          },
+          "simplePL": {
+            "team1_win": -128.79099999999994,
+            "team2_win": 454.52000000000004
+          },
+          "derivedPL": {
+            "team1_win": -583.311,
+            "team2_win": 583.311
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 732.8499999999999,
+              "totalLayVol": 593.63,
+              "totalBet": 1187.37,
+              "profitLoss": -593.7399999999999
+            },
+            "team2": {
+              "totalBackVol": 0,
+              "totalLayVol": 454.52000000000004,
+              "totalBet": 593.63,
+              "profitLoss": 593.7399999999999
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 722.4209999999999,
+              "totalLayVol": 593.63,
+              "totalBet": 1176.941,
+              "profitLoss": -576.8123
+            },
+            "team2": {
+              "totalBackExpo": 0,
+              "totalLayVol": 454.52000000000004,
+              "totalBet": 593.63,
+              "profitLoss": 580.9175999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 722.4209999999999,
+              "totalLayNetVol": 600.1287,
+              "totalBet": 1164.1186,
+              "profitLoss": -563.9899
+            },
+            "team2": {
+              "totalBackNetVol": 0,
+              "totalLayNetVol": 441.6976,
+              "totalBet": 600.1287,
+              "profitLoss": 563.9899
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 6,
+            "averageOdds": 1.9933333333333334,
+            "averageSize": 197.89499999999998,
+            "supportProduct": 394.47069999999997
+          },
+          "teamB": {
+            "tradeCount": 4,
+            "averageOdds": 1.9875,
+            "averageSize": 148.4075,
+            "supportProduct": 294.95990625
+          },
+          "strongerTeam": "Nellai Royal Kings",
+          "supportRatio": 1.3373705769544737
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 732.8499999999999,
+            "oppoLayVolume": 454.52000000000004,
+            "layExposure": 600.1287,
+            "netSupportValue": 587.2412999999999
+          },
+          "teamB": {
+            "totalBackVolume": 0,
+            "oppoLayVolume": 593.63,
+            "layExposure": 441.6976,
+            "netSupportValue": 151.93239999999997
+          },
+          "strongerTeam": "Nellai Royal Kings",
+          "netSupportDifference": 435.30889999999994,
+          "percentageA": 79.44564315532331,
+          "percentageB": 20.5543568446767
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 139.2199999999999,
+            "syntheticSupport": 454.52000000000004,
+            "opponentLiabilityRejection": 441.6976,
+            "sentimentScore": 152.0424
+          },
+          "teamB": {
+            "directNetSupport": -454.52000000000004,
+            "syntheticSupport": 593.63,
+            "opponentLiabilityRejection": 600.1287,
+            "sentimentScore": -461.0187
+          },
+          "strongerTeam": "Nellai Royal Kings",
+          "scoreDifference": 613.0611,
+          "percentageA": 100,
+          "percentageB": 0
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Nellai Royal Kings",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Madurai Panthers",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Nellai Royal Kings"
+        },
+        "teams": {
+          "Nellai Royal Kings": {
+            "trades": [
+              {
+                "team": "Nellai Royal Kings",
+                "price": 2.04,
+                "type": "lay",
+                "size": 367.26,
+                "updatedAt": 1787403957668
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.9,
+                "type": "lay",
+                "size": 70.47,
+                "updatedAt": 1787403365141
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 2.02,
+                "type": "lay",
+                "size": 13.81,
+                "updatedAt": 1787403272457
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.98,
+                "type": "back",
+                "size": 310.05,
+                "updatedAt": 1787399871434
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.99,
+                "type": "back",
+                "size": 422.79999999999995,
+                "updatedAt": 1787399708751
+              },
+              {
+                "team": "Nellai Royal Kings",
+                "price": 1.99,
+                "type": "lay",
+                "size": 142.09,
+                "updatedAt": 1787398452448
+              }
+            ],
+            "pnlIfWins": -576.8123,
+            "totalBet": 1176.941
+          },
+          "Madurai Panthers": {
+            "trades": [
+              {
+                "team": "Madurai Panthers",
+                "price": 1.96,
+                "type": "lay",
+                "size": 13.74,
+                "updatedAt": 1787403957613
+              },
+              {
+                "team": "Madurai Panthers",
+                "price": 2.1,
+                "type": "lay",
+                "size": 63.7,
+                "updatedAt": 1787403365987
+              },
+              {
+                "team": "Madurai Panthers",
+                "price": 1.98,
+                "type": "lay",
+                "size": 7.04,
+                "updatedAt": 1787403268803
+              },
+              {
+                "team": "Madurai Panthers",
+                "price": 1.95,
+                "type": "lay",
+                "size": 370.04,
+                "updatedAt": 1787403246484
+              }
+            ],
+            "pnlIfWins": 580.9176,
+            "totalBet": 593.63
+          }
+        }
+      },
+      "predictedWinner": "Nellai Royal Kings",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "low",
+        "label": "Low Risk",
+        "shortLabel": "Low",
+        "color": "text-[#22c55e]",
+        "hex": "#22c55e",
+        "bg": "rgba(34,197,94,0.12)",
+        "border": "rgba(34,197,94,0.35)",
+        "emoji": "🟢",
+        "wrongPct": "~10–15%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "Nellai Royal Kings",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Nellai Royal Kings",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Nellai Royal Kings",
+          "priority": 80,
+          "selected": true
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Nellai Royal Kings",
+          "priority": 85,
+          "selected": true
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Activity, ChevronRight, LoaderCircle, Lock, Radio } from 'lucide-react'
 import { getCricketMatches, getCricketOddsBulk, getTennisMatches } from '../api'
@@ -10,6 +10,10 @@ const SPORT_FILTERS = [
   { id: 'cricket', label: '🏏 Cricket' },
   { id: 'tennis', label: '🎾 Tennis' },
 ]
+
+const SCROLL_Y_KEY = 'live_desk_scroll_y'
+const FILTER_KEY = 'live_desk_sport_filter'
+const FOCUS_KEY = 'live_desk_focus_match'
 
 const fmtWhen = (ts) => {
   if (!ts) return null
@@ -39,17 +43,36 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
   const navigate = useNavigate()
   const isPro = hasProAccess(user)
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => {
+    try {
+      // Returning from match detail — avoid full-page spinner wipe of scroll context
+      if (sessionStorage.getItem(FOCUS_KEY) || sessionStorage.getItem(SCROLL_Y_KEY) != null) return false
+    } catch { /* ignore */ }
+    return true
+  })
   const [loadError, setLoadError] = useState('')
   const [matches, setMatches] = useState([])
   const [oddsMap, setOddsMap] = useState({})
-  const [sportFilter, setSportFilter] = useState('all')
+  const [sportFilter, setSportFilter] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(FILTER_KEY)
+      if (saved && SPORT_FILTERS.some((f) => f.id === saved)) return saved
+    } catch { /* ignore */ }
+    return 'all'
+  })
+
+  useEffect(() => {
+    try { sessionStorage.setItem(FILTER_KEY, sportFilter) } catch { /* ignore */ }
+  }, [sportFilter])
 
   useEffect(() => {
     if (!authReady) return
     let cancelled = false
+    const returning = (() => {
+      try { return sessionStorage.getItem(SCROLL_Y_KEY) != null || sessionStorage.getItem(FOCUS_KEY) } catch { return false }
+    })()
 
-    const load = () => {
+    const load = (isInitial = false) => {
       Promise.all([
         getCricketMatches().catch((err) => ({ __err: err })),
         getTennisMatches().catch((err) => ({ __err: err })),
@@ -74,9 +97,10 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
       })
     }
 
-    setLoading(true)
-    load()
-    return startVisibleInterval(load, LIVE_POLL_MS * 2)
+    // Back from match: don't blank the page with spinner if we can restore scroll
+    if (!returning) setLoading(true)
+    load(true)
+    return startVisibleInterval(() => load(false), LIVE_POLL_MS * 2)
   }, [isLoggedIn, authReady])
 
   const filtered = useMemo(() => {
@@ -116,7 +140,45 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
     return startVisibleInterval(fetchOdds, LIVE_POLL_MS)
   }, [filtered, isPro, loading])
 
+  // Restore scroll / focus after list is painted (back from match detail)
+  useLayoutEffect(() => {
+    if (loading || !matches.length) return
+    let focus = null
+    let y = null
+    try {
+      focus = sessionStorage.getItem(FOCUS_KEY)
+      y = sessionStorage.getItem(SCROLL_Y_KEY)
+    } catch { /* ignore */ }
+    if (focus == null && y == null) return
+
+    const restore = () => {
+      try {
+        if (focus) {
+          const el = document.querySelector(`[data-live-key="${CSS.escape(focus)}"]`)
+          if (el) {
+            el.scrollIntoView({ block: 'center', behavior: 'auto' })
+          } else if (y != null) {
+            window.scrollTo(0, Number(y) || 0)
+          }
+        } else if (y != null) {
+          window.scrollTo(0, Number(y) || 0)
+        }
+        sessionStorage.removeItem(FOCUS_KEY)
+        sessionStorage.removeItem(SCROLL_Y_KEY)
+      } catch { /* ignore */ }
+    }
+
+    // Wait a frame so rows exist after fade-in / layout
+    const id = requestAnimationFrame(() => requestAnimationFrame(restore))
+    return () => cancelAnimationFrame(id)
+  }, [loading, matches, sportFilter])
+
   const openMatch = (match) => {
+    try {
+      sessionStorage.setItem(SCROLL_Y_KEY, String(window.scrollY || 0))
+      sessionStorage.setItem(FILTER_KEY, sportFilter)
+      sessionStorage.setItem(FOCUS_KEY, match._key)
+    } catch { /* ignore */ }
     if (match.startTime != null) {
       sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
     }
@@ -261,6 +323,7 @@ function MatchRow({ match, live, odds, isPro, onOpen, style }) {
   return (
     <button
       type="button"
+      data-live-key={match._key}
       onClick={() => onOpen(match)}
       className={`live-desk-row group w-full text-left ${live ? 'live-desk-row--live' : 'live-desk-row--up'}`}
       style={style}
