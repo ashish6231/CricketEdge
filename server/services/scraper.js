@@ -1,6 +1,6 @@
 /**
  * tennisliveload.com API Scraper
- * Python scraper.py ka Node.js version — same logic, same endpoints
+ * Auto-relogin on 401 — cookie expire hote hi khud login karke nayi cookie le leta hai.
  */
 
 const axios = require('axios');
@@ -21,11 +21,12 @@ const ENDPOINTS = {
   AUTH_LOGIN:       '/api/auth/login',
 };
 
-const CACHE_TTL = 15 * 1000;
-const LIST_TTL  = 60 * 1000;
-const SNAPSHOT_CACHE_TTL = 3000; // align with 3s frontend polling
-const LIST_CACHE_TTL = 10000;
-const STALE_CACHE_MAX_AGE = 30 * 60 * 1000;
+const SNAPSHOT_CACHE_TTL = 5000;  // 5s global cache for snapshots
+const LIST_CACHE_TTL = 15000;     // 15s global cache for match lists
+const STALE_CACHE_MAX_AGE = 30 * 60 * 1000; // Serve stale data up to 30 min if upstream down
+
+// ──── Single consistent browser fingerprint ────
+const FIXED_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 function _formatUpstreamError(errPayload) {
   const raw = errPayload?.error || errPayload?.message || 'Service temporarily unavailable';
@@ -35,17 +36,11 @@ function _formatUpstreamError(errPayload) {
   return String(raw).replace(/tennisliveload\.com/gi, 'live feed');
 }
 
-const USER_AGENTS = [
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
-];
-
-// ──── HTTP Client ────
+// ──── HTTP Client with auto-relogin on 401 ────
 function _getHeaders() {
   const cookies = tennisLogin.getCookies() || '';
   return {
-    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
+    'User-Agent': FIXED_USER_AGENT,
     'Accept': 'application/json, text/plain, */*',
     'Accept-Language': 'en-US,en;q=0.9',
     'Content-Type': 'application/json',
@@ -56,7 +51,7 @@ function _getHeaders() {
   };
 }
 
-async function _callApi(endpoint, params = null, method = 'GET') {
+async function _callApi(endpoint, params = null, method = 'GET', _isRetry = false) {
   const url = `${BASE_URL}${endpoint}`;
   try {
     const config = { headers: _getHeaders(), timeout: 15000 };
@@ -66,9 +61,23 @@ async function _callApi(endpoint, params = null, method = 'GET') {
     return resp.data;
   } catch (err) {
     if (err.response) {
+      const status = err.response.status;
+
+      // ──── AUTO-RELOGIN on 401 ────
+      // Cookie expired → login karke nayi cookie lo → retry the same request
+      if (status === 401 && !_isRetry) {
+        console.log(`🔑 scraper: got 401 on ${endpoint} — triggering auto-relogin...`);
+        const ok = await tennisLogin.autoRelogin();
+        if (ok) {
+          console.log(`🔄 scraper: retrying ${endpoint} with fresh cookie...`);
+          return _callApi(endpoint, params, method, true); // retry once
+        }
+        console.log(`❌ scraper: auto-relogin failed, returning 401 error`);
+      }
+
       return {
-        error: _formatUpstreamError({ error: `HTTP ${err.response.status}` }),
-        upstreamStatus: err.response.status,
+        error: _formatUpstreamError({ error: `HTTP ${status}` }),
+        upstreamStatus: status,
       };
     }
     if (err.code === 'ECONNABORTED') return { error: _formatUpstreamError({ error: 'Request timed out' }) };
@@ -76,7 +85,7 @@ async function _callApi(endpoint, params = null, method = 'GET') {
   }
 }
 
-// ──── Login / Logout — tennisLogin ke through (single session) ────
+// ──── Login / Logout ────
 
 async function login(email, password) {
   try {
@@ -90,7 +99,6 @@ async function login(email, password) {
 }
 
 function logout() {
-  // tennisLogin ka session clear karo
   tennisLogin._sessionCookies = null;
   tennisLogin._connected = false;
 }
@@ -134,6 +142,15 @@ async function _cachedCall(endpoint, matchId) {
   _inFlight[key] = _callApi(endpoint, { matchId })
     .then(data => {
       if (data && !data.error) _cacheSet(key, data);
+      else {
+        // If upstream failed, serve stale cache if available
+        const stale = _cacheGetStale(key);
+        if (stale) {
+          console.warn(`⚠️  upstream error for ${key}, serving stale cache`);
+          delete _inFlight[key];
+          return stale;
+        }
+      }
       delete _inFlight[key];
       return data;
     })
@@ -186,7 +203,7 @@ const getCricketSnapshot   = (matchId) => _cachedCall(ENDPOINTS.CRICKET_SNAPSHOT
 const getTennisSnapshot    = (matchId) => _cachedCall(ENDPOINTS.TENNIS_SNAPSHOT,  matchId);
 const getSessionTrades     = (matchId) => _cachedCall(ENDPOINTS.SESSION_TRADES,   matchId);
 const getTossSnapshot      = (matchId) => _cachedCall(ENDPOINTS.TOSS_SNAPSHOT,    matchId);
-const getLiveOdds          = (matchId) => _callApi(ENDPOINTS.LIVE_ODDS, { matchId });
+const getLiveOdds          = (matchId) => _cachedCall(ENDPOINTS.LIVE_ODDS, matchId);
 
 async function getCricketFullData(includeSnapshots = true) {
   const matches = await getAllCricketMatches();

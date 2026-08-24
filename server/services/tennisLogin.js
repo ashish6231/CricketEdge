@@ -7,10 +7,41 @@ const LOGIN_URL = `${BASE_URL}/api/auth/login`;
 const COOKIES_FILE = path.join(__dirname, '../tennis_cookies.json');
 const COOKIE_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
+// ──── Single consistent browser fingerprint (anti-detection) ────
+const FIXED_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+
+function _browserHeaders(extraHeaders = {}) {
+  return {
+    'User-Agent': FIXED_USER_AGENT,
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Referer': BASE_URL + '/',
+    'Origin': BASE_URL,
+    'Connection': 'keep-alive',
+    ...extraHeaders,
+  };
+}
+
 let _sessionCookies = null;
 let _sessionExpiry = null;
 let _storedEmail = null;
 let _storedPassword = null;
+
+// ──── Auto-Relogin State ────
+let _reloginInProgress = null; // Promise when relogin is happening (dedup)
+let _lastLoginAttempt = 0;
+const LOGIN_COOLDOWN_MS = 10 * 60 * 1000; // Wait 10 min between login attempts (daily limit = 2)
+let _loginAttemptsToday = 0;
+let _loginAttemptResetDate = new Date().toDateString();
+
+function _resetDailyCounterIfNeeded() {
+  const today = new Date().toDateString();
+  if (today !== _loginAttemptResetDate) {
+    _loginAttemptsToday = 0;
+    _loginAttemptResetDate = today;
+    console.log('🔄 tennisliveload: daily login counter reset');
+  }
+}
 
 function _applyCookies(raw, source) {
   const cookies = raw?.trim();
@@ -21,7 +52,7 @@ function _applyCookies(raw, source) {
   return true;
 }
 
-// Env cookies first (Railway redeploy), then disk
+// Load: env cookies first, then disk
 if (!_applyCookies(process.env.TENNIS_SESSION_COOKIES, 'TENNIS_SESSION_COOKIES env')) {
   try {
     if (fs.existsSync(COOKIES_FILE)) {
@@ -36,29 +67,29 @@ if (!_applyCookies(process.env.TENNIS_SESSION_COOKIES, 'TENNIS_SESSION_COOKIES e
 }
 
 function _persist() {
-  try { fs.writeFileSync(COOKIES_FILE, JSON.stringify({ cookies: _sessionCookies, expiry: _sessionExpiry })); } catch {}
+  try { 
+    fs.writeFileSync(COOKIES_FILE, JSON.stringify({ cookies: _sessionCookies, expiry: _sessionExpiry })); 
+    // Also update env variable in memory so fallback always has latest
+    process.env.TENNIS_SESSION_COOKIES = _sessionCookies;
+  } catch {}
 }
 
 function isSessionValid() {
   return !!(_sessionCookies && _sessionExpiry && Date.now() < _sessionExpiry);
 }
 
-async function _verifySession() {
-  if (!_sessionCookies) return false;
-  try {
-    const res = await axios.get(`${BASE_URL}/api/auth/session`, {
-      headers: { Cookie: _sessionCookies, Accept: 'application/json' },
-      timeout: 8000,
-    });
-    return res.status === 200 && res.data?.isLoggedIn !== false;
-  } catch {
-    return false;
-  }
+function getCookies() {
+  return _sessionCookies;
 }
 
+function isConnected() {
+  return isSessionValid();
+}
+
+// ──── Login with same browser fingerprint ────
 async function login(email, password) {
   const res = await axios.post(LOGIN_URL, { email, password }, {
-    headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+    headers: _browserHeaders({ 'Content-Type': 'application/json' }),
     timeout: 10000,
     validateStatus: () => true,
   });
@@ -74,78 +105,111 @@ async function login(email, password) {
 
   _sessionExpiry = Date.now() + COOKIE_TTL_MS;
   _persist();
-  console.log('✅ tennisliveload.com login successful');
+  console.log('✅ tennisliveload.com login successful — fresh cookie saved');
   return { success: true };
 }
 
-function getCookies() {
-  return _sessionCookies;
+// ──── AUTO-RELOGIN: Called when any API call gets 401 ────
+// This is the magic — when scraper detects 401, it calls this.
+// Multiple concurrent 401s will all wait on the same Promise (dedup).
+async function autoRelogin() {
+  // If relogin is already in progress, wait for that one
+  if (_reloginInProgress) {
+    return _reloginInProgress;
+  }
+
+  // Cooldown — don't spam login attempts
+  const now = Date.now();
+  if ((now - _lastLoginAttempt) < LOGIN_COOLDOWN_MS) {
+    console.log(`⏳ tennisliveload: login cooldown active, waiting ${Math.round((LOGIN_COOLDOWN_MS - (now - _lastLoginAttempt)) / 1000)}s`);
+    return false;
+  }
+
+  // Daily limit check
+  _resetDailyCounterIfNeeded();
+  if (_loginAttemptsToday >= 3) {
+    console.log('⚠️  tennisliveload: daily login limit reached (3 attempts), skipping');
+    return false;
+  }
+
+  if (!_storedEmail || !_storedPassword) {
+    console.log('⚠️  tennisliveload: no credentials stored, cannot auto-relogin');
+    return false;
+  }
+
+  // Start relogin — all concurrent callers will await this same promise
+  _reloginInProgress = (async () => {
+    _lastLoginAttempt = Date.now();
+    _loginAttemptsToday++;
+    console.log(`🔄 tennisliveload: auto-relogin attempt #${_loginAttemptsToday} today...`);
+
+    try {
+      await login(_storedEmail, _storedPassword);
+      console.log('✅ tennisliveload: auto-relogin SUCCESS — new cookie active');
+      return true;
+    } catch (err) {
+      if (/limit exceeded/i.test(err.message)) {
+        console.log('⚠️  tennisliveload: login limit hit by upstream');
+        // Mark that we've hit the upstream limit, stop trying today
+        _loginAttemptsToday = 10; // effectively disable for today
+      } else {
+        console.error('❌ tennisliveload: auto-relogin failed:', err.message);
+      }
+      return false;
+    } finally {
+      _reloginInProgress = null;
+    }
+  })();
+
+  return _reloginInProgress;
 }
 
-function isConnected() {
-  return isSessionValid();
-}
-
+// ──── Startup ────
 async function startAutoLogin() {
   const email = process.env.TENNIS_EMAIL;
   const password = process.env.TENNIS_PASSWORD;
 
+  _storedEmail = email;
+  _storedPassword = password;
+
+  // If we have cookies, just use them — don't verify, don't login
   if (_sessionCookies) {
-    const ok = await _verifySession();
-    if (ok) {
-      console.log('✅ tennisliveload: session verified, skipping login');
-      _startRefreshLoop(email, password);
-      return;
-    }
-    console.log('⚠️  tennisliveload: saved cookies invalid or expired');
+    console.log('✅ tennisliveload: using existing cookies (will auto-relogin on 401)');
+    _startRetryLoop();
+    return;
   }
 
+  // No cookies at all — must login
   if (!email || !password) {
     console.log('⚠️  TENNIS_EMAIL / TENNIS_PASSWORD not set — skipped');
     return;
   }
 
-  _storedEmail = email;
-  _storedPassword = password;
-
   try {
+    _lastLoginAttempt = Date.now();
+    _loginAttemptsToday++;
     await login(email, password);
   } catch (err) {
-    const limitHit = /limit exceeded/i.test(err.message);
-    if (limitHit && process.env.TENNIS_SESSION_COOKIES?.trim()) {
-      _applyCookies(process.env.TENNIS_SESSION_COOKIES, 'TENNIS_SESSION_COOKIES (login limit fallback)');
-      console.log('⚠️  tennisliveload: login limit hit — using env cookies without new login');
-    } else {
-      console.error('❌ tennisliveload login failed:', err.message);
-    }
+    console.error('❌ tennisliveload: startup login failed:', err.message);
   }
 
-  _startRefreshLoop(email, password);
+  _startRetryLoop();
 }
 
-function _startRefreshLoop(email, password) {
-  _storedEmail = email || _storedEmail;
-  _storedPassword = password || _storedPassword;
-
+// ──── Background retry loop ────
+// If cookie is dead AND auto-relogin failed (daily limit), keep trying every 2 hours.
+// The daily limit resets at midnight, so eventually it will work.
+function _startRetryLoop() {
   setInterval(async () => {
-    if (_sessionCookies) {
-      const ok = await _verifySession();
-      if (ok) return;
-    }
-    if (!_storedEmail || !_storedPassword) return;
+    // Only retry if we don't have a working cookie
+    if (_sessionCookies) return; // We have cookies, they'll be validated on use
 
-    console.log('🔄 tennisliveload: session expired, re-logging in...');
-    try {
-      await login(_storedEmail, _storedPassword);
-    } catch (err) {
-      if (/limit exceeded/i.test(err.message) && process.env.TENNIS_SESSION_COOKIES?.trim()) {
-        _applyCookies(process.env.TENNIS_SESSION_COOKIES, 'TENNIS_SESSION_COOKIES (re-login limit fallback)');
-        console.log('⚠️  tennisliveload: re-login blocked by daily limit — reusing env cookies');
-      } else {
-        console.error('❌ tennisliveload re-login failed:', err.message);
-      }
-    }
-  }, 60 * 60 * 1000);
+    _resetDailyCounterIfNeeded();
+    if (_loginAttemptsToday >= 3) return; // Still over limit
+
+    console.log('🔄 tennisliveload: background retry — attempting login...');
+    await autoRelogin();
+  }, 2 * 60 * 60 * 1000); // Every 2 hours
 }
 
-module.exports = { login, getCookies, isConnected, startAutoLogin };
+module.exports = { login, getCookies, isConnected, startAutoLogin, autoRelogin };
