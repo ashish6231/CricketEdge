@@ -61,9 +61,9 @@ export default function TennisPage() {
   if (loadError) return (
     <div className="flex h-[80vh] items-center justify-center px-6">
       <div className="max-w-md rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-center">
-        <p className="text-sm font-semibold text-red-300">{loadError}</p>
-        <p className="mt-2 text-xs text-text-muted">VPN on karke refresh karo, ya thodi der baad dubara try karo.</p>
-        <button onClick={() => window.location.reload()} className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-xs font-bold text-white">Retry</button>
+        <p className="text-sm font-semibold text-red-300 mb-3">{loadError}</p>
+        <p className="text-xs text-text-muted">VPN on karke refresh karo, ya thodi der baad dubara try karo.</p>
+        <button onClick={() => window.location.reload()} className="mt-4 rounded-lg bg-red-600 px-6 py-2.5 text-sm font-bold text-white hover:bg-red-500 transition-colors">Retry</button>
       </div>
     </div>
   )

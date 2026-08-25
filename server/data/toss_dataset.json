@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-22T19:32:26.346Z",
+  "updatedAt": "2026-08-25T18:43:35.380Z",
   "records": [
     {
       "matchId": "35901908",
@@ -10919,6 +10919,449 @@
           "winner": "Nellai Royal Kings",
           "priority": 85,
           "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35973277",
+      "marketId": "1.261434055",
+      "matchName": "Lyca Kovai Kings v Tiruppur Tamizhans",
+      "competitionName": "Tamil Nadu Premier League",
+      "team1": "Lyca Kovai Kings",
+      "team2": "Tiruppur Tamizhans",
+      "startTime": 1787580000000,
+      "endedAt": "2026-08-25T18:43:35.342Z",
+      "capturedAt": "2026-08-25T18:43:35.342Z",
+      "snapshot": {
+        "serverTime": "2026-08-25T18:43:35.125Z",
+        "matchId": "35973277",
+        "matchName": "Lyca Kovai Kings v Tiruppur Tamizhans",
+        "teamNames": [
+          "Lyca Kovai Kings",
+          "Tiruppur Tamizhans"
+        ],
+        "inPlayPnl": {
+          "team1": 88.13700000000028,
+          "team2": 42.84979999999979
+        },
+        "inPlayTotalBets": {
+          "team1": 1955.6899,
+          "team2": 1995.8263000000002
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1539.02,
+            "lay": 700.9000000000001,
+            "total": 2049.7200000000003
+          },
+          "team2": {
+            "back": 1342.94,
+            "lay": 510.70000000000005,
+            "total": 2043.8400000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": 88.13700000000028,
+          "team2": 42.84979999999979
+        },
+        "preMatchTotalBets": {
+          "team1": 1955.6899,
+          "team2": 1995.8263000000002
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1539.02,
+            "lay": 700.9000000000001,
+            "total": 2049.7200000000003
+          },
+          "team2": {
+            "back": 1342.94,
+            "lay": 510.70000000000005,
+            "total": 2043.8400000000001
+          }
+        },
+        "threeMinPnl": {
+          "team1": 88.13700000000028,
+          "team2": 42.84979999999979
+        },
+        "threeMinTotalBets": {
+          "team1": 1955.6899,
+          "team2": 1995.8263000000002
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1539.02,
+            "lay": 700.9000000000001,
+            "total": 2049.7200000000003
+          },
+          "team2": {
+            "back": 1342.94,
+            "lay": 510.70000000000005,
+            "total": 2043.8400000000001
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1539.02,
+            "lay": 700.9000000000001,
+            "totalVolume": 2239.92,
+            "backPercentage": 68.70870388228151
+          },
+          "team2": {
+            "back": 1342.94,
+            "lay": 510.70000000000005,
+            "totalVolume": 1853.64,
+            "backPercentage": 72.44880343540278
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1444.9899,
+            "lay": 700.8869000000002,
+            "totalBet": 2145.8768
+          },
+          "team2": {
+            "back": 1294.9263,
+            "lay": 499.65610000000004,
+            "totalBet": 1794.5824000000002
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 2049.7200000000003,
+            "support": 50.07182012722423
+          },
+          "team2": {
+            "supportMoney": 2043.8400000000001,
+            "support": 49.92817987277577
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Tiruppur Tamizhans",
+          "bookieFavouriteOutcome": "Lyca Kovai Kings",
+          "riskTeam": "Tiruppur Tamizhans",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 0.14364025444845652,
+          "mostBettedTeam": "Tiruppur Tamizhans",
+          "prediction": {
+            "team1TrueSupport": 1944.6460000000002,
+            "team2TrueSupport": 1995.8132000000003,
+            "ratio": 1.0263118325906104,
+            "bookiePnlTeam1": -744.0899,
+            "bookiePnlTeam2": -784.2263,
+            "prediction": "Tiruppur Tamizhans",
+            "pattern": "Fair Market",
+            "reason": "Ratio (1.03) is low. Money is distributed naturally. Prediction follows Higher True Support."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 744.1029999999998,
+            "backExposure": 1444.9899,
+            "layExposure": 700.8869000000002,
+            "teamName": "Lyca Kovai Kings"
+          },
+          "team2": {
+            "netExposure": 795.2702,
+            "backExposure": 1294.9263,
+            "layExposure": 499.65610000000004,
+            "teamName": "Tiruppur Tamizhans"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1444.9899,
+            "A_lay_stake": 700.9000000000001,
+            "B_back_expo": 1294.9263,
+            "B_lay_stake": 510.70000000000005
+          },
+          "totals": {
+            "totalBetTeam1": 1955.6899,
+            "totalBetTeam2": 1995.8263000000002
+          },
+          "simplePL": {
+            "team1_win": -744.0899,
+            "team2_win": -784.2263
+          },
+          "derivedPL": {
+            "team1_win": 40.136400000000094,
+            "team2_win": -40.136400000000094
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1539.02,
+              "totalLayVol": 700.9000000000001,
+              "totalBet": 2049.7200000000003,
+              "profitLoss": -5.880000000000109
+            },
+            "team2": {
+              "totalBackVol": 1342.94,
+              "totalLayVol": 510.70000000000005,
+              "totalBet": 2043.8400000000001,
+              "profitLoss": 5.880000000000109
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1444.9899,
+              "totalLayVol": 700.9000000000001,
+              "totalBet": 1955.6899,
+              "profitLoss": 88.13700000000017
+            },
+            "team2": {
+              "totalBackExpo": 1294.9263,
+              "totalLayVol": 510.70000000000005,
+              "totalBet": 1995.8263000000002,
+              "profitLoss": 42.84979999999996
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1444.9899,
+              "totalLayNetVol": 700.8869000000002,
+              "totalBet": 1944.6460000000002,
+              "profitLoss": 51.16720000000009
+            },
+            "team2": {
+              "totalBackNetVol": 1294.9263,
+              "totalLayNetVol": 499.65610000000004,
+              "totalBet": 1995.8132000000003,
+              "profitLoss": -51.16720000000009
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.947142857142857,
+            "averageSize": 292.81714285714287,
+            "supportProduct": 570.1568081632653
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.9557142857142857,
+            "averageSize": 291.97714285714295,
+            "supportProduct": 571.0238693877553
+          },
+          "strongerTeam": "Tiruppur Tamizhans",
+          "supportRatio": 1.0015207416838243
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1539.02,
+            "oppoLayVolume": 510.70000000000005,
+            "layExposure": 700.8869000000002,
+            "netSupportValue": 1348.8331
+          },
+          "teamB": {
+            "totalBackVolume": 1342.94,
+            "oppoLayVolume": 700.9000000000001,
+            "layExposure": 499.65610000000004,
+            "netSupportValue": 1544.1839
+          },
+          "strongerTeam": "Tiruppur Tamizhans",
+          "netSupportDifference": 195.35079999999994,
+          "percentageA": 46.62375298866201,
+          "percentageB": 53.376247011337995
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 838.1199999999999,
+            "syntheticSupport": 510.70000000000005,
+            "opponentLiabilityRejection": 499.65610000000004,
+            "sentimentScore": 849.1638999999999
+          },
+          "teamB": {
+            "directNetSupport": 832.24,
+            "syntheticSupport": 700.9000000000001,
+            "opponentLiabilityRejection": 700.8869000000002,
+            "sentimentScore": 832.2530999999999
+          },
+          "strongerTeam": "Lyca Kovai Kings",
+          "scoreDifference": 16.910799999999995,
+          "percentageA": 50.502873469222685,
+          "percentageB": 49.497126530777315
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Lyca Kovai Kings",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Tiruppur Tamizhans",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Lyca Kovai Kings"
+        },
+        "teams": {
+          "Lyca Kovai Kings": {
+            "trades": [
+              {
+                "team": "Lyca Kovai Kings",
+                "price": 2,
+                "type": "lay",
+                "size": 699.5900000000001,
+                "updatedAt": 1787577292990
+              },
+              {
+                "team": "Lyca Kovai Kings",
+                "price": 1.91,
+                "type": "back",
+                "size": 253.83,
+                "updatedAt": 1787576461201
+              },
+              {
+                "team": "Lyca Kovai Kings",
+                "price": 2,
+                "type": "back",
+                "size": 333.25,
+                "updatedAt": 1787575523433
+              },
+              {
+                "team": "Lyca Kovai Kings",
+                "price": 1.92,
+                "type": "back",
+                "size": 562.76,
+                "updatedAt": 1787574806063
+              },
+              {
+                "team": "Lyca Kovai Kings",
+                "price": 1.93,
+                "type": "back",
+                "size": 281.38,
+                "updatedAt": 1787573980111
+              },
+              {
+                "team": "Lyca Kovai Kings",
+                "price": 1.94,
+                "type": "back",
+                "size": 107.80000000000001,
+                "updatedAt": 1787573931686
+              },
+              {
+                "team": "Lyca Kovai Kings",
+                "price": 1.99,
+                "type": "lay",
+                "size": 1.31,
+                "updatedAt": 1787569202492
+              }
+            ],
+            "pnlIfWins": 88.13700000000028,
+            "totalBet": 1955.6899
+          },
+          "Tiruppur Tamizhans": {
+            "trades": [
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.07,
+                "updatedAt": 1787577318591
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 2,
+                "type": "lay",
+                "size": 352.93000000000006,
+                "updatedAt": 1787577292990
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 2,
+                "type": "back",
+                "size": 639.0100000000001,
+                "updatedAt": 1787576378289
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.92,
+                "type": "back",
+                "size": 127.1,
+                "updatedAt": 1787575506620
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.93,
+                "type": "lay",
+                "size": 157.76999999999998,
+                "updatedAt": 1787575375931
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.93,
+                "type": "back",
+                "size": 281.38,
+                "updatedAt": 1787575375426
+              },
+              {
+                "team": "Tiruppur Tamizhans",
+                "price": 1.94,
+                "type": "back",
+                "size": 281.38,
+                "updatedAt": 1787573731897
+              }
+            ],
+            "pnlIfWins": 42.84979999999979,
+            "totalBet": 1995.8263000000002
+          }
+        }
+      },
+      "predictedWinner": "Lyca Kovai Kings",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "Lyca Kovai Kings",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Lyca Kovai Kings",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Tiruppur Tamizhans",
+          "priority": 40,
+          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",

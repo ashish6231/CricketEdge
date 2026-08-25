@@ -218,7 +218,7 @@ export default function MainLayout() {
                     return next
                   })
                 }}
-                className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold transition-all flex-shrink-0"
+                className="flex items-center gap-1.5 rounded-full px-2.5 h-8 text-xs font-bold transition-all flex-shrink-0"
                 style={liveMode
                   ? { background: 'rgba(220,38,38,0.2)', color: '#f87171', border: '1px solid rgba(220,38,38,0.45)', boxShadow: '0 0 16px rgba(220,38,38,0.2)' }
                   : { background: 'rgba(255,255,255,0.05)', color: '#8e8e93', border: '1px solid #2c2c2e' }
@@ -228,7 +228,7 @@ export default function MainLayout() {
                 <span className="hidden xs:inline sm:inline">Live</span>
                 <span
                   className="relative inline-block h-4 w-7 rounded-full transition-colors"
-                  style={{ background: liveMode ? '#dc2626' : '#3a3a3c' }}
+                  style={{ background: liveMode ? '#dc2626' : '#48484a' }}
                 >
                   <span
                     className="absolute top-0.5 h-3 w-3 rounded-full bg-white transition-transform"
@@ -241,7 +241,7 @@ export default function MainLayout() {
             {/* Admin button — navbar me */}
             {isAdmin && (
               <Link to="/admin"
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white flex-shrink-0"
+                className="hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-full text-xs font-semibold text-white flex-shrink-0"
                 style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)' }}>
                 <Shield size={12} /> Admin
               </Link>
@@ -321,7 +321,7 @@ export default function MainLayout() {
             ) : authReady ? (
               /* ── Login button ── */
               <button type="button" onClick={() => setLoginOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-white"
+                className="flex items-center gap-1.5 px-3 h-8 rounded-full text-xs font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
                 Login
               </button>
