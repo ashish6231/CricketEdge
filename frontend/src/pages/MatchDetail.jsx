@@ -1572,19 +1572,13 @@ export default function MatchDetail({ sport }) {
 
                       <div className="text-xl font-black text-white mb-2 flex items-center gap-2">
                         <span>{safeTeamDisplay}</span>
-                        <span className="text-xs font-semibold text-[#10b981] font-mono">
-                          ({safeValDisplay >= 0 ? `+${safeValDisplay.toFixed(0)}` : safeValDisplay.toFixed(0)} Safe)
+                        <span className="text-xs font-semibold text-[#10b981]">
+                          (🏆 Predicted Winner)
                         </span>
                       </div>
 
-                      <div className="text-xs text-[#d1d5db] leading-relaxed space-y-1">
-                        <div>
-                          🔴 <b>Heavy Negative Side (Public Favorite):</b> <span className="text-[#ef4444] font-bold">{trapTeamDisplay} ({trapValDisplay < 0 ? trapValDisplay.toFixed(0) : `-${Math.abs(trapValDisplay).toFixed(0)}`})</span> ❌ <i>Trap Side</i>
-                        </div>
-                        <div>
-                          🟢 <b>High Positive Side (Bookmaker Safe):</b> <span className="text-[#10b981] font-bold">{safeTeamDisplay} (+{Math.abs(safeValDisplay).toFixed(0)})</span> 🏆 <i>Advantage Side</i>
-                        </div>
-                        <div className="pt-1.5 text-[11px] text-[#9ca3af] border-t border-white/10">
+                      <div className="text-xs text-[#d1d5db] leading-relaxed">
+                        <div className="text-[12px] text-[#9ca3af]">
                           ⚖️ <b>Pre-Match Stability Catch:</b> {stabilityReason}
                         </div>
                       </div>
