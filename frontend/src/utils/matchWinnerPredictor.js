@@ -284,10 +284,10 @@ export function predictSmartMarketWinner(snap) {
 
   // Load V2 Metrics
   const load = snap.matchLoadV2 || {}
-  const l1 = load.team1 ?? 0
-  const l2 = load.team2 ?? 0
-  const favLoad = favTeam === t1 ? l1 : l2
-  const dogLoad = dogTeam === t1 ? l1 : l2
+  const load1 = load.team1 ?? 0
+  const load2 = load.team2 ?? 0
+  const favLoad = favTeam === t1 ? load1 : load2
+  const dogLoad = dogTeam === t1 ? load1 : load2
   const loadGap = favLoad - dogLoad
   const isFavOverloaded = (dogLoad > 0 && favLoad >= dogLoad * 1.3) || loadGap >= 3
 
@@ -310,13 +310,25 @@ export function predictSmartMarketWinner(snap) {
   const preSafeVal = preSafeTeam === t1 ? prePnl1 : prePnl2
   const preTrapVal = preTrapTeam === t1 ? prePnl1 : prePnl2
 
+  // Back vs Lay Stability Ratio Catch
+  const pv = snap.preMatchVolume || {}
+  const b1 = pv.team1?.back || (am1.totalVolume ? am1.totalVolume * (am1.backPercentage || 50) / 100 : 0)
+  const l1 = pv.team1?.lay || (am1.totalVolume ? am1.totalVolume * (100 - (am1.backPercentage || 50)) / 100 : 0)
+  const b2 = pv.team2?.back || (am2.totalVolume ? am2.totalVolume * (am2.backPercentage || 50) / 100 : 0)
+  const l2 = pv.team2?.lay || (am2.totalVolume ? am2.totalVolume * (100 - (am2.backPercentage || 50)) / 100 : 0)
+
+  const ratio1 = (b1 > 0 && l1 > 0) ? (Math.max(b1, l1) / Math.min(b1, l1)) : (Math.max(b1, l1) > 0 ? 100 : 1)
+  const ratio2 = (b2 > 0 && l2 > 0) ? (Math.max(b2, l2) / Math.min(b2, l2)) : (Math.max(b2, l2) > 0 ? 100 : 1)
+  const isStable1 = ratio1 <= 2.2
+  const isStable2 = ratio2 <= 2.2
+
   const pnl1 = snap.teams?.[t1]?.pnlIfWins ?? (prePnl1 || ip.team1) ?? 0
   const pnl2 = snap.teams?.[t2]?.pnlIfWins ?? (prePnl2 || ip.team2) ?? 0
   const favPnl = favTeam === t1 ? pnl1 : pnl2
   const dogPnl = dogTeam === t1 ? pnl1 : pnl2
   const isDogPnlSafe = dogPnl > favPnl && dogPnl > 0
 
-  // Decision Logic with Pre-Match Exposure Consideration
+  // Decision Logic
   let winner = favTeam
   let isTrap = false
   let confidence = '78%'
@@ -324,14 +336,34 @@ export function predictSmartMarketWinner(snap) {
   let confidenceColor = 'text-[#3b82f6]'
   let reason = `Market Price Favorite (${favPrice.toFixed(2)} Odds, Load ${favLoad} vs ${dogLoad})`
 
-  // High-conviction Pre-Match Exposure Trap (Exposure Divergence + Bloated Load or Lay Density)
-  if (preExposureDiff >= 800 && preSafeTeam === dogTeam && (isFavOverloaded || dogLayPct >= 50)) {
+  if (isStable1 && !isStable2) {
+    winner = t1
+    isTrap = (favTeam !== t1)
+    confidence = '88%'
+    confidenceLabel = 'High Probability (Stable vs Unstable)'
+    confidenceColor = 'text-[#10b981]'
+    reason = `Stable Back/Lay Team (${t1}: Ratio ${ratio1.toFixed(1)}x) vs Unstable Public Trap (${t2}: Ratio ${ratio2.toFixed(1)}x)`
+  } else if (isStable2 && !isStable1) {
+    winner = t2
+    isTrap = (favTeam !== t2)
+    confidence = '88%'
+    confidenceLabel = 'High Probability (Stable vs Unstable)'
+    confidenceColor = 'text-[#10b981]'
+    reason = `Stable Back/Lay Team (${t2}: Ratio ${ratio2.toFixed(1)}x) vs Unstable Public Trap (${t1}: Ratio ${ratio1.toFixed(1)}x)`
+  } else if (!isStable1 && !isStable2) {
+    winner = b1 >= b2 ? t1 : t2
+    isTrap = (favTeam !== winner)
+    confidence = '82%'
+    confidenceLabel = 'Momentum Pick (High Back Value)'
+    confidenceColor = 'text-[#10b981]'
+    reason = `Both Teams Unstable -> Chosen Higher Back Liquidity (${winner})`
+  } else if (preExposureDiff >= 800 && preSafeTeam === dogTeam && (isFavOverloaded || dogLayPct >= 50)) {
     winner = dogTeam
     isTrap = true
     confidence = '88%'
     confidenceLabel = 'High Edge (Pre-Match Exposure Trap)'
     confidenceColor = 'text-[#10b981]'
-    reason = `Pre-Match Exposure Trap on ${favTeam} (${preTrapVal.toFixed(0)} Liability) vs ${dogTeam} (+${preSafeVal.toFixed(0)} Safe Bookie PnL) + Load ${favLoad} vs ${dogLoad}`
+    reason = `Pre-Match Exposure Trap on ${favTeam} (${preTrapVal.toFixed(0)} Liability) vs ${dogTeam} (+${preSafeVal.toFixed(0)} Safe Bookie PnL)`
   } else if (isFavOverloaded && (dogLayPct >= 55 || isDogPnlSafe)) {
     winner = dogTeam
     isTrap = true
