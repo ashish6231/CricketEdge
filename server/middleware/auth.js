@@ -78,16 +78,7 @@ async function resolveBearerUser(token) {
     setCachedAuth(token, result);
     return result;
   }
-  if (user.activeToken && user.activeToken !== token) {
-    const result = {
-      errorStatus: 401,
-      errorBody: { success: false, message: 'Logged in on another device', code: 'SESSION_REPLACED' },
-      sessionReplaced: true,
-    };
-    // Don't cache session-replaced long — user may re-login; short cache still ok
-    setCachedAuth(token, result);
-    return result;
-  }
+  // Single-session enforcement removed: multiple concurrent logins are allowed
   // Always prefer DB role/plan — never trust JWT claims for authorization
   const result = {
     user: {
