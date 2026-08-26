@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-25T18:43:35.380Z",
+  "updatedAt": "2026-08-26T16:15:05.678Z",
   "records": [
     {
       "matchId": "35901908",
@@ -11362,6 +11362,588 @@
           "winner": "Tiruppur Tamizhans",
           "priority": 40,
           "selected": false
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35972909",
+      "marketId": "1.261432535",
+      "matchName": "Antigua & Barbuda Falc v Barbados Tridents",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Antigua & Barbuda Falc",
+      "team2": "Barbados Tridents",
+      "startTime": 1787698800000,
+      "endedAt": "2026-08-26T16:15:05.655Z",
+      "capturedAt": "2026-08-26T16:15:05.655Z",
+      "snapshot": {
+        "serverTime": "2026-08-26T16:15:05.210Z",
+        "matchId": "35972909",
+        "matchName": "Antigua & Barbuda Falc v Barbados Tridents",
+        "teamNames": [
+          "Antigua & Barbuda Falc",
+          "Barbados Tridents"
+        ],
+        "inPlayPnl": {
+          "team1": 1655.9353000000006,
+          "team2": -1372.2687999999994
+        },
+        "inPlayTotalBets": {
+          "team1": 2193.3408999999997,
+          "team2": 3556.5868999999993
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1640.9200000000003,
+            "lay": 365.26,
+            "total": 2187.5800000000004
+          },
+          "team2": {
+            "back": 3456.9500000000003,
+            "lay": 546.66,
+            "total": 3822.21
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1655.9353000000006,
+          "team2": -1372.2687999999994
+        },
+        "preMatchTotalBets": {
+          "team1": 2193.3408999999997,
+          "team2": 3556.5868999999993
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1640.9200000000003,
+            "lay": 365.26,
+            "total": 2187.5800000000004
+          },
+          "team2": {
+            "back": 3456.9500000000003,
+            "lay": 546.66,
+            "total": 3822.21
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1655.9353000000006,
+          "team2": -1372.2687999999994
+        },
+        "threeMinTotalBets": {
+          "team1": 2193.3408999999997,
+          "team2": 3556.5868999999993
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1640.9200000000003,
+            "lay": 365.26,
+            "total": 2187.5800000000004
+          },
+          "team2": {
+            "back": 3456.9500000000003,
+            "lay": 546.66,
+            "total": 3822.21
+          }
+        },
+        "matchLoadV2": {
+          "team1": 14,
+          "team2": 19
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1640.9200000000003,
+            "lay": 365.26,
+            "totalVolume": 2006.1800000000003,
+            "backPercentage": 81.79325883021464
+          },
+          "team2": {
+            "back": 3456.9500000000003,
+            "lay": 546.66,
+            "totalVolume": 4003.61,
+            "backPercentage": 86.34582289483741
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1646.6808999999996,
+            "lay": 392.3262,
+            "totalBet": 2039.0070999999996
+          },
+          "team2": {
+            "back": 3191.326899999999,
+            "lay": 543.3981,
+            "totalBet": 3734.724999999999
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 2187.5800000000004,
+            "support": 36.40027355365162
+          },
+          "team2": {
+            "supportMoney": 3822.21,
+            "support": 63.59972644634837
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Barbados Tridents",
+          "bookieFavouriteOutcome": "Antigua & Barbuda Falc",
+          "riskTeam": "Barbados Tridents",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 27.199452892696748,
+          "mostBettedTeam": "Barbados Tridents",
+          "prediction": {
+            "team1TrueSupport": 2190.0789999999997,
+            "team2TrueSupport": 3583.653099999999,
+            "ratio": 1.6363122517498225,
+            "bookiePnlTeam1": -1281.4208999999996,
+            "bookiePnlTeam2": -2644.6668999999993,
+            "prediction": "Antigua & Barbuda Falc",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.64) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1254.3546999999996,
+            "backExposure": 1646.6808999999996,
+            "layExposure": 392.3262,
+            "teamName": "Antigua & Barbuda Falc"
+          },
+          "team2": {
+            "netExposure": 2647.9287999999992,
+            "backExposure": 3191.326899999999,
+            "layExposure": 543.3981,
+            "teamName": "Barbados Tridents"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1646.6808999999996,
+            "A_lay_stake": 365.26,
+            "B_back_expo": 3191.326899999999,
+            "B_lay_stake": 546.66
+          },
+          "totals": {
+            "totalBetTeam1": 2193.3408999999997,
+            "totalBetTeam2": 3556.5868999999993
+          },
+          "simplePL": {
+            "team1_win": -1281.4208999999996,
+            "team2_win": -2644.6668999999993
+          },
+          "derivedPL": {
+            "team1_win": 1363.2459999999996,
+            "team2_win": -1363.2459999999996
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1640.9200000000003,
+              "totalLayVol": 365.26,
+              "totalBet": 2187.5800000000004,
+              "profitLoss": 1634.6299999999997
+            },
+            "team2": {
+              "totalBackVol": 3456.9500000000003,
+              "totalLayVol": 546.66,
+              "totalBet": 3822.21,
+              "profitLoss": -1634.6299999999997
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1646.6808999999996,
+              "totalLayVol": 365.26,
+              "totalBet": 2193.3408999999997,
+              "profitLoss": 1655.9353000000006
+            },
+            "team2": {
+              "totalBackExpo": 3191.326899999999,
+              "totalLayVol": 546.66,
+              "totalBet": 3556.5868999999993,
+              "profitLoss": -1372.268799999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1646.6808999999996,
+              "totalLayNetVol": 392.3262,
+              "totalBet": 2190.0789999999997,
+              "profitLoss": 1393.5740999999994
+            },
+            "team2": {
+              "totalBackNetVol": 3191.326899999999,
+              "totalLayNetVol": 543.3981,
+              "totalBet": 3583.653099999999,
+              "profitLoss": -1393.5740999999994
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 14,
+            "averageOdds": 1.99,
+            "averageSize": 156.25571428571428,
+            "supportProduct": 310.9488714285714
+          },
+          "teamB": {
+            "tradeCount": 19,
+            "averageOdds": 1.9894736842105265,
+            "averageSize": 201.16894736842107,
+            "supportProduct": 400.2203268698062
+          },
+          "strongerTeam": "Barbados Tridents",
+          "supportRatio": 1.2870936788774983
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1640.9200000000003,
+            "oppoLayVolume": 546.66,
+            "layExposure": 392.3262,
+            "netSupportValue": 1795.2538000000004
+          },
+          "teamB": {
+            "totalBackVolume": 3456.9500000000003,
+            "oppoLayVolume": 365.26,
+            "layExposure": 543.3981,
+            "netSupportValue": 3278.8119
+          },
+          "strongerTeam": "Barbados Tridents",
+          "netSupportDifference": 1483.5580999999997,
+          "percentageA": 35.38097269808706,
+          "percentageB": 64.61902730191294
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1275.6600000000003,
+            "syntheticSupport": 546.66,
+            "opponentLiabilityRejection": 543.3981,
+            "sentimentScore": 1278.9219000000003
+          },
+          "teamB": {
+            "directNetSupport": 2910.2900000000004,
+            "syntheticSupport": 365.26,
+            "opponentLiabilityRejection": 392.3262,
+            "sentimentScore": 2883.2238
+          },
+          "strongerTeam": "Barbados Tridents",
+          "scoreDifference": 1604.3019,
+          "percentageA": 30.72746588376279,
+          "percentageB": 69.2725341162372
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Antigua & Barbuda Falc",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Barbados Tridents",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Antigua & Barbuda Falc"
+        },
+        "teams": {
+          "Antigua & Barbuda Falc": {
+            "trades": [
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2,
+                "type": "back",
+                "size": 758.88,
+                "updatedAt": 1787696072581
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.12,
+                "type": "lay",
+                "size": 58.8,
+                "updatedAt": 1787695767933
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.02,
+                "type": "back",
+                "size": 237.2,
+                "updatedAt": 1787695512581
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.1,
+                "type": "lay",
+                "size": 70.53,
+                "updatedAt": 1787694957923
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.04,
+                "type": "back",
+                "size": 38.13,
+                "updatedAt": 1787692344169
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.06,
+                "type": "back",
+                "size": 60.640000000000015,
+                "updatedAt": 1787692323682
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.08,
+                "type": "lay",
+                "size": 78.91,
+                "updatedAt": 1787692214048
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.08,
+                "type": "back",
+                "size": 39.67,
+                "updatedAt": 1787692194959
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 1.99,
+                "type": "back",
+                "size": 451.1,
+                "updatedAt": 1787691938594
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.06,
+                "type": "lay",
+                "size": 99.38,
+                "updatedAt": 1787689471831
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 1.95,
+                "type": "back",
+                "size": 50.87,
+                "updatedAt": 1787687783415
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 1.94,
+                "type": "back",
+                "size": 4.43,
+                "updatedAt": 1787687783415
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2,
+                "type": "lay",
+                "size": 31.809999999999974,
+                "updatedAt": 1787687231341
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.04,
+                "type": "lay",
+                "size": 13.68,
+                "updatedAt": 1787684367317
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 2.02,
+                "type": "lay",
+                "size": 8.530000000000001,
+                "updatedAt": 1787683708649
+              },
+              {
+                "team": "Antigua & Barbuda Falc",
+                "price": 1.99,
+                "type": "lay",
+                "size": 3.62,
+                "updatedAt": 1787666962034
+              }
+            ],
+            "pnlIfWins": 1655.9353000000006,
+            "totalBet": 2193.3408999999997
+          },
+          "Barbados Tridents": {
+            "trades": [
+              {
+                "team": "Barbados Tridents",
+                "price": 2,
+                "type": "lay",
+                "size": 434.02000000000004,
+                "updatedAt": 1787696072581
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.89,
+                "type": "back",
+                "size": 348.08,
+                "updatedAt": 1787695767924
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.91,
+                "type": "back",
+                "size": 672.4,
+                "updatedAt": 1787695426745
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.99,
+                "type": "lay",
+                "size": 69.92999999999995,
+                "updatedAt": 1787695407684
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.9,
+                "type": "back",
+                "size": 642.22,
+                "updatedAt": 1787694957908
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.95,
+                "type": "lay",
+                "size": 10.37,
+                "updatedAt": 1787692344153
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "lay",
+                "size": 21.889999999999986,
+                "updatedAt": 1787692323682
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.92,
+                "type": "back",
+                "size": 649.76,
+                "updatedAt": 1787692214048
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.93,
+                "type": "lay",
+                "size": 10.430000000000007,
+                "updatedAt": 1787691956113
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.93,
+                "type": "back",
+                "size": 282.15,
+                "updatedAt": 1787691955171
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.97,
+                "type": "lay",
+                "size": 0.020000000000003126,
+                "updatedAt": 1787691938594
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "back",
+                "size": 430.69,
+                "updatedAt": 1787689471847
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 2,
+                "type": "back",
+                "size": 69.22999999999996,
+                "updatedAt": 1787687231293
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.97,
+                "type": "back",
+                "size": 47.65,
+                "updatedAt": 1787684367333
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.96,
+                "type": "back",
+                "size": 14.25,
+                "updatedAt": 1787684367333
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.98,
+                "type": "back",
+                "size": 1.89,
+                "updatedAt": 1787683708629
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.99,
+                "type": "back",
+                "size": 298.63,
+                "updatedAt": 1787677287664
+              }
+            ],
+            "pnlIfWins": -1372.2687999999994,
+            "totalBet": 3556.5868999999993
+          }
+        }
+      },
+      "predictedWinner": "Barbados Tridents",
+      "predictionReason": "Clear Lay Vol Edge",
+      "predictionRisk": {
+        "tier": "low",
+        "label": "Low Risk",
+        "shortLabel": "Low",
+        "color": "text-[#22c55e]",
+        "hex": "#22c55e",
+        "bg": "rgba(34,197,94,0.12)",
+        "border": "rgba(34,197,94,0.35)",
+        "emoji": "🟢",
+        "wrongPct": "~10–15%",
+        "reason": "Clear Lay Vol Edge"
+      },
+      "matchedRules": [
+        {
+          "reason": "Clear Lay Vol Edge",
+          "winner": "Barbados Tridents",
+          "priority": 100,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Vol",
+          "winner": "Barbados Tridents",
+          "priority": 90,
+          "selected": true
+        },
+        {
+          "reason": "Higher Lay Trades",
+          "winner": "Barbados Tridents",
+          "priority": 80,
+          "selected": true
+        },
+        {
+          "reason": "Stronger Support Team",
+          "winner": "Barbados Tridents",
+          "priority": 85,
+          "selected": true
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",

@@ -113,7 +113,15 @@ router.get('/signup-status', async (_req, res) => {
       },
     });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.warn('⚠️  signup-status fallback used:', err.message);
+    res.json({
+      success: true,
+      data: {
+        signupMode: 'admin_only',
+        allowSignups: false,
+        siteName: 'CricketEdge',
+      },
+    });
   }
 });
 

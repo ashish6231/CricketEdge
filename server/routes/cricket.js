@@ -85,9 +85,8 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   const data = await scraper.getCricketSnapshot(matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded && !assertProAccess(req, res)) return;
+  if (!data) return upstreamUnavailable(res, { error: 'No data returned from upstream' });
   if (data?.error) {
-    if (String(data.error).includes('401'))
-      return res.json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
     return upstreamUnavailable(res, data);
   }
   res.json(attachMatchMeta(data, matchInfo));
@@ -238,8 +237,8 @@ router.get('/tennis/match/:matchId', optionalAuth, async (req, res) => {
   const data = await scraper.getTennisSnapshot(matchId);
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded && !assertProAccess(req, res)) return;
-  if (data?.error === 'Login required for live matches')
-    return res.json({ error: 'login_required', message: 'Tennis live data requires login.', matchId, matchName: data.matchName, teamNames: data.teamNames || [] });
+  if (!data) return upstreamUnavailable(res, { error: 'No data returned from upstream' });
+  if (data?.error) return upstreamUnavailable(res, data);
 
   res.json(attachMatchMeta(data, matchInfo));
 });
