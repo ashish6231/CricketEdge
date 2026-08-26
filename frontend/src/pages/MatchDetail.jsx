@@ -1333,6 +1333,144 @@ export default function MatchDetail({ sport }) {
               <div className="text-sm font-bold text-white">{mostFakeTeam}</div>
             </div>
           </div>
+
+          {/* ━━━━━━━━━━ 11. MARKET EXPOSURE & TRAP PREDICTOR ━━━━━━━━━━ */}
+          {(() => {
+            const rawPnl1 = t1Data?.pnlIfWins ?? ip.team1 ?? pp.team1 ?? sp.team1_win ?? 0
+            const rawPnl2 = t2Data?.pnlIfWins ?? ip.team2 ?? pp.team2 ?? sp.team2_win ?? 0
+            const trapTeam = rawPnl1 < rawPnl2 ? t1 : (rawPnl2 < rawPnl1 ? t2 : null)
+            const safeTeam = rawPnl1 > rawPnl2 ? t1 : (rawPnl2 > rawPnl1 ? t2 : null)
+            const trapPnl = trapTeam === t1 ? rawPnl1 : rawPnl2
+            const safePnl = safeTeam === t1 ? rawPnl1 : rawPnl2
+            const exposureDiff = Math.abs(rawPnl1 - rawPnl2)
+            const isHighEdge = exposureDiff > 1000
+
+            return (
+              <div className="rounded-2xl p-4 overflow-hidden border border-[#2c2c2e]" style={{ background: 'linear-gradient(180deg, #161616 0%, #111111 100%)' }}>
+                {/* Header */}
+                <div className="flex items-center justify-between gap-2 mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-black text-white flex items-center gap-1.5">
+                      🎯 Market Exposure & Trap Predictor
+                    </span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30">
+                    EXCHANGE METRICS
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#8e8e93] mb-4">
+                  Exchange bookmaker net liability and public trap detection based on real-time matched trade flow.
+                </p>
+
+                {/* Team P/L Exposure Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                  {/* Team 1 */}
+                  <div
+                    className="rounded-xl p-3.5 border transition-all"
+                    style={{
+                      background: rawPnl1 >= 0 ? 'rgba(16, 185, 129, 0.04)' : 'rgba(239, 68, 68, 0.04)',
+                      borderColor: rawPnl1 >= 0 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)',
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white truncate">{t1}</span>
+                      <span
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${
+                          rawPnl1 >= 0
+                            ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
+                            : 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/40'
+                        }`}
+                      >
+                        {rawPnl1 >= 0 ? '🛡️ Bookie Safe Side' : '⚠️ Public Trap Side'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-baseline justify-between mt-1">
+                      <span className="text-[11px] text-[#8e8e93]">Net Market P/L:</span>
+                      <span className={`text-base font-black font-mono ${rawPnl1 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
+                        {rawPnl1 >= 0 ? `+${rawPnl1.toFixed(1)}` : rawPnl1.toFixed(1)}
+                      </span>
+                    </div>
+
+                    <div className="mt-2.5 pt-2 border-t border-[#2c2c2e] text-[11px] flex justify-between text-[#8e8e93]">
+                      <span>Volume: <b className="text-white">₹{fmtVol(am1.totalVolume || t1Data.totalBet || 0)}</b></span>
+                      <span>Back: <b className="text-[#3b82f6]">{(am1.backPercentage || 50).toFixed(0)}%</b></span>
+                    </div>
+                  </div>
+
+                  {/* Team 2 */}
+                  <div
+                    className="rounded-xl p-3.5 border transition-all"
+                    style={{
+                      background: rawPnl2 >= 0 ? 'rgba(16, 185, 129, 0.04)' : 'rgba(239, 68, 68, 0.04)',
+                      borderColor: rawPnl2 >= 0 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)',
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-bold text-white truncate">{t2}</span>
+                      <span
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded ${
+                          rawPnl2 >= 0
+                            ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
+                            : 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/40'
+                        }`}
+                      >
+                        {rawPnl2 >= 0 ? '🛡️ Bookie Safe Side' : '⚠️ Public Trap Side'}
+                      </span>
+                    </div>
+
+                    <div className="flex items-baseline justify-between mt-1">
+                      <span className="text-[11px] text-[#8e8e93]">Net Market P/L:</span>
+                      <span className={`text-base font-black font-mono ${rawPnl2 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
+                        {rawPnl2 >= 0 ? `+${rawPnl2.toFixed(1)}` : rawPnl2.toFixed(1)}
+                      </span>
+                    </div>
+
+                    <div className="mt-2.5 pt-2 border-t border-[#2c2c2e] text-[11px] flex justify-between text-[#8e8e93]">
+                      <span>Volume: <b className="text-white">₹{fmtVol(am2.totalVolume || t2Data.totalBet || 0)}</b></span>
+                      <span>Back: <b className="text-[#3b82f6]">{(am2.backPercentage || 50).toFixed(0)}%</b></span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Predicted Winner Banner */}
+                {safeTeam ? (
+                  <div
+                    className="rounded-xl p-4 border"
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)',
+                      borderColor: 'rgba(16, 185, 129, 0.4)',
+                    }}
+                  >
+                    <div className="flex items-center justify-between gap-2 mb-1.5">
+                      <div className="text-[10px] font-bold uppercase tracking-widest text-[#10b981] flex items-center gap-1">
+                        🏆 PREDICTED MATCH WINNER (MARKET ADVANTAGE)
+                      </div>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#10b981] text-black">
+                        {isHighEdge ? 'HIGH PROBABILITY' : 'FAVORABLE'}
+                      </span>
+                    </div>
+
+                    <div className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                      <span>{safeTeam}</span>
+                      <span className="text-xs font-semibold text-[#10b981] font-mono">
+                        ({safePnl >= 0 ? `+${safePnl.toFixed(0)}` : safePnl.toFixed(0)} PnL Safe)
+                      </span>
+                    </div>
+
+                    <div className="text-xs text-[#d1d5db] leading-relaxed">
+                      💡 <b>Reason:</b> Heavy public money created <span className="text-[#ef4444] font-semibold">{trapTeam} ({trapPnl < 0 ? trapPnl.toFixed(0) : `-${trapPnl.toFixed(0)}`} Trap)</span> liability. Market positioning heavily favors <span className="text-[#10b981] font-bold">{safeTeam}</span>.
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-xl p-3 text-center border border-[#2c2c2e] text-xs text-[#8e8e93]">
+                    Analyzing live exposure metrics across bookmakers...
+                  </div>
+                )}
+              </div>
+            )
+          })()}
         </>
       )}
     </div>
