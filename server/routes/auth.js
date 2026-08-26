@@ -325,8 +325,7 @@ router.get('/me', async (req, res) => {
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.status === 'banned')
       return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });
-    if (user.activeToken && user.activeToken !== token)
-      return res.status(401).json({ success: false, message: 'Logged in on another device', code: 'SESSION_REPLACED' });
+    // Note: single-session enforcement removed — multiple concurrent sessions allowed
 
     res.json({ success: true, user: sanitizeUser(user) });
   } catch (err) {
