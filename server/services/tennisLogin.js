@@ -109,10 +109,14 @@ async function login(email, password) {
   return { success: true };
 }
 
-// ──── AUTO-RELOGIN: Called when any API call gets 401 ────
-// This is the magic — when scraper detects 401, it calls this.
-// Multiple concurrent 401s will all wait on the same Promise (dedup).
+// ──── AUTO-RELOGIN (Disabled when using manual cookies) ────
 async function autoRelogin() {
+  const autoLoginEnabled = process.env.TENNIS_AUTO_LOGIN === 'true';
+  if (!autoLoginEnabled) {
+    console.log('ℹ️  tennisliveload: auto-login disabled — strictly using manual cookies');
+    return false;
+  }
+
   // If relogin is already in progress, wait for that one
   if (_reloginInProgress) {
     return _reloginInProgress;
@@ -127,8 +131,8 @@ async function autoRelogin() {
 
   // Daily limit check
   _resetDailyCounterIfNeeded();
-  if (_loginAttemptsToday >= 3) {
-    console.log('⚠️  tennisliveload: daily login limit reached (3 attempts), skipping');
+  if (_loginAttemptsToday >= 2) {
+    console.log('⚠️  tennisliveload: daily login limit reached, skipping');
     return false;
   }
 
@@ -137,7 +141,6 @@ async function autoRelogin() {
     return false;
   }
 
-  // Start relogin — all concurrent callers will await this same promise
   _reloginInProgress = (async () => {
     _lastLoginAttempt = Date.now();
     _loginAttemptsToday++;
@@ -148,13 +151,7 @@ async function autoRelogin() {
       console.log('✅ tennisliveload: auto-relogin SUCCESS — new cookie active');
       return true;
     } catch (err) {
-      if (/limit exceeded/i.test(err.message)) {
-        console.log('⚠️  tennisliveload: login limit hit by upstream');
-        // Mark that we've hit the upstream limit, stop trying today
-        _loginAttemptsToday = 10; // effectively disable for today
-      } else {
-        console.error('❌ tennisliveload: auto-relogin failed:', err.message);
-      }
+      console.error('❌ tennisliveload: auto-relogin failed:', err.message);
       return false;
     } finally {
       _reloginInProgress = null;
@@ -166,20 +163,24 @@ async function autoRelogin() {
 
 // ──── Startup ────
 async function startAutoLogin() {
-  const email = process.env.TENNIS_EMAIL;
-  const password = process.env.TENNIS_PASSWORD;
+  const autoLoginEnabled = process.env.TENNIS_AUTO_LOGIN === 'true';
 
-  _storedEmail = email;
-  _storedPassword = password;
-
-  // If we have cookies, just use them — don't verify, don't login
+  // If we have cookies from env/disk, strictly use them
   if (_sessionCookies) {
-    console.log('✅ tennisliveload: using existing cookies (will auto-relogin on 401)');
-    _startRetryLoop();
+    console.log('✅ tennisliveload: using manual session cookies (auto-login disabled)');
     return;
   }
 
-  // No cookies at all — must login
+  if (!autoLoginEnabled) {
+    console.log('ℹ️  tennisliveload: manual cookie mode active — set TENNIS_SESSION_COOKIES in env');
+    return;
+  }
+
+  const email = process.env.TENNIS_EMAIL;
+  const password = process.env.TENNIS_PASSWORD;
+  _storedEmail = email;
+  _storedPassword = password;
+
   if (!email || !password) {
     console.log('⚠️  TENNIS_EMAIL / TENNIS_PASSWORD not set — skipped');
     return;
@@ -192,24 +193,6 @@ async function startAutoLogin() {
   } catch (err) {
     console.error('❌ tennisliveload: startup login failed:', err.message);
   }
-
-  _startRetryLoop();
-}
-
-// ──── Background retry loop ────
-// If cookie is dead AND auto-relogin failed (daily limit), keep trying every 2 hours.
-// The daily limit resets at midnight, so eventually it will work.
-function _startRetryLoop() {
-  setInterval(async () => {
-    // Only retry if we don't have a working cookie
-    if (_sessionCookies) return; // We have cookies, they'll be validated on use
-
-    _resetDailyCounterIfNeeded();
-    if (_loginAttemptsToday >= 3) return; // Still over limit
-
-    console.log('🔄 tennisliveload: background retry — attempting login...');
-    await autoRelogin();
-  }, 2 * 60 * 60 * 1000); // Every 2 hours
 }
 
 module.exports = { login, getCookies, isConnected, startAutoLogin, autoRelogin };

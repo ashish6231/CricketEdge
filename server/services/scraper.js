@@ -63,16 +63,18 @@ async function _callApi(endpoint, params = null, method = 'GET', _isRetry = fals
     if (err.response) {
       const status = err.response.status;
 
-      // ──── AUTO-RELOGIN on 401 ────
-      // Cookie expired → login karke nayi cookie lo → retry the same request
+      // ──── Upstream 401 Handler ────
       if (status === 401 && !_isRetry) {
-        console.log(`🔑 scraper: got 401 on ${endpoint} — triggering auto-relogin...`);
-        const ok = await tennisLogin.autoRelogin();
-        if (ok) {
-          console.log(`🔄 scraper: retrying ${endpoint} with fresh cookie...`);
-          return _callApi(endpoint, params, method, true); // retry once
+        if (process.env.TENNIS_AUTO_LOGIN === 'true') {
+          console.log(`🔑 scraper: got 401 on ${endpoint} — triggering auto-relogin...`);
+          const ok = await tennisLogin.autoRelogin();
+          if (ok) {
+            console.log(`🔄 scraper: retrying ${endpoint} with fresh cookie...`);
+            return _callApi(endpoint, params, method, true);
+          }
+        } else {
+          console.warn(`⚠️  scraper: got 401 on ${endpoint} — manual cookie expired. Please update TENNIS_SESSION_COOKIES.`);
         }
-        console.log(`❌ scraper: auto-relogin failed, returning 401 error`);
       }
 
       return {
