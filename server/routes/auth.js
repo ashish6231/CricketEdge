@@ -318,6 +318,9 @@ router.post('/resend-otp', async (req, res) => {
 });
 
 // ─── GET ME ───
+const _userMeCache = new Map();
+const ME_CACHE_TTL = 15000;
+
 router.get('/me', async (req, res) => {
   try {
     const { JWT_SECRET } = require('../middleware/auth');
@@ -329,13 +332,21 @@ router.get('/me', async (req, res) => {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, JWT_SECRET);
 
+    const now = Date.now();
+    const cached = _userMeCache.get(decoded.userId);
+    if (cached && (now - cached.ts) < ME_CACHE_TTL) {
+      return res.json({ success: true, user: cached.user });
+    }
+
     const user = await refreshUserSubscriptionState(prisma, decoded.userId);
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.status === 'banned')
       return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });
-    // Note: single-session enforcement removed — multiple concurrent sessions allowed
 
-    res.json({ success: true, user: sanitizeUser(user) });
+    const sanitized = sanitizeUser(user);
+    _userMeCache.set(decoded.userId, { user: sanitized, ts: now });
+
+    res.json({ success: true, user: sanitized });
   } catch (err) {
     res.status(401).json({ success: false, message: 'Invalid token' });
   }

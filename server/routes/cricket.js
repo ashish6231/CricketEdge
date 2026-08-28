@@ -95,9 +95,17 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
 /** One request for MatchDetail poll — cricket + toss + session (single auth). */
 router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
+
+  // Dispatch all calls concurrently to eliminate sequential network waterfall
+  const cricketMatchesPromise = scraper.getAllCricketMatches();
+  const tossMatchesPromise = scraper.getAllTossMatches();
+  const cricketRawPromise = scraper.getCricketSnapshot(matchId);
+  const tossRawPromise = scraper.getTossSnapshot(matchId).catch(() => null);
+  const sessionRawPromise = scraper.getSessionTrades(matchId).catch(() => null);
+
   const [cricketMatches, tossMatches] = await Promise.all([
-    scraper.getAllCricketMatches(),
-    scraper.getAllTossMatches(),
+    cricketMatchesPromise,
+    tossMatchesPromise,
   ]);
   const matchInfo = findMatchInfo(cricketMatches, matchId);
   const tossInfo = findMatchInfo(tossMatches, matchId);
@@ -110,9 +118,9 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   if (!isEnded && !assertProAccess(req, res)) return;
 
   const [cricketRaw, tossRaw, sessionRaw] = await Promise.all([
-    scraper.getCricketSnapshot(matchId),
-    scraper.getTossSnapshot(matchId).catch(() => null),
-    scraper.getSessionTrades(matchId).catch(() => null),
+    cricketRawPromise,
+    tossRawPromise,
+    sessionRawPromise,
   ]);
 
   const cricket = cricketRaw?.error
@@ -186,27 +194,71 @@ router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) =>
   }
   res.json({ matchId: req.params.matchId, teamNames: data.teamNames || [], odds: result });
 });
+const _oddsCache = new Map();
+const ODDS_FRESH_TTL = 2500;
+const ODDS_SWR_TTL = 10000;
+
+function _extractOddsFromSnapshot(data) {
+  if (!data || data.error) return null;
+  const teams = data.teams || {};
+  const odds = {};
+  for (const [teamName, teamData] of Object.entries(teams)) {
+    const trades = teamData.trades || [];
+    if (!trades.length) {
+      odds[teamName] = { back: null, lay: null };
+      continue;
+    }
+    let latestBack = null;
+    let latestBackTs = -1;
+    let latestLay = null;
+    let latestLayTs = -1;
+    for (let i = trades.length - 1; i >= 0; i--) {
+      const t = trades[i];
+      const ts = t.updatedAt || 0;
+      if (t.type === 'back' && ts > latestBackTs) {
+        latestBack = t.price;
+        latestBackTs = ts;
+      } else if (t.type === 'lay' && ts > latestLayTs) {
+        latestLay = t.price;
+        latestLayTs = ts;
+      }
+    }
+    odds[teamName] = { back: latestBack, lay: latestLay };
+  }
+  return { teamNames: data.teamNames || [], odds };
+}
+
+async function _getOrFetchOdds(id) {
+  const now = Date.now();
+  const cached = _oddsCache.get(id);
+  if (cached && (now - cached.ts) < ODDS_FRESH_TTL) {
+    return cached.data;
+  }
+  if (cached && (now - cached.ts) < ODDS_SWR_TTL) {
+    // SWR: return immediately and refresh in background
+    scraper.getCricketSnapshot(id).then(data => {
+      const parsed = _extractOddsFromSnapshot(data);
+      if (parsed) _oddsCache.set(id, { data: parsed, ts: Date.now() });
+    }).catch(() => {});
+    return cached.data;
+  }
+
+  const data = await scraper.getCricketSnapshot(id);
+  const parsed = _extractOddsFromSnapshot(data);
+  if (parsed) {
+    _oddsCache.set(id, { data: parsed, ts: Date.now() });
+  }
+  return parsed;
+}
+
 router.get('/cricket/odds-bulk', requireProSubscription, async (req, res) => {
   const matchIds = req.query.ids ? req.query.ids.split(',').filter(Boolean) : [];
   if (!matchIds.length) return res.status(400).json({ error: 'No match IDs provided' });
   
   const results = {};
   await Promise.all(matchIds.map(async (id) => {
-    const data = await scraper.getCricketSnapshot(id);
-    if (!data || data.error) return;
-    
-    const teams = data.teams || {};
-    const odds = {};
-    for (const [teamName, teamData] of Object.entries(teams)) {
-      const trades = teamData.trades || [];
-      if (!trades.length) { odds[teamName] = { back: null, lay: null }; continue; }
-      const sorted = [...trades].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-      odds[teamName] = {
-        back: sorted.find(t => t.type === 'back')?.price ?? null,
-        lay:  sorted.find(t => t.type === 'lay')?.price  ?? null,
-      };
-    }
-    results[id] = { teamNames: data.teamNames || [], odds };
+    const odds = await _getOrFetchOdds(id);
+    if (odds) results[id] = odds;
   }));
   
   res.json(results);

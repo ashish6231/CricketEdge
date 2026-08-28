@@ -234,6 +234,10 @@ export function predictTossWinner(snap) {
   let verdictTag = 'SMART MONEY INFLOW'
   let pattern = 'SMART_BACK_FLOW'
 
+  const trap = snap.marketSignals?.trap?.level || 'none'
+  const bookieFav = snap.marketSignals?.bookieFavouriteOutcome
+  const stronger = snap.syntheticSupport?.strongerTeam
+
   // 🚨 1. CRITICAL OVERLOAD TRAP (>= 92% One-Sided Load or Ratio >= 10.0x with negative P/L AND opposite side has zero/tiny lay)
   if ((b1Pct >= 0.92 || backRatio >= 10.0) && b1 > b2 && prePnl1 < 0 && l2 <= 100) {
     winner = t2
@@ -265,19 +269,31 @@ export function predictTossWinner(snap) {
     pattern = 'DUAL_INFLOW_PNL_ALIGN'
     reason = `Dual Advantage: Higher Back Inflow (₹${fmtVol(Math.max(b1, b2))}) & Positive Bookie P/L (+${Math.max(prePnl1, prePnl2).toFixed(1)})`
   }
-  // 🛡️ 4. HEAVY LAY ABSORPTION / BOOKIE SHIELD (P/L > 1500 and Lay > 1.8x Back)
-  else if (isLayAbsorbed1 && !isLayAbsorbed2 && prePnl1 > 1500) {
+  // 🛡️ 4. HIGH TRAP + EXTREME NEGATIVE P/L COUNTER (> 1000 P/L deficit & opponent has uncontested < 50 Lay)
+  else if (trap === 'high' && b1 > b2 && prePnl1 < -500 && prePnl2 > 1000 && l2 <= 50 && bookieFav && teamEq(bookieFav, t2)) {
+    winner = t2
+    verdictTag = 'TRAP COUNTER SAFE BOOKIE'
+    pattern = 'TRAP_COUNTER_SAFE_BOOKIE'
+    reason = `High Trap Overload on ${t1} (P/L: ${prePnl1.toFixed(1)}) -> Bookmaker Safe Side on ${t2} (+${prePnl2.toFixed(1)})`
+  } else if (trap === 'high' && b2 > b1 && prePnl2 < -500 && prePnl1 > 1000 && l1 <= 50 && bookieFav && teamEq(bookieFav, t1)) {
+    winner = t1
+    verdictTag = 'TRAP COUNTER SAFE BOOKIE'
+    pattern = 'TRAP_COUNTER_SAFE_BOOKIE'
+    reason = `High Trap Overload on ${t2} (P/L: ${prePnl2.toFixed(1)}) -> Bookmaker Safe Side on ${t1} (+${prePnl1.toFixed(1)})`
+  }
+  // 🛡️ 5. HEAVY LAY ABSORPTION / BOOKIE SHIELD (P/L > 1650 and Lay > 1.8x Back)
+  else if (isLayAbsorbed1 && !isLayAbsorbed2 && prePnl1 > 1650) {
     winner = t1
     verdictTag = 'BOOKMAKER SHIELD'
     pattern = 'BOOKIE_LAY_ABSORPTION'
     reason = `Bookie Lay Shield on ${t1} (Lay: ₹${fmtVol(l1)} vs Back: ₹${fmtVol(b1)}, P/L: +${prePnl1.toFixed(1)})`
-  } else if (isLayAbsorbed2 && !isLayAbsorbed1 && prePnl2 > 1500) {
+  } else if (isLayAbsorbed2 && !isLayAbsorbed1 && prePnl2 > 1650) {
     winner = t2
     verdictTag = 'BOOKMAKER SHIELD'
     pattern = 'BOOKIE_LAY_ABSORPTION'
     reason = `Bookie Lay Shield on ${t2} (Lay: ₹${fmtVol(l2)} vs Back: ₹${fmtVol(b2)}, P/L: +${prePnl2.toFixed(1)})`
   }
-  // ⚖️ 5. LOW LIQUIDITY / MICRO BOOKIE SAFE TRAP CATCH
+  // ⚖️ 6. LOW LIQUIDITY / MICRO BOOKIE SAFE TRAP CATCH
   else if (Math.max(b1, b2) < 500 && prePnl1 > 100 && prePnl2 < -100) {
     winner = t1
     verdictTag = 'BOOKIE SAFE SIDE'
@@ -289,14 +305,26 @@ export function predictTossWinner(snap) {
     pattern = 'BOOKIE_MICRO_SAFE'
     reason = `Micro Liquidity Bookie Safe on ${t2} (P/L: +${prePnl2.toFixed(1)} vs ${t1}: ${prePnl1.toFixed(1)})`
   }
-  // ⚡ 6. SMART INFLOW LEADER (Dominant Back Volume Lead)
+  // 🎯 7. WEAK BACK LEAD (<= 1.55x) WITH PROFITABLE BOOKIE P/L ADVANTAGE in Clean Markets (trap === none)
+  else if (trap === 'none' && backRatio <= 1.55 && prePnl1 > 0 && prePnl2 < 0 && stronger && bookieFav && teamEq(stronger, t1) && teamEq(bookieFav, t1)) {
+    winner = t1
+    verdictTag = 'BOOKIE SAFE STRONGER SUPPORT'
+    pattern = 'BOOKIE_SAFE_STRONGER_SUPPORT'
+    reason = `Weak Inflow Lead Faded -> Stronger Bookie Safe Side on ${t1} (P/L: +${prePnl1.toFixed(1)})`
+  } else if (trap === 'none' && backRatio <= 1.55 && prePnl2 > 0 && prePnl1 < 0 && stronger && bookieFav && teamEq(stronger, t2) && teamEq(bookieFav, t2)) {
+    winner = t2
+    verdictTag = 'BOOKIE SAFE STRONGER SUPPORT'
+    pattern = 'BOOKIE_SAFE_STRONGER_SUPPORT'
+    reason = `Weak Inflow Lead Faded -> Stronger Bookie Safe Side on ${t2} (P/L: +${prePnl2.toFixed(1)})`
+  }
+  // ⚡ 8. SMART INFLOW LEADER (Dominant Back Volume Lead)
   else if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
     winner = b1 > b2 ? t1 : t2
     verdictTag = backRatio >= 1.4 ? 'SMART INFLOW LEADER' : 'BACK MOMENTUM'
     pattern = backRatio >= 1.4 ? 'SMART_MONEY_FLOW' : 'BACK_MOMENTUM'
     reason = `Smart Money Inflow (${winner}: ₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`
   }
-  // 7. FALLBACK
+  // 9. FALLBACK
   else {
     winner = prePnl1 > prePnl2 ? t1 : t2
     verdictTag = 'BOOKIE SAFE'

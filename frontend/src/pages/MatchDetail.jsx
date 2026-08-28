@@ -570,6 +570,26 @@ export default function MatchDetail({ sport }) {
     }
   }, [liveStartPred, snapshot?.inPlay, matchId])
 
+  const hasTossData = useMemo(() => {
+    if (sport !== 'cricket' || !tossSnapshot || tossSnapshot.error) return false
+    const m1 = tossSnapshot.advancedMetricsV2?.team1 || tossSnapshot.supportMetrics?.team1 || null
+    const m2 = tossSnapshot.advancedMetricsV2?.team2 || tossSnapshot.supportMetrics?.team2 || null
+    const mTotal = ((m1?.totalBet || 0) + (m2?.totalBet || 0)) || ((m1?.back || 0) + (m2?.back || 0)) || ((m1?.lay || 0) + (m2?.lay || 0))
+    const hasTrades = Array.isArray(tossSnapshot.trades) && tossSnapshot.trades.length > 0
+    const hasOdds = Array.isArray(tossSnapshot.odds) && tossSnapshot.odds.length > 0
+    const hasPnl = Boolean(tossSnapshot.preMatchPnl && (tossSnapshot.preMatchPnl.team1 !== undefined || tossSnapshot.preMatchPnl.team2 !== undefined))
+    const hasSynthetic = Boolean(tossSnapshot.syntheticSupport && (tossSnapshot.syntheticSupport.teamA || tossSnapshot.syntheticSupport.strongerTeam))
+    const hasTeamMap = Boolean(tossSnapshot.teams && Object.keys(tossSnapshot.teams).length > 0)
+
+    return Boolean(mTotal > 0 || hasTrades || hasOdds || hasPnl || hasSynthetic || hasTeamMap)
+  }, [sport, tossSnapshot])
+
+  useEffect(() => {
+    if (!loading && activeTab === 'toss' && !hasTossData) {
+      setActiveTab('simple')
+    }
+  }, [loading, activeTab, hasTossData])
+
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 
   if (requiresPro) {
@@ -758,7 +778,7 @@ export default function MatchDetail({ sport }) {
           {[
             { key: 'simple', label: 'Simple Book' },
             { key: 'graph', label: 'Graphs', icon: <BarChart3 size={11} /> },
-            sport === 'cricket' ? { key: 'toss', label: 'Toss' } : null,
+            hasTossData ? { key: 'toss', label: 'Toss' } : null,
             { key: 'session', label: 'Session' },
           ].filter(Boolean).map(({ key, label, icon }) => (
             <button

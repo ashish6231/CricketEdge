@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-28T03:26:43.549Z",
+  "updatedAt": "2026-08-28T04:24:49.702Z",
   "records": [
     {
       "matchId": "35901908",
@@ -12470,11 +12470,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T03:38:57.276Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders"
     },
     {
       "matchId": "35977014",
@@ -12852,11 +12852,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T03:39:00.581Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Dublin Guardians"
     },
     {
       "matchId": "35966902",
@@ -13311,11 +13311,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T03:39:14.248Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Pakistan"
     },
     {
       "matchId": "35979895",
@@ -13694,6 +13694,626 @@
         {
           "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)",
           "winner": "Edinburgh Castle Rockers",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-28T03:39:03.681Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers"
+    },
+    {
+      "matchId": "35970079",
+      "marketId": "1.261398404",
+      "matchName": "St. Kitts and Nevis Patriots v Jamaica Kingsmen",
+      "competitionName": "Caribbean Premier League",
+      "team1": "St. Kitts and Nevis Patriots",
+      "team2": "Jamaica Kingsmen",
+      "startTime": 1787871600000,
+      "endedAt": "2026-08-28T04:24:49.688Z",
+      "capturedAt": "2026-08-28T04:24:49.688Z",
+      "snapshot": {
+        "serverTime": "2026-08-28T04:24:49.484Z",
+        "matchId": "35970079",
+        "matchName": "St. Kitts and Nevis Patriots v Jamaica Kingsmen",
+        "teamNames": [
+          "St. Kitts and Nevis Patriots",
+          "Jamaica Kingsmen"
+        ],
+        "inPlayPnl": {
+          "team1": -774164.8884999991,
+          "team2": 776162.3510999993
+        },
+        "inPlayTotalBets": {
+          "team1": 1854070.5477999991,
+          "team2": 1080122.3022999999
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1246834.7199999993,
+            "lay": 336668.6900000001,
+            "total": 1856194.5799999991
+          },
+          "team2": {
+            "back": 743892.3599999998,
+            "lay": 609359.8599999999,
+            "total": 1080561.0499999998
+          }
+        },
+        "preMatchPnl": {
+          "team1": -774164.8884999991,
+          "team2": 776162.3510999993
+        },
+        "preMatchTotalBets": {
+          "team1": 1854070.5477999991,
+          "team2": 1080122.3022999999
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1246834.7199999993,
+            "lay": 336668.6900000001,
+            "total": 1856194.5799999991
+          },
+          "team2": {
+            "back": 743892.3599999998,
+            "lay": 609359.8599999999,
+            "total": 1080561.0499999998
+          }
+        },
+        "threeMinPnl": {
+          "team1": -774164.8884999991,
+          "team2": 776162.3510999993
+        },
+        "threeMinTotalBets": {
+          "team1": 1854070.5477999991,
+          "team2": 1080122.3022999999
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1246834.7199999993,
+            "lay": 336668.6900000001,
+            "total": 1856194.5799999991
+          },
+          "team2": {
+            "back": 743892.3599999998,
+            "lay": 609359.8599999999,
+            "total": 1080561.0499999998
+          }
+        },
+        "matchLoadV2": {
+          "team1": 20,
+          "team2": 21
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1246834.7199999993,
+            "lay": 336668.6900000001,
+            "totalVolume": 1583503.4099999995,
+            "backPercentage": 78.73899810547296
+          },
+          "team2": {
+            "back": 743892.3599999998,
+            "lay": 609359.8599999999,
+            "totalVolume": 1353252.2199999997,
+            "backPercentage": 54.97071048588415
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1244710.6877999993,
+            "lay": 336013.29930000013,
+            "totalBet": 1580723.9870999993
+          },
+          "team2": {
+            "back": 743453.6122999998,
+            "lay": 609449.9334000001,
+            "totalBet": 1352903.5457
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1856194.5799999991,
+            "support": 63.205619188682704
+          },
+          "team2": {
+            "supportMoney": 1080561.0499999998,
+            "support": 36.79438081131729
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "St. Kitts and Nevis Patriots",
+          "bookieFavouriteOutcome": "Jamaica Kingsmen",
+          "riskTeam": "St. Kitts and Nevis Patriots",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 26.411238377365414,
+          "mostBettedTeam": "St. Kitts and Nevis Patriots",
+          "prediction": {
+            "team1TrueSupport": 1854054.8940999992,
+            "team2TrueSupport": 1079391.1448,
+            "ratio": 1.717685848204301,
+            "bookiePnlTeam1": -908777.4866999991,
+            "bookiePnlTeam2": -134109.32539999986,
+            "prediction": "Jamaica Kingsmen",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.72) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 908772.377299999,
+            "backExposure": 1244710.2966999991,
+            "layExposure": 335937.91940000013,
+            "teamName": "St. Kitts and Nevis Patriots"
+          },
+          "team2": {
+            "netExposure": 134003.29199999967,
+            "backExposure": 743453.2253999998,
+            "layExposure": 609449.9334000001,
+            "teamName": "Jamaica Kingsmen"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1244710.6877999993,
+            "A_lay_stake": 336668.6900000001,
+            "B_back_expo": 743453.6122999998,
+            "B_lay_stake": 609359.8599999999
+          },
+          "totals": {
+            "totalBetTeam1": 1854070.5477999991,
+            "totalBetTeam2": 1080122.3022999999
+          },
+          "simplePL": {
+            "team1_win": -908041.9977999991,
+            "team2_win": -134093.75229999993
+          },
+          "derivedPL": {
+            "team1_win": -773948.2454999993,
+            "team2_win": 773948.2454999993
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1246834.7199999993,
+              "totalLayVol": 336668.6900000001,
+              "totalBet": 1856194.5799999991,
+              "profitLoss": -775633.5299999993
+            },
+            "team2": {
+              "totalBackVol": 743892.3599999998,
+              "totalLayVol": 609359.8599999999,
+              "totalBet": 1080561.0499999998,
+              "profitLoss": 775633.5299999993
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1244710.6877999993,
+              "totalLayVol": 336668.6900000001,
+              "totalBet": 1854070.5477999991,
+              "profitLoss": -774164.8884999992
+            },
+            "team2": {
+              "totalBackExpo": 743453.6122999998,
+              "totalLayVol": 609359.8599999999,
+              "totalBet": 1080122.3022999999,
+              "profitLoss": 776162.3510999994
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1244710.6877999993,
+              "totalLayNetVol": 336013.29930000013,
+              "totalBet": 1854160.6211999995,
+              "profitLoss": -774693.7095999995
+            },
+            "team2": {
+              "totalBackNetVol": 743453.6122999998,
+              "totalLayNetVol": 609449.9334000001,
+              "totalBet": 1079466.9116,
+              "profitLoss": 774693.7095999995
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 20,
+            "averageOdds": 2.1385,
+            "averageSize": 92809.72899999996,
+            "supportProduct": 198473.60546649992
+          },
+          "teamB": {
+            "tradeCount": 21,
+            "averageOdds": 1.7871428571428571,
+            "averageSize": 51455.288095238095,
+            "supportProduct": 91957.95058163266
+          },
+          "strongerTeam": "St. Kitts and Nevis Patriots",
+          "supportRatio": 2.158308272543672
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1246834.7199999993,
+            "oppoLayVolume": 609359.8599999999,
+            "layExposure": 336013.29930000013,
+            "netSupportValue": 1520181.280699999
+          },
+          "teamB": {
+            "totalBackVolume": 743892.3599999998,
+            "oppoLayVolume": 336668.6900000001,
+            "layExposure": 609449.9334000001,
+            "netSupportValue": 471111.1165999997
+          },
+          "strongerTeam": "St. Kitts and Nevis Patriots",
+          "netSupportDifference": 1049070.1640999992,
+          "percentageA": 76.34143949734448,
+          "percentageB": 23.65856050265552
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 910166.0299999991,
+            "syntheticSupport": 609359.8599999999,
+            "opponentLiabilityRejection": 609449.9334000001,
+            "sentimentScore": 910075.9565999989
+          },
+          "teamB": {
+            "directNetSupport": 134532.49999999988,
+            "syntheticSupport": 336668.6900000001,
+            "opponentLiabilityRejection": 336013.29930000013,
+            "sentimentScore": 135187.89069999987
+          },
+          "strongerTeam": "St. Kitts and Nevis Patriots",
+          "scoreDifference": 774888.065899999,
+          "percentageA": 87.06662523063424,
+          "percentageB": 12.933374769365761
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "St. Kitts and Nevis Patriots",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Jamaica Kingsmen",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "St. Kitts and Nevis Patriots"
+        },
+        "teams": {
+          "St. Kitts and Nevis Patriots": {
+            "trades": [
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.15,
+                "type": "lay",
+                "size": 356.82,
+                "updatedAt": 1787869474551
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.14,
+                "type": "lay",
+                "size": 114.63,
+                "updatedAt": 1787869474551
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.1,
+                "type": "lay",
+                "size": 35.16,
+                "updatedAt": 1787869319357
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.01,
+                "type": "lay",
+                "size": 229.26999999999998,
+                "updatedAt": 1787869259528
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.6,
+                "type": "back",
+                "size": 4219.38,
+                "updatedAt": 1787869062649
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 2,
+                "type": "lay",
+                "size": 335800.66000000015,
+                "updatedAt": 1787868876514
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 3,
+                "type": "lay",
+                "size": 0.56,
+                "updatedAt": 1787868626796
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.92,
+                "type": "back",
+                "size": 638.77,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.91,
+                "type": "back",
+                "size": 577.46,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.9,
+                "type": "back",
+                "size": 640.3,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.89,
+                "type": "back",
+                "size": 439.05,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.88,
+                "type": "back",
+                "size": 281.29,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.87,
+                "type": "back",
+                "size": 442.25,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.86,
+                "type": "back",
+                "size": 281.29,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.01,
+                "type": "back",
+                "size": 39.11,
+                "updatedAt": 1787868087728
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.93,
+                "type": "back",
+                "size": 168.77000000000004,
+                "updatedAt": 1787865974747
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.94,
+                "type": "back",
+                "size": 324.13,
+                "updatedAt": 1787865893123
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.95,
+                "type": "back",
+                "size": 405.46000000000004,
+                "updatedAt": 1787865874724
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 2.06,
+                "type": "lay",
+                "size": 83.79,
+                "updatedAt": 1787864649644
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 2,
+                "type": "back",
+                "size": 1238377.4399999992,
+                "updatedAt": 1787860864944
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.99,
+                "type": "back",
+                "size": 0.01999999999999602,
+                "updatedAt": 1787860864944
+              },
+              {
+                "team": "St. Kitts and Nevis Patriots",
+                "price": 1.99,
+                "type": "lay",
+                "size": 47.8,
+                "updatedAt": 1787858037382
+              }
+            ],
+            "pnlIfWins": -774164.8884999991,
+            "totalBet": 1854070.5477999991
+          },
+          "Jamaica Kingsmen": {
+            "trades": [
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7.6,
+                "type": "lay",
+                "size": 15.96,
+                "updatedAt": 1787869425343
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.5,
+                "type": "lay",
+                "size": 6.75,
+                "updatedAt": 1787868626780
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.94,
+                "type": "lay",
+                "size": 33.44,
+                "updatedAt": 1787868471550
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.94,
+                "type": "back",
+                "size": 570.24,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.93,
+                "type": "back",
+                "size": 281.25,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.92,
+                "type": "back",
+                "size": 638.77,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.91,
+                "type": "back",
+                "size": 577.46,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.9,
+                "type": "back",
+                "size": 640.3,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.89,
+                "type": "back",
+                "size": 439.05,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.88,
+                "type": "back",
+                "size": 281.29,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.87,
+                "type": "back",
+                "size": 442.25,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.86,
+                "type": "back",
+                "size": 281.29,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.01,
+                "type": "back",
+                "size": 38.69,
+                "updatedAt": 1787868280817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.06,
+                "type": "lay",
+                "size": 40.58,
+                "updatedAt": 1787865893123
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.02,
+                "type": "lay",
+                "size": 182.20000000000005,
+                "updatedAt": 1787860864817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2,
+                "type": "lay",
+                "size": 609080.93,
+                "updatedAt": 1787860864817
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.95,
+                "type": "back",
+                "size": 29.01,
+                "updatedAt": 1787860504644
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2,
+                "type": "back",
+                "size": 739626.0499999998,
+                "updatedAt": 1787858344159
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.02,
+                "type": "back",
+                "size": 46.709999999999994,
+                "updatedAt": 1787857995549
+              }
+            ],
+            "pnlIfWins": 776162.3510999993,
+            "totalBet": 1080122.3022999999
+          }
+        }
+      },
+      "predictedWinner": "St. Kitts and Nevis Patriots",
+      "predictionReason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹12.5L Back, Lead: 1.7x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹12.5L Back, Lead: 1.7x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹12.5L Back, Lead: 1.7x)",
+          "winner": "St. Kitts and Nevis Patriots",
           "priority": 100,
           "selected": true
         }

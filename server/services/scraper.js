@@ -4,9 +4,33 @@
  */
 
 const axios = require('axios');
+const http = require('http');
+const https = require('https');
 const tennisLogin = require('./tennisLogin');
 
 const BASE_URL = process.env.TENNIS_BASE_URL || 'https://tennisliveload.com';
+
+const httpAgent = new http.Agent({
+  keepAlive: true,
+  maxSockets: 100,
+  maxFreeSockets: 25,
+  timeout: 60000,
+  freeSocketTimeout: 30000,
+});
+
+const httpsAgent = new https.Agent({
+  keepAlive: true,
+  maxSockets: 100,
+  maxFreeSockets: 25,
+  timeout: 60000,
+  freeSocketTimeout: 30000,
+});
+
+const axiosInstance = axios.create({
+  httpAgent,
+  httpsAgent,
+  timeout: 12000,
+});
 
 const ENDPOINTS = {
   CRICKET_MATCHES:  '/api/cricket/matches',
@@ -21,8 +45,10 @@ const ENDPOINTS = {
   AUTH_LOGIN:       '/api/auth/login',
 };
 
-const SNAPSHOT_CACHE_TTL = 5000;  // 5s global cache for snapshots
-const LIST_CACHE_TTL = 15000;     // 15s global cache for match lists
+const SNAPSHOT_FRESH_TTL = 2000;   // 2s fresh cache
+const SNAPSHOT_SWR_TTL   = 8000;   // up to 8s serve stale immediately + background revalidate
+const LIST_FRESH_TTL     = 5000;   // 5s fresh match list
+const LIST_SWR_TTL       = 30000;  // up to 30s serve stale match list + background revalidate
 const STALE_CACHE_MAX_AGE = 30 * 60 * 1000; // Serve stale data up to 30 min if upstream down
 
 // ──── Single consistent browser fingerprint ────
@@ -54,10 +80,10 @@ function _getHeaders() {
 async function _callApi(endpoint, params = null, method = 'GET', _isRetry = false) {
   const url = `${BASE_URL}${endpoint}`;
   try {
-    const config = { headers: _getHeaders(), timeout: 15000 };
+    const config = { headers: _getHeaders() };
     const resp = method === 'GET'
-      ? await axios.get(url, { ...config, params })
-      : await axios.post(url, params, config);
+      ? await axiosInstance.get(url, { ...config, params })
+      : await axiosInstance.post(url, params, config);
     return resp.data;
   } catch (err) {
     if (err.response) {
@@ -136,8 +162,27 @@ function _cacheSet(key, data) {
 
 async function _cachedCall(endpoint, matchId) {
   const key = `${endpoint}:${matchId}`;
-  const cached = _cacheGet(key, SNAPSHOT_CACHE_TTL);
-  if (cached) return cached;
+  
+  // 1. Instant return if fresh (< 2s)
+  const fresh = _cacheGet(key, SNAPSHOT_FRESH_TTL);
+  if (fresh) return fresh;
+
+  // 2. SWR: Instant return if within SWR window (< 8s) + background refresh
+  const swr = _cacheGet(key, SNAPSHOT_SWR_TTL);
+  if (swr && !swr.error) {
+    if (!_inFlight[key]) {
+      _inFlight[key] = _callApi(endpoint, { matchId })
+        .then(data => {
+          if (data && !data.error) _cacheSet(key, data);
+          delete _inFlight[key];
+          return data;
+        })
+        .catch(() => {
+          delete _inFlight[key];
+        });
+    }
+    return swr;
+  }
   
   if (_inFlight[key]) return _inFlight[key];
   
@@ -145,10 +190,8 @@ async function _cachedCall(endpoint, matchId) {
     .then(data => {
       if (data && !data.error) _cacheSet(key, data);
       else {
-        // If upstream failed, serve stale cache if available
         const stale = _cacheGetStale(key);
         if (stale) {
-          console.warn(`⚠️  upstream error for ${key}, serving stale cache`);
           delete _inFlight[key];
           return stale;
         }
@@ -158,15 +201,37 @@ async function _cachedCall(endpoint, matchId) {
     })
     .catch(err => {
       delete _inFlight[key];
+      const stale = _cacheGetStale(key);
+      if (stale) return stale;
       return { error: err.message || 'API Error' };
     });
     
   return _inFlight[key];
 }
 
-async function _cachedList(key, fn, ttl = LIST_CACHE_TTL) {
-  const cached = _cacheGet(key, ttl);
-  if (cached !== null) return cached;
+async function _cachedList(key, fn, freshTtl = LIST_FRESH_TTL, swrTtl = LIST_SWR_TTL) {
+  // 1. Instant return if fresh (< 5s)
+  const fresh = _cacheGet(key, freshTtl);
+  if (fresh !== null && !(typeof fresh === 'object' && fresh.error)) return fresh;
+
+  // 2. SWR: Instant return if within SWR window (< 30s) + background refresh
+  const swr = _cacheGet(key, swrTtl);
+  if (swr !== null && !(typeof swr === 'object' && swr.error)) {
+    if (!_inFlight[key]) {
+      _inFlight[key] = fn()
+        .then(data => {
+          if (data && !(typeof data === 'object' && data.error)) {
+            _cacheSet(key, data);
+          }
+          delete _inFlight[key];
+          return data;
+        })
+        .catch(() => {
+          delete _inFlight[key];
+        });
+    }
+    return swr;
+  }
   
   if (_inFlight[key]) return _inFlight[key];
   
@@ -179,7 +244,6 @@ async function _cachedList(key, fn, ttl = LIST_CACHE_TTL) {
       }
       const stale = _cacheGetStale(key);
       if (stale !== null) {
-        console.warn(`⚠️  upstream failed for ${key}, serving stale cache`);
         delete _inFlight[key];
         return stale;
       }
@@ -188,6 +252,8 @@ async function _cachedList(key, fn, ttl = LIST_CACHE_TTL) {
     })
     .catch(err => {
       delete _inFlight[key];
+      const stale = _cacheGetStale(key);
+      if (stale !== null) return stale;
       return { error: err.message || 'API Error' };
     });
     
