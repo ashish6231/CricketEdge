@@ -584,6 +584,13 @@ export default function MatchDetail({ sport }) {
     return Boolean(mTotal > 0 || hasTrades || hasOdds || hasPnl || hasSynthetic || hasTeamMap)
   }, [sport, tossSnapshot])
 
+  const hasSessionData = useMemo(() => {
+    if (sport !== 'cricket') return false
+    const hasOdds = Array.isArray(sessionOdds) && sessionOdds.length > 0
+    const hasTrades = Array.isArray(sessionTrades) && sessionTrades.length > 0
+    return hasOdds || hasTrades
+  }, [sport, sessionOdds, sessionTrades])
+
   useEffect(() => {
     if (!loading && activeTab === 'toss' && !hasTossData) {
       setActiveTab('simple')
@@ -779,7 +786,7 @@ export default function MatchDetail({ sport }) {
             { key: 'simple', label: 'Simple Book' },
             { key: 'graph', label: 'Graphs', icon: <BarChart3 size={11} /> },
             hasTossData ? { key: 'toss', label: 'Toss' } : null,
-            { key: 'session', label: 'Session' },
+            sport === 'cricket' ? { key: 'session', label: 'Session' } : null,
           ].filter(Boolean).map(({ key, label, icon }) => (
             <button
               key={key}
@@ -1085,7 +1092,7 @@ export default function MatchDetail({ sport }) {
           )}
         </div>
       ) : activeTab === 'session' ? (
-        <SessionPanel odds={sessionOdds} trades={sessionTrades} />
+        <SessionPanel odds={sessionOdds} trades={sessionTrades} t1={t1} t2={t2} />
       ) : (
         <>
           {isSessionMarket ? (

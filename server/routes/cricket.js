@@ -172,7 +172,13 @@ router.get('/session/matches', optionalAuth, async (req, res) => {
 
 router.get('/session/trades/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  if (!assertProAccess(req, res)) return;
+  const matches = await scraper.getAllSessionMatches();
+  const matchInfo = findMatchInfo(matches, matchId);
+  if (!guestMayViewMatch(matchInfo, req.user)) {
+    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+  }
+  const isEnded = matchInfo?.status === 'ended';
+  if (!isEnded && !assertProAccess(req, res)) return;
   const data = await scraper.getSessionTrades(matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
   res.json(data);

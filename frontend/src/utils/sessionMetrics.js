@@ -252,8 +252,17 @@ export function computeSessionMetrics(oddsItem, trades = []) {
   }
 }
 
+export function mergeOddsAndTrades(odds = [], trades = []) {
+  const names = new Set()
+  odds?.forEach(o => o.marketName && names.add(o.marketName))
+  trades?.forEach(t => t.team && names.add(t.team))
+  const oddsMap = Object.fromEntries((odds || []).map(o => [o.marketName, o]))
+  return [...names].map(name => oddsMap[name] || { marketName: name, bestYes: null, bestNo: null })
+}
+
 export function buildAllSessions(odds = [], trades = []) {
-  return odds
+  const merged = mergeOddsAndTrades(odds, trades)
+  return merged
     .map(o => computeSessionMetrics(o, trades))
     .sort((a, b) => a.inning - b.inning || a.over - b.over)
 }

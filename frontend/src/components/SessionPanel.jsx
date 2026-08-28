@@ -372,21 +372,12 @@ function SessionCard({ session }) {
   )
 }
 
-function mergeOddsAndTrades(odds, trades) {
-  const names = new Set()
-  odds?.forEach(o => o.marketName && names.add(o.marketName))
-  trades?.forEach(t => t.team && names.add(t.team))
-  const oddsMap = Object.fromEntries((odds || []).map(o => [o.marketName, o]))
-  return [...names].map(name => oddsMap[name] || { marketName: name, bestYes: null, bestNo: null })
-}
-
 /** Premium session panel — MatchDetail Session tab */
-function SessionPanel({ odds = [], trades = [] }) {
+function SessionPanel({ odds = [], trades = [], t1 = '', t2 = '' }) {
   const [activeInning, setActiveInning] = useState(1)
   const [showLegend, setShowLegend] = useState(false)
 
-  const mergedOdds = useMemo(() => mergeOddsAndTrades(odds, trades), [odds, trades])
-  const sessions = useMemo(() => buildAllSessions(mergedOdds, trades), [mergedOdds, trades])
+  const sessions = useMemo(() => buildAllSessions(odds, trades), [odds, trades])
   const innings = useMemo(() => [...new Set(sessions.map(s => s.inning))].sort(), [sessions])
 
   const filtered = useMemo(() => {
@@ -395,9 +386,20 @@ function SessionPanel({ odds = [], trades = [] }) {
   }, [sessions, activeInning, innings.length])
 
   if (!sessions.length) {
+    const matchLabel = t1 && t2 ? `${t1} vs ${t2}` : 'This match'
     return (
-      <div className="flex h-[40vh] items-center justify-center rounded-2xl" style={{ background: '#111', border: '1px solid #2c2c2e' }}>
-        <p className="text-[#8e8e93] text-sm">No session data available</p>
+      <div className="rounded-2xl p-8 text-center border space-y-3" style={{ background: '#111', borderColor: '#2c2c2e' }}>
+        <div className="w-12 h-12 mx-auto rounded-full bg-[#f59e0b]/10 border border-[#f59e0b]/30 flex items-center justify-center text-xl animate-pulse">
+          ⚡
+        </div>
+        <h3 className="text-base font-bold text-white">Session Markets Live Tracking</h3>
+        <p className="text-xs text-[#8e8e93] leading-relaxed max-w-md mx-auto">
+          Over-by-over lines (6 Ov, 10 Ov, 15 Ov, 20 Ov & Total Runs) for <b className="text-white">{matchLabel}</b> will appear live here automatically as soon as trades are placed on the exchange.
+        </p>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#1a1a1a] border border-[#2c2c2e] text-[11px] text-[#f59e0b]">
+          <span className="w-2 h-2 rounded-full bg-[#f59e0b] animate-pulse inline-block" />
+          <span>Listening for live session orders...</span>
+        </div>
       </div>
     )
   }
