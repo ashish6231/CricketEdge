@@ -378,6 +378,7 @@ export default function MatchDetail({ sport }) {
   }
   const [timeFilter, setTimeFilter] = useState('all')
   const [marketType, setMarketType] = useState('match_odds')
+  const [showMarketMenu, setShowMarketMenu] = useState(false)
   const [tossSnapshot, setTossSnapshot] = useState(null)
   const [lockedStartPred, setLockedStartPred] = useState(() => {
     try {
