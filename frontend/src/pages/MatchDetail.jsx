@@ -9,6 +9,7 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchWinner, predictSmartMarketWinner } from '../utils/matchWinnerPredictor'
+import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
 import { getBookiePl, splitMatchOutcomes } from '../utils/bookiePl'
 import { predictGatedFade, teamEq } from '../utils/gatedFadePredictor'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
@@ -377,8 +378,16 @@ export default function MatchDetail({ sport }) {
   }
   const [timeFilter, setTimeFilter] = useState('all')
   const [marketType, setMarketType] = useState('match_odds')
-  const [showMarketMenu, setShowMarketMenu] = useState(false)
   const [tossSnapshot, setTossSnapshot] = useState(null)
+  const [lockedStartPred, setLockedStartPred] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`match_start_rawvol_${matchId}`)
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
+  const [showTipperPick, setShowTipperPick] = useState(false)
   const [sessionTrades, setSessionTrades] = useState([])
   const [sessionOdds, setSessionOdds] = useState([])
   const [activeSessions, setActiveSessions] = useState([])
@@ -541,6 +550,25 @@ export default function MatchDetail({ sport }) {
     return () => { cancelled = true; stopPoll() }
   }, [matchId, sport, isLoggedIn])
 
+  const liveStartPred = useMemo(() => {
+    if (!snapshot) return null
+    return predictMatchStart(snapshot)
+  }, [snapshot])
+
+  useEffect(() => {
+    if (liveStartPred) {
+      setLockedStartPred((prev) => {
+        const next = lockMatchStartPrediction(liveStartPred, prev, { inPlay: snapshot?.inPlay })
+        if (next && matchId) {
+          try {
+            sessionStorage.setItem(`match_start_rawvol_${matchId}`, JSON.stringify(next))
+          } catch {}
+        }
+        return next
+      })
+    }
+  }, [liveStartPred, snapshot?.inPlay, matchId])
+
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 
   if (requiresPro) {
@@ -625,6 +653,21 @@ export default function MatchDetail({ sport }) {
 
   const { pl1, pl2, plDraw } = getBookiePl(snapshot, t1, t2, drawName)
   const gatedFade = predictGatedFade(snapshot)
+  const matchStartPred = lockedStartPred || liveStartPred
+
+  const pickName = matchStartPred?.winnerName
+  const isPickT1 = pickName ? teamEq(pickName, t1) : false
+  const pickBackOdds = isPickT1 ? t1Odds?.back : t2Odds?.back
+  const oppBackOdds = isPickT1 ? t2Odds?.back : t1Odds?.back
+  const exitAdvice = (matchStartPred && snapshot?.inPlay && pickName)
+    ? getMatchStartExitAdvice({
+        lockedPick: matchStartPred,
+        inPlay: snapshot.inPlay,
+        pickBackOdds: typeof pickBackOdds === 'number' ? pickBackOdds : parseFloat(pickBackOdds),
+        opponentBackOdds: typeof oppBackOdds === 'number' ? oppBackOdds : parseFloat(oppBackOdds),
+      })
+    : null
+
   const dpl1 = dp.team1_win
   const dpl2 = dp.team2_win
 
@@ -677,8 +720,8 @@ export default function MatchDetail({ sport }) {
   const tossSnap = tossSnapshot
   const tossT1Name = tossSnap?.teamNames?.[0] || t1
   const tossT2Name = tossSnap?.teamNames?.[1] || t2
-  const tossM1 = tossSnap?.advancedMetricsV2?.team1
-  const tossM2 = tossSnap?.advancedMetricsV2?.team2
+  const tossM1 = tossSnap?.advancedMetricsV2?.team1 || tossSnap?.supportMetrics?.team1 || (tossSnap?.teams?.[tossT1Name] ? { totalBet: tossSnap.teams[tossT1Name].totalBet || 0, back: tossSnap.teams[tossT1Name].totalBet || 0, lay: 0 } : null)
+  const tossM2 = tossSnap?.advancedMetricsV2?.team2 || tossSnap?.supportMetrics?.team2 || (tossSnap?.teams?.[tossT2Name] ? { totalBet: tossSnap.teams[tossT2Name].totalBet || 0, back: tossSnap.teams[tossT2Name].totalBet || 0, lay: 0 } : null)
   const tossS1 = tossSnap?.syntheticSupport?.teamA
   const tossS2 = tossSnap?.syntheticSupport?.teamB
   const tossSup1 = tossSnap?.supportMetrics?.team1
@@ -714,7 +757,7 @@ export default function MatchDetail({ sport }) {
           {[
             { key: 'simple', label: 'Simple Book' },
             { key: 'graph', label: 'Graphs', icon: <BarChart3 size={11} /> },
-            (tossM1 && tossM2) ? { key: 'toss', label: 'Toss' } : null,
+            sport === 'cricket' ? { key: 'toss', label: 'Toss' } : null,
             { key: 'session', label: 'Session' },
           ].filter(Boolean).map(({ key, label, icon }) => (
             <button
@@ -809,63 +852,192 @@ export default function MatchDetail({ sport }) {
         </div>
       ) : activeTab === 'toss' ? (
         <div className="space-y-4">
-          {tossM1 && tossM2 ? (
+          {tossSnapshot ? (
             <>
               {/* Toss Odds Total Bar */}
-              <div className="mb-6 mt-6">
-                <div className="flex justify-between items-center mb-5">
-                  <h2 className="text-white font-bold text-base tracking-wide">Toss Odds</h2>
+              <div className="mb-4 mt-2">
+                <div className="flex justify-between items-center mb-3">
+                  <h2 className="text-white font-bold text-base tracking-wide flex items-center gap-2">
+                    <span>🪙</span> Toss Market Load
+                  </h2>
+                  <span className="text-xs text-[#8e8e93] font-semibold">
+                    Total: ₹{formatVolStr(tossMarketVol)}
+                  </span>
                 </div>
 
-                {/* Progress Bar (White vs Dark Grey) */}
-                <div className="h-[6px] w-full bg-[#2c2c2e] mb-3 flex rounded-sm">
-                  <div className="bg-white h-full transition-all duration-500 rounded-l-sm" style={{ width: `${tossT1PctVol}%` }} />
+                {/* Progress Bar */}
+                <div className="h-[6px] w-full bg-[#2c2c2e] mb-2 flex rounded-sm overflow-hidden">
+                  <div className="bg-[#a855f7] h-full transition-all duration-500" style={{ width: `${tossT1PctVol}%` }} />
+                  <div className="bg-[#3b82f6] h-full transition-all duration-500" style={{ width: `${tossT2PctVol}%` }} />
                 </div>
                 <div className="flex justify-between text-[11px] font-bold text-[#8e8e93] tracking-wide">
-                  <span>{tossT1Name} <span className="text-white ml-1">{tossT1PctVol.toFixed(0)}%</span></span>
-                  <span>{tossT2Name} <span className="text-white ml-1">{tossT2PctVol.toFixed(0)}%</span></span>
+                  <span className="text-[#a855f7]">{tossT1Name} <span className="text-white ml-1">{tossT1PctVol.toFixed(0)}%</span></span>
+                  <span className="text-[#3b82f6]">{tossT2Name} <span className="text-white ml-1">{tossT2PctVol.toFixed(0)}%</span></span>
                 </div>
               </div>
 
-              <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
-                <div className="px-4 py-3 flex items-center justify-between border-b border-[#2c2c2e] gap-2 flex-wrap">
-                  <span className="text-sm font-bold text-white flex items-center gap-2"><TrendingUp size={15} className="text-[#a855f7]" /> CricketEdge Toss Winner</span>
-                  <div className="flex items-center gap-2 ml-auto flex-wrap justify-end">
-                    {tossPrediction?.risk && <RiskBadge risk={tossPrediction.risk} compact />}
-                    {tossPrediction?.confidence && (
-                      <span className={`text-[10px] font-semibold ${tossPrediction.confidence.color}`}>
-                        {tossPrediction.confidence.label}
-                      </span>
-                    )}
+              {/* 🎯 TOSS SMART MONEY & INFLOW PREDICTOR */}
+              <div
+                className="rounded-2xl overflow-hidden border shadow-2xl relative p-4 space-y-4"
+                style={{
+                  background: 'linear-gradient(180deg, #161616 0%, #111111 100%)',
+                  borderColor: '#2c2c2e',
+                }}
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-black text-white flex items-center gap-1.5">
+                      🎯 Toss Smart Money & Inflow Predictor
+                    </span>
+                  </div>
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#a855f7]/15 text-[#a855f7] border border-[#a855f7]/30">
+                    EXCHANGE INFLOW
+                  </span>
+                </div>
+
+                <p className="text-xs text-[#8e8e93]">
+                  Toss market smart money accumulation, back-volume dominance, and syndicate trade flow detection.
+                </p>
+
+                {/* 1. PRE-MATCH INFLOW BREAKDOWN */}
+                {(() => {
+                  const b1 = tossM1?.back ?? 0
+                  const l1 = tossM1?.lay ?? 0
+                  const b2 = tossM2?.back ?? 0
+                  const l2 = tossM2?.lay ?? 0
+                  const pnl1 = tossSnap?.preMatchPnl?.team1 ?? (l1 - b1)
+                  const pnl2 = tossSnap?.preMatchPnl?.team2 ?? (l2 - b2)
+                  const totBack = b1 + b2
+                  const b1Pct = totBack > 0 ? (b1 / totBack) * 100 : 50
+                  const b2Pct = totBack > 0 ? (b2 / totBack) * 100 : 50
+
+                  return (
+                    <div className="rounded-xl p-3.5 border border-[#2c2c2e]" style={{ background: '#181818' }}>
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-black uppercase tracking-wider text-[#38bdf8] flex items-center gap-1.5">
+                          📌 1. Pre-Match Back Accumulation & Inflow
+                        </span>
+                        <span className="text-[10px] text-[#8e8e93] font-semibold">Toss Inflow Base</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {/* Team 1 Pre-match */}
+                        <div
+                          className="rounded-lg p-3 border"
+                          style={{
+                            background: b1 >= b2 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.02)',
+                            borderColor: b1 >= b2 ? 'rgba(16, 185, 129, 0.45)' : 'rgba(255, 255, 255, 0.08)',
+                          }}
+                        >
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-xs font-bold text-white truncate">{tossT1Name}</span>
+                            <span
+                              className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
+                                b1 >= b2
+                                  ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
+                                  : 'bg-[#8e8e93]/20 text-[#8e8e93] border border-[#8e8e93]/40'
+                              }`}
+                            >
+                              {b1 >= b2 ? '🔥 Back Dominance Leader' : 'Secondary Inflow'}
+                            </span>
+                          </div>
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-[10px] text-[#8e8e93]">Back Inflow:</span>
+                            <span className={`text-base font-black font-mono ${b1 >= b2 ? 'text-[#10b981]' : 'text-white'}`}>
+                              ₹{formatVolStr(b1)} <span className="text-xs text-[#8e8e93]">({b1Pct.toFixed(0)}%)</span>
+                            </span>
+                          </div>
+                          <div className="mt-1.5 pt-1.5 border-t border-[#2c2c2e] text-[10px] flex justify-between text-[#8e8e93]">
+                            <span>Lay: <b className="text-gray-300">₹{formatVolStr(l1)}</b></span>
+                            <span>P/L: <b className={pnl1 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}>{pnl1 >= 0 ? `+${pnl1.toFixed(1)}` : pnl1.toFixed(1)}</b></span>
+                          </div>
+                        </div>
+
+                        {/* Team 2 Pre-match */}
+                        <div
+                          className="rounded-lg p-3 border"
+                          style={{
+                            background: b2 > b1 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.02)',
+                            borderColor: b2 > b1 ? 'rgba(16, 185, 129, 0.45)' : 'rgba(255, 255, 255, 0.08)',
+                          }}
+                        >
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-xs font-bold text-white truncate">{tossT2Name}</span>
+                            <span
+                              className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
+                                b2 > b1
+                                  ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
+                                  : 'bg-[#8e8e93]/20 text-[#8e8e93] border border-[#8e8e93]/40'
+                              }`}
+                            >
+                              {b2 > b1 ? '🔥 Back Dominance Leader' : 'Secondary Inflow'}
+                            </span>
+                          </div>
+                          <div className="flex items-baseline justify-between">
+                            <span className="text-[10px] text-[#8e8e93]">Back Inflow:</span>
+                            <span className={`text-base font-black font-mono ${b2 > b1 ? 'text-[#10b981]' : 'text-white'}`}>
+                              ₹{formatVolStr(b2)} <span className="text-xs text-[#8e8e93]">({b2Pct.toFixed(0)}%)</span>
+                            </span>
+                          </div>
+                          <div className="mt-1.5 pt-1.5 border-t border-[#2c2c2e] text-[10px] flex justify-between text-[#8e8e93]">
+                            <span>Lay: <b className="text-gray-300">₹{formatVolStr(l2)}</b></span>
+                            <span>P/L: <b className={pnl2 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}>{pnl2 >= 0 ? `+${pnl2.toFixed(1)}` : pnl2.toFixed(1)}</b></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
+
+                {/* 2. PREDICTED TOSS WINNER (SMART MONEY INFLOW) */}
+                <div
+                  className="rounded-xl p-4 border"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)',
+                    borderColor: 'rgba(16, 185, 129, 0.4)',
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-[#10b981] flex items-center gap-1">
+                      🏆 PREDICTED TOSS WINNER (SMART MONEY INFLOW)
+                    </div>
+                    <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#10b981] text-black">
+                      {tossPrediction?.verdictTag || 'SMART MONEY INFLOW'}
+                    </span>
+                  </div>
+
+                  <div className="text-xl font-black text-white mb-2 flex items-center gap-2">
+                    <span>{predictedTossWinner}</span>
+                    <span className="text-xs font-semibold text-[#10b981]">
+                      (🏆 Predicted Toss Winner)
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-[#d1d5db] leading-relaxed">
+                    <div className="text-[12px] text-[#9ca3af]">
+                      💡 <b>Inflow Analysis:</b> {tossPredictionReason || 'Analyzing orderbook accumulation...'}
+                    </div>
                   </div>
                 </div>
-                <div className="p-4">
-                  <div className="rounded-xl p-4 text-center mb-3 border border-[#2c2c2e]" style={{ background: '#1a1a1a' }}>
-                    <div className="text-2xl font-black text-[#10b981] mb-1">{predictedTossWinner}</div>
-                    <div className="text-[10px] text-[#8e8e93]">
-                      {tossPredictionReason || 'Analyzing market signals...'}
-                      {tossPrediction?.confidence?.pct && ` • ${tossPrediction.confidence.pct} backtest`}
-                    </div>
-                    {tossPrediction?.matchedRules?.length > 1 && (
-                      <MatchedRulesPanel rules={tossPrediction.matchedRules} selectedReason={tossPredictionReason} />
-                    )}
-                    <AvoidEntryBanner risk={tossPrediction?.risk} />
+
+                {/* 3. 6-Metric Breakdown Table */}
+                <div className="pt-2">
+                  <div className="grid grid-cols-3 gap-1 mb-2 px-1">
+                    <div className="text-[10px] font-bold text-[#8e8e93] uppercase">Metrics</div>
+                    <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate">{tossT1Name}</div>
+                    <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate">{tossT2Name}</div>
                   </div>
-                  <div className="px-1">
-                    <div className="grid grid-cols-3 gap-1 mb-2">
-                      <div />
-                      <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate">{tossT1Name}</div>
-                      <div className="text-center text-[10px] font-bold text-[#8e8e93] truncate">{tossT2Name}</div>
-                    </div>
+                  <div className="rounded-xl border border-[#2c2c2e] p-2 bg-[#121214]">
                     {[
-                      { label: 'Back Val', v1: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossM1.back)}</span>, v2: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossM2.back)}</span> },
-                      { label: 'Lay Liab', v1: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM1.lay)}</span>, v2: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM2.lay)}</span> },
-                      { label: 'Total Bet', v1: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM1.totalBet)}</span>, v2: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM2.totalBet)}</span> },
+                      { label: 'Back Val', v1: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossM1?.back)}</span>, v2: <span className="text-[11px] text-[#3b82f6] font-bold">₹{formatVolStr(tossM2?.back)}</span> },
+                      { label: 'Lay Liab', v1: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM1?.lay)}</span>, v2: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM2?.lay)}</span> },
+                      { label: 'Total Bet', v1: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM1?.totalBet)}</span>, v2: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM2?.totalBet)}</span> },
                       { label: 'Lay Trades', v1: <span className="text-[11px] text-white font-bold">{tossS1?.tradeCount ?? '—'}</span>, v2: <span className="text-[11px] text-white font-bold">{tossS2?.tradeCount ?? '—'}</span> },
                       { label: 'Support %', v1: <span className="text-[11px] font-bold" style={{color:(tossSup1?.support??0)>(tossSup2?.support??0)?'#10b981':'#8e8e93'}}>{tossSup1?tossSup1.support.toFixed(1)+'%':'—'}</span>, v2: <span className="text-[11px] font-bold" style={{color:(tossSup2?.support??0)>(tossSup1?.support??0)?'#10b981':'#8e8e93'}}>{tossSup2?tossSup2.support.toFixed(1)+'%':'—'}</span> },
-                      { label: 'B/L Ratio', v1: <span className="text-[11px] text-[#10b981] font-bold">{tossM1.lay>0?(tossM1.back/tossM1.lay).toFixed(2):'—'}</span>, v2: <span className="text-[11px] text-[#10b981] font-bold">{tossM2.lay>0?(tossM2.back/tossM2.lay).toFixed(2):'—'}</span> },
+                      { label: 'B/L Ratio', v1: <span className="text-[11px] text-[#10b981] font-bold">{tossM1?.lay>0?(tossM1.back/tossM1.lay).toFixed(2):'—'}</span>, v2: <span className="text-[11px] text-[#10b981] font-bold">{tossM2?.lay>0?(tossM2.back/tossM2.lay).toFixed(2):'—'}</span> },
                     ].map(({ label, v1, v2 }, i, arr) => (
-                      <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 ${i !== arr.length - 1 ? 'border-b border-[#2c2c2e]' : ''}`}>
+                      <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 px-2 ${i !== arr.length - 1 ? 'border-b border-[#2c2c2e]/60' : ''}`}>
                         <div className="text-[10px] text-[#8e8e93] flex items-center font-semibold">{label}</div>
                         <div className="text-center flex items-center justify-center">{v1}</div>
                         <div className="text-center flex items-center justify-center">{v2}</div>
@@ -882,9 +1054,12 @@ export default function MatchDetail({ sport }) {
               </div>
             </>
           ) : (
-            <div className="flex h-[40vh] items-center justify-center text-center">
-              <div className="text-3xl mb-3">🪙</div>
-              <p className="text-[#8e8e93] text-sm mt-2">No toss data available</p>
+            <div className="rounded-2xl p-8 max-w-md mx-auto text-center border border-[#2c2c2e] my-8" style={{ background: '#111111' }}>
+              <div className="text-4xl mb-3">🪙</div>
+              <h3 className="text-base font-bold text-white mb-1">Toss Market Synchronizing</h3>
+              <p className="text-xs text-[#8e8e93] leading-relaxed">
+                Toss orderbook and live bookie load for <b>{t1} vs {t2}</b> will appear here as soon as the toss market is opened on the exchange.
+              </p>
             </div>
           )}
         </div>
@@ -900,6 +1075,168 @@ export default function MatchDetail({ sport }) {
             </div>
           ) : (
             <>
+              {/* ━━━━━━━━━━ 🎯 TIPPER'S MATCH-START LOAD PICK (COLLAPSIBLE DROPDOWN) ━━━━━━━━━━ */}
+              {matchStartPred && matchStartPred.winnerName && (
+                <div
+                  className="rounded-2xl overflow-hidden border shadow-2xl relative transition-all duration-300"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(13, 17, 23, 0.95) 45%, rgba(59, 130, 246, 0.1) 100%)',
+                    borderColor: showTipperPick ? 'rgba(16, 185, 129, 0.5)' : 'rgba(16, 185, 129, 0.3)',
+                    boxShadow: showTipperPick ? '0 0 25px rgba(16, 185, 129, 0.12)' : 'none',
+                  }}
+                >
+                  {/* Clickable Header / Accordion Bar */}
+                  <div
+                    onClick={() => setShowTipperPick(!showTipperPick)}
+                    className="px-4 py-3 flex items-center justify-between bg-black/40 backdrop-blur-md cursor-pointer hover:bg-white/[0.04] transition-colors select-none flex-wrap gap-2"
+                    style={{ borderBottom: showTipperPick ? '1px solid rgba(44, 44, 46, 0.6)' : 'none' }}
+                  >
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-base animate-pulse">🎯</span>
+                      <span className="text-xs font-black uppercase tracking-wider text-[#10b981]">
+                        Tipper's Match-Start Load Pick
+                      </span>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#10b981] text-black flex items-center gap-1 shadow-sm">
+                        🏆 {matchStartPred.winnerName}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2 ml-auto">
+                      <span className="text-[10px] font-bold text-[#8e8e93] bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#2c2c2e]">
+                        {snapshot.inPlay ? '🔒 LOCKED' : '⚡ LIVE LOAD'}
+                      </span>
+                      {matchStartPred.confidence && (
+                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full bg-black/50 border border-[#10b981]/40 ${matchStartPred.confidence.color || 'text-[#10b981]'}`}>
+                          {matchStartPred.confidence.pct || '85%'} Edge
+                        </span>
+                      )}
+                      <div className="text-[#8e8e93] hover:text-white transition-transform p-1">
+                        {showTipperPick ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Collapsible Dropdown Content */}
+                  {showTipperPick && (
+                    <div className="p-4 space-y-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                      {/* Big Winner vs Public Card */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {/* Bookie Safe Team */}
+                        <div
+                          className="rounded-xl p-3.5 border relative overflow-hidden flex flex-col justify-between"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(16, 185, 129, 0.05) 100%)',
+                            borderColor: 'rgba(16, 185, 129, 0.5)',
+                          }}
+                        >
+                          <div className="flex items-center justify-between gap-1 mb-1">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#10b981] flex items-center gap-1">
+                              🏆 Bookie Safe Pick (Win Side)
+                            </span>
+                            <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#10b981] text-black">
+                              WIN
+                            </span>
+                          </div>
+                          <div className="text-xl font-black text-white truncate py-1">
+                            {matchStartPred.winnerName}
+                          </div>
+                          <div className="text-[11px] text-[#9ca3af] flex items-center justify-between pt-1 border-t border-[#10b981]/20">
+                            <span>Opening Odds:</span>
+                            <span className="font-bold text-white">
+                              {matchStartPred.preOdds?.[matchStartPred.winnerIdx === 0 ? 't1' : 't2'] != null
+                                ? matchStartPred.preOdds[matchStartPred.winnerIdx === 0 ? 't1' : 't2'].toFixed(2)
+                                : '—'}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Public Load Team / Opponent */}
+                        <div
+                          className="rounded-xl p-3.5 border relative overflow-hidden flex flex-col justify-between"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.04) 100%)',
+                            borderColor: 'rgba(239, 68, 68, 0.4)',
+                          }}
+                        >
+                          <div className="flex items-center justify-between gap-1 mb-1">
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#ef4444] flex items-center gap-1">
+                              🚨 Public Load Trap (Liability Side)
+                            </span>
+                            <span className="text-[9px] font-black px-1.5 py-0.5 rounded bg-[#ef4444] text-white">
+                              TRAP
+                            </span>
+                          </div>
+                          <div className="text-xl font-black text-gray-200 truncate py-1">
+                            {matchStartPred.moreBetted || (matchStartPred.winnerName === t1 ? t2 : t1)}
+                          </div>
+                          <div className="text-[11px] text-[#9ca3af] flex items-center justify-between pt-1 border-t border-[#ef4444]/20">
+                            <span>Opponent Odds:</span>
+                            <span className="font-bold text-white">
+                              {matchStartPred.preOdds?.[matchStartPred.winnerIdx === 0 ? 't2' : 't1'] != null
+                                ? matchStartPred.preOdds[matchStartPred.winnerIdx === 0 ? 't2' : 't1'].toFixed(2)
+                                : '—'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Tipper Strategy Reason */}
+                      <div className="text-xs text-gray-300 bg-[#161618] rounded-xl p-3 border border-[#2c2c2e] flex items-start gap-2.5">
+                        <span className="text-sm mt-0.5">💡</span>
+                        <div className="leading-relaxed">
+                          <span className="font-bold text-white">Tipper Load Analysis: </span>
+                          {matchStartPred.reason === 'Fade Public Money' || matchStartPred.reason?.includes('Fade Public') ? (
+                            <span>
+                              Public money is overwhelmingly biased toward <b className="text-[#ef4444]">{matchStartPred.moreBetted || 'the opposing team'}</b>. Bookmakers carry heavy liability on them, creating a statistical edge on <b className="text-[#10b981]">{matchStartPred.winnerName}</b>.
+                            </span>
+                          ) : matchStartPred.reason === 'Smart Money Trap' ? (
+                            <span>
+                              Extreme one-sided bet volume detected with heavy lay resistance. The bookmaker's net book is heavily protected on <b className="text-[#10b981]">{matchStartPred.winnerName}</b>.
+                            </span>
+                          ) : (
+                            <span>
+                              {matchStartPred.reason} — Market volume and opening liquidity position indicate bookmaker preference for <b className="text-[#10b981]">{matchStartPred.winnerName}</b>.
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Exit Advice (if live hedge needed) */}
+                      {exitAdvice && (
+                        <div className="rounded-xl p-3 bg-amber-950/40 border border-amber-500/40 text-amber-300 text-xs flex items-start gap-2">
+                          <span className="text-sm">⚠️</span>
+                          <div>
+                            <div className="font-bold">{exitAdvice.title}</div>
+                            <div className="text-[11px] text-amber-200/90 mt-0.5">{exitAdvice.message}</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Signals Grid */}
+                      {matchStartPred.signals && matchStartPred.signals.length > 0 && (
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5">
+                          {matchStartPred.signals.map((sig, idx) => (
+                            <div
+                              key={idx}
+                              className={`rounded-lg p-2.5 border text-center transition-all ${
+                                sig.active ? 'bg-[#18261e] border-[#10b981]/40' : 'bg-[#121214] border-[#2c2c2e]'
+                              }`}
+                            >
+                              <div className="text-[10px] font-semibold text-[#8e8e93] truncate">{sig.label}</div>
+                              <div className="text-xs font-bold text-white mt-1 flex justify-center items-center gap-1.5">
+                                <span className="text-[#10b981] truncate">{sig.v1 || '—'}</span>
+                                <span className="text-[#555] text-[10px]">vs</span>
+                                <span className="text-[#ef4444] truncate">{sig.v2 || '—'}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
               <div className="rounded-2xl overflow-hidden" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
                 {/* Date / Title */}
@@ -1334,260 +1671,6 @@ export default function MatchDetail({ sport }) {
               <div className="text-sm font-bold text-white">{mostFakeTeam}</div>
             </div>
           </div>
-
-          {/* ━━━━━━━━━━ 11. PRE-MATCH & LIVE EXPOSURE TRAP PREDICTOR ━━━━━━━━━━ */}
-          {(() => {
-            const prePnl1 = pp.team1 ?? 0
-            const prePnl2 = pp.team2 ?? 0
-            const inplayPnl1 = ip.team1 ?? 0
-            const inplayPnl2 = ip.team2 ?? 0
-            const netPnl1 = t1Data?.pnlIfWins ?? (prePnl1 || inplayPnl1) ?? 0
-            const netPnl2 = t2Data?.pnlIfWins ?? (prePnl2 || inplayPnl2) ?? 0
-
-            // Pre-match trap analysis (The foundational bookie stance before play)
-            const preTrapTeam = prePnl1 < prePnl2 ? t1 : (prePnl2 < prePnl1 ? t2 : null)
-            const preSafeTeam = prePnl1 > prePnl2 ? t1 : (prePnl2 > prePnl1 ? t2 : null)
-            const preTrapVal = preTrapTeam === t1 ? prePnl1 : prePnl2
-            const preSafeVal = preSafeTeam === t1 ? prePnl1 : prePnl2
-
-            // Overall net winner
-            const netTrapTeam = netPnl1 < netPnl2 ? t1 : (netPnl2 < netPnl1 ? t2 : null)
-            const netSafeTeam = netPnl1 > netPnl2 ? t1 : (netPnl2 > netPnl1 ? t2 : null)
-            const netTrapVal = netTrapTeam === t1 ? netPnl1 : netPnl2
-            const netSafeVal = netSafeTeam === t1 ? netPnl1 : netPnl2
-
-            const exposureDiff = Math.abs((preSafeVal || netSafeVal) - (preTrapVal || netTrapVal))
-            const isHighEdge = exposureDiff > 1000
-
-            return (
-              <div className="rounded-2xl p-4 overflow-hidden border border-[#2c2c2e]" style={{ background: 'linear-gradient(180deg, #161616 0%, #111111 100%)' }}>
-                {/* Header */}
-                <div className="flex items-center justify-between gap-2 mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base font-black text-white flex items-center gap-1.5">
-                      🎯 Pre-Match & Live Exposure Trap Predictor
-                    </span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#10b981]/15 text-[#10b981] border border-[#10b981]/30">
-                    EXCHANGE METRICS
-                  </span>
-                </div>
-
-                <p className="text-xs text-[#8e8e93] mb-4">
-                  Pre-match initial bookmaker liability and live trade flow trap detection.
-                </p>
-
-                {/* 1. PRE-MATCH EXPOSURE BREAKDOWN */}
-                <div className="mb-4 rounded-xl p-3.5 border border-[#2c2c2e]" style={{ background: '#181818' }}>
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-black uppercase tracking-wider text-[#fbbf24] flex items-center gap-1.5">
-                      📌 1. Pre-Match Market Stance (Initial Trap vs Safe)
-                    </span>
-                    <span className="text-[10px] text-[#8e8e93] font-semibold">Pre-Match Base</span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {/* Team 1 Pre-match */}
-                    <div
-                      className="rounded-lg p-3 border"
-                      style={{
-                        background: prePnl1 >= 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)',
-                        borderColor: prePnl1 >= 0 ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)',
-                      }}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-bold text-white truncate">{t1}</span>
-                        <span
-                          className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
-                            prePnl1 >= 0
-                              ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
-                              : 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/40'
-                          }`}
-                        >
-                          {prePnl1 >= 0 ? '🛡️ High Positive (Bookmaker Safe)' : '❌ Heavy Negative (Public Trap)'}
-                        </span>
-                      </div>
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-[10px] text-[#8e8e93]">Pre-Match P/L:</span>
-                        <span className={`text-base font-black font-mono ${prePnl1 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
-                          {prePnl1 >= 0 ? `+${prePnl1.toFixed(1)}` : prePnl1.toFixed(1)}
-                        </span>
-                      </div>
-                      <div className="mt-1.5 pt-1.5 border-t border-[#2c2c2e] text-[10px] flex justify-between text-[#8e8e93]">
-                        <span>Back: <b className="text-[#3b82f6]">₹{fmtVol(pv.team1?.back || 0)}</b></span>
-                        <span>Lay: <b className="text-[#ef4444]">₹{fmtVol(pv.team1?.lay || 0)}</b></span>
-                      </div>
-                    </div>
-
-                    {/* Team 2 Pre-match */}
-                    <div
-                      className="rounded-lg p-3 border"
-                      style={{
-                        background: prePnl2 >= 0 ? 'rgba(16, 185, 129, 0.05)' : 'rgba(239, 68, 68, 0.05)',
-                        borderColor: prePnl2 >= 0 ? 'rgba(16, 185, 129, 0.35)' : 'rgba(239, 68, 68, 0.35)',
-                      }}
-                    >
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-xs font-bold text-white truncate">{t2}</span>
-                        <span
-                          className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
-                            prePnl2 >= 0
-                              ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
-                              : 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/40'
-                          }`}
-                        >
-                          {prePnl2 >= 0 ? '🛡️ High Positive (Bookmaker Safe)' : '❌ Heavy Negative (Public Trap)'}
-                        </span>
-                      </div>
-                      <div className="flex items-baseline justify-between">
-                        <span className="text-[10px] text-[#8e8e93]">Pre-Match P/L:</span>
-                        <span className={`text-base font-black font-mono ${prePnl2 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
-                          {prePnl2 >= 0 ? `+${prePnl2.toFixed(1)}` : prePnl2.toFixed(1)}
-                        </span>
-                      </div>
-                      <div className="mt-1.5 pt-1.5 border-t border-[#2c2c2e] text-[10px] flex justify-between text-[#8e8e93]">
-                        <span>Back: <b className="text-[#3b82f6]">₹{fmtVol(pv.team2?.back || 0)}</b></span>
-                        <span>Lay: <b className="text-[#ef4444]">₹{fmtVol(pv.team2?.lay || 0)}</b></span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. IN-PLAY & NET EXPOSURE */}
-                <div className="mb-4 rounded-xl p-3.5 border border-[#2c2c2e]" style={{ background: '#181818' }}>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-black uppercase tracking-wider text-[#38bdf8] flex items-center gap-1.5">
-                      ⚡ 2. In-Play Matched Shift
-                    </span>
-                    <span className="text-[10px] text-[#8e8e93] font-semibold">Live Action</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="rounded-lg p-2.5 bg-[#141414] border border-[#2c2c2e]">
-                      <div className="text-[11px] font-bold text-white mb-1 truncate">{t1}</div>
-                      <div className="flex justify-between text-[10px] text-[#8e8e93] mb-0.5">
-                        <span>In-Play P/L:</span>
-                        <span className={`font-bold font-mono ${inplayPnl1 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
-                          {inplayPnl1 >= 0 ? `+${inplayPnl1.toFixed(1)}` : inplayPnl1.toFixed(1)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-[10px] text-[#8e8e93]">
-                        <span>Live Volume:</span>
-                        <span className="font-bold text-white">₹{fmtVol(iv.team1?.total || 0)}</span>
-                      </div>
-                    </div>
-
-                    <div className="rounded-lg p-2.5 bg-[#141414] border border-[#2c2c2e]">
-                      <div className="text-[11px] font-bold text-white mb-1 truncate">{t2}</div>
-                      <div className="flex justify-between text-[10px] text-[#8e8e93] mb-0.5">
-                        <span>In-Play P/L:</span>
-                        <span className={`font-bold font-mono ${inplayPnl2 >= 0 ? 'text-[#10b981]' : 'text-[#ef4444]'}`}>
-                          {inplayPnl2 >= 0 ? `+${inplayPnl2.toFixed(1)}` : inplayPnl2.toFixed(1)}
-                        </span>
-                      </div>
-                      <div className="flex justify-between text-[10px] text-[#8e8e93]">
-                        <span>Live Volume:</span>
-                        <span className="font-bold text-white">₹{fmtVol(iv.team2?.total || 0)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. PREDICTED WINNER VERDICT (STRICT USER BACK/LAY STABILITY RULES) */}
-                {(() => {
-                  // STRICT PURE PRE-MATCH VOLUMES
-                  const b1 = pv.team1?.back ?? 0
-                  const l1 = pv.team1?.lay ?? 0
-                  const b2 = pv.team2?.back ?? 0
-                  const l2 = pv.team2?.lay ?? 0
-
-                  // Condition: If ANY team lacks active Back AND Lay values -> DO NOT SHOW AT ALL
-                  const hasBoth1 = b1 > 0 && l1 > 0
-                  const hasBoth2 = b2 > 0 && l2 > 0
-
-                  if (!hasBoth1 || !hasBoth2) {
-                    return (
-                      <div className="rounded-xl py-2.5 px-4 text-center border border-[#2c2c2e] bg-[#141414] text-xs text-[#8e8e93] flex items-center justify-center gap-2">
-                        <span className="text-[#eab308]">⚠️</span>
-                        <span>Insufficient pre-match data for this match, so can't predict.</span>
-                      </div>
-                    )
-                  }
-
-                  // Ratio calculation: max / min
-                  const ratio1 = Math.max(b1, l1) / Math.min(b1, l1)
-                  const ratio2 = Math.max(b2, l2) / Math.min(b2, l2)
-
-                  // Stability Threshold (e.g. <= 2.2 is Stable, > 2.2 is Unstable)
-                  const isStable1 = ratio1 <= 2.2
-                  const isStable2 = ratio2 <= 2.2
-
-                  let predictedWinner = null
-                  let stabilityReason = ''
-                  let verdictTag = 'FAVORABLE'
-
-                  if (isStable1 && !isStable2) {
-                    // One stable, one unstable -> Predict Stable Team
-                    predictedWinner = t1
-                    verdictTag = 'HIGH PROBABILITY'
-                    stabilityReason = `Stable Team (${t1}: ${fmtVol(b1)} Back / ${fmtVol(l1)} Lay, Ratio ${ratio1.toFixed(1)}x) vs Unstable Trap (${t2}: ${fmtVol(b2)} Back / ${fmtVol(l2)} Lay, Ratio ${ratio2.toFixed(1)}x)`
-                  } else if (isStable2 && !isStable1) {
-                    // One stable, one unstable -> Predict Stable Team
-                    predictedWinner = t2
-                    verdictTag = 'HIGH PROBABILITY'
-                    stabilityReason = `Stable Team (${t2}: ${fmtVol(b2)} Back / ${fmtVol(l2)} Lay, Ratio ${ratio2.toFixed(1)}x) vs Unstable Trap (${t1}: ${fmtVol(b1)} Back / ${fmtVol(l1)} Lay, Ratio ${ratio1.toFixed(1)}x)`
-                  } else if (!isStable1 && !isStable2) {
-                    // Both unstable -> Always choose team with higher Back value
-                    predictedWinner = b1 >= b2 ? t1 : t2
-                    verdictTag = 'HIGH BACK MOMENTUM'
-                    stabilityReason = `Both Teams Unstable (Ratios ${ratio1.toFixed(1)}x & ${ratio2.toFixed(1)}x) -> Chosen Higher Back Value (${predictedWinner}: ₹${fmtVol(Math.max(b1, b2))})`
-                  } else {
-                    // Both stable -> choose the more balanced team or safe bookie side
-                    predictedWinner = ratio1 <= ratio2 ? t1 : t2
-                    verdictTag = 'BALANCED BOOK'
-                    stabilityReason = `Both Teams Stable -> Most Balanced Team (${predictedWinner}: Ratio ${Math.min(ratio1, ratio2).toFixed(1)}x)`
-                  }
-
-                  const safeTeamDisplay = predictedWinner
-                  const trapTeamDisplay = predictedWinner === t1 ? t2 : t1
-                  const safeValDisplay = predictedWinner === t1 ? prePnl1 : prePnl2
-                  const trapValDisplay = trapTeamDisplay === t1 ? prePnl1 : prePnl2
-
-                  return (
-                    <div
-                      className="rounded-xl p-4 border"
-                      style={{
-                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%)',
-                        borderColor: 'rgba(16, 185, 129, 0.4)',
-                      }}
-                    >
-                      <div className="flex items-center justify-between gap-2 mb-1.5">
-                        <div className="text-[10px] font-bold uppercase tracking-widest text-[#10b981] flex items-center gap-1">
-                          🏆 PREDICTED MATCH WINNER (EXPOSURE ADVANTAGE)
-                        </div>
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded bg-[#10b981] text-black">
-                          {verdictTag}
-                        </span>
-                      </div>
-
-                      <div className="text-xl font-black text-white mb-2 flex items-center gap-2">
-                        <span>{safeTeamDisplay}</span>
-                        <span className="text-xs font-semibold text-[#10b981]">
-                          (🏆 Predicted Winner)
-                        </span>
-                      </div>
-
-                      <div className="text-xs text-[#d1d5db] leading-relaxed">
-                        <div className="text-[12px] text-[#9ca3af]">
-                          ⚖️ <b>Pre-Match Stability Catch:</b> {stabilityReason}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })()}
-              </div>
-            )
-          })()}
         </>
       )}
     </div>

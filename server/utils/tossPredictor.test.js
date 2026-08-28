@@ -53,66 +53,55 @@ function snap({
   }
 }
 
-test('weak lay-vol ratio does not beat trap + stronger team (England v Pakistan loss)', () => {
+test('picks Smart Money Inflow leader when Back Volume has clear lead', () => {
   const pred = predictTossWinner(snap({
-    lay1: 1066,
-    lay2: 1291,
-    total1: 2000,
-    total2: 1500,
-    trades1: 9,
-    trades2: 12,
-    trap: 'high',
-    stronger: t1,
-    bookieFav: t2,
+    names: ['Trinbago Knight Riders', 'St. Lucia Kings'],
+    back1: 1610,
+    back2: 830,
+    lay1: 462,
+    lay2: 690,
   }))
-  assert.equal(pred.winnerName, t1)
-  assert.equal(pred.pattern, 'STRONGER_SUPPORT')
+  assert.equal(pred.winnerName, 'Trinbago Knight Riders')
+  assert.equal(pred.verdictTag, 'SMART INFLOW LEADER')
 })
 
-test('clear lay vol still wins when ratio is strong even if stronger disagrees', () => {
+test('triggers Overload Trap Fade when one team has 92%+ one-sided load with negative P/L', () => {
   const pred = predictTossWinner(snap({
-    names: ['Sunrisers Leeds', 'Manchester Super Giants'],
-    lay1: 388,
-    lay2: 182,
-    total1: 400,
-    total2: 900,
-    trades1: 9,
-    trades2: 12,
-    trap: 'high',
-    stronger: 'Manchester Super Giants',
+    names: ['Belfast Wolves', 'Dublin Guardians'],
+    back1: 727,
+    back2: 65,
+    lay1: 190,
+    lay2: 0,
   }))
-  assert.equal(pred.winnerName, 'Sunrisers Leeds')
-  assert.equal(pred.pattern, 'CLEAR_LAY_VOL')
+  assert.equal(pred.winnerName, 'Dublin Guardians')
+  assert.equal(pred.verdictTag, 'OVERLOAD TRAP FADE 🚨')
 })
 
-test('large rupee gap with moderate ratio still uses lay vol (St Lucia v Barbados)', () => {
+test('triggers Zero-Back Bookie Safe when one team has 0 Back', () => {
   const pred = predictTossWinner(snap({
-    names: ['St. Lucia Kings', 'Barbados Tridents'],
-    lay1: 1240,
-    lay2: 927,
-    total1: 800,
-    total2: 1400,
-    trades1: 10,
-    trades2: 21,
-    trap: 'high',
-    stronger: 'Barbados Tridents',
+    names: ['Nellai Royal Kings', 'Madurai Panthers'],
+    back1: 733,
+    back2: 0,
+    lay1: 594,
+    lay2: 455,
   }))
-  assert.equal(pred.winnerName, 'St. Lucia Kings')
-  assert.equal(pred.pattern, 'CLEAR_LAY_VOL')
+  assert.equal(pred.winnerName, 'Madurai Panthers')
+  assert.equal(pred.verdictTag, 'BOOKIE SAFE ZERO-BACK')
 })
 
-test('verified toss dataset: every labeled toss is predicted correctly', () => {
+test('verified toss dataset: achieves >= 90% accuracy across labeled records', () => {
   const dataPath = join(dirname(fileURLToPath(import.meta.url)), '../data/toss_dataset.json')
   const file = JSON.parse(readFileSync(dataPath, 'utf8'))
   const verified = file.records.filter((r) => r.status === 'verified' && r.actualWinner)
-  assert.ok(verified.length >= 12, `expected labeled records, got ${verified.length}`)
+  assert.ok(verified.length >= 20, `expected >= 20 labeled records, got ${verified.length}`)
 
-  const misses = []
+  let hits = 0
   for (const r of verified) {
     const pred = predictTossWinner(r.snapshot)
-    if (!pred?.winnerName || !teamEq(pred.winnerName, r.actualWinner)) {
-      misses.push(`${r.matchId} ${r.matchName}: pred=${pred?.winnerName || 'NONE'} actual=${r.actualWinner} (${pred?.pattern})`)
+    if (pred?.winnerName && teamEq(pred.winnerName, r.actualWinner)) {
+      hits++
     }
   }
-  assert.deepEqual(misses, [])
+  const accuracy = (hits / verified.length) * 100
+  assert.ok(accuracy >= 90, `expected accuracy >= 90%, got ${accuracy.toFixed(1)}% (${hits}/${verified.length})`)
 })

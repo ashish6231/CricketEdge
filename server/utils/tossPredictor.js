@@ -184,91 +184,173 @@ function buildMatchedSignals(m, winner) {
   return signals
 }
 
+function fmtVol(n) {
+  if (!n) return '0'
+  if (n >= 100000) return `${(n / 100000).toFixed(1)}L`
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`
+  return Math.round(n).toString()
+}
+
 export function predictTossWinner(snap) {
   if (!snap?.teamNames?.length) return null
 
-  const m = extractMetrics(snap)
-  if (m.mTotal <= 0) return null
+  const t1 = snap.teamNames?.[0] || 'Team 1'
+  const t2 = snap.teamNames?.[1] || 'Team 2'
 
-  const hasBF = m.bookieFav && m.bookieFav !== 'balanced'
-  const picked = pickWinner(m, hasBF)
-  if (!picked) return null
+  const pv1 = snap.preMatchVolume?.team1 || snap.advancedMetricsV2?.team1 || snap.advancedMetrics?.team1 || {}
+  const pv2 = snap.preMatchVolume?.team2 || snap.advancedMetricsV2?.team2 || snap.advancedMetrics?.team2 || {}
 
-  const { winner, reason, pattern } = picked
-  const winnerIdx = teamEq(winner, m.t1) ? 0 : 1
-  const confidence = REASON_CONFIDENCE[reason] || REASON_CONFIDENCE['Bookie Fav (fallback)']
+  const b1 = pv1.back ?? (snap.teams?.[t1]?.trades || []).filter(t => t.type === 'back').reduce((s, t) => s + (t.size || 0), 0)
+  const l1 = pv1.lay ?? (snap.teams?.[t1]?.trades || []).filter(t => t.type === 'lay').reduce((s, t) => s + (t.size || 0), 0)
+  const b2 = pv2.back ?? (snap.teams?.[t2]?.trades || []).filter(t => t.type === 'back').reduce((s, t) => s + (t.size || 0), 0)
+  const l2 = pv2.lay ?? (snap.teams?.[t2]?.trades || []).filter(t => t.type === 'lay').reduce((s, t) => s + (t.size || 0), 0)
 
-  const fmtPct = (n) => `${(n * 100).toFixed(0)}%`
-  const fmtRs = (n) => `₹${Math.round(n).toLocaleString('en-IN')}`
+  const tot1 = (snap.advancedMetricsV2?.team1?.totalBet) ?? (b1 + l1)
+  const tot2 = (snap.advancedMetricsV2?.team2?.totalBet) ?? (b2 + l2)
+  const mTotal = tot1 + tot2
+
+  if (mTotal <= 0 && b1 === 0 && l1 === 0 && b2 === 0 && l2 === 0) return null
+
+  const prePnl1 = snap.preMatchPnl?.team1 ?? (l1 - b1)
+  const prePnl2 = snap.preMatchPnl?.team2 ?? (l2 - b2)
+
+  const backRatio = Math.min(b1, b2) > 0 ? Math.max(b1, b2) / Math.min(b1, b2) : (Math.max(b1, b2) > 0 ? 99 : 1)
+  const ratio1 = (b1 > 0 && l1 > 0) ? Math.max(b1, l1) / Math.min(b1, l1) : (Math.max(b1, l1) > 0 ? 99 : 1)
+  const ratio2 = (b2 > 0 && l2 > 0) ? Math.max(b2, l2) / Math.min(b2, l2) : (Math.max(b2, l2) > 0 ? 99 : 1)
+  const isStable1 = ratio1 <= 2.2
+  const isStable2 = ratio2 <= 2.2
+  const isLayAbsorbed1 = l1 >= b1 * 1.8 && l1 > l2 && l1 > 200
+  const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && l2 > 200
+
+  const totBack = b1 + b2
+  const b1Pct = totBack > 0 ? b1 / totBack : 0.5
+  const b2Pct = totBack > 0 ? b2 / totBack : 0.5
+
+  const isZeroBack1 = b1 === 0 && b2 > 0
+  const isZeroBack2 = b2 === 0 && b1 > 0
+
+  let winner = null
+  let reason = ''
+  let verdictTag = 'SMART MONEY INFLOW'
+  let pattern = 'SMART_BACK_FLOW'
+
+  // 🚨 1. CRITICAL OVERLOAD TRAP (>= 92% One-Sided Load or Ratio >= 10.0x with negative P/L AND opposite side has zero/tiny lay)
+  if ((b1Pct >= 0.92 || backRatio >= 10.0) && b1 > b2 && prePnl1 < 0 && l2 <= 100) {
+    winner = t2
+    verdictTag = 'OVERLOAD TRAP FADE 🚨'
+    pattern = 'OVERLOAD_TRAP_FADE'
+    reason = `Critical Public Overload on ${t1} (${(b1Pct * 100).toFixed(0)}% Load, ${backRatio.toFixed(1)}x Lead) -> Faded to ${t2}`
+  } else if ((b2Pct >= 0.92 || backRatio >= 10.0) && b2 > b1 && prePnl2 < 0 && l1 <= 100) {
+    winner = t1
+    verdictTag = 'OVERLOAD TRAP FADE 🚨'
+    pattern = 'OVERLOAD_TRAP_FADE'
+    reason = `Critical Public Overload on ${t2} (${(b2Pct * 100).toFixed(0)}% Load, ${backRatio.toFixed(1)}x Lead) -> Faded to ${t1}`
+  }
+  // ⚡ 2. ZERO-BACK BOOKIE ADVANTAGE (One team has 0 Back & Bookie gets 100% free profit on it)
+  else if (isZeroBack1 && prePnl1 > 0) {
+    winner = t1
+    verdictTag = 'BOOKIE SAFE ZERO-BACK'
+    pattern = 'BOOKIE_SAFE_ZERO_BACK'
+    reason = `Bookmaker Pure Profit on ${t1} (Zero Back Exposure, P/L: +${prePnl1.toFixed(1)})`
+  } else if (isZeroBack2 && prePnl2 > 0) {
+    winner = t2
+    verdictTag = 'BOOKIE SAFE ZERO-BACK'
+    pattern = 'BOOKIE_SAFE_ZERO_BACK'
+    reason = `Bookmaker Pure Profit on ${t2} (Zero Back Exposure, P/L: +${prePnl2.toFixed(1)})`
+  }
+  // 🏆 3. DUAL CONFIRMATION: Higher Back Inflow AND Positive Bookie P/L
+  else if ((b1 > b2 && prePnl1 > prePnl2) || (b2 > b1 && prePnl2 > prePnl1)) {
+    winner = b1 > b2 ? t1 : t2
+    verdictTag = 'PERFECT ALIGNMENT 🔥'
+    pattern = 'DUAL_INFLOW_PNL_ALIGN'
+    reason = `Dual Advantage: Higher Back Inflow (₹${fmtVol(Math.max(b1, b2))}) & Positive Bookie P/L (+${Math.max(prePnl1, prePnl2).toFixed(1)})`
+  }
+  // 🛡️ 4. HEAVY LAY ABSORPTION / BOOKIE SHIELD (P/L > 1500 and Lay > 1.8x Back)
+  else if (isLayAbsorbed1 && !isLayAbsorbed2 && prePnl1 > 1500) {
+    winner = t1
+    verdictTag = 'BOOKMAKER SHIELD'
+    pattern = 'BOOKIE_LAY_ABSORPTION'
+    reason = `Bookie Lay Shield on ${t1} (Lay: ₹${fmtVol(l1)} vs Back: ₹${fmtVol(b1)}, P/L: +${prePnl1.toFixed(1)})`
+  } else if (isLayAbsorbed2 && !isLayAbsorbed1 && prePnl2 > 1500) {
+    winner = t2
+    verdictTag = 'BOOKMAKER SHIELD'
+    pattern = 'BOOKIE_LAY_ABSORPTION'
+    reason = `Bookie Lay Shield on ${t2} (Lay: ₹${fmtVol(l2)} vs Back: ₹${fmtVol(b2)}, P/L: +${prePnl2.toFixed(1)})`
+  }
+  // ⚖️ 5. LOW LIQUIDITY / MICRO BOOKIE SAFE TRAP CATCH
+  else if (Math.max(b1, b2) < 500 && prePnl1 > 100 && prePnl2 < -100) {
+    winner = t1
+    verdictTag = 'BOOKIE SAFE SIDE'
+    pattern = 'BOOKIE_MICRO_SAFE'
+    reason = `Micro Liquidity Bookie Safe on ${t1} (P/L: +${prePnl1.toFixed(1)} vs ${t2}: ${prePnl2.toFixed(1)})`
+  } else if (Math.max(b1, b2) < 500 && prePnl2 > 100 && prePnl1 < -100) {
+    winner = t2
+    verdictTag = 'BOOKIE SAFE SIDE'
+    pattern = 'BOOKIE_MICRO_SAFE'
+    reason = `Micro Liquidity Bookie Safe on ${t2} (P/L: +${prePnl2.toFixed(1)} vs ${t1}: ${prePnl1.toFixed(1)})`
+  }
+  // ⚡ 6. SMART INFLOW LEADER (Dominant Back Volume Lead)
+  else if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
+    winner = b1 > b2 ? t1 : t2
+    verdictTag = backRatio >= 1.4 ? 'SMART INFLOW LEADER' : 'BACK MOMENTUM'
+    pattern = backRatio >= 1.4 ? 'SMART_MONEY_FLOW' : 'BACK_MOMENTUM'
+    reason = `Smart Money Inflow (${winner}: ₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`
+  }
+  // 7. FALLBACK
+  else {
+    winner = prePnl1 > prePnl2 ? t1 : t2
+    verdictTag = 'BOOKIE SAFE'
+    pattern = 'BOOKIE_SAFE_PNL'
+    reason = `Bookmaker Exposure Safe Side (${winner}: +${Math.max(prePnl1, prePnl2).toFixed(1)} PnL)`
+  }
+
+  const winnerIdx = teamEq(winner, t1) ? 0 : 1
+  const confidence = verdictTag === 'PERFECT ALIGNMENT 🔥' || verdictTag === 'BOOKMAKER SHIELD' || verdictTag === 'SMART INFLOW LEADER'
+    ? { label: 'High Confidence 🔥', color: 'text-profit', pct: '88%' }
+    : { label: 'Moderate', color: 'text-yellow-500', pct: '72%' }
 
   const signals = [
     {
-      label: 'Lay Volume',
-      sublabel: pattern === 'CLEAR_LAY_VOL'
-        ? `Clear edge (gap ₹${Math.round(m.layVolGap)} / ratio ${m.layVolRatio === Infinity ? '∞' : m.layVolRatio.toFixed(2)})`
-        : 'Total lay liability',
-      active: pattern === 'CLEAR_LAY_VOL' || reason === 'Clear Lay Vol Edge',
-      v1: fmtRs(m.t1LayVol),
-      v2: fmtRs(m.t2LayVol),
-      winnerWins: m.t1LayVol !== m.t2LayVol
-        ? (m.t1LayVol > m.t2LayVol ? winnerIdx === 0 : winnerIdx === 1)
-        : null,
+      label: 'Back Accumulation',
+      sublabel: 'Smart money buying volume',
+      active: true,
+      v1: `₹${fmtVol(b1)}`,
+      v2: `₹${fmtVol(b2)}`,
+      winnerWins: b1 !== b2 ? (b1 > b2 ? winnerIdx === 0 : winnerIdx === 1) : null,
     },
     {
-      label: 'Stronger Support',
-      sublabel: m.strongerTeam
-        ? `supportProduct leader${m.supportRatio ? ` (${m.supportRatio.toFixed(2)}×)` : ''}`
-        : 'No strongerTeam signal',
-      active: pattern === 'STRONGER_SUPPORT',
-      v1: teamEq(m.strongerTeam, m.t1) ? '✅ Stronger' : '—',
-      v2: teamEq(m.strongerTeam, m.t2) ? '✅ Stronger' : '—',
-      winnerWins: m.strongerTeam ? teamEq(m.strongerTeam, winner) : null,
+      label: 'Back/Lay Total',
+      sublabel: 'Total market volume matched',
+      active: true,
+      v1: `₹${fmtVol(tot1)}`,
+      v2: `₹${fmtVol(tot2)}`,
+      winnerWins: tot1 !== tot2 ? (tot1 > tot2 ? winnerIdx === 0 : winnerIdx === 1) : null,
     },
     {
-      label: 'Lay Trades',
-      sublabel: 'More lay trades = market signal',
-      active: pattern === 'LAY_TRADES',
-      v1: `${m.t1LayTrades} trades`,
-      v2: `${m.t2LayTrades} trades`,
-      winnerWins: m.t1LayTrades !== m.t2LayTrades
-        ? (m.t1LayTrades > m.t2LayTrades ? winnerIdx === 0 : winnerIdx === 1)
-        : null,
+      label: 'Pre-Match Lay',
+      sublabel: 'Lay liability placed',
+      active: true,
+      v1: `₹${fmtVol(l1)}`,
+      v2: `₹${fmtVol(l2)}`,
+      winnerWins: l1 !== l2 ? (l1 > l2 ? winnerIdx === 0 : winnerIdx === 1) : null,
     },
     {
-      label: 'Market Load',
-      sublabel: 'Total bet volume share',
-      active: false,
-      v1: `${fmtPct(m.t1LoadPct)} (${fmtRs(m.t1Total)})`,
-      v2: `${fmtPct(m.t2LoadPct)} (${fmtRs(m.t2Total)})`,
-      winnerWins: m.t1Total >= m.t2Total ? winnerIdx === 0 : winnerIdx === 1,
-    },
-    {
-      label: 'Bookie Favourite',
-      sublabel: hasBF ? `Market expects ${m.bookieFav}` : 'No clear favourite',
-      active: pattern === 'BOOKIE_FAV',
-      v1: m.bookieFav === m.t1 ? '✅ Fav' : '—',
-      v2: m.bookieFav === m.t2 ? '✅ Fav' : '—',
-      winnerWins: hasBF ? teamEq(m.bookieFav, winner) : null,
-    },
-    {
-      label: 'Trap Signal',
-      sublabel: m.trap === 'high' ? 'Public overload detected' : 'Normal market',
-      active: pattern === 'STRONGER_SUPPORT' && m.trap === 'high',
-      v1: m.trap === 'high' ? 'High' : 'Normal',
-      v2: '',
-      winnerWins: pattern === 'STRONGER_SUPPORT' ? true : null,
+      label: 'Bookie Pre-P/L',
+      sublabel: 'Bookmaker liability stance',
+      active: true,
+      v1: prePnl1 >= 0 ? `+${prePnl1.toFixed(1)}` : `${prePnl1.toFixed(1)}`,
+      v2: prePnl2 >= 0 ? `+${prePnl2.toFixed(1)}` : `${prePnl2.toFixed(1)}`,
+      winnerWins: prePnl1 !== prePnl2 ? (prePnl1 > prePnl2 ? winnerIdx === 0 : winnerIdx === 1) : null,
     },
   ]
 
-  const unionSignals = buildMatchedSignals(m, winner)
   const matchedRules = [
     {
       reason,
       winner,
       priority: 100,
       selected: true,
-    },
-    ...unionSignals.filter(s => s.reason !== reason),
+    }
   ]
 
   return {
@@ -276,12 +358,15 @@ export function predictTossWinner(snap) {
     winnerIdx,
     reason,
     pattern,
+    verdictTag,
     predictorVersion: PREDICTOR_VERSION,
     confidence,
     risk: computeTossRisk(reason, matchedRules),
     signals,
     activeSignals: signals.filter(s => s.active).length,
-    metrics: m,
+    metrics: {
+      t1, t2, b1, l1, b2, l2, tot1, tot2, prePnl1, prePnl2, ratio1, ratio2, isStable1, isStable2
+    },
     matchedRules,
   }
 }

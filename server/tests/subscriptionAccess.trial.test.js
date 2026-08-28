@@ -152,6 +152,7 @@ test('grantTrialToNewUser returns trial_disabled result and does not grant when 
 
 test('disable does not revoke an already-active trial', async () => {
   const expiresAt = new Date('2026-08-17T12:00:00.000Z');
+  const now = new Date('2026-08-17T10:00:00.000Z');
   const prisma = createFakePrisma({
     settings: [{ key: 'trialEnabled', value: false }],
     user: eligibleUser({
@@ -161,7 +162,7 @@ test('disable does not revoke an already-active trial', async () => {
     }),
   });
 
-  const result = await grantTrialIfEligible(prisma, 1);
+  const result = await grantTrialIfEligible(prisma, 1, { now });
 
   assert.equal(result.granted, false);
   assert.equal(result.reason, 'trial_active');

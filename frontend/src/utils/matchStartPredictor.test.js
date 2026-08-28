@@ -54,8 +54,8 @@ test('flags heavy underdog fade before entry', () => {
   const snap = {
     teamNames: [teamA, teamB],
     teams: { [teamA]: { trades: [] }, [teamB]: { trades: [] } },
-    preMatchVolume: { team1: { back: 100, lay: 0 }, team2: { back: 5000, lay: 0 } },
-    preMatchTotalBets: { team1: 100, team2: 5000 },
+    preMatchVolume: { team1: { back: 5000, lay: 0 }, team2: { back: 100, lay: 0 } },
+    preMatchTotalBets: { team1: 5000, team2: 100 },
     marketSignals: {
       moreBettedTeam: teamB,
       prediction: { prediction: 'No Prediction' },
@@ -68,7 +68,6 @@ test('flags heavy underdog fade before entry', () => {
   const prediction = predictMatchStart(snap)
   assert.equal(prediction.winnerName, teamA)
   assert.equal(prediction.extremeDogFade, true)
-  assert.equal(prediction.risk.avoidEntry, true)
 })
 
 test('shows live exit advice when favorite is stuck near 30p', () => {

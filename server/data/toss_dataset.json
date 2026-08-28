@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-26T16:15:05.678Z",
+  "updatedAt": "2026-08-28T03:26:43.549Z",
   "records": [
     {
       "matchId": "35901908",
@@ -8488,11 +8488,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T02:59:03.573Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Dindigul Dragons"
     },
     {
       "matchId": "35958346",
@@ -8958,11 +8958,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T02:59:28.884Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Ruby Trichy Warriors"
     },
     {
       "matchId": "35962894",
@@ -9554,11 +9554,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T03:00:36.518Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "St. Lucia Kings"
     },
     {
       "matchId": "35947011",
@@ -10102,11 +10102,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T03:02:55.408Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Australia"
     },
     {
       "matchId": "35962365",
@@ -10502,11 +10502,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T02:59:42.149Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Salem Spartans"
     },
     {
       "matchId": "35962407",
@@ -10923,11 +10923,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T03:00:06.916Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Madurai Panthers"
     },
     {
       "matchId": "35973277",
@@ -11366,11 +11366,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-28T02:59:58.460Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Lyca Kovai Kings"
     },
     {
       "matchId": "35972909",
@@ -11943,6 +11943,1758 @@
           "reason": "Stronger Support Team",
           "winner": "Barbados Tridents",
           "priority": 85,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-28T03:00:55.326Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Barbados Tridents"
+    },
+    {
+      "matchId": "35972917",
+      "marketId": "1.261432677",
+      "matchName": "Trinbago Knight Riders v St. Lucia Kings",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Trinbago Knight Riders",
+      "team2": "St. Lucia Kings",
+      "startTime": 1787785200000,
+      "endedAt": "2026-08-28T03:26:42.940Z",
+      "capturedAt": "2026-08-28T03:26:42.940Z",
+      "snapshot": {
+        "serverTime": "2026-08-28T03:26:42.895Z",
+        "matchId": "35972917",
+        "matchName": "Trinbago Knight Riders v St. Lucia Kings",
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "St. Lucia Kings"
+        ],
+        "inPlayPnl": {
+          "team1": -991.0422000000001,
+          "team2": 1128.7127000000003
+        },
+        "inPlayTotalBets": {
+          "team1": 2285.6025,
+          "team2": 1293.1272
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1731.3200000000002,
+            "lay": 462.74,
+            "total": 2407.6000000000004
+          },
+          "team2": {
+            "back": 832.01,
+            "lay": 676.28,
+            "total": 1294.75
+          }
+        },
+        "preMatchPnl": {
+          "team1": -991.0422000000001,
+          "team2": 1128.7127000000003
+        },
+        "preMatchTotalBets": {
+          "team1": 2285.6025,
+          "team2": 1293.1272
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1731.3200000000002,
+            "lay": 462.74,
+            "total": 2407.6000000000004
+          },
+          "team2": {
+            "back": 832.01,
+            "lay": 676.28,
+            "total": 1294.75
+          }
+        },
+        "threeMinPnl": {
+          "team1": -991.0422000000001,
+          "team2": 1128.7127000000003
+        },
+        "threeMinTotalBets": {
+          "team1": 2285.6025,
+          "team2": 1293.1272
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1731.3200000000002,
+            "lay": 462.74,
+            "total": 2407.6000000000004
+          },
+          "team2": {
+            "back": 832.01,
+            "lay": 676.28,
+            "total": 1294.75
+          }
+        },
+        "matchLoadV2": {
+          "team1": 14,
+          "team2": 13
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1731.3200000000002,
+            "lay": 462.74,
+            "totalVolume": 2194.0600000000004,
+            "backPercentage": 78.90941906784683
+          },
+          "team2": {
+            "back": 832.01,
+            "lay": 676.28,
+            "totalVolume": 1508.29,
+            "backPercentage": 55.162468756008465
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1609.3224999999998,
+            "lay": 462.5503,
+            "totalBet": 2071.8727999999996
+          },
+          "team2": {
+            "back": 830.3872,
+            "lay": 690.5199,
+            "totalBet": 1520.9071
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 2407.6000000000004,
+            "support": 65.0289680878361
+          },
+          "team2": {
+            "supportMoney": 1294.75,
+            "support": 34.971031912163895
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Trinbago Knight Riders",
+          "bookieFavouriteOutcome": "St. Lucia Kings",
+          "riskTeam": "Trinbago Knight Riders",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 30.05793617567221,
+          "mostBettedTeam": "Trinbago Knight Riders",
+          "prediction": {
+            "team1TrueSupport": 2299.8423999999995,
+            "team2TrueSupport": 1292.9375,
+            "ratio": 1.7787730652100349,
+            "bookiePnlTeam1": -1146.5824999999998,
+            "bookiePnlTeam2": -154.10720000000003,
+            "prediction": "St. Lucia Kings",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.78) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1146.7721999999999,
+            "backExposure": 1609.3224999999998,
+            "layExposure": 462.5503,
+            "teamName": "Trinbago Knight Riders"
+          },
+          "team2": {
+            "netExposure": 139.8673,
+            "backExposure": 830.3872,
+            "layExposure": 690.5199,
+            "teamName": "St. Lucia Kings"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1609.3224999999998,
+            "A_lay_stake": 462.74,
+            "B_back_expo": 830.3872,
+            "B_lay_stake": 676.28
+          },
+          "totals": {
+            "totalBetTeam1": 2285.6025,
+            "totalBetTeam2": 1293.1272
+          },
+          "simplePL": {
+            "team1_win": -1146.5824999999998,
+            "team2_win": -154.10720000000003
+          },
+          "derivedPL": {
+            "team1_win": -992.4753000000001,
+            "team2_win": 992.4753000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1731.3200000000002,
+              "totalLayVol": 462.74,
+              "totalBet": 2407.6000000000004,
+              "profitLoss": -1112.8500000000004
+            },
+            "team2": {
+              "totalBackVol": 832.01,
+              "totalLayVol": 676.28,
+              "totalBet": 1294.75,
+              "profitLoss": 1112.8500000000004
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1609.3224999999998,
+              "totalLayVol": 462.74,
+              "totalBet": 2285.6025,
+              "profitLoss": -991.0421999999999
+            },
+            "team2": {
+              "totalBackExpo": 830.3872,
+              "totalLayVol": 676.28,
+              "totalBet": 1293.1272,
+              "profitLoss": 1128.7127
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1609.3224999999998,
+              "totalLayNetVol": 462.5503,
+              "totalBet": 2299.8423999999995,
+              "profitLoss": -1006.9048999999995
+            },
+            "team2": {
+              "totalBackNetVol": 830.3872,
+              "totalLayNetVol": 690.5199,
+              "totalBet": 1292.9375,
+              "profitLoss": 1006.9048999999995
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 14,
+            "averageOdds": 1.9614285714285715,
+            "averageSize": 171.9714285714286,
+            "supportProduct": 337.3096734693878
+          },
+          "teamB": {
+            "tradeCount": 13,
+            "averageOdds": 1.9553846153846153,
+            "averageSize": 99.59615384615384,
+            "supportProduct": 194.7487869822485
+          },
+          "strongerTeam": "Trinbago Knight Riders",
+          "supportRatio": 1.7320245157682745
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1731.3200000000002,
+            "oppoLayVolume": 676.28,
+            "layExposure": 462.5503,
+            "netSupportValue": 1945.0497000000005
+          },
+          "teamB": {
+            "totalBackVolume": 832.01,
+            "oppoLayVolume": 462.74,
+            "layExposure": 690.5199,
+            "netSupportValue": 604.2301
+          },
+          "strongerTeam": "Trinbago Knight Riders",
+          "netSupportDifference": 1340.8196000000005,
+          "percentageA": 76.29800777458796,
+          "percentageB": 23.701992225412052
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1268.5800000000002,
+            "syntheticSupport": 676.28,
+            "opponentLiabilityRejection": 690.5199,
+            "sentimentScore": 1254.3401000000001
+          },
+          "teamB": {
+            "directNetSupport": 155.73000000000002,
+            "syntheticSupport": 462.74,
+            "opponentLiabilityRejection": 462.5503,
+            "sentimentScore": 155.91970000000003
+          },
+          "strongerTeam": "Trinbago Knight Riders",
+          "scoreDifference": 1098.4204,
+          "percentageA": 88.94390239302005,
+          "percentageB": 11.056097606979934
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Trinbago Knight Riders",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "St. Lucia Kings",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Trinbago Knight Riders"
+        },
+        "teams": {
+          "Trinbago Knight Riders": {
+            "trades": [
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.12,
+                "type": "lay",
+                "size": 4.99,
+                "updatedAt": 1787782404411
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "lay",
+                "size": 2.81,
+                "updatedAt": 1787782345099
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "lay",
+                "size": 399.81,
+                "updatedAt": 1787782328458
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.91,
+                "type": "back",
+                "size": 504.34,
+                "updatedAt": 1787782201175
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.92,
+                "type": "back",
+                "size": 574.15,
+                "updatedAt": 1787782152891
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.93,
+                "type": "back",
+                "size": 324.31000000000006,
+                "updatedAt": 1787781764526
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "lay",
+                "size": 25.789999999999992,
+                "updatedAt": 1787779517998
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.98,
+                "type": "lay",
+                "size": 29.339999999999996,
+                "updatedAt": 1787778938735
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.94,
+                "type": "back",
+                "size": 93.75999999999999,
+                "updatedAt": 1787778068943
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "back",
+                "size": 234.76,
+                "updatedAt": 1787773013310
+              }
+            ],
+            "pnlIfWins": -991.0422000000001,
+            "totalBet": 2285.6025
+          },
+          "St. Lucia Kings": {
+            "trades": [
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.66,
+                "type": "lay",
+                "size": 11.25,
+                "updatedAt": 1787782504012
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.66,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1787782501362
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.77,
+                "type": "back",
+                "size": 15.43,
+                "updatedAt": 1787782439822
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.88,
+                "type": "lay",
+                "size": 5.63,
+                "updatedAt": 1787782404411
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1787782366726
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.91,
+                "type": "back",
+                "size": 25.5,
+                "updatedAt": 1787782350612
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.98,
+                "type": "lay",
+                "size": 17.21,
+                "updatedAt": 1787782347135
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.99,
+                "type": "lay",
+                "size": 7.229999999999997,
+                "updatedAt": 1787782340119
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.99,
+                "type": "back",
+                "size": 52.790000000000006,
+                "updatedAt": 1787782337634
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.02,
+                "type": "back",
+                "size": 307.47,
+                "updatedAt": 1787782328505
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2,
+                "type": "back",
+                "size": 404.77,
+                "updatedAt": 1787782328505
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.06,
+                "type": "lay",
+                "size": 88.29999999999998,
+                "updatedAt": 1787781764542
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.08,
+                "type": "back",
+                "size": 14.810000000000002,
+                "updatedAt": 1787777975506
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.1,
+                "type": "lay",
+                "size": 14.05,
+                "updatedAt": 1787777950370
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.08,
+                "type": "lay",
+                "size": 153.8,
+                "updatedAt": 1787777897706
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.02,
+                "type": "lay",
+                "size": 7.5,
+                "updatedAt": 1787774747376
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2,
+                "type": "lay",
+                "size": 371.30999999999995,
+                "updatedAt": 1787773013371
+              }
+            ],
+            "pnlIfWins": 1128.7127000000003,
+            "totalBet": 1293.1272
+          }
+        }
+      },
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictionReason": "Smart Money Inflow (Trinbago Knight Riders: ₹1.7k Back, Lead: 2.1x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (Trinbago Knight Riders: ₹1.7k Back, Lead: 2.1x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (Trinbago Knight Riders: ₹1.7k Back, Lead: 2.1x)",
+          "winner": "Trinbago Knight Riders",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35977014",
+      "marketId": "1.261592337",
+      "matchName": "Belfast Wolves v Dublin Guardians",
+      "competitionName": "European T20 Premier League",
+      "team1": "Belfast Wolves",
+      "team2": "Dublin Guardians",
+      "startTime": 1787823000000,
+      "endedAt": "2026-08-28T03:26:43.139Z",
+      "capturedAt": "2026-08-28T03:26:43.139Z",
+      "snapshot": {
+        "serverTime": "2026-08-28T03:26:43.112Z",
+        "matchId": "35977014",
+        "matchName": "Belfast Wolves v Dublin Guardians",
+        "teamNames": [
+          "Belfast Wolves",
+          "Dublin Guardians"
+        ],
+        "inPlayPnl": {
+          "team1": -465.5925,
+          "team2": 516.0637000000002
+        },
+        "inPlayTotalBets": {
+          "team1": 727.3521,
+          "team2": 268.6563
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 784.72,
+            "lay": 202.83999999999997,
+            "total": 784.72
+          },
+          "team2": {
+            "back": 71.09,
+            "lay": 0,
+            "total": 273.92999999999995
+          }
+        },
+        "preMatchPnl": {
+          "team1": -465.5925,
+          "team2": 516.0637000000002
+        },
+        "preMatchTotalBets": {
+          "team1": 727.3521,
+          "team2": 268.6563
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 784.72,
+            "lay": 202.83999999999997,
+            "total": 784.72
+          },
+          "team2": {
+            "back": 71.09,
+            "lay": 0,
+            "total": 273.92999999999995
+          }
+        },
+        "threeMinPnl": {
+          "team1": -465.5925,
+          "team2": 516.0637000000002
+        },
+        "threeMinTotalBets": {
+          "team1": 727.3521,
+          "team2": 268.6563
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 784.72,
+            "lay": 202.83999999999997,
+            "total": 784.72
+          },
+          "team2": {
+            "back": 71.09,
+            "lay": 0,
+            "total": 273.92999999999995
+          }
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 3
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 784.72,
+            "lay": 202.83999999999997,
+            "totalVolume": 987.56,
+            "backPercentage": 79.46048847664953
+          },
+          "team2": {
+            "back": 71.09,
+            "lay": 0,
+            "totalVolume": 71.09,
+            "backPercentage": 100
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 727.3521,
+            "lay": 190.66959999999997,
+            "totalBet": 918.0216999999999
+          },
+          "team2": {
+            "back": 65.8163,
+            "lay": 0,
+            "totalBet": 65.8163
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 784.72,
+            "support": 74.12459264157181
+          },
+          "team2": {
+            "supportMoney": 273.92999999999995,
+            "support": 25.87540735842818
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Belfast Wolves",
+          "bookieFavouriteOutcome": "Dublin Guardians",
+          "riskTeam": "Belfast Wolves",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 48.24918528314363,
+          "mostBettedTeam": "Belfast Wolves",
+          "prediction": {
+            "team1TrueSupport": 727.3521,
+            "team2TrueSupport": 256.48589999999996,
+            "ratio": 2.8358365898476294,
+            "bookiePnlTeam1": -524.5120999999999,
+            "bookiePnlTeam2": -65.8163,
+            "prediction": "Dublin Guardians",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.84) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 536.6825,
+            "backExposure": 727.3521,
+            "layExposure": 190.66959999999997,
+            "teamName": "Belfast Wolves"
+          },
+          "team2": {
+            "netExposure": 65.8163,
+            "backExposure": 65.8163,
+            "layExposure": 0,
+            "teamName": "Dublin Guardians"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 727.3521,
+            "A_lay_stake": 202.83999999999997,
+            "B_back_expo": 65.8163,
+            "B_lay_stake": 0
+          },
+          "totals": {
+            "totalBetTeam1": 727.3521,
+            "totalBetTeam2": 268.6563
+          },
+          "simplePL": {
+            "team1_win": -524.5120999999999,
+            "team2_win": -65.8163
+          },
+          "derivedPL": {
+            "team1_win": -458.69579999999996,
+            "team2_win": 458.69579999999996
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 784.72,
+              "totalLayVol": 202.83999999999997,
+              "totalBet": 784.72,
+              "profitLoss": -510.7900000000001
+            },
+            "team2": {
+              "totalBackVol": 71.09,
+              "totalLayVol": 0,
+              "totalBet": 273.92999999999995,
+              "profitLoss": 510.7900000000001
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 727.3521,
+              "totalLayVol": 202.83999999999997,
+              "totalBet": 727.3521,
+              "profitLoss": -465.5925
+            },
+            "team2": {
+              "totalBackExpo": 65.8163,
+              "totalLayVol": 0,
+              "totalBet": 268.6563,
+              "profitLoss": 516.0637
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 727.3521,
+              "totalLayNetVol": 190.66959999999997,
+              "totalBet": 727.3521,
+              "profitLoss": -470.8662
+            },
+            "team2": {
+              "totalBackNetVol": 65.8163,
+              "totalLayNetVol": 0,
+              "totalBet": 256.48589999999996,
+              "profitLoss": 470.8662
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.9249999999999998,
+            "averageSize": 196.18,
+            "supportProduct": 377.6465
+          },
+          "teamB": {
+            "tradeCount": 3,
+            "averageOdds": 1.9266666666666665,
+            "averageSize": 91.31,
+            "supportProduct": 175.92393333333334
+          },
+          "strongerTeam": "Belfast Wolves",
+          "supportRatio": 2.1466465241227364
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 784.72,
+            "oppoLayVolume": 0,
+            "layExposure": 190.66959999999997,
+            "netSupportValue": 594.0504000000001
+          },
+          "teamB": {
+            "totalBackVolume": 71.09,
+            "oppoLayVolume": 202.83999999999997,
+            "layExposure": 0,
+            "netSupportValue": 273.92999999999995
+          },
+          "strongerTeam": "Belfast Wolves",
+          "netSupportDifference": 320.12040000000013,
+          "percentageA": 68.44053160647408,
+          "percentageB": 31.55946839352593
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 581.8800000000001,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 581.8800000000001
+          },
+          "teamB": {
+            "directNetSupport": 71.09,
+            "syntheticSupport": 202.83999999999997,
+            "opponentLiabilityRejection": 190.66959999999997,
+            "sentimentScore": 83.26039999999998
+          },
+          "strongerTeam": "Belfast Wolves",
+          "scoreDifference": 498.6196000000001,
+          "percentageA": 87.48228193626488,
+          "percentageB": 12.517718063735108
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Belfast Wolves",
+            "matchedVolume": 990.74,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 990.74,
+            "supportPercentage": 81.07130582786442
+          },
+          "team2": {
+            "name": "Dublin Guardians",
+            "matchedVolume": 231.32000000000002,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 231.32000000000002,
+            "supportPercentage": 18.928694172135575
+          },
+          "heavierSide": "Belfast Wolves"
+        },
+        "teams": {
+          "Belfast Wolves": {
+            "trades": [
+              {
+                "team": "Belfast Wolves",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.87,
+                "updatedAt": 1787820321231
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.92,
+                "type": "back",
+                "size": 351.38,
+                "updatedAt": 1787819021793
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.93,
+                "type": "back",
+                "size": 281.1,
+                "updatedAt": 1787818855741
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.94,
+                "type": "lay",
+                "size": 202.83999999999997,
+                "updatedAt": 1787818849233
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.94,
+                "type": "back",
+                "size": 137.37,
+                "updatedAt": 1787818848728
+              }
+            ],
+            "pnlIfWins": -465.5925,
+            "totalBet": 727.3521
+          },
+          "Dublin Guardians": {
+            "trades": [
+              {
+                "team": "Dublin Guardians",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.87,
+                "updatedAt": 1787820343721
+              },
+              {
+                "team": "Dublin Guardians",
+                "price": 1.93,
+                "type": "back",
+                "size": 56.220000000000006,
+                "updatedAt": 1787819976849
+              }
+            ],
+            "pnlIfWins": 516.0637000000002,
+            "totalBet": 268.6563
+          }
+        }
+      },
+      "predictedWinner": "Dublin Guardians",
+      "predictionReason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians"
+      },
+      "matchedRules": [
+        {
+          "reason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians",
+          "winner": "Dublin Guardians",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35966902",
+      "marketId": "1.261378304",
+      "matchName": "England v Pakistan",
+      "competitionName": "Test Matches",
+      "team1": "England",
+      "team2": "Pakistan",
+      "startTime": 1787824800000,
+      "endedAt": "2026-08-28T03:26:43.342Z",
+      "capturedAt": "2026-08-28T03:26:43.342Z",
+      "snapshot": {
+        "serverTime": "2026-08-28T03:26:43.318Z",
+        "matchId": "35966902",
+        "matchName": "England v Pakistan",
+        "teamNames": [
+          "England",
+          "Pakistan"
+        ],
+        "inPlayPnl": {
+          "team1": -956.6643999999997,
+          "team2": 1043.2359999999996
+        },
+        "inPlayTotalBets": {
+          "team1": 1984.7379,
+          "team2": 1021.9380000000001
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 2047.7600000000002,
+            "lay": 166.78000000000003,
+            "total": 2064.82
+          },
+          "team2": {
+            "back": 861.9300000000001,
+            "lay": 17.06000000000001,
+            "total": 1028.71
+          }
+        },
+        "preMatchPnl": {
+          "team1": -956.6643999999997,
+          "team2": 1043.2359999999996
+        },
+        "preMatchTotalBets": {
+          "team1": 1984.7379,
+          "team2": 1021.9380000000001
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 2047.7600000000002,
+            "lay": 166.78000000000003,
+            "total": 2064.82
+          },
+          "team2": {
+            "back": 861.9300000000001,
+            "lay": 17.06000000000001,
+            "total": 1028.71
+          }
+        },
+        "threeMinPnl": {
+          "team1": -956.6643999999997,
+          "team2": 1043.2359999999996
+        },
+        "threeMinTotalBets": {
+          "team1": 1984.7379,
+          "team2": 1021.9380000000001
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 2047.7600000000002,
+            "lay": 166.78000000000003,
+            "total": 2064.82
+          },
+          "team2": {
+            "back": 861.9300000000001,
+            "lay": 17.06000000000001,
+            "total": 1028.71
+          }
+        },
+        "matchLoadV2": {
+          "team1": 8,
+          "team2": 10
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 2047.7600000000002,
+            "lay": 166.78000000000003,
+            "totalVolume": 2214.5400000000004,
+            "backPercentage": 92.4688648658412
+          },
+          "team2": {
+            "back": 861.9300000000001,
+            "lay": 17.06000000000001,
+            "totalVolume": 878.9900000000001,
+            "backPercentage": 98.05913605388001
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1967.6779000000001,
+            "lay": 166.14350000000002,
+            "totalBet": 2133.8214000000003
+          },
+          "team2": {
+            "back": 855.158,
+            "lay": 17.41400000000001,
+            "totalBet": 872.572
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 2064.82,
+            "support": 66.7464029765349
+          },
+          "team2": {
+            "supportMoney": 1028.71,
+            "support": 33.253597023465105
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "England",
+          "bookieFavouriteOutcome": "Pakistan",
+          "riskTeam": "England",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 33.49280595306979,
+          "mostBettedTeam": "England",
+          "prediction": {
+            "team1TrueSupport": 1985.0919000000001,
+            "team2TrueSupport": 1021.3015,
+            "ratio": 1.9436884210979815,
+            "bookiePnlTeam1": -1800.8979000000002,
+            "bookiePnlTeam2": -838.098,
+            "prediction": "Pakistan",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.94) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1801.5344,
+            "backExposure": 1967.6779000000001,
+            "layExposure": 166.14350000000002,
+            "teamName": "England"
+          },
+          "team2": {
+            "netExposure": 837.744,
+            "backExposure": 855.158,
+            "layExposure": 17.41400000000001,
+            "teamName": "Pakistan"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1967.6779000000001,
+            "A_lay_stake": 166.78000000000003,
+            "B_back_expo": 855.158,
+            "B_lay_stake": 17.06000000000001
+          },
+          "totals": {
+            "totalBetTeam1": 1984.7379,
+            "totalBetTeam2": 1021.9380000000001
+          },
+          "simplePL": {
+            "team1_win": -1800.8979000000002,
+            "team2_win": -838.098
+          },
+          "derivedPL": {
+            "team1_win": -962.7999,
+            "team2_win": 962.7999
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 2047.7600000000002,
+              "totalLayVol": 166.78000000000003,
+              "totalBet": 2064.82,
+              "profitLoss": -1036.1100000000001
+            },
+            "team2": {
+              "totalBackVol": 861.9300000000001,
+              "totalLayVol": 17.06000000000001,
+              "totalBet": 1028.71,
+              "profitLoss": 1036.1100000000001
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1967.6779000000001,
+              "totalLayVol": 166.78000000000003,
+              "totalBet": 1984.7379,
+              "profitLoss": -956.6644000000001
+            },
+            "team2": {
+              "totalBackExpo": 855.158,
+              "totalLayVol": 17.06000000000001,
+              "totalBet": 1021.9380000000001,
+              "profitLoss": 1043.2360000000003
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1967.6779000000001,
+              "totalLayNetVol": 166.14350000000002,
+              "totalBet": 1985.0919000000001,
+              "profitLoss": -963.7904000000001
+            },
+            "team2": {
+              "totalBackNetVol": 855.158,
+              "totalLayNetVol": 17.41400000000001,
+              "totalBet": 1021.3015,
+              "profitLoss": 963.7904000000001
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 8,
+            "averageOdds": 1.9874999999999998,
+            "averageSize": 258.1025,
+            "supportProduct": 512.97871875
+          },
+          "teamB": {
+            "tradeCount": 10,
+            "averageOdds": 1.991,
+            "averageSize": 102.87100000000001,
+            "supportProduct": 204.81616100000002
+          },
+          "strongerTeam": "England",
+          "supportRatio": 2.5045812608019733
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 2047.7600000000002,
+            "oppoLayVolume": 17.06000000000001,
+            "layExposure": 166.14350000000002,
+            "netSupportValue": 1898.6765
+          },
+          "teamB": {
+            "totalBackVolume": 861.9300000000001,
+            "oppoLayVolume": 166.78000000000003,
+            "layExposure": 17.41400000000001,
+            "netSupportValue": 1011.296
+          },
+          "strongerTeam": "England",
+          "netSupportDifference": 887.3805,
+          "percentageA": 65.24723171782551,
+          "percentageB": 34.75276828217449
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1880.9800000000002,
+            "syntheticSupport": 17.06000000000001,
+            "opponentLiabilityRejection": 17.41400000000001,
+            "sentimentScore": 1880.6260000000002
+          },
+          "teamB": {
+            "directNetSupport": 844.87,
+            "syntheticSupport": 166.78000000000003,
+            "opponentLiabilityRejection": 166.14350000000002,
+            "sentimentScore": 845.5065000000001
+          },
+          "strongerTeam": "England",
+          "scoreDifference": 1035.1195000000002,
+          "percentageA": 68.98512819901454,
+          "percentageB": 31.01487180098546
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "England",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Pakistan",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "England"
+        },
+        "teams": {
+          "England": {
+            "trades": [
+              {
+                "team": "England",
+                "price": 1.96,
+                "type": "back",
+                "size": 871.15,
+                "updatedAt": 1787822387317
+              },
+              {
+                "team": "England",
+                "price": 1.99,
+                "type": "lay",
+                "size": 6.3700000000000045,
+                "updatedAt": 1787822293333
+              },
+              {
+                "team": "England",
+                "price": 1.95,
+                "type": "back",
+                "size": 626.97,
+                "updatedAt": 1787822022423
+              },
+              {
+                "team": "England",
+                "price": 2,
+                "type": "lay",
+                "size": 132.17000000000002,
+                "updatedAt": 1787821330450
+              },
+              {
+                "team": "England",
+                "price": 1.94,
+                "type": "back",
+                "size": 171.05,
+                "updatedAt": 1787820708866
+              },
+              {
+                "team": "England",
+                "price": 1.97,
+                "type": "lay",
+                "size": 0.84,
+                "updatedAt": 1787819329554
+              },
+              {
+                "team": "England",
+                "price": 1.98,
+                "type": "lay",
+                "size": 27.39,
+                "updatedAt": 1787818648524
+              },
+              {
+                "team": "England",
+                "price": 1.99,
+                "type": "back",
+                "size": 367.73999999999995,
+                "updatedAt": 1787815058960
+              },
+              {
+                "team": "England",
+                "price": 2,
+                "type": "back",
+                "size": 8.209999999999994,
+                "updatedAt": 1787809820317
+              },
+              {
+                "team": "England",
+                "price": 2.02,
+                "type": "lay",
+                "size": 0.010000000000000231,
+                "updatedAt": 1787801378590
+              },
+              {
+                "team": "England",
+                "price": 2.02,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1787765653640
+              }
+            ],
+            "pnlIfWins": -956.6643999999997,
+            "totalBet": 1984.7379
+          },
+          "Pakistan": {
+            "trades": [
+              {
+                "team": "Pakistan",
+                "price": 2.02,
+                "type": "back",
+                "size": 202.13,
+                "updatedAt": 1787822216059
+              },
+              {
+                "team": "Pakistan",
+                "price": 2,
+                "type": "back",
+                "size": 154.16,
+                "updatedAt": 1787821330543
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.96,
+                "type": "back",
+                "size": 189.13,
+                "updatedAt": 1787821330543
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.99,
+                "type": "back",
+                "size": 308.08000000000004,
+                "updatedAt": 1787819329631
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.98,
+                "type": "back",
+                "size": 8.43,
+                "updatedAt": 1787819329631
+              },
+              {
+                "team": "Pakistan",
+                "price": 2.04,
+                "type": "lay",
+                "size": 8.85,
+                "updatedAt": 1787817484637
+              },
+              {
+                "team": "Pakistan",
+                "price": 2,
+                "type": "lay",
+                "size": 8.210000000000008,
+                "updatedAt": 1787809820388
+              }
+            ],
+            "pnlIfWins": 1043.2359999999996,
+            "totalBet": 1021.9380000000001
+          }
+        }
+      },
+      "predictedWinner": "England",
+      "predictionReason": "Smart Money Inflow (England: ₹2.0k Back, Lead: 2.4x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (England: ₹2.0k Back, Lead: 2.4x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (England: ₹2.0k Back, Lead: 2.4x)",
+          "winner": "England",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35979895",
+      "marketId": "1.261592271",
+      "matchName": "Edinburgh Castle Rockers v Glasgow Cosmic",
+      "competitionName": "European T20 Premier League",
+      "team1": "Edinburgh Castle Rockers",
+      "team2": "Glasgow Cosmic",
+      "startTime": 1787836500000,
+      "endedAt": "2026-08-28T03:26:43.546Z",
+      "capturedAt": "2026-08-28T03:26:43.546Z",
+      "snapshot": {
+        "serverTime": "2026-08-28T03:26:43.511Z",
+        "matchId": "35979895",
+        "matchName": "Edinburgh Castle Rockers v Glasgow Cosmic",
+        "teamNames": [
+          "Edinburgh Castle Rockers",
+          "Glasgow Cosmic"
+        ],
+        "inPlayPnl": {
+          "team1": -91.38709999999978,
+          "team2": 343.4749000000003
+        },
+        "inPlayTotalBets": {
+          "team1": 1515.1170999999997,
+          "team2": 1308.0551
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1651.53,
+            "lay": 0,
+            "total": 1651.53
+          },
+          "team2": {
+            "back": 1423.73,
+            "lay": 0,
+            "total": 1423.73
+          }
+        },
+        "preMatchPnl": {
+          "team1": -91.38709999999978,
+          "team2": 343.4749000000003
+        },
+        "preMatchTotalBets": {
+          "team1": 1515.1170999999997,
+          "team2": 1308.0551
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1651.53,
+            "lay": 0,
+            "total": 1651.53
+          },
+          "team2": {
+            "back": 1423.73,
+            "lay": 0,
+            "total": 1423.73
+          }
+        },
+        "threeMinPnl": {
+          "team1": -91.38709999999978,
+          "team2": 343.4749000000003
+        },
+        "threeMinTotalBets": {
+          "team1": 1515.1170999999997,
+          "team2": 1308.0551
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1651.53,
+            "lay": 0,
+            "total": 1651.53
+          },
+          "team2": {
+            "back": 1423.73,
+            "lay": 0,
+            "total": 1423.73
+          }
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 4
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1651.53,
+            "lay": 0,
+            "totalVolume": 1651.53,
+            "backPercentage": 100
+          },
+          "team2": {
+            "back": 1423.73,
+            "lay": 0,
+            "totalVolume": 1423.73,
+            "backPercentage": 100
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1515.1170999999997,
+            "lay": 0,
+            "totalBet": 1515.1170999999997
+          },
+          "team2": {
+            "back": 1308.0551,
+            "lay": 0,
+            "totalBet": 1308.0551
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1651.53,
+            "support": 53.70375187788999
+          },
+          "team2": {
+            "supportMoney": 1423.73,
+            "support": 46.29624812210999
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Edinburgh Castle Rockers",
+          "bookieFavouriteOutcome": "Glasgow Cosmic",
+          "riskTeam": "Edinburgh Castle Rockers",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 7.407503755779999,
+          "mostBettedTeam": "Edinburgh Castle Rockers",
+          "prediction": {
+            "team1TrueSupport": 1515.1170999999997,
+            "team2TrueSupport": 1308.0551,
+            "ratio": 1.1582976129981066,
+            "bookiePnlTeam1": -1515.1170999999997,
+            "bookiePnlTeam2": -1308.0551,
+            "prediction": "Glasgow Cosmic",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.16) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1515.1170999999997,
+            "backExposure": 1515.1170999999997,
+            "layExposure": 0,
+            "teamName": "Edinburgh Castle Rockers"
+          },
+          "team2": {
+            "netExposure": 1308.0551,
+            "backExposure": 1308.0551,
+            "layExposure": 0,
+            "teamName": "Glasgow Cosmic"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1515.1170999999997,
+            "A_lay_stake": 0,
+            "B_back_expo": 1308.0551,
+            "B_lay_stake": 0
+          },
+          "totals": {
+            "totalBetTeam1": 1515.1170999999997,
+            "totalBetTeam2": 1308.0551
+          },
+          "simplePL": {
+            "team1_win": -1515.1170999999997,
+            "team2_win": -1308.0551
+          },
+          "derivedPL": {
+            "team1_win": -207.06199999999967,
+            "team2_win": 207.06199999999967
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1651.53,
+              "totalLayVol": 0,
+              "totalBet": 1651.53,
+              "profitLoss": -227.79999999999995
+            },
+            "team2": {
+              "totalBackVol": 1423.73,
+              "totalLayVol": 0,
+              "totalBet": 1423.73,
+              "profitLoss": 227.79999999999995
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1515.1170999999997,
+              "totalLayVol": 0,
+              "totalBet": 1515.1170999999997,
+              "profitLoss": -91.38709999999969
+            },
+            "team2": {
+              "totalBackExpo": 1308.0551,
+              "totalLayVol": 0,
+              "totalBet": 1308.0551,
+              "profitLoss": 343.47489999999993
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1515.1170999999997,
+              "totalLayNetVol": 0,
+              "totalBet": 1515.1170999999997,
+              "profitLoss": -207.06199999999967
+            },
+            "team2": {
+              "totalBackNetVol": 1308.0551,
+              "totalLayNetVol": 0,
+              "totalBet": 1308.0551,
+              "profitLoss": 207.06199999999967
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.9149999999999998,
+            "averageSize": 412.8825,
+            "supportProduct": 790.6699874999999
+          },
+          "teamB": {
+            "tradeCount": 4,
+            "averageOdds": 1.9249999999999998,
+            "averageSize": 355.9325,
+            "supportProduct": 685.1700625
+          },
+          "strongerTeam": "Edinburgh Castle Rockers",
+          "supportRatio": 1.1539762619152671
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1651.53,
+            "oppoLayVolume": 0,
+            "layExposure": 0,
+            "netSupportValue": 1651.53
+          },
+          "teamB": {
+            "totalBackVolume": 1423.73,
+            "oppoLayVolume": 0,
+            "layExposure": 0,
+            "netSupportValue": 1423.73
+          },
+          "strongerTeam": "Edinburgh Castle Rockers",
+          "netSupportDifference": 227.79999999999995,
+          "percentageA": 53.70375187788999,
+          "percentageB": 46.29624812210999
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1651.53,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 1651.53
+          },
+          "teamB": {
+            "directNetSupport": 1423.73,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 1423.73
+          },
+          "strongerTeam": "Edinburgh Castle Rockers",
+          "scoreDifference": 227.79999999999995,
+          "percentageA": 53.70375187788999,
+          "percentageB": 46.29624812210999
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Edinburgh Castle Rockers",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Glasgow Cosmic",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Edinburgh Castle Rockers"
+        },
+        "teams": {
+          "Edinburgh Castle Rockers": {
+            "trades": [
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.9,
+                "type": "back",
+                "size": 168.56,
+                "updatedAt": 1787833455826
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.91,
+                "type": "back",
+                "size": 576.75,
+                "updatedAt": 1787833445328
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.92,
+                "type": "back",
+                "size": 421.4,
+                "updatedAt": 1787833197464
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.93,
+                "type": "back",
+                "size": 484.82,
+                "updatedAt": 1787833189360
+              }
+            ],
+            "pnlIfWins": -91.38709999999978,
+            "totalBet": 1515.1170999999997
+          },
+          "Glasgow Cosmic": {
+            "trades": [
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.91,
+                "type": "back",
+                "size": 633.79,
+                "updatedAt": 1787833412179
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.92,
+                "type": "back",
+                "size": 421.4,
+                "updatedAt": 1787832941923
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.94,
+                "updatedAt": 1787832882698
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.94,
+                "type": "back",
+                "size": 87.6,
+                "updatedAt": 1787832848165
+              }
+            ],
+            "pnlIfWins": 343.4749000000003,
+            "totalBet": 1308.0551
+          }
+        }
+      },
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictionReason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)",
+          "winner": "Edinburgh Castle Rockers",
+          "priority": 100,
           "selected": true
         }
       ],
