@@ -25,8 +25,8 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
   const preVol1 = snap?.preMatchVolume?.team1 || {};
   const preVol2 = snap?.preMatchVolume?.team2 || {};
 
-  const prePnl1 = prePnl.team1 != null ? prePnl.team1 : null;
-  const prePnl2 = prePnl.team2 != null ? prePnl.team2 : null;
+  const prePnl1 = prePnl.team1 != null ? prePnl.team1 : pnl1;
+  const prePnl2 = prePnl.team2 != null ? prePnl.team2 : pnl2;
   const preBetCount1 = preBets.team1 != null ? preBets.team1 : null;
   const preBetCount2 = preBets.team2 != null ? preBets.team2 : null;
 
@@ -35,17 +35,35 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
   const preBack2 = preVol2.back ?? b2 ?? 0;
   const preLay2 = preVol2.lay ?? l2 ?? 0;
 
-  // 1. Primary Rule: Pre-Match Bookie P/L Exposure Edge (Fade the Public Trap)
-  if (prePnl1 != null && prePnl2 != null && prePnl1 !== prePnl2) {
-    if (prePnl1 > prePnl2) {
-      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Bookie Edge (Fade Public)' };
-    }
-    if (prePnl2 > prePnl1) {
-      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Bookie Edge (Fade Public)' };
-    }
+  const totBack = preBack1 + preBack2;
+  const maxBack = Math.max(preBack1, preBack2);
+  const minBack = Math.min(preBack1, preBack2);
+  const backRatio = minBack > 0 ? maxBack / minBack : (maxBack > 0 ? 99 : 1);
+
+  // 1. Extreme Public Trap Fortress (e.g. South Africa holding ₹11.8k vs ₹536 = 22x overload on public favorite)
+  // When one team holds >= 85% of total volume with heavy liquidity (totBack >= 2000), public gets trapped!
+  if (totBack >= 2000 && backRatio >= 8.0) {
+    const safeWinner = preBack1 > preBack2 ? team2 : team1;
+    return { winner: safeWinner, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Extreme Public Trap Fortress' };
   }
 
-  // 2. Pre-Match Total Bets / Activity Engagement
+  // 2. Dual Flow Inflow Dominance (Higher Back & Higher Lay)
+  if (preBack1 > preBack2 && preLay1 > preLay2 && (preBack1 >= preBack2 * 1.25 || preLay1 >= preLay2 * 1.25)) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Dual Flow Inflow Dominance' };
+  }
+  if (preBack2 > preBack1 && preLay2 > preLay1 && (preBack2 >= preBack1 * 1.25 || preLay2 >= preLay1 * 1.25)) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Dual Flow Inflow Dominance' };
+  }
+
+  // 3. Dominant Smart Money Back Inflow Margin (1.25x+)
+  if (preBack1 >= (preBack2 || 1) * 1.25 && preBack1 > preBack2) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Smart Money Inflow Margin' };
+  }
+  if (preBack2 >= (preBack1 || 1) * 1.25 && preBack2 > preBack1) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Smart Money Inflow Margin' };
+  }
+
+  // 4. Pre-Match Total Bets / Activity Engagement
   if (preBetCount1 != null && preBetCount2 != null && (preBetCount1 > 0 || preBetCount2 > 0) && preBetCount1 !== preBetCount2) {
     if (preBetCount1 >= preBetCount2 * 1.5) {
       return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Activity Lead' };
@@ -55,44 +73,15 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
     }
   }
 
-  // 3. Pre-Match Lay vs Back Volume Ratio (Smart Money)
-  if (preLay1 > preBack1 && preLay2 <= preBack2) {
-    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Lay Pressure Edge' };
+  // 5. Volume Leader
+  if (preBack1 > preBack2) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Leader' };
   }
-  if (preLay2 > preBack2 && preLay1 <= preBack1) {
-    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Lay Pressure Edge' };
-  }
-
-  // 4. Calculated Bookie PnL (pnl1 vs pnl2)
-  if (pnl1 !== pnl2) {
-    if (pnl1 > pnl2) {
-      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Bookie Trap (Higher PnL)' };
-    }
-    if (pnl2 > pnl1) {
-      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Bookie Trap (Higher PnL)' };
-    }
+  if (preBack2 > preBack1) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Leader' };
   }
 
-  // 5. Pre-Match Market Signals / True Support Sentiment
-  const msPred = snap?.marketSignals?.prediction?.prediction;
-  if (msPred && msPred !== 'No Prediction') {
-    if (msPred.toLowerCase().includes(team1.toLowerCase())) {
-      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match True Support' };
-    }
-    if (msPred.toLowerCase().includes(team2.toLowerCase())) {
-      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match True Support' };
-    }
-  }
-
-  // 6. Pre-Match Volume Edge fallback
-  if (b1 > b2) {
-    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Margin' };
-  }
-  if (b2 > b1) {
-    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Margin' };
-  }
-
-  return null;
+  return { winner: prePnl1 > prePnl2 ? team1 : team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Bookmaker Safe Edge' };
 }
 
 function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
@@ -356,11 +345,36 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 
   // 👩 LEAGUE SPECIFIC RULE: Women's International Twenty20 Matches / Women's matches
   if (comp.includes('womens') || comp.includes('women\'s') || comp.includes('women')) {
+    // 1. Dual Flow Dominance (Higher Back and Higher Lay)
+    if (b1 > b2 && l1 > l2 && (b1 >= b2 * 1.25 || l1 >= l2 * 1.25)) {
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Dual Flow Advantage' };
+    }
+    if (b2 > b1 && l2 > l1 && (b2 >= b1 * 1.25 || l2 >= l1 * 1.25)) {
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Dual Flow Advantage' };
+    }
+
+    // 2. Clear Back Inflow Margin (1.25x+)
+    if (b1 >= (b2 || 1) * 1.25 && b1 > b2) {
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Smart Inflow Margin' };
+    }
+    if (b2 >= (b1 || 1) * 1.25 && b2 > b1) {
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Smart Inflow Margin' };
+    }
+
+    // 3. Dominant Volume Leader
+    if (b1 > b2) {
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Volume Leader' };
+    }
+    if (b2 > b1) {
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Volume Leader' };
+    }
+
+    // 4. Bookmaker Safe P/L (fallback)
     if (epnl1 > epnl2) {
-      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookie Trap (Fade Public)' };
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookmaker Safe Edge' };
     }
     if (epnl2 > epnl1) {
-      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookie Trap (Fade Public)' };
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookmaker Safe Edge' };
     }
   }
 
