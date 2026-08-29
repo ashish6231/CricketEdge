@@ -1269,7 +1269,7 @@ export default function MatchDetail({ sport }) {
                         : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'CPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
-                        ? 'Kerala matches have shown a massive correlation with the default Volume Margin strategy. The AI successfully filters the noise and picks the true market favorite.'
+                        ? 'Kerala matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
                         ? 'Delhi matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'UP_SPECIAL'
@@ -1281,7 +1281,7 @@ export default function MatchDetail({ sport }) {
                         : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
                         ? 'Women\'s T20 matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
-                        ? 'TNPL matches evaluate Pre-Match Back and Lay liquidity volume leadership to predict the true winner.'
+                        ? 'TNPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
                         ? 'The Hundred matches evaluate Pre-Match volume accumulation margins and dual volume advantages.'
                         : snapshot.aiPrediction.tier === 1 
