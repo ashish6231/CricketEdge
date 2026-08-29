@@ -96,39 +96,49 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
 }
 
 function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
-  // 1. Dual Flow Inflow & Lay Dominance (e.g. Trinbago 47.6k Back & 32.5k Lay vs Barbados 6.8k Back & 12.4k Lay)
-  if (b1 > b2 && l1 > l2) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Dominance' };
+  const backRatio = Math.min(b1, b2) > 0 ? Math.max(b1, b2) / Math.min(b1, b2) : (Math.max(b1, b2) > 0 ? 99 : 1);
+  const isLayAbsorbed1 = l1 >= b1 * 1.8 && l1 > l2 && epnl1 > 1000;
+  const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && epnl2 > 1000;
+
+  // 1. Massive Lay Shield + Bookie PnL Dominance (e.g. Antigua vs St. Kitts)
+  if (isLayAbsorbed1 && b1 > b2) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
   }
-  if (b2 > b1 && l2 > l1) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Dominance' };
+  if (isLayAbsorbed2 && b2 > b1) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
   }
 
-  // 2. Dominant Smart Money Back Inflow Margin (>= 1.3x)
-  if (b1 >= b2 * 1.3) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Smart Volume Inflow Margin' };
+  // 2. Extreme Bookie Profit Fortress (PnL >= 4000)
+  if (epnl1 >= 4000 && epnl1 > epnl2) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
-  if (b2 >= b1 * 1.3) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Smart Volume Inflow Margin' };
-  }
-
-  // 3. Strict Pre-Match Volume Leader
-  if (b1 > b2) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Volume Leader' };
-  }
-  if (b2 > b1) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Volume Leader' };
+  if (epnl2 >= 4000 && epnl2 > epnl1) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
 
-  // 4. Fallback: Bookie Safe
+  // 3. Blowout Smart Money Back Inflow (BackRatio >= 4.0x)
+  if (backRatio >= 4.0) {
+    return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dominant Inflow Blowout' };
+  }
+
+  // 4. Dual Inflow & Lay Advantage (Both Back AND Lay higher with tight P/L)
+  if (b1 > b2 && l1 > l2 && epnl1 < 500 && epnl2 < 500) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
+  }
+  if (b2 > b1 && l2 > l1 && epnl2 < 500 && epnl1 < 500) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
+  }
+
+  // 5. Bookie Trap (Higher Bookmaker P/L / Fade the Public)
   if (epnl1 > epnl2) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Safe' };
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
   if (epnl2 > epnl1) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Safe' };
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
 
-  return null;
+  // 6. Volume Leader fallback
+  return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Volume Leader' };
 }
 
 function getUPT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
@@ -174,6 +184,43 @@ function getUPT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   }
   if (epnl2 > epnl1) {
     return { winner: team2, tier: 'UP_SPECIAL', confidence: 'UP Bookie Safe' };
+  }
+
+  return null;
+}
+
+// 🇪🇺 European Cricket Series (ECS / European T20) Algorithm
+function getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  // 1. Dual Flow Inflow & Lay Pressure Advantage (e.g. Belfast Wolves 784 Back & 202 Lay vs Dublin 71 Back & 0 Lay)
+  if (b1 > b2 && l1 > l2) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Dual Flow Inflow Lead' };
+  }
+  if (b2 > b1 && l2 > l1) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Dual Flow Inflow Lead' };
+  }
+
+  // 2. Smart Money Volume Margin (>= 1.2x)
+  if (b1 >= b2 * 1.2) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Smart Volume Margin' };
+  }
+  if (b2 >= b1 * 1.2) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Smart Volume Margin' };
+  }
+
+  // 3. Pre-Match Volume Leader
+  if (b1 > b2) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Volume Leader' };
+  }
+  if (b2 > b1) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Volume Leader' };
+  }
+
+  // 4. Fallback: Bookie Safe
+  if (epnl1 > epnl2) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Bookie Safe' };
+  }
+  if (epnl2 > epnl1) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Bookie Safe' };
   }
 
   return null;
@@ -290,14 +337,10 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
     }
   }
 
-  // 🇪🇺 LEAGUE SPECIFIC RULE: European Cricket Series (ECS)
+  // 🇪🇺 LEAGUE SPECIFIC RULE: European Cricket Series (ECS / European T20)
   if (comp.includes('european') || comp.includes('ecs')) {
-    if (epnl1 > epnl2) {
-      return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'ECS Bookie Trap (Fade Public)' };
-    }
-    if (epnl2 > epnl1) {
-      return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'ECS Bookie Trap (Fade Public)' };
-    }
+    const ecsPred = getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (ecsPred) return ecsPred;
   }
 
   // 👩 LEAGUE SPECIFIC RULE: Women's International Twenty20 Matches / Women's matches
