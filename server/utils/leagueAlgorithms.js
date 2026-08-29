@@ -95,6 +95,57 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
   return null;
 }
 
+function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const isLayAbsorbed1 = l1 >= b1 * 1.8 && l1 > l2 && epnl1 > 1000;
+  const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && epnl2 > 1000;
+
+  // 1. Lay Absorption Shield (P/L > 1000 and Lay > 1.8x Back)
+  if (isLayAbsorbed1 && !isLayAbsorbed2 && epnl1 > 1000) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
+  }
+  if (isLayAbsorbed2 && !isLayAbsorbed1 && epnl2 > 1000) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
+  }
+
+  const trap = snap?.marketSignals?.trap?.level || 'none';
+  const bookieFav = snap?.marketSignals?.bookieFavouriteOutcome;
+  const stronger = snap?.syntheticSupport?.strongerTeam;
+  const supRatio = snap?.syntheticSupport?.supportRatio || 1;
+  const backRatio = Math.min(b1, b2) > 0 ? Math.max(b1, b2) / Math.min(b1, b2) : (Math.max(b1, b2) > 0 ? 99 : 1);
+
+  // 2. High Trap with Strong Synthetic Support (>= 1.5x)
+  if (trap === 'high' && supRatio >= 1.5 && stronger) {
+    const win = stronger.toLowerCase().includes(team1.toLowerCase()) ? team1 : team2;
+    return { winner: win, tier: 'CPL_SPECIAL', confidence: 'CPL Smart Money Support' };
+  }
+
+  // 3. High Trap with Weak Synthetic Support (< 1.5x) & Non-Blowout Back Lead (< 1.65x) -> Bookie Safe Side
+  if (trap === 'high' && bookieFav && supRatio < 1.5 && backRatio < 1.65) {
+    if (bookieFav.toLowerCase().includes(team1.toLowerCase()) && epnl1 > 0) {
+      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
+    }
+    if (bookieFav.toLowerCase().includes(team2.toLowerCase()) && epnl2 > 0) {
+      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
+    }
+  }
+
+  // 4. Smart Volume Inflow Lead
+  if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
+    const win = b1 > b2 ? team1 : team2;
+    return { winner: win, tier: 'CPL_SPECIAL', confidence: 'CPL Smart Volume Inflow Lead' };
+  }
+
+  // 5. Fallback: Higher Bookie P/L
+  if (epnl1 > epnl2) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Safe' };
+  }
+  if (epnl2 > epnl1) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Safe' };
+  }
+
+  return null;
+}
+
 function getUPT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const totBack = b1 + b2;
   const b1Pct = totBack > 0 ? b1 / totBack : 0.5;
@@ -158,12 +209,8 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 
   // 🏆 LEAGUE SPECIFIC RULE: Caribbean Premier League (CPL)
   if (comp.includes('caribbean') || comp.includes('cpl')) {
-    if (epnl1 > epnl2) {
-      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
-    }
-    if (epnl2 > epnl1) {
-      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
-    }
+    const cplPred = getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (cplPred) return cplPred;
   }
 
   // 🇮🇳 LEAGUE SPECIFIC RULE: Tamil Nadu Premier League (TNPL)
@@ -312,6 +359,7 @@ function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2)
 module.exports = {
   isInternationalT20,
   getInternationalT20Prediction,
+  getCPLPrediction,
   getUPT20Prediction,
   getLeagueAlgorithmPrediction,
   getDefaultAlgorithmPrediction
