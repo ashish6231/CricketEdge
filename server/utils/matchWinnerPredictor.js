@@ -67,7 +67,7 @@ function predictMatchWinner(snap) {
   const compName = (snap.competitionName || '');
   
   // Try league specific algorithms first
-  const leaguePred = getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team1, team2);
+  const leaguePred = getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team1, team2, snap);
   if (leaguePred) return leaguePred;
 
   // Fallback to default algorithm

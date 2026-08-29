@@ -2,8 +2,108 @@
  * League-Specific Algorithms for Match Winner Prediction
  */
 
-function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team1, team2) {
+function isInternationalT20(compName) {
   const comp = (compName || '').toLowerCase();
+  return (
+    comp.includes('international twenty20') ||
+    comp.includes('international t20') ||
+    comp.includes('twenty20 international') ||
+    comp.includes('t20 international') ||
+    comp.includes('twenty20 matches') ||
+    comp.includes('t20i') ||
+    comp.includes('acc mens premier cup') ||
+    comp.includes('icc men') ||
+    comp.includes('icc t20')
+  );
+}
+
+function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, team2) {
+  // Pre-match metrics directly from snapshot
+  const prePnl = snap?.preMatchPnl || {};
+  const preBets = snap?.preMatchTotalBets || {};
+  const preVol1 = snap?.preMatchVolume?.team1 || {};
+  const preVol2 = snap?.preMatchVolume?.team2 || {};
+
+  const prePnl1 = prePnl.team1 != null ? prePnl.team1 : null;
+  const prePnl2 = prePnl.team2 != null ? prePnl.team2 : null;
+  const preBetCount1 = preBets.team1 != null ? preBets.team1 : null;
+  const preBetCount2 = preBets.team2 != null ? preBets.team2 : null;
+
+  const preBack1 = preVol1.back ?? b1 ?? 0;
+  const preLay1 = preVol1.lay ?? l1 ?? 0;
+  const preBack2 = preVol2.back ?? b2 ?? 0;
+  const preLay2 = preVol2.lay ?? l2 ?? 0;
+
+  // 1. Primary Rule: Pre-Match Bookie P/L Exposure Edge (Fade the Public Trap)
+  // In International T20s, public heavily backs big brand teams, bookmakers earn on higher Pre-Match PnL
+  if (prePnl1 != null && prePnl2 != null && prePnl1 !== prePnl2) {
+    if (prePnl1 > prePnl2) {
+      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Bookie Edge (Fade Public)' };
+    }
+    if (prePnl2 > prePnl1) {
+      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Bookie Edge (Fade Public)' };
+    }
+  }
+
+  // 2. Pre-Match Total Bets / Activity Engagement
+  if (preBetCount1 != null && preBetCount2 != null && (preBetCount1 > 0 || preBetCount2 > 0) && preBetCount1 !== preBetCount2) {
+    if (preBetCount1 >= preBetCount2 * 1.5) {
+      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Activity Lead' };
+    }
+    if (preBetCount2 >= preBetCount1 * 1.5) {
+      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Activity Lead' };
+    }
+  }
+
+  // 3. Pre-Match Lay vs Back Volume Ratio (Smart Money)
+  if (preLay1 > preBack1 && preLay2 <= preBack2) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Lay Pressure Edge' };
+  }
+  if (preLay2 > preBack2 && preLay1 <= preBack1) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Lay Pressure Edge' };
+  }
+
+  // 4. Calculated Bookie PnL (pnl1 vs pnl2)
+  if (pnl1 !== pnl2) {
+    if (pnl1 > pnl2) {
+      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Bookie Trap (Higher PnL)' };
+    }
+    if (pnl2 > pnl1) {
+      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Bookie Trap (Higher PnL)' };
+    }
+  }
+
+  // 5. Pre-Match Market Signals / True Support Sentiment
+  const msPred = snap?.marketSignals?.prediction?.prediction;
+  if (msPred && msPred !== 'No Prediction') {
+    if (msPred.toLowerCase().includes(team1.toLowerCase())) {
+      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match True Support' };
+    }
+    if (msPred.toLowerCase().includes(team2.toLowerCase())) {
+      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match True Support' };
+    }
+  }
+
+  // 6. Pre-Match Volume Edge fallback
+  if (b1 > b2) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Margin' };
+  }
+  if (b2 > b1) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Margin' };
+  }
+
+  return null;
+}
+
+function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team1, team2, snap = null) {
+  const comp = (compName || '').toLowerCase();
+
+  // 🌍 LEAGUE SPECIFIC RULE: International Twenty20 Matches (T20I)
+  // Dedicated Pre-Match Data Algorithm for International T20s (excl women's if women's rule triggers)
+  if (isInternationalT20(compName) && !comp.includes('womens') && !comp.includes("women's") && !comp.includes('women')) {
+    const intlPred = getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, team2);
+    if (intlPred) return intlPred;
+  }
 
   // 🏆 LEAGUE SPECIFIC RULE: Caribbean Premier League (CPL)
   // In CPL, the Bookie Trap usually wins (The team with HIGHER Bookie PNL).
@@ -65,7 +165,7 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 
   // 🇱🇰 LEAGUE SPECIFIC RULE: Sri Lanka Major Clubs T20
   // Results are consistently reversed (the default algorithm fails), so we use the Bookie Trap logic.
-  if (comp.includes('sri lanka') || comp.includes('srilanka') || comp.includes('major clubs')) {
+  if (comp.includes('sri lanka major clubs') || comp.includes('slc major clubs') || comp.includes('major clubs') || comp.includes('srilanka major')) {
     if (pnl1 > pnl2) {
       return { winner: team1, tier: 'SRILANKA_SPECIAL', confidence: 'Sri Lanka Bookie Trap (Fade Public)' };
     }
@@ -88,6 +188,16 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
   // 👩 LEAGUE SPECIFIC RULE: Women's International Twenty20 Matches / Women's matches
   // In Women's T20 matches, the Bookie Trap usually wins (The team with HIGHER Bookie PNL).
   if (comp.includes('womens') || comp.includes('women\'s') || comp.includes('women')) {
+    const prePnl1 = snap?.preMatchPnl?.team1;
+    const prePnl2 = snap?.preMatchPnl?.team2;
+    if (prePnl1 != null && prePnl2 != null && prePnl1 !== prePnl2) {
+      if (prePnl1 > prePnl2) {
+        return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookie Trap (Fade Public)' };
+      }
+      if (prePnl2 > prePnl1) {
+        return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookie Trap (Fade Public)' };
+      }
+    }
     if (pnl1 > pnl2) {
       return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookie Trap (Fade Public)' };
     }
@@ -122,6 +232,9 @@ function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2)
 }
 
 module.exports = {
+  isInternationalT20,
+  getInternationalT20Prediction,
   getLeagueAlgorithmPrediction,
   getDefaultAlgorithmPrediction
 };
+

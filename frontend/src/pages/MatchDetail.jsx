@@ -1107,7 +1107,9 @@ export default function MatchDetail({ sport }) {
                   <div 
                     className="relative overflow-hidden rounded-xl border p-4 shadow-2xl transition-all duration-500"
                     style={{
-                      background: snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                      background: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                        ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
                         ? 'linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
@@ -1124,7 +1126,9 @@ export default function MatchDetail({ sport }) {
                         : snapshot.aiPrediction.tier === 1 
                         ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
                         : 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(13, 17, 23, 0.9) 100%)',
-                      borderColor: snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                      borderColor: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                        ? 'rgba(16, 185, 129, 0.3)'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'rgba(168, 85, 247, 0.3)'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
                         ? 'rgba(20, 184, 166, 0.3)'
@@ -1141,7 +1145,9 @@ export default function MatchDetail({ sport }) {
                         : snapshot.aiPrediction.tier === 1 
                         ? 'rgba(234, 179, 8, 0.3)'
                         : 'rgba(59, 130, 246, 0.2)',
-                      boxShadow: snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                      boxShadow: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                        ? '0 4px 20px rgba(16, 185, 129, 0.1)'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? '0 4px 20px rgba(168, 85, 247, 0.1)'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
                         ? '0 4px 20px rgba(20, 184, 166, 0.1)'
@@ -1165,7 +1171,8 @@ export default function MatchDetail({ sport }) {
                         <div className="flex items-center gap-2 mb-1.5">
                           <span className="text-sm animate-bounce">🤖</span>
                           <span className={`text-xs font-black uppercase tracking-wider ${
-                            snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'text-purple-500' 
+                            snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'text-emerald-500'
+                            : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'text-purple-500' 
                             : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'text-teal-500'
                             : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'text-rose-500'
                             : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'text-indigo-500'
@@ -1183,7 +1190,8 @@ export default function MatchDetail({ sport }) {
                         </h3>
                       </div>
                       <span className={`text-[10px] font-black px-2 py-0.5 rounded text-black flex items-center gap-1 shadow-sm ${
-                        snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'bg-purple-500' 
+                        snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'bg-emerald-500'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'bg-purple-500' 
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'bg-teal-500'
                         : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'bg-rose-500'
                         : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'bg-indigo-500'
@@ -1193,7 +1201,8 @@ export default function MatchDetail({ sport }) {
                         : snapshot.aiPrediction.tier === 1 ? 'bg-yellow-500' 
                         : 'bg-blue-500'
                       }`}>
-                        {snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? '⚡ LEAGUE SPECIAL (CPL ALGO USED)' 
+                        {snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? '🌍 LEAGUE SPECIAL (INTL T20 ALGO USED)'
+                         : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? '⚡ LEAGUE SPECIAL (CPL ALGO USED)' 
                          : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? '🌴 LEAGUE SPECIAL (KERALA ALGO USED)'
                          : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (DELHI ALGO USED)'
                          : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (UP ALGO USED)'
@@ -1206,7 +1215,8 @@ export default function MatchDetail({ sport }) {
 
                     <div className="flex flex-wrap items-center gap-2 mt-2">
                       <span className={`text-[10px] font-black px-2 py-0.5 rounded-full bg-black/50 border ${
-                        snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'border-purple-500/40 text-purple-500' 
+                        snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'border-emerald-500/40 text-emerald-500'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'border-purple-500/40 text-purple-500' 
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'border-teal-500/40 text-teal-500'
                         : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'border-rose-500/40 text-rose-500'
                         : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'border-indigo-500/40 text-indigo-500'
@@ -1221,7 +1231,9 @@ export default function MatchDetail({ sport }) {
                     </div>
 
                     <p className="text-xs text-[#8e8e93] mt-3 leading-relaxed border-t border-white/5 pt-3">
-                      {snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                      {snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                        ? 'International T20 matches rely on high-liquidity Pre-Match data. The AI evaluates Pre-Match Bookmaker P/L exposure, Smart Lay Pressure, and Public Overload Traps to predict the true winner.'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'CPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
                         ? 'Kerala matches have shown a massive correlation with the default Volume Margin strategy. The AI successfully filters the noise and picks the true market favorite.'
