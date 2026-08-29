@@ -4,6 +4,7 @@ const scraper = require('../services/scraper');
 const { optionalAuth, requireProSubscription, assertProAccess } = require('../middleware/auth');
 const { requireAdmin } = require('../middleware/admin');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
+const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 
 // ──── Auth (admin only — scraper login control) ────
 
@@ -64,6 +65,14 @@ function attachMatchMeta(data, matchInfo) {
     matchInfo.eventDate ??
     null;
   if (start != null && start !== '') data.startTime = start;
+  
+  if (matchInfo.status === 'upcoming' || matchInfo.status === 'ended') {
+    const prediction = predictMatchWinner(data);
+    if (prediction) {
+      data.aiPrediction = prediction;
+    }
+  }
+
   return data;
 }
 
@@ -172,12 +181,17 @@ router.get('/session/matches', optionalAuth, async (req, res) => {
 
 router.get('/session/trades/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  const matches = await scraper.getAllSessionMatches();
-  const matchInfo = findMatchInfo(matches, matchId);
-  if (!guestMayViewMatch(matchInfo, req.user)) {
+  const [sessionMatches, cricketMatches] = await Promise.all([
+    scraper.getAllSessionMatches(),
+    scraper.getAllCricketMatches(),
+  ]);
+  const sessionInfo = findMatchInfo(sessionMatches, matchId);
+  const cricketInfo = findMatchInfo(cricketMatches, matchId);
+  
+  if (!guestMayViewFromInfos(req.user, [sessionInfo, cricketInfo])) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
-  const isEnded = matchInfo?.status === 'ended';
+  const isEnded = isEndedMatch(sessionInfo) || isEndedMatch(cricketInfo);
   if (!isEnded && !assertProAccess(req, res)) return;
   const data = await scraper.getSessionTrades(matchId);
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
@@ -202,7 +216,7 @@ router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) =>
 });
 const _oddsCache = new Map();
 const ODDS_FRESH_TTL = 2500;
-const ODDS_SWR_TTL = 10000;
+const ODDS_SWR_TTL = 30 * 60 * 1000; // 30 minutes SWR
 
 function _extractOddsFromSnapshot(data) {
   if (!data || data.error) return null;
@@ -242,17 +256,24 @@ async function _getOrFetchOdds(id) {
   }
   if (cached && (now - cached.ts) < ODDS_SWR_TTL) {
     // SWR: return immediately and refresh in background
-    scraper.getCricketSnapshot(id).then(data => {
-      const parsed = _extractOddsFromSnapshot(data);
-      if (parsed) _oddsCache.set(id, { data: parsed, ts: Date.now() });
-    }).catch(() => {});
+    if (!cached.refreshing) {
+      cached.refreshing = true;
+      scraper.getCricketSnapshot(id).then(data => {
+        const parsed = _extractOddsFromSnapshot(data);
+        if (parsed) _oddsCache.set(id, { data: parsed, ts: Date.now(), refreshing: false });
+        else _oddsCache.set(id, { ...cached, ts: Date.now(), refreshing: false });
+      }).catch(() => {
+        const c = _oddsCache.get(id);
+        if (c) c.refreshing = false;
+      });
+    }
     return cached.data;
   }
 
   const data = await scraper.getCricketSnapshot(id);
   const parsed = _extractOddsFromSnapshot(data);
   if (parsed) {
-    _oddsCache.set(id, { data: parsed, ts: Date.now() });
+    _oddsCache.set(id, { data: parsed, ts: Date.now(), refreshing: false });
   }
   return parsed;
 }
