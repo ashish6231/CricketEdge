@@ -66,11 +66,9 @@ function attachMatchMeta(data, matchInfo) {
     null;
   if (start != null && start !== '') data.startTime = start;
   
-  if (matchInfo.status === 'upcoming' || matchInfo.status === 'ended') {
-    const prediction = predictMatchWinner(data);
-    if (prediction) {
-      data.aiPrediction = prediction;
-    }
+  const prediction = predictMatchWinner(data);
+  if (prediction) {
+    data.aiPrediction = prediction;
   }
 
   return data;

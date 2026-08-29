@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-28T18:36:26.208Z",
+  "updatedAt": "2026-08-29T05:25:02.795Z",
   "records": [
     {
       "matchId": "35901908",
@@ -15238,6 +15238,846 @@
         {
           "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.5k Back, Lead: 1.8x)",
           "winner": "Edinburgh Castle Rockers",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35982250",
+      "marketId": "1.261537347",
+      "matchName": "Hong Kong W v Thailand W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "team1": "Hong Kong W",
+      "team2": "Thailand W",
+      "startTime": 1787927400000,
+      "endedAt": "2026-08-29T04:54:58.309Z",
+      "capturedAt": "2026-08-29T04:54:58.309Z",
+      "snapshot": {
+        "serverTime": "2026-08-29T04:54:58.240Z",
+        "matchId": "35982250",
+        "matchName": "Hong Kong W v Thailand W",
+        "teamNames": [
+          "Hong Kong W",
+          "Thailand W"
+        ],
+        "inPlayPnl": {
+          "team1": -6.167599999999999,
+          "team2": 7.12
+        },
+        "inPlayTotalBets": {
+          "team1": 13.5681,
+          "team2": 7.79
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 14.91,
+            "lay": 7.79,
+            "total": 14.91
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "total": 7.79
+          }
+        },
+        "preMatchPnl": {
+          "team1": -6.167599999999999,
+          "team2": 7.12
+        },
+        "preMatchTotalBets": {
+          "team1": 13.5681,
+          "team2": 7.79
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 14.91,
+            "lay": 7.79,
+            "total": 14.91
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "total": 7.79
+          }
+        },
+        "threeMinPnl": {
+          "team1": -6.167599999999999,
+          "team2": 7.12
+        },
+        "threeMinTotalBets": {
+          "team1": 13.5681,
+          "team2": 7.79
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 14.91,
+            "lay": 7.79,
+            "total": 14.91
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "total": 7.79
+          }
+        },
+        "matchLoadV2": {
+          "team1": 1,
+          "team2": 1
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 14.91,
+            "lay": 7.79,
+            "totalVolume": 22.7,
+            "backPercentage": 65.68281938325991
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "totalVolume": 0,
+            "backPercentage": 0
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 13.5681,
+            "lay": 7.4005,
+            "totalBet": 20.9686
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "totalBet": 0
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 14.91,
+            "support": 65.68281938325991
+          },
+          "team2": {
+            "supportMoney": 7.79,
+            "support": 34.31718061674009
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Hong Kong W",
+          "bookieFavouriteOutcome": "Thailand W",
+          "riskTeam": "Hong Kong W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 31.365638766519822,
+          "mostBettedTeam": "Hong Kong W",
+          "prediction": {
+            "team1TrueSupport": 13.5681,
+            "team2TrueSupport": 7.4005,
+            "ratio": 1.8334031484359163,
+            "bookiePnlTeam1": -5.778099999999999,
+            "bookiePnlTeam2": 0,
+            "prediction": "Thailand W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.83) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 6.167599999999999,
+            "backExposure": 13.5681,
+            "layExposure": 7.4005,
+            "teamName": "Hong Kong W"
+          },
+          "team2": {
+            "netExposure": 0,
+            "backExposure": 0,
+            "layExposure": 0,
+            "teamName": "Thailand W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 13.5681,
+            "A_lay_stake": 7.79,
+            "B_back_expo": 0,
+            "B_lay_stake": 0
+          },
+          "totals": {
+            "totalBetTeam1": 13.5681,
+            "totalBetTeam2": 7.79
+          },
+          "simplePL": {
+            "team1_win": -5.778099999999999,
+            "team2_win": 0
+          },
+          "derivedPL": {
+            "team1_win": -5.778099999999999,
+            "team2_win": 5.778099999999999
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 14.91,
+              "totalLayVol": 7.79,
+              "totalBet": 14.91,
+              "profitLoss": -7.12
+            },
+            "team2": {
+              "totalBackVol": 0,
+              "totalLayVol": 0,
+              "totalBet": 7.79,
+              "profitLoss": 7.12
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 13.5681,
+              "totalLayVol": 7.79,
+              "totalBet": 13.5681,
+              "profitLoss": -6.167599999999999
+            },
+            "team2": {
+              "totalBackExpo": 0,
+              "totalLayVol": 0,
+              "totalBet": 7.79,
+              "profitLoss": 7.12
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 13.5681,
+              "totalLayNetVol": 7.4005,
+              "totalBet": 13.5681,
+              "profitLoss": -6.167599999999999
+            },
+            "team2": {
+              "totalBackNetVol": 0,
+              "totalLayNetVol": 0,
+              "totalBet": 7.4005,
+              "profitLoss": 6.167599999999999
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 1,
+            "averageOdds": 1.91,
+            "averageSize": 14.91,
+            "supportProduct": 28.478099999999998
+          },
+          "teamB": {
+            "tradeCount": 1,
+            "averageOdds": 1.95,
+            "averageSize": 7.79,
+            "supportProduct": 15.1905
+          },
+          "strongerTeam": "Hong Kong W",
+          "supportRatio": 1.8747309173496591
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 14.91,
+            "oppoLayVolume": 0,
+            "layExposure": 7.4005,
+            "netSupportValue": 7.5095
+          },
+          "teamB": {
+            "totalBackVolume": 0,
+            "oppoLayVolume": 7.79,
+            "layExposure": 0,
+            "netSupportValue": 7.79
+          },
+          "strongerTeam": "Thailand W",
+          "netSupportDifference": 0.28049999999999997,
+          "percentageA": 49.083303375927315,
+          "percentageB": 50.91669662407268
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 7.12,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 7.12
+          },
+          "teamB": {
+            "directNetSupport": 0,
+            "syntheticSupport": 7.79,
+            "opponentLiabilityRejection": 7.4005,
+            "sentimentScore": 0.38949999999999996
+          },
+          "strongerTeam": "Hong Kong W",
+          "scoreDifference": 6.7305,
+          "percentageA": 94.81323656701511,
+          "percentageB": 5.186763432984885
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Hong Kong W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 1536.2918,
+            "supportPercentage": 100
+          },
+          "team2": {
+            "name": "Thailand W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 1536.2918,
+            "totalSupport": 0,
+            "supportPercentage": 0
+          },
+          "heavierSide": "Hong Kong W"
+        },
+        "teams": {
+          "Hong Kong W": {
+            "trades": [
+              {
+                "team": "Hong Kong W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.91,
+                "updatedAt": 1787924513796
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.95,
+                "type": "lay",
+                "size": 7.79,
+                "updatedAt": 1787924504376
+              }
+            ],
+            "pnlIfWins": -6.167599999999999,
+            "totalBet": 13.5681
+          },
+          "Thailand W": {
+            "trades": [],
+            "pnlIfWins": 7.12,
+            "totalBet": 7.79
+          }
+        }
+      },
+      "predictedWinner": "Thailand W",
+      "predictionReason": "Critical Public Overload on Hong Kong W (100% Load, 99.0x Lead) -> Faded to Thailand W",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Critical Public Overload on Hong Kong W (100% Load, 99.0x Lead) -> Faded to Thailand W"
+      },
+      "matchedRules": [
+        {
+          "reason": "Critical Public Overload on Hong Kong W (100% Load, 99.0x Lead) -> Faded to Thailand W",
+          "winner": "Thailand W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "35986052",
+      "marketId": "1.261569140",
+      "matchName": "Trinbago Knight Riders v Barbados Tridents",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Trinbago Knight Riders",
+      "team2": "Barbados Tridents",
+      "startTime": 1787961600000,
+      "endedAt": "2026-08-29T05:25:02.788Z",
+      "capturedAt": "2026-08-29T05:25:02.788Z",
+      "snapshot": {
+        "serverTime": "2026-08-29T05:25:02.779Z",
+        "matchId": "35986052",
+        "matchName": "Trinbago Knight Riders v Barbados Tridents",
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "Barbados Tridents"
+        ],
+        "inPlayPnl": {
+          "team1": 732.384,
+          "team2": -559.7956999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 1471.687,
+          "team2": 2069.4002
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1304.08,
+            "lay": 169.44000000000003,
+            "total": 1514.3399999999997
+          },
+          "team2": {
+            "back": 2025.3899999999999,
+            "lay": 210.25999999999988,
+            "total": 2194.83
+          }
+        },
+        "preMatchPnl": {
+          "team1": 732.384,
+          "team2": -559.7956999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 1471.687,
+          "team2": 2069.4002
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1304.08,
+            "lay": 169.44000000000003,
+            "total": 1514.3399999999997
+          },
+          "team2": {
+            "back": 2025.3899999999999,
+            "lay": 210.25999999999988,
+            "total": 2194.83
+          }
+        },
+        "threeMinPnl": {
+          "team1": 732.384,
+          "team2": -559.7956999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 1471.687,
+          "team2": 2069.4002
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1304.08,
+            "lay": 169.44000000000003,
+            "total": 1514.3399999999997
+          },
+          "team2": {
+            "back": 2025.3899999999999,
+            "lay": 210.25999999999988,
+            "total": 2194.83
+          }
+        },
+        "matchLoadV2": {
+          "team1": 11,
+          "team2": 12
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1304.08,
+            "lay": 169.44000000000003,
+            "totalVolume": 1473.52,
+            "backPercentage": 88.50100439763288
+          },
+          "team2": {
+            "back": 2025.3899999999999,
+            "lay": 210.25999999999988,
+            "totalVolume": 2235.6499999999996,
+            "backPercentage": 90.59512893341982
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1261.427,
+            "lay": 178.68100000000004,
+            "totalBet": 1440.108
+          },
+          "team2": {
+            "back": 1899.9602,
+            "lay": 205.52449999999988,
+            "totalBet": 2105.4847
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1514.3399999999997,
+            "support": 40.82692354354208
+          },
+          "team2": {
+            "supportMoney": 2194.83,
+            "support": 59.17307645645792
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Barbados Tridents",
+          "bookieFavouriteOutcome": "Trinbago Knight Riders",
+          "riskTeam": "Barbados Tridents",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 18.34615291291584,
+          "mostBettedTeam": "Barbados Tridents",
+          "prediction": {
+            "team1TrueSupport": 1466.9514999999997,
+            "team2TrueSupport": 2078.6412,
+            "ratio": 1.416980179644658,
+            "bookiePnlTeam1": -1091.9869999999999,
+            "bookiePnlTeam2": -1689.7002000000002,
+            "prediction": "Trinbago Knight Riders",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.42) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1082.7459999999999,
+            "backExposure": 1261.427,
+            "layExposure": 178.68100000000004,
+            "teamName": "Trinbago Knight Riders"
+          },
+          "team2": {
+            "netExposure": 1694.4357,
+            "backExposure": 1899.9602,
+            "layExposure": 205.52449999999988,
+            "teamName": "Barbados Tridents"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1261.427,
+            "A_lay_stake": 169.44000000000003,
+            "B_back_expo": 1899.9602,
+            "B_lay_stake": 210.25999999999988
+          },
+          "totals": {
+            "totalBetTeam1": 1471.687,
+            "totalBetTeam2": 2069.4002
+          },
+          "simplePL": {
+            "team1_win": -1091.9869999999999,
+            "team2_win": -1689.7002000000002
+          },
+          "derivedPL": {
+            "team1_win": 597.7132000000001,
+            "team2_win": -597.7132000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1304.08,
+              "totalLayVol": 169.44000000000003,
+              "totalBet": 1514.3399999999997,
+              "profitLoss": 680.4900000000002
+            },
+            "team2": {
+              "totalBackVol": 2025.3899999999999,
+              "totalLayVol": 210.25999999999988,
+              "totalBet": 2194.83,
+              "profitLoss": -680.4900000000002
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1261.427,
+              "totalLayVol": 169.44000000000003,
+              "totalBet": 1471.687,
+              "profitLoss": 732.384
+            },
+            "team2": {
+              "totalBackExpo": 1899.9602,
+              "totalLayVol": 210.25999999999988,
+              "totalBet": 2069.4002,
+              "profitLoss": -559.7957000000001
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1261.427,
+              "totalLayNetVol": 178.68100000000004,
+              "totalBet": 1466.9514999999997,
+              "profitLoss": 611.6897000000004
+            },
+            "team2": {
+              "totalBackNetVol": 1899.9602,
+              "totalLayNetVol": 205.52449999999988,
+              "totalBet": 2078.6412,
+              "profitLoss": -611.6897000000004
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 11,
+            "averageOdds": 1.9663636363636363,
+            "averageSize": 137.6672727272727,
+            "supportProduct": 270.7039190082644
+          },
+          "teamB": {
+            "tradeCount": 12,
+            "averageOdds": 1.9299999999999997,
+            "averageSize": 182.90249999999995,
+            "supportProduct": 353.0018249999998
+          },
+          "strongerTeam": "Barbados Tridents",
+          "supportRatio": 1.3040144608664603
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1304.08,
+            "oppoLayVolume": 210.25999999999988,
+            "layExposure": 178.68100000000004,
+            "netSupportValue": 1335.6589999999997
+          },
+          "teamB": {
+            "totalBackVolume": 2025.3899999999999,
+            "oppoLayVolume": 169.44000000000003,
+            "layExposure": 205.52449999999988,
+            "netSupportValue": 1989.3055
+          },
+          "strongerTeam": "Barbados Tridents",
+          "netSupportDifference": 653.6465000000003,
+          "percentageA": 40.17062437809486,
+          "percentageB": 59.82937562190514
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1134.6399999999999,
+            "syntheticSupport": 210.25999999999988,
+            "opponentLiabilityRejection": 205.52449999999988,
+            "sentimentScore": 1139.3754999999996
+          },
+          "teamB": {
+            "directNetSupport": 1815.13,
+            "syntheticSupport": 169.44000000000003,
+            "opponentLiabilityRejection": 178.68100000000004,
+            "sentimentScore": 1805.8890000000001
+          },
+          "strongerTeam": "Barbados Tridents",
+          "scoreDifference": 666.5135000000005,
+          "percentageA": 38.68499756133956,
+          "percentageB": 61.315002438660436
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Trinbago Knight Riders",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Barbados Tridents",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Trinbago Knight Riders"
+        },
+        "teams": {
+          "Trinbago Knight Riders": {
+            "trades": [
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "lay",
+                "size": 34.450000000000024,
+                "updatedAt": 1787958831572
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.92,
+                "type": "back",
+                "size": 136.3,
+                "updatedAt": 1787958369777
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.75,
+                "updatedAt": 1787957963790
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.7,
+                "updatedAt": 1787956516607
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "back",
+                "size": 113.46000000000001,
+                "updatedAt": 1787956492465
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "back",
+                "size": 89.13999999999999,
+                "updatedAt": 1787956435148
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.08,
+                "type": "lay",
+                "size": 94.44,
+                "updatedAt": 1787954468037
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.06,
+                "type": "lay",
+                "size": 21.87,
+                "updatedAt": 1787953662208
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "lay",
+                "size": 18.68,
+                "updatedAt": 1787953005767
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "back",
+                "size": 543.7299999999999,
+                "updatedAt": 1787930433811
+              }
+            ],
+            "pnlIfWins": 732.384,
+            "totalBet": 1471.687
+          },
+          "Barbados Tridents": {
+            "trades": [
+              {
+                "team": "Barbados Tridents",
+                "price": 1.66,
+                "type": "back",
+                "size": 5.61,
+                "updatedAt": 1787958969856
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 2,
+                "type": "lay",
+                "size": 82.23,
+                "updatedAt": 1787958831584
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.77,
+                "type": "back",
+                "size": 5.61,
+                "updatedAt": 1787958768728
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.61,
+                "updatedAt": 1787958740551
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.91,
+                "type": "back",
+                "size": 442.36999999999995,
+                "updatedAt": 1787958349653
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.99,
+                "type": "lay",
+                "size": 58.82999999999993,
+                "updatedAt": 1787956435142
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.92,
+                "type": "back",
+                "size": 566.6500000000001,
+                "updatedAt": 1787954468037
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.92,
+                "type": "lay",
+                "size": 43.35999999999996,
+                "updatedAt": 1787954188864
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.93,
+                "type": "back",
+                "size": 307.07,
+                "updatedAt": 1787953960889
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "lay",
+                "size": 4.039999999999992,
+                "updatedAt": 1787953662208
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "back",
+                "size": 159.88,
+                "updatedAt": 1787953639045
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.98,
+                "type": "lay",
+                "size": 21.800000000000004,
+                "updatedAt": 1787953005767
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.99,
+                "type": "back",
+                "size": 532.59,
+                "updatedAt": 1787951089859
+              }
+            ],
+            "pnlIfWins": -559.7956999999999,
+            "totalBet": 2069.4002
+          }
+        }
+      },
+      "predictedWinner": "Barbados Tridents",
+      "predictionReason": "Smart Money Inflow (Barbados Tridents: ₹2.0k Back, Lead: 1.6x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (Barbados Tridents: ₹2.0k Back, Lead: 1.6x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (Barbados Tridents: ₹2.0k Back, Lead: 1.6x)",
+          "winner": "Barbados Tridents",
           "priority": 100,
           "selected": true
         }
