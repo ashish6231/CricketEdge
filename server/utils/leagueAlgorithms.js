@@ -124,8 +124,9 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
 
-  // 4. Blowout Smart Money Back Inflow (BackRatio >= 4.0x)
-  if (backRatio >= 4.0) {
+  // 4. Blowout Smart Money Back Inflow (BackRatio >= 4.0x with genuine liquidity totBack >= 500)
+  const totBack = b1 + b2;
+  if (backRatio >= 4.0 && totBack >= 500) {
     return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dominant Inflow Blowout' };
   }
 
