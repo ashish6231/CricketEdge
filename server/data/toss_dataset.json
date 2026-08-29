@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-29T05:25:02.795Z",
+  "updatedAt": "2026-08-29T09:25:57.547Z",
   "records": [
     {
       "matchId": "35901908",
@@ -14320,11 +14320,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-29T09:25:09.459Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "St. Kitts and Nevis Patriots"
     },
     {
       "matchId": "35977921",
@@ -14715,11 +14715,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-29T09:25:26.043Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "South Africa"
     },
     {
       "matchId": "35988957",
@@ -15244,11 +15244,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-29T09:25:33.457Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers"
     },
     {
       "matchId": "35982250",
@@ -15590,11 +15590,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-29T09:25:47.259Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Hong Kong W"
     },
     {
       "matchId": "35986052",
@@ -16084,11 +16084,11 @@
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-08-29T09:25:57.547Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders"
     }
   ]
 }

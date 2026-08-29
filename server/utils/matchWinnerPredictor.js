@@ -44,18 +44,26 @@ function predictMatchWinner(snap) {
       l2 = trades2.filter(t => t.type === 'lay').reduce((sum, t) => sum + (t.size || 0), 0);
     }
 
-    // 🎯 EXACT BOOKIE P/L (Matches UI Bookie P/L)
-    const sp = snap.deepMetrics?.simplePL || {};
-    const t1Data = snap.teams?.[team1] || {};
-    const t2Data = snap.teams?.[team2] || {};
+    // 🎯 STRICT PRE-MATCH BOOKIE P/L (Does not flip when match goes live)
+    const prePnl1 = snap?.preMatchPnl?.team1;
+    const prePnl2 = snap?.preMatchPnl?.team2;
 
-    if (sp.team1_win != null || t1Data.pnlIfWins != null) {
-      pnl1 = sp.team1_win ?? t1Data.pnlIfWins ?? 0;
-      pnl2 = sp.team2_win ?? t2Data.pnlIfWins ?? 0;
+    if (prePnl1 != null && prePnl2 != null) {
+      pnl1 = prePnl1;
+      pnl2 = prePnl2;
     } else {
-      // Fallback if API simplePL is not present
-      pnl1 = (l1 - b1) + (b2 - l2);
-      pnl2 = (l2 - b2) + (b1 - l1);
+      const sp = snap.deepMetrics?.simplePL || {};
+      const t1Data = snap.teams?.[team1] || {};
+      const t2Data = snap.teams?.[team2] || {};
+
+      if (sp.team1_win != null || t1Data.pnlIfWins != null) {
+        pnl1 = sp.team1_win ?? t1Data.pnlIfWins ?? 0;
+        pnl2 = sp.team2_win ?? t2Data.pnlIfWins ?? 0;
+      } else {
+        // Fallback if API simplePL is not present
+        pnl1 = (l1 - b1) + (b2 - l2);
+        pnl2 = (l2 - b2) + (b1 - l1);
+      }
     }
 
     // Freeze it on the very first call!

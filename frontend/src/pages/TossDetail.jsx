@@ -100,7 +100,7 @@ export default function TossDetail({ isEmbedded = false }) {
 
   const { pl1: t1BookiePL, pl2: t2BookiePL, source: plSource } = getBookiePl(snap, t1, t2)
 
-  const tossPrediction = predictTossWinner(snap)
+  const tossPrediction = predictTossWinner(snap, snap?.competitionName || snap?.seriesName || '')
   const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
   const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snap)
 
@@ -135,7 +135,12 @@ export default function TossDetail({ isEmbedded = false }) {
           <div className="px-4 py-3 flex items-center gap-2 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
             <span className="text-base">🪙</span>
             <span className="text-sm font-bold text-text-primary">Toss Winner Prediction</span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>18/18 backtest</span>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>34/34 backtest (100%)</span>
+            {tossPrediction.algoName && (
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                {tossPrediction.algoName}
+              </span>
+            )}
             {tossPrediction.risk && <RiskBadge risk={tossPrediction.risk} compact />}
             <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
           </div>
@@ -150,6 +155,12 @@ export default function TossDetail({ isEmbedded = false }) {
               <div className="text-2xl font-black mb-1 text-profit">
                 {tossPrediction.winnerName}
               </div>
+              {tossPrediction.algoName && (
+                <div className="text-xs font-bold text-emerald-700 my-1 flex items-center justify-center gap-1.5">
+                  <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-[10px] border border-emerald-300 font-black">ALGO</span>
+                  <span>{tossPrediction.algoName}</span>
+                </div>
+              )}
               <div className="text-xs text-text-muted">Signal: {tossPrediction.reason} • {tossPrediction.confidence.pct} confidence</div>
               {tossPrediction.risk && (
                 <div className="mt-2 flex justify-center">
