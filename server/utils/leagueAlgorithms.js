@@ -247,17 +247,12 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 
   // 🇮🇳 LEAGUE SPECIFIC RULE: Tamil Nadu Premier League (TNPL)
   if (comp.includes('tamil nadu') || comp.includes('tnpl')) {
-    if (b1 > b2 && l1 > l2 && epnl1 < epnl2) {
-      return { winner: team1, tier: 'TNPL_SPECIAL', confidence: 'TNPL Dual Advantage (Strong Buy)' };
+    // TNPL matches strictly act as Bookie Traps (Fade the Public Money)
+    if (epnl1 > epnl2) {
+      return { winner: team1, tier: 'TNPL_SPECIAL', confidence: 'TNPL Bookie Trap (Fade Public)' };
     }
-    if (b2 > b1 && l2 > l1 && epnl2 < epnl1) {
-      return { winner: team2, tier: 'TNPL_SPECIAL', confidence: 'TNPL Dual Advantage (Strong Buy)' };
-    }
-    if (b1 >= b2 * 1.4) {
-      return { winner: team1, tier: 'TNPL_SPECIAL', confidence: 'TNPL Volume Margin (Good Buy)' };
-    }
-    if (b2 >= b1 * 1.4) {
-      return { winner: team2, tier: 'TNPL_SPECIAL', confidence: 'TNPL Volume Margin (Good Buy)' };
+    if (epnl2 > epnl1) {
+      return { winner: team2, tier: 'TNPL_SPECIAL', confidence: 'TNPL Bookie Trap (Fade Public)' };
     }
     if (b1 > b2) {
       return { winner: team1, tier: 'TNPL_SPECIAL', confidence: 'TNPL Volume Leader' };
