@@ -10,16 +10,16 @@ import { getBookiePl, getTeamMetrics } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 
-const fmt    = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
-const fmtRs  = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
+const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
+const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
 const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
 
 export default function TossDetail({ isEmbedded = false }) {
   const { matchId } = useParams()
-  const navigate    = useNavigate()
+  const navigate = useNavigate()
   const { isLoggedIn } = useOutletContext()
-  const [snap, setSnap]               = useState(null)
-  const [loading, setLoading]         = useState(true)
+  const [snap, setSnap] = useState(null)
+  const [loading, setLoading] = useState(true)
   const [requiresLogin, setRequiresLogin] = useState(false)
   const [requiresPro, setRequiresPro] = useState(false)
 
@@ -74,11 +74,11 @@ export default function TossDetail({ isEmbedded = false }) {
 
   if (!snap) return null
 
-  const t1  = snap.teamNames?.[0] || 'Team 1'
-  const t2  = snap.teamNames?.[1] || 'Team 2'
-  const raw = snap.deepMetrics?.raw    || {}
+  const t1 = snap.teamNames?.[0] || 'Team 1'
+  const t2 = snap.teamNames?.[1] || 'Team 2'
+  const raw = snap.deepMetrics?.raw || {}
   const tot = snap.deepMetrics?.totals || {}
-  const sp  = snap.deepMetrics?.simplePL || {}
+  const sp = snap.deepMetrics?.simplePL || {}
   const sup = snap.supportMetrics || {}
   const am1 = getTeamMetrics(snap, 0)
   const am2 = getTeamMetrics(snap, 1)
@@ -90,9 +90,9 @@ export default function TossDetail({ isEmbedded = false }) {
 
   // Back/Lay ratio prediction
   const aBack = am1.back || 0
-  const aLay  = am1.lay  || 0
+  const aLay = am1.lay || 0
   const bBack = am2.back || 0
-  const bLay  = am2.lay  || 0
+  const bLay = am2.lay || 0
   const t1Trades = (snap.teams?.[t1] || {}).trades || []
   const t2Trades = (snap.teams?.[t2] || {}).trades || []
   const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
