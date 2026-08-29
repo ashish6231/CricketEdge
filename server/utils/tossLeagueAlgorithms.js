@@ -448,8 +448,30 @@ export function getWomensTossPrediction({ t1, t2, b1, b2, backRatio }) {
  * 🇪🇺 European T20 Premier League / ECS Toss Algorithm
  */
 export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct, totBack }) {
-  // 5.1 Retail Overload Fade
-  if ((b1Pct >= 0.90 || backRatio >= 9.0) && b1 > b2 && prePnl1 < 0 && l2 <= 50 && totBack > 500) {
+  // 5.1 Lay Dump Resistance Fade (Heavy Lay dump on one team indicates smart short selling against them)
+  if (l1 >= 50 && l1 >= l2 * 2.0) {
+    return {
+      winner: t2,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS LAY DUMP FADE 🚨',
+      pattern: 'ECS_LAY_DUMP_FADE',
+      reason: `ECS Heavy Lay Short Dump on ${t1} (₹${l1.toFixed(0)} Lay) -> Faded to ${t2}`,
+    }
+  }
+  if (l2 >= 50 && l2 >= l1 * 2.0) {
+    return {
+      winner: t1,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS LAY DUMP FADE 🚨',
+      pattern: 'ECS_LAY_DUMP_FADE',
+      reason: `ECS Heavy Lay Short Dump on ${t2} (₹${l2.toFixed(0)} Lay) -> Faded to ${t1}`,
+    }
+  }
+
+  // 5.2 Retail Overload Fade (85%+ load with negative PnL)
+  if ((b1Pct >= 0.85 || backRatio >= 6.0) && b1 > b2 && prePnl1 < 0 && totBack > 400) {
     return {
       winner: t2,
       tier: 'EUROPEAN_TOSS_SPECIAL',
@@ -459,7 +481,7 @@ export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       reason: `ECS Public Overload Fade on ${t1} -> Faded to ${t2}`,
     }
   }
-  if ((b2Pct >= 0.90 || backRatio >= 9.0) && b2 > b1 && prePnl2 < 0 && l1 <= 50 && totBack > 500) {
+  if ((b2Pct >= 0.85 || backRatio >= 6.0) && b2 > b1 && prePnl2 < 0 && totBack > 400) {
     return {
       winner: t1,
       tier: 'EUROPEAN_TOSS_SPECIAL',
@@ -470,7 +492,7 @@ export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
     }
   }
 
-  // 5.2 Smart Inflow
+  // 5.3 Smart Inflow Lead (Standard matches)
   if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
     const win = b1 > b2 ? t1 : t2
     return {
@@ -479,7 +501,7 @@ export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       algoName: '🇪🇺 European T20 Toss Algorithm',
       verdictTag: 'ECS SMART INFLOW',
       pattern: 'ECS_SMART_INFLOW',
-      reason: `ECS Smart Inflow on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`,
+      reason: `ECS Smart Inflow on ${win} (₹${Math.max(b1, b2).toFixed(0)} Back, Lead: ${backRatio.toFixed(1)}x)`,
     }
   }
 
