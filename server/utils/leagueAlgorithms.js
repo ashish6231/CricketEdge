@@ -108,7 +108,15 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
   }
 
-  // 2. Extreme Bookie Profit Fortress (PnL >= 4000)
+  // 2. High Liquidity Dual Flow Dominance (e.g. Trinbago 47.6k Back & 32.5k Lay vs Barbados 6.8k Back & 12.4k Lay)
+  if (b1 > b2 && l1 > l2 && (b1 >= b2 * 2.0 && l1 >= l2 * 2.0)) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Dominance' };
+  }
+  if (b2 > b1 && l2 > l1 && (b2 >= b1 * 2.0 && l2 >= l1 * 2.0)) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Dominance' };
+  }
+
+  // 3. Extreme Bookie Profit Fortress (PnL >= 4000)
   if (epnl1 >= 4000 && epnl1 > epnl2) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
@@ -116,12 +124,12 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
 
-  // 3. Blowout Smart Money Back Inflow (BackRatio >= 4.0x)
+  // 4. Blowout Smart Money Back Inflow (BackRatio >= 4.0x)
   if (backRatio >= 4.0) {
     return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dominant Inflow Blowout' };
   }
 
-  // 4. Dual Inflow & Lay Advantage (Both Back AND Lay higher with tight P/L)
+  // 5. Dual Inflow & Lay Advantage (Both Back AND Lay higher with tight P/L)
   if (b1 > b2 && l1 > l2 && epnl1 < 500 && epnl2 < 500) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
   }
@@ -129,7 +137,7 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
   }
 
-  // 5. Bookie Trap (Higher Bookmaker P/L / Fade the Public)
+  // 6. Bookie Trap (Higher Bookmaker P/L / Fade the Public)
   if (epnl1 > epnl2) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
@@ -137,7 +145,7 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
 
-  // 6. Volume Leader fallback
+  // 7. Volume Leader fallback
   return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Volume Leader' };
 }
 
