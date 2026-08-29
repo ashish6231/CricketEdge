@@ -15,6 +15,8 @@ const {
 } = require('../lib/siteSettings');
 const { getDefaultStore } = require('../services/tossDatasetStore');
 const { runTossCaptureNow } = require('../services/tossCaptureWorker');
+const { getDefaultStore: getDefaultMatchStore } = require('../services/matchDatasetStore');
+const { runMatchCaptureNow } = require('../services/matchCaptureWorker');
 
 function parseUserId(raw) {
   const id = parseInt(raw, 10);
@@ -789,13 +791,87 @@ async function getTossDatasetExport(req, res, deps = {}) {
   }
 }
 
+async function getMatchDataset(req, res, deps = {}) {
+  const store = deps.store || getDefaultMatchStore();
+  try {
+    const { status = 'all', page = '1', limit = '20', search = '' } = req.query || {};
+    const result = await store.listRecords({
+      status: status || 'all',
+      search: search || undefined,
+      page: Number(page) || 1,
+      limit: Number(limit) || 20,
+    });
+    res.json({ success: true, records: result.records, pagination: result.pagination });
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
+async function patchMatchActualWinner(req, res, deps = {}) {
+  const store = deps.store || getDefaultMatchStore();
+  const writeAudit = deps.auditLog || auditLog;
+  try {
+    const matchId = String(req.params.matchId);
+    const actualWinner = req.body?.actualWinner;
+    const admin = req.user;
+    const dataset = await store.load();
+    const existing = dataset.records.find((r) => r.matchId === matchId);
+    const before = existing ? { ...existing } : null;
+    const { record, edited } = await store.confirmActualWinner({ matchId, actualWinner, admin });
+    await writeAudit(
+      admin,
+      edited ? 'match_dataset_edit_winner' : 'match_dataset_confirm_winner',
+      'match_dataset',
+      Number(matchId) || 0,
+      matchId,
+      { before, after: record },
+      edited ? 'Corrected match winner' : 'Confirmed match winner',
+      req,
+    );
+    res.json({ success: true, data: record });
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
+async function postMatchDatasetCapture(req, res, deps = {}) {
+  const runNow = deps.runMatchCaptureNow || runMatchCaptureNow;
+  try {
+    const data = await runNow();
+    res.json({ success: true, data });
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
+async function getMatchDatasetExport(req, res, deps = {}) {
+  const store = deps.store || getDefaultMatchStore();
+  try {
+    const payload = await store.buildExport();
+    res.set('Content-Disposition', 'attachment; filename="match_dataset.json"');
+    res.json(payload);
+  } catch (err) {
+    sendStoreError(res, err);
+  }
+}
+
 router.get('/toss-dataset', requireSuperAdmin, (req, res) => getTossDataset(req, res));
 router.patch('/toss-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchTossActualWinner(req, res));
 router.post('/toss-dataset/capture', requireSuperAdmin, (req, res) => postTossDatasetCapture(req, res));
 router.get('/toss-dataset/export', requireSuperAdmin, (req, res) => getTossDatasetExport(req, res));
+
+router.get('/match-dataset', requireSuperAdmin, (req, res) => getMatchDataset(req, res));
+router.patch('/match-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchMatchActualWinner(req, res));
+router.post('/match-dataset/capture', requireSuperAdmin, (req, res) => postMatchDatasetCapture(req, res));
+router.get('/match-dataset/export', requireSuperAdmin, (req, res) => getMatchDatasetExport(req, res));
 
 module.exports = router;
 module.exports.getTossDataset = getTossDataset;
 module.exports.patchTossActualWinner = patchTossActualWinner;
 module.exports.postTossDatasetCapture = postTossDatasetCapture;
 module.exports.getTossDatasetExport = getTossDatasetExport;
+module.exports.getMatchDataset = getMatchDataset;
+module.exports.patchMatchActualWinner = patchMatchActualWinner;
+module.exports.postMatchDatasetCapture = postMatchDatasetCapture;
+module.exports.getMatchDatasetExport = getMatchDatasetExport;
+
