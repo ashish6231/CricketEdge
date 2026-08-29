@@ -295,23 +295,18 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 
   // 🌴 LEAGUE SPECIFIC RULE: Kerala Cricket League
   if (comp.includes('kerala')) {
-    if (b1 > b2 && l1 > l2 && epnl1 < epnl2) {
-      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala 100% Accuracy (Strong Buy)' };
+    // Kerala matches strictly act as Bookie Traps (Fade the Public Money)
+    if (epnl1 > epnl2) {
+      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Trap (Fade Public)' };
     }
-    if (b2 > b1 && l2 > l1 && epnl2 < epnl1) {
-      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala 100% Accuracy (Strong Buy)' };
-    }
-    if (b1 >= b2 * 1.5) {
-      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin (Good Buy)' };
-    }
-    if (b2 >= b1 * 1.5) {
-      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin (Good Buy)' };
+    if (epnl2 > epnl1) {
+      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Trap (Fade Public)' };
     }
     if (b1 > b2) {
-      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Slight Volume Edge' };
+      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
     }
     if (b2 > b1) {
-      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Slight Volume Edge' };
+      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
     }
   }
 
