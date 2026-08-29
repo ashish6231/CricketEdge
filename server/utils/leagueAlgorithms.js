@@ -295,19 +295,31 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 
   // 🌴 LEAGUE SPECIFIC RULE: Kerala Cricket League
   if (comp.includes('kerala')) {
-    // Kerala matches strictly act as Bookie Traps (Fade the Public Money)
-    if (epnl1 > epnl2) {
-      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Trap (Fade Public)' };
+    // 1. Massive Lay Dump / Short Pressure against a team with negative P/L
+    if (l2 >= 50 && (l2 >= l1 * 3.0 || l2 >= b2 * 0.35) && epnl2 < epnl1) {
+      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
     }
-    if (epnl2 > epnl1) {
-      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Trap (Fade Public)' };
+    if (l1 >= 50 && (l1 >= l2 * 3.0 || l1 >= b1 * 0.35) && epnl1 < epnl2) {
+      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
     }
+
+    // 2. Clear Back Inflow Margin (1.3x+)
+    if (b1 >= (b2 || 1) * 1.3 && b1 > b2) {
+      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
+    }
+    if (b2 >= (b1 || 1) * 1.3 && b2 > b1) {
+      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
+    }
+
+    // 3. Volume Leader
     if (b1 > b2) {
       return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
     }
     if (b2 > b1) {
       return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
     }
+
+    return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Safe Edge' };
   }
 
   // 🇮🇳 LEAGUE SPECIFIC RULE: Delhi Premier League (DPL)

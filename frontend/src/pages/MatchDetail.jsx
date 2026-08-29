@@ -1269,7 +1269,7 @@ export default function MatchDetail({ sport }) {
                         : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'CPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
-                        ? 'Kerala matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
+                        ? 'Kerala matches evaluate Pre-Match Lay Resistance Dumps and Dominant Inflow Margins to identify the true market winner.'
                         : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
                         ? 'Delhi matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'UP_SPECIAL'
