@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-29T09:25:57.547Z",
+  "updatedAt": "2026-08-29T16:36:35.725Z",
   "records": [
     {
       "matchId": "35901908",
@@ -16089,6 +16089,416 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Trinbago Knight Riders"
+    },
+    {
+      "matchId": "35989974",
+      "marketId": "1.261619206",
+      "matchName": "Glasgow Cosmic v Dublin Guardians",
+      "competitionName": "European T20 Premier League",
+      "team1": "Glasgow Cosmic",
+      "team2": "Dublin Guardians",
+      "startTime": 1787995800000,
+      "endedAt": "2026-08-29T16:29:27.247Z",
+      "capturedAt": "2026-08-29T16:29:27.247Z",
+      "snapshot": {
+        "serverTime": "2026-08-29T16:29:27.357Z",
+        "matchId": "35989974",
+        "matchName": "Glasgow Cosmic v Dublin Guardians",
+        "teamNames": [
+          "Glasgow Cosmic",
+          "Dublin Guardians"
+        ],
+        "inPlayPnl": {
+          "team1": 741.8656999999997,
+          "team2": -577.1234999999998
+        },
+        "inPlayTotalBets": {
+          "team1": 640.7791000000001,
+          "team2": 1265.5754999999997
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 683.97,
+            "lay": 70.56,
+            "total": 688.12
+          },
+          "team2": {
+            "back": 1306.4399999999998,
+            "lay": 4.15,
+            "total": 1376.9999999999998
+          }
+        },
+        "preMatchPnl": {
+          "team1": 741.8656999999997,
+          "team2": -577.1234999999998
+        },
+        "preMatchTotalBets": {
+          "team1": 640.7791000000001,
+          "team2": 1265.5754999999997
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 683.97,
+            "lay": 70.56,
+            "total": 688.12
+          },
+          "team2": {
+            "back": 1306.4399999999998,
+            "lay": 4.15,
+            "total": 1376.9999999999998
+          }
+        },
+        "threeMinPnl": {
+          "team1": 741.8656999999997,
+          "team2": -577.1234999999998
+        },
+        "threeMinTotalBets": {
+          "team1": 640.7791000000001,
+          "team2": 1265.5754999999997
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 683.97,
+            "lay": 70.56,
+            "total": 688.12
+          },
+          "team2": {
+            "back": 1306.4399999999998,
+            "lay": 4.15,
+            "total": 1376.9999999999998
+          }
+        },
+        "matchLoadV2": {
+          "team1": 6,
+          "team2": 5
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 683.97,
+            "lay": 70.56,
+            "totalVolume": 754.53,
+            "backPercentage": 90.64848316170333
+          },
+          "team2": {
+            "back": 1306.4399999999998,
+            "lay": 4.15,
+            "totalVolume": 1310.59,
+            "backPercentage": 99.68334872080513
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 636.6291000000001,
+            "lay": 76.2048,
+            "totalBet": 712.8339000000001
+          },
+          "team2": {
+            "back": 1195.0154999999997,
+            "lay": 4.482000000000001,
+            "totalBet": 1199.4974999999997
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 688.12,
+            "support": 33.32106608816921
+          },
+          "team2": {
+            "supportMoney": 1376.9999999999998,
+            "support": 66.67893391183078
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Dublin Guardians",
+          "bookieFavouriteOutcome": "Glasgow Cosmic",
+          "riskTeam": "Dublin Guardians",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 33.35786782366157,
+          "mostBettedTeam": "Dublin Guardians",
+          "prediction": {
+            "team1TrueSupport": 641.1111000000001,
+            "team2TrueSupport": 1271.2202999999997,
+            "ratio": 1.9828393237927087,
+            "bookiePnlTeam1": -566.0691000000002,
+            "bookiePnlTeam2": -1190.8654999999997,
+            "prediction": "Glasgow Cosmic",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.98) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 560.4243000000001,
+            "backExposure": 636.6291000000001,
+            "layExposure": 76.2048,
+            "teamName": "Glasgow Cosmic"
+          },
+          "team2": {
+            "netExposure": 1190.5334999999998,
+            "backExposure": 1195.0154999999997,
+            "layExposure": 4.482000000000001,
+            "teamName": "Dublin Guardians"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 636.6291000000001,
+            "A_lay_stake": 70.56,
+            "B_back_expo": 1195.0154999999997,
+            "B_lay_stake": 4.15
+          },
+          "totals": {
+            "totalBetTeam1": 640.7791000000001,
+            "totalBetTeam2": 1265.5754999999997
+          },
+          "simplePL": {
+            "team1_win": -566.0691000000002,
+            "team2_win": -1190.8654999999997
+          },
+          "derivedPL": {
+            "team1_win": 624.7963999999996,
+            "team2_win": -624.7963999999996
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 683.97,
+              "totalLayVol": 70.56,
+              "totalBet": 688.12,
+              "profitLoss": 688.8799999999998
+            },
+            "team2": {
+              "totalBackVol": 1306.4399999999998,
+              "totalLayVol": 4.15,
+              "totalBet": 1376.9999999999998,
+              "profitLoss": -688.8799999999998
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 636.6291000000001,
+              "totalLayVol": 70.56,
+              "totalBet": 640.7791000000001,
+              "profitLoss": 741.8656999999997
+            },
+            "team2": {
+              "totalBackExpo": 1195.0154999999997,
+              "totalLayVol": 4.15,
+              "totalBet": 1265.5754999999997,
+              "profitLoss": -577.1234999999997
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 636.6291000000001,
+              "totalLayNetVol": 76.2048,
+              "totalBet": 641.1111000000001,
+              "profitLoss": 630.1091999999996
+            },
+            "team2": {
+              "totalBackNetVol": 1195.0154999999997,
+              "totalLayNetVol": 4.482000000000001,
+              "totalBet": 1271.2202999999997,
+              "profitLoss": -630.1091999999996
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 6,
+            "averageOdds": 1.9799999999999998,
+            "averageSize": 114.68666666666667,
+            "supportProduct": 227.07959999999997
+          },
+          "teamB": {
+            "tradeCount": 5,
+            "averageOdds": 1.9479999999999997,
+            "averageSize": 275.4,
+            "supportProduct": 536.4791999999999
+          },
+          "strongerTeam": "Dublin Guardians",
+          "supportRatio": 2.3625160516400414
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 683.97,
+            "oppoLayVolume": 4.15,
+            "layExposure": 76.2048,
+            "netSupportValue": 611.9152
+          },
+          "teamB": {
+            "totalBackVolume": 1306.4399999999998,
+            "oppoLayVolume": 70.56,
+            "layExposure": 4.482000000000001,
+            "netSupportValue": 1372.5179999999998
+          },
+          "strongerTeam": "Dublin Guardians",
+          "netSupportDifference": 760.6027999999998,
+          "percentageA": 30.83576710972181,
+          "percentageB": 69.16423289027819
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 613.4100000000001,
+            "syntheticSupport": 4.15,
+            "opponentLiabilityRejection": 4.482000000000001,
+            "sentimentScore": 613.0780000000001
+          },
+          "teamB": {
+            "directNetSupport": 1302.2899999999997,
+            "syntheticSupport": 70.56,
+            "opponentLiabilityRejection": 76.2048,
+            "sentimentScore": 1296.6451999999997
+          },
+          "strongerTeam": "Dublin Guardians",
+          "scoreDifference": 683.5671999999996,
+          "percentageA": 32.102977017821225,
+          "percentageB": 67.89702298217877
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Glasgow Cosmic",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Dublin Guardians",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Glasgow Cosmic"
+        },
+        "teams": {
+          "Glasgow Cosmic": {
+            "trades": [
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.56,
+                "updatedAt": 1787992596961
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.92,
+                "type": "back",
+                "size": 243.87000000000003,
+                "updatedAt": 1787992539875
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.5,
+                "updatedAt": 1787991039983
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.25,
+                "updatedAt": 1787990274693
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2.02,
+                "type": "back",
+                "size": 13.74,
+                "updatedAt": 1787989131916
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.61,
+                "updatedAt": 1787989131916
+              }
+            ],
+            "pnlIfWins": 741.8656999999997,
+            "totalBet": 640.7791000000001
+          },
+          "Dublin Guardians": {
+            "trades": [
+              {
+                "team": "Dublin Guardians",
+                "price": 1.9,
+                "type": "back",
+                "size": 112.9,
+                "updatedAt": 1787992715256
+              },
+              {
+                "team": "Dublin Guardians",
+                "price": 1.91,
+                "type": "back",
+                "size": 579.43,
+                "updatedAt": 1787992701236
+              },
+              {
+                "team": "Dublin Guardians",
+                "price": 1.92,
+                "type": "back",
+                "size": 499.81,
+                "updatedAt": 1787992596961
+              },
+              {
+                "team": "Dublin Guardians",
+                "price": 1.93,
+                "type": "back",
+                "size": 114.30000000000001,
+                "updatedAt": 1787992582353
+              },
+              {
+                "team": "Dublin Guardians",
+                "price": 2.08,
+                "type": "lay",
+                "size": 4.15,
+                "updatedAt": 1787992539906
+              }
+            ],
+            "pnlIfWins": -577.1234999999998,
+            "totalBet": 1265.5754999999997
+          }
+        }
+      },
+      "predictedWinner": "Dublin Guardians",
+      "predictionReason": "ECS Smart Inflow on Dublin Guardians (₹1.3k Back, Lead: 1.9x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "ECS Smart Inflow on Dublin Guardians (₹1.3k Back, Lead: 1.9x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "ECS Smart Inflow on Dublin Guardians (₹1.3k Back, Lead: 1.9x)",
+          "winner": "Dublin Guardians",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-29T16:36:35.725Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Dublin Guardians"
     }
   ]
 }

@@ -1279,7 +1279,7 @@ export default function MatchDetail({ sport }) {
                         : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
                         ? 'European Cricket Series (ECS) matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
-                        ? 'Women\'s T20 matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
+                        ? 'Women\'s T20 matches evaluate Pre-Match smart money inflow margins and dual volume leadership to identify the true market winner.'
                         : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
                         ? 'TNPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
