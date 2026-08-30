@@ -27,8 +27,8 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
 
   const prePnl1 = prePnl.team1 != null ? prePnl.team1 : pnl1;
   const prePnl2 = prePnl.team2 != null ? prePnl.team2 : pnl2;
-  const preBetCount1 = preBets.team1 != null ? preBets.team1 : null;
-  const preBetCount2 = preBets.team2 != null ? preBets.team2 : null;
+  const preBetCount1 = preBets.team1 != null ? preBets.team1 : (snap?.advancedMetricsV2?.team1?.totalBet ?? snap?.deepMetrics?.totals?.totalBetTeam1 ?? snap?.teams?.[team1]?.totalBet ?? null);
+  const preBetCount2 = preBets.team2 != null ? preBets.team2 : (snap?.advancedMetricsV2?.team2?.totalBet ?? snap?.deepMetrics?.totals?.totalBetTeam2 ?? snap?.teams?.[team2]?.totalBet ?? null);
 
   const preBack1 = preVol1.back ?? b1 ?? 0;
   const preLay1 = preVol1.lay ?? l1 ?? 0;
@@ -91,8 +91,8 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && epnl2 > 1000;
 
   const preBets = snap?.preMatchTotalBets || {};
-  const bets1 = preBets.team1 || 0;
-  const bets2 = preBets.team2 || 0;
+  const bets1 = preBets.team1 != null ? preBets.team1 : (snap?.advancedMetricsV2?.team1?.totalBet ?? snap?.deepMetrics?.totals?.totalBetTeam1 ?? snap?.teams?.[team1]?.totalBet ?? 0);
+  const bets2 = preBets.team2 != null ? preBets.team2 : (snap?.advancedMetricsV2?.team2?.totalBet ?? snap?.deepMetrics?.totals?.totalBetTeam2 ?? snap?.teams?.[team2]?.totalBet ?? 0);
 
   // 1. Extreme Bookie Profit Fortress (Deficit >= 4000)
   if (epnl1 >= 4000 && epnl1 > epnl2 && epnl2 <= 0) {
