@@ -85,11 +85,6 @@ async function _callApi(endpoint, params = null, method = 'GET', _isRetry = fals
       ? await axiosInstance.get(url, { ...config, params })
       : await axiosInstance.post(url, params, config);
 
-    // 🔄 Capture any rolling/refreshed cookies from upstream to keep session alive
-    if (resp.headers?.['set-cookie']) {
-      tennisLogin.saveRefreshedCookies(resp.headers['set-cookie']);
-    }
-
     return resp.data;
   } catch (err) {
     if (err.response) {
@@ -306,14 +301,11 @@ async function pingSession() {
   if (!tennisLogin.getCookies()) return;
   try {
     const url = `${BASE_URL}${ENDPOINTS.CRICKET_MATCHES}`;
-    const resp = await axiosInstance.get(url, {
+    await axiosInstance.get(url, {
       headers: _getHeaders(),
       timeout: 8000,
       validateStatus: () => true,
     });
-    if (resp.headers?.['set-cookie']) {
-      tennisLogin.saveRefreshedCookies(resp.headers['set-cookie']);
-    }
   } catch {}
 }
 

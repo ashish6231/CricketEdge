@@ -52,67 +52,14 @@ function _applyCookies(raw, source) {
   return true;
 }
 
-// Load: disk first (contains freshest rolled cookie), fallback to env
-let _loaded = false;
-try {
-  if (fs.existsSync(COOKIES_FILE)) {
-    const saved = JSON.parse(fs.readFileSync(COOKIES_FILE, 'utf8'));
-    if (saved.cookies && saved.expiry && Date.now() < saved.expiry) {
-      _sessionCookies = saved.cookies;
-      _sessionExpiry = saved.expiry;
-      _loaded = true;
-      console.log('✅ tennisliveload: loaded saved rolling session from disk');
-    }
-  }
-} catch {}
-
-if (!_loaded) {
-  _applyCookies(process.env.TENNIS_SESSION_COOKIES, 'TENNIS_SESSION_COOKIES env');
-}
+// Strictly load manual cookies from env
+_applyCookies(process.env.TENNIS_SESSION_COOKIES, 'TENNIS_SESSION_COOKIES env');
 
 function _persist() {
   try { 
     fs.writeFileSync(COOKIES_FILE, JSON.stringify({ cookies: _sessionCookies, expiry: _sessionExpiry })); 
     process.env.TENNIS_SESSION_COOKIES = _sessionCookies;
   } catch {}
-}
-
-/**
- * Capture and merge any rolling cookies from upstream response headers
- */
-function saveRefreshedCookies(setCookieHeader) {
-  if (!setCookieHeader) return;
-  const cookieList = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
-  if (!cookieList.length) return;
-
-  const currentMap = new Map();
-  if (_sessionCookies) {
-    _sessionCookies.split(';').forEach(c => {
-      const parts = c.trim().split('=');
-      if (parts[0]) currentMap.set(parts[0], parts.slice(1).join('='));
-    });
-  }
-
-  let updated = false;
-  cookieList.forEach(raw => {
-    const firstPart = raw.split(';')[0];
-    const [name, ...valParts] = firstPart.trim().split('=');
-    if (name && valParts.length) {
-      const val = valParts.join('=');
-      if (currentMap.get(name) !== val) {
-        currentMap.set(name, val);
-        updated = true;
-      }
-    }
-  });
-
-  if (updated) {
-    const merged = Array.from(currentMap.entries()).map(([k, v]) => `${k}=${v}`).join('; ');
-    _sessionCookies = merged;
-    _sessionExpiry = Date.now() + COOKIE_TTL_MS;
-    _persist();
-    console.log('🔄 tennisliveload: captured and saved rolling refreshed cookie');
-  }
 }
 
 function isSessionValid() {
@@ -242,4 +189,4 @@ async function startAutoLogin() {
   }
 }
 
-module.exports = { login, getCookies, isConnected, startAutoLogin, autoRelogin, saveRefreshedCookies, updateCookies };
+module.exports = { login, getCookies, isConnected, startAutoLogin, autoRelogin, updateCookies };
