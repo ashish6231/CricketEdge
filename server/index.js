@@ -182,6 +182,7 @@ function shutdown(signal) {
   console.log(`\n${signal} received, shutting down...`);
   tossCaptureWorker?.stop();
   matchCaptureWorker?.stop();
+  scraper.stopSessionKeepAlive();
 
   server.close(async closeError => {
     if (shutdownComplete) return;
@@ -234,4 +235,5 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 
   tennisLogin.startAutoLogin();
   scraper.warmup();
+  scraper.startSessionKeepAlive();
 })();
