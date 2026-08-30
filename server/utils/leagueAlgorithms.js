@@ -85,27 +85,12 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
 }
 
 function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const totBack = b1 + b2;
   const backRatio = Math.min(b1, b2) > 0 ? Math.max(b1, b2) / Math.min(b1, b2) : (Math.max(b1, b2) > 0 ? 99 : 1);
   const isLayAbsorbed1 = l1 >= b1 * 1.8 && l1 > l2 && epnl1 > 1000;
   const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && epnl2 > 1000;
 
-  // 1. Massive Lay Shield + Bookie PnL Dominance (e.g. Antigua vs St. Kitts)
-  if (isLayAbsorbed1 && b1 > b2) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
-  }
-  if (isLayAbsorbed2 && b2 > b1) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
-  }
-
-  // 2. High Liquidity Dual Flow Dominance (e.g. Trinbago 47.6k Back & 32.5k Lay vs Barbados 6.8k Back & 12.4k Lay)
-  if (b1 > b2 && l1 > l2 && (b1 >= b2 * 2.0 && l1 >= l2 * 2.0)) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Dominance' };
-  }
-  if (b2 > b1 && l2 > l1 && (b2 >= b1 * 2.0 && l2 >= l1 * 2.0)) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Dominance' };
-  }
-
-  // 3. Extreme Bookie Profit Fortress (PnL >= 4000)
+  // 1. Extreme Bookie Profit Fortress (PnL >= 4000 or high liquidity trap)
   if (epnl1 >= 4000 && epnl1 > epnl2) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
@@ -113,21 +98,31 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
 
-  // 4. Blowout Smart Money Back Inflow (BackRatio >= 4.0x with genuine liquidity totBack >= 500)
-  const totBack = b1 + b2;
-  if (backRatio >= 4.0 && totBack >= 500) {
+  // 2. Massive Lay Shield + Bookie PnL Dominance (e.g. Antigua vs St. Kitts)
+  if (isLayAbsorbed1 && b1 > b2) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
+  }
+  if (isLayAbsorbed2 && b2 > b1) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
+  }
+
+  // 3. Dominant Smart Money Blowout (BackRatio >= 3.5x with genuine liquidity totBack >= 500)
+  if (backRatio >= 3.5 && totBack >= 500) {
     return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dominant Inflow Blowout' };
   }
 
-  // 5. Dual Inflow & Lay Advantage (Both Back AND Lay higher with tight P/L)
-  if (b1 > b2 && l1 > l2 && epnl1 < 500 && epnl2 < 500) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
-  }
-  if (b2 > b1 && l2 > l1 && epnl2 < 500 && epnl1 < 500) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
+  // 4. Genuine Dual Flow Dominance with balanced/low liability (abs(pnl1 - pnl2) < 900)
+  if (Math.abs(epnl1 - epnl2) < 900) {
+    if (b1 > b2 && l1 > l2) {
+      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
+    }
+    if (b2 > b1 && l2 > l1) {
+      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
+    }
   }
 
-  // 6. Bookie Trap (Higher Bookmaker P/L / Fade the Public)
+  // 5. Significant Bookie Trap Fade (abs(pnl1 - pnl2) >= 900)
+  // When public money creates >= 900 deficit, the bookmaker safe profit team wins!
   if (epnl1 > epnl2) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
@@ -135,7 +130,7 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
 
-  // 7. Volume Leader fallback
+  // 6. Volume Leader fallback
   return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Volume Leader' };
 }
 
@@ -382,7 +377,21 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 }
 
 function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2) {
-  // Tier 1: Highest Confidence (BackVol > AND LayVol > AND PNL <)
+  const m1 = b1 + l1;
+  const m2 = b2 + l2;
+  const totMoney = m1 + m2;
+  const m1Pct = totMoney > 0 ? (m1 / totMoney) * 100 : 50;
+  const m2Pct = totMoney > 0 ? (m2 / totMoney) * 100 : 50;
+
+  // Tier 1: Highest Confidence (BackVol > AND LayVol > AND Total Money > AND PNL <)
+  if (b1 > b2 && l1 > l2 && m1 > m2 && pnl1 < pnl2) {
+    return { winner: team1, tier: 1, confidence: '99% Sure (Maximum Money + Back + Lay Alignment)' };
+  }
+  if (b2 > b1 && l2 > l1 && m2 > m1 && pnl2 < pnl1) {
+    return { winner: team2, tier: 1, confidence: '99% Sure (Maximum Money + Back + Lay Alignment)' };
+  }
+
+  // Tier 1b: Dual Advantage (BackVol > AND LayVol > AND PNL <)
   if (b1 > b2 && l1 > l2 && pnl1 < pnl2) {
     return { winner: team1, tier: 1, confidence: '99% Sure (Strong Buy)' };
   }
@@ -390,7 +399,15 @@ function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2)
     return { winner: team2, tier: 1, confidence: '99% Sure (Strong Buy)' };
   }
 
-  // Tier 2: Volume Margin (BackVol > 1.4x)
+  // Tier 2a: Maximum Total Money Dominance Lead (Total Money >= 1.5x / 60%+ share)
+  if (m1 >= (m2 || 1) * 1.5 && m1 > m2) {
+    return { winner: team1, tier: 2, confidence: `82% Maximum Money Lead (${m1Pct.toFixed(0)}% Share)` };
+  }
+  if (m2 >= (m1 || 1) * 1.5 && m2 > m1) {
+    return { winner: team2, tier: 2, confidence: `82% Maximum Money Lead (${m2Pct.toFixed(0)}% Share)` };
+  }
+
+  // Tier 2b: Volume Margin (BackVol > 1.4x)
   if (b1 >= b2 * 1.4) {
     return { winner: team1, tier: 2, confidence: '75% Sure (Good Buy)' };
   }
@@ -398,7 +415,15 @@ function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2)
     return { winner: team2, tier: 2, confidence: '75% Sure (Good Buy)' };
   }
 
-  // Tier 3: Dominant Back Volume leader fallback
+  // Tier 3: Maximum Total Money Leader
+  if (m1 > m2) {
+    return { winner: team1, tier: 3, confidence: `68% Money Leader (${m1Pct.toFixed(0)}% Share)` };
+  }
+  if (m2 > m1) {
+    return { winner: team2, tier: 3, confidence: `68% Money Leader (${m2Pct.toFixed(0)}% Share)` };
+  }
+
+  // Tier 4: Dominant Back Volume leader fallback
   if (b1 > b2) {
     return { winner: team1, tier: 3, confidence: '65% Volume Lead' };
   }
