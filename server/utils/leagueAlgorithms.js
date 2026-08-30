@@ -90,11 +90,15 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const isLayAbsorbed1 = l1 >= b1 * 1.8 && l1 > l2 && epnl1 > 1000;
   const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && epnl2 > 1000;
 
-  const preBets = snap?.preMatchTotalBets || {};
-  const bets1 = preBets.team1 != null ? preBets.team1 : (snap?.advancedMetricsV2?.team1?.totalBet ?? snap?.deepMetrics?.totals?.totalBetTeam1 ?? snap?.teams?.[team1]?.totalBet ?? 0);
-  const bets2 = preBets.team2 != null ? preBets.team2 : (snap?.advancedMetricsV2?.team2?.totalBet ?? snap?.deepMetrics?.totals?.totalBetTeam2 ?? snap?.teams?.[team2]?.totalBet ?? 0);
+  // 1. Extreme Public Trap & Lay Dump Fade (e.g. Trinbago 85% back volume ₹25.6k vs Jamaica ₹4.6k with massive ₹51.3k Lay Dump)
+  if (totBack >= 5000 && b1 >= b2 * 4.0 && l1 >= b1 * 1.8) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Public Trap & Lay Dump Fade' };
+  }
+  if (totBack >= 5000 && b2 >= b1 * 4.0 && l2 >= b2 * 1.8) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Public Trap & Lay Dump Fade' };
+  }
 
-  // 1. Extreme Bookie Profit Fortress (Deficit >= 4000)
+  // 2. Extreme Bookie Profit Fortress (Deficit >= 4000)
   if (epnl1 >= 4000 && epnl1 > epnl2 && epnl2 <= 0) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
@@ -102,7 +106,7 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
 
-  // 2. Massive Lay Shield + Bookie PnL Dominance (e.g. Antigua vs St. Kitts)
+  // 3. Massive Lay Shield + Bookie PnL Dominance (e.g. Antigua vs St. Kitts)
   if (isLayAbsorbed1 && b1 > b2) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
   }
@@ -110,28 +114,18 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield' };
   }
 
-  // 3. Dominant Smart Money Blowout (BackRatio >= 3.5x with genuine liquidity totBack >= 500)
+  // 4. Dominant Smart Money Blowout (BackRatio >= 3.5x with genuine liquidity totBack >= 500)
   if (backRatio >= 3.5 && totBack >= 500 && Math.abs(epnl1 - epnl2) < 4000) {
     return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dominant Inflow Blowout' };
   }
 
-  // 4. Significant Bookie Trap Fade (When one team has a deficit and liability diff >= 900)
+  // 5. Significant Bookie Trap Fade (When one team has a deficit and liability diff >= 900)
   if ((epnl1 < 0 || epnl2 < 0) && Math.abs(epnl1 - epnl2) >= 900) {
     if (epnl1 > epnl2) {
       return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
     }
     if (epnl2 > epnl1) {
       return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
-    }
-  }
-
-  // 5. Total Bets Activity Dominance (When both teams are safe or balanced PnL)
-  if (bets1 > 0 || bets2 > 0) {
-    if (bets1 >= bets2 * 1.25) {
-      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Total Bets Leader' };
-    }
-    if (bets2 >= bets1 * 1.25) {
-      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Total Bets Leader' };
     }
   }
 

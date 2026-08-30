@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-30T00:29:05.772Z",
+  "updatedAt": "2026-08-30T10:37:23.865Z",
   "records": [
     {
       "matchId": "35901908",
@@ -82515,6 +82515,5935 @@
       "confirmedById": null,
       "status": "pending",
       "actualWinner": null
+    },
+    {
+      "matchId": "35997363",
+      "marketId": "1.261689547",
+      "matchName": "Trinbago Knight Riders v Jamaica Kingsmen",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Trinbago Knight Riders",
+      "team2": "Jamaica Kingsmen",
+      "startTime": 1788044400000,
+      "endedAt": "2026-08-30T10:37:23.858Z",
+      "capturedAt": "2026-08-30T10:37:23.858Z",
+      "snapshot": {
+        "serverTime": "2026-08-30T10:37:23.753Z",
+        "matchId": "35997363",
+        "matchName": "Trinbago Knight Riders v Jamaica Kingsmen",
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "Jamaica Kingsmen"
+        ],
+        "inPlayPnl": {
+          "team1": 6246.412099999972,
+          "team2": -5619.945399999998
+        },
+        "inPlayTotalBets": {
+          "team1": 100750.71640000002,
+          "team2": 169542.67479999998
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 149975.51999999993,
+            "lay": 151526.59999999998,
+            "total": 158609.95999999993
+          },
+          "team2": {
+            "back": 11356.460000000001,
+            "lay": 8634.44,
+            "total": 162883.05999999997
+          }
+        },
+        "preMatchPnl": {
+          "team1": 14243.313600000001,
+          "team2": -23714.02479999998
+        },
+        "preMatchTotalBets": {
+          "team1": 21434.4035,
+          "team2": 58881.8478
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 25660.270000000015,
+            "lay": 51387.72,
+            "total": 31452.810000000016
+          },
+          "team2": {
+            "back": 4613.61,
+            "lay": 5792.54,
+            "total": 56001.33
+          }
+        },
+        "threeMinPnl": {
+          "team1": 34232.34229999999,
+          "team2": -52718.82919999998
+        },
+        "threeMinTotalBets": {
+          "team1": 65026.508300000016,
+          "team2": 157273.71799999996
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 90862.06999999998,
+            "lay": 141525.64999999997,
+            "total": 99339.35999999999
+          },
+          "team2": {
+            "back": 9928.82,
+            "lay": 8477.290000000003,
+            "total": 151454.46999999997
+          }
+        },
+        "matchLoadV2": {
+          "team1": 397,
+          "team2": 405
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 5664601.3,
+            "lay": 6177870.880000006,
+            "totalVolume": 11842472.180000007,
+            "backPercentage": 47.83292891805633
+          },
+          "team2": {
+            "back": 1973279.7899999998,
+            "lay": 1936136.7899999993,
+            "totalVolume": 3909416.579999999,
+            "backPercentage": 50.475045307144015
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 2713086.689100001,
+            "lay": 3026767.5949000022,
+            "totalBet": 5739854.284000004
+          },
+          "team2": {
+            "back": 1099924.3142999995,
+            "lay": 1125754.7379000008,
+            "totalBet": 2225679.0522000003
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 7600738.089999999,
+            "support": 48.25286799447914
+          },
+          "team2": {
+            "supportMoney": 8151150.670000006,
+            "support": 51.74713200552087
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Jamaica Kingsmen",
+          "bookieFavouriteOutcome": "Trinbago Knight Riders",
+          "riskTeam": "Jamaica Kingsmen",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 3.4942640110417287,
+          "mostBettedTeam": "Jamaica Kingsmen",
+          "prediction": {
+            "team1TrueSupport": 3049500.7551999995,
+            "team2TrueSupport": 3532965.502199999,
+            "ratio": 1.1585389825451253,
+            "bookiePnlTeam1": 2417933.471200006,
+            "bookiePnlTeam2": 226437.24300000037,
+            "prediction": "Jamaica Kingsmen",
+            "pattern": "The Alignment",
+            "reason": "Strong validation (1.16) and Bookie profits if Favorite wins. Crowd and Bookie are aligned."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -454816.1755000029,
+            "backExposure": 1958910.1010999985,
+            "layExposure": 2413726.2766000014,
+            "teamName": "Trinbago Knight Riders"
+          },
+          "team2": {
+            "netExposure": 1827.1683999995003,
+            "backExposure": 1021168.188,
+            "layExposure": 1019341.0196000005,
+            "teamName": "Jamaica Kingsmen"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 2713086.689100001,
+            "A_lay_stake": 6177870.880000006,
+            "B_back_expo": 1099924.3142999995,
+            "B_lay_stake": 1936136.7899999993
+          },
+          "totals": {
+            "totalBetTeam1": 4649223.4791,
+            "totalBetTeam2": 7277795.194300006
+          },
+          "simplePL": {
+            "team1_win": 3464784.1909000054,
+            "team2_win": 836212.4756999998
+          },
+          "derivedPL": {
+            "team1_win": 2628571.715200006,
+            "team2_win": -2628571.715200006
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 5664601.3,
+              "totalLayVol": 6177870.880000006,
+              "totalBet": 7600738.089999999,
+              "profitLoss": 550412.5800000075
+            },
+            "team2": {
+              "totalBackVol": 1973279.7899999998,
+              "totalLayVol": 1936136.7899999993,
+              "totalBet": 8151150.670000006,
+              "profitLoss": -550412.5800000075
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 2713086.689100001,
+              "totalLayVol": 6177870.880000006,
+              "totalBet": 4649223.4791,
+              "profitLoss": 350823.9058000017
+            },
+            "team2": {
+              "totalBackExpo": 1099924.3142999995,
+              "totalLayVol": 1936136.7899999993,
+              "totalBet": 7277795.194300006,
+              "profitLoss": -487439.15640000533
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 2713086.689100001,
+              "totalLayNetVol": 3026767.5949000022,
+              "totalBet": 3838841.427000002,
+              "profitLoss": 287850.4821999995
+            },
+            "team2": {
+              "totalBackNetVol": 1099924.3142999995,
+              "totalLayNetVol": 1125754.7379000008,
+              "totalBet": 4126691.9092000015,
+              "profitLoss": -287850.4821999995
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 397,
+            "averageOdds": 8.016120906801007,
+            "averageSize": 19145.435994962216,
+            "supportProduct": 153472.12974903715
+          },
+          "teamB": {
+            "tradeCount": 405,
+            "averageOdds": 7.159086419753087,
+            "averageSize": 20126.297950617303,
+            "supportProduct": 144085.90633816872
+          },
+          "strongerTeam": "Trinbago Knight Riders",
+          "supportRatio": 1.065143244397818
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 5664601.3,
+            "oppoLayVolume": 1936136.7899999993,
+            "layExposure": 3026767.5949000022,
+            "netSupportValue": 4573970.495099997
+          },
+          "teamB": {
+            "totalBackVolume": 1973279.7899999998,
+            "oppoLayVolume": 6177870.880000006,
+            "layExposure": 1125754.7379000008,
+            "netSupportValue": 7025395.932100005
+          },
+          "strongerTeam": "Jamaica Kingsmen",
+          "netSupportDifference": 2451425.4370000083,
+          "percentageA": 39.432933891753244,
+          "percentageB": 60.567066108246756
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -513269.5800000066,
+            "syntheticSupport": 1936136.7899999993,
+            "opponentLiabilityRejection": 1125754.7379000008,
+            "sentimentScore": 297112.472099992
+          },
+          "teamB": {
+            "directNetSupport": 37143.000000000466,
+            "syntheticSupport": 6177870.880000006,
+            "opponentLiabilityRejection": 3026767.5949000022,
+            "sentimentScore": 3188246.285100004
+          },
+          "strongerTeam": "Jamaica Kingsmen",
+          "scoreDifference": 2891133.813000012,
+          "percentageA": 8.52458793477779,
+          "percentageB": 91.4754120652222
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Trinbago Knight Riders",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Jamaica Kingsmen",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Trinbago Knight Riders"
+        },
+        "teams": {
+          "Trinbago Knight Riders": {
+            "trades": [
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1000,
+                "type": "back",
+                "size": 34.01,
+                "updatedAt": 1788061085540
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 300,
+                "type": "lay",
+                "size": 3.25,
+                "updatedAt": 1788060626075
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 290,
+                "type": "lay",
+                "size": 5.65,
+                "updatedAt": 1788060624074
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 280,
+                "type": "lay",
+                "size": 5.65,
+                "updatedAt": 1788060624074
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 200,
+                "type": "lay",
+                "size": 14.11,
+                "updatedAt": 1788060623556
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 150,
+                "type": "back",
+                "size": 2.41,
+                "updatedAt": 1788060612032
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 170,
+                "type": "back",
+                "size": 28.23,
+                "updatedAt": 1788060585883
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 160,
+                "type": "back",
+                "size": 35.17,
+                "updatedAt": 1788060585883
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 160,
+                "type": "lay",
+                "size": 70.56,
+                "updatedAt": 1788060565733
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 130,
+                "type": "back",
+                "size": 10.89,
+                "updatedAt": 1788060558720
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 150,
+                "type": "lay",
+                "size": 4.8,
+                "updatedAt": 1788060557207
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 120,
+                "type": "back",
+                "size": 0.24,
+                "updatedAt": 1788060540637
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 100,
+                "type": "back",
+                "size": 10.64,
+                "updatedAt": 1788060511489
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 50,
+                "type": "back",
+                "size": 1299.99,
+                "updatedAt": 1788060497932
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 50,
+                "type": "lay",
+                "size": 698.4600000000002,
+                "updatedAt": 1788060454135
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 48,
+                "type": "lay",
+                "size": 10.16,
+                "updatedAt": 1788060454135
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 42,
+                "type": "back",
+                "size": 10.51,
+                "updatedAt": 1788060451632
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 36,
+                "type": "back",
+                "size": 114.03999999999999,
+                "updatedAt": 1788060397809
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 34,
+                "type": "back",
+                "size": 129.07000000000002,
+                "updatedAt": 1788060397809
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 34,
+                "type": "lay",
+                "size": 1.3299999999999983,
+                "updatedAt": 1788060389611
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 28,
+                "type": "back",
+                "size": 7.73,
+                "updatedAt": 1788060384571
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 26,
+                "type": "back",
+                "size": 30.830000000000002,
+                "updatedAt": 1788060373034
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 27,
+                "type": "back",
+                "size": 2.65,
+                "updatedAt": 1788060366996
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 25,
+                "type": "lay",
+                "size": 1.4,
+                "updatedAt": 1788060361309
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 21,
+                "type": "back",
+                "size": 61.66,
+                "updatedAt": 1788060357792
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 26,
+                "type": "lay",
+                "size": 4.23,
+                "updatedAt": 1788060340212
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 46,
+                "type": "lay",
+                "size": 1.75,
+                "updatedAt": 1788060330571
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 40,
+                "type": "lay",
+                "size": 13.39,
+                "updatedAt": 1788060295744
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 36,
+                "type": "lay",
+                "size": 1.0500000000000007,
+                "updatedAt": 1788060295744
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 22,
+                "type": "lay",
+                "size": 66.96,
+                "updatedAt": 1788060248944
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 20,
+                "type": "lay",
+                "size": 2.62,
+                "updatedAt": 1788060238947
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 19.5,
+                "type": "lay",
+                "size": 11.94,
+                "updatedAt": 1788060238947
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 18.5,
+                "type": "lay",
+                "size": 12.28,
+                "updatedAt": 1788060238947
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 18,
+                "type": "lay",
+                "size": 13.18,
+                "updatedAt": 1788060238947
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 15.5,
+                "type": "lay",
+                "size": 1.33,
+                "updatedAt": 1788060236498
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 15,
+                "type": "back",
+                "size": 3.16,
+                "updatedAt": 1788060236498
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 14.5,
+                "type": "lay",
+                "size": 11.53,
+                "updatedAt": 1788060235843
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 14,
+                "type": "lay",
+                "size": 40.16,
+                "updatedAt": 1788060235843
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 13.5,
+                "type": "lay",
+                "size": 1.58,
+                "updatedAt": 1788060234834
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 12,
+                "type": "back",
+                "size": 75.37,
+                "updatedAt": 1788060231827
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 12,
+                "type": "lay",
+                "size": 28.89,
+                "updatedAt": 1788060227796
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 11,
+                "type": "back",
+                "size": 578.02,
+                "updatedAt": 1788060227306
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 11,
+                "type": "lay",
+                "size": 461.17,
+                "updatedAt": 1788060222820
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 10,
+                "type": "lay",
+                "size": 32.81,
+                "updatedAt": 1788060222820
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 9.4,
+                "type": "back",
+                "size": 6.14,
+                "updatedAt": 1788060221828
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 9.2,
+                "type": "back",
+                "size": 102.26,
+                "updatedAt": 1788060221828
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8.8,
+                "type": "lay",
+                "size": 1.3399999999999999,
+                "updatedAt": 1788060218259
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8,
+                "type": "lay",
+                "size": 116.71,
+                "updatedAt": 1788060214166
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7.6,
+                "type": "lay",
+                "size": 70.78,
+                "updatedAt": 1788060212151
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8,
+                "type": "back",
+                "size": 20.51,
+                "updatedAt": 1788060209161
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7.6,
+                "type": "back",
+                "size": 22.620000000000008,
+                "updatedAt": 1788060209161
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7.2,
+                "type": "back",
+                "size": 30.96,
+                "updatedAt": 1788060205620
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7.8,
+                "type": "back",
+                "size": 28.69,
+                "updatedAt": 1788060201120
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8.2,
+                "type": "back",
+                "size": 2.6999999999999997,
+                "updatedAt": 1788060192614
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7.2,
+                "type": "lay",
+                "size": 60.71,
+                "updatedAt": 1788060190967
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7,
+                "type": "lay",
+                "size": 13.190000000000001,
+                "updatedAt": 1788060190967
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.8,
+                "type": "back",
+                "size": 24.100000000000016,
+                "updatedAt": 1788060185010
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.6,
+                "type": "back",
+                "size": 5.100000000000003,
+                "updatedAt": 1788060179825
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.4,
+                "type": "back",
+                "size": 1.3599999999999932,
+                "updatedAt": 1788060179825
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7.4,
+                "type": "back",
+                "size": 5.35,
+                "updatedAt": 1788060171127
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 7,
+                "type": "back",
+                "size": 5.31,
+                "updatedAt": 1788060148141
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.8,
+                "type": "lay",
+                "size": 128.26,
+                "updatedAt": 1788060139098
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.4,
+                "type": "lay",
+                "size": 115.39000000000001,
+                "updatedAt": 1788060138326
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.6,
+                "type": "lay",
+                "size": 30.99,
+                "updatedAt": 1788060133558
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.2,
+                "type": "back",
+                "size": 19.380000000000003,
+                "updatedAt": 1788060133558
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6,
+                "type": "back",
+                "size": 77.04,
+                "updatedAt": 1788060131539
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6,
+                "type": "lay",
+                "size": 32.849999999999994,
+                "updatedAt": 1788060129349
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.8,
+                "type": "lay",
+                "size": 17.83,
+                "updatedAt": 1788060129349
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.8,
+                "type": "back",
+                "size": 30.29,
+                "updatedAt": 1788060121880
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.4,
+                "type": "lay",
+                "size": 2.6300000000000003,
+                "updatedAt": 1788060117459
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.5,
+                "type": "back",
+                "size": 0.08,
+                "updatedAt": 1788060113349
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.4,
+                "type": "back",
+                "size": 2.65,
+                "updatedAt": 1788060111833
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.3,
+                "type": "back",
+                "size": 28.25,
+                "updatedAt": 1788060111833
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8.8,
+                "type": "back",
+                "size": 1.33,
+                "updatedAt": 1788060089658
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8.6,
+                "type": "back",
+                "size": 43.86,
+                "updatedAt": 1788060089658
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8.4,
+                "type": "back",
+                "size": 47.36,
+                "updatedAt": 1788060089658
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 10,
+                "type": "back",
+                "size": 70.31,
+                "updatedAt": 1788060076604
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 10.5,
+                "type": "lay",
+                "size": 155.17000000000002,
+                "updatedAt": 1788060060925
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 10.5,
+                "type": "back",
+                "size": 0.04,
+                "updatedAt": 1788060021575
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 9.4,
+                "type": "lay",
+                "size": 0.41,
+                "updatedAt": 1788060016555
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 9,
+                "type": "lay",
+                "size": 13.83,
+                "updatedAt": 1788060016555
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8.6,
+                "type": "lay",
+                "size": 40.06999999999999,
+                "updatedAt": 1788060016555
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 8.2,
+                "type": "lay",
+                "size": 2.65,
+                "updatedAt": 1788060006494
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 6.2,
+                "type": "lay",
+                "size": 29.83,
+                "updatedAt": 1788060002358
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.7,
+                "type": "lay",
+                "size": 209.51,
+                "updatedAt": 1788060000881
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 5.2,
+                "type": "lay",
+                "size": 3.01,
+                "updatedAt": 1788059996836
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 4.8,
+                "type": "lay",
+                "size": 18.32,
+                "updatedAt": 1788059996441
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 4.7,
+                "type": "lay",
+                "size": 2.99,
+                "updatedAt": 1788059995342
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 4.5,
+                "type": "lay",
+                "size": 22.98,
+                "updatedAt": 1788059994838
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 4.2,
+                "type": "lay",
+                "size": 208.15,
+                "updatedAt": 1788059993822
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 4.1,
+                "type": "lay",
+                "size": 38.58,
+                "updatedAt": 1788059992807
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 4,
+                "type": "lay",
+                "size": 1036.96,
+                "updatedAt": 1788059989400
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.85,
+                "type": "lay",
+                "size": 4439.99,
+                "updatedAt": 1788059989400
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.75,
+                "type": "lay",
+                "size": 251.22999999999996,
+                "updatedAt": 1788059988283
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.7,
+                "type": "lay",
+                "size": 59.78,
+                "updatedAt": 1788059988283
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.9,
+                "type": "back",
+                "size": 1035.8899999999999,
+                "updatedAt": 1788059974148
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.85,
+                "type": "back",
+                "size": 2361.26,
+                "updatedAt": 1788059974148
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.9,
+                "type": "lay",
+                "size": 274.35,
+                "updatedAt": 1788059973659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.75,
+                "type": "back",
+                "size": 117.35000000000004,
+                "updatedAt": 1788059963609
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.5,
+                "type": "lay",
+                "size": 90.32,
+                "updatedAt": 1788059961011
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.45,
+                "type": "lay",
+                "size": 59.94999999999999,
+                "updatedAt": 1788059959603
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.4,
+                "type": "lay",
+                "size": 34.169999999999995,
+                "updatedAt": 1788059959083
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.35,
+                "type": "back",
+                "size": 59.97000000000004,
+                "updatedAt": 1788059959083
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.15,
+                "type": "back",
+                "size": 6789.6500000000015,
+                "updatedAt": 1788059957111
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.1,
+                "type": "back",
+                "size": 1156.09,
+                "updatedAt": 1788059955563
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.05,
+                "type": "back",
+                "size": 116.53999999999992,
+                "updatedAt": 1788059954066
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.05,
+                "type": "lay",
+                "size": 1073.72,
+                "updatedAt": 1788059952047
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.98,
+                "type": "back",
+                "size": 27.569999999999993,
+                "updatedAt": 1788059952047
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.96,
+                "type": "back",
+                "size": 243.9299999999999,
+                "updatedAt": 1788059952047
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.96,
+                "type": "lay",
+                "size": 291.8400000000001,
+                "updatedAt": 1788059951050
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.94,
+                "type": "back",
+                "size": 31.18,
+                "updatedAt": 1788059947029
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.92,
+                "type": "lay",
+                "size": 202.77000000000004,
+                "updatedAt": 1788059944999
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.9,
+                "type": "lay",
+                "size": 23.090000000000007,
+                "updatedAt": 1788059944386
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.88,
+                "type": "lay",
+                "size": 5.450000000000074,
+                "updatedAt": 1788059943898
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.86,
+                "type": "back",
+                "size": 25.77,
+                "updatedAt": 1788059941877
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.84,
+                "type": "lay",
+                "size": 29.449999999999996,
+                "updatedAt": 1788059934829
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.82,
+                "type": "back",
+                "size": 248.2400000000001,
+                "updatedAt": 1788059934323
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.76,
+                "type": "lay",
+                "size": 2.6099999999999994,
+                "updatedAt": 1788059932825
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.74,
+                "type": "back",
+                "size": 355.63000000000005,
+                "updatedAt": 1788059931818
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.74,
+                "type": "lay",
+                "size": 83.24,
+                "updatedAt": 1788059928291
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.7,
+                "type": "lay",
+                "size": 11.339999999999996,
+                "updatedAt": 1788059927312
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.68,
+                "type": "lay",
+                "size": 44.129999999999995,
+                "updatedAt": 1788059926304
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.5,
+                "type": "lay",
+                "size": 791.7200000000003,
+                "updatedAt": 1788059922786
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.48,
+                "type": "lay",
+                "size": 139.94,
+                "updatedAt": 1788059921278
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.4,
+                "type": "back",
+                "size": 543.49,
+                "updatedAt": 1788059917759
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.42,
+                "type": "back",
+                "size": 37.24000000000004,
+                "updatedAt": 1788059916747
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.44,
+                "type": "back",
+                "size": 178.29999999999998,
+                "updatedAt": 1788059916258
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.38,
+                "type": "back",
+                "size": 351.33,
+                "updatedAt": 1788059916211
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.34,
+                "type": "lay",
+                "size": 359.6699999999999,
+                "updatedAt": 1788059910205
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.32,
+                "type": "lay",
+                "size": 554.5699999999999,
+                "updatedAt": 1788059910205
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.3,
+                "type": "back",
+                "size": 305.54999999999865,
+                "updatedAt": 1788059908678
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.28,
+                "type": "back",
+                "size": 2936.2200000000007,
+                "updatedAt": 1788059901636
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.26,
+                "type": "back",
+                "size": 1477.9599999999998,
+                "updatedAt": 1788059893587
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.26,
+                "type": "lay",
+                "size": 1697.14,
+                "updatedAt": 1788059883740
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.24,
+                "type": "lay",
+                "size": 1801.3599999999997,
+                "updatedAt": 1788059883740
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.32,
+                "type": "back",
+                "size": 1929.05,
+                "updatedAt": 1788059873175
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.3,
+                "type": "lay",
+                "size": 8821.78,
+                "updatedAt": 1788059870161
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.28,
+                "type": "lay",
+                "size": 3860.4199999999996,
+                "updatedAt": 1788059869168
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.24,
+                "type": "back",
+                "size": 1648.8500000000001,
+                "updatedAt": 1788059856023
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.22,
+                "type": "lay",
+                "size": 3913.059999999999,
+                "updatedAt": 1788059847407
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.2,
+                "type": "lay",
+                "size": 6924.230000000002,
+                "updatedAt": 1788059843887
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.18,
+                "type": "lay",
+                "size": 16745.29,
+                "updatedAt": 1788059842389
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.16,
+                "type": "back",
+                "size": 25362.940000000002,
+                "updatedAt": 1788059840955
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.16,
+                "type": "lay",
+                "size": 6574.5999999999985,
+                "updatedAt": 1788059831319
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.22,
+                "type": "back",
+                "size": 6873.68,
+                "updatedAt": 1788059821244
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.2,
+                "type": "back",
+                "size": 1907.2899999999981,
+                "updatedAt": 1788059775342
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.36,
+                "type": "lay",
+                "size": 51.309999999999995,
+                "updatedAt": 1788059718838
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.34,
+                "type": "back",
+                "size": 3331.99,
+                "updatedAt": 1788059718838
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.36,
+                "type": "back",
+                "size": 12.250000000000002,
+                "updatedAt": 1788059708800
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.12,
+                "type": "back",
+                "size": 9753.849999999999,
+                "updatedAt": 1788059678670
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.1,
+                "type": "back",
+                "size": 15478.060000000005,
+                "updatedAt": 1788059677655
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.08,
+                "type": "back",
+                "size": 6677.650000000001,
+                "updatedAt": 1788059677655
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.04,
+                "type": "back",
+                "size": 3826.9700000000003,
+                "updatedAt": 1788059676153
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "lay",
+                "size": 8374.65999999999,
+                "updatedAt": 1788059672013
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "lay",
+                "size": 1930.5799999999995,
+                "updatedAt": 1788059671020
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.98,
+                "type": "lay",
+                "size": 4225.860000000006,
+                "updatedAt": 1788059669993
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.65,
+                "type": "lay",
+                "size": 49557.07000000001,
+                "updatedAt": 1788059656429
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "back",
+                "size": 3178.78,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "back",
+                "size": 31481.150000000005,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.98,
+                "type": "back",
+                "size": 25034.229999999996,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.96,
+                "type": "back",
+                "size": 24196.290000000005,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.94,
+                "type": "back",
+                "size": 15824.310000000003,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.91,
+                "type": "back",
+                "size": 3731.879999999999,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.9,
+                "type": "back",
+                "size": 18689.26999999999,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.87,
+                "type": "back",
+                "size": 480.82999999999987,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.86,
+                "type": "back",
+                "size": 17165.709999999995,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.75,
+                "type": "back",
+                "size": 10147.439999999999,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.73,
+                "type": "back",
+                "size": 47534.09000000001,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.72,
+                "type": "back",
+                "size": 49801.14,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.7,
+                "type": "back",
+                "size": 111015.65000000001,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.68,
+                "type": "back",
+                "size": 19928.85000000001,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.67,
+                "type": "back",
+                "size": 63462.92000000002,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.66,
+                "type": "back",
+                "size": 28647.389999999996,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.65,
+                "type": "back",
+                "size": 27007.779999999995,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.78,
+                "type": "lay",
+                "size": 196.67999999999995,
+                "updatedAt": 1788059645850
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.76,
+                "type": "back",
+                "size": 27.62,
+                "updatedAt": 1788059641320
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.78,
+                "type": "back",
+                "size": 186.22000000000003,
+                "updatedAt": 1788059640305
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.82,
+                "type": "lay",
+                "size": 374.84,
+                "updatedAt": 1788059636782
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.8,
+                "type": "lay",
+                "size": 724.5300000000001,
+                "updatedAt": 1788059636782
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.8,
+                "type": "back",
+                "size": 87.28999999999999,
+                "updatedAt": 1788059629748
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3,
+                "type": "back",
+                "size": 1438.2099999999998,
+                "updatedAt": 1788059627820
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.2,
+                "type": "lay",
+                "size": 611.1099999999997,
+                "updatedAt": 1788059612668
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.4,
+                "type": "back",
+                "size": 30.160000000000007,
+                "updatedAt": 1788059596581
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.45,
+                "type": "back",
+                "size": 664.64,
+                "updatedAt": 1788059587034
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.8,
+                "type": "lay",
+                "size": 167.33000000000004,
+                "updatedAt": 1788059565925
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.8,
+                "type": "back",
+                "size": 1795.55,
+                "updatedAt": 1788059559985
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.55,
+                "type": "back",
+                "size": 5.81,
+                "updatedAt": 1788059543163
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.5,
+                "type": "back",
+                "size": 62.11,
+                "updatedAt": 1788059543163
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.35,
+                "type": "lay",
+                "size": 768.8299999999999,
+                "updatedAt": 1788059535127
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.15,
+                "type": "lay",
+                "size": 1405.439999999999,
+                "updatedAt": 1788059535127
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.1,
+                "type": "lay",
+                "size": 564.03,
+                "updatedAt": 1788059534623
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.2,
+                "type": "back",
+                "size": 2531.32,
+                "updatedAt": 1788059487809
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.3,
+                "type": "back",
+                "size": 145.44,
+                "updatedAt": 1788059445027
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.25,
+                "type": "back",
+                "size": 935.8900000000007,
+                "updatedAt": 1788059445027
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.25,
+                "type": "lay",
+                "size": 1702.3899999999994,
+                "updatedAt": 1788059431966
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.6,
+                "type": "back",
+                "size": 184.57000000000002,
+                "updatedAt": 1788059384202
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.95,
+                "type": "back",
+                "size": 253.43999999999997,
+                "updatedAt": 1788059380859
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.95,
+                "type": "lay",
+                "size": 30.120000000000022,
+                "updatedAt": 1788059345777
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 4,
+                "type": "back",
+                "size": 107.96999999999997,
+                "updatedAt": 1788059326101
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.7,
+                "type": "back",
+                "size": 4.28,
+                "updatedAt": 1788059305422
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.3,
+                "type": "lay",
+                "size": 594.6600000000001,
+                "updatedAt": 1788059302403
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3,
+                "type": "lay",
+                "size": 143.75000000000014,
+                "updatedAt": 1788059174890
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.98,
+                "type": "lay",
+                "size": 75.66000000000001,
+                "updatedAt": 1788059174262
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.92,
+                "type": "back",
+                "size": 94.96999999999997,
+                "updatedAt": 1788059168238
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.88,
+                "type": "back",
+                "size": 641.65,
+                "updatedAt": 1788059163560
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.9,
+                "type": "back",
+                "size": 199.61999999999998,
+                "updatedAt": 1788059163061
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.94,
+                "type": "lay",
+                "size": 18.78,
+                "updatedAt": 1788059150657
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.86,
+                "type": "lay",
+                "size": 75.15,
+                "updatedAt": 1788059123805
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.84,
+                "type": "back",
+                "size": 29.92,
+                "updatedAt": 1788059123289
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.7,
+                "type": "back",
+                "size": 579.7099999999999,
+                "updatedAt": 1788059110230
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.72,
+                "type": "back",
+                "size": 272.21,
+                "updatedAt": 1788059109223
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.72,
+                "type": "lay",
+                "size": 8.22,
+                "updatedAt": 1788059107207
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.62,
+                "type": "back",
+                "size": 165.26,
+                "updatedAt": 1788059103166
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.6,
+                "type": "back",
+                "size": 15.10000000000003,
+                "updatedAt": 1788059100139
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.6,
+                "type": "lay",
+                "size": 361.2,
+                "updatedAt": 1788059098140
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.58,
+                "type": "lay",
+                "size": 25.34,
+                "updatedAt": 1788059098140
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.56,
+                "type": "back",
+                "size": 71.48000000000005,
+                "updatedAt": 1788059097625
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.56,
+                "type": "lay",
+                "size": 601.64,
+                "updatedAt": 1788059097124
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.54,
+                "type": "lay",
+                "size": 2.11,
+                "updatedAt": 1788059097124
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.52,
+                "type": "lay",
+                "size": 20.160000000000004,
+                "updatedAt": 1788059097124
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.5,
+                "type": "back",
+                "size": 2840.99,
+                "updatedAt": 1788059096112
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.46,
+                "type": "lay",
+                "size": 786.13,
+                "updatedAt": 1788059091594
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.44,
+                "type": "lay",
+                "size": 198.08,
+                "updatedAt": 1788059091594
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.42,
+                "type": "lay",
+                "size": 714.25,
+                "updatedAt": 1788059088579
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.4,
+                "type": "lay",
+                "size": 45.30999999999996,
+                "updatedAt": 1788059088076
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.1,
+                "type": "lay",
+                "size": 3544.5799999999945,
+                "updatedAt": 1788059078019
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.14,
+                "type": "lay",
+                "size": 1568.9500000000016,
+                "updatedAt": 1788059051370
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.14,
+                "type": "back",
+                "size": 5501.609999999999,
+                "updatedAt": 1788059025669
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.06,
+                "type": "back",
+                "size": 2924.0399999999995,
+                "updatedAt": 1788059020624
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.18,
+                "type": "back",
+                "size": 1192.1100000000022,
+                "updatedAt": 1788059014585
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.12,
+                "type": "lay",
+                "size": 1268.62,
+                "updatedAt": 1788059012977
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.08,
+                "type": "lay",
+                "size": 8662.199999999999,
+                "updatedAt": 1788059012977
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.06,
+                "type": "lay",
+                "size": 2819.2400000000002,
+                "updatedAt": 1788059012977
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.04,
+                "type": "lay",
+                "size": 4881.8,
+                "updatedAt": 1788059012977
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "back",
+                "size": 17098.54,
+                "updatedAt": 1788058903179
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.97,
+                "type": "back",
+                "size": 26886.200000000004,
+                "updatedAt": 1788058896136
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.97,
+                "type": "lay",
+                "size": 4791.36,
+                "updatedAt": 1788058895740
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.96,
+                "type": "lay",
+                "size": 37364.82,
+                "updatedAt": 1788058886498
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.95,
+                "type": "back",
+                "size": 37981.21000000001,
+                "updatedAt": 1788058886006
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.95,
+                "type": "lay",
+                "size": 18239.079999999998,
+                "updatedAt": 1788058872959
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.94,
+                "type": "lay",
+                "size": 68176.34,
+                "updatedAt": 1788058868434
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "lay",
+                "size": 2890.989999999999,
+                "updatedAt": 1788058861795
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.93,
+                "type": "lay",
+                "size": 5399.0700000000015,
+                "updatedAt": 1788058641500
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.92,
+                "type": "lay",
+                "size": 7467.06,
+                "updatedAt": 1788058630410
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.91,
+                "type": "lay",
+                "size": 1221.8200000000008,
+                "updatedAt": 1788058630125
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.9,
+                "type": "lay",
+                "size": 31107.70000000001,
+                "updatedAt": 1788058630125
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.87,
+                "type": "lay",
+                "size": 745.22,
+                "updatedAt": 1788058630125
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.85,
+                "type": "back",
+                "size": 11375.349999999999,
+                "updatedAt": 1788058629998
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.86,
+                "type": "lay",
+                "size": 5703.630000000003,
+                "updatedAt": 1788058627839
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.82,
+                "type": "lay",
+                "size": 9803.04,
+                "updatedAt": 1788058627820
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.81,
+                "type": "lay",
+                "size": 31865.250000000004,
+                "updatedAt": 1788058624360
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.78,
+                "type": "lay",
+                "size": 1356.6200000000001,
+                "updatedAt": 1788058624360
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.75,
+                "type": "lay",
+                "size": 6468.799999999999,
+                "updatedAt": 1788058623967
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.74,
+                "type": "lay",
+                "size": 2640.59,
+                "updatedAt": 1788058620242
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.72,
+                "type": "lay",
+                "size": 123159.74,
+                "updatedAt": 1788058620242
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.71,
+                "type": "back",
+                "size": 48916.560000000005,
+                "updatedAt": 1788058615717
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.71,
+                "type": "lay",
+                "size": 73975.57,
+                "updatedAt": 1788058607667
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.69,
+                "type": "back",
+                "size": 78040.91999999998,
+                "updatedAt": 1788058607163
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.7,
+                "type": "lay",
+                "size": 149530.75999999998,
+                "updatedAt": 1788058606674
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.69,
+                "type": "lay",
+                "size": 39005.42000000001,
+                "updatedAt": 1788058597128
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.68,
+                "type": "lay",
+                "size": 35615.04999999999,
+                "updatedAt": 1788058594607
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.67,
+                "type": "lay",
+                "size": 66998.47999999998,
+                "updatedAt": 1788058585999
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.66,
+                "type": "lay",
+                "size": 161868.31000000003,
+                "updatedAt": 1788058563372
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.64,
+                "type": "back",
+                "size": 53796.01999999994,
+                "updatedAt": 1788058556822
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.62,
+                "type": "back",
+                "size": 84751.06999999999,
+                "updatedAt": 1788058501957
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.62,
+                "type": "lay",
+                "size": 90624.79999999999,
+                "updatedAt": 1788058498951
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.64,
+                "type": "lay",
+                "size": 113316.57000000005,
+                "updatedAt": 1788058498438
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.63,
+                "type": "lay",
+                "size": 135494.19999999998,
+                "updatedAt": 1788058498438
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.61,
+                "type": "back",
+                "size": 35264.28,
+                "updatedAt": 1788058495899
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.63,
+                "type": "back",
+                "size": 114442.26000000002,
+                "updatedAt": 1788058485357
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.61,
+                "type": "lay",
+                "size": 26162.309999999998,
+                "updatedAt": 1788058385565
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.6,
+                "type": "back",
+                "size": 81633.41000000003,
+                "updatedAt": 1788058382476
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.73,
+                "type": "lay",
+                "size": 93043.14,
+                "updatedAt": 1788058248142
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.74,
+                "type": "back",
+                "size": 6445.32,
+                "updatedAt": 1788058239163
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.76,
+                "type": "lay",
+                "size": 650.8,
+                "updatedAt": 1788058174166
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.76,
+                "type": "back",
+                "size": 28.220000000000006,
+                "updatedAt": 1788058040806
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.77,
+                "type": "lay",
+                "size": 19.8,
+                "updatedAt": 1788058037278
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.78,
+                "type": "back",
+                "size": 14.11,
+                "updatedAt": 1788058036271
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.79,
+                "type": "lay",
+                "size": 179.73999999999998,
+                "updatedAt": 1788058034255
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.8,
+                "type": "back",
+                "size": 12230.12,
+                "updatedAt": 1788058031815
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.79,
+                "type": "back",
+                "size": 178.39000000000001,
+                "updatedAt": 1788058031815
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.83,
+                "type": "lay",
+                "size": 15978.260000000002,
+                "updatedAt": 1788058023689
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.81,
+                "type": "back",
+                "size": 28122.98,
+                "updatedAt": 1788058021168
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.84,
+                "type": "back",
+                "size": 1523.0700000000002,
+                "updatedAt": 1788058016637
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.83,
+                "type": "back",
+                "size": 12464.669999999998,
+                "updatedAt": 1788058016637
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.93,
+                "type": "back",
+                "size": 4720.439999999999,
+                "updatedAt": 1788058007098
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.92,
+                "type": "back",
+                "size": 1459.559999999999,
+                "updatedAt": 1788058007098
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.89,
+                "type": "back",
+                "size": 5095.81,
+                "updatedAt": 1788058007098
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.54,
+                "type": "back",
+                "size": 2.65,
+                "updatedAt": 1788057512146
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.52,
+                "type": "back",
+                "size": 28.869999999999997,
+                "updatedAt": 1788057512146
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.48,
+                "type": "back",
+                "size": 759.4499999999999,
+                "updatedAt": 1788057403357
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.68,
+                "type": "back",
+                "size": 51.07000000000001,
+                "updatedAt": 1788057131938
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.46,
+                "type": "back",
+                "size": 57.59000000000002,
+                "updatedAt": 1788057096739
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.66,
+                "type": "lay",
+                "size": 101.20000000000003,
+                "updatedAt": 1788056942936
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.62,
+                "type": "lay",
+                "size": 72.86000000000001,
+                "updatedAt": 1788056903696
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.66,
+                "type": "back",
+                "size": 50.12999999999998,
+                "updatedAt": 1788056868485
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.64,
+                "type": "back",
+                "size": 6.73,
+                "updatedAt": 1788056861451
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.58,
+                "type": "back",
+                "size": 4.200000000000001,
+                "updatedAt": 1788056848894
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.38,
+                "type": "lay",
+                "size": 54.74000000000001,
+                "updatedAt": 1788056789020
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.64,
+                "type": "lay",
+                "size": 13.59,
+                "updatedAt": 1788056547263
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.6,
+                "type": "lay",
+                "size": 190.92,
+                "updatedAt": 1788056372904
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.65,
+                "type": "back",
+                "size": 2.16,
+                "updatedAt": 1788055958319
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 3.55,
+                "type": "lay",
+                "size": 1.33,
+                "updatedAt": 1788055952766
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.88,
+                "type": "back",
+                "size": 6072.830000000002,
+                "updatedAt": 1788055637632
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.89,
+                "type": "lay",
+                "size": 2460.5199999999995,
+                "updatedAt": 1788055530226
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.88,
+                "type": "lay",
+                "size": 20733.67,
+                "updatedAt": 1788055530226
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.85,
+                "type": "lay",
+                "size": 1719.130000000001,
+                "updatedAt": 1788055514589
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.84,
+                "type": "lay",
+                "size": 4974.329999999999,
+                "updatedAt": 1788055510569
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.82,
+                "type": "back",
+                "size": 4585.869999999999,
+                "updatedAt": 1788055339156
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.8,
+                "type": "lay",
+                "size": 2449.32,
+                "updatedAt": 1788055194012
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.59,
+                "type": "back",
+                "size": 29109.85000000001,
+                "updatedAt": 1788054346744
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.6,
+                "type": "lay",
+                "size": 39954.049999999974,
+                "updatedAt": 1788054346347
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.58,
+                "type": "back",
+                "size": 40834.64999999998,
+                "updatedAt": 1788054338649
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.57,
+                "type": "back",
+                "size": 80406.30000000002,
+                "updatedAt": 1788054338649
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.53,
+                "type": "lay",
+                "size": 28412.800000000014,
+                "updatedAt": 1788054338178
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.51,
+                "type": "lay",
+                "size": 83224.63999999997,
+                "updatedAt": 1788054337644
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.5,
+                "type": "lay",
+                "size": 234523.21,
+                "updatedAt": 1788054337644
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.49,
+                "type": "lay",
+                "size": 147993.15999999997,
+                "updatedAt": 1788054335614
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.49,
+                "type": "back",
+                "size": 85278.56000000003,
+                "updatedAt": 1788054330152
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.48,
+                "type": "back",
+                "size": 95952.77000000006,
+                "updatedAt": 1788054330152
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.52,
+                "type": "back",
+                "size": 31992.35,
+                "updatedAt": 1788054326013
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.51,
+                "type": "back",
+                "size": 207058.34000000003,
+                "updatedAt": 1788054326013
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.5,
+                "type": "back",
+                "size": 67364.19999999997,
+                "updatedAt": 1788054326013
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.52,
+                "type": "lay",
+                "size": 51807.659999999996,
+                "updatedAt": 1788054324486
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.48,
+                "type": "lay",
+                "size": 209384.98999999993,
+                "updatedAt": 1788054293724
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.47,
+                "type": "back",
+                "size": 124407.48000000005,
+                "updatedAt": 1788054292673
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.47,
+                "type": "lay",
+                "size": 192927.11,
+                "updatedAt": 1788054251717
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.46,
+                "type": "lay",
+                "size": 146268.73,
+                "updatedAt": 1788054251717
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.45,
+                "type": "lay",
+                "size": 188459.1500000001,
+                "updatedAt": 1788054251717
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.44,
+                "type": "back",
+                "size": 149976.12,
+                "updatedAt": 1788054250211
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.45,
+                "type": "back",
+                "size": 164760.2999999999,
+                "updatedAt": 1788054230997
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.46,
+                "type": "back",
+                "size": 88538.59,
+                "updatedAt": 1788054230634
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.43,
+                "type": "lay",
+                "size": 193947.78,
+                "updatedAt": 1788054199204
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.44,
+                "type": "lay",
+                "size": 169699.45,
+                "updatedAt": 1788054196691
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.41,
+                "type": "lay",
+                "size": 106358.53999999998,
+                "updatedAt": 1788054196201
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.43,
+                "type": "back",
+                "size": 91838.06999999999,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.41,
+                "type": "back",
+                "size": 40469.20000000002,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.4,
+                "type": "back",
+                "size": 281749.9000000001,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.39,
+                "type": "back",
+                "size": 85425.67999999996,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.38,
+                "type": "back",
+                "size": 82679.79999999999,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.37,
+                "type": "back",
+                "size": 160311.55000000008,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.36,
+                "type": "back",
+                "size": 260768.3499999999,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.35,
+                "type": "back",
+                "size": 60320.53000000002,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.54,
+                "type": "back",
+                "size": 15738.050000000001,
+                "updatedAt": 1788054192127
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.59,
+                "type": "lay",
+                "size": 66035.04999999999,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.58,
+                "type": "lay",
+                "size": 128705.16000000002,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.57,
+                "type": "lay",
+                "size": 111032.48999999999,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.56,
+                "type": "lay",
+                "size": 110589.73000000003,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.55,
+                "type": "lay",
+                "size": 30618.169999999987,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.55,
+                "type": "back",
+                "size": 63639.18000000001,
+                "updatedAt": 1788053896902
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.56,
+                "type": "back",
+                "size": 71662.43999999999,
+                "updatedAt": 1788053894836
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.54,
+                "type": "lay",
+                "size": 55164.92999999999,
+                "updatedAt": 1788053292397
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.53,
+                "type": "back",
+                "size": 131618.05,
+                "updatedAt": 1788053290872
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.42,
+                "type": "back",
+                "size": 98445.54999999999,
+                "updatedAt": 1788052930889
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.42,
+                "type": "lay",
+                "size": 99666.87000000002,
+                "updatedAt": 1788052928804
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.4,
+                "type": "lay",
+                "size": 144016.12999999998,
+                "updatedAt": 1788052920465
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.39,
+                "type": "lay",
+                "size": 110864.43000000002,
+                "updatedAt": 1788052672436
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.38,
+                "type": "lay",
+                "size": 99110.61000000002,
+                "updatedAt": 1788052598993
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.37,
+                "type": "lay",
+                "size": 196979.52999999994,
+                "updatedAt": 1788052597987
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.36,
+                "type": "lay",
+                "size": 80156.5700000001,
+                "updatedAt": 1788052575295
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.35,
+                "type": "lay",
+                "size": 80168.96999999997,
+                "updatedAt": 1788052560518
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.34,
+                "type": "back",
+                "size": 108578.45999999998,
+                "updatedAt": 1788052560518
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.33,
+                "type": "back",
+                "size": 25339.229999999996,
+                "updatedAt": 1788050947946
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.32,
+                "type": "back",
+                "size": 71579.56999999999,
+                "updatedAt": 1788050947946
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.34,
+                "type": "lay",
+                "size": 163720.30000000002,
+                "updatedAt": 1788050729612
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.33,
+                "type": "lay",
+                "size": 57001.240000000005,
+                "updatedAt": 1788050334585
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.31,
+                "type": "back",
+                "size": 75332.24,
+                "updatedAt": 1788050322414
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.32,
+                "type": "lay",
+                "size": 40314.19,
+                "updatedAt": 1788050035740
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.31,
+                "type": "lay",
+                "size": 27918.089999999997,
+                "updatedAt": 1788050004422
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.3,
+                "type": "back",
+                "size": 41454.88999999999,
+                "updatedAt": 1788050004013
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.3,
+                "type": "lay",
+                "size": 48140.24000000001,
+                "updatedAt": 1788049601368
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.29,
+                "type": "back",
+                "size": 48361.56,
+                "updatedAt": 1788049547888
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.29,
+                "type": "lay",
+                "size": 14813.58,
+                "updatedAt": 1788049316437
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.28,
+                "type": "lay",
+                "size": 21791.34999999999,
+                "updatedAt": 1788049316437
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.28,
+                "type": "back",
+                "size": 49634.380000000005,
+                "updatedAt": 1788049315333
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.27,
+                "type": "back",
+                "size": 132009.07,
+                "updatedAt": 1788048646467
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.27,
+                "type": "lay",
+                "size": 53590.47,
+                "updatedAt": 1788048525034
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.26,
+                "type": "back",
+                "size": 28578.920000000006,
+                "updatedAt": 1788048522516
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.25,
+                "type": "back",
+                "size": 55944.55999999998,
+                "updatedAt": 1788048516478
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.26,
+                "type": "lay",
+                "size": 4643.149999999996,
+                "updatedAt": 1788048508374
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.25,
+                "type": "lay",
+                "size": 36709.95000000001,
+                "updatedAt": 1788048508374
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.24,
+                "type": "lay",
+                "size": 82249.75000000001,
+                "updatedAt": 1788048508374
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.23,
+                "type": "lay",
+                "size": 51596.99,
+                "updatedAt": 1788048507322
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.22,
+                "type": "back",
+                "size": 59792.25000000001,
+                "updatedAt": 1788048506846
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.22,
+                "type": "lay",
+                "size": 19222.77,
+                "updatedAt": 1788048462318
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.21,
+                "type": "back",
+                "size": 145761.78,
+                "updatedAt": 1788048461311
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.21,
+                "type": "lay",
+                "size": 86347.04000000002,
+                "updatedAt": 1788048436368
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.19,
+                "type": "lay",
+                "size": 117568.96000000004,
+                "updatedAt": 1788048335065
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.2,
+                "type": "back",
+                "size": 55651.13999999999,
+                "updatedAt": 1788048333541
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.19,
+                "type": "back",
+                "size": 37143.20999999998,
+                "updatedAt": 1788048333541
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.2,
+                "type": "lay",
+                "size": 37526.11,
+                "updatedAt": 1788048275750
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.18,
+                "type": "back",
+                "size": 68982.25999999998,
+                "updatedAt": 1788048179511
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.18,
+                "type": "lay",
+                "size": 167459.86000000002,
+                "updatedAt": 1788048008743
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.17,
+                "type": "back",
+                "size": 217752.11999999985,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.16,
+                "type": "back",
+                "size": 257139.85,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.15,
+                "type": "back",
+                "size": 74936.4,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.14,
+                "type": "back",
+                "size": 4479.79,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.13,
+                "type": "back",
+                "size": 56725.71,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.12,
+                "type": "back",
+                "size": 73887.66,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.17,
+                "type": "lay",
+                "size": 312560.7300000001,
+                "updatedAt": 1788047607300
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.16,
+                "type": "lay",
+                "size": 93145.18999999997,
+                "updatedAt": 1788047410750
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.15,
+                "type": "lay",
+                "size": 4695.130000000005,
+                "updatedAt": 1788046969893
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.14,
+                "type": "lay",
+                "size": 23041.79,
+                "updatedAt": 1788046969893
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.13,
+                "type": "lay",
+                "size": 53952.939999999995,
+                "updatedAt": 1788046966853
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.23,
+                "type": "back",
+                "size": 37261.24,
+                "updatedAt": 1788046472746
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.24,
+                "type": "back",
+                "size": 35310.13999999999,
+                "updatedAt": 1788046455531
+              }
+            ],
+            "pnlIfWins": 350823.9057999995,
+            "totalBet": 4649223.4791
+          },
+          "Jamaica Kingsmen": {
+            "trades": [
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.01,
+                "type": "lay",
+                "size": 17572.109999999986,
+                "updatedAt": 1788061140835
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.02,
+                "type": "lay",
+                "size": 97179.23000000001,
+                "updatedAt": 1788060499445
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.01,
+                "type": "back",
+                "size": 287043.77,
+                "updatedAt": 1788060499445
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.02,
+                "type": "back",
+                "size": 179615.25999999998,
+                "updatedAt": 1788060454130
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.03,
+                "type": "lay",
+                "size": 99233.58,
+                "updatedAt": 1788060452622
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.03,
+                "type": "back",
+                "size": 18094.55,
+                "updatedAt": 1788060389596
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.04,
+                "type": "lay",
+                "size": 81843.73999999999,
+                "updatedAt": 1788060389105
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.05,
+                "type": "lay",
+                "size": 1635.6100000000006,
+                "updatedAt": 1788060361309
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.04,
+                "type": "back",
+                "size": 5865.159999999997,
+                "updatedAt": 1788060361309
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.07,
+                "type": "lay",
+                "size": 1930.22,
+                "updatedAt": 1788060238947
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.06,
+                "type": "back",
+                "size": 1812.88,
+                "updatedAt": 1788060238947
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.05,
+                "type": "back",
+                "size": 43425.85,
+                "updatedAt": 1788060238947
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.08,
+                "type": "lay",
+                "size": 901.42,
+                "updatedAt": 1788060237845
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.07,
+                "type": "back",
+                "size": 1240.07,
+                "updatedAt": 1788060235843
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.08,
+                "type": "back",
+                "size": 938.92,
+                "updatedAt": 1788060234329
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.09,
+                "type": "lay",
+                "size": 3978.6600000000008,
+                "updatedAt": 1788060233812
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.1,
+                "type": "lay",
+                "size": 63465.04000000001,
+                "updatedAt": 1788060227796
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.09,
+                "type": "back",
+                "size": 15786.150000000001,
+                "updatedAt": 1788060227796
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.11,
+                "type": "back",
+                "size": 52563.01,
+                "updatedAt": 1788060222838
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.1,
+                "type": "back",
+                "size": 48596.31,
+                "updatedAt": 1788060222838
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.12,
+                "type": "lay",
+                "size": 16596.93,
+                "updatedAt": 1788060221828
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.14,
+                "type": "lay",
+                "size": 10623.33,
+                "updatedAt": 1788060218259
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.13,
+                "type": "back",
+                "size": 2730.369999999999,
+                "updatedAt": 1788060218259
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.12,
+                "type": "back",
+                "size": 19643.67,
+                "updatedAt": 1788060218259
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.14,
+                "type": "back",
+                "size": 20270.660000000003,
+                "updatedAt": 1788060213143
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.15,
+                "type": "lay",
+                "size": 27275.009999999995,
+                "updatedAt": 1788060212665
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.15,
+                "type": "back",
+                "size": 29683.250000000007,
+                "updatedAt": 1788060212151
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.16,
+                "type": "lay",
+                "size": 29694.250000000004,
+                "updatedAt": 1788060209161
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.17,
+                "type": "lay",
+                "size": 37487.08,
+                "updatedAt": 1788060191045
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.16,
+                "type": "back",
+                "size": 13702.489999999994,
+                "updatedAt": 1788060191045
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.17,
+                "type": "back",
+                "size": 2128.969999999999,
+                "updatedAt": 1788060180332
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.18,
+                "type": "lay",
+                "size": 16342.54,
+                "updatedAt": 1788060179825
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.18,
+                "type": "back",
+                "size": 4198.419999999999,
+                "updatedAt": 1788060177318
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.19,
+                "type": "lay",
+                "size": 6285.09,
+                "updatedAt": 1788060138579
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.2,
+                "type": "lay",
+                "size": 30695.21,
+                "updatedAt": 1788060132122
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.19,
+                "type": "back",
+                "size": 493.9200000000004,
+                "updatedAt": 1788060132122
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.21,
+                "type": "lay",
+                "size": 1692.2499999999964,
+                "updatedAt": 1788060129349
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.2,
+                "type": "back",
+                "size": 29334.82,
+                "updatedAt": 1788060129349
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.22,
+                "type": "lay",
+                "size": 707.48,
+                "updatedAt": 1788060124376
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.21,
+                "type": "back",
+                "size": 14861.530000000002,
+                "updatedAt": 1788060123410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.22,
+                "type": "back",
+                "size": 129.05,
+                "updatedAt": 1788060117459
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.23,
+                "type": "lay",
+                "size": 166.65,
+                "updatedAt": 1788060116859
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.13,
+                "type": "lay",
+                "size": 6971.52,
+                "updatedAt": 1788060089658
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.11,
+                "type": "lay",
+                "size": 25694.379999999994,
+                "updatedAt": 1788060081122
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.24,
+                "type": "lay",
+                "size": 12.31,
+                "updatedAt": 1788059996836
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.26,
+                "type": "lay",
+                "size": 295.58,
+                "updatedAt": 1788059996441
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.25,
+                "type": "back",
+                "size": 57.78,
+                "updatedAt": 1788059996441
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.26,
+                "type": "back",
+                "size": 50.68,
+                "updatedAt": 1788059995846
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.27,
+                "type": "back",
+                "size": 95.88,
+                "updatedAt": 1788059995342
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.28,
+                "type": "lay",
+                "size": 80.75,
+                "updatedAt": 1788059994822
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.32,
+                "type": "lay",
+                "size": 8107.410000000001,
+                "updatedAt": 1788059993832
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.31,
+                "type": "back",
+                "size": 631.0499999999994,
+                "updatedAt": 1788059993832
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.3,
+                "type": "back",
+                "size": 2042.8,
+                "updatedAt": 1788059993832
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.35,
+                "type": "back",
+                "size": 6750.399999999996,
+                "updatedAt": 1788059989400
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.33,
+                "type": "back",
+                "size": 35263.88,
+                "updatedAt": 1788059989400
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.37,
+                "type": "back",
+                "size": 1727.21,
+                "updatedAt": 1788059988283
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.36,
+                "type": "back",
+                "size": 24867.61000000001,
+                "updatedAt": 1788059988283
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.38,
+                "type": "back",
+                "size": 1735.8300000000002,
+                "updatedAt": 1788059985769
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.35,
+                "type": "lay",
+                "size": 41163.810000000005,
+                "updatedAt": 1788059981222
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.33,
+                "type": "lay",
+                "size": 14053.900000000001,
+                "updatedAt": 1788059981222
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.31,
+                "type": "lay",
+                "size": 4437.06,
+                "updatedAt": 1788059981222
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.32,
+                "type": "back",
+                "size": 7934.509999999999,
+                "updatedAt": 1788059977713
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.34,
+                "type": "back",
+                "size": 19405.09,
+                "updatedAt": 1788059968124
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.4,
+                "type": "lay",
+                "size": 19635.179999999997,
+                "updatedAt": 1788059967124
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.38,
+                "type": "lay",
+                "size": 8316.34,
+                "updatedAt": 1788059967124
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.36,
+                "type": "lay",
+                "size": 31408.549999999992,
+                "updatedAt": 1788059967124
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.4,
+                "type": "back",
+                "size": 7211.920000000002,
+                "updatedAt": 1788059961011
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.39,
+                "type": "back",
+                "size": 870.3100000000002,
+                "updatedAt": 1788059961011
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.41,
+                "type": "lay",
+                "size": 3574.1200000000003,
+                "updatedAt": 1788059960082
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.43,
+                "type": "lay",
+                "size": 14797.370000000006,
+                "updatedAt": 1788059959083
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.42,
+                "type": "back",
+                "size": 3171.7700000000023,
+                "updatedAt": 1788059959083
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.41,
+                "type": "back",
+                "size": 3655.5499999999997,
+                "updatedAt": 1788059959083
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.46,
+                "type": "lay",
+                "size": 72443.65,
+                "updatedAt": 1788059957583
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.45,
+                "type": "back",
+                "size": 84635.85,
+                "updatedAt": 1788059957583
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.44,
+                "type": "back",
+                "size": 19299.170000000002,
+                "updatedAt": 1788059957583
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.48,
+                "type": "lay",
+                "size": 16116.220000000008,
+                "updatedAt": 1788059956116
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.46,
+                "type": "back",
+                "size": 74709.20000000001,
+                "updatedAt": 1788059956116
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.51,
+                "type": "lay",
+                "size": 12346.72,
+                "updatedAt": 1788059952047
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.48,
+                "type": "back",
+                "size": 22485.149999999994,
+                "updatedAt": 1788059952047
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.5,
+                "type": "lay",
+                "size": 48056.57000000001,
+                "updatedAt": 1788059951555
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.49,
+                "type": "lay",
+                "size": 27259.899999999998,
+                "updatedAt": 1788059951555
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.5,
+                "type": "back",
+                "size": 8717.549999999996,
+                "updatedAt": 1788059951129
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.49,
+                "type": "back",
+                "size": 20594.09,
+                "updatedAt": 1788059951129
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.52,
+                "type": "lay",
+                "size": 25626.550000000003,
+                "updatedAt": 1788059947029
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.52,
+                "type": "back",
+                "size": 8255.930000000002,
+                "updatedAt": 1788059944370
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.51,
+                "type": "back",
+                "size": 30954.970000000005,
+                "updatedAt": 1788059944370
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.53,
+                "type": "lay",
+                "size": 16412.100000000002,
+                "updatedAt": 1788059943898
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.54,
+                "type": "lay",
+                "size": 8045.030000000002,
+                "updatedAt": 1788059943405
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.53,
+                "type": "back",
+                "size": 4494.67,
+                "updatedAt": 1788059943405
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.55,
+                "type": "lay",
+                "size": 26710.440000000002,
+                "updatedAt": 1788059934339
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.56,
+                "type": "lay",
+                "size": 12467.099999999997,
+                "updatedAt": 1788059933329
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.56,
+                "type": "back",
+                "size": 7966.320000000001,
+                "updatedAt": 1788059932809
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.57,
+                "type": "lay",
+                "size": 3883.200000000001,
+                "updatedAt": 1788059931818
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.58,
+                "type": "lay",
+                "size": 5491.530000000001,
+                "updatedAt": 1788059927296
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.57,
+                "type": "back",
+                "size": 25761.719999999998,
+                "updatedAt": 1788059927296
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.59,
+                "type": "back",
+                "size": 939.4299999999998,
+                "updatedAt": 1788059926288
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.6,
+                "type": "lay",
+                "size": 4966.209999999999,
+                "updatedAt": 1788059925801
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.66,
+                "type": "lay",
+                "size": 12783.76,
+                "updatedAt": 1788059922801
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.64,
+                "type": "back",
+                "size": 10876.57,
+                "updatedAt": 1788059922801
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.67,
+                "type": "lay",
+                "size": 17427.31999999999,
+                "updatedAt": 1788059921795
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.72,
+                "type": "lay",
+                "size": 1759.789999999997,
+                "updatedAt": 1788059916747
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.71,
+                "type": "lay",
+                "size": 2785.35,
+                "updatedAt": 1788059916747
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.7,
+                "type": "lay",
+                "size": 7027.270000000001,
+                "updatedAt": 1788059916747
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.72,
+                "type": "back",
+                "size": 11537.350000000002,
+                "updatedAt": 1788059916211
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.73,
+                "type": "lay",
+                "size": 7861.5199999999995,
+                "updatedAt": 1788059916196
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.74,
+                "type": "lay",
+                "size": 13424.880000000005,
+                "updatedAt": 1788059911196
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.75,
+                "type": "back",
+                "size": 17500.71,
+                "updatedAt": 1788059910189
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.74,
+                "type": "back",
+                "size": 3761.679999999997,
+                "updatedAt": 1788059910189
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.73,
+                "type": "back",
+                "size": 1763.7200000000005,
+                "updatedAt": 1788059910189
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.76,
+                "type": "lay",
+                "size": 20588.949999999997,
+                "updatedAt": 1788059909684
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.76,
+                "type": "back",
+                "size": 9562.060000000001,
+                "updatedAt": 1788059904141
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.77,
+                "type": "lay",
+                "size": 34373.7,
+                "updatedAt": 1788059902652
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.78,
+                "type": "back",
+                "size": 15212.659999999996,
+                "updatedAt": 1788059894612
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.77,
+                "type": "back",
+                "size": 30901.69,
+                "updatedAt": 1788059894612
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.79,
+                "type": "lay",
+                "size": 32765.930000000004,
+                "updatedAt": 1788059894109
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.78,
+                "type": "lay",
+                "size": 46013.16,
+                "updatedAt": 1788059887604
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.8,
+                "type": "back",
+                "size": 12490.890000000003,
+                "updatedAt": 1788059883752
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.79,
+                "type": "back",
+                "size": 18211.679999999997,
+                "updatedAt": 1788059883752
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.81,
+                "type": "lay",
+                "size": 16745.59,
+                "updatedAt": 1788059882740
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.8,
+                "type": "lay",
+                "size": 11227.739999999998,
+                "updatedAt": 1788059879731
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.75,
+                "type": "lay",
+                "size": 30372.020000000004,
+                "updatedAt": 1788059876692
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.83,
+                "type": "lay",
+                "size": 6572.460000000002,
+                "updatedAt": 1788059843887
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.85,
+                "type": "lay",
+                "size": 6540.16,
+                "updatedAt": 1788059843474
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.84,
+                "type": "lay",
+                "size": 10668.219999999998,
+                "updatedAt": 1788059843474
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.81,
+                "type": "back",
+                "size": 1249.3000000000013,
+                "updatedAt": 1788059842876
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.83,
+                "type": "back",
+                "size": 13712.369999999999,
+                "updatedAt": 1788059841884
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.82,
+                "type": "lay",
+                "size": 15463.65,
+                "updatedAt": 1788059840946
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.82,
+                "type": "back",
+                "size": 7275.94,
+                "updatedAt": 1788059833320
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.86,
+                "type": "lay",
+                "size": 64708.70000000002,
+                "updatedAt": 1788059831319
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.84,
+                "type": "back",
+                "size": 14270.410000000003,
+                "updatedAt": 1788059831319
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.91,
+                "type": "lay",
+                "size": 50707.6,
+                "updatedAt": 1788059677655
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.96,
+                "type": "back",
+                "size": 2024.0600000000004,
+                "updatedAt": 1788059677149
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.97,
+                "type": "lay",
+                "size": 16290.050000000001,
+                "updatedAt": 1788059675907
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.99,
+                "type": "lay",
+                "size": 7681.25,
+                "updatedAt": 1788059672013
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.99,
+                "type": "back",
+                "size": 260.3599999999992,
+                "updatedAt": 1788059671009
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.02,
+                "type": "lay",
+                "size": 982.1999999999999,
+                "updatedAt": 1788059669993
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2,
+                "type": "back",
+                "size": 18442.5,
+                "updatedAt": 1788059668495
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.98,
+                "type": "back",
+                "size": 1414.84,
+                "updatedAt": 1788059662949
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.52,
+                "type": "lay",
+                "size": 1038.4900000000023,
+                "updatedAt": 1788059656456
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.54,
+                "type": "back",
+                "size": 2926.7999999999997,
+                "updatedAt": 1788059654422
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.52,
+                "type": "back",
+                "size": 5185.139999999998,
+                "updatedAt": 1788059654422
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.48,
+                "type": "lay",
+                "size": 472.27000000000055,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.46,
+                "type": "lay",
+                "size": 646.4800000000001,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.36,
+                "type": "lay",
+                "size": 27.549999999999955,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.14,
+                "type": "lay",
+                "size": 13.630000000000013,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.1,
+                "type": "lay",
+                "size": 4608.59,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.04,
+                "type": "lay",
+                "size": 1651.9399999999996,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2,
+                "type": "lay",
+                "size": 13924.34,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.98,
+                "type": "lay",
+                "size": 204.61000000000007,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.9,
+                "type": "lay",
+                "size": 13943.629999999994,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.88,
+                "type": "lay",
+                "size": 15931.86,
+                "updatedAt": 1788059653410
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.69,
+                "type": "lay",
+                "size": 2444.5099999999998,
+                "updatedAt": 1788059650941
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.61,
+                "type": "lay",
+                "size": 7898.060000000001,
+                "updatedAt": 1788059650941
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.55,
+                "type": "back",
+                "size": 8235.169999999998,
+                "updatedAt": 1788059646387
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.58,
+                "type": "back",
+                "size": 5538.990000000001,
+                "updatedAt": 1788059645850
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.59,
+                "type": "lay",
+                "size": 13948,
+                "updatedAt": 1788059641827
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.54,
+                "type": "back",
+                "size": 6501.249999999999,
+                "updatedAt": 1788059633254
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.47,
+                "type": "lay",
+                "size": 35135.32,
+                "updatedAt": 1788059620741
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.45,
+                "type": "lay",
+                "size": 66675.25,
+                "updatedAt": 1788059615955
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.43,
+                "type": "back",
+                "size": 13691.169999999995,
+                "updatedAt": 1788059614176
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.42,
+                "type": "lay",
+                "size": 15153.839999999998,
+                "updatedAt": 1788059598078
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.37,
+                "type": "lay",
+                "size": 5003.64,
+                "updatedAt": 1788059571455
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.34,
+                "type": "lay",
+                "size": 50969.18,
+                "updatedAt": 1788059559985
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.47,
+                "type": "back",
+                "size": 13389.31,
+                "updatedAt": 1788059513451
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.44,
+                "type": "lay",
+                "size": 6172.98,
+                "updatedAt": 1788059445027
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.39,
+                "type": "lay",
+                "size": 2650.2200000000003,
+                "updatedAt": 1788059418395
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.6,
+                "type": "back",
+                "size": 2105.9,
+                "updatedAt": 1788059104175
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.61,
+                "type": "back",
+                "size": 7552.7,
+                "updatedAt": 1788059103674
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.62,
+                "type": "lay",
+                "size": 4721.639999999999,
+                "updatedAt": 1788059103166
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.63,
+                "type": "lay",
+                "size": 3469.8200000000006,
+                "updatedAt": 1788059099116
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.63,
+                "type": "back",
+                "size": 6659.71,
+                "updatedAt": 1788059098140
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.62,
+                "type": "back",
+                "size": 3599.9099999999994,
+                "updatedAt": 1788059098140
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.64,
+                "type": "lay",
+                "size": 2272.19,
+                "updatedAt": 1788059097625
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.65,
+                "type": "back",
+                "size": 26015.78000000001,
+                "updatedAt": 1788059097114
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.68,
+                "type": "lay",
+                "size": 12791.390000000001,
+                "updatedAt": 1788059091578
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.88,
+                "type": "back",
+                "size": 13270.939999999999,
+                "updatedAt": 1788059085054
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.87,
+                "type": "back",
+                "size": 16862.06,
+                "updatedAt": 1788059085054
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.86,
+                "type": "back",
+                "size": 17236.879999999983,
+                "updatedAt": 1788059085054
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.89,
+                "type": "lay",
+                "size": 20976.960000000003,
+                "updatedAt": 1788059084041
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.91,
+                "type": "back",
+                "size": 30040.159999999996,
+                "updatedAt": 1788059078022
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.9,
+                "type": "back",
+                "size": 32223.10000000001,
+                "updatedAt": 1788059078022
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.89,
+                "type": "back",
+                "size": 5502.359999999999,
+                "updatedAt": 1788059051370
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.87,
+                "type": "lay",
+                "size": 17439.24,
+                "updatedAt": 1788059044834
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.85,
+                "type": "back",
+                "size": 11075.720000000001,
+                "updatedAt": 1788059042294
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.94,
+                "type": "back",
+                "size": 15049.06000000001,
+                "updatedAt": 1788059021648
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.92,
+                "type": "back",
+                "size": 45865.520000000004,
+                "updatedAt": 1788059021648
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.95,
+                "type": "lay",
+                "size": 5315.889999999999,
+                "updatedAt": 1788059020624
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.94,
+                "type": "lay",
+                "size": 14598.15999999999,
+                "updatedAt": 1788059020624
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.93,
+                "type": "lay",
+                "size": 4735.780000000004,
+                "updatedAt": 1788059020624
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.92,
+                "type": "lay",
+                "size": 11920.13,
+                "updatedAt": 1788059018619
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.97,
+                "type": "back",
+                "size": 6065.850000000001,
+                "updatedAt": 1788059012977
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.95,
+                "type": "back",
+                "size": 5272.1,
+                "updatedAt": 1788059012977
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.93,
+                "type": "back",
+                "size": 13342.759999999997,
+                "updatedAt": 1788059012977
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.96,
+                "type": "lay",
+                "size": 4009.2299999999996,
+                "updatedAt": 1788059008485
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.04,
+                "type": "back",
+                "size": 5027.21,
+                "updatedAt": 1788058889503
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.06,
+                "type": "lay",
+                "size": 1019.749999999999,
+                "updatedAt": 1788058886497
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.08,
+                "type": "lay",
+                "size": 721.03,
+                "updatedAt": 1788058871913
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.06,
+                "type": "back",
+                "size": 9335.950000000003,
+                "updatedAt": 1788058870606
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.02,
+                "type": "back",
+                "size": 2653.1800000000003,
+                "updatedAt": 1788058860279
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.08,
+                "type": "back",
+                "size": 708.0200000000001,
+                "updatedAt": 1788058641491
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.1,
+                "type": "back",
+                "size": 2477.8599999999997,
+                "updatedAt": 1788058630125
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.16,
+                "type": "lay",
+                "size": 103.65000000000018,
+                "updatedAt": 1788058627839
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.22,
+                "type": "back",
+                "size": 1192.31,
+                "updatedAt": 1788058627820
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.32,
+                "type": "lay",
+                "size": 1901.68,
+                "updatedAt": 1788058623951
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.38,
+                "type": "back",
+                "size": 214.7300000000001,
+                "updatedAt": 1788058612704
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.42,
+                "type": "lay",
+                "size": 14782.650000000003,
+                "updatedAt": 1788058611693
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.4,
+                "type": "lay",
+                "size": 3998.9700000000016,
+                "updatedAt": 1788058611693
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.38,
+                "type": "lay",
+                "size": 605.79,
+                "updatedAt": 1788058610544
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.42,
+                "type": "back",
+                "size": 7107.439999999997,
+                "updatedAt": 1788058605650
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.44,
+                "type": "lay",
+                "size": 4266.789999999999,
+                "updatedAt": 1788058599623
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.48,
+                "type": "back",
+                "size": 7000.839999999999,
+                "updatedAt": 1788058590014
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.5,
+                "type": "lay",
+                "size": 860.54,
+                "updatedAt": 1788058581967
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.5,
+                "type": "back",
+                "size": 1043.66,
+                "updatedAt": 1788058563356
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.54,
+                "type": "lay",
+                "size": 3031.11,
+                "updatedAt": 1788058551307
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.44,
+                "type": "back",
+                "size": 372.13000000000045,
+                "updatedAt": 1788058531257
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.6,
+                "type": "lay",
+                "size": 2837.109999999997,
+                "updatedAt": 1788058498422
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.64,
+                "type": "lay",
+                "size": 1086.95,
+                "updatedAt": 1788058497428
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.62,
+                "type": "lay",
+                "size": 2124,
+                "updatedAt": 1788058497428
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.58,
+                "type": "back",
+                "size": 5882.589999999997,
+                "updatedAt": 1788058496923
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.6,
+                "type": "back",
+                "size": 8628.860000000002,
+                "updatedAt": 1788058496404
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.58,
+                "type": "lay",
+                "size": 7223.120000000002,
+                "updatedAt": 1788058485513
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.56,
+                "type": "lay",
+                "size": 6727.029999999999,
+                "updatedAt": 1788058485513
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.46,
+                "type": "back",
+                "size": 2168.77,
+                "updatedAt": 1788058456920
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.56,
+                "type": "back",
+                "size": 1412.0500000000009,
+                "updatedAt": 1788058406578
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.64,
+                "type": "back",
+                "size": 865.1599999999999,
+                "updatedAt": 1788058385580
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.4,
+                "type": "back",
+                "size": 7940.569999999999,
+                "updatedAt": 1788058254681
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.34,
+                "type": "lay",
+                "size": 77.37999999999997,
+                "updatedAt": 1788058241098
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.36,
+                "type": "back",
+                "size": 1703.01,
+                "updatedAt": 1788058211008
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.34,
+                "type": "back",
+                "size": 347.52,
+                "updatedAt": 1788058205307
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.32,
+                "type": "back",
+                "size": 1491.76,
+                "updatedAt": 1788058195787
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.3,
+                "type": "back",
+                "size": 5509.14,
+                "updatedAt": 1788058174166
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.28,
+                "type": "back",
+                "size": 40.35,
+                "updatedAt": 1788058039342
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.26,
+                "type": "lay",
+                "size": 206.14000000000001,
+                "updatedAt": 1788058031831
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.24,
+                "type": "back",
+                "size": 3160.6200000000003,
+                "updatedAt": 1788058031831
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.2,
+                "type": "back",
+                "size": 3054.5299999999997,
+                "updatedAt": 1788058022665
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.24,
+                "type": "lay",
+                "size": 6.249999999999636,
+                "updatedAt": 1788058021168
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.16,
+                "type": "back",
+                "size": 2680.41,
+                "updatedAt": 1788058014654
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.71,
+                "type": "back",
+                "size": 1471.9400000000003,
+                "updatedAt": 1788057741695
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.68,
+                "type": "back",
+                "size": 383.4899999999989,
+                "updatedAt": 1788057710442
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.67,
+                "type": "back",
+                "size": 19097.940000000013,
+                "updatedAt": 1788057673150
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.69,
+                "type": "back",
+                "size": 1619.3700000000001,
+                "updatedAt": 1788057661040
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.66,
+                "type": "back",
+                "size": 6378.719999999999,
+                "updatedAt": 1788057644383
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.65,
+                "type": "lay",
+                "size": 604.2099999999919,
+                "updatedAt": 1788057512540
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 1.7,
+                "type": "back",
+                "size": 12220.29,
+                "updatedAt": 1788057442066
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.14,
+                "type": "back",
+                "size": 86.55,
+                "updatedAt": 1788055530210
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.18,
+                "type": "back",
+                "size": 253.73999999999995,
+                "updatedAt": 1788055514589
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.18,
+                "type": "lay",
+                "size": 147.51000000000005,
+                "updatedAt": 1788055437471
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.12,
+                "type": "lay",
+                "size": 26.330000000000027,
+                "updatedAt": 1788055373471
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.2,
+                "type": "lay",
+                "size": 45.959999999999994,
+                "updatedAt": 1788055335124
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.22,
+                "type": "lay",
+                "size": 1739.58,
+                "updatedAt": 1788055302461
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.28,
+                "type": "lay",
+                "size": 1.69,
+                "updatedAt": 1788055190574
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.26,
+                "type": "back",
+                "size": 6.94,
+                "updatedAt": 1788055172061
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.12,
+                "type": "back",
+                "size": 1640.71,
+                "updatedAt": 1788055081640
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.66,
+                "type": "lay",
+                "size": 1579.6600000000005,
+                "updatedAt": 1788054346760
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3,
+                "type": "lay",
+                "size": 2296.1200000000035,
+                "updatedAt": 1788054337660
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3,
+                "type": "back",
+                "size": 9841.799999999997,
+                "updatedAt": 1788054336148
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.98,
+                "type": "lay",
+                "size": 2425.53,
+                "updatedAt": 1788054326013
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.96,
+                "type": "back",
+                "size": 498.64000000000004,
+                "updatedAt": 1788054322974
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.98,
+                "type": "back",
+                "size": 6305.04,
+                "updatedAt": 1788054320438
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.96,
+                "type": "lay",
+                "size": 64.61999999999992,
+                "updatedAt": 1788054305785
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.92,
+                "type": "back",
+                "size": 805.0999999999999,
+                "updatedAt": 1788054299755
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.05,
+                "type": "lay",
+                "size": 2638.4299999999967,
+                "updatedAt": 1788054296185
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.05,
+                "type": "back",
+                "size": 6954.450000000003,
+                "updatedAt": 1788054294219
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.1,
+                "type": "lay",
+                "size": 1304.7600000000016,
+                "updatedAt": 1788054272490
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.1,
+                "type": "back",
+                "size": 7009.139999999998,
+                "updatedAt": 1788054259324
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.15,
+                "type": "lay",
+                "size": 578.7300000000004,
+                "updatedAt": 1788054253761
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.2,
+                "type": "back",
+                "size": 1457.2500000000002,
+                "updatedAt": 1788054251733
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.15,
+                "type": "back",
+                "size": 8961.37,
+                "updatedAt": 1788054251733
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.2,
+                "type": "lay",
+                "size": 3159.06,
+                "updatedAt": 1788054230698
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.3,
+                "type": "lay",
+                "size": 2685.8900000000003,
+                "updatedAt": 1788054199204
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.45,
+                "type": "back",
+                "size": 23.39999999999975,
+                "updatedAt": 1788054196201
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.8,
+                "type": "lay",
+                "size": 2389.34,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.7,
+                "type": "lay",
+                "size": 9248.199999999999,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.55,
+                "type": "lay",
+                "size": 223.50000000000017,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.5,
+                "type": "lay",
+                "size": 1665.3300000000002,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.25,
+                "type": "lay",
+                "size": 3838.0200000000004,
+                "updatedAt": 1788054194659
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.82,
+                "type": "lay",
+                "size": 945.7799999999996,
+                "updatedAt": 1788054192143
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.62,
+                "type": "back",
+                "size": 1030.1999999999998,
+                "updatedAt": 1788053940801
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.82,
+                "type": "back",
+                "size": 3861.01,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.78,
+                "type": "back",
+                "size": 4028.66,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.76,
+                "type": "back",
+                "size": 4860.219999999999,
+                "updatedAt": 1788053904423
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.84,
+                "type": "lay",
+                "size": 1355.54,
+                "updatedAt": 1788053903919
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.8,
+                "type": "lay",
+                "size": 399.3399999999999,
+                "updatedAt": 1788053902966
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.8,
+                "type": "back",
+                "size": 1299.88,
+                "updatedAt": 1788053900910
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.78,
+                "type": "lay",
+                "size": 1553.3699999999997,
+                "updatedAt": 1788053895375
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.74,
+                "type": "back",
+                "size": 756.9899999999992,
+                "updatedAt": 1788053891332
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.76,
+                "type": "lay",
+                "size": 1809.1900000000003,
+                "updatedAt": 1788053890355
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.74,
+                "type": "lay",
+                "size": 4078.8000000000006,
+                "updatedAt": 1788053890355
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.72,
+                "type": "back",
+                "size": 2143.7499999999995,
+                "updatedAt": 1788053887271
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.7,
+                "type": "lay",
+                "size": 485.0799999999999,
+                "updatedAt": 1788053872671
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.68,
+                "type": "back",
+                "size": 4276.18,
+                "updatedAt": 1788053869612
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.7,
+                "type": "back",
+                "size": 449.8,
+                "updatedAt": 1788053851952
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.66,
+                "type": "back",
+                "size": 1267.6599999999996,
+                "updatedAt": 1788053849412
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.72,
+                "type": "lay",
+                "size": 4563.330000000001,
+                "updatedAt": 1788053603048
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.68,
+                "type": "lay",
+                "size": 646.9399999999997,
+                "updatedAt": 1788053582366
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.86,
+                "type": "lay",
+                "size": 1616.1599999999999,
+                "updatedAt": 1788053300705
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.84,
+                "type": "back",
+                "size": 509.53,
+                "updatedAt": 1788053300197
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.86,
+                "type": "back",
+                "size": 485.49000000000024,
+                "updatedAt": 1788053275251
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.88,
+                "type": "back",
+                "size": 115.27000000000021,
+                "updatedAt": 1788053173891
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.94,
+                "type": "lay",
+                "size": 4.0100000000000335,
+                "updatedAt": 1788053173486
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.9,
+                "type": "back",
+                "size": 856.6900000000002,
+                "updatedAt": 1788053166790
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.94,
+                "type": "back",
+                "size": 415.40999999999997,
+                "updatedAt": 1788053046208
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.9,
+                "type": "lay",
+                "size": 20.789999999999907,
+                "updatedAt": 1788053041686
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.88,
+                "type": "lay",
+                "size": 1621.0799999999997,
+                "updatedAt": 1788053035640
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.35,
+                "type": "lay",
+                "size": 2929.3899999999985,
+                "updatedAt": 1788052930889
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.4,
+                "type": "lay",
+                "size": 740.6600000000005,
+                "updatedAt": 1788052930873
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.35,
+                "type": "back",
+                "size": 5178.750000000002,
+                "updatedAt": 1788052922005
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.4,
+                "type": "back",
+                "size": 2223.629999999999,
+                "updatedAt": 1788052920496
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.3,
+                "type": "back",
+                "size": 1436.46,
+                "updatedAt": 1788052908862
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.25,
+                "type": "back",
+                "size": 3706.4799999999996,
+                "updatedAt": 1788052894207
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.45,
+                "type": "lay",
+                "size": 1521.9500000000003,
+                "updatedAt": 1788052840562
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.5,
+                "type": "back",
+                "size": 2698.2,
+                "updatedAt": 1788052680030
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.55,
+                "type": "back",
+                "size": 926.6399999999999,
+                "updatedAt": 1788052671456
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.7,
+                "type": "back",
+                "size": 8245.570000000002,
+                "updatedAt": 1788052583350
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.8,
+                "type": "back",
+                "size": 921.5699999999999,
+                "updatedAt": 1788052575327
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.85,
+                "type": "lay",
+                "size": 687.87,
+                "updatedAt": 1788052559030
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.75,
+                "type": "lay",
+                "size": 4421.92,
+                "updatedAt": 1788052545333
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.6,
+                "type": "back",
+                "size": 3938,
+                "updatedAt": 1788052543451
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.75,
+                "type": "back",
+                "size": 7136.280000000001,
+                "updatedAt": 1788052539251
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.65,
+                "type": "back",
+                "size": 4678.32,
+                "updatedAt": 1788052034463
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.65,
+                "type": "lay",
+                "size": 1648.2400000000002,
+                "updatedAt": 1788051810616
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.6,
+                "type": "lay",
+                "size": 324.6000000000005,
+                "updatedAt": 1788051440615
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.95,
+                "type": "back",
+                "size": 1643.1899999999998,
+                "updatedAt": 1788050950524
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.9,
+                "type": "back",
+                "size": 3347.7800000000007,
+                "updatedAt": 1788050950524
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4,
+                "type": "lay",
+                "size": 552.1999999999999,
+                "updatedAt": 1788050947993
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.95,
+                "type": "lay",
+                "size": 6.3900000000000095,
+                "updatedAt": 1788050947993
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.9,
+                "type": "lay",
+                "size": 1392.5999999999997,
+                "updatedAt": 1788050729659
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4,
+                "type": "back",
+                "size": 350.8900000000001,
+                "updatedAt": 1788050333056
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.1,
+                "type": "lay",
+                "size": 1115.2799999999997,
+                "updatedAt": 1788050317874
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.2,
+                "type": "lay",
+                "size": 318.9300000000001,
+                "updatedAt": 1788050035204
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.1,
+                "type": "back",
+                "size": 655.5100000000002,
+                "updatedAt": 1788050031178
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.2,
+                "type": "back",
+                "size": 184.11999999999992,
+                "updatedAt": 1788049999981
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 3.85,
+                "type": "back",
+                "size": 314.71000000000004,
+                "updatedAt": 1788049965581
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.3,
+                "type": "back",
+                "size": 457.56999999999994,
+                "updatedAt": 1788049600895
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.3,
+                "type": "lay",
+                "size": 780,
+                "updatedAt": 1788049588764
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.4,
+                "type": "lay",
+                "size": 340.43,
+                "updatedAt": 1788049547872
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.4,
+                "type": "back",
+                "size": 18.920000000000016,
+                "updatedAt": 1788049319887
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.5,
+                "type": "back",
+                "size": 840.87,
+                "updatedAt": 1788049315348
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.6,
+                "type": "back",
+                "size": 811.58,
+                "updatedAt": 1788048642894
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.8,
+                "type": "lay",
+                "size": 102.89,
+                "updatedAt": 1788048627676
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.7,
+                "type": "lay",
+                "size": 1470.5700000000002,
+                "updatedAt": 1788048565435
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.5,
+                "type": "lay",
+                "size": 48.58,
+                "updatedAt": 1788048501777
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.6,
+                "type": "lay",
+                "size": 53.07000000000001,
+                "updatedAt": 1788048499275
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.5,
+                "type": "back",
+                "size": 203.16000000000003,
+                "updatedAt": 1788048494203
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.4,
+                "type": "back",
+                "size": 176.97,
+                "updatedAt": 1788048479478
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.6,
+                "type": "back",
+                "size": 146.01999999999998,
+                "updatedAt": 1788048459296
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.7,
+                "type": "back",
+                "size": 400.9900000000001,
+                "updatedAt": 1788048436368
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.7,
+                "type": "lay",
+                "size": 2719.2599999999998,
+                "updatedAt": 1788048434428
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.8,
+                "type": "back",
+                "size": 3.980000000000004,
+                "updatedAt": 1788048351292
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.2,
+                "type": "lay",
+                "size": 354.6299999999999,
+                "updatedAt": 1788048334532
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6,
+                "type": "lay",
+                "size": 2937.49,
+                "updatedAt": 1788048333541
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.8,
+                "type": "lay",
+                "size": 64.24,
+                "updatedAt": 1788048312309
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6,
+                "type": "back",
+                "size": 166.85000000000045,
+                "updatedAt": 1788048275750
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.9,
+                "type": "lay",
+                "size": 59.36,
+                "updatedAt": 1788048218033
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.4,
+                "type": "lay",
+                "size": 591.4499999999998,
+                "updatedAt": 1788048178026
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.2,
+                "type": "back",
+                "size": 645.3600000000001,
+                "updatedAt": 1788048173089
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.4,
+                "type": "back",
+                "size": 1421.3700000000001,
+                "updatedAt": 1788048104354
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.8,
+                "type": "lay",
+                "size": 104.38000000000002,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.6,
+                "type": "lay",
+                "size": 1.40000000000005,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.2,
+                "type": "lay",
+                "size": 217.56,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.8,
+                "type": "lay",
+                "size": 79.87999999999997,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.6,
+                "type": "lay",
+                "size": 170.39,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.3,
+                "type": "back",
+                "size": 676.77,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.7,
+                "type": "back",
+                "size": 324.3499999999999,
+                "updatedAt": 1788048006727
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.6,
+                "type": "back",
+                "size": 1565.8999999999999,
+                "updatedAt": 1788047933487
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 6.8,
+                "type": "back",
+                "size": 1166.5900000000001,
+                "updatedAt": 1788047604722
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7,
+                "type": "lay",
+                "size": 1306.6499999999996,
+                "updatedAt": 1788047593123
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7.2,
+                "type": "lay",
+                "size": 1345.2999999999997,
+                "updatedAt": 1788047408228
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7,
+                "type": "back",
+                "size": 1203.7000000000003,
+                "updatedAt": 1788047297114
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7.2,
+                "type": "back",
+                "size": 403.32000000000005,
+                "updatedAt": 1788047036718
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7.4,
+                "type": "lay",
+                "size": 7.1899999999999915,
+                "updatedAt": 1788047026186
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.4,
+                "type": "back",
+                "size": 1.4099999999999997,
+                "updatedAt": 1788046969893
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 9,
+                "type": "back",
+                "size": 80.83,
+                "updatedAt": 1788046955202
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.8,
+                "type": "back",
+                "size": 227.17,
+                "updatedAt": 1788046955202
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 9,
+                "type": "lay",
+                "size": 67.73,
+                "updatedAt": 1788046954193
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.4,
+                "type": "lay",
+                "size": 3.18,
+                "updatedAt": 1788046924957
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8,
+                "type": "back",
+                "size": 7.880000000000001,
+                "updatedAt": 1788046918893
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.2,
+                "type": "back",
+                "size": 73.22999999999999,
+                "updatedAt": 1788046917788
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8,
+                "type": "lay",
+                "size": 4.779999999999999,
+                "updatedAt": 1788046891959
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 8.6,
+                "type": "back",
+                "size": 299.2,
+                "updatedAt": 1788046874754
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7.6,
+                "type": "lay",
+                "size": 1.41,
+                "updatedAt": 1788046852001
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 7.4,
+                "type": "back",
+                "size": 113.08,
+                "updatedAt": 1788046841892
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.4,
+                "type": "lay",
+                "size": 5.620000000000004,
+                "updatedAt": 1788046520306
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.3,
+                "type": "lay",
+                "size": 120.53999999999995,
+                "updatedAt": 1788046518747
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.2,
+                "type": "back",
+                "size": 23.029999999999998,
+                "updatedAt": 1788046467190
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.1,
+                "type": "back",
+                "size": 366.66999999999996,
+                "updatedAt": 1788046459602
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.1,
+                "type": "lay",
+                "size": 22.230000000000025,
+                "updatedAt": 1788046455546
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5,
+                "type": "lay",
+                "size": 672.5,
+                "updatedAt": 1788046452548
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.8,
+                "type": "back",
+                "size": 19.48,
+                "updatedAt": 1788046447029
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5.2,
+                "type": "lay",
+                "size": 18.189999999999998,
+                "updatedAt": 1788046422213
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 5,
+                "type": "back",
+                "size": 215.39999999999998,
+                "updatedAt": 1788046369096
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.9,
+                "type": "lay",
+                "size": 156.38000000000002,
+                "updatedAt": 1788046353972
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.9,
+                "type": "back",
+                "size": 118.22,
+                "updatedAt": 1788046299577
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.5,
+                "type": "lay",
+                "size": 1.3899999999999944,
+                "updatedAt": 1788046071416
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 4.6,
+                "type": "lay",
+                "size": 21.04,
+                "updatedAt": 1788046057311
+              },
+              {
+                "team": "Jamaica Kingsmen",
+                "price": 2.92,
+                "type": "lay",
+                "size": 70.21,
+                "updatedAt": 1788045221209
+              }
+            ],
+            "pnlIfWins": -487439.1563999999,
+            "totalBet": 7277795.194300006
+          }
+        },
+        "Usr": "cricketloaduser56@gmail.com",
+        "competitionName": "Caribbean Premier League"
+      },
+      "predictedWinner": "Jamaica Kingsmen",
+      "predictionTier": "CPL_SPECIAL",
+      "predictionConfidence": "CPL Public Trap & Lay Dump Fade",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "verified",
+      "actualWinner": "Jamaica Kingsmen"
     }
   ]
 }
