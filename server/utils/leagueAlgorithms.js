@@ -90,11 +90,15 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const isLayAbsorbed1 = l1 >= b1 * 1.8 && l1 > l2 && epnl1 > 1000;
   const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && epnl2 > 1000;
 
-  // 1. Extreme Bookie Profit Fortress (PnL >= 4000 or high liquidity trap)
-  if (epnl1 >= 4000 && epnl1 > epnl2) {
+  const preBets = snap?.preMatchTotalBets || {};
+  const bets1 = preBets.team1 || 0;
+  const bets2 = preBets.team2 || 0;
+
+  // 1. Extreme Bookie Profit Fortress (Deficit >= 4000)
+  if (epnl1 >= 4000 && epnl1 > epnl2 && epnl2 <= 0) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
-  if (epnl2 >= 4000 && epnl2 > epnl1) {
+  if (epnl2 >= 4000 && epnl2 > epnl1 && epnl1 <= 0) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap Fortress' };
   }
 
@@ -107,11 +111,31 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   }
 
   // 3. Dominant Smart Money Blowout (BackRatio >= 3.5x with genuine liquidity totBack >= 500)
-  if (backRatio >= 3.5 && totBack >= 500) {
+  if (backRatio >= 3.5 && totBack >= 500 && Math.abs(epnl1 - epnl2) < 4000) {
     return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dominant Inflow Blowout' };
   }
 
-  // 4. Genuine Dual Flow Dominance with balanced/low liability (abs(pnl1 - pnl2) < 900)
+  // 4. Significant Bookie Trap Fade (When one team has a deficit and liability diff >= 900)
+  if ((epnl1 < 0 || epnl2 < 0) && Math.abs(epnl1 - epnl2) >= 900) {
+    if (epnl1 > epnl2) {
+      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
+    }
+    if (epnl2 > epnl1) {
+      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
+    }
+  }
+
+  // 5. Total Bets Activity Dominance (When both teams are safe or balanced PnL)
+  if (bets1 > 0 || bets2 > 0) {
+    if (bets1 >= bets2 * 1.25) {
+      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Total Bets Leader' };
+    }
+    if (bets2 >= bets1 * 1.25) {
+      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Total Bets Leader' };
+    }
+  }
+
+  // 6. Genuine Dual Flow Dominance with balanced/low liability (abs(pnl1 - pnl2) < 900)
   if (Math.abs(epnl1 - epnl2) < 900) {
     if (b1 > b2 && l1 > l2) {
       return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Advantage' };
@@ -121,8 +145,7 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     }
   }
 
-  // 5. Significant Bookie Trap Fade (abs(pnl1 - pnl2) >= 900)
-  // When public money creates >= 900 deficit, the bookmaker safe profit team wins!
+  // 7. Bookie Trap Fade fallback
   if (epnl1 > epnl2) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
@@ -130,7 +153,7 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Trap (Fade Public)' };
   }
 
-  // 6. Volume Leader fallback
+  // 8. Volume Leader fallback
   return { winner: b1 > b2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Volume Leader' };
 }
 
