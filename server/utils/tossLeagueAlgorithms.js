@@ -37,10 +37,10 @@ export function inferCompetition(snap, compName = '') {
     all.includes('jamaica') ||
     all.includes('barbados') ||
     all.includes('antigua') ||
+    all.includes('barbuda') ||
     all.includes('st kitts') ||
     all.includes('st. kitts') ||
     all.includes('patriots') ||
-    all.includes('falcons') ||
     all.includes('tallawahs')
   ) {
     return 'caribbean premier league'
@@ -118,6 +118,22 @@ export function inferCompetition(snap, compName = '') {
     all.includes('noida super')
   ) {
     return 'uttar pradesh premier league'
+  }
+
+  if (
+    all.includes('jalandhar') ||
+    all.includes('fazilka') ||
+    all.includes('mohali') ||
+    all.includes('bathinda') ||
+    all.includes('ludhiana') ||
+    all.includes('amritsar') ||
+    all.includes('agri king') ||
+    all.includes('blasters') ||
+    all.includes('phantoms') ||
+    all.includes('super strikers') ||
+    all.includes('punjab')
+  ) {
+    return 'sher e punjab t20 league'
   }
 
   if (
@@ -576,6 +592,26 @@ export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2
  * 🌴 Kerala Cricket League Toss Algorithm
  */
 export function getKeralaTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio }) {
+  if (l1 >= 50 && l1 >= b1 * 1.8 && l1 > l2) {
+    return {
+      winner: t2,
+      tier: 'KERALA_TOSS_SPECIAL',
+      algoName: '🌴 Kerala Toss Special Algorithm',
+      verdictTag: 'KERALA LAY RESISTANCE',
+      pattern: 'KERALA_LAY_RESISTANCE',
+      reason: `Kerala Pre-Match Lay Resistance on ${t1} (₹${fmtVol(l1)} Lay) -> Faded to ${t2}`,
+    }
+  }
+  if (l2 >= 50 && l2 >= b2 * 1.8 && l2 > l1) {
+    return {
+      winner: t1,
+      tier: 'KERALA_TOSS_SPECIAL',
+      algoName: '🌴 Kerala Toss Special Algorithm',
+      verdictTag: 'KERALA LAY RESISTANCE',
+      pattern: 'KERALA_LAY_RESISTANCE',
+      reason: `Kerala Pre-Match Lay Resistance on ${t2} (₹${fmtVol(l2)} Lay) -> Faded to ${t1}`,
+    }
+  }
   if (b1 > b2 && l1 > l2 && prePnl1 < prePnl2) {
     return {
       winner: t1,
@@ -596,7 +632,7 @@ export function getKeralaTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePn
       reason: `Kerala Dual Back+Lay Lead on ${t2}`,
     }
   }
-  if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
+  if (b1 !== b2 && (b1 > 0 || b2 > 0) && (b1 > b2 ? l1 < b1 * 1.5 : l2 < b2 * 1.5)) {
     const win = b1 > b2 ? t1 : t2
     return {
       winner: win,
@@ -605,6 +641,17 @@ export function getKeralaTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePn
       verdictTag: 'KERALA SMART INFLOW',
       pattern: 'KERALA_SMART_INFLOW',
       reason: `Kerala Inflow on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`,
+    }
+  }
+  if (prePnl1 !== prePnl2) {
+    const win = prePnl1 > prePnl2 ? t1 : t2
+    return {
+      winner: win,
+      tier: 'KERALA_TOSS_SPECIAL',
+      algoName: '🌴 Kerala Toss Special Algorithm',
+      verdictTag: 'KERALA BOOKIE SAFE',
+      pattern: 'KERALA_BOOKIE_SAFE',
+      reason: `Kerala Bookie Safe Side on ${win}`,
     }
   }
   return null
@@ -690,6 +737,64 @@ export function getSriLankaTossPrediction({ t1, t2, prePnl1, prePnl2 }) {
       verdictTag: 'SRILANKA BOOKIE SAFE',
       pattern: 'SRILANKA_BOOKIE_SAFE',
       reason: `Sri Lanka Bookie Exposure Safe Side on ${win}`,
+    }
+  }
+  return null
+}
+
+/**
+ * 🦁 Sher E Punjab T20 League Toss Algorithm (Bookie Safe / Fade Public)
+ */
+export function getSherEPunjabTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, isZeroBack1, isZeroBack2 }) {
+  if (prePnl1 !== prePnl2) {
+    const win = prePnl1 > prePnl2 ? t1 : t2
+    return {
+      winner: win,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB BOOKIE SAFE',
+      pattern: 'PUNJAB_BOOKIE_SAFE',
+      reason: `Sher-e-Punjab Bookie Exposure Safe Side on ${win} (Fade Public)`,
+    }
+  }
+  if (isZeroBack1 && prePnl1 > 0) {
+    return {
+      winner: t1,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB ZERO-BACK',
+      pattern: 'PUNJAB_ZERO_BACK',
+      reason: `Sher-e-Punjab Pure Profit on ${t1} (Zero Back Exposure)`,
+    }
+  }
+  if (isZeroBack2 && prePnl2 > 0) {
+    return {
+      winner: t2,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB ZERO-BACK',
+      pattern: 'PUNJAB_ZERO_BACK',
+      reason: `Sher-e-Punjab Pure Profit on ${t2} (Zero Back Exposure)`,
+    }
+  }
+  if (b1 < b2 && b1 > 0) {
+    return {
+      winner: t1,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB UNDERDOG FADE',
+      pattern: 'PUNJAB_UNDERDOG_FADE',
+      reason: `Sher-e-Punjab Public Overload Fade to ${t1}`,
+    }
+  }
+  if (b2 < b1 && b2 > 0) {
+    return {
+      winner: t2,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB UNDERDOG FADE',
+      pattern: 'PUNJAB_UNDERDOG_FADE',
+      reason: `Sher-e-Punjab Public Overload Fade to ${t2}`,
     }
   }
   return null
@@ -827,6 +932,12 @@ export function getLeagueTossPrediction(snap, compName = '') {
   // 10. Sri Lanka Major Clubs / LPL
   if (comp.includes('sri lanka') || comp.includes('lanka') || comp.includes('slc')) {
     const p = getSriLankaTossPrediction(ctx)
+    if (p) return p
+  }
+
+  // 11. Sher E Punjab T20 League
+  if (comp.includes('punjab') || comp.includes('sher e punjab') || comp.includes('sher-e-punjab')) {
+    const p = getSherEPunjabTossPrediction(ctx)
     if (p) return p
   }
 
