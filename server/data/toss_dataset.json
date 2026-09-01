@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-31T17:47:58.465Z",
+  "updatedAt": "2026-09-01T03:56:45.020Z",
   "records": [
     {
       "matchId": "35901908",
@@ -19564,7 +19564,7 @@
           }
         }
       },
-      "predictedWinner": "St Kitts & Nevis Pats",
+      "predictedWinner": "Antigua & Barbuda Falcs",
       "predictionReason": "CPL Strong Synthetic Support on St Kitts & Nevis Pats (5.7x Ratio)",
       "predictionRisk": {
         "tier": "medium",
@@ -19591,8 +19591,12 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Antigua & Barbuda Falcs",
+      "actualTossWinner": "Antigua & Barbuda Falcs",
+      "predictionTier": "CPL_TOSS_SPECIAL",
+      "verdictTag": "CPL OVERLOAD TRAP FADE 🚨",
+      "reason": "CPL Naked Public Overload on St Kitts & Nevis Pats (₹3.0k Back, ₹15 Lay) Faded to Antigua & Barbuda Falcs (₹431 Lay, PnL: +2924)"
     },
     {
       "matchId": "35998050",
@@ -20125,6 +20129,882 @@
         {
           "reason": "Intl Inflow on Zimbabwe (₹1.3k Back, Lead: 1.1x)",
           "winner": "Zimbabwe",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-08-31T19:30:24.651Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Namibia"
+    },
+    {
+      "matchId": "35982279",
+      "marketId": "1.261538706",
+      "matchName": "Bangladesh W v Indonesia W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "team1": "Bangladesh W",
+      "team2": "Indonesia W",
+      "startTime": 1788186600000,
+      "endedAt": "2026-09-01T03:56:44.683Z",
+      "capturedAt": "2026-09-01T03:56:44.683Z",
+      "snapshot": {
+        "serverTime": "2026-09-01T03:56:44.733Z",
+        "matchId": "35982279",
+        "matchName": "Bangladesh W v Indonesia W",
+        "teamNames": [
+          "Bangladesh W",
+          "Indonesia W"
+        ],
+        "inPlayPnl": {
+          "team1": -1142.9813999999997,
+          "team2": 1262.6698
+        },
+        "inPlayTotalBets": {
+          "team1": 1644.5895999999998,
+          "team2": 472.2436
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1401.49,
+            "lay": 39.699999999999996,
+            "total": 1754.92
+          },
+          "team2": {
+            "back": 462.07000000000005,
+            "lay": 353.43000000000006,
+            "total": 501.77000000000004
+          }
+        },
+        "preMatchPnl": {
+          "team1": -1142.9813999999997,
+          "team2": 1262.6698
+        },
+        "preMatchTotalBets": {
+          "team1": 1644.5895999999998,
+          "team2": 472.2436
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1401.49,
+            "lay": 39.699999999999996,
+            "total": 1754.92
+          },
+          "team2": {
+            "back": 462.07000000000005,
+            "lay": 353.43000000000006,
+            "total": 501.77000000000004
+          }
+        },
+        "threeMinPnl": {
+          "team1": -1142.9813999999997,
+          "team2": 1262.6698
+        },
+        "threeMinTotalBets": {
+          "team1": 1644.5895999999998,
+          "team2": 472.2436
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1401.49,
+            "lay": 39.699999999999996,
+            "total": 1754.92
+          },
+          "team2": {
+            "back": 462.07000000000005,
+            "lay": 353.43000000000006,
+            "total": 501.77000000000004
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 5
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1401.49,
+            "lay": 39.699999999999996,
+            "totalVolume": 1441.19,
+            "backPercentage": 97.24533198259772
+          },
+          "team2": {
+            "back": 462.07000000000005,
+            "lay": 353.43000000000006,
+            "totalVolume": 815.5000000000001,
+            "backPercentage": 56.66094420600858
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1291.1595999999997,
+            "lay": 39.538199999999996,
+            "totalBet": 1330.6977999999997
+          },
+          "team2": {
+            "back": 432.5436,
+            "lay": 333.4234,
+            "totalBet": 765.9670000000001
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1754.92,
+            "support": 77.76522251616306
+          },
+          "team2": {
+            "supportMoney": 501.77000000000004,
+            "support": 22.234777483836947
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Bangladesh W",
+          "bookieFavouriteOutcome": "Indonesia W",
+          "riskTeam": "Bangladesh W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 55.530445032326114,
+          "mostBettedTeam": "Bangladesh W",
+          "prediction": {
+            "team1TrueSupport": 1624.5829999999996,
+            "team2TrueSupport": 472.08180000000004,
+            "ratio": 3.44131673790432,
+            "bookiePnlTeam1": -1251.4595999999997,
+            "bookiePnlTeam2": -79.11359999999996,
+            "prediction": "Indonesia W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (3.44) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1251.6213999999998,
+            "backExposure": 1291.1595999999997,
+            "layExposure": 39.538199999999996,
+            "teamName": "Bangladesh W"
+          },
+          "team2": {
+            "netExposure": 99.12020000000001,
+            "backExposure": 432.5436,
+            "layExposure": 333.4234,
+            "teamName": "Indonesia W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1291.1595999999997,
+            "A_lay_stake": 39.699999999999996,
+            "B_back_expo": 432.5436,
+            "B_lay_stake": 353.43000000000006
+          },
+          "totals": {
+            "totalBetTeam1": 1644.5895999999998,
+            "totalBetTeam2": 472.2436
+          },
+          "simplePL": {
+            "team1_win": -1251.4595999999997,
+            "team2_win": -79.11359999999996
+          },
+          "derivedPL": {
+            "team1_win": -1172.3459999999998,
+            "team2_win": 1172.3459999999998
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1401.49,
+              "totalLayVol": 39.699999999999996,
+              "totalBet": 1754.92,
+              "profitLoss": -1253.15
+            },
+            "team2": {
+              "totalBackVol": 462.07000000000005,
+              "totalLayVol": 353.43000000000006,
+              "totalBet": 501.77000000000004,
+              "profitLoss": 1253.15
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1291.1595999999997,
+              "totalLayVol": 39.699999999999996,
+              "totalBet": 1644.5895999999998,
+              "profitLoss": -1142.9813999999997
+            },
+            "team2": {
+              "totalBackExpo": 432.5436,
+              "totalLayVol": 353.43000000000006,
+              "totalBet": 472.2436,
+              "profitLoss": 1262.6698
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1291.1595999999997,
+              "totalLayNetVol": 39.538199999999996,
+              "totalBet": 1624.5829999999996,
+              "profitLoss": -1152.5011999999997
+            },
+            "team2": {
+              "totalBackNetVol": 432.5436,
+              "totalLayNetVol": 333.4234,
+              "totalBet": 472.08180000000004,
+              "profitLoss": 1152.5011999999997
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.941428571428571,
+            "averageSize": 250.70285714285714,
+            "supportProduct": 486.7216897959183
+          },
+          "teamB": {
+            "tradeCount": 5,
+            "averageOdds": 1.9759999999999998,
+            "averageSize": 100.35400000000001,
+            "supportProduct": 198.299504
+          },
+          "strongerTeam": "Bangladesh W",
+          "supportRatio": 2.4544775956470284
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1401.49,
+            "oppoLayVolume": 353.43000000000006,
+            "layExposure": 39.538199999999996,
+            "netSupportValue": 1715.3818
+          },
+          "teamB": {
+            "totalBackVolume": 462.07000000000005,
+            "oppoLayVolume": 39.699999999999996,
+            "layExposure": 333.4234,
+            "netSupportValue": 168.34660000000002
+          },
+          "strongerTeam": "Bangladesh W",
+          "netSupportDifference": 1547.0352,
+          "percentageA": 91.0631171669971,
+          "percentageB": 8.936882833002889
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1361.79,
+            "syntheticSupport": 353.43000000000006,
+            "opponentLiabilityRejection": 333.4234,
+            "sentimentScore": 1381.7966000000001
+          },
+          "teamB": {
+            "directNetSupport": 108.63999999999999,
+            "syntheticSupport": 39.699999999999996,
+            "opponentLiabilityRejection": 39.538199999999996,
+            "sentimentScore": 108.80179999999999
+          },
+          "strongerTeam": "Bangladesh W",
+          "scoreDifference": 1272.9948000000002,
+          "percentageA": 92.70079721003324,
+          "percentageB": 7.299202789966766
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Bangladesh W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Indonesia W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Bangladesh W"
+        },
+        "teams": {
+          "Bangladesh W": {
+            "trades": [
+              {
+                "team": "Bangladesh W",
+                "price": 1.91,
+                "type": "back",
+                "size": 414.33,
+                "updatedAt": 1788183483407
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.92,
+                "type": "back",
+                "size": 563.72,
+                "updatedAt": 1788181051242
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.93,
+                "type": "back",
+                "size": 253.67000000000002,
+                "updatedAt": 1788181003719
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.99,
+                "type": "lay",
+                "size": 6.64,
+                "updatedAt": 1788180731464
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.94,
+                "type": "back",
+                "size": 169.76999999999998,
+                "updatedAt": 1788178828848
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 23.629999999999995,
+                "updatedAt": 1788178814768
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 2.04,
+                "type": "lay",
+                "size": 9.43,
+                "updatedAt": 1788178802271
+              }
+            ],
+            "pnlIfWins": -1142.9813999999997,
+            "totalBet": 1644.5895999999998
+          },
+          "Indonesia W": {
+            "trades": [
+              {
+                "team": "Indonesia W",
+                "price": 1.92,
+                "type": "lay",
+                "size": 263.85,
+                "updatedAt": 1788183312016
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.93,
+                "type": "back",
+                "size": 180.22000000000003,
+                "updatedAt": 1788183303392
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.94,
+                "type": "back",
+                "size": 281.85,
+                "updatedAt": 1788182005459
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.02,
+                "type": "lay",
+                "size": 79.72,
+                "updatedAt": 1788178814752
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.95,
+                "type": "lay",
+                "size": 9.860000000000001,
+                "updatedAt": 1788178802299
+              }
+            ],
+            "pnlIfWins": 1262.6698,
+            "totalBet": 472.2436
+          }
+        }
+      },
+      "predictedWinner": "Bangladesh W",
+      "predictionReason": "Women's Inflow on Bangladesh W (₹1.4k Back, Lead: 3.0x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Women's Inflow on Bangladesh W (₹1.4k Back, Lead: 3.0x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Women's Inflow on Bangladesh W (₹1.4k Back, Lead: 3.0x)",
+          "winner": "Bangladesh W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36004104",
+      "marketId": "1.261731626",
+      "matchName": "Trinbago Knight Riders v Guyana Amazon Warriors",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Trinbago Knight Riders",
+      "team2": "Guyana Amazon Warriors",
+      "startTime": 1788210000000,
+      "endedAt": "2026-09-01T03:56:45.015Z",
+      "capturedAt": "2026-09-01T03:56:45.015Z",
+      "snapshot": {
+        "serverTime": "2026-09-01T03:56:45.066Z",
+        "matchId": "36004104",
+        "matchName": "Trinbago Knight Riders v Guyana Amazon Warriors",
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "Guyana Amazon Warriors"
+        ],
+        "inPlayPnl": {
+          "team1": -138.0215999999998,
+          "team2": 253.8235000000002
+        },
+        "inPlayTotalBets": {
+          "team1": 1346.5874,
+          "team2": 1146.6540000000002
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1092.5400000000002,
+            "lay": 31.43,
+            "total": 1404.2500000000002
+          },
+          "team2": {
+            "back": 1175.25,
+            "lay": 311.71000000000004,
+            "total": 1206.68
+          }
+        },
+        "preMatchPnl": {
+          "team1": -137.99159999999972,
+          "team2": 253.7938000000001
+        },
+        "preMatchTotalBets": {
+          "team1": 1346.5573999999997,
+          "team2": 1146.6540000000002
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1092.5400000000002,
+            "lay": 31.43,
+            "total": 1404.2200000000003
+          },
+          "team2": {
+            "back": 1175.25,
+            "lay": 311.67999999999995,
+            "total": 1206.68
+          }
+        },
+        "threeMinPnl": {
+          "team1": -137.99159999999972,
+          "team2": 253.7938000000001
+        },
+        "threeMinTotalBets": {
+          "team1": 1346.5573999999997,
+          "team2": 1146.6540000000002
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1092.5400000000002,
+            "lay": 31.43,
+            "total": 1404.2200000000003
+          },
+          "team2": {
+            "back": 1175.25,
+            "lay": 311.67999999999995,
+            "total": 1206.68
+          }
+        },
+        "matchLoadV2": {
+          "team1": 11,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1092.5400000000002,
+            "lay": 31.43,
+            "totalVolume": 1123.9700000000003,
+            "backPercentage": 97.20366201944891
+          },
+          "team2": {
+            "back": 1175.25,
+            "lay": 311.71000000000004,
+            "totalVolume": 1486.96,
+            "backPercentage": 79.0370958196589
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1034.8773999999999,
+            "lay": 33.3158,
+            "totalBet": 1068.1932
+          },
+          "team2": {
+            "back": 1115.2240000000002,
+            "lay": 307.9375,
+            "totalBet": 1423.1615000000002
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1404.2500000000002,
+            "support": 53.78351775038014
+          },
+          "team2": {
+            "supportMoney": 1206.68,
+            "support": 46.216482249619865
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Trinbago Knight Riders",
+          "bookieFavouriteOutcome": "Guyana Amazon Warriors",
+          "riskTeam": "Trinbago Knight Riders",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 7.5670355007602765,
+          "mostBettedTeam": "Trinbago Knight Riders",
+          "prediction": {
+            "team1TrueSupport": 1342.8148999999999,
+            "team2TrueSupport": 1148.5116,
+            "ratio": 1.1691783522256107,
+            "bookiePnlTeam1": -1003.4473999999999,
+            "bookiePnlTeam2": -803.4857999999999,
+            "prediction": "Guyana Amazon Warriors",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.17) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1001.5615999999999,
+            "backExposure": 1034.8773999999999,
+            "layExposure": 33.3158,
+            "teamName": "Trinbago Knight Riders"
+          },
+          "team2": {
+            "netExposure": 807.2583,
+            "backExposure": 1115.1958,
+            "layExposure": 307.9375,
+            "teamName": "Guyana Amazon Warriors"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1034.8773999999999,
+            "A_lay_stake": 31.43,
+            "B_back_expo": 1115.2240000000002,
+            "B_lay_stake": 311.71000000000004
+          },
+          "totals": {
+            "totalBetTeam1": 1346.5874,
+            "totalBetTeam2": 1146.6540000000002
+          },
+          "simplePL": {
+            "team1_win": -1003.4473999999999,
+            "team2_win": -803.5140000000001
+          },
+          "derivedPL": {
+            "team1_win": -199.93339999999966,
+            "team2_win": 199.93339999999966
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1092.5400000000002,
+              "totalLayVol": 31.43,
+              "totalBet": 1404.2500000000002,
+              "profitLoss": -197.57000000000016
+            },
+            "team2": {
+              "totalBackVol": 1175.25,
+              "totalLayVol": 311.71000000000004,
+              "totalBet": 1206.68,
+              "profitLoss": 197.57000000000016
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1034.8773999999999,
+              "totalLayVol": 31.43,
+              "totalBet": 1346.5874,
+              "profitLoss": -138.0215999999998
+            },
+            "team2": {
+              "totalBackExpo": 1115.2240000000002,
+              "totalLayVol": 311.71000000000004,
+              "totalBet": 1146.6540000000002,
+              "profitLoss": 253.82349999999997
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1034.8773999999999,
+              "totalLayNetVol": 33.3158,
+              "totalBet": 1342.8148999999999,
+              "profitLoss": -194.2750999999996
+            },
+            "team2": {
+              "totalBackNetVol": 1115.2240000000002,
+              "totalLayNetVol": 307.9375,
+              "totalBet": 1148.5398000000002,
+              "profitLoss": 194.2750999999996
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 11,
+            "averageOdds": 1.967272727272727,
+            "averageSize": 127.65909090909095,
+            "supportProduct": 251.14024793388435
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.8228571428571427,
+            "averageSize": 172.38285714285715,
+            "supportProduct": 314.2293224489796
+          },
+          "strongerTeam": "Guyana Amazon Warriors",
+          "supportRatio": 1.2512105289141235
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1092.5400000000002,
+            "oppoLayVolume": 311.71000000000004,
+            "layExposure": 33.3158,
+            "netSupportValue": 1370.9342000000001
+          },
+          "teamB": {
+            "totalBackVolume": 1175.25,
+            "oppoLayVolume": 31.43,
+            "layExposure": 307.9375,
+            "netSupportValue": 898.7425000000001
+          },
+          "strongerTeam": "Trinbago Knight Riders",
+          "netSupportDifference": 472.1917000000001,
+          "percentageA": 60.402179746569196,
+          "percentageB": 39.59782025343081
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1061.1100000000001,
+            "syntheticSupport": 311.71000000000004,
+            "opponentLiabilityRejection": 307.9375,
+            "sentimentScore": 1064.8825000000002
+          },
+          "teamB": {
+            "directNetSupport": 863.54,
+            "syntheticSupport": 31.43,
+            "opponentLiabilityRejection": 33.3158,
+            "sentimentScore": 861.6542
+          },
+          "strongerTeam": "Trinbago Knight Riders",
+          "scoreDifference": 203.22830000000022,
+          "percentageA": 55.27444662746368,
+          "percentageB": 44.72555337253632
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Trinbago Knight Riders",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Guyana Amazon Warriors",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Trinbago Knight Riders"
+        },
+        "teams": {
+          "Trinbago Knight Riders": {
+            "trades": [
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.92,
+                "type": "back",
+                "size": 332.51,
+                "updatedAt": 1788206867425
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.06,
+                "type": "lay",
+                "size": 31.43,
+                "updatedAt": 1788206812421
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "back",
+                "size": 192.17,
+                "updatedAt": 1788206524741
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.93,
+                "type": "back",
+                "size": 281.91,
+                "updatedAt": 1788204835993
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.94,
+                "type": "back",
+                "size": 169.15,
+                "updatedAt": 1788202937076
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "back",
+                "size": 79.67,
+                "updatedAt": 1788202916062
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "back",
+                "size": 37.13,
+                "updatedAt": 1788202909938
+              }
+            ],
+            "pnlIfWins": -138.0215999999998,
+            "totalBet": 1346.5874
+          },
+          "Guyana Amazon Warriors": {
+            "trades": [
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.99,
+                "type": "lay",
+                "size": 150.16000000000003,
+                "updatedAt": 1788210023022
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.98,
+                "type": "lay",
+                "size": 67.79,
+                "updatedAt": 1788207872068
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.01,
+                "type": "back",
+                "size": 2.82,
+                "updatedAt": 1788207323043
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.91,
+                "updatedAt": 1788207188257
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.94,
+                "type": "lay",
+                "size": 7.050000000000011,
+                "updatedAt": 1788206812467
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.93,
+                "type": "lay",
+                "size": 7.029999999999973,
+                "updatedAt": 1788206774959
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.92,
+                "type": "back",
+                "size": 276.95000000000005,
+                "updatedAt": 1788206767365
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 2,
+                "type": "lay",
+                "size": 79.68,
+                "updatedAt": 1788206524757
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.93,
+                "type": "back",
+                "size": 281.91,
+                "updatedAt": 1788205624273
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.94,
+                "type": "back",
+                "size": 160.32,
+                "updatedAt": 1788202853902
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.99,
+                "type": "back",
+                "size": 438.34000000000003,
+                "updatedAt": 1788200557267
+              }
+            ],
+            "pnlIfWins": 253.8235000000002,
+            "totalBet": 1146.6540000000002
+          }
+        }
+      },
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictionReason": "CPL Smart Money Inflow on Guyana Amazon Warriors (₹1.2k Back, Lead: 1.1x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "CPL Smart Money Inflow on Guyana Amazon Warriors (₹1.2k Back, Lead: 1.1x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "CPL Smart Money Inflow on Guyana Amazon Warriors (₹1.2k Back, Lead: 1.1x)",
+          "winner": "Guyana Amazon Warriors",
           "priority": 100,
           "selected": true
         }

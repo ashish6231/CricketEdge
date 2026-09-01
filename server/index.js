@@ -20,6 +20,7 @@ const { setIo } = require('./socketInstance');
 const { getAllowedOrigins } = require('./lib/publicUrl');
 const { startTossCaptureWorker } = require('./services/tossCaptureWorker');
 const { startMatchCaptureWorker } = require('./services/matchCaptureWorker');
+const { expireAllTrials } = require('./lib/subscriptionAccess');
 
 const allowedOrigins = getAllowedOrigins();
 

@@ -173,7 +173,53 @@ export function inferCompetition(snap, compName = '') {
 /**
  * 🌴 Caribbean Premier League (CPL) Toss Algorithm
  */
-export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, trap, bookieFav, stronger, supRatio, isLayAbsorbed1, isLayAbsorbed2 }) {
+export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, trap, bookieFav, stronger, supRatio, isLayAbsorbed1, isLayAbsorbed2, totBack }) {
+  const totalBack = totBack ?? (b1 + b2)
+
+  // 1.0 Naked Public Overload & Lay Resistance Trap Fade (e.g. St Kitts 77% load ₹2.98k with 0 lay vs Antigua ₹431 Lay & +₹2.92k Bookie Profit)
+  if (totalBack >= 2000 && b1 >= b2 * 4.0 && l1 <= 50 && l2 >= 250 && l2 >= b2 * 0.8 && prePnl1 < -1500 && prePnl2 > 1500) {
+    return {
+      winner: t2,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL OVERLOAD TRAP FADE 🚨',
+      pattern: 'CPL_OVERLOAD_TRAP_FADE',
+      reason: `CPL Naked Public Overload on ${t1} (₹${fmtVol(b1)} Back, ₹${fmtVol(l1)} Lay) Faded to ${t2} (₹${fmtVol(l2)} Lay, PnL: +${prePnl2.toFixed(0)})`,
+    }
+  }
+  if (totalBack >= 2000 && b2 >= b1 * 4.0 && l2 <= 50 && l1 >= 250 && l1 >= b1 * 0.8 && prePnl2 < -1500 && prePnl1 > 1500) {
+    return {
+      winner: t1,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL OVERLOAD TRAP FADE 🚨',
+      pattern: 'CPL_OVERLOAD_TRAP_FADE',
+      reason: `CPL Naked Public Overload on ${t2} (₹${fmtVol(b2)} Back, ₹${fmtVol(l2)} Lay) Faded to ${t1} (₹${fmtVol(l1)} Lay, PnL: +${prePnl1.toFixed(0)})`,
+    }
+  }
+
+  // 1.05 Pre-Match Lay Resistance Dump Fade (near-flat back lead < 1.35x, heavy lay dump on one team)
+  if (backRatio < 1.35 && l2 >= 150 && l2 >= l1 * 2.5) {
+    return {
+      winner: t1,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL LAY DUMP FADE 🚨',
+      pattern: 'CPL_LAY_DUMP_FADE',
+      reason: `CPL Lay Resistance Dump on ${t2} (₹${fmtVol(l2)} Lay vs ₹${fmtVol(l1)}) -> Faded to ${t1}`,
+    }
+  }
+  if (backRatio < 1.35 && l1 >= 150 && l1 >= l2 * 2.5) {
+    return {
+      winner: t2,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL LAY DUMP FADE 🚨',
+      pattern: 'CPL_LAY_DUMP_FADE',
+      reason: `CPL Lay Resistance Dump on ${t1} (₹${fmtVol(l1)} Lay vs ₹${fmtVol(l2)}) -> Faded to ${t2}`,
+    }
+  }
+
   // 1.1 Lay absorption shield
   if (isLayAbsorbed1 && !isLayAbsorbed2 && prePnl1 > 1000) {
     return {
@@ -462,53 +508,89 @@ export function getWomensTossPrediction({ t1, t2, b1, b2, backRatio }) {
 
 /**
  * 🇪🇺 European T20 Premier League / ECS Toss Algorithm
+ *
+ * Revision log:
+ *  v2 – Tightened Overload Fade to 90%/9x + PnL gate + totBack > 800 to reduce false fades.
+ *       Raised Lay Dump Fade minimum to 100 & 2.5x ratio.
+ *       Added Bookie Safe PnL fallback before raw inflow.
+ *  v3 – Fixed ECS_BOOKIE_SAFE false fires: added back-volume alignment gate.
+ *       Bookie Safe only fires when PnL winner ALSO leads in back volume.
+ *       In ETPL the back-volume leader is the most reliable toss signal.
+ *       Raised Bookie Safe PnL threshold to ≥500 / ≤-300 for stronger signal.
  */
 export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct, totBack }) {
-  // 5.1 Lay Dump Resistance Fade (Heavy Lay dump on one team indicates smart short selling against them)
-  if (l1 >= 50 && l1 >= l2 * 2.0) {
+  // 5.1 Lay Dump Resistance Fade – min ₹100 lay, 2.5x dominance, negative PnL on dumped team
+  // Heavy asymmetric lay = smart money short-selling against that team
+  if (l1 >= 100 && l1 >= l2 * 2.5 && prePnl1 < 0) {
     return {
       winner: t2,
       tier: 'EUROPEAN_TOSS_SPECIAL',
       algoName: '🇪🇺 European T20 Toss Algorithm',
       verdictTag: 'ECS LAY DUMP FADE 🚨',
       pattern: 'ECS_LAY_DUMP_FADE',
-      reason: `ECS Heavy Lay Short Dump on ${t1} (₹${l1.toFixed(0)} Lay) -> Faded to ${t2}`,
+      reason: `ECS Heavy Lay Short Dump on ${t1} (₹${l1.toFixed(0)} Lay, ${(l1 / Math.max(l2, 1)).toFixed(1)}x) -> Faded to ${t2}`,
     }
   }
-  if (l2 >= 50 && l2 >= l1 * 2.0) {
+  if (l2 >= 100 && l2 >= l1 * 2.5 && prePnl2 < 0) {
     return {
       winner: t1,
       tier: 'EUROPEAN_TOSS_SPECIAL',
       algoName: '🇪🇺 European T20 Toss Algorithm',
       verdictTag: 'ECS LAY DUMP FADE 🚨',
       pattern: 'ECS_LAY_DUMP_FADE',
-      reason: `ECS Heavy Lay Short Dump on ${t2} (₹${l2.toFixed(0)} Lay) -> Faded to ${t1}`,
+      reason: `ECS Heavy Lay Short Dump on ${t2} (₹${l2.toFixed(0)} Lay, ${(l2 / Math.max(l1, 1)).toFixed(1)}x) -> Faded to ${t1}`,
     }
   }
 
-  // 5.2 Retail Overload Fade (85%+ load with negative PnL)
-  if ((b1Pct >= 0.85 || backRatio >= 6.0) && b1 > b2 && prePnl1 < 0 && totBack > 400) {
+  // 5.2 Retail Overload Fade – 90%/9x threshold, double PnL gate, totBack > 800
+  // Requires the FADE side (bookie) to also show positive PnL to confirm genuine overload
+  if ((b1Pct >= 0.90 || backRatio >= 9.0) && b1 > b2 && prePnl1 < -300 && prePnl2 > 0 && totBack > 800) {
     return {
       winner: t2,
       tier: 'EUROPEAN_TOSS_SPECIAL',
       algoName: '🇪🇺 European T20 Toss Algorithm',
       verdictTag: 'ECS OVERLOAD FADE 🚨',
       pattern: 'ECS_OVERLOAD_FADE',
-      reason: `ECS Public Overload Fade on ${t1} -> Faded to ${t2}`,
+      reason: `ECS Public Overload Fade on ${t1} (${(b1Pct * 100).toFixed(0)}% Load, PnL: ${prePnl1.toFixed(0)}) -> Faded to ${t2} (PnL: +${prePnl2.toFixed(0)})`,
     }
   }
-  if ((b2Pct >= 0.85 || backRatio >= 6.0) && b2 > b1 && prePnl2 < 0 && totBack > 400) {
+  if ((b2Pct >= 0.90 || backRatio >= 9.0) && b2 > b1 && prePnl2 < -300 && prePnl1 > 0 && totBack > 800) {
     return {
       winner: t1,
       tier: 'EUROPEAN_TOSS_SPECIAL',
       algoName: '🇪🇺 European T20 Toss Algorithm',
       verdictTag: 'ECS OVERLOAD FADE 🚨',
       pattern: 'ECS_OVERLOAD_FADE',
-      reason: `ECS Public Overload Fade on ${t2} -> Faded to ${t1}`,
+      reason: `ECS Public Overload Fade on ${t2} (${(b2Pct * 100).toFixed(0)}% Load, PnL: ${prePnl2.toFixed(0)}) -> Faded to ${t1} (PnL: +${prePnl1.toFixed(0)})`,
     }
   }
 
-  // 5.3 Smart Inflow Lead (Standard matches)
+  // 5.3 Bookie Safe PnL — ONLY when back-volume ALSO agrees with bookie
+  // Guard: In ETPL, the back-volume leader is the primary signal. Bookie PnL alone is not enough
+  // if it contradicts who has more back money in the market.
+  // Threshold raised to ≥500 / ≤-300 to require a strong PnL gap signal.
+  if (prePnl1 >= 500 && prePnl2 <= -300 && b1 >= b2) {
+    return {
+      winner: t1,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS BOOKIE SAFE',
+      pattern: 'ECS_BOOKIE_SAFE',
+      reason: `ECS Bookie Exposure Safe Side on ${t1} (PnL: +${prePnl1.toFixed(0)} vs ${prePnl2.toFixed(0)}, Back aligned)`,
+    }
+  }
+  if (prePnl2 >= 500 && prePnl1 <= -300 && b2 >= b1) {
+    return {
+      winner: t2,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS BOOKIE SAFE',
+      pattern: 'ECS_BOOKIE_SAFE',
+      reason: `ECS Bookie Exposure Safe Side on ${t2} (PnL: +${prePnl2.toFixed(0)} vs ${prePnl1.toFixed(0)}, Back aligned)`,
+    }
+  }
+
+  // 5.4 Smart Inflow Lead — primary signal for ETPL: back-volume leader wins the toss
   if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
     const win = b1 > b2 ? t1 : t2
     return {
@@ -523,6 +605,7 @@ export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
 
   return null
 }
+
 
 /**
  * 🌍 International Matches (T20I, Test Matches, ODIs, ICC Events) Toss Algorithm

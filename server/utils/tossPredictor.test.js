@@ -83,6 +83,24 @@ test('picks CPL Smart Money support when supportRatio >= 1.5 in high trap', () =
   assert.equal(pred.verdictTag, 'CPL SMART MONEY SUPPORT')
 })
 
+test('triggers CPL Overload Trap Fade when one team has naked public load with negative P/L and opposing team has lay resistance', () => {
+  const pred = predictTossWinner(snap({
+    names: ['St Kitts & Nevis Pats', 'Antigua & Barbuda Falcs'],
+    comp: 'Caribbean Premier League',
+    back1: 2981,
+    back2: 450,
+    lay1: 15,
+    lay2: 431,
+    pnl1: -2773,
+    pnl2: 2924,
+    trap: 'high',
+    stronger: 'St Kitts & Nevis Pats',
+    supRatio: 5.7,
+  }))
+  assert.equal(pred.winnerName, 'Antigua & Barbuda Falcs')
+  assert.equal(pred.verdictTag, 'CPL OVERLOAD TRAP FADE 🚨')
+})
+
 test('triggers TNPL Overload Trap Fade when one team has 92%+ one-sided load with negative P/L', () => {
   const pred = predictTossWinner(snap({
     names: ['Dindigul Dragons', 'Ruby Trichy Warriors'],
