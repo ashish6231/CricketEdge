@@ -85,85 +85,92 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
 }
 
 function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
-  const totBack = b1 + b2;
-  const backRatio = Math.min(b1, b2) > 0
-    ? Math.max(b1, b2) / Math.min(b1, b2)
-    : (Math.max(b1, b2) > 0 ? 99 : 1);
+  const tot1 = b1 + l1;
+  const tot2 = b2 + l2;
+  const maxBack = Math.max(b1, b2);
+  const minBack = Math.min(b1, b2);
+  const backRatio = minBack > 0 ? maxBack / minBack : (maxBack > 0 ? 99 : 1);
+  const pnlDiff = Math.abs(epnl1 - epnl2);
+
+  const pb1 = snap?.preMatchTotalBets?.team1 ?? snap?.advancedMetricsV2?.team1?.totalBet ?? 0;
+  const pb2 = snap?.preMatchTotalBets?.team2 ?? snap?.advancedMetricsV2?.team2?.totalBet ?? 0;
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RULE 0 — 🛡️ Bookmaker Lay Shield
-  //   Bookie absorbed massive lay on team (l >= b * 1.8 AND l is the bigger
-  //   pile), AND bookie PnL is strongly positive for that team (>1000).
-  //   This means smart-money shorted the OPPONENT, bookie scooped the lay
-  //   liability and is hedged — team with the lay absorption wins.
-  //   Applies REGARDLESS of which team has more back volume.
+  // RULE 1 — 🚨 Massive Lay Dump on Favorite Fade
+  //   Favorite is shorted heavily (Lay >= 25k & Lay >= 1.8x Back), while the
+  //   opponent has a massive retail trade engagement overload (2.0x+ Bets).
   // ─────────────────────────────────────────────────────────────────────────
-  const isLayAbsorbed1 = l1 >= b1 * 1.8 && l1 > l2 && epnl1 > 1000;
-  const isLayAbsorbed2 = l2 >= b2 * 1.8 && l2 > l1 && epnl2 > 1000;
-  if (isLayAbsorbed1) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield (Lay Absorbed)' };
+  if (l1 >= 25000 && l1 >= b1 * 1.8 && pb2 >= pb1 * 2.0) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
   }
-  if (isLayAbsorbed2) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Lay Shield (Lay Absorbed)' };
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // RULE 1 — 🚨 Naked Public Overload Fade
-  //   Team1 has a MASSIVE back load but near-zero lay (l <= 30), meaning it
-  //   is pure retail / naïve public money — no smart lay-hedge at all.
-  //   PLUS the bookie is strongly positioned for team2 (epnl2 >= 2000 and
-  //   bookie loses from team1 winning, epnl1 < 0).
-  //   Classic "trap" — public overloads, bookie profits from underdog.
-  // ─────────────────────────────────────────────────────────────────────────
-  if (b1 > b2 && l1 <= 30 && epnl2 >= 2000 && epnl1 < 0) {
-    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Naked Public Overload Trap Fade' };
-  }
-  if (b2 > b1 && l2 <= 30 && epnl1 >= 2000 && epnl2 < 0) {
-    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Naked Public Overload Trap Fade' };
+  if (l2 >= 25000 && l2 >= b2 * 1.8 && pb1 >= pb2 * 2.0) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RULE 2 — 📉 Lay Resistance Dump Fade
-  //   Back volumes are close (ratio < 2.0x) but one team has a heavy
-  //   lay dump (>= 3x the other side AND >= 150 absolute).
-  //   The side WITHOUT the lay dump wins — smart money is shorting the
-  //   other team and shielding this team.
-  //   Guard (b_non_dump >= b_dump * 0.75) ensures the non-dump side is
-  //   at least in the ballpark on back volume.
+  // RULE 2 — 🛡️ Massive Lay Absorption Shield & Volume Dominance
+  //   Bookmaker scooped heavy lay on team (l >= 2000 & 3x+ opponent lay) with
+  //   total volume dominance (2.0x+) and positive bookmaker PnL (>1000).
   // ─────────────────────────────────────────────────────────────────────────
-  if (backRatio < 2.0) {
-    if (l2 >= 150 && l2 >= l1 * 3.0 && b1 >= b2 * 0.75) {
-      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Resistance Dump Fade' };
+  if (l1 >= 2000 && l1 >= l2 * 3.0 && tot1 >= tot2 * 2.0 && epnl1 > 1000 && pb1 >= 500) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Shield & Volume Dominance' };
+  }
+  if (l2 >= 2000 && l2 >= l1 * 3.0 && tot2 >= tot1 * 2.0 && epnl2 > 1000 && pb2 >= 500) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Shield & Volume Dominance' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 3 — 📉 Heavy Lay Resistance Short Dump on Underdog
+  //   Underdog has severe Lay dump (Lay >= 3x Back & Lay >= 500), while the
+  //   favorite has strong Back volume (>= 2x underdog back).
+  // ─────────────────────────────────────────────────────────────────────────
+  if (l1 >= b1 * 3.0 && l1 >= 500 && b2 >= b1 * 2.0) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Resistance Dump Short' };
+  }
+  if (l2 >= b2 * 3.0 && l2 >= 500 && b1 >= b2 * 2.0) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Resistance Dump Short' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 4 — 🌊 Dual Flow Blowout Inflow (Smart Money Accumulation)
+  //   One team dominates both Back (>= 2.5x) and Lay (>= 1.5x) with massive
+  //   overall liquidity (>= 20k volume).
+  // ─────────────────────────────────────────────────────────────────────────
+  if (b1 >= b2 * 2.5 && l1 >= l2 * 1.5 && tot1 >= 20000) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Blowout Inflow' };
+  }
+  if (b2 >= b1 * 2.5 && l2 >= l1 * 1.5 && tot2 >= 20000) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Blowout Inflow' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 5 — 🚨 Severe Public Overload Shielded Trap Fade
+  //   Heavy retail favorite (Back >= 3x), but underdog has Lay Shield
+  //   (Lay >= 1.5x Back) and Bookie PnL >= 2000 with favorite in deficit.
+  // ─────────────────────────────────────────────────────────────────────────
+  if (b2 >= b1 * 3.0 && l1 >= b1 * 1.5 && epnl1 >= 2000 && epnl2 < 0) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Shielded Public Overload Trap Fade' };
+  }
+  if (b1 >= b2 * 3.0 && l2 >= b2 * 1.5 && epnl2 >= 2000 && epnl1 < 0) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Shielded Public Overload Trap Fade' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 6 — 💰 Moderate Public Overload Trap Fade
+  //   Back ratio between 1.5x and 2.5x, but Bookmaker in strong deficit on
+  //   the back leader and profits significantly (gap >= 1000) from underdog.
+  // ─────────────────────────────────────────────────────────────────────────
+  if (backRatio >= 1.5 && backRatio <= 2.5 && pnlDiff >= 1000) {
+    if (b2 > b1 && epnl2 < 0 && epnl1 > 0) {
+      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
     }
-    if (l1 >= 150 && l1 >= l2 * 3.0 && b2 >= b1 * 0.75) {
-      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Resistance Dump Fade' };
+    if (b1 > b2 && epnl1 < 0 && epnl2 > 0) {
+      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
     }
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RULE 3 — 💰 Bookie Conviction (Close Market)
-  //   Back volumes are very close (ratio < 1.6x), meaning the market is
-  //   genuinely balanced. In this case, the bookie's positioning (PnL)
-  //   becomes the deciding edge:
-  //   If the bookie profits SIGNIFICANTLY (gap >= 1000) from the BACK
-  //   UNDERDOG winning, that's strong bookie conviction — take the underdog.
-  //   If both teams are equally the underdog (pnl gap tiny), skip this.
-  // ─────────────────────────────────────────────────────────────────────────
-  if (backRatio < 1.6) {
-    const pnlGap = Math.abs(epnl1 - epnl2);
-    if (pnlGap >= 1000 && epnl1 > 0 && b1 < b2) {
-      // Bookie profits from the team with LESS back — smart fade of back leader
-      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Conviction (Fade Back Leader)' };
-    }
-    if (pnlGap >= 1000 && epnl2 > 0 && b2 < b1) {
-      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookie Conviction (Fade Back Leader)' };
-    }
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // RULE 4 — 📊 Back Volume Leader (Default)
-  //   In CPL, when no override pattern is present, the team with the higher
-  //   pre-match back volume wins. Confirmed as correct signal in 10/14 matches.
+  // RULE 7 — 📊 Back Volume Leader (Default Core Signal)
   // ─────────────────────────────────────────────────────────────────────────
   if (b1 > b2) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Back Volume Leader' };
@@ -172,8 +179,8 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Back Volume Leader' };
   }
 
-  // True tie — fall back to bookie PnL
-  return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL PnL Edge (Balanced Market)' };
+  // Fallback
+  return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Safe PnL Fallback' };
 }
 
 
@@ -342,7 +349,7 @@ function getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   return null;
 }
 
-// 🦁 Sher E Punjab T20 League Algorithm (Bookie Trap / Fade Public Money)
+// 🦁 Sher E Punjab T20 League Algorithm (Bookie Trap & Inflow Dynamic)
 function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const prePnl = snap?.preMatchPnl || {};
   const prePnl1 = prePnl.team1 != null ? prePnl.team1 : epnl1;
@@ -352,8 +359,40 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
   const t1Pnl = prePnl1 != null ? prePnl1 : (sp.team1_win ?? (snap?.teams?.[team1]?.pnlIfWins ?? (l1 - b1)));
   const t2Pnl = prePnl2 != null ? prePnl2 : (sp.team2_win ?? (snap?.teams?.[team2]?.pnlIfWins ?? (l2 - b2)));
 
-  // 1. Primary Rule: Strict Bookie Profit Side (Fade Public Overload)
-  if (t1Pnl !== t2Pnl) {
+  // 1. 📉 Lay Resistance Dump / Short Fade (One team has heavy lay dump >= 50 & >= 1.5x its back, other team has clean back)
+  // e.g. Bathinda vs Ludhiana: Bathinda has ₹74 Lay vs ₹0 on Ludhiana -> Faded to Ludhiana Lion
+  if (l1 >= 50 && l1 >= b1 * 1.5 && b2 > b1 && l2 <= 20) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Resistance Dump (Fade to Clean Inflow)' };
+  }
+  if (l2 >= 50 && l2 >= b2 * 1.5 && b1 > b2 && l1 <= 20) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Resistance Dump (Fade to Clean Inflow)' };
+  }
+
+  // 2. 🛡️ Lay Absorption Shield (Underdog has lay absorption >= 25 & >= 3x its back, retail naked overload on favorite >= 5x)
+  // e.g. Mohali (₹106 Back, ₹0 Lay) vs Bathinda (₹7 Back, ₹36 Lay, +156 PnL) -> Bathinda wins!
+  if (l1 >= 25 && l1 >= b1 * 3.0 && t1Pnl > 0 && t2Pnl < 0 && b2 >= b1 * 5.0) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield (Lay Absorbed)' };
+  }
+  if (l2 >= 25 && l2 >= b2 * 3.0 && t2Pnl > 0 && t1Pnl < 0 && b1 >= b2 * 5.0) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield (Lay Absorbed)' };
+  }
+
+  // 3. 🛡️ Heavy Lay Absorption Shield & Total Bet Activity Lead
+  // e.g. Match 36015901: Jalandhar has Lay ₹2160 (3x lay absorption) & 3455 Total Bet vs Amritsar ₹701 Lay & 2422 Total Bet
+  const totBet1 = snap?.advancedMetricsV2?.team1?.totalBet ?? (snap?.preMatchTotalBets?.team1 ?? (b1 + l1));
+  const totBet2 = snap?.advancedMetricsV2?.team2?.totalBet ?? (snap?.preMatchTotalBets?.team2 ?? (b2 + l2));
+  const snapL1 = snap?.advancedMetricsV2?.team1?.lay ?? l1;
+  const snapL2 = snap?.advancedMetricsV2?.team2?.lay ?? l2;
+
+  if (snapL1 >= 500 && snapL1 >= snapL2 * 1.5 && totBet1 > totBet2) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield & Activity Lead' };
+  }
+  if (snapL2 >= 500 && snapL2 >= snapL1 * 1.5 && totBet2 > totBet1) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield & Activity Lead' };
+  }
+
+  // 4. Primary Rule: Strict Bookie Profit Side (Fade Public Overload)
+  if (t1Pnl !== t2Pnl && (t1Pnl < 0 || t2Pnl < 0)) {
     if (t1Pnl > t2Pnl) {
       return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
     }
@@ -362,7 +401,7 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
     }
   }
 
-  // 2. Underdog Trap Fade (Lower Back Volume Side)
+  // 4. Underdog Trap Fade (Lower Back Volume Side)
   if (b1 < b2 && b1 > 0) {
     return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Underdog Trap Fade' };
   }
@@ -370,7 +409,7 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
     return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Underdog Trap Fade' };
   }
 
-  // 3. Fallback: Safe PnL Edge
+  // 5. Fallback: Safe PnL Edge
   return { winner: t1Pnl > t2Pnl ? team1 : team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
 }
 

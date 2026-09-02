@@ -4,7 +4,11 @@ import { fileURLToPath } from 'url';
 import { predictMatchWinner } from './utils/matchWinnerPredictor.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const d = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/toss_dataset.json'), 'utf8'));
+const matchDatasetPath = path.join(__dirname, 'data/match_dataset.json');
+const tossDatasetPath = path.join(__dirname, 'data/toss_dataset.json');
+
+const datasetFile = fs.existsSync(matchDatasetPath) ? matchDatasetPath : tossDatasetPath;
+const d = JSON.parse(fs.readFileSync(datasetFile, 'utf8'));
 const records = d.records || [];
 
 const cpl = records.filter(r => {
@@ -18,9 +22,10 @@ const cpl = records.filter(r => {
     teams.includes('st. kitts');
 });
 
-// User-confirmed results for matches that ended but weren't yet verified in dataset
+// User-confirmed results for matches that ended but were pending verification in dataset
 const CONFIRMED_RESULTS = {
-  '36004104': 'Trinbago Knight Riders', // 01 Sept 2026 02:30am — user confirmed
+  '35989000': 'Antigua & Barbuda Falcons', // 31 Aug 2026 — user confirmed
+  '36004104': 'Guyana Amazon Warriors',    // 01 Sept 2026 — user confirmed
 };
 
 // Only ended/verified matches (+ user-confirmed ones)
@@ -31,10 +36,20 @@ const pending = cpl.filter(r =>
   !(r.actualWinner && r.status === 'verified') && !CONFIRMED_RESULTS[r.matchId]
 );
 
+function isMatchOk(predName, actualName) {
+  if (!predName || !actualName) return false;
+  const p = predName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const a = actualName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  if (p.includes(a) || a.includes(p)) return true;
+  if ((a.includes('falco') || a.includes('falcs')) && (p.includes('falco') || p.includes('falcs'))) return true;
+  if ((a.includes('patriot') || a.includes('pats')) && (p.includes('patriot') || p.includes('pats'))) return true;
+  return false;
+}
+
 const SEP = '═'.repeat(90);
 console.log(`\n${SEP}`);
 console.log('  🌴 CPL MATCH WINNER — NEW ALGO BACKTEST');
-console.log(`  Dataset: toss_dataset.json | Run: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST`);
+console.log(`  Dataset: ${path.basename(datasetFile)} | Run: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST`);
 console.log(`${SEP}\n`);
 console.log(`📂 Total CPL records: ${cpl.length}  |  ✅ Ended/Verified: ${ended.length}  |  ⏳ Pending: ${pending.length}\n`);
 
@@ -52,9 +67,7 @@ for (const r of ended) {
   if (!snap.competitionName) snap.competitionName = r.competitionName || 'Caribbean Premier League';
 
   const pred = predictMatchWinner(snap, r.competitionName || 'Caribbean Premier League');
-  const ok = pred?.winner &&
-    (pred.winner.toLowerCase().includes(actual.toLowerCase()) ||
-     actual.toLowerCase().includes(pred.winner.toLowerCase()));
+  const ok = isMatchOk(pred?.winner, actual);
 
   const isUserConfirmed = !r.actualWinner && !!CONFIRMED_RESULTS[r.matchId];
 

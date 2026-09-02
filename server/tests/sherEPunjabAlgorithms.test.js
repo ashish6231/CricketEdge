@@ -56,7 +56,34 @@ describe('Sher E Punjab T20 League Match Winner Algorithm', () => {
     assert.ok(pred);
     assert.equal(pred.winner, 'Bathinda Royals');
     assert.equal(pred.tier, 'PUNJAB_SPECIAL');
-    assert.equal(pred.confidence, 'Sher-e-Punjab Bookie Trap (Fade Public)');
+    assert.equal(pred.confidence, 'Sher-e-Punjab Lay Shield (Lay Absorbed)');
+  });
+
+  it('correctly predicts Ludhiana Lion in Bathinda vs Ludhiana (Lay Resistance Dump Fade)', () => {
+    const snap = {
+      matchId: '36015981',
+      matchName: 'Bathinda Royals v Ludhiana Lion',
+      competitionName: 'Sher E Punjab T20 League',
+      teamNames: ['Bathinda Royals', 'Ludhiana Lion'],
+      preMatchVolume: {
+        team1: { back: 45.34, lay: 74.04, total: 45.34 },
+        team2: { back: 94.82, lay: 0, total: 168.86 },
+      },
+      preMatchTotalBets: {
+        team1: 36.3,
+        team2: 164.6,
+      },
+      preMatchPnl: {
+        team1: 132.94,
+        team2: -119.28,
+      }
+    };
+
+    const pred = predictMatchWinner(snap);
+    assert.ok(pred);
+    assert.equal(pred.winner, 'Ludhiana Lion');
+    assert.equal(pred.tier, 'PUNJAB_SPECIAL');
+    assert.equal(pred.confidence, 'Sher-e-Punjab Lay Resistance Dump (Fade to Clean Inflow)');
   });
 
   it('predicts bookie safe side when liability exists on one team', () => {

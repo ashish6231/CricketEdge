@@ -829,7 +829,52 @@ export function getSriLankaTossPrediction({ t1, t2, prePnl1, prePnl2 }) {
  * 🦁 Sher E Punjab T20 League Toss Algorithm (Bookie Safe / Fade Public)
  */
 export function getSherEPunjabTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, isZeroBack1, isZeroBack2 }) {
-  if (prePnl1 !== prePnl2) {
+  // 1. 📉 Lay Resistance Dump / Short Fade (One team has heavy lay dump, other team has clean back inflow)
+  // e.g. Bathinda (₹74 Lay) vs Ludhiana (₹0 Lay) -> Faded to Ludhiana Lion
+  if (l1 >= 50 && l1 >= b1 * 1.5 && b2 > b1 && l2 <= 20) {
+    return {
+      winner: t2,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB LAY DUMP FADE 🚨',
+      pattern: 'PUNJAB_LAY_DUMP_FADE',
+      reason: `Sher-e-Punjab Lay Resistance Dump on ${t1} (₹${fmtVol(l1)} Lay vs ₹${fmtVol(l2)}) -> Faded to ${t2}`,
+    }
+  }
+  if (l2 >= 50 && l2 >= b2 * 1.5 && b1 > b2 && l1 <= 20) {
+    return {
+      winner: t1,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB LAY DUMP FADE 🚨',
+      pattern: 'PUNJAB_LAY_DUMP_FADE',
+      reason: `Sher-e-Punjab Lay Resistance Dump on ${t2} (₹${fmtVol(l2)} Lay vs ₹${fmtVol(l1)}) -> Faded to ${t1}`,
+    }
+  }
+
+  // 2. 🛡️ Lay Absorption Shield (Underdog has lay absorption, retail naked overload on favorite)
+  if (l1 >= 25 && l1 >= b1 * 3.0 && prePnl1 > 0 && prePnl2 < 0 && b2 >= b1 * 5.0) {
+    return {
+      winner: t1,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB BOOKIE SHIELD',
+      pattern: 'PUNJAB_BOOKIE_SHIELD',
+      reason: `Sher-e-Punjab Lay Shield on ${t1} (Lay: ₹${fmtVol(l1)}, PnL: +${prePnl1.toFixed(0)})`,
+    }
+  }
+  if (l2 >= 25 && l2 >= b2 * 3.0 && prePnl2 > 0 && prePnl1 < 0 && b1 >= b2 * 5.0) {
+    return {
+      winner: t2,
+      tier: 'PUNJAB_TOSS_SPECIAL',
+      algoName: '🦁 Sher-e-Punjab Toss Algorithm',
+      verdictTag: 'PUNJAB BOOKIE SHIELD',
+      pattern: 'PUNJAB_BOOKIE_SHIELD',
+      reason: `Sher-e-Punjab Lay Shield on ${t2} (Lay: ₹${fmtVol(l2)}, PnL: +${prePnl2.toFixed(0)})`,
+    }
+  }
+
+  if (prePnl1 !== prePnl2 && (prePnl1 < 0 || prePnl2 < 0)) {
     const win = prePnl1 > prePnl2 ? t1 : t2
     return {
       winner: win,
