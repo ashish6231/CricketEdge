@@ -141,8 +141,12 @@ export default function MainLayout() {
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/profile') ||
     location.pathname.startsWith('/subscription')
-  const showLiveDesk = liveMode && !isShellBypass && !isMatchDetail
-  const hideSportNav = liveMode && !isShellBypass
+  const isSportsPage =
+    location.pathname.startsWith('/cricket') ||
+    location.pathname.startsWith('/tennis') ||
+    location.pathname.startsWith('/toss')
+  const showLiveDesk = liveMode && !isShellBypass && !isMatchDetail && !isSportsPage
+  const hideSportNav = false
 
   return (
     <div className="flex min-h-screen bg-[#000000]">
@@ -350,7 +354,7 @@ export default function MainLayout() {
             stickyTop={onTrial ? 88 : 56}
           />
         ) : (
-          <Outlet context={{ isLoggedIn, user: authUser, authReady, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu, liveMode }} />
+          <Outlet context={{ isLoggedIn, user: authUser, authReady, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu, liveMode, setLiveMode }} />
         )}
       </main>
 

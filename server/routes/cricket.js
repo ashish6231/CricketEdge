@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
@@ -6,6 +8,64 @@ const { requireAdmin } = require('../middleware/admin');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { getDefaultStore } = require('../services/tossDatasetStore');
+
+function computeMatchLoad(snap, matchInfo) {
+  if (!snap && !matchInfo) return null;
+  const t1 = snap?.teamNames?.[0] || matchInfo?.team1 || matchInfo?.matchName?.split(' v ')?.[0] || 'Team 1';
+  const t2 = snap?.teamNames?.[1] || matchInfo?.team2 || matchInfo?.matchName?.split(' v ')?.[1] || 'Team 2';
+
+  const tr1 = snap?.teams?.[t1]?.trades || [];
+  const tr2 = snap?.teams?.[t2]?.trades || [];
+
+  // MatchDetail logic: trades.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0)
+  const tradeVol1 = tr1.length > 0 ? tr1.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0) : 0;
+  const tradeVol2 = tr2.length > 0 ? tr2.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0) : 0;
+
+  const vol1 = tradeVol1 || snap?.teams?.[t1]?.totalBet || snap?.preMatchTotalBets?.team1 || snap?.preMatchVolume?.team1?.total || snap?.advancedMetrics?.team1?.totalVolume || matchInfo?.preMatchVolume?.team1?.total || 0;
+  const vol2 = tradeVol2 || snap?.teams?.[t2]?.totalBet || snap?.preMatchTotalBets?.team2 || snap?.preMatchVolume?.team2?.total || snap?.advancedMetrics?.team2?.totalVolume || matchInfo?.preMatchVolume?.team2?.total || 0;
+  const total = vol1 + vol2;
+
+  const pct1 = total > 0 ? Math.round((vol1 / total) * 100) : 50;
+  const pct2 = total > 0 ? (100 - pct1) : 50;
+
+  // MatchDetail logic: sortedTrades = [...trades].sort((a, b) => b.updatedAt - a.updatedAt); lastPrice = sortedTrades[0]?.price
+  const sortedTrades1 = [...tr1].sort((a, b) => b.updatedAt - a.updatedAt);
+  const sortedTrades2 = [...tr2].sort((a, b) => b.updatedAt - a.updatedAt);
+
+  const lastPrice1 = parseFloat(sortedTrades1[0]?.price) || tr1[tr1.length - 1]?.price || snap?.runners?.[0]?.price || matchInfo?.runners?.[0]?.price || null;
+  const lastPrice2 = parseFloat(sortedTrades2[0]?.price) || tr2[tr2.length - 1]?.price || snap?.runners?.[1]?.price || matchInfo?.runners?.[1]?.price || null;
+
+  let trend1 = 'up';
+  if (sortedTrades1.length >= 2) {
+    const last = parseFloat(sortedTrades1[0].price) || 0;
+    const prev = parseFloat(sortedTrades1.find(t => t.price !== sortedTrades1[0].price)?.price) || last;
+    if (last < prev) trend1 = 'down';
+  }
+  let trend2 = 'up';
+  if (sortedTrades2.length >= 2) {
+    const last = parseFloat(sortedTrades2[0].price) || 0;
+    const prev = parseFloat(sortedTrades2.find(t => t.price !== sortedTrades2[0].price)?.price) || last;
+    if (last < prev) trend2 = 'down';
+  }
+
+  return {
+    team1: {
+      name: t1,
+      money: Math.round(vol1),
+      percent: pct1,
+      odds: lastPrice1,
+      trend: trend1,
+    },
+    team2: {
+      name: t2,
+      money: Math.round(vol2),
+      percent: pct2,
+      odds: lastPrice2,
+      trend: trend2,
+    },
+    totalMatched: Math.round(total || matchInfo?.totalMatched || 0),
+  };
+}
 
 // ──── Auth (admin only — scraper login control) ────
 
@@ -76,11 +136,113 @@ function attachMatchMeta(data, matchInfo) {
 }
 
 router.get('/cricket/matches', optionalAuth, async (req, res) => {
-  const data = await scraper.getAllCricketMatches();
-  if (data?.error) return upstreamUnavailable(res, data);
-  const matches = asMatchList(data);
-  const filtered = filterMatchesForViewer(matches, req.user);
-  res.json({ total: filtered.length, matches: filtered });
+  const matchesMap = new Map();
+
+  // 1. Try fetching live cricket matches from scraper
+  try {
+    const liveData = await scraper.getAllCricketMatches();
+    if (Array.isArray(liveData)) {
+      const activeLive = liveData.filter(m => m.status !== 'ended' && m.status !== 'verified' && m.status !== 'closed');
+
+      // Fetch snapshots in parallel for active matches to compute live matchLoad with real money and odds
+      await Promise.all(activeLive.map(async (m) => {
+        let snap = null;
+        try {
+          snap = await scraper.getCricketSnapshot(m.matchId);
+          if (snap?.error) snap = null;
+        } catch (e) {}
+
+        const load = computeMatchLoad(snap, m);
+        matchesMap.set(String(m.matchId), {
+          matchId: String(m.matchId),
+          marketId: m.marketId,
+          matchName: m.matchName,
+          competitionName: m.competitionName || 'Other',
+          status: m.status || (m.inPlay ? 'in-play' : 'upcoming'),
+          inPlay: Boolean(m.inPlay),
+          startTime: m.startTime || m.openDate || null,
+          totalMatched: load?.totalMatched || m.totalMatched || 0,
+          runners: snap?.runners || m.runners || [],
+          matchLoad: load,
+        });
+      }));
+
+      // Inactive/Ended live matches
+      for (const m of liveData) {
+        if (!matchesMap.has(String(m.matchId))) {
+          const load = computeMatchLoad(null, m);
+          matchesMap.set(String(m.matchId), {
+            matchId: String(m.matchId),
+            marketId: m.marketId,
+            matchName: m.matchName,
+            competitionName: m.competitionName || 'Other',
+            status: m.status || (m.inPlay ? 'in-play' : 'upcoming'),
+            inPlay: Boolean(m.inPlay),
+            startTime: m.startTime || m.openDate || null,
+            totalMatched: m.totalMatched || 0,
+            runners: m.runners || [],
+            matchLoad: load,
+          });
+        }
+      }
+    }
+  } catch (err) {
+    // ignore upstream live failure
+  }
+
+  // 2. ONLY enrich existing matches that came from backend feed with saved snapshot if available, DO NOT add saved matches!
+  try {
+    const mdPath = path.join(__dirname, '../data/match_dataset.json');
+    if (fs.existsSync(mdPath)) {
+      const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
+      const records = md.records || [];
+      for (const r of records) {
+        const id = String(r.matchId);
+        if (matchesMap.has(id)) {
+          const existing = matchesMap.get(id);
+          const snap = r.snapshot || {};
+          const load = computeMatchLoad(snap, r);
+          if ((!existing.matchLoad || (existing.matchLoad.team1?.money === 0 && existing.matchLoad.team2?.money === 0)) && load && (load.team1?.money > 0 || load.team2?.money > 0)) {
+            existing.matchLoad = load;
+          }
+          if (r.status && existing.status !== 'in-play') {
+            existing.status = (r.status === 'verified' || r.status === 'pending') ? 'ended' : r.status;
+          }
+          if (r.predictedWinner) existing.predictedWinner = r.predictedWinner;
+          if (r.actualWinner) existing.actualWinner = r.actualWinner;
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Error reading match_dataset in /cricket/matches:', err);
+  }
+
+  const allMatches = Array.from(matchesMap.values()).map((m) => {
+    const isEnded =
+      m.status === 'ended' ||
+      m.status === 'verified' ||
+      m.status === 'pending' ||
+      m.status === 'completed' ||
+      m.status === 'closed';
+    if (isEnded) {
+      m.status = 'ended';
+      m.inPlay = false;
+    }
+    return m;
+  });
+  const filtered = filterMatchesForViewer(allMatches, req.user);
+
+  // Extract unique competitions
+  const compsSet = new Set();
+  filtered.forEach(m => {
+    if (m.competitionName) compsSet.add(m.competitionName);
+  });
+
+  res.json({
+    total: filtered.length,
+    matches: filtered,
+    competitions: Array.from(compsSet).sort()
+  });
 });
 
 router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
@@ -90,7 +252,25 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   if (!guestMayViewMatch(matchInfo, req.user)) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
-  const data = await scraper.getCricketSnapshot(matchId);
+  let data = null;
+  try {
+    data = await scraper.getCricketSnapshot(matchId);
+  } catch (e) {
+    data = null;
+  }
+  if (!data || data?.error) {
+    // Fallback to match_dataset.json snapshot
+    try {
+      const mdPath = path.join(__dirname, '../data/match_dataset.json');
+      if (fs.existsSync(mdPath)) {
+        const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
+        const rec = (md.records || []).find(x => String(x.matchId) === String(matchId));
+        if (rec?.snapshot) {
+          data = rec.snapshot;
+        }
+      }
+    } catch {}
+  }
   const isEnded = matchInfo?.status === 'ended';
   if (!isEnded && !assertProAccess(req, res)) return;
   if (!data) return upstreamUnavailable(res, { error: 'No data returned from upstream' });
