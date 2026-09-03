@@ -97,13 +97,13 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
 
   // ─────────────────────────────────────────────────────────────────────────
   // RULE 1 — 🚨 Massive Lay Dump on Favorite Fade
-  //   Favorite is shorted heavily (Lay >= 25k & Lay >= 1.8x Back), while the
-  //   opponent has a massive retail trade engagement overload (2.0x+ Bets).
+  //   Favorite is shorted heavily (Lay >= 15k & Lay >= 1.7x Back & Lay >= opponent Lay * 2.0).
+  //   Smart money heavily short-sells the favorite in the lay market, creating massive resistance.
   // ─────────────────────────────────────────────────────────────────────────
-  if (l1 >= 25000 && l1 >= b1 * 1.8 && pb2 >= pb1 * 2.0) {
+  if (l1 >= 15000 && l1 >= b1 * 1.7 && l1 >= l2 * 2.0) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
   }
-  if (l2 >= 25000 && l2 >= b2 * 1.8 && pb1 >= pb2 * 2.0) {
+  if (l2 >= 15000 && l2 >= b2 * 1.7 && l2 >= l1 * 2.0) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
   }
 

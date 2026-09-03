@@ -118248,15 +118248,16 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Caribbean Premier League"
       },
-      "predictedWinner": "St Kitts & Nevis Pats",
+      "predictedWinner": "Antigua & Barbuda Falcs",
       "predictionTier": "CPL_SPECIAL",
       "predictionConfidence": "CPL Bookie Trap Fortress",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Antigua & Barbuda Falcs",
+      "predictionReason": "CPL Dual Flow Blowout Inflow"
     },
     {
       "matchId": "35997496",
@@ -154592,15 +154593,16 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Caribbean Premier League"
       },
-      "predictedWinner": "Trinbago Knight Riders",
+      "predictedWinner": "Guyana Amazon Warriors",
       "predictionTier": "CPL_SPECIAL",
       "predictionConfidence": "CPL Bookie Trap Fortress",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors",
+      "predictionReason": "CPL Back Volume Leader"
     },
     {
       "matchId": "36004378",
@@ -211621,15 +211623,16 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Caribbean Premier League"
       },
-      "predictedWinner": "Barbados Tridents",
+      "predictedWinner": "St Kitts & Nevis Pats",
       "predictionTier": "CPL_SPECIAL",
       "predictionConfidence": "CPL Back Volume Leader",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "St Kitts & Nevis Pats",
+      "predictionReason": "CPL Favorite Short Resistance Fade"
     },
     {
       "matchId": "36015021",
