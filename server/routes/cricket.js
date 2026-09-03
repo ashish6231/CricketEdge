@@ -5,6 +5,7 @@ const { optionalAuth, requireProSubscription, assertProAccess } = require('../mi
 const { requireAdmin } = require('../middleware/admin');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
+const { getDefaultStore } = require('../services/tossDatasetStore');
 
 // ──── Auth (admin only — scraper login control) ────
 
@@ -143,29 +144,195 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   res.json({ matchId, cricket, toss, session });
 });
 
+function computeTossLoad(snap, matchInfo) {
+  if (!snap) return null;
+  const t1 = snap.teamNames?.[0] || matchInfo?.team1 || 'Team 1';
+  const t2 = snap.teamNames?.[1] || matchInfo?.team2 || 'Team 2';
+
+  const tr1 = snap.teams?.[t1]?.trades || [];
+  const tr2 = snap.teams?.[t2]?.trades || [];
+
+  const vol1 = snap.preMatchVolume?.team1?.total || snap.advancedMetrics?.team1?.totalVolume || snap.teams?.[t1]?.totalBet || 0;
+  const vol2 = snap.preMatchVolume?.team2?.total || snap.advancedMetrics?.team2?.totalVolume || snap.teams?.[t2]?.totalBet || 0;
+  const total = vol1 + vol2;
+
+  const pct1 = total > 0 ? Math.round((vol1 / total) * 100) : 50;
+  const pct2 = total > 0 ? (100 - pct1) : 50;
+
+  // Last traded price for odds
+  const lastPrice1 = tr1.length ? tr1[tr1.length - 1].price : (snap.runners?.[0]?.price || null);
+  const lastPrice2 = tr2.length ? tr2[tr2.length - 1].price : (snap.runners?.[1]?.price || null);
+
+  const prevPrice1 = tr1.length > 1 ? tr1[tr1.length - 2].price : lastPrice1;
+  const prevPrice2 = tr2.length > 1 ? tr2[tr2.length - 2].price : lastPrice2;
+
+  const trend1 = lastPrice1 && prevPrice1 ? (lastPrice1 < prevPrice1 ? 'down' : 'up') : 'up';
+  const trend2 = lastPrice2 && prevPrice2 ? (lastPrice2 < prevPrice2 ? 'down' : 'up') : 'up';
+
+  return {
+    team1: {
+      name: t1,
+      money: Math.round(vol1),
+      percent: pct1,
+      odds: lastPrice1,
+      trend: trend1,
+    },
+    team2: {
+      name: t2,
+      money: Math.round(vol2),
+      percent: pct2,
+      odds: lastPrice2,
+      trend: trend2,
+    },
+    totalMatched: Math.round(total),
+  };
+}
+
 router.get('/toss/matches', optionalAuth, async (req, res) => {
-  const data = await scraper.getAllTossMatches();
-  if (!data || data.error) return upstreamUnavailable(res, data || { error: 'No toss matches data' });
-  const list = Array.isArray(data) ? data : [];
-  const filtered = filterMatchesForViewer(list, req.user);
-  res.json({ matches: filtered });
+  const matchesMap = new Map();
+
+  // 1. Try fetching live toss matches from scraper
+  try {
+    const liveData = await scraper.getAllTossMatches();
+    if (Array.isArray(liveData)) {
+      const activeLive = liveData.filter(m => m.status !== 'ended' && m.status !== 'verified' && m.status !== 'closed');
+
+      // Fetch snapshots in parallel for active matches to compute live tossLoad
+      await Promise.all(activeLive.map(async (m) => {
+        let snap = null;
+        try {
+          snap = await scraper.getTossSnapshot(m.matchId);
+          if (snap?.error) snap = null;
+        } catch (e) {
+          // ignore
+        }
+
+        const load = computeTossLoad(snap, m);
+        matchesMap.set(String(m.matchId), {
+          matchId: String(m.matchId),
+          marketId: m.marketId,
+          matchName: m.matchName,
+          competitionName: m.competitionName || snap?.competitionName || 'Other',
+          status: m.status || (m.inPlay ? 'in-play' : 'upcoming'),
+          inPlay: Boolean(m.inPlay || m.status === 'in-play'),
+          startTime: m.startTime || m.openDate || snap?.startTime || null,
+          totalMatched: load?.totalMatched || m.totalMatched || 0,
+          runners: m.runners || [],
+          tossLoad: load,
+        });
+      }));
+    }
+  } catch (err) {
+    // ignore upstream live failure
+  }
+
+  // 2. Merge any active non-ended records from toss dataset store
+  try {
+    const store = getDefaultStore();
+    const dataset = await store.load();
+    const records = Array.isArray(dataset?.records) ? dataset.records : [];
+
+    for (const r of records) {
+      // Exclude ended or verified records
+      if (r.status === 'ended' || r.status === 'verified' || r.status === 'closed') continue;
+
+      const id = String(r.matchId);
+      const snap = r.snapshot || {};
+      const load = computeTossLoad(snap, r);
+      const t1 = snap.teamNames?.[0] || r.team1 || 'Team 1';
+      const t2 = snap.teamNames?.[1] || r.team2 || 'Team 2';
+
+      if (matchesMap.has(id)) {
+        const existing = matchesMap.get(id);
+        if (!existing.tossLoad && load) existing.tossLoad = load;
+      } else {
+        matchesMap.set(id, {
+          matchId: id,
+          marketId: r.marketId || snap.marketId,
+          matchName: r.matchName || snap.matchName || `${t1} v ${t2}`,
+          competitionName: r.competitionName || snap.competitionName || 'Other',
+          status: r.status || (snap.inPlay ? 'in-play' : 'upcoming'),
+          inPlay: Boolean(snap.inPlay),
+          startTime: r.startTime || snap.serverTime || snap.startTime || null,
+          totalMatched: load?.totalMatched || 0,
+          tossLoad: load,
+          predictedWinner: r.predictedWinner,
+          actualWinner: r.actualWinner,
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Error reading toss dataset in /toss/matches:', err);
+  }
+
+  const allMatches = Array.from(matchesMap.values());
+
+  // Strictly filter only live or upcoming matches
+  const isLiveOrUpcoming = (m) => {
+    if (m.status === 'ended' || m.status === 'verified' || m.status === 'closed') return false;
+    if (m.inPlay || m.status === 'in-play') return true;
+    if (m.status === 'upcoming' || m.status === 'active') return true;
+    if (m.startTime) {
+      const ms = Number(m.startTime);
+      if (!isNaN(ms)) {
+        return ms >= Date.now() - 4 * 60 * 60 * 1000;
+      }
+    }
+    return true;
+  };
+
+  const withTossData = allMatches.filter(isLiveOrUpcoming);
+  const filtered = filterMatchesForViewer(withTossData, req.user);
+
+  // Extract unique competitions that have live or upcoming toss data
+  const compsSet = new Set();
+  filtered.forEach(m => {
+    if (m.competitionName) compsSet.add(m.competitionName);
+  });
+
+  res.json({
+    total: filtered.length,
+    matches: filtered,
+    competitions: Array.from(compsSet).sort()
+  });
 });
 
 router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
-  const matchId = req.params.matchId;
+  const matchId = String(req.params.matchId);
   const [tossMatches, cricketMatches] = await Promise.all([
-    scraper.getAllTossMatches(),
-    scraper.getAllCricketMatches(),
+    scraper.getAllTossMatches().catch(() => []),
+    scraper.getAllCricketMatches().catch(() => []),
   ]);
   const tossInfo = findMatchInfo(tossMatches, matchId);
   const cricketInfo = findMatchInfo(cricketMatches, matchId);
-  if (!guestMayViewFromInfos(req.user, [tossInfo, cricketInfo])) {
-    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+
+  // 1. Try scraper snapshot
+  let data = null;
+  try {
+    data = await scraper.getTossSnapshot(matchId);
+  } catch (e) {
+    data = null;
   }
-  const isEnded = isEndedMatch(tossInfo) || isEndedMatch(cricketInfo);
-  if (!isEnded && !assertProAccess(req, res)) return;
-  const data = await scraper.getTossSnapshot(matchId);
-  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data' });
+
+  // 2. If scraper failed or returned error, check toss dataset
+  if (!data || data.error) {
+    try {
+      const store = getDefaultStore();
+      const ds = await store.load();
+      const rec = (ds.records || []).find(r => String(r.matchId) === matchId);
+      if (rec && rec.snapshot) {
+        data = JSON.parse(JSON.stringify(rec.snapshot));
+        if (!data.competitionName) data.competitionName = rec.competitionName;
+        if (!data.startTime) data.startTime = rec.startTime;
+        if (rec.actualWinner && !data.actualWinner) data.actualWinner = rec.actualWinner;
+        if (rec.predictedWinner && !data.predictedWinner) data.predictedWinner = rec.predictedWinner;
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data available for this match' });
   res.json(attachMatchMeta(data, tossInfo || cricketInfo));
 });
 

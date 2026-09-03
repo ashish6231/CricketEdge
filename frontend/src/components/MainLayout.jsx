@@ -10,6 +10,7 @@ import LiveDesk from '../pages/LiveDesk'
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
   { path: '/tennis',  label: 'Tennis',  icon: '🎾' },
+  { path: '/toss',    label: 'Toss',    icon: '🪙' },
 ]
 
 export default function MainLayout() {
@@ -135,7 +136,7 @@ export default function MainLayout() {
   const planLabel = getPlanLabel(authUser)
   const initials = authUser?.name?.[0]?.toUpperCase() || '?'
 
-  const isMatchDetail = /\/(cricket|tennis)\/match\//.test(location.pathname)
+  const isMatchDetail = /\/(cricket|tennis|toss)\/match\//.test(location.pathname)
   const isShellBypass =
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/profile') ||

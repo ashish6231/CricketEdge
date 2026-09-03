@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-02T16:03:31.633Z",
+  "updatedAt": "2026-09-02T20:15:23.759Z",
   "records": [
     {
       "matchId": "35901908",
@@ -5729,8 +5729,8 @@
           }
         }
       },
-      "predictedWinner": "Pakistan",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictedWinner": "England",
+      "predictionReason": "Intl Inflow on England (₹3.1k Back, Lead: 1.9x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -7519,8 +7519,8 @@
           }
         }
       },
-      "predictedWinner": "Nellai Royal Kings",
-      "predictionReason": "Stronger Support Team",
+      "predictedWinner": "Salem Spartans",
+      "predictionReason": "TNPL Smart Money Inflow on Salem Spartans (₹1.7k Back, Lead: 1.5x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -8446,8 +8446,8 @@
           }
         }
       },
-      "predictedWinner": "Lyca Kovai Kings",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictedWinner": "Dindigul Dragons",
+      "predictionReason": "TNPL Smart Money Inflow on Dindigul Dragons (₹915 Back, Lead: 4.0x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -9512,8 +9512,8 @@
           }
         }
       },
-      "predictedWinner": "Jamaica Kingsmen",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictedWinner": "St. Lucia Kings",
+      "predictionReason": "CPL Strong Synthetic Support on St. Lucia Kings (4.8x Ratio)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -10881,8 +10881,8 @@
           }
         }
       },
-      "predictedWinner": "Nellai Royal Kings",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictedWinner": "Madurai Panthers",
+      "predictionReason": "TNPL Pure Profit on Madurai Panthers (Zero Back Exposure, PnL: +581)",
       "predictionRisk": {
         "tier": "low",
         "label": "Low Risk",
@@ -13287,8 +13287,8 @@
           }
         }
       },
-      "predictedWinner": "England",
-      "predictionReason": "Smart Money Inflow (England: ₹2.0k Back, Lead: 2.4x)",
+      "predictedWinner": "Pakistan",
+      "predictionReason": "Intl High Trap Counter on England (PnL: -957) -> Bookie Safe Side Pakistan (+1043)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -15566,8 +15566,8 @@
           }
         }
       },
-      "predictedWinner": "Thailand W",
-      "predictionReason": "Critical Public Overload on Hong Kong W (100% Load, 99.0x Lead) -> Faded to Thailand W",
+      "predictedWinner": "Hong Kong W",
+      "predictionReason": "Women's Organic Support on Hong Kong W (₹15 Back)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -16060,8 +16060,8 @@
           }
         }
       },
-      "predictedWinner": "Barbados Tridents",
-      "predictionReason": "Smart Money Inflow (Barbados Tridents: ₹2.0k Back, Lead: 1.6x)",
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictionReason": "CPL Trap Bookie Safe on Trinbago Knight Riders (PnL: +732)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -16925,11 +16925,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:27:37.447Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Zimbabwe"
     },
     {
       "matchId": "35989760",
@@ -17363,11 +17363,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:28:30.183Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Belfast Wolves"
     },
     {
       "matchId": "35982257",
@@ -17773,11 +17773,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:31:08.187Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Sri Lanka W"
     },
     {
       "matchId": "35998885",
@@ -18225,11 +18225,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:28:51.284Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Belfast Wolves"
     },
     {
       "matchId": "35997455",
@@ -18642,11 +18642,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:29:02.488Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Dublin Guardians"
     },
     {
       "matchId": "35982267",
@@ -19021,8 +19021,8 @@
           }
         }
       },
-      "predictedWinner": "India W",
-      "predictionReason": "Women's Inflow on India W (₹1.8k Back, Lead: 99.0x)",
+      "predictedWinner": "Thailand W",
+      "predictionReason": "Women's Heavy Trap on India W (PnL: -1466) -> Bookie Safe Side Thailand W (+1565)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -19045,11 +19045,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:31:21.268Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Thailand W"
     },
     {
       "matchId": "35989000",
@@ -20111,8 +20111,8 @@
           }
         }
       },
-      "predictedWinner": "Zimbabwe",
-      "predictionReason": "Intl Inflow on Zimbabwe (₹1.3k Back, Lead: 1.1x)",
+      "predictedWinner": "Namibia",
+      "predictionReason": "Intl Heavy Lay Absorption Lead on Namibia (₹254 Lay) -> Safe Winner",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -20528,8 +20528,8 @@
           }
         }
       },
-      "predictedWinner": "Bangladesh W",
-      "predictionReason": "Women's Inflow on Bangladesh W (₹1.4k Back, Lead: 3.0x)",
+      "predictedWinner": "Indonesia W",
+      "predictionReason": "Women's Heavy Trap on Bangladesh W (PnL: -1143) -> Bookie Safe Side Indonesia W (+1263)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -20552,11 +20552,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:31:40.519Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Indonesia W"
     },
     {
       "matchId": "36004104",
@@ -20987,8 +20987,8 @@
           }
         }
       },
-      "predictedWinner": "Guyana Amazon Warriors",
-      "predictionReason": "CPL Smart Money Inflow on Guyana Amazon Warriors (₹1.2k Back, Lead: 1.1x)",
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictionReason": "CPL Lay Resistance Dump on Guyana Amazon Warriors (₹312 Lay vs ₹31) -> Faded to Trinbago Knight Riders",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -21011,11 +21011,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:32:00.106Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders"
     },
     {
       "matchId": "35994441",
@@ -21421,11 +21421,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:33:26.315Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "England W"
     },
     {
       "matchId": "36013997",
@@ -21807,8 +21807,8 @@
           }
         }
       },
-      "predictedWinner": "Zimbabwe",
-      "predictionReason": "Intl Inflow on Zimbabwe (₹1.2k Back, Lead: 4.7x)",
+      "predictedWinner": "South Africa",
+      "predictionReason": "Intl High Trap Counter on Zimbabwe (PnL: -598) -> Bookie Safe Side South Africa (+648)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -21831,11 +21831,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:33:54.917Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "South Africa"
     },
     {
       "matchId": "35998693",
@@ -22276,11 +22276,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:30:11.448Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Rotterdam Dockers"
     },
     {
       "matchId": "36007810",
@@ -22679,11 +22679,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:34:19.983Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Pakistan W"
     },
     {
       "matchId": "36004314",
@@ -23166,11 +23166,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-02T17:34:29.086Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "St Kitts & Nevis Pats"
     },
     {
       "matchId": "36020340",
@@ -23570,6 +23570,959 @@
         {
           "reason": "ECS Smart Inflow on Rotterdam Dockers (₹643 Back, Lead: 228.7x)",
           "winner": "Rotterdam Dockers",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-09-02T17:29:42.435Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Rotterdam Dockers"
+    },
+    {
+      "matchId": "36016128",
+      "marketId": "1.261812719",
+      "matchName": "Belfast Wolves v Edinburgh Castle Rockers",
+      "competitionName": "European T20 Premier League",
+      "team1": "Belfast Wolves",
+      "team2": "Edinburgh Castle Rockers",
+      "startTime": 1788354900000,
+      "endedAt": "2026-09-02T19:10:23.965Z",
+      "capturedAt": "2026-09-02T19:10:23.965Z",
+      "snapshot": {
+        "serverTime": "2026-09-02T19:10:23.823Z",
+        "matchId": "36016128",
+        "matchName": "Belfast Wolves v Edinburgh Castle Rockers",
+        "teamNames": [
+          "Belfast Wolves",
+          "Edinburgh Castle Rockers"
+        ],
+        "inPlayPnl": {
+          "team1": -1387.4325999999996,
+          "team2": 1490.5335
+        },
+        "inPlayTotalBets": {
+          "team1": 1505.7252,
+          "team2": 104.01190000000001
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1516.63,
+            "lay": 6.740000000000009,
+            "total": 1588.93
+          },
+          "team2": {
+            "back": 111.62,
+            "lay": 72.3,
+            "total": 118.36000000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": -1387.4325999999996,
+          "team2": 1490.5335
+        },
+        "preMatchTotalBets": {
+          "team1": 1505.7252,
+          "team2": 104.01190000000001
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1516.63,
+            "lay": 6.740000000000009,
+            "total": 1588.93
+          },
+          "team2": {
+            "back": 111.62,
+            "lay": 72.3,
+            "total": 118.36000000000001
+          }
+        },
+        "threeMinPnl": {
+          "team1": -1387.4325999999996,
+          "team2": 1490.5335
+        },
+        "threeMinTotalBets": {
+          "team1": 1505.7252,
+          "team2": 104.01190000000001
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1516.63,
+            "lay": 6.740000000000009,
+            "total": 1588.93
+          },
+          "team2": {
+            "back": 111.62,
+            "lay": 72.3,
+            "total": 118.36000000000001
+          }
+        },
+        "matchLoadV2": {
+          "team1": 9,
+          "team2": 10
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1516.63,
+            "lay": 6.740000000000009,
+            "totalVolume": 1523.3700000000001,
+            "backPercentage": 99.55755988367895
+          },
+          "team2": {
+            "back": 111.62,
+            "lay": 72.3,
+            "totalVolume": 183.92000000000002,
+            "backPercentage": 60.68943018703784
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1433.4252000000001,
+            "lay": 6.672600000000009,
+            "totalBet": 1440.0978000000002
+          },
+          "team2": {
+            "back": 97.2719,
+            "lay": 77.9154,
+            "totalBet": 175.1873
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1588.93,
+            "support": 93.06737578267314
+          },
+          "team2": {
+            "supportMoney": 118.36000000000001,
+            "support": 6.932624217326875
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Belfast Wolves",
+          "bookieFavouriteOutcome": "Edinburgh Castle Rockers",
+          "riskTeam": "Belfast Wolves",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 86.13475156534626,
+          "mostBettedTeam": "Belfast Wolves",
+          "prediction": {
+            "team1TrueSupport": 1511.3406000000002,
+            "team2TrueSupport": 103.9445,
+            "ratio": 14.53988041695328,
+            "bookiePnlTeam1": -1426.6852000000001,
+            "bookiePnlTeam2": -24.971900000000005,
+            "prediction": "Edinburgh Castle Rockers",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (14.54) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1426.7526,
+            "backExposure": 1433.4252000000001,
+            "layExposure": 6.672600000000009,
+            "teamName": "Belfast Wolves"
+          },
+          "team2": {
+            "netExposure": 19.356499999999997,
+            "backExposure": 97.2719,
+            "layExposure": 77.9154,
+            "teamName": "Edinburgh Castle Rockers"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1433.4252000000001,
+            "A_lay_stake": 6.740000000000009,
+            "B_back_expo": 97.2719,
+            "B_lay_stake": 72.3
+          },
+          "totals": {
+            "totalBetTeam1": 1505.7252,
+            "totalBetTeam2": 104.01190000000001
+          },
+          "simplePL": {
+            "team1_win": -1426.6852000000001,
+            "team2_win": -24.971900000000005
+          },
+          "derivedPL": {
+            "team1_win": -1401.7133000000001,
+            "team2_win": 1401.7133000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1516.63,
+              "totalLayVol": 6.740000000000009,
+              "totalBet": 1588.93,
+              "profitLoss": -1470.5700000000002
+            },
+            "team2": {
+              "totalBackVol": 111.62,
+              "totalLayVol": 72.3,
+              "totalBet": 118.36000000000001,
+              "profitLoss": 1470.5700000000002
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1433.4252000000001,
+              "totalLayVol": 6.740000000000009,
+              "totalBet": 1505.7252,
+              "profitLoss": -1387.4326
+            },
+            "team2": {
+              "totalBackExpo": 97.2719,
+              "totalLayVol": 72.3,
+              "totalBet": 104.01190000000001,
+              "profitLoss": 1490.5335000000002
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1433.4252000000001,
+              "totalLayNetVol": 6.672600000000009,
+              "totalBet": 1511.3406000000002,
+              "profitLoss": -1407.3961000000002
+            },
+            "team2": {
+              "totalBackNetVol": 97.2719,
+              "totalLayNetVol": 77.9154,
+              "totalBet": 103.9445,
+              "profitLoss": 1407.3961000000002
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 9,
+            "averageOdds": 1.9733333333333332,
+            "averageSize": 176.5477777777778,
+            "supportProduct": 348.38761481481487
+          },
+          "teamB": {
+            "tradeCount": 10,
+            "averageOdds": 1.813,
+            "averageSize": 11.836000000000002,
+            "supportProduct": 21.458668000000003
+          },
+          "strongerTeam": "Belfast Wolves",
+          "supportRatio": 16.23528612376196
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1516.63,
+            "oppoLayVolume": 72.3,
+            "layExposure": 6.672600000000009,
+            "netSupportValue": 1582.2574
+          },
+          "teamB": {
+            "totalBackVolume": 111.62,
+            "oppoLayVolume": 6.740000000000009,
+            "layExposure": 77.9154,
+            "netSupportValue": 40.44460000000001
+          },
+          "strongerTeam": "Belfast Wolves",
+          "netSupportDifference": 1541.8128,
+          "percentageA": 97.50757686870418,
+          "percentageB": 2.4924231312958267
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1509.89,
+            "syntheticSupport": 72.3,
+            "opponentLiabilityRejection": 77.9154,
+            "sentimentScore": 1504.2746
+          },
+          "teamB": {
+            "directNetSupport": 39.32000000000001,
+            "syntheticSupport": 6.740000000000009,
+            "opponentLiabilityRejection": 6.672600000000009,
+            "sentimentScore": 39.38740000000001
+          },
+          "strongerTeam": "Belfast Wolves",
+          "scoreDifference": 1464.8872,
+          "percentageA": 97.44844402466343,
+          "percentageB": 2.55155597533657
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Belfast Wolves",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Edinburgh Castle Rockers",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Belfast Wolves"
+        },
+        "teams": {
+          "Belfast Wolves": {
+            "trades": [
+              {
+                "team": "Belfast Wolves",
+                "price": 1.92,
+                "type": "back",
+                "size": 497.85,
+                "updatedAt": 1788351844725
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.91,
+                "type": "back",
+                "size": 40.82,
+                "updatedAt": 1788351844725
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.93,
+                "type": "back",
+                "size": 357.91,
+                "updatedAt": 1788351841734
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.94,
+                "type": "back",
+                "size": 169.06000000000003,
+                "updatedAt": 1788351414571
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.99,
+                "type": "back",
+                "size": 450.57,
+                "updatedAt": 1788350903688
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 2,
+                "type": "back",
+                "size": 0.42,
+                "updatedAt": 1788348806000
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.99,
+                "type": "lay",
+                "size": 6.740000000000009,
+                "updatedAt": 1788347448455
+              }
+            ],
+            "pnlIfWins": -1387.4325999999996,
+            "totalBet": 1505.7252
+          },
+          "Edinburgh Castle Rockers": {
+            "trades": [
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.44,
+                "type": "back",
+                "size": 5.63,
+                "updatedAt": 1788352038979
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.55,
+                "type": "back",
+                "size": 5.63,
+                "updatedAt": 1788352012325
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.66,
+                "type": "back",
+                "size": 5.63,
+                "updatedAt": 1788351994790
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.77,
+                "type": "back",
+                "size": 5.63,
+                "updatedAt": 1788351973116
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.92,
+                "updatedAt": 1788351934917
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.63,
+                "updatedAt": 1788351934917
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.38,
+                "updatedAt": 1788351844930
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.94,
+                "type": "back",
+                "size": 56.3,
+                "updatedAt": 1788351222045
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.99,
+                "type": "lay",
+                "size": 1.5,
+                "updatedAt": 1788350904256
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.630000000000001,
+                "updatedAt": 1788350903704
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 2,
+                "type": "lay",
+                "size": 0.41999999999999993,
+                "updatedAt": 1788348804482
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 2,
+                "type": "back",
+                "size": 6.62,
+                "updatedAt": 1788347448219
+              }
+            ],
+            "pnlIfWins": 1490.5335,
+            "totalBet": 104.01190000000001
+          }
+        }
+      },
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictionReason": "ECS Public Overload Fade on Belfast Wolves (93% Load, PnL: -1387) -> Faded to Edinburgh Castle Rockers (PnL: +1491)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "ECS Public Overload Fade on Belfast Wolves (93% Load, PnL: -1387) -> Faded to Edinburgh Castle Rockers (PnL: +1491)"
+      },
+      "matchedRules": [
+        {
+          "reason": "ECS Public Overload Fade on Belfast Wolves (93% Load, PnL: -1387) -> Faded to Edinburgh Castle Rockers (PnL: +1491)",
+          "winner": "Edinburgh Castle Rockers",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36018220",
+      "marketId": "1.261875978",
+      "matchName": "Indonesia W v Sri Lanka W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "team1": "Indonesia W",
+      "team2": "Sri Lanka W",
+      "startTime": 1788359400000,
+      "endedAt": "2026-09-02T20:15:23.749Z",
+      "capturedAt": "2026-09-02T20:15:23.749Z",
+      "snapshot": {
+        "serverTime": "2026-09-02T20:15:23.788Z",
+        "matchId": "36018220",
+        "matchName": "Indonesia W v Sri Lanka W",
+        "teamNames": [
+          "Indonesia W",
+          "Sri Lanka W"
+        ],
+        "inPlayPnl": {
+          "team1": 1780.2956999999997,
+          "team2": -1567.2462999999998
+        },
+        "inPlayTotalBets": {
+          "team1": 616.3517999999999,
+          "team2": 2216.2516
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 485.53999999999996,
+            "lay": 351.18,
+            "total": 646.8599999999999
+          },
+          "team2": {
+            "back": 2037.2399999999998,
+            "lay": 161.32,
+            "total": 2388.4199999999996
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1780.2956999999997,
+          "team2": -1567.2462999999998
+        },
+        "preMatchTotalBets": {
+          "team1": 616.3517999999999,
+          "team2": 2216.2516
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 485.53999999999996,
+            "lay": 351.18,
+            "total": 646.8599999999999
+          },
+          "team2": {
+            "back": 2037.2399999999998,
+            "lay": 161.32,
+            "total": 2388.4199999999996
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1780.2956999999997,
+          "team2": -1567.2462999999998
+        },
+        "threeMinTotalBets": {
+          "team1": 616.3517999999999,
+          "team2": 2216.2516
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 485.53999999999996,
+            "lay": 351.18,
+            "total": 646.8599999999999
+          },
+          "team2": {
+            "back": 2037.2399999999998,
+            "lay": 161.32,
+            "total": 2388.4199999999996
+          }
+        },
+        "matchLoadV2": {
+          "team1": 10,
+          "team2": 12
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 485.53999999999996,
+            "lay": 351.18,
+            "totalVolume": 836.72,
+            "backPercentage": 58.02897026484367
+          },
+          "team2": {
+            "back": 2037.2399999999998,
+            "lay": 161.32,
+            "totalVolume": 2198.56,
+            "backPercentage": 92.66246998035076
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 455.0318,
+            "lay": 359.40749999999997,
+            "totalBet": 814.4393
+          },
+          "team2": {
+            "back": 1865.0716,
+            "lay": 163.4653,
+            "totalBet": 2028.5369
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 646.8599999999999,
+            "support": 21.311378192456708
+          },
+          "team2": {
+            "supportMoney": 2388.4199999999996,
+            "support": 78.68862180754329
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Sri Lanka W",
+          "bookieFavouriteOutcome": "Indonesia W",
+          "riskTeam": "Sri Lanka W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 57.37724361508658,
+          "mostBettedTeam": "Sri Lanka W",
+          "prediction": {
+            "team1TrueSupport": 618.4971,
+            "team2TrueSupport": 2224.4791,
+            "ratio": 3.5965877608803662,
+            "bookiePnlTeam1": -103.85179999999997,
+            "bookiePnlTeam2": -1703.7516,
+            "prediction": "Indonesia W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (3.60) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 95.6243,
+            "backExposure": 455.0318,
+            "layExposure": 359.40749999999997,
+            "teamName": "Indonesia W"
+          },
+          "team2": {
+            "netExposure": 1701.6063,
+            "backExposure": 1865.0716,
+            "layExposure": 163.4653,
+            "teamName": "Sri Lanka W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 455.0318,
+            "A_lay_stake": 351.18,
+            "B_back_expo": 1865.0716,
+            "B_lay_stake": 161.32
+          },
+          "totals": {
+            "totalBetTeam1": 616.3517999999999,
+            "totalBetTeam2": 2216.2516
+          },
+          "simplePL": {
+            "team1_win": -103.85179999999997,
+            "team2_win": -1703.7516
+          },
+          "derivedPL": {
+            "team1_win": 1599.8998000000001,
+            "team2_win": -1599.8998000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 485.53999999999996,
+              "totalLayVol": 351.18,
+              "totalBet": 646.8599999999999,
+              "profitLoss": 1741.5599999999997
+            },
+            "team2": {
+              "totalBackVol": 2037.2399999999998,
+              "totalLayVol": 161.32,
+              "totalBet": 2388.4199999999996,
+              "profitLoss": -1741.5599999999997
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 455.0318,
+              "totalLayVol": 351.18,
+              "totalBet": 616.3517999999999,
+              "profitLoss": 1780.2956999999997
+            },
+            "team2": {
+              "totalBackExpo": 1865.0716,
+              "totalLayVol": 161.32,
+              "totalBet": 2216.2516,
+              "profitLoss": -1567.2463
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 455.0318,
+              "totalLayNetVol": 359.40749999999997,
+              "totalBet": 618.4971,
+              "profitLoss": 1605.982
+            },
+            "team2": {
+              "totalBackNetVol": 1865.0716,
+              "totalLayNetVol": 163.4653,
+              "totalBet": 2224.4791,
+              "profitLoss": -1605.982
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 10,
+            "averageOdds": 1.9739999999999998,
+            "averageSize": 64.68599999999999,
+            "supportProduct": 127.69016399999997
+          },
+          "teamB": {
+            "tradeCount": 12,
+            "averageOdds": 1.9841666666666666,
+            "averageSize": 199.035,
+            "supportProduct": 394.9186125
+          },
+          "strongerTeam": "Sri Lanka W",
+          "supportRatio": 3.092788043564578
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 485.53999999999996,
+            "oppoLayVolume": 161.32,
+            "layExposure": 359.40749999999997,
+            "netSupportValue": 287.45249999999993
+          },
+          "teamB": {
+            "totalBackVolume": 2037.2399999999998,
+            "oppoLayVolume": 351.18,
+            "layExposure": 163.4653,
+            "netSupportValue": 2224.9547
+          },
+          "strongerTeam": "Sri Lanka W",
+          "netSupportDifference": 1937.5022,
+          "percentageA": 11.441318111172423,
+          "percentageB": 88.55868188882758
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 134.35999999999996,
+            "syntheticSupport": 161.32,
+            "opponentLiabilityRejection": 163.4653,
+            "sentimentScore": 132.21469999999994
+          },
+          "teamB": {
+            "directNetSupport": 1875.9199999999998,
+            "syntheticSupport": 351.18,
+            "opponentLiabilityRejection": 359.40749999999997,
+            "sentimentScore": 1867.6924999999999
+          },
+          "strongerTeam": "Sri Lanka W",
+          "scoreDifference": 1735.4778,
+          "percentageA": 6.6110417523373055,
+          "percentageB": 93.38895824766269
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Indonesia W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Sri Lanka W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Indonesia W"
+        },
+        "teams": {
+          "Indonesia W": {
+            "trades": [
+              {
+                "team": "Indonesia W",
+                "price": 2,
+                "type": "lay",
+                "size": 56.68,
+                "updatedAt": 1788356834620
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.9,
+                "updatedAt": 1788356475754
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.93,
+                "type": "back",
+                "size": 167.59,
+                "updatedAt": 1788355775631
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.94,
+                "type": "back",
+                "size": 263.33,
+                "updatedAt": 1788355399788
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.95,
+                "type": "lay",
+                "size": 67.44999999999999,
+                "updatedAt": 1788355392698
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.04,
+                "type": "lay",
+                "size": 8.07,
+                "updatedAt": 1788355392185
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.95,
+                "type": "back",
+                "size": 28.07,
+                "updatedAt": 1788355392185
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.1,
+                "type": "lay",
+                "size": 59.08,
+                "updatedAt": 1788355316980
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.98,
+                "type": "back",
+                "size": 11.629999999999995,
+                "updatedAt": 1788355070610
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2,
+                "type": "back",
+                "size": 0.020000000000003126,
+                "updatedAt": 1788354600604
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.28,
+                "updatedAt": 1788351627953
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 19.240000000000002,
+                "updatedAt": 1788351589748
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 70.38,
+                "updatedAt": 1788350015271
+              }
+            ],
+            "pnlIfWins": 1780.2956999999997,
+            "totalBet": 616.3517999999999
+          },
+          "Sri Lanka W": {
+            "trades": [
+              {
+                "team": "Sri Lanka W",
+                "price": 2,
+                "type": "lay",
+                "size": 56.49,
+                "updatedAt": 1788357077091
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 15.97,
+                "updatedAt": 1788355399725
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.95,
+                "type": "lay",
+                "size": 8.43,
+                "updatedAt": 1788355392138
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.9,
+                "type": "back",
+                "size": 487.01,
+                "updatedAt": 1788355316980
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 2.02,
+                "type": "lay",
+                "size": 80.42999999999999,
+                "updatedAt": 1788355070610
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.94,
+                "type": "back",
+                "size": 158.52000000000004,
+                "updatedAt": 1788354600572
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.93,
+                "type": "back",
+                "size": 315.6,
+                "updatedAt": 1788354600572
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.92,
+                "type": "back",
+                "size": 498.56999999999994,
+                "updatedAt": 1788354600572
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.91,
+                "type": "back",
+                "size": 577.54,
+                "updatedAt": 1788354600572
+              }
+            ],
+            "pnlIfWins": -1567.2462999999998,
+            "totalBet": 2216.2516
+          }
+        }
+      },
+      "predictedWinner": "Indonesia W",
+      "predictionReason": "Women's Heavy Trap on Sri Lanka W (PnL: -1567) -> Bookie Safe Side Indonesia W (+1780)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Women's Heavy Trap on Sri Lanka W (PnL: -1567) -> Bookie Safe Side Indonesia W (+1780)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Women's Heavy Trap on Sri Lanka W (PnL: -1567) -> Bookie Safe Side Indonesia W (+1780)",
+          "winner": "Indonesia W",
           "priority": 100,
           "selected": true
         }

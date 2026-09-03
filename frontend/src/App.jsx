@@ -4,6 +4,7 @@ import MainLayout from './components/MainLayout'
 import { ToastProvider } from './components/ToastProvider'
 import CricketPage from './pages/CricketPage'
 import TennisPage from './pages/TennisPage'
+import TossPage from './pages/TossPage'
 import AdminPage from './pages/AdminPage'
 import ProfilePage from './pages/ProfilePage'
 import SubscriptionPage from './pages/SubscriptionPage'
@@ -57,6 +58,8 @@ function App() {
             <Route path="/cricket/match/:matchId" element={<CricketPage />} />
             <Route path="/tennis" element={<TennisPage />} />
             <Route path="/tennis/match/:matchId" element={<TennisPage />} />
+            <Route path="/toss" element={<TossPage />} />
+            <Route path="/toss/match/:matchId" element={<TossPage />} />
             <Route path="/admin" element={<RequireAuth><AdminRoute><AdminPage /></AdminRoute></RequireAuth>} />
             <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
             <Route path="/subscription" element={<RequireAuth><SubscriptionPage /></RequireAuth>} />
