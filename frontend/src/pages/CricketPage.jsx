@@ -322,10 +322,6 @@ export default function CricketPage() {
     )
   }
 
-  // If a specific match detail is opened
-  if (matchId) {
-    return <MatchDetail sport="cricket" />
-  }
 
   return (
     <div className="flex h-[calc(100vh-57px)] overflow-hidden bg-[#07090e]">
@@ -453,10 +449,9 @@ export default function CricketPage() {
 
       {/* ── Main Content Area ── */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        {/* =========================================================================
-            MODE 1: LIVE DESK / LIVE TABLE INTERFACE (when live toggle is ON)
-            ========================================================================= */}
-        {isLiveMode ? (
+        {matchId ? (
+          <MatchDetail sport="cricket" />
+        ) : isLiveMode ? (
           <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-3 md:space-y-4 fade-in">
             {/* Top Bar with Title, Live Badge, and Controls */}
             <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0c1018] p-3 md:p-4 rounded-xl border border-[#1e2536] shadow-lg">

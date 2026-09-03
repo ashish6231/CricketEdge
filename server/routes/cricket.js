@@ -324,61 +324,116 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   res.json({ matchId, cricket, toss, session });
 });
 
+function extractTossOdds(trades, fallback = null) {
+  if (!Array.isArray(trades) || trades.length === 0) return fallback;
+  // Coin toss odds are strictly 50-50 market odds (around 1.70 to 2.30).
+  // Any trade outside this range (like 1.01, 1.10, 1.50, 100) is a match winner trade.
+  const tossTrades = trades.filter(t => {
+    const p = parseFloat(t.price);
+    return !isNaN(p) && p >= 1.70 && p <= 2.30;
+  });
+  if (tossTrades.length > 0) {
+    const sorted = [...tossTrades].sort((a, b) => b.updatedAt - a.updatedAt);
+    return parseFloat(sorted[0].price);
+  }
+  const broader = trades.filter(t => {
+    const p = parseFloat(t.price);
+    return !isNaN(p) && p >= 1.60 && p <= 2.40;
+  });
+  if (broader.length > 0) {
+    const sorted = [...broader].sort((a, b) => b.updatedAt - a.updatedAt);
+    return parseFloat(sorted[0].price);
+  }
+  return fallback;
+}
+
 function computeTossLoad(snap, matchInfo) {
-  if (!snap) return null;
-  const t1 = snap.teamNames?.[0] || matchInfo?.team1 || 'Team 1';
-  const t2 = snap.teamNames?.[1] || matchInfo?.team2 || 'Team 2';
+  if (!snap && !matchInfo) return null;
+  const t1 = snap?.teamNames?.[0] || matchInfo?.team1 || matchInfo?.matchName?.split(' v ')?.[0] || 'Team 1';
+  const t2 = snap?.teamNames?.[1] || matchInfo?.team2 || matchInfo?.matchName?.split(' v ')?.[1] || 'Team 2';
 
-  const tr1 = snap.teams?.[t1]?.trades || [];
-  const tr2 = snap.teams?.[t2]?.trades || [];
+  const tr1 = snap?.teams?.[t1]?.trades || snap?.teams?.[snap?.teamNames?.[0]]?.trades || [];
+  const tr2 = snap?.teams?.[t2]?.trades || snap?.teams?.[snap?.teamNames?.[1]]?.trades || [];
 
-  const vol1 = snap.preMatchVolume?.team1?.total || snap.advancedMetrics?.team1?.totalVolume || snap.teams?.[t1]?.totalBet || 0;
-  const vol2 = snap.preMatchVolume?.team2?.total || snap.advancedMetrics?.team2?.totalVolume || snap.teams?.[t2]?.totalBet || 0;
+  // MatchDetail graph logic: trades.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0)
+  const tradeVol1 = tr1.length > 0 ? tr1.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0) : 0;
+  const tradeVol2 = tr2.length > 0 ? tr2.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0) : 0;
+
+  const vol1 = tradeVol1 || snap?.teams?.[t1]?.totalBet || snap?.teams?.[snap?.teamNames?.[0]]?.totalBet || snap?.preMatchTotalBets?.team1 || snap?.preMatchVolume?.team1?.total || snap?.advancedMetrics?.team1?.totalVolume || matchInfo?.preMatchVolume?.team1?.total || 0;
+  const vol2 = tradeVol2 || snap?.teams?.[t2]?.totalBet || snap?.teams?.[snap?.teamNames?.[1]]?.totalBet || snap?.preMatchTotalBets?.team2 || snap?.preMatchVolume?.team2?.total || snap?.advancedMetrics?.team2?.totalVolume || matchInfo?.preMatchVolume?.team2?.total || 0;
   const total = vol1 + vol2;
 
   const pct1 = total > 0 ? Math.round((vol1 / total) * 100) : 50;
   const pct2 = total > 0 ? (100 - pct1) : 50;
 
-  // Last traded price for odds
-  const lastPrice1 = tr1.length ? tr1[tr1.length - 1].price : (snap.runners?.[0]?.price || null);
-  const lastPrice2 = tr2.length ? tr2[tr2.length - 1].price : (snap.runners?.[1]?.price || null);
+  // Filter strictly for true coin-toss trades (1.70 to 2.30)
+  const tossTrades1 = tr1.filter(t => { const p = parseFloat(t.price); return !isNaN(p) && p >= 1.70 && p <= 2.30; });
+  const tossTrades2 = tr2.filter(t => { const p = parseFloat(t.price); return !isNaN(p) && p >= 1.70 && p <= 2.30; });
 
-  const prevPrice1 = tr1.length > 1 ? tr1[tr1.length - 2].price : lastPrice1;
-  const prevPrice2 = tr2.length > 1 ? tr2[tr2.length - 2].price : lastPrice2;
+  const sortedTrades1 = [...tossTrades1].sort((a, b) => b.updatedAt - a.updatedAt);
+  const sortedTrades2 = [...tossTrades2].sort((a, b) => b.updatedAt - a.updatedAt);
 
-  const trend1 = lastPrice1 && prevPrice1 ? (lastPrice1 < prevPrice1 ? 'down' : 'up') : 'up';
-  const trend2 = lastPrice2 && prevPrice2 ? (lastPrice2 < prevPrice2 ? 'down' : 'up') : 'up';
+  const fallbackOdds1 = snap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(snap.syntheticSupport.teamA.averageOdds.toFixed(2)) : (snap?.runners?.[0]?.price && snap.runners[0].price >= 1.60 && snap.runners[0].price <= 2.40 ? snap.runners[0].price : null);
+  const fallbackOdds2 = snap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(snap.syntheticSupport.teamB.averageOdds.toFixed(2)) : (snap?.runners?.[1]?.price && snap.runners[1].price >= 1.60 && snap.runners[1].price <= 2.40 ? snap.runners[1].price : null);
+
+  const lastPrice1 = extractTossOdds(tr1, fallbackOdds1);
+  const lastPrice2 = extractTossOdds(tr2, fallbackOdds2);
+
+  let trend1 = 'up';
+  if (sortedTrades1.length >= 2) {
+    const last = parseFloat(sortedTrades1[0].price) || 0;
+    const prev = parseFloat(sortedTrades1.find(t => t.price !== sortedTrades1[0].price)?.price) || last;
+    if (last < prev) trend1 = 'down';
+  }
+  let trend2 = 'up';
+  if (sortedTrades2.length >= 2) {
+    const last = parseFloat(sortedTrades2[0].price) || 0;
+    const prev = parseFloat(sortedTrades2.find(t => t.price !== sortedTrades2[0].price)?.price) || last;
+    if (last < prev) trend2 = 'down';
+  }
 
   return {
     team1: {
       name: t1,
-      money: Math.round(vol1),
+      money: vol1,
       percent: pct1,
       odds: lastPrice1,
       trend: trend1,
     },
     team2: {
       name: t2,
-      money: Math.round(vol2),
+      money: vol2,
       percent: pct2,
       odds: lastPrice2,
       trend: trend2,
     },
-    totalMatched: Math.round(total),
+    totalMatched: total,
   };
 }
 
 router.get('/toss/matches', optionalAuth, async (req, res) => {
   const matchesMap = new Map();
 
+  let datasetRecords = [];
+  try {
+    const store = getDefaultStore();
+    const dataset = await store.load();
+    datasetRecords = Array.isArray(dataset?.records) ? dataset.records : [];
+  } catch (err) {
+    console.error('Error reading toss dataset in /toss/matches:', err);
+  }
+
+  const datasetMap = new Map();
+  datasetRecords.forEach(r => {
+    if (r.matchId) datasetMap.set(String(r.matchId), r);
+  });
+
   // 1. Try fetching live toss matches from scraper
   try {
     const liveData = await scraper.getAllTossMatches();
     if (Array.isArray(liveData)) {
-      const activeLive = liveData.filter(m => m.status !== 'ended' && m.status !== 'verified' && m.status !== 'closed');
-
-      // Fetch snapshots in parallel for active matches to compute live tossLoad
-      await Promise.all(activeLive.map(async (m) => {
+      await Promise.all(liveData.map(async (m) => {
+        const id = String(m.matchId);
         let snap = null;
         try {
           snap = await scraper.getTossSnapshot(m.matchId);
@@ -387,18 +442,29 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
           // ignore
         }
 
+        const dsRec = datasetMap.get(id);
+        if (!snap && dsRec?.snapshot) {
+          snap = dsRec.snapshot;
+        }
+
         const load = computeTossLoad(snap, m);
-        matchesMap.set(String(m.matchId), {
-          matchId: String(m.matchId),
+        const isEnded = m.status === 'ended' || m.status === 'verified' || m.status === 'closed' || dsRec?.status === 'ended' || dsRec?.status === 'verified';
+        const matchStatus = isEnded ? 'ended' : (m.status || (m.inPlay ? 'in-play' : 'upcoming'));
+
+        matchesMap.set(id, {
+          matchId: id,
           marketId: m.marketId,
           matchName: m.matchName,
-          competitionName: m.competitionName || snap?.competitionName || 'Other',
-          status: m.status || (m.inPlay ? 'in-play' : 'upcoming'),
-          inPlay: Boolean(m.inPlay || m.status === 'in-play'),
-          startTime: m.startTime || m.openDate || snap?.startTime || null,
+          competitionName: m.competitionName || snap?.competitionName || dsRec?.competitionName || 'Other',
+          status: matchStatus,
+          inPlay: !isEnded && Boolean(m.inPlay || m.status === 'in-play'),
+          startTime: m.startTime || m.openDate || snap?.startTime || dsRec?.startTime || null,
           totalMatched: load?.totalMatched || m.totalMatched || 0,
           runners: m.runners || [],
           tossLoad: load,
+          snapshot: snap,
+          predictedWinner: dsRec?.predictedWinner,
+          actualWinner: dsRec?.actualWinner,
         });
       }));
     }
@@ -406,63 +472,8 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
     // ignore upstream live failure
   }
 
-  // 2. Merge any active non-ended records from toss dataset store
-  try {
-    const store = getDefaultStore();
-    const dataset = await store.load();
-    const records = Array.isArray(dataset?.records) ? dataset.records : [];
-
-    for (const r of records) {
-      // Exclude ended or verified records
-      if (r.status === 'ended' || r.status === 'verified' || r.status === 'closed') continue;
-
-      const id = String(r.matchId);
-      const snap = r.snapshot || {};
-      const load = computeTossLoad(snap, r);
-      const t1 = snap.teamNames?.[0] || r.team1 || 'Team 1';
-      const t2 = snap.teamNames?.[1] || r.team2 || 'Team 2';
-
-      if (matchesMap.has(id)) {
-        const existing = matchesMap.get(id);
-        if (!existing.tossLoad && load) existing.tossLoad = load;
-      } else {
-        matchesMap.set(id, {
-          matchId: id,
-          marketId: r.marketId || snap.marketId,
-          matchName: r.matchName || snap.matchName || `${t1} v ${t2}`,
-          competitionName: r.competitionName || snap.competitionName || 'Other',
-          status: r.status || (snap.inPlay ? 'in-play' : 'upcoming'),
-          inPlay: Boolean(snap.inPlay),
-          startTime: r.startTime || snap.serverTime || snap.startTime || null,
-          totalMatched: load?.totalMatched || 0,
-          tossLoad: load,
-          predictedWinner: r.predictedWinner,
-          actualWinner: r.actualWinner,
-        });
-      }
-    }
-  } catch (err) {
-    console.error('Error reading toss dataset in /toss/matches:', err);
-  }
-
   const allMatches = Array.from(matchesMap.values());
-
-  // Strictly filter only live or upcoming matches
-  const isLiveOrUpcoming = (m) => {
-    if (m.status === 'ended' || m.status === 'verified' || m.status === 'closed') return false;
-    if (m.inPlay || m.status === 'in-play') return true;
-    if (m.status === 'upcoming' || m.status === 'active') return true;
-    if (m.startTime) {
-      const ms = Number(m.startTime);
-      if (!isNaN(ms)) {
-        return ms >= Date.now() - 4 * 60 * 60 * 1000;
-      }
-    }
-    return true;
-  };
-
-  const withTossData = allMatches.filter(isLiveOrUpcoming);
-  const filtered = filterMatchesForViewer(withTossData, req.user);
+  const filtered = filterMatchesForViewer(allMatches, req.user);
 
   // Extract unique competitions that have live or upcoming toss data
   const compsSet = new Set();

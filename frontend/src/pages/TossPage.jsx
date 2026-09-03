@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
-import { LoaderCircle, Info, ChevronRight, Coins, Radio, Lock, Activity, X } from 'lucide-react'
-import { getTossMatches } from '../api'
-import { hasProAccess } from '../lib/subscriptionAccess'
+import { LoaderCircle, Info, ChevronRight, Coins, Radio, Activity, X } from 'lucide-react'
+import { getTossMatches, getTossSnapshot } from '../api'
 import TossDetail from './TossDetail'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 
@@ -17,14 +16,6 @@ function formatTimeAndDate(ts) {
   const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
   const month = monthNames[d.getMonth()]
   return `${hours}:${mins} (${day} ${month})`
-}
-
-function fmtDateTime(ts) {
-  if (!ts) return null
-  const d = new Date(ts)
-  const date = d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' })
-  const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
-  return `${date} • ${time}`
 }
 
 function formatCountdown(startTimeMs, now) {
@@ -62,10 +53,30 @@ const formatOdds = (val) => {
   return Number(val).toFixed(2)
 }
 
+function extractTossOdds(trades, fallback = null) {
+  if (!Array.isArray(trades) || trades.length === 0) return fallback
+  const tossTrades = trades.filter((t) => {
+    const p = parseFloat(t.price)
+    return !isNaN(p) && p >= 1.70 && p <= 2.30
+  })
+  if (tossTrades.length > 0) {
+    const sorted = [...tossTrades].sort((a, b) => b.updatedAt - a.updatedAt)
+    return parseFloat(sorted[0].price)
+  }
+  const broader = trades.filter((t) => {
+    const p = parseFloat(t.price)
+    return !isNaN(p) && p >= 1.60 && p <= 2.40
+  })
+  if (broader.length > 0) {
+    const sorted = [...broader].sort((a, b) => b.updatedAt - a.updatedAt)
+    return parseFloat(sorted[0].price)
+  }
+  return fallback
+}
+
 export default function TossPage() {
   const navigate = useNavigate()
-  const { user, mobileMenu, setMobileMenu, liveMode: outletLiveMode, setLiveMode: outletSetLiveMode } = useOutletContext() || {}
-  const isPro = hasProAccess(user)
+  const { mobileMenu, setMobileMenu } = useOutletContext() || {}
   const { matchId } = useParams()
 
   const [loading, setLoading] = useState(true)
@@ -76,23 +87,6 @@ export default function TossPage() {
   const [now, setNow] = useState(() => Date.now())
   const [currency, setCurrency] = useState('€') // '€' or '₹'
   const scrollRef = useRef(null)
-
-  // Determine Live Mode state (from Navbar switch or localStorage)
-  const isLiveMode = outletLiveMode !== undefined ? Boolean(outletLiveMode) : (() => {
-    try { return localStorage.getItem('live_desk_mode') === '1' } catch { return false }
-  })()
-
-  const toggleLiveMode = () => {
-    if (outletSetLiveMode) {
-      outletSetLiveMode((prev) => !prev)
-    } else {
-      try {
-        const next = !isLiveMode
-        localStorage.setItem('live_desk_mode', next ? '1' : '0')
-        window.location.reload()
-      } catch {}
-    }
-  }
 
   // Real-time 1s ticker for countdown clocks
   useEffect(() => {
@@ -160,7 +154,7 @@ export default function TossPage() {
         if (saved && (saved === 'ALL' || grouped[saved])) {
           setSelectedComp(saved)
         } else {
-          setSelectedComp(isLiveMode ? 'ALL' : (Object.keys(grouped)[0] || 'ALL'))
+          setSelectedComp('ALL')
         }
         setLoading(false)
       })
@@ -176,6 +170,25 @@ export default function TossPage() {
     return startVisibleInterval(fetchMatches, LIVE_POLL_MS)
   }, [])
 
+  // Auto-fetch snapshot for any match missing snapshot to ensure exact graph volume
+  useEffect(() => {
+    if (!allMatches.length) return
+    const missing = allMatches.filter((m) => !m.snapshot)
+    if (!missing.length) return
+
+    missing.slice(0, 15).forEach((m) => {
+      getTossSnapshot(m.matchId)
+        .then((snap) => {
+          if (snap && !snap.error && snap.teams) {
+            setAllMatches((prev) =>
+              prev.map((item) => (item.matchId === m.matchId ? { ...item, snapshot: snap } : item))
+            )
+          }
+        })
+        .catch(() => {})
+    })
+  }, [allMatches.length])
+
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)
     localStorage.setItem(STORAGE_KEY, comp)
@@ -184,71 +197,22 @@ export default function TossPage() {
     }
   }
 
-  const isEndedMatch = (m) => {
-    const s = (m.status || '').toLowerCase()
-    return s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-  }
-
-  // Filter matches based on selected competition & liveMode
+  // Filter matches based on selected competition (Toss shows all matches unconditionally)
   const displayedMatches = useMemo(() => {
-    let list = selectedComp === 'ALL' ? allMatches : (competitions[selectedComp] || [])
-    if (isLiveMode) {
-      // In live mode: only show live and upcoming matches; ended matches are hidden
-      list = list.filter((m) => !isEndedMatch(m))
+    if (selectedComp === 'ALL') {
+      return allMatches
     }
-    return list
-  }, [selectedComp, allMatches, competitions, isLiveMode])
-
-  const totalDisplayCount = useMemo(() => {
-    if (!isLiveMode) return allMatches.length
-    return allMatches.filter((m) => !isEndedMatch(m)).length
-  }, [allMatches, isLiveMode])
-
-  const availableCompetitions = useMemo(() => {
-    if (!isLiveMode) return competitions
-    const filtered = {}
-    Object.entries(competitions).forEach(([comp, matches]) => {
-      const active = matches.filter((m) => !isEndedMatch(m))
-      if (active.length > 0) {
-        filtered[comp] = active
-      }
-    })
-    return filtered
-  }, [competitions, isLiveMode])
+    return competitions[selectedComp] || []
+  }, [selectedComp, allMatches, competitions])
 
   // Count active live matches (strictly non-ended)
   const liveCount = useMemo(() => {
     return allMatches.filter((m) => {
-      return !isEndedMatch(m) && (m.inPlay || (m.status || '').toLowerCase() === 'in-play' || (m.status || '').toLowerCase() === 'live')
+      const s = (m.status || '').toLowerCase()
+      const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
+      return !isEnded && (m.inPlay || s === 'in-play' || s === 'live')
     }).length
   }, [allMatches])
-
-  const getMatchStatusBadge = (match) => {
-    const s = (match.status || '').toLowerCase()
-    const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-    if (isEnded) {
-      return (
-        <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-          ENDED
-        </span>
-      )
-    }
-    if (match.inPlay || s === 'in-play' || s === 'live') {
-      return (
-        <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30">
-          <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse inline-block" /> LIVE
-        </span>
-      )
-    }
-    return <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">UPCOMING</span>
-  }
-
-  const getAccessType = (match) => {
-    const isEnded = match.status === 'ended' || match.status === 'verified' || match.status === 'pending' || match.status === 'completed' || match.status === 'closed'
-    if (isEnded) return 'free'
-    if (isPro) return 'pro'
-    return 'locked'
-  }
 
   if (loading && !allMatches.length) {
     return (
@@ -277,10 +241,6 @@ export default function TossPage() {
     )
   }
 
-  // If a specific toss match detail is opened
-  if (matchId) {
-    return <TossDetail />
-  }
 
   return (
     <div className="flex h-[calc(100vh-57px)] overflow-hidden bg-[#07090e]">
@@ -316,7 +276,11 @@ export default function TossPage() {
 
         {/* Categorized League List */}
         {Object.entries(competitions).map(([comp, compMatches]) => {
-          const compLiveCount = compMatches.filter((m) => m.inPlay || m.status === 'in-play').length
+          const compLiveCount = compMatches.filter((m) => {
+            const s = (m.status || '').toLowerCase()
+            const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
+            return !isEnded && (m.inPlay || s === 'in-play' || s === 'live')
+          }).length
           const isSelected = selectedComp === comp
 
           return (
@@ -401,368 +365,276 @@ export default function TossPage() {
         </div>
       </div>
 
-      {/* ── Main Content Area ── */}
+      {/* ── Main Content Area: Unconditional Toss Smart Money Table ── */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        {/* =========================================================================
-            MODE 1: LIVE DESK / LIVE TABLE INTERFACE (when live toggle is ON)
-            ========================================================================= */}
-        {isLiveMode ? (
+        {matchId ? (
+          <TossDetail />
+        ) : (
           <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-3 md:space-y-4 fade-in">
-            {/* Top Bar with Title, Live Badge, and Controls */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0c1018] p-3 md:p-4 rounded-xl border border-[#1e2536] shadow-lg">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <span className="text-xl sm:text-2xl">🪙</span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-base sm:text-lg font-black text-white tracking-tight">
-                      Live Toss Smart Money Desk
-                    </h1>
-                    {liveCount > 0 && (
-                      <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider bg-red-500/15 text-red-400 border border-red-500/30 animate-pulse">
-                        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                        {liveCount} LIVE
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-text-muted mt-0.5">
-                    Real-time market volume & live odds for upcoming and in-play cricket toss markets.
-                  </p>
+            {/* Top Bar with Title, Live Badge, and Currency Controls */}
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0c1018] p-3 md:p-4 rounded-xl border border-[#1e2536] shadow-lg">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-xl sm:text-2xl">🪙</span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-base sm:text-lg font-black text-white tracking-tight">
+                    Live Toss Smart Money Desk
+                  </h1>
+                  {liveCount > 0 && (
+                    <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider bg-red-500/15 text-red-400 border border-red-500/30 animate-pulse">
+                      <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
+                      {liveCount} LIVE
+                    </span>
+                  )}
                 </div>
-              </div>
-
-              {/* Controls: Mode Status & Currency Switch */}
-              <div className="flex items-center gap-2.5">
-                <button
-                  onClick={toggleLiveMode}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all bg-red-500/20 text-red-300 border border-red-500/40 hover:bg-red-500/30"
-                  title="Click to toggle between Live Desk and Classic Card UI"
-                >
-                  <Radio size={12} className="animate-pulse text-red-400" />
-                  <span>Live Mode: ON</span>
-                </button>
-
-                {/* Currency Switch */}
-                <div className="flex items-center bg-[#151a26] p-0.5 rounded-lg border border-[#232b3e]">
-                  <button
-                    type="button"
-                    onClick={() => setCurrency('€')}
-                    className={`px-2.5 py-1 text-xs font-extrabold rounded-md transition-all ${
-                      currency === '€'
-                        ? 'bg-amber-500 text-slate-950 shadow-sm'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    EUR (€)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrency('₹')}
-                    className={`px-2.5 py-1 text-xs font-extrabold rounded-md transition-all ${
-                      currency === '₹'
-                        ? 'bg-amber-500 text-slate-950 shadow-sm'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    INR (₹)
-                  </button>
-                </div>
+                <p className="text-[11px] text-text-muted mt-0.5">
+                  Real-time market volume & live odds for upcoming, in-play, and completed cricket toss markets.
+                </p>
               </div>
             </div>
 
-            {/* Horizontal Scrollable Competition Pills Filter */}
-            <div className="overflow-x-auto no-scrollbar py-1">
-              <div className="flex items-center gap-1.5 whitespace-nowrap min-w-max">
+            {/* Currency Switch */}
+            <div className="flex items-center bg-[#151a26] p-0.5 rounded-lg border border-[#232b3e]">
+              <button
+                type="button"
+                onClick={() => setCurrency('€')}
+                className={`px-2.5 py-1 text-xs font-extrabold rounded-md transition-all ${
+                  currency === '€'
+                    ? 'bg-amber-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                EUR (€)
+              </button>
+              <button
+                type="button"
+                onClick={() => setCurrency('₹')}
+                className={`px-2.5 py-1 text-xs font-extrabold rounded-md transition-all ${
+                  currency === '₹'
+                    ? 'bg-amber-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                INR (₹)
+              </button>
+            </div>
+          </div>
+
+          {/* Horizontal Scrollable Competition Pills Filter */}
+          <div className="overflow-x-auto no-scrollbar py-1">
+            <div className="flex items-center gap-1.5 whitespace-nowrap min-w-max">
+              <button
+                type="button"
+                onClick={() => handleCompSelect('ALL')}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  selectedComp === 'ALL'
+                    ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
+                    : 'bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 border border-white/10'
+                }`}
+              >
+                <span>All Toss Markets</span>
+                <span
+                  className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                    selectedComp === 'ALL' ? 'bg-slate-950/30 text-slate-950' : 'bg-white/10 text-slate-300'
+                  }`}
+                >
+                  {allMatches.length}
+                </span>
+              </button>
+
+              {Object.keys(competitions).map((comp) => (
                 <button
+                  key={comp}
                   type="button"
-                  onClick={() => handleCompSelect('ALL')}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    selectedComp === 'ALL'
+                  onClick={() => handleCompSelect(comp)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
+                    selectedComp === comp
                       ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
                       : 'bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 border border-white/10'
                   }`}
                 >
-                  <span>All Toss Markets</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      selectedComp === 'ALL' ? 'bg-slate-950/30 text-slate-950' : 'bg-white/10 text-slate-300'
-                    }`}
-                  >
-                    {totalDisplayCount}
-                  </span>
+                  {comp}
                 </button>
-
-                {Object.keys(availableCompetitions).map((comp) => (
-                  <button
-                    key={comp}
-                    type="button"
-                    onClick={() => handleCompSelect(comp)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-                      selectedComp === comp
-                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
-                        : 'bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 border border-white/10'
-                    }`}
-                  >
-                    {comp}
-                  </button>
-                ))}
-              </div>
+              ))}
             </div>
+          </div>
 
-            {/* ── Compact Match Table Layout matching reference image ── */}
-            {displayedMatches.length > 0 ? (
-              <div className="rounded-xl border border-[#1e2536] bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
-                {displayedMatches.map((match) => {
-                  const tLoad = match.tossLoad
-                  const team1 = tLoad?.team1 || {
-                    name: match.matchName?.split(' v ')?.[0] || 'Team 1',
-                    money: 0,
-                    percent: 50,
-                    odds: null,
-                  }
-                  const team2 = tLoad?.team2 || {
-                    name: match.matchName?.split(' v ')?.[1] || 'Team 2',
-                    money: 0,
-                    percent: 50,
-                    odds: null,
-                  }
+          {/* ── Compact Match Table Layout matching reference image ── */}
+          {displayedMatches.length > 0 ? (
+            <div className="rounded-xl border border-[#1e2536] bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
+              {displayedMatches.map((match) => {
+                const tLoad = match.tossLoad
+                const t1Name = match.matchName?.split(' v ')?.[0] || 'Team 1'
+                const t2Name = match.matchName?.split(' v ')?.[1] || 'Team 2'
 
-                  const dt = formatTimeAndDate(match.startTime)
-                  const countdown = formatCountdown(match.startTime, now)
-                  const s = (match.status || '').toLowerCase()
-                  const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-                  const isLive = !isEnded && (match.inPlay || s === 'in-play' || s === 'live')
+                // Extract exact selection volume from trades (identical to MatchDetail graph teamData.totalBet)
+                const snap = match.snapshot
+                const tr1 = snap?.teams?.[t1Name]?.trades || snap?.teams?.[snap?.teamNames?.[0]]?.trades || []
+                const tr2 = snap?.teams?.[t2Name]?.trades || snap?.teams?.[snap?.teamNames?.[1]]?.trades || []
 
-                  return (
-                    <div
-                      key={match.matchId}
-                      className="px-3 py-2 md:px-4 md:py-2.5 hover:bg-[#121824]/80 transition-colors flex items-center justify-between gap-2 md:gap-4 cursor-pointer group"
-                      onClick={() => navigate(`/toss/match/${match.matchId}`)}
+                const tradeVol1 = tr1.length > 0 ? tr1.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
+                const tradeVol2 = tr2.length > 0 ? tr2.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
+
+                const vol1 = tradeVol1 || tLoad?.team1?.money || snap?.teams?.[t1Name]?.totalBet || snap?.teams?.[snap?.teamNames?.[0]]?.totalBet || snap?.preMatchTotalBets?.team1 || match.preMatchVolume?.team1?.total || 0
+                const vol2 = tradeVol2 || tLoad?.team2?.money || snap?.teams?.[t2Name]?.totalBet || snap?.teams?.[snap?.teamNames?.[1]]?.totalBet || snap?.preMatchTotalBets?.team2 || match.preMatchVolume?.team2?.total || 0
+
+                const tossOdds1 = extractTossOdds(tr1) || (snap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(snap.syntheticSupport.teamA.averageOdds.toFixed(2)) : null)
+                const tossOdds2 = extractTossOdds(tr2) || (snap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(snap.syntheticSupport.teamB.averageOdds.toFixed(2)) : null)
+
+                const odds1 = (tLoad?.team1?.odds && tLoad.team1.odds >= 1.60 && tLoad.team1.odds <= 2.40 ? tLoad.team1.odds : null) || tossOdds1 || (match.runners?.[0]?.price && match.runners[0].price >= 1.60 && match.runners[0].price <= 2.40 ? match.runners[0].price : null) || null
+                const odds2 = (tLoad?.team2?.odds && tLoad.team2.odds >= 1.60 && tLoad.team2.odds <= 2.40 ? tLoad.team2.odds : null) || tossOdds2 || (match.runners?.[1]?.price && match.runners[1].price >= 1.60 && match.runners[1].price <= 2.40 ? match.runners[1].price : null) || null
+
+                const tot = vol1 + vol2
+                const pct1 = (tLoad?.team1?.percent && tLoad?.team1?.money > 0) ? tLoad.team1.percent : (tot > 0 ? Math.round((vol1 / tot) * 100) : 50)
+                const pct2 = (tLoad?.team2?.percent && tLoad?.team2?.money > 0) ? tLoad.team2.percent : (tot > 0 ? (100 - pct1) : 50)
+
+                const team1 = {
+                  name: tLoad?.team1?.name || t1Name,
+                  money: vol1,
+                  percent: pct1,
+                  odds: odds1,
+                }
+                const team2 = {
+                  name: tLoad?.team2?.name || t2Name,
+                  money: vol2,
+                  percent: pct2,
+                  odds: odds2,
+                }
+
+                const dt = formatTimeAndDate(match.startTime)
+                const countdown = formatCountdown(match.startTime, now)
+                const s = (match.status || '').toLowerCase()
+                const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
+                const isLive = !isEnded && (match.inPlay || s === 'in-play' || s === 'live')
+
+                return (
+                  <div
+                    key={match.matchId}
+                    className="px-3 py-2 md:px-4 md:py-2.5 hover:bg-[#121824]/80 transition-colors flex items-center justify-between gap-2 md:gap-4 cursor-pointer group"
+                    onClick={() => navigate(`/toss/match/${match.matchId}`)}
+                  >
+                    {/* Left: Info icon */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        navigate(`/toss/match/${match.matchId}`)
+                      }}
+                      className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full border border-white/20 hover:border-amber-400/60 text-white/50 hover:text-amber-300 flex items-center justify-center transition-colors bg-white/5"
+                      title="View Toss AI Predictions & Smart Money Flow"
                     >
-                      {/* Left: Info icon */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          navigate(`/toss/match/${match.matchId}`)
-                        }}
-                        className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full border border-white/20 hover:border-amber-400/60 text-white/50 hover:text-amber-300 flex items-center justify-center transition-colors bg-white/5"
-                        title="View Toss AI Predictions & Smart Money Flow"
-                      >
-                        <Info size={12} />
-                      </button>
+                      <Info size={12} />
+                    </button>
 
-                      {/* Scheduled Time & Countdown Column */}
-                      <div className="flex flex-col items-start min-w-[75px] md:min-w-[95px] flex-shrink-0">
-                        {dt && (
-                          <span className="text-xs md:text-sm font-bold text-[#f59e0b] leading-tight tracking-tight">
-                            {dt}
-                          </span>
-                        )}
-                        {isEnded ? (
-                          <span className="text-[10px] font-bold text-emerald-400 leading-tight mt-0.5">
-                            COMPLETED
-                          </span>
-                        ) : isLive ? (
-                          <span className="flex items-center gap-1 text-[10px] md:text-[11px] font-extrabold text-red-400 leading-tight mt-0.5">
-                            <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse inline-block" />
-                            LIVE
-                          </span>
-                        ) : countdown ? (
-                          <span className="text-[11px] md:text-xs font-mono font-bold text-[#f59e0b] leading-tight mt-0.5">
-                            {countdown}
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-bold text-emerald-400 leading-tight mt-0.5">
-                            COMPLETED
-                          </span>
-                        )}
-                      </div>
-
-                      {/* Competition & Match Title Column */}
-                      <div className="flex flex-col min-w-0 flex-1 pr-2">
-                        <span className="text-[10px] md:text-[11px] text-slate-400 font-medium truncate leading-tight">
-                          {match.competitionName || 'T20 Cricket League'}
+                    {/* Scheduled Time & Countdown Column */}
+                    <div className="flex flex-col items-start min-w-[75px] md:min-w-[95px] flex-shrink-0">
+                      {dt && (
+                        <span className="text-xs md:text-sm font-bold text-[#f59e0b] leading-tight tracking-tight">
+                          {dt}
                         </span>
-                        <span className="text-xs md:text-sm font-bold text-white group-hover:text-amber-300 transition-colors truncate leading-tight mt-0.5">
-                          {match.matchName}
+                      )}
+                      {isEnded ? (
+                        <span className="text-[10px] font-bold text-emerald-400 leading-tight mt-0.5">
+                          COMPLETED
                         </span>
-                      </div>
+                      ) : isLive ? (
+                        <span className="flex items-center gap-1 text-[10px] md:text-[11px] font-extrabold text-red-400 leading-tight mt-0.5">
+                          <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse inline-block" />
+                          LIVE
+                        </span>
+                      ) : countdown ? (
+                        <span className="text-[11px] md:text-xs font-mono font-bold text-[#f59e0b] leading-tight mt-0.5">
+                          {countdown}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-emerald-400 leading-tight mt-0.5">
+                          COMPLETED
+                        </span>
+                      )}
+                    </div>
 
-                      {/* Right: Team 1 & Team 2 Columns matching reference image */}
-                      <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-shrink-0">
-                        {/* Team 1 Column */}
-                        <div className="flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
-                          <span className="text-[10px] md:text-[11px] font-semibold text-slate-300 truncate max-w-full leading-tight">
-                            {team1.name}
-                          </span>
-                          <span className="text-xs md:text-sm font-black text-white tracking-tight leading-none my-0.5" title="On this selection">
-                            {formatVolStr(team1.money)}
-                          </span>
-                          {/* Percentage Badge */}
-                          <span
-                            className={`text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105 ${
-                              team1.percent >= 50
-                                ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                                : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-                            }`}
-                          >
-                            {team1.percent}%
-                          </span>
-                          {/* Odds */}
-                          <div className="flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
-                            <span className="text-[9px]">▲</span>
-                            <span>{formatOdds(team1.odds)}</span>
-                          </div>
+                    {/* Competition & Match Title Column */}
+                    <div className="flex flex-col min-w-0 flex-1 pr-2">
+                      <span className="text-[10px] md:text-[11px] text-slate-400 font-medium truncate leading-tight">
+                        {match.competitionName || 'T20 Cricket League'}
+                      </span>
+                      <span className="text-xs md:text-sm font-bold text-white group-hover:text-amber-300 transition-colors truncate leading-tight mt-0.5">
+                        {match.matchName}
+                      </span>
+                    </div>
+
+                    {/* Right: Team 1 & Team 2 Columns matching reference image */}
+                    <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-shrink-0">
+                      {/* Team 1 Column */}
+                      <div className="flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
+                        <span className="text-[10px] md:text-[11px] font-semibold text-slate-300 truncate max-w-full leading-tight">
+                          {team1.name}
+                        </span>
+                        <span className="text-xs md:text-sm font-black text-white tracking-tight leading-none my-0.5" title="On this selection">
+                          {formatVolStr(team1.money)}
+                        </span>
+                        {/* Percentage Badge */}
+                        <span
+                          className={`text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105 ${
+                            team1.percent >= 50
+                              ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
+                              : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
+                          }`}
+                        >
+                          {team1.percent}%
+                        </span>
+                        {/* Odds */}
+                        <div className="flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+                          <span className="text-[9px]">▲</span>
+                          <span>{formatOdds(team1.odds)}</span>
                         </div>
+                      </div>
 
-                        {/* Team 2 Column */}
-                        <div className="flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
-                          <span className="text-[10px] md:text-[11px] font-semibold text-slate-300 truncate max-w-full leading-tight">
-                            {team2.name}
-                          </span>
-                          <span className="text-xs md:text-sm font-black text-white tracking-tight leading-none my-0.5" title="On this selection">
-                            {formatVolStr(team2.money)}
-                          </span>
-                          {/* Percentage Badge */}
-                          <span
-                            className={`text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105 ${
-                              team2.percent >= 50
-                                ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                                : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-                            }`}
-                          >
-                            {team2.percent}%
-                          </span>
-                          {/* Odds */}
-                          <div className="flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
-                            <span className="text-[9px]">▲</span>
-                            <span>{formatOdds(team2.odds)}</span>
-                          </div>
+                      {/* Team 2 Column */}
+                      <div className="flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
+                        <span className="text-[10px] md:text-[11px] font-semibold text-slate-300 truncate max-w-full leading-tight">
+                          {team2.name}
+                        </span>
+                        <span className="text-xs md:text-sm font-black text-white tracking-tight leading-none my-0.5" title="On this selection">
+                          {formatVolStr(team2.money)}
+                        </span>
+                        {/* Percentage Badge */}
+                        <span
+                          className={`text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105 ${
+                            team2.percent >= 50
+                              ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
+                              : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
+                          }`}
+                        >
+                          {team2.percent}%
+                        </span>
+                        {/* Odds */}
+                        <div className="flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+                          <span className="text-[9px]">▲</span>
+                          <span>{formatOdds(team2.odds)}</span>
                         </div>
                       </div>
                     </div>
-                  )
-                })}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-[#1e2536] bg-[#0c1018] p-12 text-center shadow-xl">
+              <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3">
+                <Coins size={24} />
               </div>
-            ) : (
-              <div className="rounded-2xl border border-[#1e2536] bg-[#0c1018] p-12 text-center shadow-xl">
-                <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3">
-                  <Coins size={24} />
-                </div>
-                <h3 className="text-base font-bold text-white mb-1">No Toss Markets in Selected League</h3>
-                <p className="text-xs text-text-muted mb-4">Select "All Toss Markets" to view all matches.</p>
-                <button
-                  onClick={() => handleCompSelect('ALL')}
-                  className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors border border-amber-500/30"
-                >
-                  View All Toss Markets
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          /* =========================================================================
-             MODE 2: CLASSIC / OLD TYPE UI CARDS (when live toggle is OFF)
-             ========================================================================= */
-          <div className="p-4 md:p-6 max-w-7xl mx-auto fade-in">
-            {/* Header with Selected League and Toggle */}
-            <div className="flex items-center justify-between mb-4 bg-[#0c1018] p-3 md:p-4 rounded-xl border border-[#1e2536]">
-              <div>
-                <h2 className="text-base sm:text-lg font-black text-text-primary">
-                  {selectedComp === 'ALL' ? 'All Toss Markets' : selectedComp}
-                </h2>
-                <span className="text-xs text-text-muted font-medium">
-                  {displayedMatches.length} markets available
-                </span>
-              </div>
+              <h3 className="text-base font-bold text-white mb-1">No Toss Markets in Selected League</h3>
+              <p className="text-xs text-text-muted mb-4">Select "All Toss Markets" to view all matches.</p>
               <button
-                onClick={toggleLiveMode}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10"
-                title="Switch to Live Desk Compact View"
+                onClick={() => handleCompSelect('ALL')}
+                className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors border border-amber-500/30"
               >
-                <Radio size={12} className="text-slate-400" />
-                <span>Live Mode: OFF (Click to Enable)</span>
+                View All Toss Markets
               </button>
             </div>
-
-            {displayedMatches.length > 0 ? (
-              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-                {displayedMatches.map((match) => {
-                  const accessType = getAccessType(match)
-                  const dt = fmtDateTime(match.startTime)
-                  const tLoad = match.tossLoad
-
-                  return (
-                    <button
-                      key={match.matchId}
-                      onClick={() => {
-                        navigate(`/toss/match/${match.matchId}`, {
-                          state: { startTime: match.startTime ?? null },
-                        })
-                      }}
-                      className="glass-card rounded-2xl p-4 transition-all text-left group hover:shadow-md border border-[#2c2c2e] hover:border-amber-500/40 bg-[#111622]/60 hover:bg-[#151c2c]/80"
-                    >
-                      {dt && <div className="text-[11px] text-text-muted mb-1 font-medium">📅 {dt}</div>}
-                      <div className="flex items-start justify-between mb-2 gap-2">
-                        <span className="font-bold text-text-primary text-sm leading-snug group-hover:text-amber-300 transition-colors">
-                          {match.matchName}
-                        </span>
-                        {getMatchStatusBadge(match)}
-                      </div>
-                      {tLoad?.team1 && tLoad?.team2 && (
-                        <div className="flex gap-2 mb-2">
-                          <div className="flex-1 rounded-lg px-2 py-1 bg-[#1a1a1a] border border-[#2c2c2e]">
-                            <div className="text-[10px] font-semibold text-text-secondary truncate mb-0.5">
-                              {tLoad.team1.name}
-                            </div>
-                            <div className="flex items-center justify-between text-[11px] font-bold">
-                              <span className="text-emerald-400">▲ {formatOdds(tLoad.team1.odds)}</span>
-                              <span className="text-slate-400">{tLoad.team1.percent}%</span>
-                            </div>
-                          </div>
-                          <div className="flex-1 rounded-lg px-2 py-1 bg-[#1a1a1a] border border-[#2c2c2e]">
-                            <div className="text-[10px] font-semibold text-text-secondary truncate mb-0.5">
-                              {tLoad.team2.name}
-                            </div>
-                            <div className="flex items-center justify-between text-[11px] font-bold">
-                              <span className="text-emerald-400">▲ {formatOdds(tLoad.team2.odds)}</span>
-                              <span className="text-slate-400">{tLoad.team2.percent}%</span>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                      <div className="text-xs text-text-muted mb-3">
-                        Matched:{' '}
-                        <span className="text-text-secondary font-semibold">
-                          ₹{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 }) || '0'}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        {accessType === 'free' ? (
-                          <span className="text-xs font-semibold text-emerald-400">✅ Free access</span>
-                        ) : accessType === 'pro' ? (
-                          <span className="text-xs font-semibold text-amber-400">⭐ Pro access</span>
-                        ) : (
-                          <span className="text-xs font-semibold flex items-center gap-1 text-red-400">
-                            <Lock size={11} /> Pro Required
-                          </span>
-                        )}
-                        <ChevronRight className="h-4 w-4 text-text-muted group-hover:text-amber-400 transition-colors" />
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
-            ) : (
-              <div className="flex h-[50vh] items-center justify-center text-center">
-                <div>
-                  <Activity className="h-10 w-10 text-text-muted mx-auto mb-2" />
-                  <h2 className="text-xl font-bold text-white">No Toss Markets Found</h2>
-                  <p className="text-text-muted mt-1">Waiting for live data...</p>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
+        </div>
         )}
       </div>
     </div>
