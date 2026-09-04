@@ -322,74 +322,54 @@ export default function CricketPage() {
     )
   }
 
+  // Full-screen match detail (old-style: no sidebar)
+  if (matchId) {
+    return <MatchDetail sport="cricket" />
+  }
 
   return (
     <div className="flex h-[calc(100vh-57px)] overflow-hidden bg-[#07090e]">
       {/* ── Sidebar: Cricket Leagues ── */}
-      <aside className="hidden md:flex w-64 border-r border-[#1e2330] flex-col overflow-y-auto flex-shrink-0 bg-[#0a0d14]">
-        <div className="px-4 py-3 border-b border-[#1e2330] flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-amber-400" />
-            <span className="text-xs font-black uppercase tracking-wider text-text-primary">Cricket Leagues</span>
-          </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30">
-            {Object.keys(competitions).length} Active
-          </span>
+      <aside className="hidden md:flex w-[220px] border-r border-[#1e2330] flex-col overflow-y-auto flex-shrink-0 bg-[#0c0e15]">
+        {/* Header */}
+        <div className="px-4 py-3 border-b border-[#1e2330]">
+          <span className="text-[11px] font-black uppercase tracking-widest text-text-muted">🏏 Cricket</span>
         </div>
-
-        {/* All Leagues Option */}
-        <button
-          onClick={() => handleCompSelect('ALL')}
-          className={`w-full text-left px-4 py-2.5 text-xs transition-all border-l-3 flex items-center justify-between ${
-            selectedComp === 'ALL'
-              ? 'border-amber-500 bg-amber-500/10 font-bold text-amber-300'
-              : 'border-transparent text-text-secondary hover:bg-white/5 hover:text-text-primary'
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-sm">🌐</span>
-            <span className="text-xs font-bold truncate">All Cricket Leagues</span>
-          </div>
-          <span className="text-[11px] text-text-muted bg-white/5 px-2 py-0.5 rounded-full font-semibold">
-            {allMatches.length}
-          </span>
-        </button>
 
         {/* Categorized League List */}
         {Object.entries(competitions).map(([comp, compMatches]) => {
           const compLiveCount = compMatches.filter((m) => m.inPlay || m.status === 'in-play').length
           const isSelected = selectedComp === comp
+          const hasToss = compMatches.some((m) => tossMatchIds.has(m.matchId))
 
           return (
             <button
               key={comp}
               onClick={() => handleCompSelect(comp)}
-              className={`w-full text-left px-4 py-2.5 text-xs transition-all border-l-3 flex items-center justify-between ${
+              className={`w-full text-left px-4 py-3 transition-all border-l-[3px] flex items-start justify-between gap-2 ${
                 isSelected
-                  ? 'border-amber-500 bg-amber-500/10 font-bold text-amber-300'
-                  : 'border-transparent text-text-secondary hover:bg-white/5 hover:text-text-primary'
+                  ? 'border-[#10b981] bg-[#10b981]/8 text-white'
+                  : 'border-transparent text-text-secondary hover:bg-white/5 hover:text-white'
               }`}
             >
-              <div className="flex items-center gap-2 min-w-0 pr-2">
-                <span className="text-sm flex-shrink-0">🏏</span>
-                <span className="truncate">{comp}</span>
-                {compMatches.some((m) => tossMatchIds.has(m.matchId)) && (
-                  <span className="text-red-500 font-bold text-[10px] bg-red-500/10 px-1 rounded flex-shrink-0">
-                    T
-                  </span>
-                )}
+              <div className="min-w-0 flex-1">
+                <div className={`text-[13px] font-bold leading-tight truncate ${isSelected ? 'text-white' : ''}`}>{comp}</div>
+                <div className="text-[11px] text-text-muted mt-0.5 flex items-center gap-1.5">
+                  {compMatches.length} matches
+                  {compLiveCount > 0 && (
+                    <>
+                      <span className="text-text-muted">•</span>
+                      <span className="text-[#10b981] font-semibold flex items-center gap-1">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#10b981] inline-block" />
+                        {compLiveCount} live
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                {compLiveCount > 0 && (
-                  <span className="flex items-center gap-1 text-[10px] font-black text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded-full">
-                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse inline-block" />
-                    {compLiveCount}
-                  </span>
-                )}
-                <span className="text-[11px] text-text-muted bg-white/5 px-1.5 py-0.5 rounded-full font-semibold">
-                  {compMatches.length}
-                </span>
-              </div>
+              {hasToss && (
+                <span className="flex-shrink-0 text-[10px] font-black text-red-400 mt-0.5">T</span>
+              )}
             </button>
           )
         })}
@@ -403,139 +383,68 @@ export default function CricketPage() {
           onClick={() => setMobileMenu && setMobileMenu(false)}
         />
         <div
-          className="relative w-72 max-w-[80vw] h-full flex flex-col overflow-y-auto pointer-events-auto bg-[#0a0d14] border-r border-[#1e2330]"
+          className="relative w-64 max-w-[80vw] h-full flex flex-col overflow-y-auto pointer-events-auto bg-[#0c0e15] border-r border-[#1e2330]"
           style={{
             transform: mobileMenu ? 'translateX(0)' : 'translateX(-100%)',
             transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
           }}
         >
           <div className="px-4 py-3 border-b border-[#1e2330] flex items-center justify-between">
-            <span className="text-xs font-black uppercase tracking-wider text-text-primary">🏏 Cricket Leagues</span>
+            <span className="text-[11px] font-black uppercase tracking-widest text-text-muted">🏏 Cricket</span>
             <button onClick={() => setMobileMenu && setMobileMenu(false)} className="text-text-muted hover:text-white">
               <X size={18} />
             </button>
           </div>
-          <button
-            onClick={() => {
-              handleCompSelect('ALL')
-              if (setMobileMenu) setMobileMenu(false)
-            }}
-            className={`w-full text-left px-4 py-2.5 text-xs transition-all border-l-3 ${
-              selectedComp === 'ALL'
-                ? 'border-amber-500 bg-amber-500/10 font-bold text-amber-300'
-                : 'border-transparent text-text-secondary hover:bg-white/5'
-            }`}
-          >
-            All Cricket Leagues ({allMatches.length})
-          </button>
-          {Object.entries(competitions).map(([comp, compMatches]) => (
-            <button
-              key={comp}
-              onClick={() => {
-                handleCompSelect(comp)
-                if (setMobileMenu) setMobileMenu(false)
-              }}
-              className={`w-full text-left px-4 py-2.5 text-xs transition-all border-l-3 ${
-                selectedComp === comp
-                  ? 'border-amber-500 bg-amber-500/10 font-bold text-amber-300'
-                  : 'border-transparent text-text-secondary hover:bg-white/5'
-              }`}
-            >
-              {comp} ({compMatches.length})
-            </button>
-          ))}
+
+          {Object.entries(competitions).map(([comp, compMatches]) => {
+            const compLiveCount = compMatches.filter((m) => m.inPlay || m.status === 'in-play').length
+            const hasToss = compMatches.some((m) => tossMatchIds.has(m.matchId))
+            return (
+              <button
+                key={comp}
+                onClick={() => {
+                  handleCompSelect(comp)
+                  if (setMobileMenu) setMobileMenu(false)
+                }}
+                className={`w-full text-left px-4 py-3 transition-all border-l-[3px] flex items-start justify-between gap-2 ${
+                  selectedComp === comp
+                    ? 'border-[#10b981] bg-[#10b981]/8 text-white'
+                    : 'border-transparent text-text-secondary hover:bg-white/5 hover:text-white'
+                }`}
+              >
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13px] font-bold leading-tight truncate">{comp}</div>
+                  <div className="text-[11px] text-text-muted mt-0.5 flex items-center gap-1.5">
+                    {compMatches.length} matches
+                    {compLiveCount > 0 && (
+                      <>
+                        <span className="text-text-muted">•</span>
+                        <span className="text-[#10b981] font-semibold flex items-center gap-1">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#10b981] inline-block" />
+                          {compLiveCount} live
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                {hasToss && (
+                  <span className="flex-shrink-0 text-[10px] font-black text-red-400 mt-0.5">T</span>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
       {/* ── Main Content Area ── */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        {matchId ? (
-          <MatchDetail sport="cricket" />
-        ) : isLiveMode ? (
+        {isLiveMode ? (
           <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-3 md:space-y-4 fade-in">
-            {/* Top Bar with Title, Live Badge, and Controls */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0c1018] p-3 md:p-4 rounded-xl border border-[#1e2536] shadow-lg">
-              <div className="flex items-center gap-2 sm:gap-3">
-                <span className="text-xl sm:text-2xl">🏏</span>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-base sm:text-lg font-black text-white tracking-tight">
-                      Cricket Live Load Board
-                    </h1>
-                    {liveCount > 0 && (
-                      <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider bg-red-500/15 text-red-400 border border-red-500/30 animate-pulse">
-                        <span className="h-1.5 w-1.5 rounded-full bg-red-500" />
-                        {liveCount} LIVE
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-text-muted mt-0.5">
-                    Live market volume ("On this selection") & latest matched prices across all active fixtures.
-                  </p>
-                </div>
-              </div>
 
-              {/* Controls: Mode Status & Currency Switch */}
-              <div className="flex items-center gap-2.5">
-                {/* Live Mode indicator toggle */}
-                <button
-                  onClick={toggleLiveMode}
-                  className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all bg-red-500/20 text-red-300 border border-red-500/40 hover:bg-red-500/30"
-                  title="Click to toggle between Live Desk and Classic Card UI"
-                >
-                  <Radio size={12} className="animate-pulse text-red-400" />
-                  <span>Live Mode: ON</span>
-                </button>
-
-                {/* Currency Switch */}
-                <div className="flex items-center bg-[#151a26] p-0.5 rounded-lg border border-[#232b3e]">
-                  <button
-                    type="button"
-                    onClick={() => setCurrency('€')}
-                    className={`px-2.5 py-1 text-xs font-extrabold rounded-md transition-all ${
-                      currency === '€'
-                        ? 'bg-amber-500 text-slate-950 shadow-sm'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    EUR (€)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setCurrency('₹')}
-                    className={`px-2.5 py-1 text-xs font-extrabold rounded-md transition-all ${
-                      currency === '₹'
-                        ? 'bg-amber-500 text-slate-950 shadow-sm'
-                        : 'text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    INR (₹)
-                  </button>
-                </div>
-              </div>
-            </div>
 
             {/* Horizontal Scrollable Competition Pills Filter */}
             <div className="overflow-x-auto no-scrollbar py-1">
               <div className="flex items-center gap-1.5 whitespace-nowrap min-w-max">
-                <button
-                  type="button"
-                  onClick={() => handleCompSelect('ALL')}
-                  className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
-                    selectedComp === 'ALL'
-                      ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
-                      : 'bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 border border-white/10'
-                  }`}
-                >
-                  <span>All Cricket Leagues</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
-                      selectedComp === 'ALL' ? 'bg-slate-950/30 text-slate-950' : 'bg-white/10 text-slate-300'
-                    }`}
-                  >
-                    {totalDisplayCount}
-                  </span>
-                </button>
 
                 {Object.keys(availableCompetitions).map((comp) => (
                   <button
@@ -720,12 +629,12 @@ export default function CricketPage() {
                   <Trophy size={24} />
                 </div>
                 <h3 className="text-base font-bold text-white mb-1">No Matches in Selected League</h3>
-                <p className="text-xs text-text-muted mb-4">Select "All Cricket Leagues" to view all matches.</p>
+                <p className="text-xs text-text-muted mb-4">Select another league or view all matches.</p>
                 <button
                   onClick={() => handleCompSelect('ALL')}
                   className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors border border-amber-500/30"
                 >
-                  View All Cricket Leagues
+                  View All Matches
                 </button>
               </div>
             )}
@@ -739,7 +648,7 @@ export default function CricketPage() {
             <div className="flex items-center justify-between mb-4 bg-[#0c1018] p-3 md:p-4 rounded-xl border border-[#1e2536]">
               <div>
                 <h2 className="text-base sm:text-lg font-black text-text-primary">
-                  {selectedComp === 'ALL' ? 'All Cricket Leagues' : selectedComp}
+                  {selectedComp === 'ALL' ? 'All Matches' : selectedComp}
                 </h2>
                 <span className="text-xs text-text-muted font-medium">
                   {displayedMatches.length} matches available

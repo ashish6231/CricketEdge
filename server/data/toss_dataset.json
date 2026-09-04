@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-02T20:15:23.759Z",
+  "updatedAt": "2026-09-03T20:32:25.845Z",
   "records": [
     {
       "matchId": "35901908",
@@ -24042,11 +24042,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-03T15:55:51.822Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Belfast Wolves"
     },
     {
       "matchId": "36018220",
@@ -24523,6 +24523,2189 @@
         {
           "reason": "Women's Heavy Trap on Sri Lanka W (PnL: -1567) -> Bookie Safe Side Indonesia W (+1780)",
           "winner": "Indonesia W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-09-03T15:56:04.857Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Indonesia W"
+    },
+    {
+      "matchId": "36018454",
+      "marketId": "1.261847624",
+      "matchName": "Trinbago Knight Riders v Antigua & Barbuda Falcs",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Trinbago Knight Riders",
+      "team2": "Antigua & Barbuda Falcs",
+      "startTime": 1788390000000,
+      "endedAt": "2026-09-03T15:55:04.126Z",
+      "capturedAt": "2026-09-03T15:55:04.126Z",
+      "snapshot": {
+        "serverTime": "2026-09-03T15:54:59.054Z",
+        "matchId": "36018454",
+        "matchName": "Trinbago Knight Riders v Antigua & Barbuda Falcs",
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "Antigua & Barbuda Falcs"
+        ],
+        "inPlayPnl": {
+          "team1": 4190.906499999999,
+          "team2": -5279.327999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 750.0731000000001,
+          "team2": 6025.350699999999
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 512.79,
+            "lay": 3933.5199999999995,
+            "total": 748.1500000000001
+          },
+          "team2": {
+            "back": 2217.3199999999997,
+            "lay": 235.3600000000001,
+            "total": 6150.839999999999
+          }
+        },
+        "preMatchPnl": {
+          "team1": 4190.906499999999,
+          "team2": -5279.327999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 750.0731000000001,
+          "team2": 6025.350699999999
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 512.79,
+            "lay": 3933.5199999999995,
+            "total": 748.1500000000001
+          },
+          "team2": {
+            "back": 2217.3199999999997,
+            "lay": 235.3600000000001,
+            "total": 6150.839999999999
+          }
+        },
+        "threeMinPnl": {
+          "team1": 4190.906499999999,
+          "team2": -5279.327999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 750.0731000000001,
+          "team2": 6025.350699999999
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 512.79,
+            "lay": 3933.5199999999995,
+            "total": 748.1500000000001
+          },
+          "team2": {
+            "back": 2217.3199999999997,
+            "lay": 235.3600000000001,
+            "total": 6150.839999999999
+          }
+        },
+        "matchLoadV2": {
+          "team1": 9,
+          "team2": 13
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 512.79,
+            "lay": 3933.5199999999995,
+            "totalVolume": 4446.3099999999995,
+            "backPercentage": 11.532934050932122
+          },
+          "team2": {
+            "back": 2217.3199999999997,
+            "lay": 235.3600000000001,
+            "totalVolume": 2452.68,
+            "backPercentage": 90.40396627362722
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 514.7130999999999,
+            "lay": 2723.6595999999995,
+            "totalBet": 3238.3726999999994
+          },
+          "team2": {
+            "back": 2091.8307,
+            "lay": 233.23270000000008,
+            "totalBet": 2325.0634
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 748.1500000000001,
+            "support": 10.844340983245376
+          },
+          "team2": {
+            "supportMoney": 6150.839999999999,
+            "support": 89.15565901675461
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Antigua & Barbuda Falcs",
+          "bookieFavouriteOutcome": "Trinbago Knight Riders",
+          "riskTeam": "Antigua & Barbuda Falcs",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 78.31131803350924,
+          "mostBettedTeam": "Antigua & Barbuda Falcs",
+          "prediction": {
+            "team1TrueSupport": 747.9458,
+            "team2TrueSupport": 4814.0983,
+            "ratio": 6.436426676906268,
+            "bookiePnlTeam1": 3279.6068999999998,
+            "bookiePnlTeam2": -1856.4706999999999,
+            "prediction": "Trinbago Knight Riders",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (6.44) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -2207.5544999999997,
+            "backExposure": 514.7130999999999,
+            "layExposure": 2722.2675999999997,
+            "teamName": "Trinbago Knight Riders"
+          },
+          "team2": {
+            "netExposure": 1858.598,
+            "backExposure": 2091.8307,
+            "layExposure": 233.23270000000008,
+            "teamName": "Antigua & Barbuda Falcs"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 514.7130999999999,
+            "A_lay_stake": 3933.5199999999995,
+            "B_back_expo": 2091.8307,
+            "B_lay_stake": 235.3600000000001
+          },
+          "totals": {
+            "totalBetTeam1": 750.0731000000001,
+            "totalBetTeam2": 6025.350699999999
+          },
+          "simplePL": {
+            "team1_win": 3418.8068999999996,
+            "team2_win": -1856.4706999999999
+          },
+          "derivedPL": {
+            "team1_win": 5275.277599999999,
+            "team2_win": -5275.277599999999
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 512.79,
+              "totalLayVol": 3933.5199999999995,
+              "totalBet": 748.1500000000001,
+              "profitLoss": 5402.689999999999
+            },
+            "team2": {
+              "totalBackVol": 2217.3199999999997,
+              "totalLayVol": 235.3600000000001,
+              "totalBet": 6150.839999999999,
+              "profitLoss": -5402.689999999999
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 514.7130999999999,
+              "totalLayVol": 3933.5199999999995,
+              "totalBet": 750.0731000000001,
+              "profitLoss": 4190.906499999999
+            },
+            "team2": {
+              "totalBackExpo": 2091.8307,
+              "totalLayVol": 235.3600000000001,
+              "totalBet": 6025.350699999999,
+              "profitLoss": -5279.3279999999995
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 514.7130999999999,
+              "totalLayNetVol": 2723.6595999999995,
+              "totalBet": 747.9458,
+              "profitLoss": 4067.5444999999995
+            },
+            "team2": {
+              "totalBackNetVol": 2091.8307,
+              "totalLayNetVol": 233.23270000000008,
+              "totalBet": 4815.4902999999995,
+              "profitLoss": -4067.5444999999995
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 9,
+            "averageOdds": 1.9988888888888887,
+            "averageSize": 83.12777777777778,
+            "supportProduct": 166.16319135802468
+          },
+          "teamB": {
+            "tradeCount": 13,
+            "averageOdds": 1.8838461538461535,
+            "averageSize": 473.14153846153846,
+            "supportProduct": 891.3258674556212
+          },
+          "strongerTeam": "Antigua & Barbuda Falcs",
+          "supportRatio": 5.364159536001687
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 512.79,
+            "oppoLayVolume": 235.3600000000001,
+            "layExposure": 2723.6595999999995,
+            "netSupportValue": -1975.5095999999994
+          },
+          "teamB": {
+            "totalBackVolume": 2217.3199999999997,
+            "oppoLayVolume": 3933.5199999999995,
+            "layExposure": 233.23270000000008,
+            "netSupportValue": 5917.607299999999
+          },
+          "strongerTeam": "Antigua & Barbuda Falcs",
+          "netSupportDifference": 7893.116899999998,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -3420.7299999999996,
+            "syntheticSupport": 235.3600000000001,
+            "opponentLiabilityRejection": 233.23270000000008,
+            "sentimentScore": -3418.6026999999995
+          },
+          "teamB": {
+            "directNetSupport": 1981.9599999999996,
+            "syntheticSupport": 3933.5199999999995,
+            "opponentLiabilityRejection": 2723.6595999999995,
+            "sentimentScore": 3191.8204
+          },
+          "strongerTeam": "Antigua & Barbuda Falcs",
+          "scoreDifference": 6610.4231,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Trinbago Knight Riders",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Antigua & Barbuda Falcs",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Trinbago Knight Riders"
+        },
+        "teams": {
+          "Trinbago Knight Riders": {
+            "trades": [
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.01,
+                "type": "lay",
+                "size": 139.2,
+                "updatedAt": 1788387870496
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.7,
+                "type": "lay",
+                "size": 3602.39,
+                "updatedAt": 1788387409131
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "lay",
+                "size": 68.71999999999998,
+                "updatedAt": 1788387403169
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "back",
+                "size": 110.60999999999999,
+                "updatedAt": 1788386893161
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "back",
+                "size": 54.550000000000004,
+                "updatedAt": 1788386322847
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.04,
+                "type": "back",
+                "size": 13.129999999999999,
+                "updatedAt": 1788386308306
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.31,
+                "updatedAt": 1788385777560
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.06,
+                "type": "lay",
+                "size": 46.19,
+                "updatedAt": 1788382804662
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.06,
+                "type": "back",
+                "size": 52.17,
+                "updatedAt": 1788381606041
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.04,
+                "type": "lay",
+                "size": 6.71,
+                "updatedAt": 1788381163580
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "back",
+                "size": 282.33,
+                "updatedAt": 1788379540217
+              }
+            ],
+            "pnlIfWins": 4190.906499999999,
+            "totalBet": 750.0731000000001
+          },
+          "Antigua & Barbuda Falcs": {
+            "trades": [
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 2,
+                "type": "lay",
+                "size": 159.26,
+                "updatedAt": 1788387403325
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.99,
+                "type": "lay",
+                "size": 46.030000000000086,
+                "updatedAt": 1788386893156
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.95,
+                "type": "lay",
+                "size": 13.719999999999999,
+                "updatedAt": 1788386308291
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.91,
+                "type": "back",
+                "size": 436.59,
+                "updatedAt": 1788386282189
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.92,
+                "type": "back",
+                "size": 498.28000000000003,
+                "updatedAt": 1788385777544
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.93,
+                "type": "back",
+                "size": 360.39,
+                "updatedAt": 1788381428441
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.94,
+                "type": "back",
+                "size": 173.36999999999998,
+                "updatedAt": 1788381224782
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.94,
+                "type": "lay",
+                "size": 16.350000000000023,
+                "updatedAt": 1788381222768
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.95,
+                "type": "back",
+                "size": 75.2,
+                "updatedAt": 1788381203150
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.96,
+                "type": "back",
+                "size": 6.98,
+                "updatedAt": 1788381163596
+              },
+              {
+                "team": "Antigua & Barbuda Falcs",
+                "price": 1.99,
+                "type": "back",
+                "size": 666.51,
+                "updatedAt": 1788379179612
+              }
+            ],
+            "pnlIfWins": -5279.327999999999,
+            "totalBet": 6025.350699999999
+          }
+        }
+      },
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictionReason": "CPL Bookie Lay Shield on Trinbago Knight Riders (Lay: ₹3.9k, PnL: +4191)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "CPL Bookie Lay Shield on Trinbago Knight Riders (Lay: ₹3.9k, PnL: +4191)"
+      },
+      "matchedRules": [
+        {
+          "reason": "CPL Bookie Lay Shield on Trinbago Knight Riders (Lay: ₹3.9k, PnL: +4191)",
+          "winner": "Trinbago Knight Riders",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-09-03T15:56:16.055Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders"
+    },
+    {
+      "matchId": "36021300",
+      "marketId": "1.261923082",
+      "matchName": "England W v Ireland W",
+      "competitionName": "Womens One Day Internationals",
+      "team1": "England W",
+      "team2": "Ireland W",
+      "startTime": 1788436800000,
+      "endedAt": "2026-09-03T17:24:05.147Z",
+      "capturedAt": "2026-09-03T17:24:05.147Z",
+      "snapshot": {
+        "serverTime": "2026-09-03T17:24:04.881Z",
+        "matchId": "36021300",
+        "matchName": "England W v Ireland W",
+        "teamNames": [
+          "England W",
+          "Ireland W"
+        ],
+        "inPlayPnl": {
+          "team1": -852.3054999999998,
+          "team2": 950.4943999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 1145.0555,
+          "team2": 280.3316
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1072.84,
+            "lay": 83.21,
+            "total": 1225.21
+          },
+          "team2": {
+            "back": 209.54000000000002,
+            "lay": 152.37,
+            "total": 292.75
+          }
+        },
+        "preMatchPnl": {
+          "team1": -852.3054999999998,
+          "team2": 950.4943999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 1145.0555,
+          "team2": 280.3316
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1072.84,
+            "lay": 83.21,
+            "total": 1225.21
+          },
+          "team2": {
+            "back": 209.54000000000002,
+            "lay": 152.37,
+            "total": 292.75
+          }
+        },
+        "threeMinPnl": {
+          "team1": -852.3054999999998,
+          "team2": 950.4943999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 1145.0555,
+          "team2": 280.3316
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1072.84,
+            "lay": 83.21,
+            "total": 1225.21
+          },
+          "team2": {
+            "back": 209.54000000000002,
+            "lay": 152.37,
+            "total": 292.75
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 5
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1072.84,
+            "lay": 83.21,
+            "totalVolume": 1156.05,
+            "backPercentage": 92.80221443709182
+          },
+          "team2": {
+            "back": 209.54000000000002,
+            "lay": 152.37,
+            "totalVolume": 361.91,
+            "backPercentage": 57.89837252355559
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 992.6854999999998,
+            "lay": 83.21,
+            "totalBet": 1075.8954999999999
+          },
+          "team2": {
+            "back": 197.1216,
+            "lay": 157.986,
+            "totalBet": 355.1076
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1225.21,
+            "support": 80.71424806977787
+          },
+          "team2": {
+            "supportMoney": 292.75,
+            "support": 19.28575193022214
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "England W",
+          "bookieFavouriteOutcome": "Ireland W",
+          "riskTeam": "England W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 61.428496139555726,
+          "mostBettedTeam": "England W",
+          "prediction": {
+            "team1TrueSupport": 1150.6715,
+            "team2TrueSupport": 280.3316,
+            "ratio": 4.1046799575930795,
+            "bookiePnlTeam1": -909.4754999999998,
+            "bookiePnlTeam2": -44.751599999999996,
+            "prediction": "Ireland W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (4.10) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 909.4754999999998,
+            "backExposure": 992.6854999999998,
+            "layExposure": 83.21,
+            "teamName": "England W"
+          },
+          "team2": {
+            "netExposure": 39.13560000000001,
+            "backExposure": 197.1216,
+            "layExposure": 157.986,
+            "teamName": "Ireland W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 992.6854999999998,
+            "A_lay_stake": 83.21,
+            "B_back_expo": 197.1216,
+            "B_lay_stake": 152.37
+          },
+          "totals": {
+            "totalBetTeam1": 1145.0555,
+            "totalBetTeam2": 280.3316
+          },
+          "simplePL": {
+            "team1_win": -909.4754999999998,
+            "team2_win": -44.751599999999996
+          },
+          "derivedPL": {
+            "team1_win": -864.7239,
+            "team2_win": 864.7239
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1072.84,
+              "totalLayVol": 83.21,
+              "totalBet": 1225.21,
+              "profitLoss": -932.46
+            },
+            "team2": {
+              "totalBackVol": 209.54000000000002,
+              "totalLayVol": 152.37,
+              "totalBet": 292.75,
+              "profitLoss": 932.46
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 992.6854999999998,
+              "totalLayVol": 83.21,
+              "totalBet": 1145.0555,
+              "profitLoss": -852.3054999999999
+            },
+            "team2": {
+              "totalBackExpo": 197.1216,
+              "totalLayVol": 152.37,
+              "totalBet": 280.3316,
+              "profitLoss": 950.4944
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 992.6854999999998,
+              "totalLayNetVol": 83.21,
+              "totalBet": 1150.6715,
+              "profitLoss": -870.3399
+            },
+            "team2": {
+              "totalBackNetVol": 197.1216,
+              "totalLayNetVol": 157.986,
+              "totalBet": 280.3316,
+              "profitLoss": 870.3399
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.9614285714285713,
+            "averageSize": 175.03,
+            "supportProduct": 343.30884285714285
+          },
+          "teamB": {
+            "tradeCount": 5,
+            "averageOdds": 1.964,
+            "averageSize": 58.55,
+            "supportProduct": 114.9922
+          },
+          "strongerTeam": "England W",
+          "supportRatio": 2.9854967802785133
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1072.84,
+            "oppoLayVolume": 152.37,
+            "layExposure": 83.21,
+            "netSupportValue": 1142
+          },
+          "teamB": {
+            "totalBackVolume": 209.54000000000002,
+            "oppoLayVolume": 83.21,
+            "layExposure": 157.986,
+            "netSupportValue": 134.764
+          },
+          "strongerTeam": "England W",
+          "netSupportDifference": 1007.236,
+          "percentageA": 89.44487783176844,
+          "percentageB": 10.555122168231561
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 989.6299999999999,
+            "syntheticSupport": 152.37,
+            "opponentLiabilityRejection": 157.986,
+            "sentimentScore": 984.014
+          },
+          "teamB": {
+            "directNetSupport": 57.170000000000016,
+            "syntheticSupport": 83.21,
+            "opponentLiabilityRejection": 83.21,
+            "sentimentScore": 57.17
+          },
+          "strongerTeam": "England W",
+          "scoreDifference": 926.844,
+          "percentageA": 94.50913575314259,
+          "percentageB": 5.4908642468574245
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "England W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Ireland W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "England W"
+        },
+        "teams": {
+          "England W": {
+            "trades": [
+              {
+                "team": "England W",
+                "price": 2,
+                "type": "lay",
+                "size": 83.21,
+                "updatedAt": 1788434578649
+              },
+              {
+                "team": "England W",
+                "price": 1.92,
+                "type": "back",
+                "size": 553.38,
+                "updatedAt": 1788434098630
+              },
+              {
+                "team": "England W",
+                "price": 1.91,
+                "type": "back",
+                "size": 72.29,
+                "updatedAt": 1788433441568
+              },
+              {
+                "team": "England W",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.39,
+                "updatedAt": 1788427865339
+              },
+              {
+                "team": "England W",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.78,
+                "updatedAt": 1788427865339
+              },
+              {
+                "team": "England W",
+                "price": 1.95,
+                "type": "back",
+                "size": 26,
+                "updatedAt": 1788425562742
+              }
+            ],
+            "pnlIfWins": -852.3054999999998,
+            "totalBet": 1145.0555
+          },
+          "Ireland W": {
+            "trades": [
+              {
+                "team": "Ireland W",
+                "price": 2,
+                "type": "lay",
+                "size": 82.16999999999999,
+                "updatedAt": 1788434578652
+              },
+              {
+                "team": "Ireland W",
+                "price": 1.94,
+                "type": "back",
+                "size": 168.5,
+                "updatedAt": 1788434578652
+              },
+              {
+                "team": "Ireland W",
+                "price": 2,
+                "type": "back",
+                "size": 0.04000000000000625,
+                "updatedAt": 1788433441584
+              },
+              {
+                "team": "Ireland W",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.2,
+                "updatedAt": 1788432885371
+              },
+              {
+                "team": "Ireland W",
+                "price": 1.93,
+                "type": "back",
+                "size": 12.92,
+                "updatedAt": 1788431869668
+              },
+              {
+                "team": "Ireland W",
+                "price": 1.95,
+                "type": "back",
+                "size": 28.08,
+                "updatedAt": 1788431040883
+              }
+            ],
+            "pnlIfWins": 950.4943999999999,
+            "totalBet": 280.3316
+          }
+        }
+      },
+      "predictedWinner": "Ireland W",
+      "predictionReason": "Women's Heavy Trap on England W (PnL: -852) -> Bookie Safe Side Ireland W (+950)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Women's Heavy Trap on England W (PnL: -852) -> Bookie Safe Side Ireland W (+950)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Women's Heavy Trap on England W (PnL: -852) -> Bookie Safe Side Ireland W (+950)",
+          "winner": "Ireland W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36020245",
+      "marketId": "1.261871844",
+      "matchName": "Namibia v Zimbabwe",
+      "competitionName": "International Twenty20 Matches",
+      "team1": "Namibia",
+      "team2": "Zimbabwe",
+      "startTime": 1788436800000,
+      "endedAt": "2026-09-03T17:24:05.611Z",
+      "capturedAt": "2026-09-03T17:24:05.611Z",
+      "snapshot": {
+        "serverTime": "2026-09-03T17:24:05.495Z",
+        "matchId": "36020245",
+        "matchName": "Namibia v Zimbabwe",
+        "teamNames": [
+          "Namibia",
+          "Zimbabwe"
+        ],
+        "inPlayPnl": {
+          "team1": 1321.4022,
+          "team2": -1243.4479999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 123.2528,
+          "team2": 1368.588
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 121.87999999999997,
+            "lay": 321.67,
+            "total": 125.13999999999999
+          },
+          "team2": {
+            "back": 1115.9199999999998,
+            "lay": 3.2600000000000193,
+            "total": 1437.59
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1321.4022,
+          "team2": -1243.4479999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 123.2528,
+          "team2": 1368.588
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 121.87999999999997,
+            "lay": 321.67,
+            "total": 125.13999999999999
+          },
+          "team2": {
+            "back": 1115.9199999999998,
+            "lay": 3.2600000000000193,
+            "total": 1437.59
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1321.4022,
+          "team2": -1243.4479999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 123.2528,
+          "team2": 1368.588
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 121.87999999999997,
+            "lay": 321.67,
+            "total": 125.13999999999999
+          },
+          "team2": {
+            "back": 1115.9199999999998,
+            "lay": 3.2600000000000193,
+            "total": 1437.59
+          }
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 8
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 121.87999999999997,
+            "lay": 321.67,
+            "totalVolume": 443.54999999999995,
+            "backPercentage": 27.478300078908802
+          },
+          "team2": {
+            "back": 1115.9199999999998,
+            "lay": 3.2600000000000193,
+            "totalVolume": 1119.1799999999998,
+            "backPercentage": 99.70871530942297
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 119.99279999999997,
+            "lay": 328.73500000000007,
+            "totalBet": 448.72780000000006
+          },
+          "team2": {
+            "back": 1046.918,
+            "lay": 3.2600000000000193,
+            "totalBet": 1050.1779999999999
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 125.13999999999999,
+            "support": 8.007781254599323
+          },
+          "team2": {
+            "supportMoney": 1437.59,
+            "support": 91.99221874540066
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Zimbabwe",
+          "bookieFavouriteOutcome": "Namibia",
+          "riskTeam": "Zimbabwe",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 83.98443749080134,
+          "mostBettedTeam": "Zimbabwe",
+          "prediction": {
+            "team1TrueSupport": 123.2528,
+            "team2TrueSupport": 1375.653,
+            "ratio": 11.161231225578648,
+            "bookiePnlTeam1": 201.67720000000003,
+            "bookiePnlTeam2": -1043.658,
+            "prediction": "Namibia",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (11.16) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -208.74220000000008,
+            "backExposure": 119.99279999999997,
+            "layExposure": 328.73500000000007,
+            "teamName": "Namibia"
+          },
+          "team2": {
+            "netExposure": 1043.658,
+            "backExposure": 1046.918,
+            "layExposure": 3.2600000000000193,
+            "teamName": "Zimbabwe"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 119.99279999999997,
+            "A_lay_stake": 321.67,
+            "B_back_expo": 1046.918,
+            "B_lay_stake": 3.2600000000000193
+          },
+          "totals": {
+            "totalBetTeam1": 123.2528,
+            "totalBetTeam2": 1368.588
+          },
+          "simplePL": {
+            "team1_win": 201.67720000000003,
+            "team2_win": -1043.658
+          },
+          "derivedPL": {
+            "team1_win": 1245.3352,
+            "team2_win": -1245.3352
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 121.87999999999997,
+              "totalLayVol": 321.67,
+              "totalBet": 125.13999999999999,
+              "profitLoss": 1312.4499999999998
+            },
+            "team2": {
+              "totalBackVol": 1115.9199999999998,
+              "totalLayVol": 3.2600000000000193,
+              "totalBet": 1437.59,
+              "profitLoss": -1312.4499999999998
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 119.99279999999997,
+              "totalLayVol": 321.67,
+              "totalBet": 123.2528,
+              "profitLoss": 1321.4022
+            },
+            "team2": {
+              "totalBackExpo": 1046.918,
+              "totalLayVol": 3.2600000000000193,
+              "totalBet": 1368.588,
+              "profitLoss": -1243.4479999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 119.99279999999997,
+              "totalLayNetVol": 328.73500000000007,
+              "totalBet": 123.2528,
+              "profitLoss": 1252.4002
+            },
+            "team2": {
+              "totalBackNetVol": 1046.918,
+              "totalLayNetVol": 3.2600000000000193,
+              "totalBet": 1375.653,
+              "profitLoss": -1252.4002
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.9825,
+            "averageSize": 31.284999999999997,
+            "supportProduct": 62.02251249999999
+          },
+          "teamB": {
+            "tradeCount": 8,
+            "averageOdds": 1.9949999999999999,
+            "averageSize": 179.69875,
+            "supportProduct": 358.49900625
+          },
+          "strongerTeam": "Zimbabwe",
+          "supportRatio": 5.780143238312057
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 121.87999999999997,
+            "oppoLayVolume": 3.2600000000000193,
+            "layExposure": 328.73500000000007,
+            "netSupportValue": -203.59500000000008
+          },
+          "teamB": {
+            "totalBackVolume": 1115.9199999999998,
+            "oppoLayVolume": 321.67,
+            "layExposure": 3.2600000000000193,
+            "netSupportValue": 1434.33
+          },
+          "strongerTeam": "Zimbabwe",
+          "netSupportDifference": 1637.925,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -199.79000000000005,
+            "syntheticSupport": 3.2600000000000193,
+            "opponentLiabilityRejection": 3.2600000000000193,
+            "sentimentScore": -199.79000000000005
+          },
+          "teamB": {
+            "directNetSupport": 1112.6599999999999,
+            "syntheticSupport": 321.67,
+            "opponentLiabilityRejection": 328.73500000000007,
+            "sentimentScore": 1105.5949999999998
+          },
+          "strongerTeam": "Zimbabwe",
+          "scoreDifference": 1305.3849999999998,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Namibia",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Zimbabwe",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Namibia"
+        },
+        "teams": {
+          "Namibia": {
+            "trades": [
+              {
+                "team": "Namibia",
+                "price": 2,
+                "type": "back",
+                "size": 3.359999999999985,
+                "updatedAt": 1788433802373
+              },
+              {
+                "team": "Namibia",
+                "price": 2.1,
+                "type": "lay",
+                "size": 14.49,
+                "updatedAt": 1788433152465
+              },
+              {
+                "team": "Namibia",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.2,
+                "updatedAt": 1788433005364
+              },
+              {
+                "team": "Namibia",
+                "price": 1.94,
+                "type": "back",
+                "size": 14.04,
+                "updatedAt": 1788432485081
+              },
+              {
+                "team": "Namibia",
+                "price": 2,
+                "type": "lay",
+                "size": 236.98000000000002,
+                "updatedAt": 1788430610329
+              },
+              {
+                "team": "Namibia",
+                "price": 1.99,
+                "type": "back",
+                "size": 104.47999999999999,
+                "updatedAt": 1788429441856
+              }
+            ],
+            "pnlIfWins": 1321.4022,
+            "totalBet": 123.2528
+          },
+          "Zimbabwe": {
+            "trades": [
+              {
+                "team": "Zimbabwe",
+                "price": 2,
+                "type": "lay",
+                "size": 3.2600000000000193,
+                "updatedAt": 1788433802209
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.42,
+                "updatedAt": 1788433802209
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.92,
+                "type": "back",
+                "size": 497.21,
+                "updatedAt": 1788433005359
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.93,
+                "type": "back",
+                "size": 296.34,
+                "updatedAt": 1788432902926
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788431060988
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 2,
+                "type": "back",
+                "size": 176.32999999999998,
+                "updatedAt": 1788430610329
+              }
+            ],
+            "pnlIfWins": -1243.4479999999999,
+            "totalBet": 1368.588
+          }
+        }
+      },
+      "predictedWinner": "Namibia",
+      "predictionReason": "Intl Heavy Lay Absorption Lead on Namibia (₹322 Lay) -> Safe Winner",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Intl Heavy Lay Absorption Lead on Namibia (₹322 Lay) -> Safe Winner"
+      },
+      "matchedRules": [
+        {
+          "reason": "Intl Heavy Lay Absorption Lead on Namibia (₹322 Lay) -> Safe Winner",
+          "winner": "Namibia",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36020432",
+      "marketId": "1.261869591",
+      "matchName": "Amsterdam Flames v Glasgow Cosmic",
+      "competitionName": "European T20 Premier League",
+      "team1": "Amsterdam Flames",
+      "team2": "Glasgow Cosmic",
+      "startTime": 1788441300000,
+      "endedAt": "2026-09-03T18:24:05.268Z",
+      "capturedAt": "2026-09-03T18:24:05.268Z",
+      "snapshot": {
+        "serverTime": "2026-09-03T18:24:05.156Z",
+        "matchId": "36020432",
+        "matchName": "Amsterdam Flames v Glasgow Cosmic",
+        "teamNames": [
+          "Amsterdam Flames",
+          "Glasgow Cosmic"
+        ],
+        "inPlayPnl": {
+          "team1": -1214.5637999999997,
+          "team2": 1356.1191999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 1659.1941999999997,
+          "team2": 416.0062
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1673.06,
+            "lay": 5.52,
+            "total": 1765.01
+          },
+          "team2": {
+            "back": 439,
+            "lay": 91.95,
+            "total": 444.52
+          }
+        },
+        "preMatchPnl": {
+          "team1": -1214.5637999999997,
+          "team2": 1356.1191999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 1659.1941999999997,
+          "team2": 416.0062
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1673.06,
+            "lay": 5.52,
+            "total": 1765.01
+          },
+          "team2": {
+            "back": 439,
+            "lay": 91.95,
+            "total": 444.52
+          }
+        },
+        "threeMinPnl": {
+          "team1": -1214.5637999999997,
+          "team2": 1356.1191999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 1659.1941999999997,
+          "team2": 416.0062
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1673.06,
+            "lay": 5.52,
+            "total": 1765.01
+          },
+          "team2": {
+            "back": 439,
+            "lay": 91.95,
+            "total": 444.52
+          }
+        },
+        "matchLoadV2": {
+          "team1": 9,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1673.06,
+            "lay": 5.52,
+            "totalVolume": 1678.58,
+            "backPercentage": 99.67115061540112
+          },
+          "team2": {
+            "back": 439,
+            "lay": 91.95,
+            "totalVolume": 530.95,
+            "backPercentage": 82.6819851210095
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1567.2441999999996,
+            "lay": 5.6304,
+            "totalBet": 1572.8745999999996
+          },
+          "team2": {
+            "back": 410.4862,
+            "lay": 99.0654,
+            "totalBet": 509.5516
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1765.01,
+            "support": 79.88169429697719
+          },
+          "team2": {
+            "supportMoney": 444.52,
+            "support": 20.118305703022816
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Amsterdam Flames",
+          "bookieFavouriteOutcome": "Glasgow Cosmic",
+          "riskTeam": "Amsterdam Flames",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 59.763388593954375,
+          "mostBettedTeam": "Amsterdam Flames",
+          "prediction": {
+            "team1TrueSupport": 1666.3095999999996,
+            "team2TrueSupport": 416.1166,
+            "ratio": 4.004429527685268,
+            "bookiePnlTeam1": -1561.7241999999997,
+            "bookiePnlTeam2": -318.5362,
+            "prediction": "Glasgow Cosmic",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (4.00) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1561.6137999999996,
+            "backExposure": 1567.2441999999996,
+            "layExposure": 5.6304,
+            "teamName": "Amsterdam Flames"
+          },
+          "team2": {
+            "netExposure": 311.4208,
+            "backExposure": 410.4862,
+            "layExposure": 99.0654,
+            "teamName": "Glasgow Cosmic"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1567.2441999999996,
+            "A_lay_stake": 5.52,
+            "B_back_expo": 410.4862,
+            "B_lay_stake": 91.95
+          },
+          "totals": {
+            "totalBetTeam1": 1659.1941999999997,
+            "totalBetTeam2": 416.0062
+          },
+          "simplePL": {
+            "team1_win": -1561.7241999999997,
+            "team2_win": -318.5362
+          },
+          "derivedPL": {
+            "team1_win": -1243.1879999999996,
+            "team2_win": 1243.1879999999996
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1673.06,
+              "totalLayVol": 5.52,
+              "totalBet": 1765.01,
+              "profitLoss": -1320.49
+            },
+            "team2": {
+              "totalBackVol": 439,
+              "totalLayVol": 91.95,
+              "totalBet": 444.52,
+              "profitLoss": 1320.49
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1567.2441999999996,
+              "totalLayVol": 5.52,
+              "totalBet": 1659.1941999999997,
+              "profitLoss": -1214.5637999999997
+            },
+            "team2": {
+              "totalBackExpo": 410.4862,
+              "totalLayVol": 91.95,
+              "totalBet": 416.0062,
+              "profitLoss": 1356.1191999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1567.2441999999996,
+              "totalLayNetVol": 5.6304,
+              "totalBet": 1666.3095999999996,
+              "profitLoss": -1250.1929999999995
+            },
+            "team2": {
+              "totalBackNetVol": 410.4862,
+              "totalLayNetVol": 99.0654,
+              "totalBet": 416.1166,
+              "profitLoss": 1250.1929999999995
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 9,
+            "averageOdds": 1.9833333333333334,
+            "averageSize": 196.11222222222221,
+            "supportProduct": 388.9559074074074
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.9528571428571428,
+            "averageSize": 63.50285714285714,
+            "supportProduct": 124.01200816326529
+          },
+          "strongerTeam": "Amsterdam Flames",
+          "supportRatio": 3.1364374560835753
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1673.06,
+            "oppoLayVolume": 91.95,
+            "layExposure": 5.6304,
+            "netSupportValue": 1759.3796
+          },
+          "teamB": {
+            "totalBackVolume": 439,
+            "oppoLayVolume": 5.52,
+            "layExposure": 99.0654,
+            "netSupportValue": 345.45459999999997
+          },
+          "strongerTeam": "Amsterdam Flames",
+          "netSupportDifference": 1413.925,
+          "percentageA": 83.58756238377352,
+          "percentageB": 16.412437616226494
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1667.54,
+            "syntheticSupport": 91.95,
+            "opponentLiabilityRejection": 99.0654,
+            "sentimentScore": 1660.4246
+          },
+          "teamB": {
+            "directNetSupport": 347.05,
+            "syntheticSupport": 5.52,
+            "opponentLiabilityRejection": 5.6304,
+            "sentimentScore": 346.9396
+          },
+          "strongerTeam": "Amsterdam Flames",
+          "scoreDifference": 1313.4850000000001,
+          "percentageA": 82.71665898993317,
+          "percentageB": 17.283341010066835
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Amsterdam Flames",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Glasgow Cosmic",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Amsterdam Flames"
+        },
+        "teams": {
+          "Amsterdam Flames": {
+            "trades": [
+              {
+                "team": "Amsterdam Flames",
+                "price": 1.91,
+                "type": "back",
+                "size": 390.23,
+                "updatedAt": 1788437383814
+              },
+              {
+                "team": "Amsterdam Flames",
+                "price": 1.92,
+                "type": "back",
+                "size": 497.23,
+                "updatedAt": 1788436991765
+              },
+              {
+                "team": "Amsterdam Flames",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.78,
+                "updatedAt": 1788436877029
+              },
+              {
+                "team": "Amsterdam Flames",
+                "price": 2.02,
+                "type": "lay",
+                "size": 5.52,
+                "updatedAt": 1788436862796
+              },
+              {
+                "team": "Amsterdam Flames",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.39,
+                "updatedAt": 1788432941618
+              },
+              {
+                "team": "Amsterdam Flames",
+                "price": 1.99,
+                "type": "back",
+                "size": 283.87,
+                "updatedAt": 1788432936093
+              },
+              {
+                "team": "Amsterdam Flames",
+                "price": 2,
+                "type": "back",
+                "size": 80.56,
+                "updatedAt": 1788432924044
+              }
+            ],
+            "pnlIfWins": -1214.5637999999997,
+            "totalBet": 1659.1941999999997
+          },
+          "Glasgow Cosmic": {
+            "trades": [
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.88,
+                "type": "back",
+                "size": 2.81,
+                "updatedAt": 1788439062209
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.91,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788438371715
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.93,
+                "type": "back",
+                "size": 274.16,
+                "updatedAt": 1788438280497
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2.1,
+                "type": "lay",
+                "size": 16.12,
+                "updatedAt": 1788437809638
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.39,
+                "updatedAt": 1788437341108
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.2,
+                "updatedAt": 1788436991734
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.98,
+                "type": "lay",
+                "size": 5.63,
+                "updatedAt": 1788436862765
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788436502357
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2,
+                "type": "back",
+                "size": 10.399999999999991,
+                "updatedAt": 1788434107754
+              }
+            ],
+            "pnlIfWins": 1356.1191999999999,
+            "totalBet": 416.0062
+          }
+        }
+      },
+      "predictedWinner": "Amsterdam Flames",
+      "predictionReason": "ECS Smart Inflow on Amsterdam Flames (₹1673 Back, Lead: 3.8x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "ECS Smart Inflow on Amsterdam Flames (₹1673 Back, Lead: 3.8x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "ECS Smart Inflow on Amsterdam Flames (₹1673 Back, Lead: 3.8x)",
+          "winner": "Amsterdam Flames",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36021032",
+      "marketId": "1.261875910",
+      "matchName": "Hong Kong W v India W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "team1": "Hong Kong W",
+      "team2": "India W",
+      "startTime": 1788445800000,
+      "endedAt": "2026-09-03T20:32:25.835Z",
+      "capturedAt": "2026-09-03T20:32:25.835Z",
+      "snapshot": {
+        "serverTime": "2026-09-03T20:32:25.676Z",
+        "matchId": "36021032",
+        "matchName": "Hong Kong W v India W",
+        "teamNames": [
+          "Hong Kong W",
+          "India W"
+        ],
+        "inPlayPnl": {
+          "team1": 1290.9352000000001,
+          "team2": -1185.9352999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 44.4488,
+          "team2": 1229.5645999999997
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 3.120000000000001,
+            "lay": 71.60000000000001,
+            "total": 44.480000000000004
+          },
+          "team2": {
+            "back": 1258.1399999999999,
+            "lay": 41.36,
+            "total": 1329.7399999999998
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1290.9352000000001,
+          "team2": -1185.9352999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 44.4488,
+          "team2": 1229.5645999999997
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 3.120000000000001,
+            "lay": 71.60000000000001,
+            "total": 44.480000000000004
+          },
+          "team2": {
+            "back": 1258.1399999999999,
+            "lay": 41.36,
+            "total": 1329.7399999999998
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1290.9352000000001,
+          "team2": -1185.9352999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 44.4488,
+          "team2": 1229.5645999999997
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 3.120000000000001,
+            "lay": 71.60000000000001,
+            "total": 44.480000000000004
+          },
+          "team2": {
+            "back": 1258.1399999999999,
+            "lay": 41.36,
+            "total": 1329.7399999999998
+          }
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 8
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 3.120000000000001,
+            "lay": 71.60000000000001,
+            "totalVolume": 74.72000000000001,
+            "backPercentage": 4.17558886509636
+          },
+          "team2": {
+            "back": 1258.1399999999999,
+            "lay": 41.36,
+            "totalVolume": 1299.4999999999998,
+            "backPercentage": 96.81723739899962
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 3.088800000000001,
+            "lay": 77.244,
+            "totalBet": 80.3328
+          },
+          "team2": {
+            "back": 1157.9645999999998,
+            "lay": 40.509299999999996,
+            "totalBet": 1198.4738999999997
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 44.480000000000004,
+            "support": 3.236745208190829
+          },
+          "team2": {
+            "supportMoney": 1329.7399999999998,
+            "support": 96.76325479180917
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "India W",
+          "bookieFavouriteOutcome": "Hong Kong W",
+          "riskTeam": "India W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 93.52650958361835,
+          "mostBettedTeam": "India W",
+          "prediction": {
+            "team1TrueSupport": 43.598099999999995,
+            "team2TrueSupport": 1235.2085999999997,
+            "ratio": 28.331707115677055,
+            "bookiePnlTeam1": 68.5112,
+            "bookiePnlTeam2": -1116.6046,
+            "prediction": "Hong Kong W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (28.33) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -74.1552,
+            "backExposure": 3.088800000000001,
+            "layExposure": 77.244,
+            "teamName": "Hong Kong W"
+          },
+          "team2": {
+            "netExposure": 1117.4552999999999,
+            "backExposure": 1157.9645999999998,
+            "layExposure": 40.509299999999996,
+            "teamName": "India W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 3.088800000000001,
+            "A_lay_stake": 71.60000000000001,
+            "B_back_expo": 1157.9645999999998,
+            "B_lay_stake": 41.36
+          },
+          "totals": {
+            "totalBetTeam1": 44.4488,
+            "totalBetTeam2": 1229.5645999999997
+          },
+          "simplePL": {
+            "team1_win": 68.5112,
+            "team2_win": -1116.6046
+          },
+          "derivedPL": {
+            "team1_win": 1185.1157999999998,
+            "team2_win": -1185.1157999999998
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 3.120000000000001,
+              "totalLayVol": 71.60000000000001,
+              "totalBet": 44.480000000000004,
+              "profitLoss": 1285.2599999999998
+            },
+            "team2": {
+              "totalBackVol": 1258.1399999999999,
+              "totalLayVol": 41.36,
+              "totalBet": 1329.7399999999998,
+              "profitLoss": -1285.2599999999998
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 3.088800000000001,
+              "totalLayVol": 71.60000000000001,
+              "totalBet": 44.4488,
+              "profitLoss": 1290.9352
+            },
+            "team2": {
+              "totalBackExpo": 1157.9645999999998,
+              "totalLayVol": 41.36,
+              "totalBet": 1229.5645999999997,
+              "profitLoss": -1185.9352999999996
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 3.088800000000001,
+              "totalLayNetVol": 77.244,
+              "totalBet": 43.598099999999995,
+              "profitLoss": 1191.6104999999998
+            },
+            "team2": {
+              "totalBackNetVol": 1157.9645999999998,
+              "totalLayNetVol": 40.509299999999996,
+              "totalBet": 1235.2085999999997,
+              "profitLoss": -1191.6104999999998
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.935,
+            "averageSize": 11.120000000000001,
+            "supportProduct": 21.517200000000003
+          },
+          "teamB": {
+            "tradeCount": 8,
+            "averageOdds": 1.9312499999999997,
+            "averageSize": 166.21749999999997,
+            "supportProduct": 321.0075468749999
+          },
+          "strongerTeam": "India W",
+          "supportRatio": 14.918648656656064
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 3.120000000000001,
+            "oppoLayVolume": 41.36,
+            "layExposure": 77.244,
+            "netSupportValue": -32.763999999999996
+          },
+          "teamB": {
+            "totalBackVolume": 1258.1399999999999,
+            "oppoLayVolume": 71.60000000000001,
+            "layExposure": 40.509299999999996,
+            "netSupportValue": 1289.2306999999998
+          },
+          "strongerTeam": "India W",
+          "netSupportDifference": 1321.9946999999997,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -68.48,
+            "syntheticSupport": 41.36,
+            "opponentLiabilityRejection": 40.509299999999996,
+            "sentimentScore": -67.6293
+          },
+          "teamB": {
+            "directNetSupport": 1216.78,
+            "syntheticSupport": 71.60000000000001,
+            "opponentLiabilityRejection": 77.244,
+            "sentimentScore": 1211.136
+          },
+          "strongerTeam": "India W",
+          "scoreDifference": 1278.7653,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Hong Kong W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "India W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Hong Kong W"
+        },
+        "teams": {
+          "Hong Kong W": {
+            "trades": [
+              {
+                "team": "Hong Kong W",
+                "price": 2.02,
+                "type": "lay",
+                "size": 1.4,
+                "updatedAt": 1788441483709
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.2,
+                "updatedAt": 1788441013947
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.99,
+                "type": "back",
+                "size": 3.120000000000001,
+                "updatedAt": 1788437527612
+              }
+            ],
+            "pnlIfWins": 1290.9352000000001,
+            "totalBet": 44.4488
+          },
+          "India W": {
+            "trades": [
+              {
+                "team": "India W",
+                "price": 1.77,
+                "type": "lay",
+                "size": 3.209999999999998,
+                "updatedAt": 1788443687476
+              },
+              {
+                "team": "India W",
+                "price": 1.77,
+                "type": "back",
+                "size": 11.240000000000002,
+                "updatedAt": 1788443609293
+              },
+              {
+                "team": "India W",
+                "price": 2,
+                "type": "lay",
+                "size": 32.53,
+                "updatedAt": 1788443572032
+              },
+              {
+                "team": "India W",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788443334529
+              },
+              {
+                "team": "India W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 5.62,
+                "updatedAt": 1788443074697
+              },
+              {
+                "team": "India W",
+                "price": 1.91,
+                "type": "back",
+                "size": 322.9,
+                "updatedAt": 1788442359610
+              },
+              {
+                "team": "India W",
+                "price": 1.92,
+                "type": "back",
+                "size": 497.21,
+                "updatedAt": 1788441013957
+              },
+              {
+                "team": "India W",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.78,
+                "updatedAt": 1788440127873
+              },
+              {
+                "team": "India W",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.39,
+                "updatedAt": 1788439786145
+              }
+            ],
+            "pnlIfWins": -1185.9352999999999,
+            "totalBet": 1229.5645999999997
+          }
+        }
+      },
+      "predictedWinner": "Hong Kong W",
+      "predictionReason": "Women's Heavy Trap on India W (PnL: -1186) -> Bookie Safe Side Hong Kong W (+1291)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Women's Heavy Trap on India W (PnL: -1186) -> Bookie Safe Side Hong Kong W (+1291)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Women's Heavy Trap on India W (PnL: -1186) -> Bookie Safe Side Hong Kong W (+1291)",
+          "winner": "Hong Kong W",
           "priority": 100,
           "selected": true
         }
