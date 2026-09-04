@@ -5,6 +5,7 @@ import { getCricketMatches, getCricketOddsBulk, getTossMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
+import { CricketBallIcon, formatRateBox, MarketRateDisplay, RunningBallBadge } from '../components/CrexLiveSection'
 
 const STORAGE_KEY = 'cricket_selected_comp'
 
@@ -133,43 +134,40 @@ export default function CricketPage() {
         const getMatchTier = (m) => {
           const s = (m.status || '').toLowerCase()
           const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-          if (isEnded) return 1 // Ended matches FIRST
+            || m.crex?.status === 'completed'
+            || m.crex?.scorecard?.status === 'completed'
+            || /won by|won the|match drawn|match tied|no result/i.test(m.crex?.statusText || '')
+          if (isEnded) return 1
           const isLive = m.inPlay || s === 'in-play' || s === 'live'
-          if (isLive) return 2 // Live matches SECOND
-          return 3 // Upcoming matches THIRD
+          if (isLive) return 2
+          return 3
         }
 
-        // Sort: Ended matches first, then Live, then Upcoming (sorted by date)
+        // Sort: Ended (asc) → Live (asc) → Upcoming (asc)
         const sorted = rawList.slice().sort((a, b) => {
           const tierA = getMatchTier(a)
           const tierB = getMatchTier(b)
-
-          if (tierA !== tierB) {
-            return tierA - tierB
-          }
-
-          // Ended matches (Tier 1): most recently ended/started first
-          if (tierA === 1) {
-            return (b.startTime || 0) - (a.startTime || 0)
-          }
-
-          // Live matches (Tier 2): most recent first
-          if (tierA === 2) {
-            return (b.startTime || 0) - (a.startTime || 0)
-          }
-
-          // Upcoming matches (Tier 3): earliest scheduled first
+          if (tierA !== tierB) return tierA - tierB
           return (a.startTime || 0) - (b.startTime || 0)
         })
 
         setAllMatches(sorted)
 
-        // Group matches by competition
+        // Group matches by competition (only keep competitions that exist in tennis scraper)
         const grouped = {}
+        const validComps = new Set()
+        sorted.forEach((m) => {
+          if (!String(m.matchId).startsWith('crex-')) {
+            validComps.add(m.competitionName || 'Other')
+          }
+        })
+
         sorted.forEach((m) => {
           const comp = m.competitionName || 'Other'
-          if (!grouped[comp]) grouped[comp] = []
-          grouped[comp].push(m)
+          if (validComps.has(comp)) {
+            if (!grouped[comp]) grouped[comp] = []
+            grouped[comp].push(m)
+          }
         })
 
         setCompetitions(grouped)
@@ -231,17 +229,29 @@ export default function CricketPage() {
 
   const isEndedMatch = (m) => {
     const s = (m.status || '').toLowerCase()
-    return s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
+    if (s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed') return true
+    if (m.crex?.status === 'completed') return true
+    if (m.crex?.scorecard?.status === 'completed') return true
+    if (/won by|won the|match drawn|match tied|no result/i.test(m.crex?.statusText || '')) return true
+    return false
   }
 
   // Filter matches based on selected competition & liveMode
   const displayedMatches = useMemo(() => {
-    let list = selectedComp === 'ALL' ? allMatches : (competitions[selectedComp] || [])
     if (isLiveMode) {
-      // In live mode: only show live and upcoming matches; ended matches are hidden
-      list = list.filter((m) => !isEndedMatch(m))
+      // Live mode: all matches, no ended, live first then upcoming by startTime
+      return allMatches
+        .filter((m) => !isEndedMatch(m))
+        .slice()
+        .sort((a, b) => {
+          const aLive = a.inPlay || (a.status || '').toLowerCase() === 'in-play' || (a.status || '').toLowerCase() === 'live'
+          const bLive = b.inPlay || (b.status || '').toLowerCase() === 'in-play' || (b.status || '').toLowerCase() === 'live'
+          if (aLive && !bLive) return -1
+          if (!aLive && bLive) return 1
+          return (a.startTime || 0) - (b.startTime || 0)
+        })
     }
-    return list
+    return selectedComp === 'ALL' ? allMatches : (competitions[selectedComp] || [])
   }, [selectedComp, allMatches, competitions, isLiveMode])
 
   const totalDisplayCount = useMemo(() => {
@@ -329,7 +339,8 @@ export default function CricketPage() {
 
   return (
     <div className="flex h-[calc(100vh-57px)] overflow-hidden bg-[#07090e]">
-      {/* ── Sidebar: Cricket Leagues ── */}
+      {/* ── Sidebar: Cricket Leagues — hidden in live mode ── */}
+      {!isLiveMode && (
       <aside className="hidden md:flex w-[220px] border-r border-[#1e2330] flex-col overflow-y-auto flex-shrink-0 bg-[#0c0e15]">
         {/* Header */}
         <div className="px-4 py-3 border-b border-[#1e2330]">
@@ -374,8 +385,10 @@ export default function CricketPage() {
           )
         })}
       </aside>
+      )}
 
-      {/* ── Mobile League Drawer ── */}
+      {/* ── Mobile League Drawer — hidden in live mode ── */}
+      {!isLiveMode && (
       <div className="md:hidden fixed inset-0 z-50 flex pointer-events-none">
         <div
           className="absolute inset-0 bg-black/70 transition-opacity duration-300"
@@ -435,38 +448,17 @@ export default function CricketPage() {
           })}
         </div>
       </div>
+      )}
 
       {/* ── Main Content Area ── */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {isLiveMode ? (
           <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-3 md:space-y-4 fade-in">
-
-
-            {/* Horizontal Scrollable Competition Pills Filter */}
-            <div className="overflow-x-auto no-scrollbar py-1">
-              <div className="flex items-center gap-1.5 whitespace-nowrap min-w-max">
-
-                {Object.keys(availableCompetitions).map((comp) => (
-                  <button
-                    key={comp}
-                    type="button"
-                    onClick={() => handleCompSelect(comp)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-                      selectedComp === comp
-                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
-                        : 'bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 border border-white/10'
-                    }`}
-                  >
-                    {comp}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* ── Compact Match Table Layout matching reference image ── */}
-            {displayedMatches.length > 0 ? (
-              <div className="rounded-xl border border-[#1e2536] bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
-                {displayedMatches.map((match) => {
+            {/* ── Compact Match Table Layout ── */}
+            {displayedMatches.length > 0 ? (() => {
+              const liveMatches = displayedMatches.filter(m => m.inPlay || (m.status || '').toLowerCase() === 'in-play' || (m.status || '').toLowerCase() === 'live')
+              const upcomingMatches = displayedMatches.filter(m => !m.inPlay && (m.status || '').toLowerCase() !== 'in-play' && (m.status || '').toLowerCase() !== 'live')
+              const renderRow = (match) => {
                   const mLoad = match.matchLoad
                   const t1Name = match.matchName?.split(' v ')?.[0] || 'Team 1'
                   const t2Name = match.matchName?.split(' v ')?.[1] || 'Team 2'
@@ -565,6 +557,42 @@ export default function CricketPage() {
                         <span className="text-xs md:text-sm font-bold text-white group-hover:text-amber-300 transition-colors truncate leading-tight mt-0.5">
                           {match.matchName}
                         </span>
+                        {match.crex && (match.crex.score1 || match.crex.score2 || match.crex.statusText || match.crex.odds?.rate) && (
+                          <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                            {match.crex.score1 && (
+                              <span className="text-[10px] md:text-[11px] font-bold text-emerald-400 bg-emerald-950/50 border border-emerald-800/40 px-1.5 py-0.5 rounded">
+                                {match.crex.team1Short || 'T1'}: {match.crex.score1}
+                              </span>
+                            )}
+                            {match.crex.score2 && (
+                              <span className="text-[10px] md:text-[11px] font-bold text-sky-400 bg-sky-950/50 border border-sky-800/40 px-1.5 py-0.5 rounded">
+                                {match.crex.team2Short || 'T2'}: {match.crex.score2}
+                              </span>
+                            )}
+                            {match.crex.statusText && (
+                              <span className="text-[10px] text-amber-300 font-medium truncate max-w-[220px]">
+                                • {match.crex.statusText}
+                              </span>
+                            )}
+                            {match.crex.runningBall && (
+                              <RunningBallBadge runningBall={match.crex.runningBall} size="sm" />
+                            )}
+                            {match.crex.odds?.rate && (
+                              <div className="flex items-center gap-1 bg-slate-900/90 border border-slate-700/80 px-1.5 py-0.5 rounded-lg shadow-sm" title="Live Market Rate">
+                                <span className="text-[10px] font-semibold text-slate-300 truncate max-w-[80px]">
+                                  {match.crex.odds.rateTeam || match.crex.team1Short || 'Rate'}
+                                </span>
+                                <CricketBallIcon size={11} />
+                                <span className="px-1.5 py-0.2 bg-white text-slate-950 font-black text-[10px] rounded border border-slate-200 shadow-sm leading-none font-mono">
+                                  {formatRateBox(match.crex.odds.rate)}
+                                </span>
+                                <span className="px-1.5 py-0.2 bg-white text-slate-950 font-black text-[10px] rounded border border-slate-200 shadow-sm leading-none font-mono">
+                                  {formatRateBox(match.crex.odds.rate2 || match.crex.odds.rate)}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {/* Right: Team 1 & Team 2 Columns (Exact Reference Style) */}
@@ -621,21 +649,40 @@ export default function CricketPage() {
                       </div>
                     </div>
                   )
-                })}
-              </div>
-            ) : (
-              <div className="rounded-2xl border border-[#1e2536] bg-[#0c1018] p-12 text-center shadow-xl">
-                <div className="w-12 h-12 rounded-full bg-amber-500/10 text-amber-400 flex items-center justify-center mx-auto mb-3">
-                  <Trophy size={24} />
+                }
+              return (
+                <div className="space-y-4">
+                  {liveMatches.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2 px-1">
+                        <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+                        <span className="text-xs font-black uppercase tracking-widest text-red-400">Live Now</span>
+                        <span className="text-xs text-[#8e8e93]">{liveMatches.length}</span>
+                      </div>
+                      <div className="rounded-xl border border-[#2c2c2e] bg-[#111111] overflow-hidden divide-y divide-[#2c2c2e]">
+                        {liveMatches.map(renderRow)}
+                      </div>
+                    </div>
+                  )}
+                  {upcomingMatches.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-2 px-1">
+                        <span className="h-2 w-2 rounded-full bg-blue-400" />
+                        <span className="text-xs font-black uppercase tracking-widest text-blue-400">Upcoming</span>
+                        <span className="text-xs text-[#8e8e93]">{upcomingMatches.length}</span>
+                      </div>
+                      <div className="rounded-xl border border-[#2c2c2e] bg-[#111111] overflow-hidden divide-y divide-[#2c2c2e]">
+                        {upcomingMatches.map(renderRow)}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <h3 className="text-base font-bold text-white mb-1">No Matches in Selected League</h3>
-                <p className="text-xs text-text-muted mb-4">Select another league or view all matches.</p>
-                <button
-                  onClick={() => handleCompSelect('ALL')}
-                  className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors border border-amber-500/30"
-                >
-                  View All Matches
-                </button>
+              )
+            })() : (
+              <div className="rounded-2xl border border-[#2c2c2e] bg-[#111111] p-12 text-center">
+                <Trophy size={24} className="text-amber-400 mx-auto mb-3" />
+                <h3 className="text-base font-bold text-white mb-1">No Live or Upcoming Matches</h3>
+                <p className="text-xs text-[#8e8e93]">Check back soon.</p>
               </div>
             )}
           </div>
@@ -688,6 +735,50 @@ export default function CricketPage() {
                         </span>
                         {getMatchStatusBadge(match)}
                       </div>
+
+                      {/* Real-Time Score & Live Status Banner */}
+                      {match.crex && (match.crex.score1 || match.crex.score2 || match.crex.statusText || match.crex.odds?.rate) && (
+                        <div className="my-2 p-2.5 rounded-xl bg-[#0a0f1d] border border-[#1e293b] flex flex-col gap-1.5 shadow-sm">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-emerald-400 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                              {match.crex.team1Short || match.crex.team1Name || 'T1'}: {match.crex.score1 || 'Yet to bat'}
+                            </span>
+                            <span className="font-bold text-sky-400 flex items-center gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-sky-400 inline-block" />
+                              {match.crex.team2Short || match.crex.team2Name || 'T2'}: {match.crex.score2 || 'Yet to bat'}
+                            </span>
+                          </div>
+                          {(() => {
+                            const hasOdds = (match.crex.odds?.rate !== null && match.crex.odds?.rate !== undefined) ||
+                                            (match.crex.odds?.rate2 !== null && match.crex.odds?.rate2 !== undefined) ||
+                                            (match.crex.odds?.back !== null && match.crex.odds?.back !== undefined)
+                            if (!match.crex.statusText && !hasOdds) return null
+                            return (
+                              <div className="pt-2 mt-0.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2">
+                                {hasOdds && (
+                                  <MarketRateDisplay
+                                    team={match.crex.odds?.rateTeam || match.crex.team1Name || match.team1}
+                                    rate={match.crex.odds?.rate != null ? match.crex.odds.rate : match.crex.odds?.back}
+                                    rate2={match.crex.odds?.rate2 != null ? match.crex.odds.rate2 : (match.crex.odds?.lay || match.crex.odds?.rate)}
+                                    back={match.crex.odds?.back}
+                                    size="sm"
+                                  />
+                                )}
+                                {match.crex.statusText && (
+                                  <div className="text-[11px] text-amber-300 font-semibold truncate flex items-center gap-1">
+                                    <span>⚡</span>
+                                    <span>{match.crex.statusText}</span>
+                                  </div>
+                                )}
+                                {match.crex.runningBall && (
+                                  <RunningBallBadge runningBall={match.crex.runningBall} size="sm" />
+                                )}
+                              </div>
+                            )
+                          })()}
+                        </div>
+                      )}
                       {o?.teamNames?.length >= 2 && (
                         <div className="flex gap-2 mb-2">
                           {o.teamNames.map((tn) => {

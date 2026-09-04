@@ -3,8 +3,9 @@ import TossDetail from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, BarChart3, ChevronDown, ChevronUp, TrendingUp } from 'lucide-react'
-import { getCricketSnapshot, getCricketMatchBundle, getTennisSnapshot, getTossSnapshot, getSessionTrades } from '../api'
+import { ArrowLeft, LoaderCircle, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio } from 'lucide-react'
+import { getCricketSnapshot, getCricketMatchBundle, getTennisSnapshot, getTossSnapshot, getSessionTrades, getCrexMatchDetail } from '../api'
+import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
@@ -370,6 +371,7 @@ export default function MatchDetail({ sport }) {
   const [requiresPro, setRequiresPro] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
+  const [crexData, setCrexData] = useState(null)
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem(`tab_${matchId}`) || 'simple')
 
   const handleTabChange = (key) => {
@@ -467,6 +469,11 @@ export default function MatchDetail({ sport }) {
         if (cancelled) return
         applySessionData(sessionData)
       })
+      // crex only for cricket
+      getCrexMatchDetail(matchId).catch(() => null).then(res => {
+        if (cancelled || !res?.crex) return
+        setCrexData(res.crex)
+      })
     }
 
     const fetchData = (isInitial = false) => {
@@ -498,6 +505,14 @@ export default function MatchDetail({ sport }) {
             }
             if (bundle?.toss && !bundle.toss.error) setTossSnapshot(bundle.toss)
             if (bundle?.session) applySessionData(bundle.session)
+            // crex only for cricket
+            if (sport === 'cricket') {
+              if (bundle?.crex) {
+                setCrexData(bundle.crex)
+              } else if (data?.crex) {
+                setCrexData(data.crex)
+              }
+            }
             if (isInitial) setLoading(false)
           })
           .catch(err => {
@@ -660,15 +675,29 @@ export default function MatchDetail({ sport }) {
   const t2Trades = (snapshot.teams?.[t2] || {}).trades || []
   const drawTrades = hasDraw ? ((snapshot.teams?.[drawName] || {}).trades || []) : []
 
-  const getLatestOdds = (trades) => {
+  const getLatestOdds = (trades, teamKey) => {
     const sorted = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
-    const back = sorted.find(t => t.type === 'back')?.price
-    const lay = sorted.find(t => t.type === 'lay')?.price
+    let back = sorted.find(t => t.type === 'back')?.price
+    let lay = sorted.find(t => t.type === 'lay')?.price
+
+    // Fallback to CREX live rates only for cricket
+    if (sport === 'cricket' && (back == null || lay == null) && crexData?.odds) {
+      const co = crexData.odds
+      const r1 = co.rate != null ? Number(co.rate) : (co.back != null ? Number(co.back) : null)
+      const r2 = co.rate2 != null ? Number(co.rate2) : (co.lay != null ? Number(co.lay) : null)
+      if (r1 !== null && back == null) {
+        back = r1 > 0 ? (r1 < 10 ? (1 + r1 / 100).toFixed(2) : (r1 < 100 ? (1 + r1 / 100).toFixed(2) : (r1 / 100).toFixed(2))) : '1.01'
+      }
+      if (r2 !== null && lay == null) {
+        lay = r2 > 0 ? (r2 < 10 ? (1 + r2 / 100).toFixed(2) : (r2 < 100 ? (1 + r2 / 100).toFixed(2) : (r2 / 100).toFixed(2))) : '1.02'
+      }
+    }
+
     return { back, lay }
   }
-  const t1Odds = getLatestOdds(t1Trades)
-  const t2Odds = getLatestOdds(t2Trades)
-  const drawOdds = hasDraw ? getLatestOdds(drawTrades) : null
+  const t1Odds = getLatestOdds(t1Trades, t1)
+  const t2Odds = getLatestOdds(t2Trades, t2)
+  const drawOdds = hasDraw ? getLatestOdds(drawTrades, drawName) : null
   const am1 = snapshot.advancedMetrics?.team1 || {}
   const am2 = snapshot.advancedMetrics?.team2 || {}
   const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snapshot)
@@ -780,21 +809,22 @@ export default function MatchDetail({ sport }) {
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-text-muted hover:text-primary text-sm font-medium">
           <ArrowLeft size={16} /> Back
         </button>
-        <div className="flex rounded-lg p-0.5 gap-0.5" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
+        <div className="flex rounded-lg p-0.5 gap-0.5 overflow-x-auto max-w-[calc(100vw-80px)]" style={{ background: '#111111', border: '1px solid #2c2c2e' }}>
           {[
             { key: 'simple', label: 'Simple Book' },
             { key: 'graph', label: 'Graphs', icon: <BarChart3 size={11} /> },
-            hasTossData ? { key: 'toss', label: 'Toss' } : null,
-            sport === 'cricket' ? { key: 'session', label: 'Session' } : null,
+            sport === 'cricket' && crexData ? { key: 'crex', label: '🏏 Live & Commentary', icon: <Radio size={11} className="text-red-400 animate-pulse" /> } : null,
+            sport === 'cricket' && hasTossData ? { key: 'toss', label: 'Toss' } : null,
           ].filter(Boolean).map(({ key, label, icon }) => (
             <button
               key={key}
               onClick={() => handleTabChange(key)}
-              className={`px-2.5 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1 ${
+              className={`px-2 py-1 rounded-md text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
                 activeTab === key ? 'text-white' : 'text-[#8e8e93] hover:text-white'
               }`}
               style={activeTab === key ? {
                 background: key === 'graph' ? 'linear-gradient(135deg,#2563eb,#3b82f6)'
+                  : key === 'crex' ? 'linear-gradient(135deg,#059669,#10b981)'
                   : key === 'toss' ? 'linear-gradient(135deg,#7c3aed,#a855f7)'
                   : key === 'session' ? 'linear-gradient(135deg,#b45309,#f59e0b)'
                   : 'linear-gradient(135deg,#dc2626,#10b981)'
@@ -805,6 +835,9 @@ export default function MatchDetail({ sport }) {
           ))}
         </div>
       </div>
+
+      {/* ── Live Scorecard Hero Banner — cricket only ── */}
+      {sport === 'cricket' && activeTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} />}
 
       {activeTab === 'graph' ? (
         <div className="w-full bg-[#0a0a0a] min-h-screen p-6 -mx-3 sm:mx-0 rounded-xl font-sans">
@@ -879,6 +912,13 @@ export default function MatchDetail({ sport }) {
         </div>
       ) : activeTab === 'toss' ? (
         <div className="space-y-4">
+          {/* Crex Toss Winner Banner */}
+          {crexData?.scorecard?.statusEquation && /opt|chose|elected|toss/i.test(crexData.scorecard.statusEquation) && (
+            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400">
+              <span>🪙</span>
+              <span>{crexData.scorecard.statusEquation}</span>
+            </div>
+          )}
           {tossSnapshot ? (
             <>
               {/* Toss Odds Total Bar */}
@@ -1105,6 +1145,8 @@ export default function MatchDetail({ sport }) {
         </div>
       ) : activeTab === 'session' ? (
         <SessionPanel odds={sessionOdds} trades={sessionTrades} t1={t1} t2={t2} />
+      ) : activeTab === 'crex' && sport === 'cricket' && crexData ? (
+        <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
       ) : (
         <>
           {isSessionMarket ? (

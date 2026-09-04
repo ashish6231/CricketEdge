@@ -98,7 +98,17 @@ app.use('/api/admin', adminRoutes);
 app.use('/api', cricketRoutes);
 
 app.get('/api/health', (req, res) => {
-  res.json({ success: true, status: 'OK' });
+  const { getCookieExpiryMs } = require('./services/tennisLogin');
+  const msLeft = getCookieExpiryMs();
+  const daysLeft = msLeft > 0 ? (msLeft / (1000 * 60 * 60 * 24)).toFixed(1) : (msLeft === 0 ? 'EXPIRED' : 'unknown');
+  res.json({
+    success: true,
+    status: 'OK',
+    cookie: {
+      status: msLeft === 0 ? 'expired' : (msLeft > 0 && msLeft < 3 * 24 * 60 * 60 * 1000 ? 'expiring_soon' : 'valid'),
+      daysLeft,
+    }
+  });
 });
 
 app.get('/api/user/subscription', verifyToken, (req, res) => {

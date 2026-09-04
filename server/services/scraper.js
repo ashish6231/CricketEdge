@@ -1,30 +1,33 @@
 /**
  * tennisliveload.com API Scraper
- * Auto-relogin on 401 — cookie expire hote hi khud login karke nayi cookie le leta hai.
+ * All requests route through SCRAPER_PROXY if set — keeps outgoing IP fixed across deploys.
  */
 
 const axios = require('axios');
 const http = require('http');
 const https = require('https');
+const { HttpsProxyAgent } = require('https-proxy-agent');
 const tennisLogin = require('./tennisLogin');
 
 const BASE_URL = process.env.TENNIS_BASE_URL || 'https://tennisliveload.com';
 
-const httpAgent = new http.Agent({
-  keepAlive: true,
-  maxSockets: 100,
-  maxFreeSockets: 25,
-  timeout: 60000,
-  freeSocketTimeout: 30000,
-});
+// ──── Proxy setup ────
+// Set SCRAPER_PROXY in env: http://user:pass@host:port  or  socks5://user:pass@host:port
+const PROXY_URL = process.env.SCRAPER_PROXY || null;
 
-const httpsAgent = new https.Agent({
-  keepAlive: true,
-  maxSockets: 100,
-  maxFreeSockets: 25,
-  timeout: 60000,
-  freeSocketTimeout: 30000,
-});
+function _makeAgents() {
+  if (PROXY_URL) {
+    const agent = new HttpsProxyAgent(PROXY_URL);
+    console.log(`🔀 scraper: routing via proxy ${PROXY_URL.replace(/:([^:@]+)@/, ':***@')}`);
+    return { httpAgent: agent, httpsAgent: agent };
+  }
+  return {
+    httpAgent: new http.Agent({ keepAlive: true, maxSockets: 10, timeout: 60000 }),
+    httpsAgent: new https.Agent({ keepAlive: true, maxSockets: 10, timeout: 60000 }),
+  };
+}
+
+const { httpAgent, httpsAgent } = _makeAgents();
 
 const axiosInstance = axios.create({
   httpAgent,
@@ -45,14 +48,15 @@ const ENDPOINTS = {
   AUTH_LOGIN:       '/api/auth/login',
 };
 
-const SNAPSHOT_FRESH_TTL = 2000;   // 2s fresh cache
-const SNAPSHOT_SWR_TTL   = 8000;   // up to 8s serve stale immediately + background revalidate
-const LIST_FRESH_TTL     = 5000;   // 5s fresh match list
-const LIST_SWR_TTL       = 30000;  // up to 30s serve stale match list + background revalidate
-const STALE_CACHE_MAX_AGE = 30 * 60 * 1000; // Serve stale data up to 30 min if upstream down
+const SNAPSHOT_FRESH_TTL  = 2000;          // 2s fresh cache
+const SNAPSHOT_SWR_TTL    = 8000;          // up to 8s serve stale + background revalidate
+const LIST_FRESH_TTL      = 5000;          // 5s fresh match list
+const LIST_SWR_TTL        = 30000;         // up to 30s serve stale match list + background revalidate
+const STALE_CACHE_MAX_AGE = 6 * 60 * 60 * 1000; // 6 hours stale fallback if upstream down
 
 // ──── Single consistent browser fingerprint ────
-const FIXED_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+// IMPORTANT: Same UA + same headers har request mein — session consistency ke liye
+const FIXED_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
 function _formatUpstreamError(errPayload) {
   const raw = errPayload?.error || errPayload?.message || 'Service temporarily unavailable';
@@ -73,41 +77,27 @@ function _getHeaders() {
     'Referer': BASE_URL + '/',
     'Origin': BASE_URL,
     'Connection': 'keep-alive',
+    'Cache-Control': 'no-cache',
+    'Pragma': 'no-cache',
     ...(cookies ? { 'Cookie': cookies } : {}),
   };
 }
 
-async function _callApi(endpoint, params = null, method = 'GET', _isRetry = false) {
+async function _callApi(endpoint, params = null, method = 'GET') {
   const url = `${BASE_URL}${endpoint}`;
   try {
     const config = { headers: _getHeaders() };
     const resp = method === 'GET'
       ? await axiosInstance.get(url, { ...config, params })
       : await axiosInstance.post(url, params, config);
-
     return resp.data;
   } catch (err) {
     if (err.response) {
       const status = err.response.status;
-
-      // ──── Upstream 401 Handler ────
-      if (status === 401 && !_isRetry) {
-        if (process.env.TENNIS_AUTO_LOGIN === 'true') {
-          console.log(`🔑 scraper: got 401 on ${endpoint} — triggering auto-relogin...`);
-          const ok = await tennisLogin.autoRelogin();
-          if (ok) {
-            console.log(`🔄 scraper: retrying ${endpoint} with fresh cookie...`);
-            return _callApi(endpoint, params, method, true);
-          }
-        } else {
-          console.warn(`⚠️  scraper: got 401 on ${endpoint} — manual cookie expired. Please update TENNIS_SESSION_COOKIES.`);
-        }
+      if (status === 401) {
+        console.warn(`⚠️  scraper: 401 on ${endpoint} — cookie expired. Update TENNIS_SESSION_COOKIES in env.`);
       }
-
-      return {
-        error: _formatUpstreamError({ error: `HTTP ${status}` }),
-        upstreamStatus: status,
-      };
+      return { error: _formatUpstreamError({ error: `HTTP ${status}` }), upstreamStatus: status };
     }
     if (err.code === 'ECONNABORTED') return { error: _formatUpstreamError({ error: 'Request timed out' }) };
     return { error: _formatUpstreamError({ error: err.message }) };
@@ -115,22 +105,7 @@ async function _callApi(endpoint, params = null, method = 'GET', _isRetry = fals
 }
 
 // ──── Login / Logout ────
-
-async function login(email, password) {
-  try {
-    await tennisLogin.login(email, password);
-    return { status: 'logged_in', email };
-  } catch (err) {
-    if (err.response?.status === 429) return { error: 'Rate limited — thodi der baad try karo', status_code: 429 };
-    if (err.response?.status === 401) return { error: err.response.data?.error || 'Invalid credentials' };
-    return { error: err.message };
-  }
-}
-
-function logout() {
-  tennisLogin._sessionCookies = null;
-  tennisLogin._connected = false;
-}
+// Removed — strictly using manual cookie from TENNIS_SESSION_COOKIES env
 
 function isLoggedIn() {
   return tennisLogin.isConnected();
@@ -294,26 +269,13 @@ async function getCricketFullData(includeSnapshots = true) {
   return result;
 }
 
-// ──── Continuous Session Keep-Alive (Heartbeat) ────
+// ──── Session Keep-Alive ────
+// Keep-alive ping disabled — frontend polls every 3-5s which keeps session alive naturally.
+// Extra pings from server side cause concurrent session access which triggers invalidation.
 let _keepAliveTimer = null;
 
-async function pingSession() {
-  if (!tennisLogin.getCookies()) return;
-  try {
-    const url = `${BASE_URL}${ENDPOINTS.CRICKET_MATCHES}`;
-    await axiosInstance.get(url, {
-      headers: _getHeaders(),
-      timeout: 8000,
-      validateStatus: () => true,
-    });
-  } catch {}
-}
-
-function startSessionKeepAlive(intervalMs = 150000) { // 2.5 minutes
-  if (_keepAliveTimer) clearInterval(_keepAliveTimer);
-  _keepAliveTimer = setInterval(pingSession, intervalMs);
-  if (_keepAliveTimer.unref) _keepAliveTimer.unref();
-  console.log('💓 tennisliveload: session keep-alive heartbeat active (pings every 2.5 min to prevent idle timeout)');
+function startSessionKeepAlive() {
+  console.log('ℹ️  tennisliveload: keep-alive disabled — frontend polling keeps session alive');
 }
 
 function stopSessionKeepAlive() {
@@ -322,6 +284,8 @@ function stopSessionKeepAlive() {
     _keepAliveTimer = null;
   }
 }
+
+async function pingSession() {}
 
 // Warmup on startup
 async function warmup() {
@@ -336,7 +300,7 @@ async function warmup() {
 }
 
 module.exports = {
-  login, logout, isLoggedIn, getAuthState,
+  isLoggedIn, getAuthState,
   getAllCricketMatches, getAllTennisMatches, getAllSessionMatches, getAllTossMatches,
   getCricketSnapshot, getTennisSnapshot, getSessionTrades, getTossSnapshot,
   getLiveOdds, getCricketFullData, warmup,

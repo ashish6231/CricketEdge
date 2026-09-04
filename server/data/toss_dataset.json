@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-03T20:32:25.845Z",
+  "updatedAt": "2026-09-04T17:40:35.653Z",
   "records": [
     {
       "matchId": "35901908",
@@ -26706,6 +26706,1050 @@
         {
           "reason": "Women's Heavy Trap on India W (PnL: -1186) -> Bookie Safe Side Hong Kong W (+1291)",
           "winner": "Hong Kong W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36019390",
+      "marketId": "1.261847792",
+      "matchName": "St Kitts & Nevis Pats v St. Lucia Kings",
+      "competitionName": "Caribbean Premier League",
+      "team1": "St Kitts & Nevis Pats",
+      "team2": "St. Lucia Kings",
+      "startTime": 1788476400000,
+      "endedAt": "2026-09-04T16:56:15.310Z",
+      "capturedAt": "2026-09-04T16:56:15.310Z",
+      "snapshot": {
+        "serverTime": "2026-09-04T16:56:15.230Z",
+        "matchId": "36019390",
+        "matchName": "St Kitts & Nevis Pats v St. Lucia Kings",
+        "teamNames": [
+          "St Kitts & Nevis Pats",
+          "St. Lucia Kings"
+        ],
+        "inPlayPnl": {
+          "team1": -1952.7408000000005,
+          "team2": 853.7616999999998
+        },
+        "inPlayTotalBets": {
+          "team1": 3787.1561,
+          "team2": 1620.8912999999998
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1527.4399999999998,
+            "lay": 415.85,
+            "total": 3857.6499999999996
+          },
+          "team2": {
+            "back": 1277.1,
+            "lay": 2330.21,
+            "total": 1692.9499999999998
+          }
+        },
+        "preMatchPnl": {
+          "team1": -1952.7408000000005,
+          "team2": 853.7616999999998
+        },
+        "preMatchTotalBets": {
+          "team1": 3787.1561,
+          "team2": 1620.8912999999998
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1527.4399999999998,
+            "lay": 415.85,
+            "total": 3857.6499999999996
+          },
+          "team2": {
+            "back": 1277.1,
+            "lay": 2330.21,
+            "total": 1692.9499999999998
+          }
+        },
+        "threeMinPnl": {
+          "team1": -1952.7408000000005,
+          "team2": 853.7616999999998
+        },
+        "threeMinTotalBets": {
+          "team1": 3787.1561,
+          "team2": 1620.8912999999998
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1527.4399999999998,
+            "lay": 415.85,
+            "total": 3857.6499999999996
+          },
+          "team2": {
+            "back": 1277.1,
+            "lay": 2330.21,
+            "total": 1692.9499999999998
+          }
+        },
+        "matchLoadV2": {
+          "team1": 21,
+          "team2": 17
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1527.4399999999998,
+            "lay": 415.85,
+            "totalVolume": 1943.29,
+            "backPercentage": 78.60072351527563
+          },
+          "team2": {
+            "back": 1277.1,
+            "lay": 2330.21,
+            "totalVolume": 3607.31,
+            "backPercentage": 35.40311201421558
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1456.9461,
+            "lay": 557.3153,
+            "totalBet": 2014.2613999999999
+          },
+          "team2": {
+            "back": 1205.0412999999999,
+            "lay": 947.2130000000002,
+            "totalBet": 2152.2543
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 3857.6499999999996,
+            "support": 69.49969372680431
+          },
+          "team2": {
+            "supportMoney": 1692.9499999999998,
+            "support": 30.500306273195687
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "St Kitts & Nevis Pats",
+          "bookieFavouriteOutcome": "St. Lucia Kings",
+          "riskTeam": "St Kitts & Nevis Pats",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 38.99938745360862,
+          "mostBettedTeam": "St Kitts & Nevis Pats",
+          "prediction": {
+            "team1TrueSupport": 2292.7061,
+            "team2TrueSupport": 1597.2286,
+            "ratio": 1.4354276526227994,
+            "bookiePnlTeam1": -1057.5861,
+            "bookiePnlTeam2": 11.266700000000355,
+            "prediction": "St. Lucia Kings",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.44) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1064.5308,
+            "backExposure": 1456.9461,
+            "layExposure": 392.4153,
+            "teamName": "St Kitts & Nevis Pats"
+          },
+          "team2": {
+            "netExposure": 369.0532999999998,
+            "backExposure": 1204.8132999999998,
+            "layExposure": 835.76,
+            "teamName": "St. Lucia Kings"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1456.9461,
+            "A_lay_stake": 415.85,
+            "B_back_expo": 1205.0412999999999,
+            "B_lay_stake": 2330.21
+          },
+          "totals": {
+            "totalBetTeam1": 3787.1561,
+            "totalBetTeam2": 1620.8912999999998
+          },
+          "simplePL": {
+            "team1_win": -1041.0960999999998,
+            "team2_win": 1125.1687000000002
+          },
+          "derivedPL": {
+            "team1_win": -2166.2648000000004,
+            "team2_win": 2166.2648000000004
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1527.4399999999998,
+              "totalLayVol": 415.85,
+              "totalBet": 3857.6499999999996,
+              "profitLoss": -2164.7
+            },
+            "team2": {
+              "totalBackVol": 1277.1,
+              "totalLayVol": 2330.21,
+              "totalBet": 1692.9499999999998,
+              "profitLoss": 2164.7
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1456.9461,
+              "totalLayVol": 415.85,
+              "totalBet": 3787.1561,
+              "profitLoss": -1952.7408000000003
+            },
+            "team2": {
+              "totalBackExpo": 1205.0412999999999,
+              "totalLayVol": 2330.21,
+              "totalBet": 1620.8912999999998,
+              "profitLoss": 853.7617000000005
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1456.9461,
+              "totalLayNetVol": 557.3153,
+              "totalBet": 2404.1591,
+              "profitLoss": -641.8025
+            },
+            "team2": {
+              "totalBackNetVol": 1205.0412999999999,
+              "totalLayNetVol": 947.2130000000002,
+              "totalBet": 1762.3565999999998,
+              "profitLoss": 641.8025
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 21,
+            "averageOdds": 1.8871428571428572,
+            "averageSize": 183.697619047619,
+            "supportProduct": 346.6636496598639
+          },
+          "teamB": {
+            "tradeCount": 17,
+            "averageOdds": 2.4494117647058826,
+            "averageSize": 99.58529411764705,
+            "supportProduct": 243.92539100346022
+          },
+          "strongerTeam": "St Kitts & Nevis Pats",
+          "supportRatio": 1.4211872254616833
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1527.4399999999998,
+            "oppoLayVolume": 2330.21,
+            "layExposure": 557.3153,
+            "netSupportValue": 3300.3346999999994
+          },
+          "teamB": {
+            "totalBackVolume": 1277.1,
+            "oppoLayVolume": 415.85,
+            "layExposure": 947.2130000000002,
+            "netSupportValue": 745.7369999999996
+          },
+          "strongerTeam": "St Kitts & Nevis Pats",
+          "netSupportDifference": 2554.5977,
+          "percentageA": 81.56886344846535,
+          "percentageB": 18.43113655153466
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1111.5899999999997,
+            "syntheticSupport": 2330.21,
+            "opponentLiabilityRejection": 947.2130000000002,
+            "sentimentScore": 2494.5869999999995
+          },
+          "teamB": {
+            "directNetSupport": -1053.1100000000001,
+            "syntheticSupport": 415.85,
+            "opponentLiabilityRejection": 557.3153,
+            "sentimentScore": -1194.5753
+          },
+          "strongerTeam": "St Kitts & Nevis Pats",
+          "scoreDifference": 3689.1622999999995,
+          "percentageA": 100,
+          "percentageB": 0
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "St Kitts & Nevis Pats",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "St. Lucia Kings",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "St Kitts & Nevis Pats"
+        },
+        "teams": {
+          "St Kitts & Nevis Pats": {
+            "trades": [
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 11,
+                "type": "lay",
+                "size": 16.49,
+                "updatedAt": 1788473992242
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2,
+                "type": "lay",
+                "size": 106.22999999999999,
+                "updatedAt": 1788473827331
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.91,
+                "type": "lay",
+                "size": 1.540000000000001,
+                "updatedAt": 1788473655542
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.92,
+                "type": "lay",
+                "size": 32.46999999999997,
+                "updatedAt": 1788473525865
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.97,
+                "updatedAt": 1788473487633
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.92,
+                "type": "back",
+                "size": 419.21000000000004,
+                "updatedAt": 1788473345909
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.95,
+                "type": "back",
+                "size": 56.29,
+                "updatedAt": 1788472393617
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2.02,
+                "type": "lay",
+                "size": 28.419999999999998,
+                "updatedAt": 1788471460766
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.98,
+                "type": "back",
+                "size": 51.86,
+                "updatedAt": 1788471181681
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.97,
+                "type": "lay",
+                "size": 66.06,
+                "updatedAt": 1788471106771
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.78,
+                "updatedAt": 1788469865269
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.94,
+                "type": "back",
+                "size": 150.49,
+                "updatedAt": 1788469841082
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.96,
+                "type": "back",
+                "size": 56.16,
+                "updatedAt": 1788469823021
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.97,
+                "type": "back",
+                "size": 7.97,
+                "updatedAt": 1788469360583
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2.06,
+                "type": "lay",
+                "size": 4.969999999999999,
+                "updatedAt": 1788466334208
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.99,
+                "type": "back",
+                "size": 419.15999999999997,
+                "updatedAt": 1788466334208
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.99,
+                "type": "lay",
+                "size": 10.010000000000048,
+                "updatedAt": 1788463828130
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.98,
+                "type": "lay",
+                "size": 149.66,
+                "updatedAt": 1788462441978
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2,
+                "type": "back",
+                "size": 10.5,
+                "updatedAt": 1788462432751
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2.06,
+                "type": "back",
+                "size": 60.05,
+                "updatedAt": 1788458928145
+              }
+            ],
+            "pnlIfWins": -1952.7408000000005,
+            "totalBet": 3787.1561
+          },
+          "St. Lucia Kings": {
+            "trades": [
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.1,
+                "type": "lay",
+                "size": 1113.93,
+                "updatedAt": 1788474227984
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.1,
+                "type": "back",
+                "size": 2.28,
+                "updatedAt": 1788473983208
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.3,
+                "type": "lay",
+                "size": 0.2,
+                "updatedAt": 1788473979378
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.5,
+                "type": "lay",
+                "size": 771.2,
+                "updatedAt": 1788473841391
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2,
+                "type": "lay",
+                "size": 87.87,
+                "updatedAt": 1788473827331
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.08,
+                "type": "lay",
+                "size": 1.82,
+                "updatedAt": 1788473515810
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.95,
+                "type": "back",
+                "size": 56.29,
+                "updatedAt": 1788472902640
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.92,
+                "type": "back",
+                "size": 377.95000000000005,
+                "updatedAt": 1788472902640
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.96,
+                "type": "back",
+                "size": 56.22,
+                "updatedAt": 1788471830293
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.98,
+                "type": "lay",
+                "size": 28.98,
+                "updatedAt": 1788471460782
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.02,
+                "type": "lay",
+                "size": 290.35,
+                "updatedAt": 1788471181933
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.04,
+                "type": "lay",
+                "size": 11.91,
+                "updatedAt": 1788470737203
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2.06,
+                "type": "lay",
+                "size": 7.23,
+                "updatedAt": 1788469841097
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.94,
+                "type": "back",
+                "size": 182.01,
+                "updatedAt": 1788466334208
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.93,
+                "type": "back",
+                "size": 302.52,
+                "updatedAt": 1788461877559
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.94,
+                "type": "lay",
+                "size": 16.72,
+                "updatedAt": 1788458928161
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 1.99,
+                "type": "back",
+                "size": 261.04,
+                "updatedAt": 1788458160297
+              },
+              {
+                "team": "St. Lucia Kings",
+                "price": 2,
+                "type": "back",
+                "size": 38.79,
+                "updatedAt": 1788458153718
+              }
+            ],
+            "pnlIfWins": 853.7616999999998,
+            "totalBet": 1620.8912999999998
+          }
+        }
+      },
+      "predictedWinner": "St Kitts & Nevis Pats",
+      "predictionReason": "CPL Lay Resistance Dump on St. Lucia Kings (₹2.3k Lay vs ₹416) -> Faded to St Kitts & Nevis Pats",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "CPL Lay Resistance Dump on St. Lucia Kings (₹2.3k Lay vs ₹416) -> Faded to St Kitts & Nevis Pats"
+      },
+      "matchedRules": [
+        {
+          "reason": "CPL Lay Resistance Dump on St. Lucia Kings (₹2.3k Lay vs ₹416) -> Faded to St Kitts & Nevis Pats",
+          "winner": "St Kitts & Nevis Pats",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": "2026-09-04T17:40:35.653Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "St. Lucia Kings"
+    },
+    {
+      "matchId": "36026448",
+      "marketId": "1.261961120",
+      "matchName": "Namibia v South Africa",
+      "competitionName": "International Twenty20 Matches",
+      "team1": "Namibia",
+      "team2": "South Africa",
+      "startTime": 1788523200000,
+      "endedAt": "2026-09-04T17:23:15.650Z",
+      "capturedAt": "2026-09-04T17:23:15.650Z",
+      "snapshot": {
+        "serverTime": "2026-09-04T17:23:15.449Z",
+        "matchId": "36026448",
+        "matchName": "Namibia v South Africa",
+        "teamNames": [
+          "Namibia",
+          "South Africa"
+        ],
+        "inPlayPnl": {
+          "team1": -303.88789999999983,
+          "team2": 417.12319999999994
+        },
+        "inPlayTotalBets": {
+          "team1": 1093.7319,
+          "team2": 753.3634
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1091.05,
+            "lay": 319,
+            "total": 1165.94
+          },
+          "team2": {
+            "back": 463.69,
+            "lay": 74.89,
+            "total": 782.69
+          }
+        },
+        "preMatchPnl": {
+          "team1": -303.88789999999983,
+          "team2": 417.12319999999994
+        },
+        "preMatchTotalBets": {
+          "team1": 1093.7319,
+          "team2": 753.3634
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1091.05,
+            "lay": 319,
+            "total": 1165.94
+          },
+          "team2": {
+            "back": 463.69,
+            "lay": 74.89,
+            "total": 782.69
+          }
+        },
+        "threeMinPnl": {
+          "team1": -303.88789999999983,
+          "team2": 417.12319999999994
+        },
+        "threeMinTotalBets": {
+          "team1": 1093.7319,
+          "team2": 753.3634
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1091.05,
+            "lay": 319,
+            "total": 1165.94
+          },
+          "team2": {
+            "back": 463.69,
+            "lay": 74.89,
+            "total": 782.69
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 9
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1091.05,
+            "lay": 319,
+            "totalVolume": 1410.05,
+            "backPercentage": 77.37668876990178
+          },
+          "team2": {
+            "back": 463.69,
+            "lay": 74.89,
+            "totalVolume": 538.58,
+            "backPercentage": 86.09491626127965
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1018.8418999999999,
+            "lay": 326.154,
+            "totalBet": 1344.9959
+          },
+          "team2": {
+            "back": 434.36339999999996,
+            "lay": 79.43660000000001,
+            "totalBet": 513.8
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1165.94,
+            "support": 59.833831974258835
+          },
+          "team2": {
+            "supportMoney": 782.69,
+            "support": 40.166168025741165
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Namibia",
+          "bookieFavouriteOutcome": "South Africa",
+          "riskTeam": "Namibia",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 19.66766394851767,
+          "mostBettedTeam": "Namibia",
+          "prediction": {
+            "team1TrueSupport": 1098.2785,
+            "team2TrueSupport": 760.5174,
+            "ratio": 1.4441201476784093,
+            "bookiePnlTeam1": -699.8418999999999,
+            "bookiePnlTeam2": -359.47339999999997,
+            "prediction": "South Africa",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.44) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 692.6878999999999,
+            "backExposure": 1018.8418999999999,
+            "layExposure": 326.154,
+            "teamName": "Namibia"
+          },
+          "team2": {
+            "netExposure": 354.92679999999996,
+            "backExposure": 434.36339999999996,
+            "layExposure": 79.43660000000001,
+            "teamName": "South Africa"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1018.8418999999999,
+            "A_lay_stake": 319,
+            "B_back_expo": 434.36339999999996,
+            "B_lay_stake": 74.89
+          },
+          "totals": {
+            "totalBetTeam1": 1093.7319,
+            "totalBetTeam2": 753.3634
+          },
+          "simplePL": {
+            "team1_win": -699.8418999999999,
+            "team2_win": -359.47339999999997
+          },
+          "derivedPL": {
+            "team1_win": -340.36850000000004,
+            "team2_win": 340.36850000000004
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1091.05,
+              "totalLayVol": 319,
+              "totalBet": 1165.94,
+              "profitLoss": -383.25
+            },
+            "team2": {
+              "totalBackVol": 463.69,
+              "totalLayVol": 74.89,
+              "totalBet": 782.69,
+              "profitLoss": 383.25
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1018.8418999999999,
+              "totalLayVol": 319,
+              "totalBet": 1093.7319,
+              "profitLoss": -303.88789999999995
+            },
+            "team2": {
+              "totalBackExpo": 434.36339999999996,
+              "totalLayVol": 74.89,
+              "totalBet": 753.3634,
+              "profitLoss": 417.1232
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1018.8418999999999,
+              "totalLayNetVol": 326.154,
+              "totalBet": 1098.2785,
+              "profitLoss": -337.76109999999994
+            },
+            "team2": {
+              "totalBackNetVol": 434.36339999999996,
+              "totalLayNetVol": 79.43660000000001,
+              "totalBet": 760.5174,
+              "profitLoss": 337.76109999999994
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.9342857142857142,
+            "averageSize": 166.56285714285715,
+            "supportProduct": 322.1801551020408
+          },
+          "teamB": {
+            "tradeCount": 9,
+            "averageOdds": 1.941111111111111,
+            "averageSize": 86.96555555555557,
+            "supportProduct": 168.80980617283953
+          },
+          "strongerTeam": "Namibia",
+          "supportRatio": 1.908539334333278
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1091.05,
+            "oppoLayVolume": 74.89,
+            "layExposure": 326.154,
+            "netSupportValue": 839.7860000000001
+          },
+          "teamB": {
+            "totalBackVolume": 463.69,
+            "oppoLayVolume": 319,
+            "layExposure": 79.43660000000001,
+            "netSupportValue": 703.2534
+          },
+          "strongerTeam": "Namibia",
+          "netSupportDifference": 136.5326,
+          "percentageA": 54.42414496998585,
+          "percentageB": 45.57585503001414
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 772.05,
+            "syntheticSupport": 74.89,
+            "opponentLiabilityRejection": 79.43660000000001,
+            "sentimentScore": 767.5033999999999
+          },
+          "teamB": {
+            "directNetSupport": 388.8,
+            "syntheticSupport": 319,
+            "opponentLiabilityRejection": 326.154,
+            "sentimentScore": 381.64599999999996
+          },
+          "strongerTeam": "Namibia",
+          "scoreDifference": 385.8574,
+          "percentageA": 66.78882658773524,
+          "percentageB": 33.21117341226476
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Namibia",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "South Africa",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Namibia"
+        },
+        "teams": {
+          "Namibia": {
+            "trades": [
+              {
+                "team": "Namibia",
+                "price": 2.28,
+                "type": "lay",
+                "size": 25.55,
+                "updatedAt": 1788520585000
+              },
+              {
+                "team": "Namibia",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.94,
+                "updatedAt": 1788520484864
+              },
+              {
+                "team": "Namibia",
+                "price": 2,
+                "type": "lay",
+                "size": 293.45,
+                "updatedAt": 1788520023755
+              },
+              {
+                "team": "Namibia",
+                "price": 1.92,
+                "type": "back",
+                "size": 497.44,
+                "updatedAt": 1788519346508
+              },
+              {
+                "team": "Namibia",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.91,
+                "updatedAt": 1788517863600
+              },
+              {
+                "team": "Namibia",
+                "price": 1.94,
+                "type": "back",
+                "size": 168.54,
+                "updatedAt": 1788517855182
+              },
+              {
+                "team": "Namibia",
+                "price": 1.99,
+                "type": "back",
+                "size": 129.21999999999997,
+                "updatedAt": 1788515155199
+              }
+            ],
+            "pnlIfWins": -303.88789999999983,
+            "totalBet": 1093.7319
+          },
+          "South Africa": {
+            "trades": [
+              {
+                "team": "South Africa",
+                "price": 1.7,
+                "type": "back",
+                "size": 74.74,
+                "updatedAt": 1788521025518
+              },
+              {
+                "team": "South Africa",
+                "price": 1.77,
+                "type": "lay",
+                "size": 4.659999999999999,
+                "updatedAt": 1788520579977
+              },
+              {
+                "team": "South Africa",
+                "price": 1.77,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788520571928
+              },
+              {
+                "team": "South Africa",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.94,
+                "updatedAt": 1788520457989
+              },
+              {
+                "team": "South Africa",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788520457989
+              },
+              {
+                "team": "South Africa",
+                "price": 1.99,
+                "type": "back",
+                "size": 11.24,
+                "updatedAt": 1788520314670
+              },
+              {
+                "team": "South Africa",
+                "price": 1.94,
+                "type": "back",
+                "size": 58.01,
+                "updatedAt": 1788520107826
+              },
+              {
+                "team": "South Africa",
+                "price": 2,
+                "type": "back",
+                "size": 293.52,
+                "updatedAt": 1788520023755
+              },
+              {
+                "team": "South Africa",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.23,
+                "updatedAt": 1788519346508
+              }
+            ],
+            "pnlIfWins": 417.12319999999994,
+            "totalBet": 753.3634
+          }
+        }
+      },
+      "predictedWinner": "Namibia",
+      "predictionReason": "Intl Inflow on Namibia (₹1.1k Back, Lead: 2.4x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Intl Inflow on Namibia (₹1.1k Back, Lead: 2.4x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Intl Inflow on Namibia (₹1.1k Back, Lead: 2.4x)",
+          "winner": "Namibia",
           "priority": 100,
           "selected": true
         }

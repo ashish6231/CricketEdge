@@ -4,10 +4,38 @@ const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
 const { optionalAuth, requireProSubscription, assertProAccess } = require('../middleware/auth');
-const { requireAdmin } = require('../middleware/admin');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { getDefaultStore } = require('../services/tossDatasetStore');
+const crexService = require('../services/crexService');
+
+async function getCrexForMatch(matchInfo, matchId = null) {
+  try {
+    const crexOverview = await crexService.getCrexOverview();
+    let matched = null;
+
+    if (matchId && String(matchId).startsWith('crex-')) {
+      const rawId = String(matchId).replace(/^crex-/, '');
+      matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
+    }
+
+    if (!matched && matchInfo?.matchName) {
+      matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
+    }
+
+    if (!matched) return null;
+    if (matched.slug || matched.url) {
+      const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
+      return {
+        ...matched,
+        ...detail,
+      };
+    }
+    return matched;
+  } catch (e) {
+    return null;
+  }
+}
 
 function computeMatchLoad(snap, matchInfo) {
   if (!snap && !matchInfo) return null;
@@ -67,30 +95,6 @@ function computeMatchLoad(snap, matchInfo) {
   };
 }
 
-// ──── Auth (admin only — scraper login control) ────
-
-router.post('/auth/login', requireAdmin, async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ detail: 'Email and password are required' });
-
-  const result = await scraper.login(email, password);
-  if (result.error) {
-    const status = result.status_code === 429 ? 429 : 401;
-    return res.status(status).json({ detail: result.error });
-  }
-  res.json({ status: 'logged_in', email, message: '✅ Login successful! Ab live matches ka data ab accessible hoga.' });
-});
-
-router.get('/auth/status', requireAdmin, (req, res) => {
-  res.json(scraper.getAuthState());
-});
-
-router.post('/auth/logout', requireAdmin, (req, res) => {
-  scraper.logout();
-  res.json({ status: 'logged_out', message: 'Logged out successfully' });
-});
-
 // ──── Cricket ────
 
 function upstreamUnavailable(res, data) {
@@ -138,10 +142,10 @@ function attachMatchMeta(data, matchInfo) {
 router.get('/cricket/matches', optionalAuth, async (req, res) => {
   const matchesMap = new Map();
 
-  // 1. Try fetching live cricket matches from scraper
+  // Fetch live matches from scraper only — no dataset/crex fallback for list
   try {
     const liveData = await scraper.getAllCricketMatches();
-    if (Array.isArray(liveData)) {
+    if (Array.isArray(liveData) && liveData.length > 0) {
       const activeLive = liveData.filter(m => m.status !== 'ended' && m.status !== 'verified' && m.status !== 'closed');
 
       // Fetch snapshots in parallel for active matches to compute live matchLoad with real money and odds
@@ -190,33 +194,6 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
     // ignore upstream live failure
   }
 
-  // 2. ONLY enrich existing matches that came from backend feed with saved snapshot if available, DO NOT add saved matches!
-  try {
-    const mdPath = path.join(__dirname, '../data/match_dataset.json');
-    if (fs.existsSync(mdPath)) {
-      const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
-      const records = md.records || [];
-      for (const r of records) {
-        const id = String(r.matchId);
-        if (matchesMap.has(id)) {
-          const existing = matchesMap.get(id);
-          const snap = r.snapshot || {};
-          const load = computeMatchLoad(snap, r);
-          if ((!existing.matchLoad || (existing.matchLoad.team1?.money === 0 && existing.matchLoad.team2?.money === 0)) && load && (load.team1?.money > 0 || load.team2?.money > 0)) {
-            existing.matchLoad = load;
-          }
-          if (r.status && existing.status !== 'in-play') {
-            existing.status = (r.status === 'verified' || r.status === 'pending') ? 'ended' : r.status;
-          }
-          if (r.predictedWinner) existing.predictedWinner = r.predictedWinner;
-          if (r.actualWinner) existing.actualWinner = r.actualWinner;
-        }
-      }
-    }
-  } catch (err) {
-    console.error('Error reading match_dataset in /cricket/matches:', err);
-  }
-
   const allMatches = Array.from(matchesMap.values()).map((m) => {
     const isEnded =
       m.status === 'ended' ||
@@ -230,6 +207,44 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
     }
     return m;
   });
+  // Enrich matches with CREX live score, status, and odds
+  try {
+    const crexOverview = await crexService.getCrexOverview();
+    if (Array.isArray(crexOverview) && crexOverview.length > 0) {
+      const matchedCrexIds = new Set();
+      for (const m of allMatches) {
+        const cm = crexService.findCrexMatch(m.matchName, crexOverview);
+        if (cm) {
+          matchedCrexIds.add(cm.crexMatchId);
+          m.crex = {
+            matched: true,
+            crexMatchId: cm.crexMatchId,
+            slug: cm.slug,
+            url: cm.url,
+            team1Name: cm.team1Name,
+            team1Short: cm.team1Short,
+            team1Flag: cm.team1Flag,
+            team2Name: cm.team2Name,
+            team2Short: cm.team2Short,
+            team2Flag: cm.team2Flag,
+            score1: cm.score1,
+            score2: cm.score2,
+            status: cm.status,
+            statusText: cm.statusText,
+            venue: cm.venue,
+            odds: cm.odds,
+            runningBall: cm.runningBall || null,
+          };
+          // CREX only provides score data — do NOT override scraper's inPlay/status
+        }
+      }
+
+      // Do NOT add crex-only matches — only enrich existing scraper matches with crex score data
+    }
+  } catch (err) {
+    console.warn('Error enriching CREX in /cricket/matches:', err.message);
+  }
+
   const filtered = filterMatchesForViewer(allMatches, req.user);
 
   // Extract unique competitions
@@ -247,8 +262,29 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
 
 router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
+
   const matches = await scraper.getAllCricketMatches();
-  const matchInfo = findMatchInfo(matches, matchId);
+  let matchInfo = findMatchInfo(matches, matchId);
+  if (!matchInfo) {
+    try {
+      const mdPath = path.join(__dirname, '../data/match_dataset.json');
+      if (fs.existsSync(mdPath)) {
+        const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
+        const rec = (md.records || []).find(x => String(x.matchId) === String(matchId));
+        if (rec) {
+          matchInfo = {
+            matchId: String(rec.matchId),
+            marketId: rec.marketId,
+            matchName: rec.matchName,
+            competitionName: rec.competitionName,
+            status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
+            startTime: rec.startTime,
+            inPlay: false,
+          };
+        }
+      }
+    } catch {}
+  }
   if (!guestMayViewMatch(matchInfo, req.user)) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
@@ -277,13 +313,17 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   if (data?.error) {
     return upstreamUnavailable(res, data);
   }
-  res.json(attachMatchMeta(data, matchInfo));
+  const responseData = attachMatchMeta(data, matchInfo);
+  try {
+    const crex = await getCrexForMatch(matchInfo, matchId);
+    if (crex) responseData.crex = crex;
+  } catch {}
+  res.json(responseData);
 });
 
 /** One request for MatchDetail poll — cricket + toss + session (single auth). */
 router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-
   // Dispatch all calls concurrently to eliminate sequential network waterfall
   const cricketMatchesPromise = scraper.getAllCricketMatches();
   const tossMatchesPromise = scraper.getAllTossMatches();
@@ -295,8 +335,32 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
     cricketMatchesPromise,
     tossMatchesPromise,
   ]);
-  const matchInfo = findMatchInfo(cricketMatches, matchId);
-  const tossInfo = findMatchInfo(tossMatches, matchId);
+  let matchInfo = findMatchInfo(cricketMatches, matchId);
+  let tossInfo = findMatchInfo(tossMatches, matchId);
+
+  // crex fetch after matchInfo is resolved so we can pass match name for accurate matching
+  const crexRawPromise = getCrexForMatch(matchInfo, matchId).catch(() => null);
+
+  if (!matchInfo) {
+    try {
+      const mdPath = path.join(__dirname, '../data/match_dataset.json');
+      if (fs.existsSync(mdPath)) {
+        const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
+        const rec = (md.records || []).find(x => String(x.matchId) === String(matchId));
+        if (rec) {
+          matchInfo = {
+            matchId: String(rec.matchId),
+            marketId: rec.marketId,
+            matchName: rec.matchName,
+            competitionName: rec.competitionName,
+            status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
+            startTime: rec.startTime,
+            inPlay: false,
+          };
+        }
+      }
+    } catch {}
+  }
 
   if (!guestMayViewMatch(matchInfo, req.user) && !guestMayViewFromInfos(req.user, [tossInfo, matchInfo])) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
@@ -305,10 +369,11 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   const isEnded = isEndedMatch(matchInfo) || isEndedMatch(tossInfo);
   if (!isEnded && !assertProAccess(req, res)) return;
 
-  const [cricketRaw, tossRaw, sessionRaw] = await Promise.all([
+  const [cricketRaw, tossRaw, sessionRaw, crexRaw] = await Promise.all([
     cricketRawPromise,
     tossRawPromise,
     sessionRawPromise,
+    crexRawPromise,
   ]);
 
   const cricket = cricketRaw?.error
@@ -321,7 +386,15 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
 
   const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
 
-  res.json({ matchId, cricket, toss, session });
+  res.json({ matchId, cricket, toss, session, crex: crexRaw });
+});
+
+router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
+  const matchId = req.params.matchId;
+  const matches = await scraper.getAllCricketMatches();
+  const matchInfo = findMatchInfo(matches, matchId);
+  const crex = await getCrexForMatch(matchInfo, matchId);
+  res.json({ matchId, crex: crex || null });
 });
 
 function extractTossOdds(trades, fallback = null) {

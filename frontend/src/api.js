@@ -59,6 +59,10 @@ export async function getCricketSnapshot(matchId) {
   return fetchAPI(`/cricket/match/${matchId}`)
 }
 
+export async function getCrexMatchDetail(matchId) {
+  return fetchAPI(`/cricket/match/${matchId}/crex`)
+}
+
 /** Cricket + toss + session in one request (MatchDetail poll). */
 export async function getCricketMatchBundle(matchId) {
   return fetchAPI(`/cricket/match/${matchId}/bundle`)
