@@ -18,7 +18,9 @@ export function hydrateTrialForm(rows = []) {
 
   const enabled = enabledRow == null || enabledRow.value == null
     ? TRIAL_FORM_DEFAULTS.enabled
-    : Boolean(enabledRow.value)
+    : enabledRow.value === false || enabledRow.value === 'false' || enabledRow.value === 0
+      ? false
+      : true
 
   const valueRaw = valueRow == null || valueRow.value == null
     ? TRIAL_FORM_DEFAULTS.value

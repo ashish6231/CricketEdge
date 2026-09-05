@@ -109,6 +109,8 @@ async function hasUsedTrial(prisma, userId) {
 }
 
 async function grantTrialIfEligible(prisma, userId, { force = false, now = new Date() } = {}) {
+  // First expire any lapsed pro/trial so stale subPlanSlug doesn't block grant
+  await expireTrialIfNeeded(prisma, userId);
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return { granted: false, user: null, reason: 'not_found' };
   if (user.role !== 'user') return { granted: false, user, reason: 'not_user' };
@@ -169,9 +171,13 @@ async function grantTrialToAllEligible(prisma) {
 async function expireTrialIfNeeded(prisma, userId) {
   const now = new Date();
   const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user || user.subPlanSlug !== 'trial' || user.subStatus !== 'active') return user;
+  if (!user) return user;
+
+  const isPaidOrTrial = user.subPlanSlug === 'trial' || user.subPlanSlug === 'pro';
+  if (!isPaidOrTrial || user.subStatus !== 'active') return user;
   if (!user.subExpiresAt || new Date(user.subExpiresAt) > now) return user;
 
+  const planSlug = user.subPlanSlug;
   await prisma.user.update({
     where: { id: userId },
     data: {
@@ -184,8 +190,8 @@ async function expireTrialIfNeeded(prisma, userId) {
   });
 
   await prisma.userSubscription.updateMany({
-    where: { userId, planSlug: 'trial', status: 'active' },
-    data: { status: 'expired', cancelledAt: now, cancelReason: 'Trial ended' },
+    where: { userId, planSlug, status: 'active' },
+    data: { status: 'expired', cancelledAt: now, cancelReason: planSlug === 'trial' ? 'Trial ended' : 'Subscription expired' },
   });
 
   return prisma.user.findUnique({ where: { id: userId } });
@@ -194,8 +200,12 @@ async function expireTrialIfNeeded(prisma, userId) {
 async function expireAllTrials(prisma) {
   const now = new Date();
   const expired = await prisma.user.findMany({
-    where: { subPlanSlug: 'trial', subStatus: 'active', subExpiresAt: { lte: now } },
-    select: { id: true, email: true },
+    where: {
+      subPlanSlug: { in: ['trial', 'pro'] },
+      subStatus: 'active',
+      subExpiresAt: { lte: now },
+    },
+    select: { id: true, email: true, subPlanSlug: true },
   });
 
   if (!expired.length) return 0;
@@ -205,12 +215,16 @@ async function expireAllTrials(prisma) {
     data: { subPlanSlug: 'free', subStatus: 'active', subPlanId: null, subExpiresAt: null, subAutoRenew: false },
   });
 
-  await prisma.userSubscription.updateMany({
-    where: { userId: { in: expired.map(u => u.id) }, planSlug: 'trial', status: 'active' },
-    data: { status: 'expired', cancelledAt: now, cancelReason: 'Trial ended' },
-  });
+  for (const planSlug of ['trial', 'pro']) {
+    const ids = expired.filter(u => u.subPlanSlug === planSlug).map(u => u.id);
+    if (!ids.length) continue;
+    await prisma.userSubscription.updateMany({
+      where: { userId: { in: ids }, planSlug, status: 'active' },
+      data: { status: 'expired', cancelledAt: now, cancelReason: planSlug === 'trial' ? 'Trial ended' : 'Subscription expired' },
+    });
+  }
 
-  expired.forEach(u => console.log(`⏱️ Trial expired for ${u.email}`));
+  expired.forEach(u => console.log(`⏱️ ${u.subPlanSlug} expired for ${u.email}`));
   return expired.length;
 }
 

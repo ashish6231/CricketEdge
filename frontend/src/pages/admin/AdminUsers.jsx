@@ -325,9 +325,11 @@ export default function AdminUsers({ isSuperAdmin }) {
           {users.map(u => {
             const roleCfg = ROLE_CFG[u.role] || ROLE_CFG.user
             const statusCfg = STATUS_CFG[u.status || 'active']
-            const planCfg = PLAN_CFG[u.subPlanSlug] || PLAN_CFG.free
             const isOpen = expanded === u.id
             const isActing = acting === u.id
+            const isExpired = u.subExpiresAt && new Date(u.subExpiresAt) <= new Date()
+            const effectivePlan = (u.subPlanSlug === 'pro' || u.subPlanSlug === 'trial') && isExpired ? 'free' : u.subPlanSlug
+            const planCfg = PLAN_CFG[effectivePlan] || PLAN_CFG.free
 
             return (
               <div key={u.id} className={`relative rounded-2xl ${isOpen ? 'z-50' : 'z-0'}`} style={{ background: '#111', border: '1px solid #1e1e1e' }}>
@@ -402,11 +404,11 @@ export default function AdminUsers({ isSuperAdmin }) {
                       {/* Plan actions */}
                       {u.role === 'user' && (<>
                         <div className="h-px bg-[#2c2c2e] my-1"></div>
-                        {trialEnabled && u.subPlanSlug === 'free' && (
+                        {trialEnabled && effectivePlan !== 'pro' && (
                           <ActionMenuItem disabled={isActing} loading={isActing} color="#10b981" icon={<Gift size={14} />} label="Grant Free Trial"
                             onClick={() => grantTrial(u.id, true)} />
                         )}
-                        {u.subPlanSlug !== 'pro' ? (
+                        {effectivePlan !== 'pro' ? (
                           <div className="px-2 py-1">
                             <div className="flex items-center justify-between gap-2 mb-1.5 px-1">
                               <span className="text-[11px] text-[#888] font-semibold">Grant Duration</span>

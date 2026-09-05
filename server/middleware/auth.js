@@ -78,7 +78,12 @@ async function resolveBearerUser(token) {
     setCachedAuth(token, result);
     return result;
   }
-  // Single-session enforcement removed: multiple concurrent logins are allowed
+  // Single-session enforcement: only the latest token is valid
+  if (user.activeToken && user.activeToken !== token) {
+    const result = { errorStatus: 401, errorBody: { success: false, message: 'Session replaced. Please login again.', code: 'SESSION_REPLACED' } };
+    setCachedAuth(token, result);
+    return result;
+  }
   // Always prefer DB role/plan — never trust JWT claims for authorization
   const result = {
     user: {
@@ -131,7 +136,6 @@ async function optionalAuth(req, res, next) {
       req.user = result.user;
       return next();
     }
-    if (result.sessionReplaced) return next();
     return res.status(result.errorStatus).json(result.errorBody);
   } catch {
     // DB slow/unavailable — don't block public match lists

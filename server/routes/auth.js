@@ -321,6 +321,8 @@ router.post('/resend-otp', async (req, res) => {
 const _userMeCache = new Map();
 const ME_CACHE_TTL = 15000;
 
+function clearMeCache() { _userMeCache.clear(); }
+
 router.get('/me', async (req, res) => {
   try {
     const { JWT_SECRET } = require('../middleware/auth');
@@ -449,3 +451,4 @@ window.location.replace(${JSON.stringify(redirectTo)});
 );
 
 module.exports = router;
+module.exports.clearMeCache = clearMeCache;

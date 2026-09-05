@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-04T17:40:35.653Z",
+  "updatedAt": "2026-09-05T01:33:40.642Z",
   "records": [
     {
       "matchId": "35901908",
@@ -27750,6 +27750,882 @@
         {
           "reason": "Intl Inflow on Namibia (₹1.1k Back, Lead: 2.4x)",
           "winner": "Namibia",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36027092",
+      "marketId": "1.261962898",
+      "matchName": "Glasgow Cosmic v Belfast Wolves",
+      "competitionName": "European T20 Premier League",
+      "team1": "Glasgow Cosmic",
+      "team2": "Belfast Wolves",
+      "startTime": 1788527700000,
+      "endedAt": "2026-09-04T18:26:16.691Z",
+      "capturedAt": "2026-09-04T18:26:16.691Z",
+      "snapshot": {
+        "serverTime": "2026-09-04T18:26:16.447Z",
+        "matchId": "36027092",
+        "matchName": "Glasgow Cosmic v Belfast Wolves",
+        "teamNames": [
+          "Glasgow Cosmic",
+          "Belfast Wolves"
+        ],
+        "inPlayPnl": {
+          "team1": -708.6557999999995,
+          "team2": 807.661
+        },
+        "inPlayTotalBets": {
+          "team1": 1270.4335999999996,
+          "team2": 527.3462
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1248.28,
+            "lay": 12.39,
+            "total": 1335.26
+          },
+          "team2": {
+            "back": 549.14,
+            "lay": 86.98,
+            "total": 561.53
+          }
+        },
+        "preMatchPnl": {
+          "team1": -708.6557999999995,
+          "team2": 807.661
+        },
+        "preMatchTotalBets": {
+          "team1": 1270.4335999999996,
+          "team2": 527.3462
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1248.28,
+            "lay": 12.39,
+            "total": 1335.26
+          },
+          "team2": {
+            "back": 549.14,
+            "lay": 86.98,
+            "total": 561.53
+          }
+        },
+        "threeMinPnl": {
+          "team1": -708.6557999999995,
+          "team2": 807.661
+        },
+        "threeMinTotalBets": {
+          "team1": 1270.4335999999996,
+          "team2": 527.3462
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1248.28,
+            "lay": 12.39,
+            "total": 1335.26
+          },
+          "team2": {
+            "back": 549.14,
+            "lay": 86.98,
+            "total": 561.53
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 5
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1248.28,
+            "lay": 12.39,
+            "totalVolume": 1260.67,
+            "backPercentage": 99.01718927237103
+          },
+          "team2": {
+            "back": 549.14,
+            "lay": 86.98,
+            "totalVolume": 636.12,
+            "backPercentage": 86.32647928063886
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1183.4535999999996,
+            "lay": 12.6378,
+            "totalBet": 1196.0913999999996
+          },
+          "team2": {
+            "back": 514.9562,
+            "lay": 86.72720000000001,
+            "totalBet": 601.6834
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1335.26,
+            "support": 70.3957739127684
+          },
+          "team2": {
+            "supportMoney": 561.53,
+            "support": 29.604226087231584
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Glasgow Cosmic",
+          "bookieFavouriteOutcome": "Belfast Wolves",
+          "riskTeam": "Glasgow Cosmic",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 40.791547825536824,
+          "mostBettedTeam": "Glasgow Cosmic",
+          "prediction": {
+            "team1TrueSupport": 1270.1807999999996,
+            "team2TrueSupport": 527.5939999999999,
+            "ratio": 2.407496673578547,
+            "bookiePnlTeam1": -1171.0635999999995,
+            "bookiePnlTeam2": -427.97619999999995,
+            "prediction": "Belfast Wolves",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.41) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1170.8157999999996,
+            "backExposure": 1183.4535999999996,
+            "layExposure": 12.6378,
+            "teamName": "Glasgow Cosmic"
+          },
+          "team2": {
+            "netExposure": 428.2289999999999,
+            "backExposure": 514.9562,
+            "layExposure": 86.72720000000001,
+            "teamName": "Belfast Wolves"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1183.4535999999996,
+            "A_lay_stake": 12.39,
+            "B_back_expo": 514.9562,
+            "B_lay_stake": 86.98
+          },
+          "totals": {
+            "totalBetTeam1": 1270.4335999999996,
+            "totalBetTeam2": 527.3462
+          },
+          "simplePL": {
+            "team1_win": -1171.0635999999995,
+            "team2_win": -427.97619999999995
+          },
+          "derivedPL": {
+            "team1_win": -743.0873999999997,
+            "team2_win": 743.0873999999997
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1248.28,
+              "totalLayVol": 12.39,
+              "totalBet": 1335.26,
+              "profitLoss": -773.73
+            },
+            "team2": {
+              "totalBackVol": 549.14,
+              "totalLayVol": 86.98,
+              "totalBet": 561.53,
+              "profitLoss": 773.73
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1183.4535999999996,
+              "totalLayVol": 12.39,
+              "totalBet": 1270.4335999999996,
+              "profitLoss": -708.6557999999997
+            },
+            "team2": {
+              "totalBackExpo": 514.9562,
+              "totalLayVol": 86.98,
+              "totalBet": 527.3462,
+              "profitLoss": 807.6610000000001
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1183.4535999999996,
+              "totalLayNetVol": 12.6378,
+              "totalBet": 1270.1807999999996,
+              "profitLoss": -742.5867999999997
+            },
+            "team2": {
+              "totalBackNetVol": 514.9562,
+              "totalLayNetVol": 86.72720000000001,
+              "totalBet": 527.5939999999999,
+              "profitLoss": 742.5867999999997
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.9657142857142857,
+            "averageSize": 190.75142857142856,
+            "supportProduct": 374.9628081632653
+          },
+          "teamB": {
+            "tradeCount": 5,
+            "averageOdds": 1.9599999999999997,
+            "averageSize": 112.306,
+            "supportProduct": 220.11975999999996
+          },
+          "strongerTeam": "Glasgow Cosmic",
+          "supportRatio": 1.703449104992961
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1248.28,
+            "oppoLayVolume": 86.98,
+            "layExposure": 12.6378,
+            "netSupportValue": 1322.6222
+          },
+          "teamB": {
+            "totalBackVolume": 549.14,
+            "oppoLayVolume": 12.39,
+            "layExposure": 86.72720000000001,
+            "netSupportValue": 474.80279999999993
+          },
+          "strongerTeam": "Glasgow Cosmic",
+          "netSupportDifference": 847.8194000000001,
+          "percentageA": 73.58427750810186,
+          "percentageB": 26.41572249189813
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1235.8899999999999,
+            "syntheticSupport": 86.98,
+            "opponentLiabilityRejection": 86.72720000000001,
+            "sentimentScore": 1236.1427999999999
+          },
+          "teamB": {
+            "directNetSupport": 462.15999999999997,
+            "syntheticSupport": 12.39,
+            "opponentLiabilityRejection": 12.6378,
+            "sentimentScore": 461.9121999999999
+          },
+          "strongerTeam": "Glasgow Cosmic",
+          "scoreDifference": 774.2305999999999,
+          "percentageA": 72.79757133897313,
+          "percentageB": 27.20242866102688
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Glasgow Cosmic",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Belfast Wolves",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Glasgow Cosmic"
+        },
+        "teams": {
+          "Glasgow Cosmic": {
+            "trades": [
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.92,
+                "type": "back",
+                "size": 242.65,
+                "updatedAt": 1788524370173
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.93,
+                "type": "back",
+                "size": 484.65,
+                "updatedAt": 1788524364130
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.45,
+                "updatedAt": 1788522732834
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2.02,
+                "type": "lay",
+                "size": 12.39,
+                "updatedAt": 1788522583759
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.99,
+                "type": "back",
+                "size": 306.19,
+                "updatedAt": 1788519580192
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2,
+                "type": "back",
+                "size": 74.34,
+                "updatedAt": 1788517894276
+              }
+            ],
+            "pnlIfWins": -708.6557999999995,
+            "totalBet": 1270.4335999999996
+          },
+          "Belfast Wolves": {
+            "trades": [
+              {
+                "team": "Belfast Wolves",
+                "price": 1.92,
+                "type": "back",
+                "size": 68.79,
+                "updatedAt": 1788523956351
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.45,
+                "updatedAt": 1788523129015
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.91,
+                "updatedAt": 1788523129015
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.98,
+                "type": "lay",
+                "size": 12.64,
+                "updatedAt": 1788522583744
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 1.99,
+                "type": "back",
+                "size": 58.99,
+                "updatedAt": 1788521915974
+              },
+              {
+                "team": "Belfast Wolves",
+                "price": 2,
+                "type": "lay",
+                "size": 74.34,
+                "updatedAt": 1788517894276
+              }
+            ],
+            "pnlIfWins": 807.661,
+            "totalBet": 527.3462
+          }
+        }
+      },
+      "predictedWinner": "Glasgow Cosmic",
+      "predictionReason": "ECS Smart Inflow on Glasgow Cosmic (₹1248 Back, Lead: 2.3x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "ECS Smart Inflow on Glasgow Cosmic (₹1248 Back, Lead: 2.3x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "ECS Smart Inflow on Glasgow Cosmic (₹1248 Back, Lead: 2.3x)",
+          "winner": "Glasgow Cosmic",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "lastCaptureError": null,
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36023009",
+      "marketId": "1.261924350",
+      "matchName": "United Arab Emirates W v Indonesia W",
+      "competitionName": "Women's Asia Cup T20",
+      "team1": "United Arab Emirates W",
+      "team2": "Indonesia W",
+      "startTime": 1788532200000,
+      "endedAt": "2026-09-05T01:33:40.633Z",
+      "capturedAt": "2026-09-05T01:33:40.633Z",
+      "snapshot": {
+        "serverTime": "2026-09-05T01:33:40.790Z",
+        "matchId": "36023009",
+        "matchName": "United Arab Emirates W v Indonesia W",
+        "teamNames": [
+          "United Arab Emirates W",
+          "Indonesia W"
+        ],
+        "inPlayPnl": {
+          "team1": -663.2053999999999,
+          "team2": 756.167
+        },
+        "inPlayTotalBets": {
+          "team1": 907.9848000000001,
+          "team2": 233.28360000000004
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 841.48,
+            "lay": 79.17999999999999,
+            "total": 986.2
+          },
+          "team2": {
+            "back": 164.70000000000005,
+            "lay": 144.72,
+            "total": 243.88000000000005
+          }
+        },
+        "preMatchPnl": {
+          "team1": -663.2053999999999,
+          "team2": 756.167
+        },
+        "preMatchTotalBets": {
+          "team1": 907.9848000000001,
+          "team2": 233.28360000000004
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 841.48,
+            "lay": 79.17999999999999,
+            "total": 986.2
+          },
+          "team2": {
+            "back": 164.70000000000005,
+            "lay": 144.72,
+            "total": 243.88000000000005
+          }
+        },
+        "threeMinPnl": {
+          "team1": -663.2053999999999,
+          "team2": 756.167
+        },
+        "threeMinTotalBets": {
+          "team1": 907.9848000000001,
+          "team2": 233.28360000000004
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 841.48,
+            "lay": 79.17999999999999,
+            "total": 986.2
+          },
+          "team2": {
+            "back": 164.70000000000005,
+            "lay": 144.72,
+            "total": 243.88000000000005
+          }
+        },
+        "matchLoadV2": {
+          "team1": 12,
+          "team2": 6
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 841.48,
+            "lay": 79.17999999999999,
+            "totalVolume": 920.66,
+            "backPercentage": 91.39964807855236
+          },
+          "team2": {
+            "back": 164.70000000000005,
+            "lay": 144.72,
+            "totalVolume": 309.4200000000001,
+            "backPercentage": 53.22862129144852
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 763.2648,
+            "lay": 80.07939999999999,
+            "totalBet": 843.3442
+          },
+          "team2": {
+            "back": 154.10360000000003,
+            "lay": 147.9706,
+            "totalBet": 302.0742
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 986.2,
+            "support": 80.17364724245577
+          },
+          "team2": {
+            "supportMoney": 243.88000000000005,
+            "support": 19.826352757544228
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "United Arab Emirates W",
+          "bookieFavouriteOutcome": "Indonesia W",
+          "riskTeam": "United Arab Emirates W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 60.347294484911544,
+          "mostBettedTeam": "United Arab Emirates W",
+          "prediction": {
+            "team1TrueSupport": 911.0669,
+            "team2TrueSupport": 234.18300000000002,
+            "ratio": 3.890405793759581,
+            "bookiePnlTeam1": -683.9163000000001,
+            "bookiePnlTeam2": -9.38360000000003,
+            "prediction": "Indonesia W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (3.89) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 683.0169000000001,
+            "backExposure": 763.0963,
+            "layExposure": 80.07939999999999,
+            "teamName": "United Arab Emirates W"
+          },
+          "team2": {
+            "netExposure": 6.133000000000038,
+            "backExposure": 154.10360000000003,
+            "layExposure": 147.9706,
+            "teamName": "Indonesia W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 763.2648,
+            "A_lay_stake": 79.17999999999999,
+            "B_back_expo": 154.10360000000003,
+            "B_lay_stake": 144.72
+          },
+          "totals": {
+            "totalBetTeam1": 907.9848000000001,
+            "totalBetTeam2": 233.28360000000004
+          },
+          "simplePL": {
+            "team1_win": -684.0848000000001,
+            "team2_win": -9.38360000000003
+          },
+          "derivedPL": {
+            "team1_win": -674.7012,
+            "team2_win": 674.7012
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 841.48,
+              "totalLayVol": 79.17999999999999,
+              "totalBet": 986.2,
+              "profitLoss": -742.3199999999999
+            },
+            "team2": {
+              "totalBackVol": 164.70000000000005,
+              "totalLayVol": 144.72,
+              "totalBet": 243.88000000000005,
+              "profitLoss": 742.3199999999999
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 763.2648,
+              "totalLayVol": 79.17999999999999,
+              "totalBet": 907.9848000000001,
+              "profitLoss": -663.2054
+            },
+            "team2": {
+              "totalBackExpo": 154.10360000000003,
+              "totalLayVol": 144.72,
+              "totalBet": 233.28360000000004,
+              "profitLoss": 756.1669999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 763.2648,
+              "totalLayNetVol": 80.07939999999999,
+              "totalBet": 911.2354,
+              "profitLoss": -677.0524
+            },
+            "team2": {
+              "totalBackNetVol": 154.10360000000003,
+              "totalLayNetVol": 147.9706,
+              "totalBet": 234.18300000000002,
+              "profitLoss": 677.0524
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 12,
+            "averageOdds": 1.8966666666666667,
+            "averageSize": 82.18333333333332,
+            "supportProduct": 155.8743888888889
+          },
+          "teamB": {
+            "tradeCount": 6,
+            "averageOdds": 1.97,
+            "averageSize": 40.646666666666675,
+            "supportProduct": 80.07393333333334
+          },
+          "strongerTeam": "United Arab Emirates W",
+          "supportRatio": 1.9466308497674507
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 841.48,
+            "oppoLayVolume": 144.72,
+            "layExposure": 80.07939999999999,
+            "netSupportValue": 906.1206000000001
+          },
+          "teamB": {
+            "totalBackVolume": 164.70000000000005,
+            "oppoLayVolume": 79.17999999999999,
+            "layExposure": 147.9706,
+            "netSupportValue": 95.90940000000006
+          },
+          "strongerTeam": "United Arab Emirates W",
+          "netSupportDifference": 810.2112,
+          "percentageA": 90.42849016496511,
+          "percentageB": 9.571509835034883
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 762.3000000000001,
+            "syntheticSupport": 144.72,
+            "opponentLiabilityRejection": 147.9706,
+            "sentimentScore": 759.0494000000001
+          },
+          "teamB": {
+            "directNetSupport": 19.980000000000047,
+            "syntheticSupport": 79.17999999999999,
+            "opponentLiabilityRejection": 80.07939999999999,
+            "sentimentScore": 19.080600000000047
+          },
+          "strongerTeam": "United Arab Emirates W",
+          "scoreDifference": 739.9688000000001,
+          "percentageA": 97.54789045532237,
+          "percentageB": 2.45210954467763
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "United Arab Emirates W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Indonesia W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "United Arab Emirates W"
+        },
+        "teams": {
+          "United Arab Emirates W": {
+            "trades": [
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.01,
+                "type": "back",
+                "size": 16.85,
+                "updatedAt": 1788529566976
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.97,
+                "updatedAt": 1788529514923
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2,
+                "type": "lay",
+                "size": 58.83,
+                "updatedAt": 1788529502807
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2,
+                "type": "back",
+                "size": 14.049999999999997,
+                "updatedAt": 1788529225689
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.92,
+                "type": "back",
+                "size": 463.47,
+                "updatedAt": 1788528369395
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.98,
+                "type": "back",
+                "size": 0.010000000000000675,
+                "updatedAt": 1788526989582
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 4.02,
+                "updatedAt": 1788526588021
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 16.33,
+                "updatedAt": 1788525960605
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.93,
+                "type": "back",
+                "size": 318.08,
+                "updatedAt": 1788523261703
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.94,
+                "type": "back",
+                "size": 14.050000000000011,
+                "updatedAt": 1788522755466
+              }
+            ],
+            "pnlIfWins": -663.2053999999999,
+            "totalBet": 907.9848000000001
+          },
+          "Indonesia W": {
+            "trades": [
+              {
+                "team": "Indonesia W",
+                "price": 2,
+                "type": "lay",
+                "size": 80.52,
+                "updatedAt": 1788529502807
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.91,
+                "type": "lay",
+                "size": 8.14,
+                "updatedAt": 1788529296895
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.96,
+                "updatedAt": 1788529284767
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.08,
+                "type": "lay",
+                "size": 38.88,
+                "updatedAt": 1788528369395
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.02,
+                "type": "lay",
+                "size": 3.95,
+                "updatedAt": 1788526989582
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.94,
+                "type": "back",
+                "size": 123.18000000000004,
+                "updatedAt": 1788526989582
+              },
+              {
+                "team": "Indonesia W",
+                "price": 1.93,
+                "type": "back",
+                "size": 26.560000000000002,
+                "updatedAt": 1788526989582
+              },
+              {
+                "team": "Indonesia W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 13.23,
+                "updatedAt": 1788522755466
+              }
+            ],
+            "pnlIfWins": 756.167,
+            "totalBet": 233.28360000000004
+          }
+        }
+      },
+      "predictedWinner": "United Arab Emirates W",
+      "predictionReason": "Smart Money Inflow (United Arab Emirates W: ₹841 Back, Lead: 5.1x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (United Arab Emirates W: ₹841 Back, Lead: 5.1x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (United Arab Emirates W: ₹841 Back, Lead: 5.1x)",
+          "winner": "United Arab Emirates W",
           "priority": 100,
           "selected": true
         }

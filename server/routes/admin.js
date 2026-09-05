@@ -380,6 +380,10 @@ router.patch('/users/:id/role', requireSuperAdmin, async (req, res) => {
         activeToken: null,
       },
     });
+    const { clearAuthCache } = require('../middleware/auth');
+    const { clearMeCache } = require('./auth');
+    clearAuthCache();
+    clearMeCache();
     await auditLog(req.user, role === 'admin' ? 'admin_create' : 'admin_demote', 'user', user.id, user.email, { before: { role: before.role }, after: { role } }, 'Role changed by superadmin', req);
     res.json({ success: true, data: sanitizeUserRecord(user) });
   } catch (err) {
