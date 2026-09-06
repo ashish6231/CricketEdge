@@ -9,6 +9,24 @@ const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { getDefaultStore } = require('../services/tossDatasetStore');
 const crexService = require('../services/crexService');
 
+// In-memory cache for match_dataset.json — avoids disk read on every request
+let _matchDatasetCache = null;
+let _matchDatasetCacheTs = 0;
+const MATCH_DATASET_CACHE_MS = 60 * 1000; // 60s
+
+function getMatchDataset() {
+  const now = Date.now();
+  if (_matchDatasetCache && (now - _matchDatasetCacheTs) < MATCH_DATASET_CACHE_MS) return _matchDatasetCache;
+  try {
+    const mdPath = path.join(__dirname, '../data/match_dataset.json');
+    if (fs.existsSync(mdPath)) {
+      _matchDatasetCache = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
+      _matchDatasetCacheTs = now;
+    }
+  } catch {}
+  return _matchDatasetCache;
+}
+
 async function getCrexForMatch(matchInfo, matchId = null) {
   try {
     const crexOverview = await crexService.getCrexOverview();
@@ -253,6 +271,7 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
     if (m.competitionName) compsSet.add(m.competitionName);
   });
 
+  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
   res.json({
     total: filtered.length,
     matches: filtered,
@@ -267,21 +286,18 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   let matchInfo = findMatchInfo(matches, matchId);
   if (!matchInfo) {
     try {
-      const mdPath = path.join(__dirname, '../data/match_dataset.json');
-      if (fs.existsSync(mdPath)) {
-        const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
-        const rec = (md.records || []).find(x => String(x.matchId) === String(matchId));
-        if (rec) {
-          matchInfo = {
-            matchId: String(rec.matchId),
-            marketId: rec.marketId,
-            matchName: rec.matchName,
-            competitionName: rec.competitionName,
-            status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
-            startTime: rec.startTime,
-            inPlay: false,
-          };
-        }
+      const md = getMatchDataset();
+      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec) {
+        matchInfo = {
+          matchId: String(rec.matchId),
+          marketId: rec.marketId,
+          matchName: rec.matchName,
+          competitionName: rec.competitionName,
+          status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
+          startTime: rec.startTime,
+          inPlay: false,
+        };
       }
     } catch {}
   }
@@ -297,13 +313,10 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   if (!data || data?.error) {
     // Fallback to match_dataset.json snapshot
     try {
-      const mdPath = path.join(__dirname, '../data/match_dataset.json');
-      if (fs.existsSync(mdPath)) {
-        const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
-        const rec = (md.records || []).find(x => String(x.matchId) === String(matchId));
-        if (rec?.snapshot) {
-          data = rec.snapshot;
-        }
+      const md = getMatchDataset();
+      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec?.snapshot) {
+        data = rec.snapshot;
       }
     } catch {}
   }
@@ -324,40 +337,58 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
 /** One request for MatchDetail poll — cricket + toss + session (single auth). */
 router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  // Dispatch all calls concurrently to eliminate sequential network waterfall
+
+  // Fire ALL upstream calls immediately in parallel — including CREX overview
   const cricketMatchesPromise = scraper.getAllCricketMatches();
   const tossMatchesPromise = scraper.getAllTossMatches();
   const cricketRawPromise = scraper.getCricketSnapshot(matchId);
   const tossRawPromise = scraper.getTossSnapshot(matchId).catch(() => null);
   const sessionRawPromise = scraper.getSessionTrades(matchId).catch(() => null);
+  const crexOverviewPromise = crexService.getCrexOverview().catch(() => []);
 
-  const [cricketMatches, tossMatches] = await Promise.all([
+  const [cricketMatches, tossMatches, crexOverview] = await Promise.all([
     cricketMatchesPromise,
     tossMatchesPromise,
+    crexOverviewPromise,
   ]);
+
   let matchInfo = findMatchInfo(cricketMatches, matchId);
   let tossInfo = findMatchInfo(tossMatches, matchId);
 
-  // crex fetch after matchInfo is resolved so we can pass match name for accurate matching
-  const crexRawPromise = getCrexForMatch(matchInfo, matchId).catch(() => null);
+  // Now start CREX detail fetch using already-resolved overview (no extra round-trip)
+  const crexRawPromise = (async () => {
+    try {
+      let matched = null;
+      if (matchId && String(matchId).startsWith('crex-')) {
+        const rawId = String(matchId).replace(/^crex-/, '');
+        matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
+      }
+      if (!matched && matchInfo?.matchName) {
+        matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
+      }
+      if (!matched) return null;
+      if (matched.slug || matched.url) {
+        const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
+        return detail ? { ...matched, ...detail } : matched;
+      }
+      return matched;
+    } catch { return null; }
+  })();
 
   if (!matchInfo) {
     try {
-      const mdPath = path.join(__dirname, '../data/match_dataset.json');
-      if (fs.existsSync(mdPath)) {
-        const md = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
-        const rec = (md.records || []).find(x => String(x.matchId) === String(matchId));
-        if (rec) {
-          matchInfo = {
-            matchId: String(rec.matchId),
-            marketId: rec.marketId,
-            matchName: rec.matchName,
-            competitionName: rec.competitionName,
-            status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
-            startTime: rec.startTime,
-            inPlay: false,
-          };
-        }
+      const md = getMatchDataset();
+      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec) {
+        matchInfo = {
+          matchId: String(rec.matchId),
+          marketId: rec.marketId,
+          matchName: rec.matchName,
+          competitionName: rec.competitionName,
+          status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
+          startTime: rec.startTime,
+          inPlay: false,
+        };
       }
     } catch {}
   }
@@ -386,6 +417,7 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
 
   const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
 
+  res.set('Cache-Control', 'private, max-age=3, stale-while-revalidate=8');
   res.json({ matchId, cricket, toss, session, crex: crexRaw });
 });
 
@@ -535,7 +567,6 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
           totalMatched: load?.totalMatched || m.totalMatched || 0,
           runners: m.runners || [],
           tossLoad: load,
-          snapshot: snap,
           predictedWinner: dsRec?.predictedWinner,
           actualWinner: dsRec?.actualWinner,
         });
@@ -554,6 +585,7 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
     if (m.competitionName) compsSet.add(m.competitionName);
   });
 
+  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
   res.json({
     total: filtered.length,
     matches: filtered,
@@ -605,6 +637,7 @@ router.get('/session/matches', optionalAuth, async (req, res) => {
   if (data?.error) return res.status(502).json({ error: data.error });
   const matches = Array.isArray(data) ? data : [];
   const filtered = filterMatchesForViewer(matches, req.user);
+  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
   res.json({ total: filtered.length, matches: filtered });
 });
 

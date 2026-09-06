@@ -1,7 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, CartesianGrid } from "recharts"
 import TossDetail from './TossDetail'
 
-import { useEffect, useState, useContext, useMemo } from 'react'
+import { useEffect, useState, useContext, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio } from 'lucide-react'
 import { getCricketSnapshot, getCricketMatchBundle, getTennisSnapshot, getTossSnapshot, getSessionTrades, getCrexMatchDetail } from '../api'
@@ -17,7 +17,7 @@ import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
-import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
+import { startVisibleInterval, LIVE_POLL_MS, CREX_POLL_MS } from '../lib/visiblePoll'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -372,6 +372,7 @@ export default function MatchDetail({ sport }) {
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
   const [crexData, setCrexData] = useState(null)
+  const crexDataRef = useRef(null)
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem(`tab_${matchId}`) || 'simple')
 
   const handleTabChange = (key) => {
@@ -469,11 +470,6 @@ export default function MatchDetail({ sport }) {
         if (cancelled) return
         applySessionData(sessionData)
       })
-      // crex only for cricket
-      getCrexMatchDetail(matchId).catch(() => null).then(res => {
-        if (cancelled || !res?.crex) return
-        setCrexData(res.crex)
-      })
     }
 
     const fetchData = (isInitial = false) => {
@@ -505,11 +501,12 @@ export default function MatchDetail({ sport }) {
             }
             if (bundle?.toss && !bundle.toss.error) setTossSnapshot(bundle.toss)
             if (bundle?.session) applySessionData(bundle.session)
-            // crex only for cricket
             if (sport === 'cricket') {
               if (bundle?.crex) {
+                crexDataRef.current = bundle.crex
                 setCrexData(bundle.crex)
               } else if (data?.crex) {
+                crexDataRef.current = data.crex
                 setCrexData(data.crex)
               }
             }
@@ -563,7 +560,21 @@ export default function MatchDetail({ sport }) {
 
     fetchData(true)
     const stopPoll = startVisibleInterval(() => fetchData(false), LIVE_POLL_MS)
-    return () => { cancelled = true; stopPoll() }
+
+    // Dedicated fast CREX poll — runs independently so scores update without waiting for bundle
+    let crexCancelled = false
+    const stopCrexPoll = sport === 'cricket'
+      ? startVisibleInterval(() => {
+          if (crexCancelled) return
+          getCrexMatchDetail(matchId).catch(() => null).then(res => {
+            if (crexCancelled || !res?.crex) return
+            crexDataRef.current = res.crex
+            setCrexData(res.crex)
+          })
+        }, CREX_POLL_MS)
+      : () => {}
+
+    return () => { cancelled = true; crexCancelled = true; stopPoll(); stopCrexPoll() }
   }, [matchId, sport, isLoggedIn])
 
   const liveStartPred = useMemo(() => {

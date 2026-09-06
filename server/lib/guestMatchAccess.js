@@ -1,5 +1,7 @@
 function isEndedMatch(match) {
-  return match?.status === 'ended';
+  if (!match || !match.status) return false;
+  const s = match.status.toLowerCase();
+  return s === 'ended' || s === 'verified' || s === 'pending' || s === 'closed';
 }
 
 /** Lists are public — guests see live/upcoming/ended. Detail is gated separately. */

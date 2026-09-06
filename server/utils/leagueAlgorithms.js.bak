@@ -389,7 +389,7 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
 
   // 4. Primary Rule: Strict Bookie Profit Side (Fade Public Overload)
   // We need MINIMUM liability to avoid noise in small leagues
-  const minLiability = -300;
+  const minLiability = -100;
   if (t1Pnl !== t2Pnl && (t1Pnl <= minLiability || t2Pnl <= minLiability)) {
     if (t1Pnl > t2Pnl) {
       return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };

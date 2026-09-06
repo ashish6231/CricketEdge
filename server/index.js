@@ -4,6 +4,7 @@ const fs = require('fs');
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
+const compression = require('compression');
 const path = require('path');
 const session = require('express-session');
 
@@ -52,6 +53,8 @@ io.use((socket, next) => {
 });
 
 // ─── MIDDLEWARE ───
+// Gzip all responses — biggest win for 3G/4G clients
+app.use(compression({ threshold: 1024 }));
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
@@ -247,4 +250,8 @@ process.on('SIGINT', () => shutdown('SIGINT'));
   tennisLogin.startAutoLogin();
   scraper.warmup();
   scraper.startSessionKeepAlive();
+  // Pre-warm CREX cache so first bundle request is fast
+  const crexService = require('./services/crexService');
+  crexService.getCrexOverview().catch(() => {});
+  setInterval(() => crexService.getCrexOverview().catch(() => {}), 9000);
 })();

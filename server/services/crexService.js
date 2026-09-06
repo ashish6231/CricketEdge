@@ -11,10 +11,10 @@ const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/
 
 let overviewCache = null;
 let overviewCacheTime = 0;
-const OVERVIEW_TTL = 4000; // 4 seconds
+const OVERVIEW_TTL = 10000; // 10 seconds
 
 const detailCache = new Map();
-const DETAIL_TTL = 2500; // 2.5 seconds
+const DETAIL_TTL = 2500; // 3 seconds — live score needs to be fresh
 
 function fetchHttps(url) {
   return new Promise((resolve, reject) => {

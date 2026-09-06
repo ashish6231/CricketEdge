@@ -199,7 +199,8 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
   }
 
   // 1.05 Pre-Match Lay Resistance Dump Fade (near-flat back lead < 1.35x, heavy lay dump on one team)
-  if (backRatio < 1.35 && l2 >= 150 && l2 >= l1 * 2.5) {
+  // Smart money shorts the team being laid, but bookie won't allow this if their liability on the other side is too massive (> 1000)
+  if (backRatio < 1.35 && l2 >= 150 && l2 >= l1 * 2.5 && prePnl1 >= -1000) {
     return {
       winner: t1,
       tier: 'CPL_TOSS_SPECIAL',
@@ -209,7 +210,7 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       reason: `CPL Lay Resistance Dump on ${t2} (₹${fmtVol(l2)} Lay vs ₹${fmtVol(l1)}) -> Faded to ${t1}`,
     }
   }
-  if (backRatio < 1.35 && l1 >= 150 && l1 >= l2 * 2.5) {
+  if (backRatio < 1.35 && l1 >= 150 && l1 >= l2 * 2.5 && prePnl2 >= -1000) {
     return {
       winner: t2,
       tier: 'CPL_TOSS_SPECIAL',
@@ -478,28 +479,29 @@ export function getTheHundredTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, p
 /**
  * 👩 Women's International T20 & Low Volume Matches Toss Algorithm
  */
-export function getWomensTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl2, backRatio }) {
-  // 1. Heavy Public Trap Fade: When public piles on favorite causing extreme bookmaker loss (prePnl <= -800)
+export function getWomensTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct }) {
+  // 1. Heavy Public Trap Fade: When public piles on favorite causing extreme bookmaker loss (prePnl <= -1100)
   // e.g. India W (-1466 PnL) vs Thailand W (+1565 PnL) -> Faded to Thailand W
   // e.g. Bangladesh W (-1143 PnL) vs Indonesia W (+1263 PnL) -> Faded to Indonesia W
-  if (prePnl1 <= -800 && prePnl2 >= 800) {
+  // Added constraint: Requires >= 75% public load or 3x back volume lead to ensure it's a true trap and not just high liquidity variance.
+  if ((b1Pct >= 0.75 || backRatio >= 3.0) && b1 > b2 && prePnl1 <= -1100 && prePnl2 >= 1100) {
     return {
       winner: t2,
       tier: 'WOMENS_TOSS_SPECIAL',
       algoName: "👩 Women's T20 Toss Algorithm",
       verdictTag: 'WOMENS TRAP FADE 🚨',
       pattern: 'WOMENS_TRAP_FADE',
-      reason: `Women's Heavy Trap on ${t1} (PnL: ${prePnl1.toFixed(0)}) -> Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
+      reason: `Women's Heavy Trap on ${t1} (${(b1Pct * 100).toFixed(0)}% Load, PnL: ${prePnl1.toFixed(0)}) -> Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
     }
   }
-  if (prePnl2 <= -800 && prePnl1 >= 800) {
+  if ((b2Pct >= 0.75 || backRatio >= 3.0) && b2 > b1 && prePnl2 <= -1100 && prePnl1 >= 1100) {
     return {
       winner: t1,
       tier: 'WOMENS_TOSS_SPECIAL',
       algoName: "👩 Women's T20 Toss Algorithm",
       verdictTag: 'WOMENS TRAP FADE 🚨',
       pattern: 'WOMENS_TRAP_FADE',
-      reason: `Women's Heavy Trap on ${t2} (PnL: ${prePnl2.toFixed(0)}) -> Bookie Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
+      reason: `Women's Heavy Trap on ${t2} (${(b2Pct * 100).toFixed(0)}% Load, PnL: ${prePnl2.toFixed(0)}) -> Bookie Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
     }
   }
 
@@ -570,7 +572,8 @@ export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
 
   // 5.2 Retail Overload Fade – 90%/9x threshold, double PnL gate, totBack > 800
   // Requires the FADE side (bookie) to also show positive PnL to confirm genuine overload
-  if ((b1Pct >= 0.90 || backRatio >= 9.0) && b1 > b2 && prePnl1 < -300 && prePnl2 > 0 && totBack > 800) {
+  // Also requires at least some lay resistance (>= 25) to confirm smart money is shorting the favorite
+  if ((b1Pct >= 0.90 || backRatio >= 9.0) && b1 > b2 && prePnl1 < -300 && prePnl2 > 0 && totBack > 800 && l1 >= 25) {
     return {
       winner: t2,
       tier: 'EUROPEAN_TOSS_SPECIAL',
@@ -580,7 +583,7 @@ export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       reason: `ECS Public Overload Fade on ${t1} (${(b1Pct * 100).toFixed(0)}% Load, PnL: ${prePnl1.toFixed(0)}) -> Faded to ${t2} (PnL: +${prePnl2.toFixed(0)})`,
     }
   }
-  if ((b2Pct >= 0.90 || backRatio >= 9.0) && b2 > b1 && prePnl2 < -300 && prePnl1 > 0 && totBack > 800) {
+  if ((b2Pct >= 0.90 || backRatio >= 9.0) && b2 > b1 && prePnl2 < -300 && prePnl1 > 0 && totBack > 800 && l2 >= 25) {
     return {
       winner: t1,
       tier: 'EUROPEAN_TOSS_SPECIAL',
