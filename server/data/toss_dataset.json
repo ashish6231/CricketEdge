@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-06T16:01:17.556Z",
+  "updatedAt": "2026-09-06T17:48:34.921Z",
   "records": [
     {
       "matchId": "35901908",
@@ -15596,7 +15596,7 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Hong Kong W"
+      "actualWinner": "Thailand W"
     },
     {
       "matchId": "35986052",
@@ -19055,7 +19055,7 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Thailand W"
+      "actualWinner": "India W"
     },
     {
       "matchId": "35989000",
@@ -20562,7 +20562,7 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Indonesia W"
+      "actualWinner": "Bangladesh W"
     },
     {
       "matchId": "36004104",
@@ -24542,7 +24542,7 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Indonesia W"
+      "actualWinner": "Sri Lanka W"
     },
     {
       "matchId": "36018454",
@@ -26725,8 +26725,8 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "India W"
     },
     {
       "matchId": "36019390",
@@ -28646,8 +28646,8 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "United Arab Emirates W"
     },
     {
       "matchId": "36019388",
@@ -30497,8 +30497,8 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "India W"
     },
     {
       "matchId": "36023098",
@@ -32294,6 +32294,507 @@
         {
           "reason": "ECS Smart Inflow on Edinburgh Castle Rockers (₹1162 Back, Lead: 7.5x)",
           "winner": "Edinburgh Castle Rockers",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36032174",
+      "marketId": "1.262017688",
+      "matchName": "South Africa v Zimbabwe",
+      "competitionName": "International Twenty20 Matches",
+      "team1": "South Africa",
+      "team2": "Zimbabwe",
+      "startTime": 1788696000000,
+      "endedAt": "2026-09-06T17:48:34.219Z",
+      "capturedAt": "2026-09-06T17:48:34.219Z",
+      "snapshot": {
+        "serverTime": "2026-09-06T17:48:33.891Z",
+        "matchId": "36032174",
+        "matchName": "South Africa v Zimbabwe",
+        "teamNames": [
+          "South Africa",
+          "Zimbabwe"
+        ],
+        "inPlayPnl": {
+          "team1": 1159.3914000000007,
+          "team2": -905.7221999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 1690.019,
+          "team2": 2675.6841999999992
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1143.1599999999999,
+            "lay": 396.68999999999994,
+            "total": 1733.4699999999998
+          },
+          "team2": {
+            "back": 2445.54,
+            "lay": 590.31,
+            "total": 2842.23
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1159.3914000000007,
+          "team2": -905.7221999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 1690.019,
+          "team2": 2675.6841999999992
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1143.1599999999999,
+            "lay": 396.68999999999994,
+            "total": 1733.4699999999998
+          },
+          "team2": {
+            "back": 2445.54,
+            "lay": 590.31,
+            "total": 2842.23
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1159.3914000000007,
+          "team2": -905.7221999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 1690.019,
+          "team2": 2675.6841999999992
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1143.1599999999999,
+            "lay": 396.68999999999994,
+            "total": 1733.4699999999998
+          },
+          "team2": {
+            "back": 2445.54,
+            "lay": 590.31,
+            "total": 2842.23
+          }
+        },
+        "matchLoadV2": {
+          "team1": 10,
+          "team2": 14
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1143.1599999999999,
+            "lay": 396.68999999999994,
+            "totalVolume": 1539.85,
+            "backPercentage": 74.23839984414066
+          },
+          "team2": {
+            "back": 2445.54,
+            "lay": 590.31,
+            "totalVolume": 3035.85,
+            "backPercentage": 80.55536340728297
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1099.709,
+            "lay": 403.87039999999996,
+            "totalBet": 1503.5794
+          },
+          "team2": {
+            "back": 2278.994199999999,
+            "lay": 626.802,
+            "totalBet": 2905.7961999999993
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1733.4699999999998,
+            "support": 37.884258146294556
+          },
+          "team2": {
+            "supportMoney": 2842.23,
+            "support": 62.115741853705444
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Zimbabwe",
+          "bookieFavouriteOutcome": "South Africa",
+          "riskTeam": "Zimbabwe",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 24.231483707410888,
+          "mostBettedTeam": "Zimbabwe",
+          "prediction": {
+            "team1TrueSupport": 1726.511,
+            "team2TrueSupport": 2682.864599999999,
+            "ratio": 1.5539226799018362,
+            "bookiePnlTeam1": -703.0190000000001,
+            "bookiePnlTeam2": -1688.6841999999992,
+            "prediction": "South Africa",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.55) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 695.8386,
+            "backExposure": 1099.709,
+            "layExposure": 403.87039999999996,
+            "teamName": "South Africa"
+          },
+          "team2": {
+            "netExposure": 1652.192199999999,
+            "backExposure": 2278.994199999999,
+            "layExposure": 626.802,
+            "teamName": "Zimbabwe"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1099.709,
+            "A_lay_stake": 396.68999999999994,
+            "B_back_expo": 2278.994199999999,
+            "B_lay_stake": 590.31
+          },
+          "totals": {
+            "totalBetTeam1": 1690.019,
+            "totalBetTeam2": 2675.6841999999992
+          },
+          "simplePL": {
+            "team1_win": -703.0190000000001,
+            "team2_win": -1688.6841999999992
+          },
+          "derivedPL": {
+            "team1_win": 985.6651999999992,
+            "team2_win": -985.6651999999992
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1143.1599999999999,
+              "totalLayVol": 396.68999999999994,
+              "totalBet": 1733.4699999999998,
+              "profitLoss": 1108.7600000000002
+            },
+            "team2": {
+              "totalBackVol": 2445.54,
+              "totalLayVol": 590.31,
+              "totalBet": 2842.23,
+              "profitLoss": -1108.7600000000002
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1099.709,
+              "totalLayVol": 396.68999999999994,
+              "totalBet": 1690.019,
+              "profitLoss": 1159.3913999999997
+            },
+            "team2": {
+              "totalBackExpo": 2278.994199999999,
+              "totalLayVol": 590.31,
+              "totalBet": 2675.6841999999992,
+              "profitLoss": -905.7221999999992
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1099.709,
+              "totalLayNetVol": 403.87039999999996,
+              "totalBet": 1726.511,
+              "profitLoss": 956.353599999999
+            },
+            "team2": {
+              "totalBackNetVol": 2278.994199999999,
+              "totalLayNetVol": 626.802,
+              "totalBet": 2682.864599999999,
+              "profitLoss": -956.353599999999
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 10,
+            "averageOdds": 2.005,
+            "averageSize": 173.34699999999995,
+            "supportProduct": 347.5607349999999
+          },
+          "teamB": {
+            "tradeCount": 14,
+            "averageOdds": 1.9692857142857145,
+            "averageSize": 203.01642857142855,
+            "supportProduct": 399.7973525510204
+          },
+          "strongerTeam": "Zimbabwe",
+          "supportRatio": 1.1502949334913235
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1143.1599999999999,
+            "oppoLayVolume": 590.31,
+            "layExposure": 403.87039999999996,
+            "netSupportValue": 1329.5995999999998
+          },
+          "teamB": {
+            "totalBackVolume": 2445.54,
+            "oppoLayVolume": 396.68999999999994,
+            "layExposure": 626.802,
+            "netSupportValue": 2215.428
+          },
+          "strongerTeam": "Zimbabwe",
+          "netSupportDifference": 885.8284000000001,
+          "percentageA": 37.506043676500575,
+          "percentageB": 62.49395632349943
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 746.4699999999999,
+            "syntheticSupport": 590.31,
+            "opponentLiabilityRejection": 626.802,
+            "sentimentScore": 709.9779999999997
+          },
+          "teamB": {
+            "directNetSupport": 1855.23,
+            "syntheticSupport": 396.68999999999994,
+            "opponentLiabilityRejection": 403.87039999999996,
+            "sentimentScore": 1848.0496
+          },
+          "strongerTeam": "Zimbabwe",
+          "scoreDifference": 1138.0716000000002,
+          "percentageA": 27.75489990803851,
+          "percentageB": 72.24510009196148
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "South Africa",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Zimbabwe",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "South Africa"
+        },
+        "teams": {
+          "South Africa": {
+            "trades": [
+              {
+                "team": "South Africa",
+                "price": 2.02,
+                "type": "lay",
+                "size": 41.09,
+                "updatedAt": 1788693887799
+              },
+              {
+                "team": "South Africa",
+                "price": 1.94,
+                "type": "back",
+                "size": 525.8599999999999,
+                "updatedAt": 1788693150725
+              },
+              {
+                "team": "South Africa",
+                "price": 2,
+                "type": "lay",
+                "size": 223.29999999999995,
+                "updatedAt": 1788692800016
+              },
+              {
+                "team": "South Africa",
+                "price": 1.94,
+                "type": "lay",
+                "size": 18.44999999999999,
+                "updatedAt": 1788692696139
+              },
+              {
+                "team": "South Africa",
+                "price": 1.95,
+                "type": "back",
+                "size": 252.68,
+                "updatedAt": 1788692689473
+              },
+              {
+                "team": "South Africa",
+                "price": 2.04,
+                "type": "lay",
+                "size": 41.06,
+                "updatedAt": 1788692359966
+              },
+              {
+                "team": "South Africa",
+                "price": 1.96,
+                "type": "back",
+                "size": 8.93,
+                "updatedAt": 1788689393583
+              },
+              {
+                "team": "South Africa",
+                "price": 2,
+                "type": "back",
+                "size": 301.1,
+                "updatedAt": 1788689368534
+              },
+              {
+                "team": "South Africa",
+                "price": 2.08,
+                "type": "lay",
+                "size": 72.79,
+                "updatedAt": 1788687563021
+              },
+              {
+                "team": "South Africa",
+                "price": 2.02,
+                "type": "back",
+                "size": 54.59,
+                "updatedAt": 1788685738984
+              }
+            ],
+            "pnlIfWins": 1159.3914000000007,
+            "totalBet": 1690.019
+          },
+          "Zimbabwe": {
+            "trades": [
+              {
+                "team": "Zimbabwe",
+                "price": 1.98,
+                "type": "back",
+                "size": 41.93000000000001,
+                "updatedAt": 1788693887581
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 2.1,
+                "type": "lay",
+                "size": 54.3,
+                "updatedAt": 1788693812751
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 2.06,
+                "type": "lay",
+                "size": 512.51,
+                "updatedAt": 1788693695687
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 2,
+                "type": "lay",
+                "size": 13.329999999999984,
+                "updatedAt": 1788692799969
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.96,
+                "type": "back",
+                "size": 163.61,
+                "updatedAt": 1788692358093
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 2.04,
+                "type": "lay",
+                "size": 8.58,
+                "updatedAt": 1788689393562
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.92,
+                "type": "back",
+                "size": 499.99,
+                "updatedAt": 1788687562974
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.98,
+                "type": "lay",
+                "size": 1.59,
+                "updatedAt": 1788685738984
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.91,
+                "type": "back",
+                "size": 576.45,
+                "updatedAt": 1788672683646
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.9,
+                "type": "back",
+                "size": 251.7,
+                "updatedAt": 1788672683646
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.74,
+                "updatedAt": 1788672666243
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.38,
+                "updatedAt": 1788672660903
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 1.95,
+                "type": "back",
+                "size": 280.77,
+                "updatedAt": 1788672660828
+              },
+              {
+                "team": "Zimbabwe",
+                "price": 2,
+                "type": "back",
+                "size": 209.97000000000003,
+                "updatedAt": 1788672520701
+              }
+            ],
+            "pnlIfWins": -905.7221999999999,
+            "totalBet": 2675.6841999999992
+          }
+        }
+      },
+      "predictedWinner": "Zimbabwe",
+      "predictionReason": "Intl Inflow on Zimbabwe (₹2.4k Back, Lead: 2.1x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Intl Inflow on Zimbabwe (₹2.4k Back, Lead: 2.1x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Intl Inflow on Zimbabwe (₹2.4k Back, Lead: 2.1x)",
+          "winner": "Zimbabwe",
           "priority": 100,
           "selected": true
         }

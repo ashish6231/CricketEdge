@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { LoaderCircle, Users, Crown, UserCheck, Ban, TrendingUp, UserMinus, Gift } from 'lucide-react'
-import { adminDashboard, adminGetUsers, adminGetPermissions } from '../../api'
+import { LoaderCircle, Users, Crown, UserCheck, Ban, TrendingUp, UserMinus, Gift, Clock } from 'lucide-react'
+import { adminDashboard, adminGetUsers, adminGetPermissions, adminGetScraperStatus } from '../../api'
 import { useToast } from '../../components/ToastProvider'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -45,6 +45,7 @@ export default function AdminDashboard({ isSuperAdmin }) {
   const [data, setData]         = useState(null)
   const [recentUsers, setRecentUsers] = useState([])
   const [permissions, setPermissions] = useState(null)
+  const [scraperStatus, setScraperStatus] = useState(null)
   const [loading, setLoading]   = useState(true)
 
   useEffect(() => {
@@ -52,11 +53,13 @@ export default function AdminDashboard({ isSuperAdmin }) {
       adminDashboard(),
       adminGetUsers({ page: 1, limit: 10, sort: 'newest' }),
       adminGetPermissions(),
+      adminGetScraperStatus().catch(() => null),
     ])
-      .then(([dash, users, perm]) => {
+      .then(([dash, users, perm, scraper]) => {
         setData(dash.data)
         setRecentUsers(users.data || [])
         setPermissions(perm.data)
+        if (scraper?.data) setScraperStatus(scraper.data)
       })
       .catch(e => toast.error(e.detail || 'Failed to load'))
       .finally(() => setLoading(false))
@@ -87,6 +90,13 @@ export default function AdminDashboard({ isSuperAdmin }) {
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         <StatCard icon={Users}      label="Total Users"     value={stats.totalUsers}    color="#6366f1" />
         <StatCard icon={Crown}      label="Pro Subscribers" value={stats.proSubscribers} color="#f59e0b" sub={`${proRatio}%`} />
+        <StatCard
+          icon={Clock}
+          label="Cookie Expiry"
+          value={scraperStatus ? `${scraperStatus.hoursLeft}h` : '—'}
+          color={scraperStatus?.isConnected ? '#10b981' : '#ef4444'}
+          sub={scraperStatus?.isConnected ? '🟢 Live' : '🔴 Expired'}
+        />
         <StatCard icon={Gift}       label="Trial Users"     value={stats.trialUsers}    color="#10b981" />
         <StatCard icon={UserMinus}  label="Former Pro"      value={stats.lapsedProUsers} color="#a855f7" />
         <StatCard icon={UserCheck}  label="Free Users"      value={stats.freeUsers}     color="#8e8e93" />

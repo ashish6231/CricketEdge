@@ -17,6 +17,7 @@ const { getDefaultStore } = require('../services/tossDatasetStore');
 const { runTossCaptureNow } = require('../services/tossCaptureWorker');
 const { getDefaultStore: getDefaultMatchStore } = require('../services/matchDatasetStore');
 const { runMatchCaptureNow } = require('../services/matchCaptureWorker');
+const tennisLogin = require('../services/tennisLogin');
 
 function parseUserId(raw) {
   const id = parseInt(raw, 10);
@@ -868,6 +869,29 @@ router.get('/match-dataset', requireSuperAdmin, (req, res) => getMatchDataset(re
 router.patch('/match-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchMatchActualWinner(req, res));
 router.post('/match-dataset/capture', requireSuperAdmin, (req, res) => postMatchDatasetCapture(req, res));
 router.get('/match-dataset/export', requireSuperAdmin, (req, res) => getMatchDatasetExport(req, res));
+
+// ──── Scraper Session Management (1 daily try + 1 emergency try + auto-persist) ────
+router.get('/scraper/status', requireAdmin, (req, res) => {
+  res.json({ success: true, data: tennisLogin.getStatus() });
+});
+
+router.post('/scraper/cookie', requireSuperAdmin, async (req, res) => {
+  const { cookie } = req.body || {};
+  if (!cookie || typeof cookie !== 'string' || !cookie.trim()) {
+    return res.status(400).json({ error: 'Valid cookie string is required' });
+  }
+  const ok = await tennisLogin.updateCookiesManually(cookie);
+  res.json({ success: ok, message: 'Session cookie updated and persisted to DB & disk', data: tennisLogin.getStatus() });
+});
+
+router.post('/scraper/emergency-login', requireSuperAdmin, async (req, res) => {
+  try {
+    const result = await tennisLogin.triggerEmergencyLogin();
+    res.json({ success: true, message: 'Emergency login succeeded. Fresh session cookie saved to DB & disk.', data: tennisLogin.getStatus() });
+  } catch (err) {
+    res.status(400).json({ success: false, error: err.message, data: tennisLogin.getStatus() });
+  }
+});
 
 module.exports = router;
 module.exports.getTossDataset = getTossDataset;

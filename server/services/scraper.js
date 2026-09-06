@@ -83,7 +83,7 @@ function _getHeaders() {
   };
 }
 
-async function _callApi(endpoint, params = null, method = 'GET') {
+async function _callApi(endpoint, params = null, method = 'GET', _isRetry = false) {
   const url = `${BASE_URL}${endpoint}`;
   try {
     const config = { headers: _getHeaders() };
@@ -95,7 +95,15 @@ async function _callApi(endpoint, params = null, method = 'GET') {
     if (err.response) {
       const status = err.response.status;
       if (status === 401) {
-        console.warn(`⚠️  scraper: 401 on ${endpoint} — cookie expired. Update TENNIS_SESSION_COOKIES in env.`);
+        if (!_isRetry && tennisLogin.canAutoLogin()) {
+          console.log(`🔑 scraper: 401 on ${endpoint} — using daily automated login try (1/1)...`);
+          const ok = await tennisLogin.autoRelogin();
+          if (ok) {
+            console.log(`🔄 scraper: retrying ${endpoint} with freshly acquired session cookie...`);
+            return _callApi(endpoint, params, method, true);
+          }
+        }
+        console.warn(`⚠️  scraper: 401 on ${endpoint} — cookie expired. 2nd login try is reserved for emergency / manual update.`);
       }
       return { error: _formatUpstreamError({ error: `HTTP ${status}` }), upstreamStatus: status };
     }

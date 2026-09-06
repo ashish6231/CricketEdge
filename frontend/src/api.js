@@ -427,3 +427,22 @@ export async function adminGetAuditLogs(params = {}) {
   const q = new URLSearchParams(params).toString()
   return fetchAPI(`/admin/audit-logs${q ? '?' + q : ''}`)
 }
+
+export async function adminGetScraperStatus() {
+  return fetchAPI('/admin/scraper/status')
+}
+
+export async function adminUpdateScraperCookie(cookie) {
+  return fetchAPI('/admin/scraper/cookie', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cookie }),
+  })
+}
+
+export async function adminTriggerEmergencyLogin() {
+  return fetchAPI('/admin/scraper/emergency-login', {
+    method: 'POST',
+  })
+}
+

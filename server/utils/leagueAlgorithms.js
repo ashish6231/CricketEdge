@@ -517,6 +517,80 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
   return null;
 }
 
+function isWomensAsiaCup(compName, team1, team2) {
+  const comp = (compName || '').toLowerCase();
+  const t1 = (team1 || '').toLowerCase();
+  const t2 = (team2 || '').toLowerCase();
+  if (comp.includes('asia cup') && (t1.includes(' w') || t2.includes(' w') || comp.includes('women'))) return true;
+
+  const asianTeams = [
+    'india w', 'pakistan w', 'sri lanka w', 'thailand w',
+    'bangladesh w', 'indonesia w', 'hong kong w', 'united arab emirates w', 'uae w', 'nepal w', 'malaysia w'
+  ];
+  const isT1Asian = asianTeams.some(t => t1.includes(t));
+  const isT2Asian = asianTeams.some(t => t2.includes(t));
+  if (isT1Asian && isT2Asian && (comp.includes('twenty20') || comp.includes('international') || comp.includes('asia'))) {
+    return true;
+  }
+  return false;
+}
+
+function getWomensAsiaCupPrediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, team2) {
+  const tot1 = b1 + l1;
+  const tot2 = b2 + l2;
+
+  // Rule 1: High volume dominance (> 3x)
+  if (tot1 >= 1000 || tot2 >= 1000) {
+    if (tot1 >= tot2 * 3) {
+      return {
+        winner: team1,
+        tier: 'WOMENS_ASIA_CUP_DOMINANCE',
+        ruleName: 'Asia Cup Volume Dominance',
+        confidence: 'High',
+        reason: `${team1} holds massive matched volume dominance (₹${Math.round(tot1)} vs ₹${Math.round(tot2)})`
+      };
+    }
+    if (tot2 >= tot1 * 3) {
+      return {
+        winner: team2,
+        tier: 'WOMENS_ASIA_CUP_DOMINANCE',
+        ruleName: 'Asia Cup Volume Dominance',
+        confidence: 'High',
+        reason: `${team2} holds massive matched volume dominance (₹${Math.round(tot2)} vs ₹${Math.round(tot1)})`
+      };
+    }
+  }
+
+  // Rule 2: Positive Bookie PnL / Trap fade for low volume matches
+  if (pnl1 > pnl2 && pnl1 > 0) {
+    return {
+      winner: team1,
+      tier: 'WOMENS_ASIA_CUP_PNL',
+      ruleName: 'Asia Cup Bookie Positive Yield',
+      confidence: 'High',
+      reason: `Bookmaker profit positive on ${team1} (+₹${Math.round(pnl1)}) vs ${team2}`
+    };
+  }
+  if (pnl2 > pnl1 && pnl2 > 0) {
+    return {
+      winner: team2,
+      tier: 'WOMENS_ASIA_CUP_PNL',
+      ruleName: 'Asia Cup Bookie Positive Yield',
+      confidence: 'High',
+      reason: `Bookmaker profit positive on ${team2} (+₹${Math.round(pnl2)}) vs ${team1}`
+    };
+  }
+
+  // Fallback to highest volume
+  return {
+    winner: tot1 >= tot2 ? team1 : team2,
+    tier: 'WOMENS_ASIA_CUP_FALLBACK',
+    ruleName: 'Asia Cup Inflow Leader',
+    confidence: 'Medium',
+    reason: `${tot1 >= tot2 ? team1 : team2} leads in total pre-match inflow`
+  };
+}
+
 function isWomenMatch(compName, team1, team2) {
   const comp = (compName || '').toLowerCase();
   if (comp.includes('women') || comp.includes("women's") || comp.includes('womens') || comp.includes('wcpl')) {
@@ -542,6 +616,12 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
   const epnl2 = snap?.preMatchPnl?.team2 != null ? snap.preMatchPnl.team2 : pnl2;
 
   const isWomen = isWomenMatch(compName, team1, team2);
+
+  // 🏆 LEAGUE SPECIFIC RULE: Women's Asia Cup
+  if (isWomensAsiaCup(compName, team1, team2)) {
+    const asiaPred = getWomensAsiaCupPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (asiaPred) return asiaPred;
+  }
 
   // 🌍 LEAGUE SPECIFIC RULE: International Twenty20 Matches (T20I)
   if (isInternationalT20(compName) && !isWomen) {
@@ -741,6 +821,8 @@ function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2)
 
 module.exports = {
   isWomenMatch,
+  isWomensAsiaCup,
+  getWomensAsiaCupPrediction,
   isInternationalT20,
   getInternationalT20Prediction,
   getCPLPrediction,
