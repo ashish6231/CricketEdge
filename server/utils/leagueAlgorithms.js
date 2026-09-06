@@ -142,13 +142,26 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
 
   // ─────────────────────────────────────────────────────────────────────────
   // RULE 1 — 🚨 Massive Lay Dump on Favorite Fade
-  //   Favorite is shorted heavily (Lay >= 15k & Lay >= 1.7x Back & Lay >= opponent Lay * 2.0).
-  //   Smart money heavily short-sells the favorite in the lay market, creating massive resistance.
+  //   Favorite is shorted heavily in the lay market:
+  //   (a) Classic short ratio: Lay >= 15k & Lay >= 1.7x Back & Lay >= opponent Lay * 2.0
+  //   (b) Extreme Lay Short Resistance: Lay >= 30k & Lay > Back & (derivedPL favors opponent || pb2 >= pb1 * 1.5)
   // ─────────────────────────────────────────────────────────────────────────
-  if (l1 >= 15000 && l1 >= b1 * 1.7 && l1 >= l2 * 2.0) {
+  const dpl1 = snap?.deepMetrics?.derivedPL?.team1_win;
+  const dpl2 = snap?.deepMetrics?.derivedPL?.team2_win;
+
+  const l1Short = (l1 >= 15000 && l1 >= l2 * 2.0) && (
+    (l1 >= b1 * 1.7) ||
+    (l1 >= 30000 && l1 > b1 && (dpl1 != null ? (dpl1 < 0 && dpl2 > 0) : (pb2 >= pb1 * 1.5 && pb2 >= 5000 && epnl1 < 10000)))
+  );
+  const l2Short = (l2 >= 15000 && l2 >= l1 * 2.0) && (
+    (l2 >= b2 * 1.7) ||
+    (l2 >= 30000 && l2 > b2 && (dpl2 != null ? (dpl2 < 0 && dpl1 > 0) : (pb1 >= pb2 * 1.5 && pb1 >= 5000 && epnl2 < 10000)))
+  );
+
+  if (l1Short) {
     return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
   }
-  if (l2 >= 15000 && l2 >= b2 * 1.7 && l2 >= l1 * 2.0) {
+  if (l2Short) {
     return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
   }
 
