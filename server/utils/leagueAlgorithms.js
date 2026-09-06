@@ -84,6 +84,51 @@ function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, 
   return { winner: prePnl1 > prePnl2 ? team1 : team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Bookmaker Safe Edge' };
 }
 
+// 👩 Women's Caribbean Premier League (WCPL) Algorithm
+function getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  // 1. Extreme Lay Resistance Dump (Fade heavily laid team, e.g. Barbados W lay=2371 vs Trinbago W lay=84 -> Trinbago W wins)
+  if (l1 >= 200 && (l1 >= b1 * 1.5 || l1 >= l2 * 2.5)) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Lay Resistance Dump (Fade Short Team)' };
+  }
+  if (l2 >= 200 && (l2 >= b2 * 1.5 || l2 >= l1 * 2.5)) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Lay Resistance Dump (Fade Short Team)' };
+  }
+
+  // 2. Dual Flow Dominance (Higher Back and Higher Lay with clean inflow)
+  if (b1 > b2 && l1 > l2 && (b1 >= b2 * 1.25 || l1 >= l2 * 1.25)) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Dual Flow Advantage' };
+  }
+  if (b2 > b1 && l2 > l1 && (b2 >= b1 * 1.25 || l2 >= l1 * 1.25)) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Dual Flow Advantage' };
+  }
+
+  // 3. Clear Back Inflow Margin (1.25x+)
+  if (b1 >= (b2 || 1) * 1.25 && b1 > b2) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Smart Inflow Margin' };
+  }
+  if (b2 >= (b1 || 1) * 1.25 && b2 > b1) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Smart Inflow Margin' };
+  }
+
+  // 4. Pre-Match Volume Leader
+  if (b1 > b2) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Volume Leader' };
+  }
+  if (b2 > b1) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Volume Leader' };
+  }
+
+  // 5. Bookmaker Safe
+  if (epnl1 > epnl2) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Safe' };
+  }
+  if (epnl2 > epnl1) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Safe' };
+  }
+
+  return null;
+}
+
 function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const tot1 = b1 + l1;
   const tot2 = b2 + l2;
@@ -459,6 +504,23 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
   return null;
 }
 
+function isWomenMatch(compName, team1, team2) {
+  const comp = (compName || '').toLowerCase();
+  if (comp.includes('women') || comp.includes("women's") || comp.includes('womens') || comp.includes('wcpl')) {
+    return true;
+  }
+  const t1 = (team1 || '').trim();
+  const t2 = (team2 || '').trim();
+  // Teams where W is written at last are women's matches
+  if (/\bW$/i.test(t1) || /\bW$/i.test(t2)) {
+    return true;
+  }
+  if (/(\bwomen\b|\bwomen\'s\b|\bwomens\b)/i.test(t1) || /(\bwomen\b|\bwomen\'s\b|\bwomens\b)/i.test(t2)) {
+    return true;
+  }
+  return false;
+}
+
 function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team1, team2, snap = null) {
   const comp = (compName || '').toLowerCase();
 
@@ -466,14 +528,22 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
   const epnl1 = snap?.preMatchPnl?.team1 != null ? snap.preMatchPnl.team1 : pnl1;
   const epnl2 = snap?.preMatchPnl?.team2 != null ? snap.preMatchPnl.team2 : pnl2;
 
+  const isWomen = isWomenMatch(compName, team1, team2);
+
   // 🌍 LEAGUE SPECIFIC RULE: International Twenty20 Matches (T20I)
-  if (isInternationalT20(compName) && !comp.includes('womens') && !comp.includes("women's") && !comp.includes('women')) {
+  if (isInternationalT20(compName) && !isWomen) {
     const intlPred = getInternationalT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
     if (intlPred) return intlPred;
   }
 
-  // 🏆 LEAGUE SPECIFIC RULE: Caribbean Premier League (CPL)
-  if (comp.includes('caribbean') || comp.match(/\bcpl\b/)) {
+  // 👩 LEAGUE SPECIFIC RULE: Women's Caribbean Premier League (WCPL)
+  if (isWomen && (comp.includes('caribbean') || comp.match(/\bcpl\b/) || comp.includes('wcpl'))) {
+    const wcplPred = getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (wcplPred) return wcplPred;
+  }
+
+  // 🏆 LEAGUE SPECIFIC RULE: Men's Caribbean Premier League (CPL)
+  if (!isWomen && (comp.includes('caribbean') || comp.match(/\bcpl\b/))) {
     const cplPred = getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
     if (cplPred) return cplPred;
   }
@@ -657,9 +727,11 @@ function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2)
 }
 
 module.exports = {
+  isWomenMatch,
   isInternationalT20,
   getInternationalT20Prediction,
   getCPLPrediction,
+  getWCPLPrediction,
   getUPT20Prediction,
   getKeralaPrediction,
   getSherEPunjabPrediction,

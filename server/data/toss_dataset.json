@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-06T11:58:48.977Z",
+  "updatedAt": "2026-09-06T16:01:17.556Z",
   "records": [
     {
       "matchId": "35901908",
@@ -30942,8 +30942,10 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders W",
+      "predictionTier": "WCPL_SPECIAL",
+      "predictionConfidence": "WCPL Lay Resistance Dump (Fade Short Team)"
     },
     {
       "matchId": "test-123-toss-unique",
@@ -31444,6 +31446,854 @@
         {
           "reason": "CPL Smart Money Inflow on Barbados Tridents (₹7.3k Back, Lead: 56.5x)",
           "winner": "Barbados Tridents",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36027911",
+      "marketId": "1.262017884",
+      "matchName": "England W v Ireland W",
+      "competitionName": "Womens One Day Internationals",
+      "team1": "England W",
+      "team2": "Ireland W",
+      "startTime": 1788687000000,
+      "endedAt": "2026-09-06T16:01:16.146Z",
+      "capturedAt": "2026-09-06T16:01:16.146Z",
+      "snapshot": {
+        "serverTime": "2026-09-06T16:01:16.082Z",
+        "matchId": "36027911",
+        "matchName": "England W v Ireland W",
+        "teamNames": [
+          "England W",
+          "Ireland W"
+        ],
+        "inPlayPnl": {
+          "team1": -465.4219999999999,
+          "team2": 586.0993999999998
+        },
+        "inPlayTotalBets": {
+          "team1": 1413.4013999999997,
+          "team2": 922.903
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1322.12,
+            "lay": 247.5800000000001,
+            "total": 1501.5099999999998
+          },
+          "team2": {
+            "back": 707.96,
+            "lay": 179.39,
+            "total": 955.5400000000002
+          }
+        },
+        "preMatchPnl": {
+          "team1": -465.4219999999999,
+          "team2": 586.0993999999998
+        },
+        "preMatchTotalBets": {
+          "team1": 1413.4013999999997,
+          "team2": 922.903
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1322.12,
+            "lay": 247.5800000000001,
+            "total": 1501.5099999999998
+          },
+          "team2": {
+            "back": 707.96,
+            "lay": 179.39,
+            "total": 955.5400000000002
+          }
+        },
+        "threeMinPnl": {
+          "team1": -465.4219999999999,
+          "team2": 586.0993999999998
+        },
+        "threeMinTotalBets": {
+          "team1": 1413.4013999999997,
+          "team2": 922.903
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1322.12,
+            "lay": 247.5800000000001,
+            "total": 1501.5099999999998
+          },
+          "team2": {
+            "back": 707.96,
+            "lay": 179.39,
+            "total": 955.5400000000002
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1322.12,
+            "lay": 247.5800000000001,
+            "totalVolume": 1569.7,
+            "backPercentage": 84.22755940625596
+          },
+          "team2": {
+            "back": 707.96,
+            "lay": 179.39,
+            "totalVolume": 887.35,
+            "backPercentage": 79.78362540147631
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1234.0113999999999,
+            "lay": 240.01940000000008,
+            "totalBet": 1474.0308
+          },
+          "team2": {
+            "back": 675.323,
+            "lay": 186.8824,
+            "totalBet": 862.2053999999999
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1501.5099999999998,
+            "support": 61.1102745161881
+          },
+          "team2": {
+            "supportMoney": 955.5400000000002,
+            "support": 38.889725483811894
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "England W",
+          "bookieFavouriteOutcome": "Ireland W",
+          "riskTeam": "England W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 22.220549032376205,
+          "mostBettedTeam": "England W",
+          "prediction": {
+            "team1TrueSupport": 1420.8937999999998,
+            "team2TrueSupport": 915.3424,
+            "ratio": 1.5523085131858851,
+            "bookiePnlTeam1": -986.4313999999997,
+            "bookiePnlTeam2": -495.933,
+            "prediction": "Ireland W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.55) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 993.9919999999997,
+            "backExposure": 1234.0113999999999,
+            "layExposure": 240.01940000000008,
+            "teamName": "England W"
+          },
+          "team2": {
+            "netExposure": 488.4406,
+            "backExposure": 675.323,
+            "layExposure": 186.8824,
+            "teamName": "Ireland W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1234.0113999999999,
+            "A_lay_stake": 247.5800000000001,
+            "B_back_expo": 675.323,
+            "B_lay_stake": 179.39
+          },
+          "totals": {
+            "totalBetTeam1": 1413.4013999999997,
+            "totalBetTeam2": 922.903
+          },
+          "simplePL": {
+            "team1_win": -986.4313999999997,
+            "team2_win": -495.933
+          },
+          "derivedPL": {
+            "team1_win": -490.4983999999997,
+            "team2_win": 490.4983999999997
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1322.12,
+              "totalLayVol": 247.5800000000001,
+              "totalBet": 1501.5099999999998,
+              "profitLoss": -545.9699999999996
+            },
+            "team2": {
+              "totalBackVol": 707.96,
+              "totalLayVol": 179.39,
+              "totalBet": 955.5400000000002,
+              "profitLoss": 545.9699999999996
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1234.0113999999999,
+              "totalLayVol": 247.5800000000001,
+              "totalBet": 1413.4013999999997,
+              "profitLoss": -465.42199999999957
+            },
+            "team2": {
+              "totalBackExpo": 675.323,
+              "totalLayVol": 179.39,
+              "totalBet": 922.903,
+              "profitLoss": 586.0993999999998
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1234.0113999999999,
+              "totalLayNetVol": 240.01940000000008,
+              "totalBet": 1420.8937999999998,
+              "profitLoss": -505.55139999999983
+            },
+            "team2": {
+              "totalBackNetVol": 675.323,
+              "totalLayNetVol": 186.8824,
+              "totalBet": 915.3424,
+              "profitLoss": 505.55139999999983
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.9685714285714284,
+            "averageSize": 214.50142857142853,
+            "supportProduct": 422.26138367346925
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.9671428571428573,
+            "averageSize": 136.5057142857143,
+            "supportProduct": 268.5262408163266
+          },
+          "strongerTeam": "England W",
+          "supportRatio": 1.5725144119613186
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1322.12,
+            "oppoLayVolume": 179.39,
+            "layExposure": 240.01940000000008,
+            "netSupportValue": 1261.4905999999996
+          },
+          "teamB": {
+            "totalBackVolume": 707.96,
+            "oppoLayVolume": 247.5800000000001,
+            "layExposure": 186.8824,
+            "netSupportValue": 768.6576000000002
+          },
+          "strongerTeam": "England W",
+          "netSupportDifference": 492.8329999999994,
+          "percentageA": 62.137857718958635,
+          "percentageB": 37.862142281041365
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1074.5399999999997,
+            "syntheticSupport": 179.39,
+            "opponentLiabilityRejection": 186.8824,
+            "sentimentScore": 1067.0475999999999
+          },
+          "teamB": {
+            "directNetSupport": 528.57,
+            "syntheticSupport": 247.5800000000001,
+            "opponentLiabilityRejection": 240.01940000000008,
+            "sentimentScore": 536.1306
+          },
+          "strongerTeam": "England W",
+          "scoreDifference": 530.9169999999999,
+          "percentageA": 66.55826532571363,
+          "percentageB": 33.441734674286366
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "England W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Ireland W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "England W"
+        },
+        "teams": {
+          "England W": {
+            "trades": [
+              {
+                "team": "England W",
+                "price": 2.04,
+                "type": "lay",
+                "size": 83.95,
+                "updatedAt": 1788684703952
+              },
+              {
+                "team": "England W",
+                "price": 1.93,
+                "type": "back",
+                "size": 540.9699999999999,
+                "updatedAt": 1788684667080
+              },
+              {
+                "team": "England W",
+                "price": 1.92,
+                "type": "back",
+                "size": 315.63,
+                "updatedAt": 1788684000514
+              },
+              {
+                "team": "England W",
+                "price": 1.93,
+                "type": "lay",
+                "size": 152.92000000000007,
+                "updatedAt": 1788683993939
+              },
+              {
+                "team": "England W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.71,
+                "updatedAt": 1788682989992
+              },
+              {
+                "team": "England W",
+                "price": 1.94,
+                "type": "back",
+                "size": 171.43,
+                "updatedAt": 1788682347022
+              },
+              {
+                "team": "England W",
+                "price": 1.95,
+                "type": "back",
+                "size": 294.09,
+                "updatedAt": 1788682339254
+              }
+            ],
+            "pnlIfWins": -465.4219999999999,
+            "totalBet": 1413.4013999999997
+          },
+          "Ireland W": {
+            "trades": [
+              {
+                "team": "Ireland W",
+                "price": 1.96,
+                "type": "back",
+                "size": 58.86,
+                "updatedAt": 1788684703857
+              },
+              {
+                "team": "Ireland W",
+                "price": 1.96,
+                "type": "lay",
+                "size": 28.51,
+                "updatedAt": 1788684695213
+              },
+              {
+                "team": "Ireland W",
+                "price": 1.97,
+                "type": "back",
+                "size": 167.58,
+                "updatedAt": 1788684691728
+              },
+              {
+                "team": "Ireland W",
+                "price": 1.95,
+                "type": "back",
+                "size": 363.6,
+                "updatedAt": 1788683672688
+              },
+              {
+                "team": "Ireland W",
+                "price": 2.02,
+                "type": "lay",
+                "size": 10.5,
+                "updatedAt": 1788682989936
+              },
+              {
+                "team": "Ireland W",
+                "price": 1.94,
+                "type": "back",
+                "size": 117.92,
+                "updatedAt": 1788682727504
+              },
+              {
+                "team": "Ireland W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 140.38,
+                "updatedAt": 1788682360766
+              }
+            ],
+            "pnlIfWins": 586.0993999999998,
+            "totalBet": 922.903
+          }
+        }
+      },
+      "predictedWinner": "England W",
+      "predictionReason": "Women's Inflow on England W (₹1.3k Back, Lead: 1.9x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Women's Inflow on England W (₹1.3k Back, Lead: 1.9x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Women's Inflow on England W (₹1.3k Back, Lead: 1.9x)",
+          "winner": "England W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36034286",
+      "marketId": "1.262018673",
+      "matchName": "Glasgow Cosmic v Edinburgh Castle Rockers",
+      "competitionName": "European T20 Premier League",
+      "team1": "Glasgow Cosmic",
+      "team2": "Edinburgh Castle Rockers",
+      "startTime": 1788687000000,
+      "endedAt": "2026-09-06T16:01:16.734Z",
+      "capturedAt": "2026-09-06T16:01:16.734Z",
+      "snapshot": {
+        "serverTime": "2026-09-06T16:01:16.724Z",
+        "matchId": "36034286",
+        "matchName": "Glasgow Cosmic v Edinburgh Castle Rockers",
+        "teamNames": [
+          "Glasgow Cosmic",
+          "Edinburgh Castle Rockers"
+        ],
+        "inPlayPnl": {
+          "team1": 1078.8446999999999,
+          "team2": -1000.9979999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 155.4536,
+          "team2": 1158.0676
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 154.42,
+            "lay": 67.19,
+            "total": 165.14
+          },
+          "team2": {
+            "back": 1161.95,
+            "lay": 10.72,
+            "total": 1229.14
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1078.8446999999999,
+          "team2": -1000.9979999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 155.4536,
+          "team2": 1158.0676
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 154.42,
+            "lay": 67.19,
+            "total": 165.14
+          },
+          "team2": {
+            "back": 1161.95,
+            "lay": 10.72,
+            "total": 1229.14
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1078.8446999999999,
+          "team2": -1000.9979999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 155.4536,
+          "team2": 1158.0676
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 154.42,
+            "lay": 67.19,
+            "total": 165.14
+          },
+          "team2": {
+            "back": 1161.95,
+            "lay": 10.72,
+            "total": 1229.14
+          }
+        },
+        "matchLoadV2": {
+          "team1": 5,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 154.42,
+            "lay": 67.19,
+            "totalVolume": 221.60999999999999,
+            "backPercentage": 69.68097107531248
+          },
+          "team2": {
+            "back": 1161.95,
+            "lay": 10.72,
+            "totalVolume": 1172.67,
+            "backPercentage": 99.08584682817843
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 144.7336,
+            "lay": 72.3483,
+            "totalBet": 217.0819
+          },
+          "team2": {
+            "back": 1090.8776,
+            "lay": 2.6496,
+            "totalBet": 1093.5272
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 165.14,
+            "support": 11.844105918466877
+          },
+          "team2": {
+            "supportMoney": 1229.14,
+            "support": 88.15589408153312
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Edinburgh Castle Rockers",
+          "bookieFavouriteOutcome": "Glasgow Cosmic",
+          "riskTeam": "Edinburgh Castle Rockers",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 76.31178816306624,
+          "mostBettedTeam": "Edinburgh Castle Rockers",
+          "prediction": {
+            "team1TrueSupport": 147.1336,
+            "team2TrueSupport": 1163.2259,
+            "ratio": 7.905916119771418,
+            "bookiePnlTeam1": -77.5436,
+            "bookiePnlTeam2": -1088.4776,
+            "prediction": "Glasgow Cosmic",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (7.91) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 72.3853,
+            "backExposure": 144.7336,
+            "layExposure": 72.3483,
+            "teamName": "Glasgow Cosmic"
+          },
+          "team2": {
+            "netExposure": 1088.4776,
+            "backExposure": 1090.8776,
+            "layExposure": 2.4,
+            "teamName": "Edinburgh Castle Rockers"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 144.7336,
+            "A_lay_stake": 67.19,
+            "B_back_expo": 1090.8776,
+            "B_lay_stake": 10.72
+          },
+          "totals": {
+            "totalBetTeam1": 155.4536,
+            "totalBetTeam2": 1158.0676
+          },
+          "simplePL": {
+            "team1_win": -77.5436,
+            "team2_win": -1080.1576
+          },
+          "derivedPL": {
+            "team1_win": 1002.614,
+            "team2_win": -1002.614
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 154.42,
+              "totalLayVol": 67.19,
+              "totalBet": 165.14,
+              "profitLoss": 1064
+            },
+            "team2": {
+              "totalBackVol": 1161.95,
+              "totalLayVol": 10.72,
+              "totalBet": 1229.14,
+              "profitLoss": -1064
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 144.7336,
+              "totalLayVol": 67.19,
+              "totalBet": 155.4536,
+              "profitLoss": 1078.8446999999999
+            },
+            "team2": {
+              "totalBackExpo": 1090.8776,
+              "totalLayVol": 10.72,
+              "totalBet": 1158.0676,
+              "profitLoss": -1000.998
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 144.7336,
+              "totalLayNetVol": 72.3483,
+              "totalBet": 147.3832,
+              "profitLoss": 1015.8426999999999
+            },
+            "team2": {
+              "totalBackNetVol": 1090.8776,
+              "totalLayNetVol": 2.6496,
+              "totalBet": 1163.2259,
+              "profitLoss": -1015.8426999999999
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 5,
+            "averageOdds": 1.582,
+            "averageSize": 33.028,
+            "supportProduct": 52.250296
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.9657142857142857,
+            "averageSize": 175.5914285714286,
+            "supportProduct": 345.1625795918368
+          },
+          "strongerTeam": "Edinburgh Castle Rockers",
+          "supportRatio": 6.605944961380445
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 154.42,
+            "oppoLayVolume": 10.72,
+            "layExposure": 72.3483,
+            "netSupportValue": 92.79169999999999
+          },
+          "teamB": {
+            "totalBackVolume": 1161.95,
+            "oppoLayVolume": 67.19,
+            "layExposure": 2.6496,
+            "netSupportValue": 1226.4904000000001
+          },
+          "strongerTeam": "Edinburgh Castle Rockers",
+          "netSupportDifference": 1133.6987000000001,
+          "percentageA": 7.033499507042502,
+          "percentageB": 92.9665004929575
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 87.22999999999999,
+            "syntheticSupport": 10.72,
+            "opponentLiabilityRejection": 2.6496,
+            "sentimentScore": 95.30039999999998
+          },
+          "teamB": {
+            "directNetSupport": 1151.23,
+            "syntheticSupport": 67.19,
+            "opponentLiabilityRejection": 72.3483,
+            "sentimentScore": 1146.0717
+          },
+          "strongerTeam": "Edinburgh Castle Rockers",
+          "scoreDifference": 1050.7712999999999,
+          "percentageA": 7.677021257365135,
+          "percentageB": 92.32297874263486
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Glasgow Cosmic",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Edinburgh Castle Rockers",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Glasgow Cosmic"
+        },
+        "teams": {
+          "Glasgow Cosmic": {
+            "trades": [
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.04,
+                "updatedAt": 1788684169795
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 2.08,
+                "type": "lay",
+                "size": 64.78,
+                "updatedAt": 1788683999213
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.99,
+                "type": "lay",
+                "size": 2.4099999999999993,
+                "updatedAt": 1788683666492
+              },
+              {
+                "team": "Glasgow Cosmic",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.38,
+                "updatedAt": 1788683628037
+              }
+            ],
+            "pnlIfWins": 1078.8446999999999,
+            "totalBet": 155.4536
+          },
+          "Edinburgh Castle Rockers": {
+            "trades": [
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.04,
+                "type": "lay",
+                "size": 4.16,
+                "updatedAt": 1788684637527
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.02,
+                "type": "lay",
+                "size": 4.16,
+                "updatedAt": 1788684622287
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.94,
+                "updatedAt": 1788684032347
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.92,
+                "type": "back",
+                "size": 491.33,
+                "updatedAt": 1788683999401
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 2,
+                "type": "lay",
+                "size": 2.4,
+                "updatedAt": 1788683666541
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.76,
+                "updatedAt": 1788682620854
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.38,
+                "updatedAt": 1788682378445
+              },
+              {
+                "team": "Edinburgh Castle Rockers",
+                "price": 1.99,
+                "type": "back",
+                "size": 234.54,
+                "updatedAt": 1788672986578
+              }
+            ],
+            "pnlIfWins": -1000.9979999999999,
+            "totalBet": 1158.0676
+          }
+        }
+      },
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictionReason": "ECS Smart Inflow on Edinburgh Castle Rockers (₹1162 Back, Lead: 7.5x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "ECS Smart Inflow on Edinburgh Castle Rockers (₹1162 Back, Lead: 7.5x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "ECS Smart Inflow on Edinburgh Castle Rockers (₹1162 Back, Lead: 7.5x)",
+          "winner": "Edinburgh Castle Rockers",
           "priority": 100,
           "selected": true
         }
