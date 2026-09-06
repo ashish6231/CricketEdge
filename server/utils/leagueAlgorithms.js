@@ -183,6 +183,68 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Safe PnL Fallback' };
 }
 
+function getKeralaPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const preBets = snap?.preMatchTotalBets || {};
+  const preBetCount1 = preBets.team1 != null ? preBets.team1 : 0;
+  const preBetCount2 = preBets.team2 != null ? preBets.team2 : 0;
+
+  // Support money is a live metric, zeroed out to prevent live lock flips
+  const sup1 = 0;
+  const sup2 = 0;
+  const totSup = sup1 + sup2;
+  const sup1Pct = totSup > 0 ? (sup1 / totSup) * 100 : 50;
+  const sup2Pct = totSup > 0 ? (sup2 / totSup) * 100 : 50;
+
+  // 1. Extreme Pre-Match Lay Dump / Short Resistance
+  const l1Dump = l1 >= 50 && (l1 >= l2 * 2.5 || l1 >= b1 * 1.5) && (epnl1 < epnl2 || epnl1 < 0 || (l1 > l2 * 3.0 && l1 >= b1 * 1.2));
+  const l2Dump = l2 >= 50 && (l2 >= l1 * 2.5 || l2 >= b2 * 1.5) && (epnl2 < epnl1 || epnl2 < 0 || (l2 > l1 * 3.0 && l2 >= b2 * 1.2));
+  if (l1Dump) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
+  if (l2Dump) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
+
+  // 2. Pre-Match Market Activity / Trade Count Engagement (>= 1.4x Bet Count Lead)
+  if (preBetCount1 != null && preBetCount2 != null && (preBetCount1 > 0 || preBetCount2 > 0) && preBetCount1 !== preBetCount2) {
+    if (preBetCount1 >= preBetCount2 * 1.4 && preBetCount1 >= 25) {
+      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
+    }
+    if (preBetCount2 >= preBetCount1 * 1.4 && preBetCount2 >= 25) {
+      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
+    }
+  }
+
+  // 3. Pre-Match Clean Back Inflow Margin (1.25x+ without high lay resistance)
+  if (b1 >= 25 && b1 >= (b2 || 1) * 1.25 && b1 > b2 && l1 < b1 * 1.5) {
+    return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
+  }
+  if (b2 >= 25 && b2 >= (b1 || 1) * 1.25 && b2 > b1 && l2 < b2 * 1.5) {
+    return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
+  }
+
+  // 4. Pre-Match Back Volume Leader (without high lay resistance)
+  if (b1 >= 25 && b1 > b2 && l1 < b1 * 1.5 && (b1 > 0 || b2 > 0)) {
+    return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
+  }
+  if (b2 >= 25 && b2 > b1 && l2 < b2 * 1.5 && (b1 > 0 || b2 > 0)) {
+    return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
+  }
+
+  // 5. Bookie Safe Stance (when deficit exists on one team)
+  if (epnl1 !== epnl2 && (epnl1 < 0 || epnl2 < 0)) {
+    return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Trap (Fade Public)' };
+  }
+
+  // 6. Strong Support Money Majority (>= 58% Support Share)
+  if (totSup >= 50000) {
+    if (sup1Pct >= 58) {
+      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Market Support Majority' };
+    }
+    if (sup2Pct >= 58) {
+      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Market Support Majority' };
+    }
+  }
+
+  // 7. Bookie Safe Fallback
+  return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Safe Edge' };
+}
 
 // 🇮🇳 Uttar Pradesh Premier League (UP T20) Algorithm
 function getUPT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
@@ -253,64 +315,36 @@ function getKeralaPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const preBetCount1 = preBets.team1 != null ? preBets.team1 : 0;
   const preBetCount2 = preBets.team2 != null ? preBets.team2 : 0;
 
-  // Support money is a live metric, zeroed out to prevent live lock flips
-  const sup1 = 0;
-  const sup2 = 0;
-  const totSup = sup1 + sup2;
-  const sup1Pct = totSup > 0 ? (sup1 / totSup) * 100 : 50;
-  const sup2Pct = totSup > 0 ? (sup2 / totSup) * 100 : 50;
+  const sup1 = 0; const sup2 = 0; const totSup = 0;
+  const sup1Pct = 50; const sup2Pct = 50;
 
   // 1. Extreme Pre-Match Lay Dump / Short Resistance
-  if (l1 >= 50 && (l1 >= l2 * 2.5 || l1 >= b1 * 0.4 || l1 >= b1 * 1.8) && (epnl1 < epnl2 || epnl1 < 0 || l1 > l2 * 3.0)) {
-    return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
-  }
-  if (l2 >= 50 && (l2 >= l1 * 2.5 || l2 >= b2 * 0.4 || l2 >= b2 * 1.8) && (epnl2 < epnl1 || epnl2 < 0 || l2 > l1 * 3.0)) {
-    return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
-  }
+  const l1Dump = l1 >= 50 && (l1 >= l2 * 2.5 || l1 >= b1 * 1.5) && (epnl1 < epnl2 || epnl1 < 0 || (l1 > l2 * 3.0 && l1 >= b1 * 1.2));
+  const l2Dump = l2 >= 50 && (l2 >= l1 * 2.5 || l2 >= b2 * 1.5) && (epnl2 < epnl1 || epnl2 < 0 || (l2 > l1 * 3.0 && l2 >= b2 * 1.2));
+  if (l1Dump) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
+  if (l2Dump) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
 
   // 2. Pre-Match Market Activity / Trade Count Engagement (>= 1.4x Bet Count Lead)
   if (preBetCount1 != null && preBetCount2 != null && (preBetCount1 > 0 || preBetCount2 > 0) && preBetCount1 !== preBetCount2) {
-    if (preBetCount1 >= preBetCount2 * 1.4 && preBetCount1 >= 25) {
-      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
-    }
-    if (preBetCount2 >= preBetCount1 * 1.4 && preBetCount2 >= 25) {
-      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
-    }
+    if (preBetCount1 >= preBetCount2 * 1.4 && preBetCount1 >= 25) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
+    if (preBetCount2 >= preBetCount1 * 1.4 && preBetCount2 >= 25) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
   }
 
   // 3. Pre-Match Clean Back Inflow Margin (1.25x+ without high lay resistance)
-  if (b1 >= (b2 || 1) * 1.25 && b1 > b2 && l1 < b1 * 1.5) {
-    return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
-  }
-  if (b2 >= (b1 || 1) * 1.25 && b2 > b1 && l2 < b2 * 1.5) {
-    return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
-  }
+  // Added min volume requirement (b >= 25)
+  if (b1 >= 25 && b1 >= (b2 || 1) * 1.25 && b1 > b2 && l1 < b1 * 1.5) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
+  if (b2 >= 25 && b2 >= (b1 || 1) * 1.25 && b2 > b1 && l2 < b2 * 1.5) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
 
   // 4. Pre-Match Back Volume Leader (without high lay resistance)
-  if (b1 > b2 && l1 < b1 * 1.5 && (b1 > 0 || b2 > 0)) {
-    return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
-  }
-  if (b2 > b1 && l2 < b2 * 1.5 && (b1 > 0 || b2 > 0)) {
-    return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
-  }
+  if (b1 >= 25 && b1 > b2 && l1 < b1 * 1.5) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
+  if (b2 >= 25 && b2 > b1 && l2 < b2 * 1.5) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
 
   // 5. Bookie Safe Stance (when deficit exists on one team)
   if (epnl1 !== epnl2 && (epnl1 < 0 || epnl2 < 0)) {
     return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Trap (Fade Public)' };
   }
 
-  // 6. Strong Support Money Majority (>= 58% Support Share)
-  if (totSup >= 50000) {
-    if (sup1Pct >= 58) {
-      return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Market Support Majority' };
-    }
-    if (sup2Pct >= 58) {
-      return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Market Support Majority' };
-    }
-  }
-
-  // 7. Bookie Safe Fallback
-  return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Safe Edge' };
+  return null;
 }
 
 // 🇪🇺 European Cricket Series (ECS / European T20) Algorithm
@@ -389,8 +423,11 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
 
   // 4. Primary Rule: Strict Bookie Profit Side (Fade Public Overload)
   // We need MINIMUM liability to avoid noise in small leagues
-  const minLiability = -300;
-  if (t1Pnl !== t2Pnl && (t1Pnl <= minLiability || t2Pnl <= minLiability)) {
+  // A true trap is either massive liability (<= -300) or heavily one-sided moderate liability (<= -150 with 5x back volume skew)
+  const isTrap1 = t1Pnl <= -300 || (t1Pnl <= -150 && b1 >= 150 && b1 >= (b2 || 1) * 5);
+  const isTrap2 = t2Pnl <= -300 || (t2Pnl <= -150 && b2 >= 150 && b2 >= (b1 || 1) * 5);
+
+  if (t1Pnl !== t2Pnl && (isTrap1 || isTrap2)) {
     if (t1Pnl > t2Pnl) {
       return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
     }

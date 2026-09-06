@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-06T00:42:27.596Z",
+  "updatedAt": "2026-09-06T01:54:58.557Z",
   "records": [
     {
       "matchId": "35901908",
@@ -4936,8 +4936,8 @@
       "startTime": 1787133600000,
       "endedAt": "2026-08-19T16:44:56.355Z",
       "capturedAt": "2026-08-19T16:44:56.355Z",
-      "status": "pending",
-      "actualWinner": null,
+      "status": "verified",
+      "actualWinner": "England",
       "predictedWinner": "England",
       "predictionTier": 2,
       "predictionConfidence": "75% Sure (Good Buy)",
@@ -5383,9 +5383,8 @@
         },
         "competitionName": "Test Matches"
       },
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "confirmedAt": "2026-09-06T01:40:58.921Z",
+      "confirmedByEmail": "crex-auto-backfill"
     },
     {
       "matchId": "35948552",
@@ -11983,8 +11982,8 @@
       "startTime": 1787824800000,
       "endedAt": "2026-08-28T03:26:43.342Z",
       "capturedAt": "2026-08-28T03:26:43.342Z",
-      "status": "pending",
-      "actualWinner": null,
+      "status": "verified",
+      "actualWinner": "England",
       "predictedWinner": "England",
       "predictionTier": 1,
       "predictionConfidence": "99% Sure (Strong Buy)",
@@ -12409,9 +12408,8 @@
         },
         "competitionName": "Test Matches"
       },
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "confirmedAt": "2026-09-06T01:40:58.998Z",
+      "confirmedByEmail": "crex-auto-backfill"
     },
     {
       "matchId": "35979895",
@@ -13770,8 +13768,8 @@
       "startTime": 1787922900000,
       "endedAt": "2026-08-28T18:36:26.204Z",
       "capturedAt": "2026-08-28T18:36:26.204Z",
-      "status": "pending",
-      "actualWinner": null,
+      "status": "verified",
+      "actualWinner": "Amsterdam Flames",
       "predictedWinner": "Edinburgh Castle Rockers",
       "predictionTier": "ECS_SPECIAL",
       "predictionConfidence": "European T20 Smart Volume Margin",
@@ -14266,9 +14264,8 @@
         },
         "competitionName": "European T20 Premier League"
       },
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "confirmedAt": "2026-09-06T01:40:59.754Z",
+      "confirmedByEmail": "crex-auto-backfill"
     },
     {
       "matchId": "35982250",
@@ -109271,11 +109268,10 @@
       "predictionTier": "ECS_SPECIAL",
       "predictionConfidence": "European T20 Smart Volume Margin",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:02.215Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers"
     },
     {
       "matchId": "35997903",
@@ -140765,11 +140761,10 @@
       "predictionTier": "KERALA_SPECIAL",
       "predictionConfidence": "Kerala Volume Margin Inflow",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:02.288Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Calicut Globstars"
     },
     {
       "matchId": "36004132",
@@ -254972,11 +254967,10 @@
       "predictionTier": "CPL_SPECIAL",
       "predictionConfidence": "CPL Lay Shield & Volume Dominance",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:54:58.493Z",
+      "confirmedByEmail": "user",
+      "status": "verified",
+      "actualWinner": "Antigua & Barbuda Falcs"
     },
     {
       "matchId": "36019441",
@@ -315564,11 +315558,10 @@
       "predictionTier": "CPL_SPECIAL",
       "predictionConfidence": "CPL Bookmaker Trap (Fade Public Favorite)",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:54:58.557Z",
+      "confirmedByEmail": "user",
+      "status": "verified",
+      "actualWinner": "St Kitts & Nevis Pats"
     },
     {
       "matchId": "36022061",
@@ -328584,11 +328577,10 @@
       "predictionTier": "INTERNATIONAL_T20_SPECIAL",
       "predictionConfidence": "T20I Extreme Public Trap Fortress",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:07.800Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Namibia"
     },
     {
       "matchId": "36025232",
@@ -343060,11 +343052,10 @@
       "predictionTier": "UP_SPECIAL",
       "predictionConfidence": "UP Pre-Match Activity Lead",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:07.863Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Noida Super Kings"
     },
     {
       "matchId": "36023009",
@@ -348037,11 +348028,10 @@
       "predictionTier": "CPL_SPECIAL",
       "predictionConfidence": "CPL Dual Flow Blowout Inflow",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:44:08.160Z",
+      "confirmedByEmail": "user",
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors"
     },
     {
       "matchId": "36027510",
@@ -353630,11 +353620,10 @@
       "predictionTier": "INTERNATIONAL_T20_SPECIAL",
       "predictionConfidence": "T20I Dual Flow Inflow Dominance",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:08.311Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Malaysia"
     },
     {
       "matchId": "36027100",
@@ -358509,11 +358498,10 @@
       "predictionTier": "INTERNATIONAL_T20_SPECIAL",
       "predictionConfidence": "T20I Smart Money Inflow Margin",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:08.381Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Kuwait"
     },
     {
       "matchId": "36027852",
@@ -365971,11 +365959,10 @@
       "predictionTier": "PUNJAB_SPECIAL",
       "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:08.439Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Fazilka Falcons"
     },
     {
       "matchId": "36023016",
@@ -376905,11 +376892,10 @@
       "predictionTier": "ECS_SPECIAL",
       "predictionConfidence": "European T20 Dual Flow Inflow Lead",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:08.494Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Rotterdam Dockers"
     },
     {
       "matchId": "36023020",
@@ -387489,11 +387475,10 @@
       "predictionTier": "ECS_SPECIAL",
       "predictionConfidence": "European T20 Dual Flow Inflow Lead",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:09.374Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Dublin Guardians"
     },
     {
       "matchId": "36032514",
@@ -389897,11 +389882,10 @@
       "predictionTier": 2,
       "predictionConfidence": "75% Sure (Good Buy)",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:09.439Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Ias Invincibles"
     },
     {
       "matchId": "36030307",
@@ -393390,11 +393374,10 @@
       "predictionTier": 1,
       "predictionConfidence": "99% Sure (Maximum Money + Back + Lay Alignment)",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:09.494Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Mohali Kings"
     },
     {
       "matchId": "36027587",
@@ -395161,11 +395144,10 @@
       "predictionTier": "WOMENS_T20_SPECIAL",
       "predictionConfidence": "Womens Dual Flow Advantage",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:09.550Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Pakistan W"
     },
     {
       "matchId": "36032393",
@@ -399473,11 +399455,10 @@
       "predictionTier": "KERALA_SPECIAL",
       "predictionConfidence": "Kerala Lay Resistance Dump",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:41:09.614Z",
+      "confirmedByEmail": "crex-auto-backfill",
+      "status": "verified",
+      "actualWinner": "Calicut Globstars"
     },
     {
       "matchId": "36023098",
@@ -405533,6 +405514,37 @@
       "confirmedById": null,
       "status": "pending",
       "actualWinner": null
+    },
+    {
+      "matchId": "test-123-unique",
+      "marketId": "1.234",
+      "matchName": "Calicut Globstars v Thrissur Titans",
+      "competitionName": "Kerala T20",
+      "team1": "Calicut Globstars",
+      "team2": "Thrissur Titans",
+      "startTime": "2026-09-06T01:30:16.948Z",
+      "endedAt": "2026-09-06T01:30:20.431Z",
+      "capturedAt": "2026-09-06T01:30:20.431Z",
+      "snapshot": {
+        "marketId": "1.234",
+        "teamNames": [
+          "Calicut Globstars",
+          "Thrissur Titans"
+        ],
+        "runners": [],
+        "totalMatched": 1000,
+        "matchId": "test-123-unique",
+        "competitionName": "Kerala T20"
+      },
+      "predictedWinner": "Calicut Globstars",
+      "predictionTier": 2,
+      "predictionConfidence": "75% Sure (Good Buy)",
+      "actualWinner": "Thrissur Titans",
+      "lastCaptureError": null,
+      "status": "verified",
+      "confirmedAt": "2026-09-06T01:30:20.431Z",
+      "confirmedByEmail": "crex-auto",
+      "confirmedById": "system"
     }
   ]
 }

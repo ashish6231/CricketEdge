@@ -565,14 +565,14 @@ export default function MatchDetail({ sport }) {
     let crexCancelled = false
     const stopCrexPoll = sport === 'cricket'
       ? startVisibleInterval(() => {
-          if (crexCancelled) return
-          getCrexMatchDetail(matchId).catch(() => null).then(res => {
-            if (crexCancelled || !res?.crex) return
-            crexDataRef.current = res.crex
-            setCrexData(res.crex)
-          })
-        }, CREX_POLL_MS)
-      : () => {}
+        if (crexCancelled) return
+        getCrexMatchDetail(matchId).catch(() => null).then(res => {
+          if (crexCancelled || !res?.crex) return
+          crexDataRef.current = res.crex
+          setCrexData(res.crex)
+        })
+      }, CREX_POLL_MS)
+      : () => { }
 
     return () => { cancelled = true; crexCancelled = true; stopPoll(); stopCrexPoll() }
   }, [matchId, sport, isLoggedIn])
@@ -589,7 +589,7 @@ export default function MatchDetail({ sport }) {
         if (next && matchId) {
           try {
             sessionStorage.setItem(`match_start_rawvol_${matchId}`, JSON.stringify(next))
-          } catch {}
+          } catch { }
         }
         return next
       })
@@ -728,11 +728,11 @@ export default function MatchDetail({ sport }) {
   const oppBackOdds = isPickT1 ? t2Odds?.back : t1Odds?.back
   const exitAdvice = (matchStartPred && snapshot?.inPlay && pickName)
     ? getMatchStartExitAdvice({
-        lockedPick: matchStartPred,
-        inPlay: snapshot.inPlay,
-        pickBackOdds: typeof pickBackOdds === 'number' ? pickBackOdds : parseFloat(pickBackOdds),
-        opponentBackOdds: typeof oppBackOdds === 'number' ? oppBackOdds : parseFloat(oppBackOdds),
-      })
+      lockedPick: matchStartPred,
+      inPlay: snapshot.inPlay,
+      pickBackOdds: typeof pickBackOdds === 'number' ? pickBackOdds : parseFloat(pickBackOdds),
+      opponentBackOdds: typeof oppBackOdds === 'number' ? oppBackOdds : parseFloat(oppBackOdds),
+    })
     : null
 
   const dpl1 = dp.team1_win
@@ -830,15 +830,14 @@ export default function MatchDetail({ sport }) {
             <button
               key={key}
               onClick={() => handleTabChange(key)}
-              className={`px-2 py-1 rounded-md text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
-                activeTab === key ? 'text-white' : 'text-[#8e8e93] hover:text-white'
-              }`}
+              className={`px-2 py-1 rounded-md text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${activeTab === key ? 'text-white' : 'text-[#8e8e93] hover:text-white'
+                }`}
               style={activeTab === key ? {
                 background: key === 'graph' ? 'linear-gradient(135deg,#2563eb,#3b82f6)'
                   : key === 'crex' ? 'linear-gradient(135deg,#059669,#10b981)'
-                  : key === 'toss' ? 'linear-gradient(135deg,#7c3aed,#a855f7)'
-                  : key === 'session' ? 'linear-gradient(135deg,#b45309,#f59e0b)'
-                  : 'linear-gradient(135deg,#dc2626,#10b981)'
+                    : key === 'toss' ? 'linear-gradient(135deg,#7c3aed,#a855f7)'
+                      : key === 'session' ? 'linear-gradient(135deg,#b45309,#f59e0b)'
+                        : 'linear-gradient(135deg,#dc2626,#10b981)'
               } : {}}
             >
               {icon}{label}
@@ -1055,11 +1054,10 @@ export default function MatchDetail({ sport }) {
                           <div className="flex items-center justify-between mb-1.5">
                             <span className="text-xs font-bold text-white truncate">{tossT1Name}</span>
                             <span
-                              className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
-                                b1 >= b2
+                              className={`text-[9px] font-black px-1.5 py-0.5 rounded ${b1 >= b2
                                   ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
                                   : 'bg-[#8e8e93]/20 text-[#8e8e93] border border-[#8e8e93]/40'
-                              }`}
+                                }`}
                             >
                               {b1 >= b2 ? '🔥 Back Dominance Leader' : 'Secondary Inflow'}
                             </span>
@@ -1087,11 +1085,10 @@ export default function MatchDetail({ sport }) {
                           <div className="flex items-center justify-between mb-1.5">
                             <span className="text-xs font-bold text-white truncate">{tossT2Name}</span>
                             <span
-                              className={`text-[9px] font-black px-1.5 py-0.5 rounded ${
-                                b2 > b1
+                              className={`text-[9px] font-black px-1.5 py-0.5 rounded ${b2 > b1
                                   ? 'bg-[#10b981]/20 text-[#10b981] border border-[#10b981]/40'
                                   : 'bg-[#8e8e93]/20 text-[#8e8e93] border border-[#8e8e93]/40'
-                              }`}
+                                }`}
                             >
                               {b2 > b1 ? '🔥 Back Dominance Leader' : 'Secondary Inflow'}
                             </span>
@@ -1125,8 +1122,8 @@ export default function MatchDetail({ sport }) {
                       { label: 'Lay Liab', v1: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM1?.lay)}</span>, v2: <span className="text-[11px] text-[#ef4444] font-bold">₹{formatVolStr(tossM2?.lay)}</span> },
                       { label: 'Total Bet', v1: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM1?.totalBet)}</span>, v2: <span className="text-[11px] text-white font-bold">₹{formatVolStr(tossM2?.totalBet)}</span> },
                       { label: 'Lay Trades', v1: <span className="text-[11px] text-white font-bold">{tossS1?.tradeCount ?? '—'}</span>, v2: <span className="text-[11px] text-white font-bold">{tossS2?.tradeCount ?? '—'}</span> },
-                      { label: 'Support %', v1: <span className="text-[11px] font-bold" style={{color:(tossSup1?.support??0)>(tossSup2?.support??0)?'#10b981':'#8e8e93'}}>{tossSup1?tossSup1.support.toFixed(1)+'%':'—'}</span>, v2: <span className="text-[11px] font-bold" style={{color:(tossSup2?.support??0)>(tossSup1?.support??0)?'#10b981':'#8e8e93'}}>{tossSup2?tossSup2.support.toFixed(1)+'%':'—'}</span> },
-                      { label: 'B/L Ratio', v1: <span className="text-[11px] text-[#10b981] font-bold">{tossM1?.lay>0?(tossM1.back/tossM1.lay).toFixed(2):'—'}</span>, v2: <span className="text-[11px] text-[#10b981] font-bold">{tossM2?.lay>0?(tossM2.back/tossM2.lay).toFixed(2):'—'}</span> },
+                      { label: 'Support %', v1: <span className="text-[11px] font-bold" style={{ color: (tossSup1?.support ?? 0) > (tossSup2?.support ?? 0) ? '#10b981' : '#8e8e93' }}>{tossSup1 ? tossSup1.support.toFixed(1) + '%' : '—'}</span>, v2: <span className="text-[11px] font-bold" style={{ color: (tossSup2?.support ?? 0) > (tossSup1?.support ?? 0) ? '#10b981' : '#8e8e93' }}>{tossSup2 ? tossSup2.support.toFixed(1) + '%' : '—'}</span> },
+                      { label: 'B/L Ratio', v1: <span className="text-[11px] text-[#10b981] font-bold">{tossM1?.lay > 0 ? (tossM1.back / tossM1.lay).toFixed(2) : '—'}</span>, v2: <span className="text-[11px] text-[#10b981] font-bold">{tossM2?.lay > 0 ? (tossM2.back / tossM2.lay).toFixed(2) : '—'}</span> },
                     ].map(({ label, v1, v2 }, i, arr) => (
                       <div key={label} className={`grid grid-cols-3 gap-1 py-1.5 px-2 ${i !== arr.length - 1 ? 'border-b border-[#2c2c2e]/60' : ''}`}>
                         <div className="text-[10px] text-[#8e8e93] flex items-center font-semibold">{label}</div>
@@ -1170,190 +1167,187 @@ export default function MatchDetail({ sport }) {
             <>
               {/* ━━━━━━━━━━ 🤖 AI PREDICTION (TIER 1 & TIER 2) ━━━━━━━━━━ */}
               {snapshot.aiPrediction && snapshot.aiPrediction.winner && (
-                  <div 
-                    className="relative overflow-hidden rounded-xl border p-4 shadow-2xl transition-all duration-500"
-                    style={{
-                      background: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                <div
+                  className="relative overflow-hidden rounded-xl border p-4 shadow-2xl transition-all duration-500"
+                  style={{
+                    background: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                      ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                      : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'UP_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(234, 88, 12, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(217, 70, 239, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
-                        ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : snapshot.aiPrediction.tier === 1 
-                        ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
-                        : 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(13, 17, 23, 0.9) 100%)',
-                      borderColor: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
-                        ? 'rgba(16, 185, 129, 0.3)'
-                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                          ? 'linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                          : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
+                            ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                            : snapshot.aiPrediction.tier === 'UP_SPECIAL'
+                              ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                              : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
+                                ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                                : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
+                                  ? 'linear-gradient(135deg, rgba(234, 88, 12, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                                  : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
+                                    ? 'linear-gradient(135deg, rgba(14, 165, 233, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                                    : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
+                                      ? 'linear-gradient(135deg, rgba(217, 70, 239, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                                      : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
+                                        ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
+                                          ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                                          : snapshot.aiPrediction.tier === 1
+                                            ? 'linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(13, 17, 23, 0.9) 100%)'
+                                            : 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(13, 17, 23, 0.9) 100%)',
+                    borderColor: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                      ? 'rgba(16, 185, 129, 0.3)'
+                      : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'rgba(168, 85, 247, 0.3)'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
-                        ? 'rgba(20, 184, 166, 0.3)'
-                        : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
-                        ? 'rgba(244, 63, 94, 0.3)'
-                        : snapshot.aiPrediction.tier === 'UP_SPECIAL'
-                        ? 'rgba(99, 102, 241, 0.3)'
-                        : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
-                        ? 'rgba(245, 158, 11, 0.4)'
-                        : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
-                        ? 'rgba(234, 88, 12, 0.3)'
-                        : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
-                        ? 'rgba(14, 165, 233, 0.3)'
-                        : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
-                        ? 'rgba(217, 70, 239, 0.3)'
-                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
-                        ? 'rgba(234, 179, 8, 0.3)'
-                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
-                        ? 'rgba(6, 182, 212, 0.3)'
-                        : snapshot.aiPrediction.tier === 1 
-                        ? 'rgba(234, 179, 8, 0.3)'
-                        : 'rgba(59, 130, 246, 0.2)',
-                      boxShadow: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
-                        ? '0 4px 20px rgba(16, 185, 129, 0.1)'
-                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                          ? 'rgba(20, 184, 166, 0.3)'
+                          : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
+                            ? 'rgba(244, 63, 94, 0.3)'
+                            : snapshot.aiPrediction.tier === 'UP_SPECIAL'
+                              ? 'rgba(99, 102, 241, 0.3)'
+                              : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
+                                ? 'rgba(245, 158, 11, 0.4)'
+                                : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
+                                  ? 'rgba(234, 88, 12, 0.3)'
+                                  : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
+                                    ? 'rgba(14, 165, 233, 0.3)'
+                                    : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
+                                      ? 'rgba(217, 70, 239, 0.3)'
+                                      : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
+                                        ? 'rgba(234, 179, 8, 0.3)'
+                                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
+                                          ? 'rgba(6, 182, 212, 0.3)'
+                                          : snapshot.aiPrediction.tier === 1
+                                            ? 'rgba(234, 179, 8, 0.3)'
+                                            : 'rgba(59, 130, 246, 0.2)',
+                    boxShadow: snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                      ? '0 4px 20px rgba(16, 185, 129, 0.1)'
+                      : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? '0 4px 20px rgba(168, 85, 247, 0.1)'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
-                        ? '0 4px 20px rgba(20, 184, 166, 0.1)'
-                        : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
-                        ? '0 4px 20px rgba(244, 63, 94, 0.1)'
-                        : snapshot.aiPrediction.tier === 'UP_SPECIAL'
-                        ? '0 4px 20px rgba(99, 102, 241, 0.1)'
-                        : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
-                        ? '0 4px 20px rgba(245, 158, 11, 0.15)'
-                        : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
-                        ? '0 4px 20px rgba(234, 88, 12, 0.1)'
-                        : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
-                        ? '0 4px 20px rgba(14, 165, 233, 0.1)'
-                        : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
-                        ? '0 4px 20px rgba(217, 70, 239, 0.1)'
-                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
-                        ? '0 4px 20px rgba(234, 179, 8, 0.1)'
-                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
-                        ? '0 4px 20px rgba(6, 182, 212, 0.1)'
-                        : snapshot.aiPrediction.tier === 1 
-                        ? '0 4px 20px rgba(234, 179, 8, 0.05)'
-                        : 'none'
-                    }}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <span className="text-sm animate-bounce">🤖</span>
-                          <span className={`text-xs font-black uppercase tracking-wider ${
-                            snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'text-emerald-500'
-                            : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'text-purple-500' 
-                            : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'text-teal-500'
-                            : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'text-rose-500'
-                            : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'text-indigo-500'
-                            : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? 'text-amber-400'
-                            : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? 'text-orange-500'
-                            : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? 'text-sky-500'
-                            : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? 'text-fuchsia-500'
-                            : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? 'text-amber-500'
-                            : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? 'text-cyan-500'
-                            : snapshot.aiPrediction.tier === 1 ? 'text-yellow-500' 
-                            : 'text-blue-500'
+                          ? '0 4px 20px rgba(20, 184, 166, 0.1)'
+                          : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
+                            ? '0 4px 20px rgba(244, 63, 94, 0.1)'
+                            : snapshot.aiPrediction.tier === 'UP_SPECIAL'
+                              ? '0 4px 20px rgba(99, 102, 241, 0.1)'
+                              : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
+                                ? '0 4px 20px rgba(245, 158, 11, 0.15)'
+                                : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
+                                  ? '0 4px 20px rgba(234, 88, 12, 0.1)'
+                                  : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
+                                    ? '0 4px 20px rgba(14, 165, 233, 0.1)'
+                                    : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
+                                      ? '0 4px 20px rgba(217, 70, 239, 0.1)'
+                                      : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
+                                        ? '0 4px 20px rgba(234, 179, 8, 0.1)'
+                                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
+                                          ? '0 4px 20px rgba(6, 182, 212, 0.1)'
+                                          : snapshot.aiPrediction.tier === 1
+                                            ? '0 4px 20px rgba(234, 179, 8, 0.05)'
+                                            : 'none'
+                  }}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="text-sm animate-bounce">🤖</span>
+                        <span className={`text-xs font-black uppercase tracking-wider ${snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'text-emerald-500'
+                            : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'text-purple-500'
+                              : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'text-teal-500'
+                                : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'text-rose-500'
+                                  : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'text-indigo-500'
+                                    : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? 'text-amber-400'
+                                      : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? 'text-orange-500'
+                                        : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? 'text-sky-500'
+                                          : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? 'text-fuchsia-500'
+                                            : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? 'text-amber-500'
+                                              : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? 'text-cyan-500'
+                                                : snapshot.aiPrediction.tier === 1 ? 'text-yellow-500'
+                                                  : 'text-blue-500'
                           }`}>
-                            AI Match Winner Prediction
-                          </span>
-                        </div>
-                        <h3 className="text-2xl font-black text-white mt-1 flex items-center gap-2">
-                          <span className="text-xl">🏆</span> {snapshot.aiPrediction.winner}
-                        </h3>
+                          Match Winner Prediction
+                        </span>
                       </div>
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded text-black flex items-center gap-1 shadow-sm ${
-                        snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'bg-emerald-500'
-                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'bg-purple-500' 
-                        : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'bg-teal-500'
-                        : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'bg-rose-500'
-                        : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'bg-indigo-500'
-                        : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? 'bg-amber-400'
-                        : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? 'bg-orange-500'
-                        : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? 'bg-sky-500'
-                        : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? 'bg-fuchsia-500'
-                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? 'bg-amber-500'
-                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? 'bg-cyan-500'
-                        : snapshot.aiPrediction.tier === 1 ? 'bg-yellow-500' 
-                        : 'bg-blue-500'
-                      }`}>
-                        {snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? '🌍 LEAGUE SPECIAL (INTL T20 ALGO USED)'
-                         : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? '⚡ LEAGUE SPECIAL (CPL ALGO USED)' 
-                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? '🌴 LEAGUE SPECIAL (KERALA ALGO USED)'
-                         : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (DELHI ALGO USED)'
-                         : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (UP ALGO USED)'
-                         : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? '🦁 LEAGUE SPECIAL (SHER-E-PUNJAB ALGO USED)'
-                         : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? '🇱🇰 LEAGUE SPECIAL (SRI LANKA ALGO)'
-                         : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? '🇪🇺 LEAGUE SPECIAL (ECS ALGO)'
-                         : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? '👩 LEAGUE SPECIAL (WOMENS T20 ALGO USED)'
-                         : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (TNPL ALGO USED)'
-                         : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? '🏴󠁧󠁢󠁥󠁮󠁧󠁿 LEAGUE SPECIAL (THE HUNDRED ALGO)'
-                         : `TIER ${snapshot.aiPrediction.tier}`}
-                      </span>
+                      <h3 className="text-2xl font-black text-white mt-1 flex items-center gap-2">
+                        <span className="text-xl">🏆</span> {snapshot.aiPrediction.winner}
+                      </h3>
                     </div>
-
-                    <div className="flex flex-wrap items-center gap-2 mt-2">
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full bg-black/50 border ${
-                        snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'border-emerald-500/40 text-emerald-500'
-                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'border-purple-500/40 text-purple-500' 
-                        : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'border-teal-500/40 text-teal-500'
-                        : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'border-rose-500/40 text-rose-500'
-                        : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'border-indigo-500/40 text-indigo-500'
-                        : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? 'border-amber-500/40 text-amber-400'
-                        : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? 'border-orange-500/40 text-orange-500'
-                        : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? 'border-sky-500/40 text-sky-500'
-                        : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? 'border-fuchsia-500/40 text-fuchsia-500'
-                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? 'border-amber-500/40 text-amber-500'
-                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? 'border-cyan-500/40 text-cyan-500'
-                        : snapshot.aiPrediction.tier === 1 ? 'border-yellow-500/40 text-yellow-500' 
-                        : 'border-blue-500/40 text-blue-500'
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded text-black flex items-center gap-1 shadow-sm ${snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'bg-emerald-500'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'bg-purple-500'
+                          : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'bg-teal-500'
+                            : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'bg-rose-500'
+                              : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'bg-indigo-500'
+                                : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? 'bg-amber-400'
+                                  : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? 'bg-orange-500'
+                                    : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? 'bg-sky-500'
+                                      : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? 'bg-fuchsia-500'
+                                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? 'bg-amber-500'
+                                          : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? 'bg-cyan-500'
+                                            : snapshot.aiPrediction.tier === 1 ? 'bg-yellow-500'
+                                              : 'bg-blue-500'
                       }`}>
-                        {snapshot.aiPrediction.confidence}
-                      </span>
-                    </div>
+                      {snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? '🌍 LEAGUE SPECIAL (INTL T20 ALGO USED)'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? '⚡ LEAGUE SPECIAL (CPL ALGO USED)'
+                          : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? '🌴 LEAGUE SPECIAL (KERALA ALGO USED)'
+                            : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (DELHI ALGO USED)'
+                              : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (UP ALGO USED)'
+                                : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? '🦁 LEAGUE SPECIAL (SHER-E-PUNJAB ALGO USED)'
+                                  : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? '🇱🇰 LEAGUE SPECIAL (SRI LANKA ALGO)'
+                                    : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? '🇪🇺 LEAGUE SPECIAL (ECS ALGO)'
+                                      : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? '👩 LEAGUE SPECIAL (WOMENS T20 ALGO USED)'
+                                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? '🇮🇳 LEAGUE SPECIAL (TNPL ALGO USED)'
+                                          : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? '🏴󠁧󠁢󠁥󠁮󠁧󠁿 LEAGUE SPECIAL (THE HUNDRED ALGO)'
+                                            : `TIER ${snapshot.aiPrediction.tier}`}
+                    </span>
+                  </div>
 
-                    <p className="text-xs text-[#8e8e93] mt-3 leading-relaxed border-t border-white/5 pt-3">
-                      {snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
-                        ? 'International T20 matches rely on high-liquidity Pre-Match data. The AI evaluates Pre-Match Bookmaker P/L exposure, Smart Lay Pressure, and Public Overload Traps to predict the true winner.'
-                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
+                  <div className="flex flex-wrap items-center gap-2 mt-2">
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full bg-black/50 border ${snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL' ? 'border-emerald-500/40 text-emerald-500'
+                        : snapshot.aiPrediction.tier === 'CPL_SPECIAL' ? 'border-purple-500/40 text-purple-500'
+                          : snapshot.aiPrediction.tier === 'KERALA_SPECIAL' ? 'border-teal-500/40 text-teal-500'
+                            : snapshot.aiPrediction.tier === 'DELHI_SPECIAL' ? 'border-rose-500/40 text-rose-500'
+                              : snapshot.aiPrediction.tier === 'UP_SPECIAL' ? 'border-indigo-500/40 text-indigo-500'
+                                : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL' ? 'border-amber-500/40 text-amber-400'
+                                  : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL' ? 'border-orange-500/40 text-orange-500'
+                                    : snapshot.aiPrediction.tier === 'ECS_SPECIAL' ? 'border-sky-500/40 text-sky-500'
+                                      : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL' ? 'border-fuchsia-500/40 text-fuchsia-500'
+                                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL' ? 'border-amber-500/40 text-amber-500'
+                                          : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL' ? 'border-cyan-500/40 text-cyan-500'
+                                            : snapshot.aiPrediction.tier === 1 ? 'border-yellow-500/40 text-yellow-500'
+                                              : 'border-blue-500/40 text-blue-500'
+                      }`}>
+                      {snapshot.aiPrediction.confidence}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-[#8e8e93] mt-3 leading-relaxed border-t border-white/5 pt-3">
+                    {snapshot.aiPrediction.tier === 'INTERNATIONAL_T20_SPECIAL'
+                      ? 'International T20 matches rely on high-liquidity Pre-Match data. The AI evaluates Pre-Match Bookmaker P/L exposure, Smart Lay Pressure, and Public Overload Traps to predict the true winner.'
+                      : snapshot.aiPrediction.tier === 'CPL_SPECIAL'
                         ? 'CPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
                         : snapshot.aiPrediction.tier === 'KERALA_SPECIAL'
-                        ? 'Kerala matches evaluate Pre-Match Lay Resistance Dumps and Dominant Inflow Margins to identify the true market winner.'
-                        : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
-                        ? 'Delhi matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
-                        : snapshot.aiPrediction.tier === 'UP_SPECIAL'
-                        ? 'Uttar Pradesh matches evaluate Pre-Match market activity engagement, smart volume accumulation, and bookmaker lay resistance to pinpoint the true winner.'
-                        : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
-                        ? 'Sher-e-Punjab T20 matches strictly act as Bookie Traps. The AI strictly fades the heavy public money to pick the team with maximum bookmaker profitability.'
-                        : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
-                        ? 'Sri Lanka Major Clubs T20 matches show a strong trend of reversed results. The AI strictly fades the public money to align with the bookmaker trap.'
-                        : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
-                        ? 'European Cricket Series (ECS) matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
-                        : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
-                        ? 'Women\'s T20 matches evaluate Pre-Match smart money inflow margins and dual volume leadership to identify the true market winner.'
-                        : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
-                        ? 'TNPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
-                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
-                        ? 'The Hundred matches evaluate Pre-Match volume accumulation margins and dual volume advantages.'
-                        : snapshot.aiPrediction.tier === 1 
-                        ? '100% backtested accuracy. PreMatch Back Volume, Lay Volume, and Liability all strongly align towards this team winning.'
-                        : '76% backtested accuracy. This team holds a massive 1.5x volume margin in the PreMatch markets.'}
-                    </p>
-                  </div>
+                          ? 'Kerala matches evaluate Pre-Match Lay Resistance Dumps and Dominant Inflow Margins to identify the true market winner.'
+                          : snapshot.aiPrediction.tier === 'DELHI_SPECIAL'
+                            ? 'Delhi matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
+                            : snapshot.aiPrediction.tier === 'UP_SPECIAL'
+                              ? 'Uttar Pradesh matches evaluate Pre-Match market activity engagement, smart volume accumulation, and bookmaker lay resistance to pinpoint the true winner.'
+                              : snapshot.aiPrediction.tier === 'PUNJAB_SPECIAL'
+                                ? 'Sher-e-Punjab T20 matches strictly act as Bookie Traps. The AI strictly fades the heavy public money to pick the team with maximum bookmaker profitability.'
+                                : snapshot.aiPrediction.tier === 'SRILANKA_SPECIAL'
+                                  ? 'Sri Lanka Major Clubs T20 matches show a strong trend of reversed results. The AI strictly fades the public money to align with the bookmaker trap.'
+                                  : snapshot.aiPrediction.tier === 'ECS_SPECIAL'
+                                    ? 'European Cricket Series (ECS) matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
+                                    : snapshot.aiPrediction.tier === 'WOMENS_T20_SPECIAL'
+                                      ? 'Women\'s T20 matches evaluate Pre-Match smart money inflow margins and dual volume leadership to identify the true market winner.'
+                                      : snapshot.aiPrediction.tier === 'TNPL_SPECIAL'
+                                        ? 'TNPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.'
+                                        : snapshot.aiPrediction.tier === 'HUNDRED_SPECIAL'
+                                          ? 'The Hundred matches evaluate Pre-Match volume accumulation margins and dual volume advantages.'
+                                          : snapshot.aiPrediction.tier === 1
+                                            ? '100% backtested accuracy. PreMatch Back Volume, Lay Volume, and Liability all strongly align towards this team winning.'
+                                            : '76% backtested accuracy. This team holds a massive 1.5x volume margin in the PreMatch markets.'}
+                  </p>
+                </div>
               )}
 
 
@@ -1378,59 +1372,59 @@ export default function MatchDetail({ sport }) {
                     const c2 = colorFor(marketBet2)
                     const cDraw = colorFor(marketBetDraw)
                     return (
-                    <div className="mt-3 space-y-3">
-                      {marketBetTotal > 0 && (
-                        <div>
-                          <div className="text-[10px] font-bold text-[#8e8e93] uppercase tracking-wider mb-1.5">Total bets</div>
-                          <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e] mb-1.5">
-                            <div className="transition-all" style={{ width: `${marketBetPct1}%`, background: c1 }} />
-                            {hasDraw && <div className="transition-all" style={{ width: `${marketBetPctDraw}%`, background: cDraw }} />}
-                            <div className="transition-all" style={{ width: `${marketBetPct2}%`, background: c2 }} />
-                          </div>
-                          <div className="flex justify-between gap-2 text-[10px] font-semibold">
-                            <span className="truncate" style={{ color: c1 }}>
-                              {t1} {marketBetPct1.toFixed(0)}%
-                              <span className="text-[#636366] font-normal"> · {fmt(marketBet1)}</span>
-                            </span>
-                            {hasDraw && (
-                              <span className="truncate" style={{ color: cDraw }}>
-                                {drawName} {marketBetPctDraw.toFixed(0)}%
-                                <span className="text-[#636366] font-normal"> · {fmt(marketBetDraw)}</span>
+                      <div className="mt-3 space-y-3">
+                        {marketBetTotal > 0 && (
+                          <div>
+                            <div className="text-[10px] font-bold text-[#8e8e93] uppercase tracking-wider mb-1.5">Total bets</div>
+                            <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e] mb-1.5">
+                              <div className="transition-all" style={{ width: `${marketBetPct1}%`, background: c1 }} />
+                              {hasDraw && <div className="transition-all" style={{ width: `${marketBetPctDraw}%`, background: cDraw }} />}
+                              <div className="transition-all" style={{ width: `${marketBetPct2}%`, background: c2 }} />
+                            </div>
+                            <div className="flex justify-between gap-2 text-[10px] font-semibold">
+                              <span className="truncate" style={{ color: c1 }}>
+                                {t1} {marketBetPct1.toFixed(0)}%
+                                <span className="text-[#636366] font-normal"> · {fmt(marketBet1)}</span>
                               </span>
-                            )}
-                            <span className="truncate text-right" style={{ color: c2 }}>
-                              {t2} {marketBetPct2.toFixed(0)}%
-                              <span className="text-[#636366] font-normal"> · {fmt(marketBet2)}</span>
-                            </span>
+                              {hasDraw && (
+                                <span className="truncate" style={{ color: cDraw }}>
+                                  {drawName} {marketBetPctDraw.toFixed(0)}%
+                                  <span className="text-[#636366] font-normal"> · {fmt(marketBetDraw)}</span>
+                                </span>
+                              )}
+                              <span className="truncate text-right" style={{ color: c2 }}>
+                                {t2} {marketBetPct2.toFixed(0)}%
+                                <span className="text-[#636366] font-normal"> · {fmt(marketBet2)}</span>
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      {marketVol > 0 && (() => {
-                        const vol1 = t1GraphData?.totalBet || 0
-                        const vol2 = t2GraphData?.totalBet || 0
-                        const moneyLeader = Math.max(vol1, vol2)
-                        const moneyColor = (amt) => (amt === moneyLeader && moneyLeader > 0 ? '#10b981' : '#ef4444')
-                        const mc1 = moneyColor(vol1)
-                        const mc2 = moneyColor(vol2)
-                        return (
-                        <div>
-                          <div className="text-[10px] font-bold text-[#8e8e93] uppercase tracking-wider mb-1.5">Money</div>
-                          <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e] mb-1.5">
-                            <div className="transition-all" style={{ width: `${t1PctVol}%`, background: mc1 }} />
-                            <div className="transition-all" style={{ width: `${t2PctVol}%`, background: mc2 }} />
-                          </div>
-                          <div className="flex justify-between gap-2 text-[10px] font-semibold">
-                            <span className="truncate" style={{ color: mc1 }}>
-                              {t1} {t1PctVol.toFixed(0)}%
-                            </span>
-                            <span className="truncate text-right" style={{ color: mc2 }}>
-                              {t2} {t2PctVol.toFixed(0)}%
-                            </span>
-                          </div>
-                        </div>
-                        )
-                      })()}
-                    </div>
+                        )}
+                        {marketVol > 0 && (() => {
+                          const vol1 = t1GraphData?.totalBet || 0
+                          const vol2 = t2GraphData?.totalBet || 0
+                          const moneyLeader = Math.max(vol1, vol2)
+                          const moneyColor = (amt) => (amt === moneyLeader && moneyLeader > 0 ? '#10b981' : '#ef4444')
+                          const mc1 = moneyColor(vol1)
+                          const mc2 = moneyColor(vol2)
+                          return (
+                            <div>
+                              <div className="text-[10px] font-bold text-[#8e8e93] uppercase tracking-wider mb-1.5">Money</div>
+                              <div className="flex h-1.5 rounded-full overflow-hidden bg-[#2c2c2e] mb-1.5">
+                                <div className="transition-all" style={{ width: `${t1PctVol}%`, background: mc1 }} />
+                                <div className="transition-all" style={{ width: `${t2PctVol}%`, background: mc2 }} />
+                              </div>
+                              <div className="flex justify-between gap-2 text-[10px] font-semibold">
+                                <span className="truncate" style={{ color: mc1 }}>
+                                  {t1} {t1PctVol.toFixed(0)}%
+                                </span>
+                                <span className="truncate text-right" style={{ color: mc2 }}>
+                                  {t2} {t2PctVol.toFixed(0)}%
+                                </span>
+                              </div>
+                            </div>
+                          )
+                        })()}
+                      </div>
                     )
                   })()}
                 </div>
@@ -1508,25 +1502,25 @@ export default function MatchDetail({ sport }) {
                         const isOther = hasPick && !side.isFade
                         const role = side.isFade ? 'Fade' : isOther ? 'Public' : 'Team'
                         return (
-                        <div
-                          key={side.name}
-                          className="rounded-xl p-3 text-center border"
-                          style={
-                            side.isFade
-                              ? { background: 'rgba(16,185,129,0.14)', borderColor: 'rgba(16,185,129,0.45)' }
-                              : isOther
-                                ? { background: 'rgba(239,68,68,0.14)', borderColor: 'rgba(239,68,68,0.45)' }
-                                : { background: '#1a1a1a', borderColor: '#2c2c2e' }
-                          }
-                        >
-                          <div className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: isOther ? '#ef4444' : side.isFade ? '#10b981' : '#8e8e93' }}>
-                            {role}
+                          <div
+                            key={side.name}
+                            className="rounded-xl p-3 text-center border"
+                            style={
+                              side.isFade
+                                ? { background: 'rgba(16,185,129,0.14)', borderColor: 'rgba(16,185,129,0.45)' }
+                                : isOther
+                                  ? { background: 'rgba(239,68,68,0.14)', borderColor: 'rgba(239,68,68,0.45)' }
+                                  : { background: '#1a1a1a', borderColor: '#2c2c2e' }
+                            }
+                          >
+                            <div className="text-[10px] font-bold uppercase tracking-wider mb-1" style={{ color: isOther ? '#ef4444' : side.isFade ? '#10b981' : '#8e8e93' }}>
+                              {role}
+                            </div>
+                            <div className="text-sm font-bold text-white truncate">{side.name}</div>
+                            <div className={`text-[11px] font-bold mt-1 ${typeof side.exposure === 'number' ? pnlCls(side.exposure) : 'text-[#8e8e93]'}`}>
+                              {typeof side.exposure === 'number' ? fmtRs(side.exposure) : 'Exp —'}
+                            </div>
                           </div>
-                          <div className="text-sm font-bold text-white truncate">{side.name}</div>
-                          <div className={`text-[11px] font-bold mt-1 ${typeof side.exposure === 'number' ? pnlCls(side.exposure) : 'text-[#8e8e93]'}`}>
-                            {typeof side.exposure === 'number' ? fmtRs(side.exposure) : 'Exp —'}
-                          </div>
-                        </div>
                         )
                       })}
                     </div>
@@ -1568,7 +1562,7 @@ export default function MatchDetail({ sport }) {
             </div>
             <div className="p-4 grid grid-cols-2 gap-3">
               {[{ name: t1, ratio: aRatio, back: aBack, lay: aLay, backPct: aBackPct },
-                { name: t2, ratio: bRatio, back: bBack, lay: bLay, backPct: bBackPct }].map((side) => {
+              { name: t2, ratio: bRatio, back: bBack, lay: bLay, backPct: bBackPct }].map((side) => {
                 const isLower = lowerRatioTeam === side.name
                 return (
                   <div

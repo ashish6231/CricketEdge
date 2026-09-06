@@ -100,8 +100,23 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
       const matchId = String(record.matchId);
       const existing = data.records.find((r) => String(r.matchId) === matchId);
 
+      const isVerified = !!record.actualWinner;
+      const status = isVerified ? 'verified' : 'pending';
+      const actualWinner = record.actualWinner || null;
+      const confirmedAt = isVerified ? (record.capturedAt || new Date().toISOString()) : null;
+      const confirmedByEmail = isVerified ? 'crex-auto' : null;
+      const confirmedById = isVerified ? 'system' : null;
+
       if (!existing) {
-        const newRecord = { ...record, matchId, status: 'pending', actualWinner: null };
+        const newRecord = { 
+          ...record, 
+          matchId, 
+          status, 
+          actualWinner,
+          confirmedAt,
+          confirmedByEmail,
+          confirmedById
+        };
         data.records.push(newRecord);
         await writeDatasetToDisk(data);
         return { record: newRecord, created: true, updated: false };
@@ -111,16 +126,16 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
         return { record: existing, created: false, updated: false };
       }
 
-      if (hasUsableSnapshot(existing.snapshot) && !existing.lastCaptureError) {
+      if (hasUsableSnapshot(existing.snapshot) && !existing.lastCaptureError && !isVerified) {
         return { record: existing, created: false, updated: false };
       }
 
       Object.assign(existing, { ...record, matchId }, {
-        status: 'pending',
-        actualWinner: null,
-        confirmedAt: null,
-        confirmedByEmail: null,
-        confirmedById: null,
+        status,
+        actualWinner,
+        confirmedAt,
+        confirmedByEmail,
+        confirmedById,
       });
       await writeDatasetToDisk(data);
       return { record: existing, created: false, updated: true };

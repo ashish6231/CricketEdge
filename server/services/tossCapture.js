@@ -3,6 +3,7 @@ const path = require('path');
 const { pathToFileURL } = require('url');
 const { getDefaultStore } = require('./tossDatasetStore');
 const scraperModule = require('./scraper');
+const { getCrexOverview, findCrexMatch, getCrexMatchDetail } = require('./crexService');
 
 let cachedPredictorVersion = 'toss-v8-layvol-ratio-gate';
 let cachedPredictorModule = null;
@@ -34,6 +35,14 @@ function extractTeams(snapshot, match) {
   const t2 = snapshot?.teamNames?.[1];
   if (t1 && t2) return [t1, t2];
   return parseTeamsFromMatchName(match.matchName);
+}
+
+function extractWinnerFromText(text, team1, team2) {
+  if (!text) return null;
+  const lowerText = text.toLowerCase();
+  if (team1 && lowerText.includes(team1.toLowerCase())) return team1;
+  if (team2 && lowerText.includes(team2.toLowerCase())) return team2;
+  return null;
 }
 
 function predictorCandidates() {
@@ -112,6 +121,13 @@ async function captureEndedTosses({
   const data = await store.load();
   const byMatchId = new Map(data.records.map((record) => [String(record.matchId), record]));
 
+  let crexOverview = [];
+  try {
+    crexOverview = await getCrexOverview();
+  } catch (err) {
+    console.error('Failed to fetch CREX overview during toss capture:', err.message);
+  }
+
   for (const match of eligible) {
     const existing = byMatchId.get(String(match.matchId));
 
@@ -128,14 +144,15 @@ async function captureEndedTosses({
     }
 
     const isoNow = now().toISOString();
+    const matchName = match.matchName ?? null;
 
     if (!hasSuccessfulSnapshot(snapshot)) {
       const errorMsg = snapshot?.error || 'No toss snapshot data';
-      const [fallbackTeam1, fallbackTeam2] = parseTeamsFromMatchName(match.matchName);
+      const [fallbackTeam1, fallbackTeam2] = parseTeamsFromMatchName(matchName);
       await store.upsertPendingCapture({
         matchId: String(match.matchId),
         marketId: match.marketId ?? null,
-        matchName: match.matchName ?? null,
+        matchName,
         competitionName: match.competitionName ?? null,
         team1: existing?.team1 ?? fallbackTeam1,
         team2: existing?.team2 ?? fallbackTeam2,
@@ -160,10 +177,37 @@ async function captureEndedTosses({
     const [team1, team2] = extractTeams(snapshot, match);
     const prediction = await predict(snapshot);
 
+    let actualWinner = null;
+    if (crexOverview && Array.isArray(crexOverview) && crexOverview.length > 0) {
+      const crexMatch = findCrexMatch(matchName, crexOverview);
+      if (crexMatch) {
+        try {
+          const detail = await getCrexMatchDetail(crexMatch.id || crexMatch.crexMatchId, crexMatch.matchIndex);
+          const tossText = detail?.scorecard?.statusEquation;
+          
+          if (tossText && tossText.toLowerCase().includes('won the toss')) {
+            actualWinner = extractWinnerFromText(tossText, team1, team2);
+            if (!actualWinner) {
+               const shortWinner = extractWinnerFromText(tossText, crexMatch.team1Short, crexMatch.team2Short);
+               let crexWinnerName = null;
+               if (shortWinner === crexMatch.team1Short) crexWinnerName = crexMatch.team1Name;
+               else if (shortWinner === crexMatch.team2Short) crexWinnerName = crexMatch.team2Name;
+               
+               if (crexWinnerName) {
+                 actualWinner = extractWinnerFromText(crexWinnerName, team1, team2);
+               }
+            }
+          }
+        } catch (e) {
+          console.error('Failed to fetch crex match detail for toss actual winner', e.message);
+        }
+      }
+    }
+
     const result = await store.upsertPendingCapture({
       matchId: String(match.matchId),
       marketId: snapshot.marketId ?? match.marketId ?? null,
-      matchName: match.matchName ?? null,
+      matchName,
       competitionName: match.competitionName ?? null,
       team1,
       team2,
@@ -176,10 +220,8 @@ async function captureEndedTosses({
       predictionRisk: prediction?.risk ?? {},
       matchedRules: prediction?.matchedRules ?? [],
       predictorVersion: prediction?.predictorVersion || cachedPredictorVersion,
+      actualWinner,
       lastCaptureError: null,
-      confirmedAt: null,
-      confirmedByEmail: null,
-      confirmedById: null,
     });
 
     if (result.created || result.updated) {

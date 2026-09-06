@@ -1,6 +1,7 @@
 const { getDefaultStore } = require('./matchDatasetStore');
 const scraperModule = require('./scraper');
 const { predictMatchWinner: defaultPredictMatchWinner } = require('../utils/matchWinnerPredictor');
+const { getCrexOverview, findCrexMatch, getCrexMatchDetail } = require('./crexService');
 
 function sanitizeError(message) {
   if (!message) return 'Capture failed';
@@ -29,6 +30,15 @@ function extractTeams(snapshot, match) {
   const t2 = snapshot?.teamNames?.[1];
   if (t1 && t2) return [t1, t2];
   return parseTeamsFromMatchName(match.matchName || match.name);
+}
+
+function extractWinnerFromText(text, team1, team2) {
+  if (!text) return null;
+  const lowerText = text.toLowerCase();
+  // Ensure we don't accidentally match if text is empty/null or if team1/team2 is null
+  if (team1 && lowerText.includes(team1.toLowerCase())) return team1;
+  if (team2 && lowerText.includes(team2.toLowerCase())) return team2;
+  return null;
 }
 
 function shouldSkipExisting(existing) {
@@ -72,6 +82,14 @@ async function captureEndedMatches({
   const data = await store.load();
   const byMatchId = new Map(data.records.map((record) => [String(record.matchId), record]));
 
+  // Fetch CREX overview to try and auto-resolve actual winners
+  let crexOverview = [];
+  try {
+    crexOverview = await getCrexOverview();
+  } catch (err) {
+    console.error('Failed to fetch CREX overview during match capture:', err.message);
+  }
+
   for (const match of eligible) {
     const matchId = String(match.matchId || match.id);
     const existing = byMatchId.get(matchId);
@@ -89,14 +107,15 @@ async function captureEndedMatches({
     }
 
     const isoNow = now().toISOString();
+    const matchName = match.matchName || match.name || null;
 
     if (!hasSuccessfulSnapshot(snapshot)) {
       const errorMsg = snapshot?.error || 'No cricket snapshot data';
-      const [fallbackTeam1, fallbackTeam2] = parseTeamsFromMatchName(match.matchName || match.name);
+      const [fallbackTeam1, fallbackTeam2] = parseTeamsFromMatchName(matchName);
       await store.upsertPendingCapture({
         matchId,
         marketId: match.marketId ?? null,
-        matchName: match.matchName ?? match.name ?? null,
+        matchName,
         competitionName: match.competitionName ?? null,
         team1: existing?.team1 ?? fallbackTeam1,
         team2: existing?.team2 ?? fallbackTeam2,
@@ -121,10 +140,45 @@ async function captureEndedMatches({
     const [team1, team2] = extractTeams(snapshot, match);
     const prediction = predictMatchWinner(snapshot);
 
+    // Auto-resolve actual winner from CREX
+    let actualWinner = null;
+    if (crexOverview && Array.isArray(crexOverview) && crexOverview.length > 0) {
+      const crexMatch = findCrexMatch(matchName, crexOverview);
+      if (crexMatch) {
+        let resultText = crexMatch.statusText;
+        if (!resultText || !resultText.toLowerCase().includes('won by')) {
+          try {
+             const detail = await getCrexMatchDetail(crexMatch.id || crexMatch.crexMatchId, crexMatch.matchIndex);
+             resultText = detail?.scorecard?.matchResult || resultText;
+          } catch(e) {
+             console.error('Failed to fetch crex match detail for actual winner', e.message);
+          }
+        }
+        
+        // Match standard names first
+        actualWinner = extractWinnerFromText(resultText, team1, team2);
+        
+        // If not found, try mapping CREX shortnames to our teams
+        if (!actualWinner && resultText) {
+           const team1Short = crexMatch.team1Short;
+           const team2Short = crexMatch.team2Short;
+           const shortWinner = extractWinnerFromText(resultText, team1Short, team2Short);
+           
+           let crexWinnerName = null;
+           if (shortWinner === team1Short) crexWinnerName = crexMatch.team1Name;
+           else if (shortWinner === team2Short) crexWinnerName = crexMatch.team2Name;
+           
+           if (crexWinnerName) {
+             actualWinner = extractWinnerFromText(crexWinnerName, team1, team2);
+           }
+        }
+      }
+    }
+
     const result = await store.upsertPendingCapture({
       matchId,
       marketId: snapshot.marketId ?? match.marketId ?? null,
-      matchName: match.matchName ?? match.name ?? null,
+      matchName,
       competitionName: match.competitionName ?? snapshot.competitionName ?? null,
       team1,
       team2,
@@ -135,10 +189,8 @@ async function captureEndedMatches({
       predictedWinner: prediction?.winner ?? null,
       predictionTier: prediction?.tier ?? null,
       predictionConfidence: prediction?.confidence ?? null,
+      actualWinner,
       lastCaptureError: null,
-      confirmedAt: null,
-      confirmedByEmail: null,
-      confirmedById: null,
     });
 
     if (result.created || result.updated) {

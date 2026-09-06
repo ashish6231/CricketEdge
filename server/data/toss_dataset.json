@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-06T00:42:27.460Z",
+  "updatedAt": "2026-09-06T01:57:13.774Z",
   "records": [
     {
       "matchId": "35901908",
@@ -29119,11 +29119,10 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-06T01:57:13.773Z",
+      "confirmedByEmail": "user",
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors"
     },
     {
       "matchId": "36023515",
@@ -30932,6 +30931,37 @@
       "confirmedById": null,
       "status": "pending",
       "actualWinner": null
+    },
+    {
+      "matchId": "test-123-toss-unique",
+      "marketId": "1.234",
+      "matchName": "Calicut Globstars v Thrissur Titans",
+      "competitionName": "Kerala T20",
+      "team1": "Calicut Globstars",
+      "team2": "Thrissur Titans",
+      "startTime": "2026-09-06T01:30:54.845Z",
+      "endedAt": "2026-09-06T01:30:58.378Z",
+      "capturedAt": "2026-09-06T01:30:58.378Z",
+      "snapshot": {
+        "marketId": "1.234",
+        "teamNames": [
+          "Calicut Globstars",
+          "Thrissur Titans"
+        ],
+        "runners": [],
+        "totalMatched": 1000
+      },
+      "predictedWinner": null,
+      "predictionReason": null,
+      "predictionRisk": {},
+      "matchedRules": [],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
     }
   ]
 }
