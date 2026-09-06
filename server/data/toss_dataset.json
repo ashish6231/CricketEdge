@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-06T01:57:13.774Z",
+  "updatedAt": "2026-09-06T11:58:48.977Z",
   "records": [
     {
       "matchId": "35901908",
@@ -12856,7 +12856,7 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Dublin Guardians"
+      "actualWinner": "Belfast Wolves"
     },
     {
       "matchId": "35966902",
@@ -13704,7 +13704,8 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Edinburgh Castle Rockers"
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictionCorrect": true
     },
     {
       "matchId": "35970079",
@@ -15247,8 +15248,9 @@
       "confirmedAt": "2026-08-29T09:25:33.457Z",
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
-      "status": "verified",
-      "actualWinner": "Edinburgh Castle Rockers"
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictionCorrect": true
     },
     {
       "matchId": "35982250",
@@ -16498,7 +16500,8 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Dublin Guardians"
+      "actualWinner": "Glasgow Cosmic",
+      "predictionCorrect": false
     },
     {
       "matchId": "35993805",
@@ -17366,8 +17369,9 @@
       "confirmedAt": "2026-09-02T17:28:30.183Z",
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
-      "status": "verified",
-      "actualWinner": "Belfast Wolves"
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictionCorrect": false
     },
     {
       "matchId": "35982257",
@@ -18229,7 +18233,8 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Belfast Wolves"
+      "actualWinner": "Belfast Wolves",
+      "predictionCorrect": true
     },
     {
       "matchId": "35997455",
@@ -18646,7 +18651,8 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Dublin Guardians"
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictionCorrect": false
     },
     {
       "matchId": "35982267",
@@ -22280,7 +22286,8 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Rotterdam Dockers"
+      "actualWinner": "Rotterdam Dockers",
+      "predictionCorrect": true
     },
     {
       "matchId": "36007810",
@@ -23580,7 +23587,8 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Rotterdam Dockers"
+      "actualWinner": "Rotterdam Dockers",
+      "predictionCorrect": true
     },
     {
       "matchId": "36016128",
@@ -24046,7 +24054,8 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Belfast Wolves"
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictionCorrect": true
     },
     {
       "matchId": "36018220",
@@ -26298,8 +26307,9 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Amsterdam Flames",
+      "predictionCorrect": true
     },
     {
       "matchId": "36021032",
@@ -28176,8 +28186,9 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Belfast Wolves",
+      "predictionCorrect": false
     },
     {
       "matchId": "36023009",
@@ -29566,8 +29577,9 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictionCorrect": false
     },
     {
       "matchId": "36027440",
@@ -29955,8 +29967,9 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Amsterdam Flames",
+      "predictionCorrect": false
     },
     {
       "matchId": "36027587",
@@ -30955,6 +30968,486 @@
       "predictionReason": null,
       "predictionRisk": {},
       "matchedRules": [],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36023549",
+      "marketId": "1.261942102",
+      "matchName": "Barbados Tridents v Trinbago Knight Riders",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Barbados Tridents",
+      "team2": "Trinbago Knight Riders",
+      "startTime": 1788652800000,
+      "endedAt": "2026-09-06T11:58:47.853Z",
+      "capturedAt": "2026-09-06T11:58:47.853Z",
+      "snapshot": {
+        "serverTime": "2026-09-06T11:58:47.722Z",
+        "matchId": "36023549",
+        "matchName": "Barbados Tridents v Trinbago Knight Riders",
+        "teamNames": [
+          "Barbados Tridents",
+          "Trinbago Knight Riders"
+        ],
+        "inPlayPnl": {
+          "team1": 258.9962999999996,
+          "team2": 3989.4181000000012
+        },
+        "inPlayTotalBets": {
+          "team1": 1884.3488000000002,
+          "team2": 3545.419099999999
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 7342.249999999999,
+            "lay": 3418.459999999999,
+            "total": 7526.899999999999
+          },
+          "team2": {
+            "back": 130.04999999999998,
+            "lay": 184.65,
+            "total": 3548.5099999999993
+          }
+        },
+        "preMatchPnl": {
+          "team1": 258.9962999999996,
+          "team2": 3989.4181000000012
+        },
+        "preMatchTotalBets": {
+          "team1": 1884.3488000000002,
+          "team2": 3545.419099999999
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 7342.249999999999,
+            "lay": 3418.459999999999,
+            "total": 7526.899999999999
+          },
+          "team2": {
+            "back": 130.04999999999998,
+            "lay": 184.65,
+            "total": 3548.5099999999993
+          }
+        },
+        "threeMinPnl": {
+          "team1": 258.9962999999996,
+          "team2": 3989.4181000000012
+        },
+        "threeMinTotalBets": {
+          "team1": 1884.3488000000002,
+          "team2": 3545.419099999999
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 7342.249999999999,
+            "lay": 3418.459999999999,
+            "total": 7526.899999999999
+          },
+          "team2": {
+            "back": 130.04999999999998,
+            "lay": 184.65,
+            "total": 3548.5099999999993
+          }
+        },
+        "matchLoadV2": {
+          "team1": 11,
+          "team2": 10
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 7342.249999999999,
+            "lay": 3418.459999999999,
+            "totalVolume": 10760.71,
+            "backPercentage": 68.23202186472825
+          },
+          "team2": {
+            "back": 130.04999999999998,
+            "lay": 184.65,
+            "totalVolume": 314.7,
+            "backPercentage": 41.32507149666348
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1699.6988000000001,
+            "lay": 2013.2950999999996,
+            "totalBet": 3712.9938999999995
+          },
+          "team2": {
+            "back": 126.9591,
+            "lay": 192.5872,
+            "totalBet": 319.5463
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 7526.899999999999,
+            "support": 67.96046376612695
+          },
+          "team2": {
+            "supportMoney": 3548.5099999999993,
+            "support": 32.03953623387306
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Trinbago Knight Riders",
+          "bookieFavouriteOutcome": "Trinbago Knight Riders",
+          "riskTeam": "Barbados Tridents",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 35.92092753225389,
+          "mostBettedTeam": null,
+          "prediction": {
+            "team1TrueSupport": 1836.1344,
+            "team2TrueSupport": 2140.2541999999994,
+            "ratio": 1.1656304680093132,
+            "bookiePnlTeam1": 1774.9127999999992,
+            "bookiePnlTeam2": 57.6909,
+            "prediction": "Trinbago Knight Riders",
+            "pattern": "The Alignment",
+            "reason": "Strong validation (1.17) and Bookie profits if Favorite wins. Crowd and Bookie are aligned."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -369.7478999999996,
+            "backExposure": 1643.5472,
+            "layExposure": 2013.2950999999996,
+            "teamName": "Barbados Tridents"
+          },
+          "team2": {
+            "netExposure": -65.62809999999999,
+            "backExposure": 126.9591,
+            "layExposure": 192.5872,
+            "teamName": "Trinbago Knight Riders"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1699.6988000000001,
+            "A_lay_stake": 3418.459999999999,
+            "B_back_expo": 126.9591,
+            "B_lay_stake": 184.65
+          },
+          "totals": {
+            "totalBetTeam1": 1884.3488000000002,
+            "totalBetTeam2": 3545.419099999999
+          },
+          "simplePL": {
+            "team1_win": 1718.761199999999,
+            "team2_win": 57.6909
+          },
+          "derivedPL": {
+            "team1_win": 1661.070299999999,
+            "team2_win": -1661.070299999999
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 7342.249999999999,
+              "totalLayVol": 3418.459999999999,
+              "totalBet": 7526.899999999999,
+              "profitLoss": -3978.3899999999994
+            },
+            "team2": {
+              "totalBackVol": 130.04999999999998,
+              "totalLayVol": 184.65,
+              "totalBet": 3548.5099999999993,
+              "profitLoss": 3978.3899999999994
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1699.6988000000001,
+              "totalLayVol": 3418.459999999999,
+              "totalBet": 1884.3488000000002,
+              "profitLoss": 258.99629999999934
+            },
+            "team2": {
+              "totalBackExpo": 126.9591,
+              "totalLayVol": 184.65,
+              "totalBet": 3545.419099999999,
+              "profitLoss": 3989.4181
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1699.6988000000001,
+              "totalLayNetVol": 2013.2950999999996,
+              "totalBet": 1892.286,
+              "profitLoss": 247.96819999999934
+            },
+            "team2": {
+              "totalBackNetVol": 126.9591,
+              "totalLayNetVol": 192.5872,
+              "totalBet": 2140.2541999999994,
+              "profitLoss": -247.96819999999934
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 11,
+            "averageOdds": 1.89,
+            "averageSize": 684.2636363636361,
+            "supportProduct": 1293.2582727272722
+          },
+          "teamB": {
+            "tradeCount": 10,
+            "averageOdds": 1.8939999999999997,
+            "averageSize": 354.85099999999994,
+            "supportProduct": 672.0877939999998
+          },
+          "strongerTeam": "Barbados Tridents",
+          "supportRatio": 1.9242400833235078
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 7342.249999999999,
+            "oppoLayVolume": 184.65,
+            "layExposure": 2013.2950999999996,
+            "netSupportValue": 5513.604899999999
+          },
+          "teamB": {
+            "totalBackVolume": 130.04999999999998,
+            "oppoLayVolume": 3418.459999999999,
+            "layExposure": 192.5872,
+            "netSupportValue": 3355.9227999999994
+          },
+          "strongerTeam": "Barbados Tridents",
+          "netSupportDifference": 2157.6821,
+          "percentageA": 62.16345544532208,
+          "percentageB": 37.83654455467792
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 3923.79,
+            "syntheticSupport": 184.65,
+            "opponentLiabilityRejection": 192.5872,
+            "sentimentScore": 3915.8527999999997
+          },
+          "teamB": {
+            "directNetSupport": -54.60000000000002,
+            "syntheticSupport": 3418.459999999999,
+            "opponentLiabilityRejection": 2013.2950999999996,
+            "sentimentScore": 1350.5648999999996
+          },
+          "strongerTeam": "Barbados Tridents",
+          "scoreDifference": 2565.2879000000003,
+          "percentageA": 74.35515037100078,
+          "percentageB": 25.644849628999232
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Barbados Tridents",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Trinbago Knight Riders",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Barbados Tridents"
+        },
+        "teams": {
+          "Barbados Tridents": {
+            "trades": [
+              {
+                "team": "Barbados Tridents",
+                "price": 1.7,
+                "type": "lay",
+                "size": 1398.84,
+                "updatedAt": 1788650463654
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.5,
+                "type": "lay",
+                "size": 1965.31,
+                "updatedAt": 1788650463654
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.01,
+                "type": "back",
+                "size": 5615.16,
+                "updatedAt": 1788650455534
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "lay",
+                "size": 14.049999999999983,
+                "updatedAt": 1788649916376
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.93,
+                "type": "lay",
+                "size": 8.350000000000023,
+                "updatedAt": 1788649916376
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.94,
+                "updatedAt": 1788649864433
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.92,
+                "type": "back",
+                "size": 525.26,
+                "updatedAt": 1788648924117
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.92,
+                "type": "lay",
+                "size": 15.199999999999989,
+                "updatedAt": 1788648186410
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.72,
+                "updatedAt": 1788645275436
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 2,
+                "type": "lay",
+                "size": 5.990000000000009,
+                "updatedAt": 1788639065495
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.94,
+                "type": "back",
+                "size": 178.21,
+                "updatedAt": 1788638224309
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.76,
+                "updatedAt": 1788638224309
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.95,
+                "type": "back",
+                "size": 83.92,
+                "updatedAt": 1788637942636
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 1.99,
+                "type": "back",
+                "size": 563.56,
+                "updatedAt": 1788634604626
+              },
+              {
+                "team": "Barbados Tridents",
+                "price": 2,
+                "type": "back",
+                "size": 80.44,
+                "updatedAt": 1788634586816
+              }
+            ],
+            "pnlIfWins": 258.9962999999996,
+            "totalBet": 1884.3488000000002
+          },
+          "Trinbago Knight Riders": {
+            "trades": [
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.96,
+                "type": "back",
+                "size": 70.19,
+                "updatedAt": 1788649377971
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.08,
+                "type": "lay",
+                "size": 84.23,
+                "updatedAt": 1788648186364
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 1.99,
+                "type": "back",
+                "size": 49.35,
+                "updatedAt": 1788645842583
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.02,
+                "type": "back",
+                "size": 10.51,
+                "updatedAt": 1788645275451
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2.06,
+                "type": "lay",
+                "size": 19.98,
+                "updatedAt": 1788637942636
+              },
+              {
+                "team": "Trinbago Knight Riders",
+                "price": 2,
+                "type": "lay",
+                "size": 80.44,
+                "updatedAt": 1788634586806
+              }
+            ],
+            "pnlIfWins": 3989.4181000000012,
+            "totalBet": 3545.419099999999
+          }
+        }
+      },
+      "predictedWinner": "Barbados Tridents",
+      "predictionReason": "CPL Smart Money Inflow on Barbados Tridents (₹7.3k Back, Lead: 56.5x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "CPL Smart Money Inflow on Barbados Tridents (₹7.3k Back, Lead: 56.5x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "CPL Smart Money Inflow on Barbados Tridents (₹7.3k Back, Lead: 56.5x)",
+          "winner": "Barbados Tridents",
+          "priority": 100,
+          "selected": true
+        }
+      ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "actualWinner": null,
       "lastCaptureError": null,

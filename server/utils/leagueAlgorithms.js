@@ -349,28 +349,39 @@ function getKeralaPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
 
 // 🇪🇺 European Cricket Series (ECS / European T20) Algorithm
 function getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
-  // 1. Dual Flow Inflow & Lay Pressure Advantage (e.g. Belfast Wolves 784 Back & 202 Lay vs Dublin 71 Back & 0 Lay)
-  if (b1 > b2 && l1 > l2) {
-    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Dual Flow Inflow Lead' };
+  const tmv1 = snap?.threeMinVolume?.team1;
+  const tmv2 = snap?.threeMinVolume?.team2;
+
+  const tb1 = tmv1?.back || b1;
+  const tl1 = tmv1?.lay  || l1;
+  const tb2 = tmv2?.back || b2;
+  const tl2 = tmv2?.lay  || l2;
+
+  // 1. Extreme Pre-Match Lay Resistance Dump (e.g. Belfast lay=1954 vs back=699 -> 2.8x lay!)
+  if (l1 >= 500 && l1 >= b1 * 2.0) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Lay Dump Resistance' };
   }
-  if (b2 > b1 && l2 > l1) {
-    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Dual Flow Inflow Lead' };
+  if (l2 >= 500 && l2 >= b2 * 2.0) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Lay Dump Resistance' };
   }
 
-  // 2. Smart Money Volume Margin (>= 1.2x)
-  if (b1 >= b2 * 1.2) {
-    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Smart Volume Margin' };
+  // 2. High-Volume ThreeMin Net Short Fade (>100k volume where market turned decisively net short)
+  const tnet1 = tb1 - tl1;
+  const tnet2 = tb2 - tl2;
+  if (tb1 + tl1 > 100000 && tnet1 < -10000 && b1 < b2 * 4.0) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 ThreeMin Net Short Fade' };
   }
-  if (b2 >= b1 * 1.2) {
-    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Smart Volume Margin' };
+  if (tb2 + tl2 > 100000 && tnet2 < -10000 && b2 < b1 * 4.0) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 ThreeMin Net Short Fade' };
   }
 
-  // 3. Pre-Match Volume Leader
+  // 3. Pre-Match Back Inflow / Volume Dominance
+  // In ETPL, clean back volume wins!
   if (b1 > b2) {
-    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Volume Leader' };
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Back Volume Leader' };
   }
   if (b2 > b1) {
-    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Volume Leader' };
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Back Volume Leader' };
   }
 
   // 4. Fallback: Bookie Safe
