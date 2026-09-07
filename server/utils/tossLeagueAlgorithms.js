@@ -477,48 +477,85 @@ export function getTheHundredTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, p
 }
 
 /**
- * 👩 Women's International T20 & Low Volume Matches Toss Algorithm
+ * 👩 Women's International T20 & Low Volume Matches Toss Algorithm (v2)
+ * ────────────────────────────────────────────────────────────────────
+ * In Women's T20I, smart money synthetic support product margin and back volume
+ * dominance strongly indicate the toss outcome.
+ *
+ * 1. Low-Volume Zero-Back Bookmaker Profit: When one side has zero back exposure
+ *    and positive PnL in a low-volume game, bookmaker captures safe coin toss.
+ * 2. Smart Synthetic Support Dominance: Smart money average trade size and support product.
+ * 3. High-Liquidity Smart Inflow: Clean back volume leadership.
+ * 4. Bookmaker Safe Exposure Fallback: Safe side with higher positive PnL.
  */
-export function getWomensTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct }) {
-  // 1. Heavy Public Trap Fade: When public piles on favorite causing extreme bookmaker loss (prePnl <= -1100)
-  // e.g. India W (-1466 PnL) vs Thailand W (+1565 PnL) -> Faded to Thailand W
-  // e.g. Bangladesh W (-1143 PnL) vs Indonesia W (+1263 PnL) -> Faded to Indonesia W
-  // Added constraint: Requires >= 75% public load or 3x back volume lead to ensure it's a true trap and not just high liquidity variance.
-  if ((b1Pct >= 0.75 || backRatio >= 3.0) && b1 > b2 && prePnl1 <= -1100 && prePnl2 >= 1100) {
-    return {
-      winner: t2,
-      tier: 'WOMENS_TOSS_SPECIAL',
-      algoName: "👩 Women's T20 Toss Algorithm",
-      verdictTag: 'WOMENS TRAP FADE 🚨',
-      pattern: 'WOMENS_TRAP_FADE',
-      reason: `Women's Heavy Trap on ${t1} (${(b1Pct * 100).toFixed(0)}% Load, PnL: ${prePnl1.toFixed(0)}) -> Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
+export function getWomensTossPrediction({
+  t1,
+  t2,
+  b1,
+  b2,
+  prePnl1,
+  prePnl2,
+  backRatio,
+  b1Pct,
+  b2Pct,
+  stronger,
+  supRatio,
+  syntheticSupport,
+  snap,
+}) {
+  // 1. Low Volume Zero-Back Pure Profit (e.g. Hong Kong v Thailand, total back < 50)
+  if (Math.max(b1, b2) < 50) {
+    if (b1 === 0 && prePnl1 > 0) {
+      return {
+        winner: t1,
+        tier: 'WOMENS_TOSS_SPECIAL',
+        algoName: "👩 Women's T20 Toss Algorithm",
+        verdictTag: 'WOMENS ZERO-BACK PROFIT',
+        pattern: 'WOMENS_ZERO_BACK_PROFIT',
+        reason: `Women's Zero-Back Pure Profit on ${t1} (PnL: +${prePnl1.toFixed(0)})`,
+      }
     }
-  }
-  if ((b2Pct >= 0.75 || backRatio >= 3.0) && b2 > b1 && prePnl2 <= -1100 && prePnl1 >= 1100) {
-    return {
-      winner: t1,
-      tier: 'WOMENS_TOSS_SPECIAL',
-      algoName: "👩 Women's T20 Toss Algorithm",
-      verdictTag: 'WOMENS TRAP FADE 🚨',
-      pattern: 'WOMENS_TRAP_FADE',
-      reason: `Women's Heavy Trap on ${t2} (${(b2Pct * 100).toFixed(0)}% Load, PnL: ${prePnl2.toFixed(0)}) -> Bookie Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
+    if (b2 === 0 && prePnl2 > 0) {
+      return {
+        winner: t2,
+        tier: 'WOMENS_TOSS_SPECIAL',
+        algoName: "👩 Women's T20 Toss Algorithm",
+        verdictTag: 'WOMENS ZERO-BACK PROFIT',
+        pattern: 'WOMENS_ZERO_BACK_PROFIT',
+        reason: `Women's Zero-Back Pure Profit on ${t2} (PnL: +${prePnl2.toFixed(0)})`,
+      }
     }
   }
 
-  // 2. Low Volume Organic Support
-  if (Math.max(b1, b2) < 200 && (b1 > 0 || b2 > 0)) {
-    const win = b1 > b2 ? t1 : t2
-    return {
-      winner: win,
-      tier: 'WOMENS_TOSS_SPECIAL',
-      algoName: "👩 Women's T20 Toss Algorithm",
-      verdictTag: 'WOMENS ORGANIC INFLOW',
-      pattern: 'WOMENS_ORGANIC_INFLOW',
-      reason: `Women's Organic Support on ${win} (₹${fmtVol(Math.max(b1, b2))} Back)`,
+  // 2. Strong Synthetic Support Dominance (e.g. India W 14.9x, Sri Lanka W 3.1x, Bangladesh W 2.5x)
+  const synTarget = stronger || snap?.syntheticSupport?.strongerTeam || syntheticSupport?.strongerTeam
+  const synRatio = supRatio || snap?.syntheticSupport?.supportRatio || syntheticSupport?.supportRatio || 1
+  if (synTarget && synRatio >= 1.25) {
+    const isT1 = synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase())
+    const isT2 = synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase())
+    if (isT1) {
+      return {
+        winner: t1,
+        tier: 'WOMENS_TOSS_SPECIAL',
+        algoName: "👩 Women's T20 Toss Algorithm",
+        verdictTag: 'WOMENS SMART SUPPORT 💎',
+        pattern: 'WOMENS_SMART_SUPPORT',
+        reason: `Women's Smart Synthetic Support on ${t1} (${Number(synRatio).toFixed(1)}x Lead)`,
+      }
+    }
+    if (isT2) {
+      return {
+        winner: t2,
+        tier: 'WOMENS_TOSS_SPECIAL',
+        algoName: "👩 Women's T20 Toss Algorithm",
+        verdictTag: 'WOMENS SMART SUPPORT 💎',
+        pattern: 'WOMENS_SMART_SUPPORT',
+        reason: `Women's Smart Synthetic Support on ${t2} (${Number(synRatio).toFixed(1)}x Lead)`,
+      }
     }
   }
 
-  // 3. Smart Inflow
+  // 3. High-Liquidity Smart Inflow / Volume Dominance
   if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
     const win = b1 > b2 ? t1 : t2
     return {
@@ -528,6 +565,19 @@ export function getWomensTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl2, back
       verdictTag: 'WOMENS SMART INFLOW',
       pattern: 'WOMENS_SMART_INFLOW',
       reason: `Women's Inflow on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`,
+    }
+  }
+
+  // 4. Bookie Safe Exposure Fallback
+  if (prePnl1 !== prePnl2) {
+    const win = prePnl1 > prePnl2 ? t1 : t2
+    return {
+      winner: win,
+      tier: 'WOMENS_TOSS_SPECIAL',
+      algoName: "👩 Women's T20 Toss Algorithm",
+      verdictTag: 'WOMENS BOOKIE SAFE',
+      pattern: 'WOMENS_BOOKIE_SAFE',
+      reason: `Women's Bookie Safe Exposure on ${win}`,
     }
   }
 

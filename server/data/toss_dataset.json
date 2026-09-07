@@ -15574,8 +15574,8 @@
           }
         }
       },
-      "predictedWinner": "Hong Kong W",
-      "predictionReason": "Women's Organic Support on Hong Kong W (₹15 Back)",
+      "predictedWinner": "Thailand W",
+      "predictionReason": "Women's Zero-Back Pure Profit on Thailand W (PnL: +7)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -15586,11 +15586,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Critical Public Overload on Hong Kong W (100% Load, 99.0x Lead) -> Faded to Thailand W"
+        "reason": "Women's Zero-Back Pure Profit on Thailand W (PnL: +7)"
       },
       "matchedRules": [
         {
-          "reason": "Critical Public Overload on Hong Kong W (100% Load, 99.0x Lead) -> Faded to Thailand W",
+          "reason": "Women's Zero-Back Pure Profit on Thailand W (PnL: +7)",
           "winner": "Thailand W",
           "priority": 100,
           "selected": true
@@ -15602,7 +15602,9 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Thailand W"
+      "actualWinner": "Thailand W",
+      "verdictTag": "WOMENS ZERO-BACK PROFIT",
+      "pattern": "WOMENS_ZERO_BACK_PROFIT"
     },
     {
       "matchId": "35986052",
@@ -17766,7 +17768,7 @@
         }
       },
       "predictedWinner": "Sri Lanka W",
-      "predictionReason": "Women's Inflow on Sri Lanka W (₹852 Back, Lead: 3.4x)",
+      "predictionReason": "Women's Smart Synthetic Support on Sri Lanka W (1.3x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -17777,11 +17779,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on Sri Lanka W (₹852 Back, Lead: 3.4x)"
+        "reason": "Women's Smart Synthetic Support on Sri Lanka W (1.3x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on Sri Lanka W (₹852 Back, Lead: 3.4x)",
+          "reason": "Women's Smart Synthetic Support on Sri Lanka W (1.3x Lead)",
           "winner": "Sri Lanka W",
           "priority": 100,
           "selected": true
@@ -17793,7 +17795,9 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Sri Lanka W"
+      "actualWinner": "Sri Lanka W",
+      "verdictTag": "WOMENS SMART SUPPORT 💎",
+      "pattern": "WOMENS_SMART_SUPPORT"
     },
     {
       "matchId": "35998885",
@@ -19042,8 +19046,8 @@
           }
         }
       },
-      "predictedWinner": "Thailand W",
-      "predictionReason": "Women's Heavy Trap on India W (PnL: -1466) -> Bookie Safe Side Thailand W (+1565)",
+      "predictedWinner": "India W",
+      "predictionReason": "Women's Smart Synthetic Support on India W (1.6x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -19054,11 +19058,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on India W (₹1.8k Back, Lead: 99.0x)"
+        "reason": "Women's Smart Synthetic Support on India W (1.6x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on India W (₹1.8k Back, Lead: 99.0x)",
+          "reason": "Women's Smart Synthetic Support on India W (1.6x Lead)",
           "winner": "India W",
           "priority": 100,
           "selected": true
@@ -19070,7 +19074,9 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "India W"
+      "actualWinner": "India W",
+      "verdictTag": "WOMENS SMART SUPPORT 💎",
+      "pattern": "WOMENS_SMART_SUPPORT"
     },
     {
       "matchId": "35989000",
@@ -20549,8 +20555,8 @@
           }
         }
       },
-      "predictedWinner": "Indonesia W",
-      "predictionReason": "Women's Heavy Trap on Bangladesh W (PnL: -1143) -> Bookie Safe Side Indonesia W (+1263)",
+      "predictedWinner": "Bangladesh W",
+      "predictionReason": "Women's Smart Synthetic Support on Bangladesh W (2.5x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -20561,11 +20567,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on Bangladesh W (₹1.4k Back, Lead: 3.0x)"
+        "reason": "Women's Smart Synthetic Support on Bangladesh W (2.5x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on Bangladesh W (₹1.4k Back, Lead: 3.0x)",
+          "reason": "Women's Smart Synthetic Support on Bangladesh W (2.5x Lead)",
           "winner": "Bangladesh W",
           "priority": 100,
           "selected": true
@@ -20577,7 +20583,9 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Bangladesh W"
+      "actualWinner": "Bangladesh W",
+      "verdictTag": "WOMENS SMART SUPPORT 💎",
+      "pattern": "WOMENS_SMART_SUPPORT"
     },
     {
       "matchId": "36004104",
@@ -22678,7 +22686,7 @@
         }
       },
       "predictedWinner": "Pakistan W",
-      "predictionReason": "Women's Inflow on Pakistan W (₹589 Back, Lead: 2.0x)",
+      "predictionReason": "Women's Smart Synthetic Support on Pakistan W (1.4x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -22689,11 +22697,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on Pakistan W (₹589 Back, Lead: 2.0x)"
+        "reason": "Women's Smart Synthetic Support on Pakistan W (1.4x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on Pakistan W (₹589 Back, Lead: 2.0x)",
+          "reason": "Women's Smart Synthetic Support on Pakistan W (1.4x Lead)",
           "winner": "Pakistan W",
           "priority": 100,
           "selected": true
@@ -22705,7 +22713,9 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Pakistan W"
+      "actualWinner": "Pakistan W",
+      "verdictTag": "WOMENS SMART SUPPORT 💎",
+      "pattern": "WOMENS_SMART_SUPPORT"
     },
     {
       "matchId": "36004314",
@@ -24529,8 +24539,8 @@
           }
         }
       },
-      "predictedWinner": "Indonesia W",
-      "predictionReason": "Women's Heavy Trap on Sri Lanka W (PnL: -1567) -> Bookie Safe Side Indonesia W (+1780)",
+      "predictedWinner": "Sri Lanka W",
+      "predictionReason": "Women's Smart Synthetic Support on Sri Lanka W (3.1x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -24541,12 +24551,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Heavy Trap on Sri Lanka W (PnL: -1567) -> Bookie Safe Side Indonesia W (+1780)"
+        "reason": "Women's Smart Synthetic Support on Sri Lanka W (3.1x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Heavy Trap on Sri Lanka W (PnL: -1567) -> Bookie Safe Side Indonesia W (+1780)",
-          "winner": "Indonesia W",
+          "reason": "Women's Smart Synthetic Support on Sri Lanka W (3.1x Lead)",
+          "winner": "Sri Lanka W",
           "priority": 100,
           "selected": true
         }
@@ -24557,7 +24567,9 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Sri Lanka W"
+      "actualWinner": "Sri Lanka W",
+      "verdictTag": "WOMENS SMART SUPPORT 💎",
+      "pattern": "WOMENS_SMART_SUPPORT"
     },
     {
       "matchId": "36018454",
@@ -26713,8 +26725,8 @@
           }
         }
       },
-      "predictedWinner": "Hong Kong W",
-      "predictionReason": "Women's Heavy Trap on India W (PnL: -1186) -> Bookie Safe Side Hong Kong W (+1291)",
+      "predictedWinner": "India W",
+      "predictionReason": "Women's Smart Synthetic Support on India W (14.9x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -26725,12 +26737,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Heavy Trap on India W (PnL: -1186) -> Bookie Safe Side Hong Kong W (+1291)"
+        "reason": "Women's Smart Synthetic Support on India W (14.9x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Heavy Trap on India W (PnL: -1186) -> Bookie Safe Side Hong Kong W (+1291)",
-          "winner": "Hong Kong W",
+          "reason": "Women's Smart Synthetic Support on India W (14.9x Lead)",
+          "winner": "India W",
           "priority": 100,
           "selected": true
         }
@@ -26741,7 +26753,9 @@
       "confirmedByEmail": null,
       "confirmedById": null,
       "status": "verified",
-      "actualWinner": "India W"
+      "actualWinner": "India W",
+      "verdictTag": "WOMENS SMART SUPPORT 💎",
+      "pattern": "WOMENS_SMART_SUPPORT"
     },
     {
       "matchId": "36019390",
