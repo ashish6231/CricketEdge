@@ -229,17 +229,25 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   }
 
   // ─────────────────────────────────────────────────────────────────────────
-  // RULE 6 — 💰 Moderate Public Overload Trap Fade
-  //   Back ratio between 1.5x and 2.5x, but Bookmaker in strong deficit on
-  //   the back leader and profits significantly (gap >= 1000) from underdog.
+  // RULE 6 — 💰 Public Overload & Bookmaker Deficit Trap Fade
+  //   (a) Moderate retail favorite (1.5x - 2.5x back) where bookmaker is in deficit
+  //       and profits significantly (gap >= 1000) from underdog.
+  //   (b) Tight back market (backRatio <= 1.35) where public slightly backs one team,
+  //       but bookmaker is in net deficit on that team (epnl < 0), while the other team
+  //       has positive bookmaker profit (epnl > 0), higher total volume (tot > otherTot),
+  //       higher lay absorption (l > otherL), and profit gap (pnlDiff >= 500).
+  //       e.g. Barbados Tridents vs St. Lucia Kings (07 Sept): St. Lucia had slight back lead (2312 vs 2149),
+  //       but bookmaker had deficit on St. Lucia (epnl2: -404) vs profit on Barbados (epnl1: +752)
+  //       with Barbados dominating total volume (3776 vs 3475) and lay volume (1627 vs 1162).
   // ─────────────────────────────────────────────────────────────────────────
-  if (backRatio >= 1.5 && backRatio <= 2.5 && pnlDiff >= 1000) {
-    if (b2 > b1 && epnl2 < 0 && epnl1 > 0) {
-      return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
-    }
-    if (b1 > b2 && epnl1 < 0 && epnl2 > 0) {
-      return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
-    }
+  const isTightAbsorptionTrap1 = (backRatio <= 1.35 && b2 > b1 && epnl2 < 0 && epnl1 > 0 && tot1 > tot2 && l1 > l2 && pnlDiff >= 500);
+  const isTightAbsorptionTrap2 = (backRatio <= 1.35 && b1 > b2 && epnl1 < 0 && epnl2 > 0 && tot2 > tot1 && l2 > l1 && pnlDiff >= 500);
+
+  if (isTightAbsorptionTrap1 || (backRatio >= 1.5 && backRatio <= 2.5 && pnlDiff >= 1000 && b2 > b1 && epnl2 < 0 && epnl1 > 0)) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
+  }
+  if (isTightAbsorptionTrap2 || (backRatio >= 1.5 && backRatio <= 2.5 && pnlDiff >= 1000 && b1 > b2 && epnl1 < 0 && epnl2 > 0)) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
   }
 
   // ─────────────────────────────────────────────────────────────────────────

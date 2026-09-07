@@ -518,9 +518,22 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
     crexRawPromise,
   ]);
 
-  const cricket = cricketRaw?.error
-    ? { error: cricketRaw.error }
+  let cricket = (!cricketRaw || cricketRaw.error)
+    ? null
     : attachMatchMeta(cricketRaw, matchInfo);
+
+  if (!cricket) {
+    try {
+      const md = getMatchDataset();
+      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec && rec.snapshot) {
+        cricket = attachMatchMeta(JSON.parse(JSON.stringify(rec.snapshot)), matchInfo);
+      }
+    } catch {}
+  }
+  if (!cricket && cricketRaw?.error) {
+    cricket = { error: cricketRaw.error };
+  }
 
   const toss = !tossRaw || tossRaw.error
     ? null

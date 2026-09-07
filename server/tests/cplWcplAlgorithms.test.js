@@ -88,3 +88,21 @@ test('getWCPLPrediction correctly predicts Jamaica Empress W via Bookmaker Trap 
   assert.equal(result.tier, 'WCPL_SPECIAL');
   assert.match(result.confidence, /WCPL Bookmaker Trap/);
 });
+
+test('getCPLPrediction correctly predicts Barbados Tridents via tight market Bookmaker Trap (Match 36034130 - 07 Sept)', () => {
+  const cplSnap = {
+    matchId: '36034130',
+    competitionName: 'Caribbean Premier League',
+    teamNames: ['Barbados Tridents', 'St. Lucia Kings'],
+    preMatchVolume: {
+      team1: { back: 2149.76, lay: 1627.02 },
+      team2: { back: 2312.40, lay: 1162.89 }
+    },
+    preMatchPnl: { team1: 752.77, team2: -404.49 }
+  };
+
+  const result = predictMatchWinner(cplSnap);
+  assert.equal(result.winner, 'Barbados Tridents');
+  assert.equal(result.tier, 'CPL_SPECIAL');
+  assert.match(result.confidence, /CPL Bookmaker Trap \(Fade Public Favorite\)/);
+});
