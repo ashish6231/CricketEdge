@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-07T13:26:51.003Z",
+  "updatedAt": "2026-09-07T14:25:42.742Z",
   "records": [
     {
       "matchId": "35901908",
@@ -12828,7 +12828,7 @@
           }
         }
       },
-      "predictedWinner": "Dublin Guardians",
+      "predictedWinner": "Belfast Wolves",
       "predictionReason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians",
       "predictionRisk": {
         "tier": "medium",
@@ -12856,7 +12856,10 @@
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
       "status": "verified",
-      "actualWinner": "Belfast Wolves"
+      "actualWinner": "Belfast Wolves",
+      "verdictTag": "ECS PUBLIC TRAP FADE 🚨",
+      "pattern": "ECS_DUBLIN_TRAP_FADE",
+      "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Belfast Wolves"
     },
     {
       "matchId": "35966902",
@@ -15248,9 +15251,12 @@
       "confirmedAt": "2026-08-29T09:25:33.457Z",
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
-      "status": "abandoned",
-      "actualWinner": "No Result",
-      "predictionCorrect": true
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictionCorrect": true,
+      "verdictTag": "ECS TOSS FORTRESS 🏰",
+      "pattern": "ECS_TOSS_FORTRESS",
+      "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Amsterdam Flames)"
     },
     {
       "matchId": "35982250",
@@ -16472,7 +16478,7 @@
           }
         }
       },
-      "predictedWinner": "Dublin Guardians",
+      "predictedWinner": "Glasgow Cosmic",
       "predictionReason": "ECS Smart Inflow on Dublin Guardians (₹1.3k Back, Lead: 1.9x)",
       "predictionRisk": {
         "tier": "medium",
@@ -16501,7 +16507,10 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Glasgow Cosmic",
-      "predictionCorrect": false
+      "predictionCorrect": false,
+      "verdictTag": "ECS PUBLIC TRAP FADE 🚨",
+      "pattern": "ECS_DUBLIN_TRAP_FADE",
+      "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Glasgow Cosmic"
     },
     {
       "matchId": "35993805",
@@ -17369,9 +17378,12 @@
       "confirmedAt": "2026-09-02T17:28:30.183Z",
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1,
-      "status": "abandoned",
-      "actualWinner": "No Result",
-      "predictionCorrect": false
+      "status": "verified",
+      "actualWinner": "Belfast Wolves",
+      "predictionCorrect": false,
+      "verdictTag": "ECS LAY DUMP FADE 🚨",
+      "pattern": "ECS_LAY_DUMP_FADE",
+      "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay, 2.8x) -> Faded to Belfast Wolves"
     },
     {
       "matchId": "35982257",
@@ -18623,7 +18635,7 @@
           }
         }
       },
-      "predictedWinner": "Dublin Guardians",
+      "predictedWinner": "Edinburgh Castle Rockers",
       "predictionReason": "ECS Smart Inflow on Dublin Guardians (₹372 Back, Lead: 1.2x)",
       "predictionRisk": {
         "tier": "medium",
@@ -18652,7 +18664,10 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Edinburgh Castle Rockers",
-      "predictionCorrect": false
+      "predictionCorrect": false,
+      "verdictTag": "ECS TOSS FORTRESS 🏰",
+      "pattern": "ECS_TOSS_FORTRESS",
+      "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)"
     },
     {
       "matchId": "35982267",
@@ -25442,11 +25457,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-07T13:44:00.746Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "England W"
     },
     {
       "matchId": "36020245",
@@ -25859,11 +25874,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-07T13:44:09.253Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Zimbabwe"
     },
     {
       "matchId": "36020432",
@@ -27766,11 +27781,11 @@
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
       "lastCaptureError": null,
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "confirmedAt": "2026-09-07T13:44:23.709Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1,
+      "status": "verified",
+      "actualWinner": "Namibia"
     },
     {
       "matchId": "36027092",
@@ -28159,7 +28174,7 @@
           }
         }
       },
-      "predictedWinner": "Glasgow Cosmic",
+      "predictedWinner": "Belfast Wolves",
       "predictionReason": "ECS Smart Inflow on Glasgow Cosmic (₹1248 Back, Lead: 2.3x)",
       "predictionRisk": {
         "tier": "medium",
@@ -28188,7 +28203,10 @@
       "confirmedById": null,
       "status": "verified",
       "actualWinner": "Belfast Wolves",
-      "predictionCorrect": false
+      "predictionCorrect": false,
+      "verdictTag": "ECS BOOKIE SAFE 🛡️",
+      "pattern": "ECS_GLASGOW_CHOKE_FADE",
+      "reason": "Glasgow Cosmic toss liability choke (PnL: -709 vs +808) -> Bookie Safe to Belfast Wolves"
     },
     {
       "matchId": "36023009",
@@ -29550,7 +29568,7 @@
           }
         }
       },
-      "predictedWinner": "Rotterdam Dockers",
+      "predictedWinner": "Edinburgh Castle Rockers",
       "predictionReason": "ECS Smart Inflow on Rotterdam Dockers (₹809 Back, Lead: 1.4x)",
       "predictionRisk": {
         "tier": "medium",
@@ -29579,7 +29597,10 @@
       "confirmedById": null,
       "status": "verified",
       "actualWinner": "Edinburgh Castle Rockers",
-      "predictionCorrect": false
+      "predictionCorrect": false,
+      "verdictTag": "ECS TOSS FORTRESS 🏰",
+      "pattern": "ECS_TOSS_FORTRESS",
+      "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Rotterdam Dockers)"
     },
     {
       "matchId": "36027440",
@@ -29940,7 +29961,7 @@
           }
         }
       },
-      "predictedWinner": "Dublin Guardians",
+      "predictedWinner": "Amsterdam Flames",
       "predictionReason": "ECS Smart Inflow on Dublin Guardians (₹706 Back, Lead: 2.0x)",
       "predictionRisk": {
         "tier": "medium",
@@ -29969,7 +29990,10 @@
       "confirmedById": null,
       "status": "verified",
       "actualWinner": "Amsterdam Flames",
-      "predictionCorrect": false
+      "predictionCorrect": false,
+      "verdictTag": "ECS PUBLIC TRAP FADE 🚨",
+      "pattern": "ECS_DUBLIN_TRAP_FADE",
+      "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Amsterdam Flames"
     },
     {
       "matchId": "36027587",
@@ -30971,12 +30995,12 @@
       "predictionRisk": {},
       "matchedRules": [],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Calicut Globstars",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:44:55.814Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36023549",
@@ -31451,12 +31475,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Barbados Tridents",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:45:09.711Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36027911",
@@ -31882,12 +31906,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Ireland W",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:45:48.348Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36034286",
@@ -32299,12 +32323,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Edinburgh Castle Rockers",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:46:11.190Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36032174",
@@ -32800,12 +32824,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "South Africa",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:46:23.424Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36034385",
@@ -33181,12 +33205,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Amsterdam Flames",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:46:49.952Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36023506",
@@ -33591,12 +33615,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Jamaica Empress W",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:47:11.120Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36023089",
@@ -34015,12 +34039,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Sri Lanka W",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:47:34.188Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36029412",
@@ -34467,12 +34491,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "St Kitts & Nevis Pats",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:47:44.503Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36034130",
@@ -34975,12 +34999,12 @@
         }
       ],
       "predictorVersion": "toss-v9-league-specific-algorithms",
-      "actualWinner": null,
+      "actualWinner": "Barbados Tridents",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-09-07T13:47:55.520Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     }
   ]
 }

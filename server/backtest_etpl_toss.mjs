@@ -64,8 +64,11 @@ function buildCtx(snap) {
   const backRatio = Math.min(b1, b2) > 0
     ? Math.max(b1, b2) / Math.min(b1, b2)
     : (Math.max(b1, b2) > 0 ? 99 : 1);
+  const stronger = snap.syntheticSupport?.strongerTeam;
+  const supRatio = snap.syntheticSupport?.supportRatio || 1;
+  const syntheticSupport = snap.syntheticSupport;
 
-  return { t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, totBack, b1Pct, b2Pct, backRatio };
+  return { t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, totBack, b1Pct, b2Pct, backRatio, stronger, supRatio, syntheticSupport, snap };
 }
 
 /** Pattern accuracy breakdown */
@@ -88,7 +91,7 @@ function byPattern(rows) {
 // ── Main ───────────────────────────────────────────────────────────────────
 const SEP = '═'.repeat(72);
 console.log(`\n${SEP}`);
-console.log('  🇪🇺 ETPL / ECS TOSS ALGO — BACKTEST  (Algo v2)');
+console.log('  🇪🇺 ETPL / ECS TOSS ALGO — BACKTEST  (Algo v3)');
 console.log(`  Dataset: server/data/toss_dataset.json`);
 console.log(`  Run at: ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST`);
 console.log(`${SEP}\n`);
@@ -116,10 +119,10 @@ const etplRecords = allRecords.filter((r) => {
 });
 
 console.log(`🏏 ETPL/ECS records found: ${etplRecords.length}`);
-const withActual = etplRecords.filter((r) => r.actualWinner && r.status === 'verified');
-const pending    = etplRecords.filter((r) => !r.actualWinner || r.status === 'pending');
+const withActual = etplRecords.filter((r) => r.actualWinner && r.status === 'verified' && r.actualWinner !== 'No Result');
+const pending    = etplRecords.filter((r) => !r.actualWinner || r.status === 'pending' || r.status === 'abandoned' || r.actualWinner === 'No Result');
 console.log(`   ✅ Verified (have actual winner): ${withActual.length}`);
-console.log(`   ⏳ Pending  (no actual winner):   ${pending.length}\n`);
+console.log(`   ⏳ Pending/Abandoned (no actual winner): ${pending.length}\n`);
 
 const rows   = [];
 let skipped  = 0;
@@ -130,7 +133,7 @@ for (const record of etplRecords) {
 
   // Determine actual winner: prefer confirmed field, then infer from settled odds
   const actual = record.actualWinner || inferTossWinner(snap);
-  if (!actual) { skipped++; continue; }
+  if (!actual || actual === 'No Result' || record.status === 'abandoned') { skipped++; continue; }
 
   const ctx  = buildCtx(snap);
   const pred = getECSTossPrediction(ctx);

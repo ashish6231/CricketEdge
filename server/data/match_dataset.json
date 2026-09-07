@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-07T13:28:51.350Z",
+  "updatedAt": "2026-09-07T14:28:18.393Z",
   "records": [
     {
       "matchId": "35901908",
@@ -498024,6 +498024,4675 @@
       "confirmedAt": "2026-09-07T13:28:51.301Z",
       "confirmedByEmail": "crex-auto",
       "confirmedById": "system"
+    },
+    {
+      "matchId": "36030280",
+      "marketId": "1.261987371",
+      "matchName": "Colombo CC v Sinhalese Sports Club",
+      "competitionName": "SLC Major Clubs Limited Overs",
+      "team1": "Colombo CC",
+      "team2": "Sinhalese Sports Club",
+      "startTime": 1788754500000,
+      "endedAt": "2026-09-07T14:28:17.632Z",
+      "capturedAt": "2026-09-07T14:28:17.632Z",
+      "snapshot": {
+        "serverTime": "2026-09-07T14:28:17.783Z",
+        "matchId": "36030280",
+        "matchName": "Colombo CC v Sinhalese Sports Club",
+        "teamNames": [
+          "Colombo CC",
+          "Sinhalese Sports Club"
+        ],
+        "inPlayPnl": {
+          "team1": 151.1220000000061,
+          "team2": 304.7979000000018
+        },
+        "inPlayTotalBets": {
+          "team1": 19944.020399999998,
+          "team2": 20119.255599999997
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 20139.9,
+            "lay": 130.48999999999887,
+            "total": 20191.33
+          },
+          "team2": {
+            "back": 19978.49,
+            "lay": 51.42999999999927,
+            "total": 20108.98
+          }
+        },
+        "preMatchPnl": {
+          "team1": null,
+          "team2": null
+        },
+        "preMatchTotalBets": {
+          "team1": null,
+          "team2": null
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": null,
+            "lay": null,
+            "total": null
+          },
+          "team2": {
+            "back": null,
+            "lay": null,
+            "total": null
+          }
+        },
+        "threeMinPnl": {
+          "team1": null,
+          "team2": null
+        },
+        "threeMinTotalBets": {
+          "team1": null,
+          "team2": null
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": null,
+            "lay": null,
+            "total": null
+          },
+          "team2": {
+            "back": null,
+            "lay": null,
+            "total": null
+          }
+        },
+        "matchLoadV2": {
+          "team1": 216,
+          "team2": 227
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 37066.62,
+            "lay": 40848.76999999995,
+            "totalVolume": 77915.38999999996,
+            "backPercentage": 47.57291210375771
+          },
+          "team2": {
+            "back": 28088.399999999998,
+            "lay": 17361.47,
+            "totalVolume": 45449.869999999995,
+            "backPercentage": 61.800836834076755
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 30639.037800000002,
+            "lay": 13705.063100000001,
+            "totalBet": 44344.100900000005
+          },
+          "team2": {
+            "back": 24809.1088,
+            "lay": 6607.9002,
+            "totalBet": 31417.009000000002
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 54428.090000000004,
+            "support": 44.119462805006876
+          },
+          "team2": {
+            "supportMoney": 68937.16999999995,
+            "support": 55.88053719499313
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Sinhalese Sports Club",
+          "bookieFavouriteOutcome": "Colombo CC",
+          "riskTeam": "Sinhalese Sports Club",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 11.761074389986256,
+          "mostBettedTeam": "Colombo CC",
+          "prediction": {
+            "team1TrueSupport": 31562.2299,
+            "team2TrueSupport": 28572.883200000004,
+            "ratio": 1.1046218079945112,
+            "bookiePnlTeam1": -19244.821399999993,
+            "bookiePnlTeam2": -21201.129500000006,
+            "prediction": "Colombo CC",
+            "pattern": "Fair Market",
+            "reason": "Ratio (1.10) is low. Money is distributed naturally. Prediction follows Higher True Support."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 22537.853900000002,
+            "backExposure": 27660.293500000003,
+            "layExposure": 5122.439600000001,
+            "teamName": "Colombo CC"
+          },
+          "team2": {
+            "netExposure": 19063.345200000007,
+            "backExposure": 24056.431700000005,
+            "layExposure": 4993.0864999999985,
+            "teamName": "Sinhalese Sports Club"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 30639.037800000002,
+            "A_lay_stake": 40848.76999999995,
+            "B_back_expo": 24809.1088,
+            "B_lay_stake": 17361.47
+          },
+          "totals": {
+            "totalBetTeam1": 48000.50780000001,
+            "totalBetTeam2": 65657.87879999995
+          },
+          "simplePL": {
+            "team1_win": 10209.732199999951,
+            "team2_win": -7447.638800000001
+          },
+          "derivedPL": {
+            "team1_win": 17657.37099999994,
+            "team2_win": -17657.37099999994
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 37066.62,
+              "totalLayVol": 40848.76999999995,
+              "totalBet": 54428.090000000004,
+              "profitLoss": 14509.07999999995
+            },
+            "team2": {
+              "totalBackVol": 28088.399999999998,
+              "totalLayVol": 17361.47,
+              "totalBet": 68937.16999999995,
+              "profitLoss": -14509.07999999995
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 30639.037800000002,
+              "totalLayVol": 40848.76999999995,
+              "totalBet": 48000.50780000001,
+              "profitLoss": -6207.044700000006
+            },
+            "team2": {
+              "totalBackExpo": 24809.1088,
+              "totalLayVol": 17361.47,
+              "totalBet": 65657.87879999995,
+              "profitLoss": -21983.35859999995
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 30639.037800000002,
+              "totalLayNetVol": 13705.063100000001,
+              "totalBet": 37246.938,
+              "profitLoss": 1267.2338999999993
+            },
+            "team2": {
+              "totalBackNetVol": 24809.1088,
+              "totalLayNetVol": 6607.9002,
+              "totalBet": 38514.1719,
+              "profitLoss": -1267.2338999999993
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 216,
+            "averageOdds": 3.8039351851851846,
+            "averageSize": 251.98189814814808,
+            "supportProduct": 958.52280839549
+          },
+          "teamB": {
+            "tradeCount": 227,
+            "averageOdds": 7.603788546255506,
+            "averageSize": 303.6879735682816,
+            "supportProduct": 2309.1791350540448
+          },
+          "strongerTeam": "Sinhalese Sports Club",
+          "supportRatio": 2.409101916854199
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 37066.62,
+            "oppoLayVolume": 17361.47,
+            "layExposure": 13705.063100000001,
+            "netSupportValue": 40723.026900000004
+          },
+          "teamB": {
+            "totalBackVolume": 28088.399999999998,
+            "oppoLayVolume": 40848.76999999995,
+            "layExposure": 6607.9002,
+            "netSupportValue": 62329.26979999995
+          },
+          "strongerTeam": "Sinhalese Sports Club",
+          "netSupportDifference": 21606.242899999947,
+          "percentageA": 39.51685523181554,
+          "percentageB": 60.48314476818446
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -3782.1499999999505,
+            "syntheticSupport": 17361.47,
+            "opponentLiabilityRejection": 6607.9002,
+            "sentimentScore": 6971.419800000051
+          },
+          "teamB": {
+            "directNetSupport": 10726.929999999997,
+            "syntheticSupport": 40848.76999999995,
+            "opponentLiabilityRejection": 13705.063100000001,
+            "sentimentScore": 37870.636899999954
+          },
+          "strongerTeam": "Sinhalese Sports Club",
+          "scoreDifference": 30899.217099999903,
+          "percentageA": 15.546610287391324,
+          "percentageB": 84.45338971260868
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Colombo CC",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Sinhalese Sports Club",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Colombo CC"
+        },
+        "teams": {
+          "Colombo CC": {
+            "trades": [
+              {
+                "team": "Colombo CC",
+                "price": 100,
+                "type": "back",
+                "size": 14.75,
+                "updatedAt": 1788785544609
+              },
+              {
+                "team": "Colombo CC",
+                "price": 50,
+                "type": "back",
+                "size": 0.35999999999999943,
+                "updatedAt": 1788785544609
+              },
+              {
+                "team": "Colombo CC",
+                "price": 34,
+                "type": "back",
+                "size": 0.04,
+                "updatedAt": 1788785497723
+              },
+              {
+                "team": "Colombo CC",
+                "price": 26,
+                "type": "back",
+                "size": 2.15,
+                "updatedAt": 1788785497723
+              },
+              {
+                "team": "Colombo CC",
+                "price": 21,
+                "type": "back",
+                "size": 0.68,
+                "updatedAt": 1788785484675
+              },
+              {
+                "team": "Colombo CC",
+                "price": 110,
+                "type": "lay",
+                "size": 5.37,
+                "updatedAt": 1788785477124
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1000,
+                "type": "lay",
+                "size": 0.07,
+                "updatedAt": 1788785465138
+              },
+              {
+                "team": "Colombo CC",
+                "price": 8,
+                "type": "lay",
+                "size": 26.7,
+                "updatedAt": 1788785442402
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.24,
+                "type": "back",
+                "size": 0.5700000000000003,
+                "updatedAt": 1788785385101
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4.4,
+                "type": "back",
+                "size": 77.46000000000001,
+                "updatedAt": 1788785375053
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4.3,
+                "type": "back",
+                "size": 367.25,
+                "updatedAt": 1788785372943
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4.4,
+                "type": "lay",
+                "size": 0.9900000000000002,
+                "updatedAt": 1788785353326
+              },
+              {
+                "team": "Colombo CC",
+                "price": 13.5,
+                "type": "lay",
+                "size": 48.56,
+                "updatedAt": 1788785314564
+              },
+              {
+                "team": "Colombo CC",
+                "price": 13,
+                "type": "lay",
+                "size": 5.81,
+                "updatedAt": 1788785312552
+              },
+              {
+                "team": "Colombo CC",
+                "price": 10.5,
+                "type": "lay",
+                "size": 0.55,
+                "updatedAt": 1788785312552
+              },
+              {
+                "team": "Colombo CC",
+                "price": 15,
+                "type": "lay",
+                "size": 0.1,
+                "updatedAt": 1788785298387
+              },
+              {
+                "team": "Colombo CC",
+                "price": 8.2,
+                "type": "lay",
+                "size": 25.05,
+                "updatedAt": 1788785268635
+              },
+              {
+                "team": "Colombo CC",
+                "price": 6.8,
+                "type": "lay",
+                "size": 5.25,
+                "updatedAt": 1788785256006
+              },
+              {
+                "team": "Colombo CC",
+                "price": 9.2,
+                "type": "lay",
+                "size": 0.17999999999999997,
+                "updatedAt": 1788785225288
+              },
+              {
+                "team": "Colombo CC",
+                "price": 8.6,
+                "type": "lay",
+                "size": 5.810000000000002,
+                "updatedAt": 1788785225288
+              },
+              {
+                "team": "Colombo CC",
+                "price": 7.8,
+                "type": "lay",
+                "size": 0.3599999999999999,
+                "updatedAt": 1788785180488
+              },
+              {
+                "team": "Colombo CC",
+                "price": 7.8,
+                "type": "back",
+                "size": 2.66,
+                "updatedAt": 1788785175960
+              },
+              {
+                "team": "Colombo CC",
+                "price": 9.2,
+                "type": "back",
+                "size": 0.17,
+                "updatedAt": 1788785137579
+              },
+              {
+                "team": "Colombo CC",
+                "price": 8.8,
+                "type": "back",
+                "size": 7.96,
+                "updatedAt": 1788785137579
+              },
+              {
+                "team": "Colombo CC",
+                "price": 8.6,
+                "type": "back",
+                "size": 34.43,
+                "updatedAt": 1788785137579
+              },
+              {
+                "team": "Colombo CC",
+                "price": 19,
+                "type": "lay",
+                "size": 2.62,
+                "updatedAt": 1788784671741
+              },
+              {
+                "team": "Colombo CC",
+                "price": 12,
+                "type": "lay",
+                "size": 66.36,
+                "updatedAt": 1788784606413
+              },
+              {
+                "team": "Colombo CC",
+                "price": 12.5,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788784546037
+              },
+              {
+                "team": "Colombo CC",
+                "price": 7.2,
+                "type": "back",
+                "size": 13.81,
+                "updatedAt": 1788784523828
+              },
+              {
+                "team": "Colombo CC",
+                "price": 6.8,
+                "type": "back",
+                "size": 4.67,
+                "updatedAt": 1788784511727
+              },
+              {
+                "team": "Colombo CC",
+                "price": 6,
+                "type": "back",
+                "size": 0.27,
+                "updatedAt": 1788784483030
+              },
+              {
+                "team": "Colombo CC",
+                "price": 5.8,
+                "type": "back",
+                "size": 16.6,
+                "updatedAt": 1788784464421
+              },
+              {
+                "team": "Colombo CC",
+                "price": 5.6,
+                "type": "back",
+                "size": 0.3,
+                "updatedAt": 1788784464421
+              },
+              {
+                "team": "Colombo CC",
+                "price": 5.5,
+                "type": "back",
+                "size": 10.49,
+                "updatedAt": 1788784451330
+              },
+              {
+                "team": "Colombo CC",
+                "price": 5,
+                "type": "lay",
+                "size": 1.58,
+                "updatedAt": 1788784434218
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4.5,
+                "type": "lay",
+                "size": 2.610000000000001,
+                "updatedAt": 1788784434218
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4.5,
+                "type": "back",
+                "size": 13.03,
+                "updatedAt": 1788784424149
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4.3,
+                "type": "lay",
+                "size": 10.629999999999995,
+                "updatedAt": 1788784396566
+              },
+              {
+                "team": "Colombo CC",
+                "price": 3.9,
+                "type": "lay",
+                "size": 10.14,
+                "updatedAt": 1788784382903
+              },
+              {
+                "team": "Colombo CC",
+                "price": 3.8,
+                "type": "back",
+                "size": 14.54,
+                "updatedAt": 1788784382903
+              },
+              {
+                "team": "Colombo CC",
+                "price": 3.75,
+                "type": "back",
+                "size": 0.46,
+                "updatedAt": 1788784382903
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4,
+                "type": "back",
+                "size": 49.58,
+                "updatedAt": 1788784374839
+              },
+              {
+                "team": "Colombo CC",
+                "price": 4.7,
+                "type": "lay",
+                "size": 0.37,
+                "updatedAt": 1788784299709
+              },
+              {
+                "team": "Colombo CC",
+                "price": 3.2,
+                "type": "back",
+                "size": 35.81,
+                "updatedAt": 1788784256426
+              },
+              {
+                "team": "Colombo CC",
+                "price": 3.25,
+                "type": "back",
+                "size": 1.33,
+                "updatedAt": 1788784255906
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.8,
+                "type": "back",
+                "size": 0.8700000000000045,
+                "updatedAt": 1788784246854
+              },
+              {
+                "team": "Colombo CC",
+                "price": 3,
+                "type": "back",
+                "size": 6.740000000000009,
+                "updatedAt": 1788784244303
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.96,
+                "type": "back",
+                "size": 20.68,
+                "updatedAt": 1788784244303
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.6,
+                "type": "lay",
+                "size": 104.88,
+                "updatedAt": 1788784218156
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.46,
+                "type": "back",
+                "size": 49.53,
+                "updatedAt": 1788784210528
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.58,
+                "type": "lay",
+                "size": 2.66,
+                "updatedAt": 1788784200463
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.44,
+                "type": "back",
+                "size": 6.22,
+                "updatedAt": 1788784199425
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.42,
+                "type": "back",
+                "size": 89.25,
+                "updatedAt": 1788784199425
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.42,
+                "type": "lay",
+                "size": 2.5799999999999983,
+                "updatedAt": 1788784185854
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.38,
+                "type": "back",
+                "size": 2.73,
+                "updatedAt": 1788784182821
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.36,
+                "type": "back",
+                "size": 12.810000000000002,
+                "updatedAt": 1788784182303
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.26,
+                "type": "lay",
+                "size": 10.8,
+                "updatedAt": 1788784175247
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.28,
+                "type": "back",
+                "size": 2.6599999999999966,
+                "updatedAt": 1788784172785
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.26,
+                "type": "back",
+                "size": 3.169999999999999,
+                "updatedAt": 1788784172785
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.28,
+                "type": "lay",
+                "size": 145.3,
+                "updatedAt": 1788784167185
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.08,
+                "type": "lay",
+                "size": 4.99,
+                "updatedAt": 1788784163170
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.36,
+                "type": "lay",
+                "size": 3.180000000000007,
+                "updatedAt": 1788784144090
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.3,
+                "type": "lay",
+                "size": 195.77999999999997,
+                "updatedAt": 1788784144090
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.1,
+                "type": "lay",
+                "size": 4.670000000000005,
+                "updatedAt": 1788784130405
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.32,
+                "type": "lay",
+                "size": 25.389999999999993,
+                "updatedAt": 1788784099671
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.34,
+                "type": "back",
+                "size": 19.919999999999998,
+                "updatedAt": 1788784056395
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.3,
+                "type": "back",
+                "size": 1.7200000000000149,
+                "updatedAt": 1788784047380
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.1,
+                "type": "back",
+                "size": 83.82,
+                "updatedAt": 1788784033286
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.02,
+                "type": "back",
+                "size": 2.66,
+                "updatedAt": 1788783979255
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2,
+                "type": "back",
+                "size": 19852.77,
+                "updatedAt": 1788783979255
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2,
+                "type": "lay",
+                "size": 313.8800000000019,
+                "updatedAt": 1788783976172
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.79,
+                "type": "lay",
+                "size": 50.63999999999999,
+                "updatedAt": 1788783969842
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.79,
+                "type": "back",
+                "size": 27.47,
+                "updatedAt": 1788783962076
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.75,
+                "type": "lay",
+                "size": 352.63,
+                "updatedAt": 1788783959035
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.64,
+                "type": "lay",
+                "size": 486.57000000000005,
+                "updatedAt": 1788783959035
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.63,
+                "type": "lay",
+                "size": 34.67,
+                "updatedAt": 1788783958529
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.56,
+                "type": "lay",
+                "size": 58.30999999999998,
+                "updatedAt": 1788783952991
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.51,
+                "type": "back",
+                "size": 76.39000000000001,
+                "updatedAt": 1788783944949
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.48,
+                "type": "back",
+                "size": 959.9900000000001,
+                "updatedAt": 1788783944949
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.49,
+                "type": "back",
+                "size": 74.68,
+                "updatedAt": 1788783940897
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.5,
+                "type": "back",
+                "size": 1223.64,
+                "updatedAt": 1788783940407
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.47,
+                "type": "back",
+                "size": 409.67,
+                "updatedAt": 1788783929769
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.46,
+                "type": "back",
+                "size": 1223.4499999999998,
+                "updatedAt": 1788783929769
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.46,
+                "type": "lay",
+                "size": 723.8700000000001,
+                "updatedAt": 1788783925190
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.42,
+                "type": "lay",
+                "size": 652.5999999999999,
+                "updatedAt": 1788783898910
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.41,
+                "type": "lay",
+                "size": 32.14000000000001,
+                "updatedAt": 1788783898910
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.48,
+                "type": "lay",
+                "size": 73.13999999999997,
+                "updatedAt": 1788783881179
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.52,
+                "type": "lay",
+                "size": 588.7499999999999,
+                "updatedAt": 1788783865016
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.51,
+                "type": "lay",
+                "size": 38.39,
+                "updatedAt": 1788783865016
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.45,
+                "type": "back",
+                "size": 2515.92,
+                "updatedAt": 1788783856967
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.45,
+                "type": "lay",
+                "size": 1141.9399999999998,
+                "updatedAt": 1788783842849
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.28,
+                "type": "back",
+                "size": 10.219999999999999,
+                "updatedAt": 1788783810584
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.4,
+                "type": "lay",
+                "size": 1275.6800000000003,
+                "updatedAt": 1788783806055
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.26,
+                "type": "back",
+                "size": 347.0999999999998,
+                "updatedAt": 1788783806055
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.25,
+                "type": "back",
+                "size": 24.749999999999986,
+                "updatedAt": 1788783805551
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.26,
+                "type": "lay",
+                "size": 1144.7700000000002,
+                "updatedAt": 1788783804646
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.25,
+                "type": "lay",
+                "size": 77.13000000000001,
+                "updatedAt": 1788783800025
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.27,
+                "type": "back",
+                "size": 9.39,
+                "updatedAt": 1788783787935
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.18,
+                "type": "back",
+                "size": 46.140000000000015,
+                "updatedAt": 1788783787935
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.31,
+                "type": "lay",
+                "size": 27.049999999999994,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.24,
+                "type": "lay",
+                "size": 124.28,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.23,
+                "type": "lay",
+                "size": 119.16,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.22,
+                "type": "lay",
+                "size": 18.02,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.24,
+                "type": "back",
+                "size": 222.49,
+                "updatedAt": 1788783774301
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.18,
+                "type": "lay",
+                "size": 201.48,
+                "updatedAt": 1788783764801
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.23,
+                "type": "back",
+                "size": 2.6500000000000057,
+                "updatedAt": 1788783716856
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.31,
+                "type": "back",
+                "size": 140.92000000000002,
+                "updatedAt": 1788783643836
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.34,
+                "type": "lay",
+                "size": 178.88999999999996,
+                "updatedAt": 1788783642307
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.42,
+                "type": "back",
+                "size": 433.25,
+                "updatedAt": 1788783596962
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.43,
+                "type": "back",
+                "size": 5.309999999999999,
+                "updatedAt": 1788783586522
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.47,
+                "type": "lay",
+                "size": 32.349999999999994,
+                "updatedAt": 1788783568287
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.44,
+                "type": "back",
+                "size": 2.6500000000000004,
+                "updatedAt": 1788783559232
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.2,
+                "type": "back",
+                "size": 752.8399999999999,
+                "updatedAt": 1788783510349
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.29,
+                "type": "lay",
+                "size": 9.71,
+                "updatedAt": 1788783506809
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.28,
+                "type": "lay",
+                "size": 14.790000000000001,
+                "updatedAt": 1788783506809
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.21,
+                "type": "back",
+                "size": 131.3100000000013,
+                "updatedAt": 1788783496748
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.2,
+                "type": "lay",
+                "size": 1490.05,
+                "updatedAt": 1788783486639
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.19,
+                "type": "lay",
+                "size": 211.87,
+                "updatedAt": 1788783486639
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.19,
+                "type": "back",
+                "size": 0.060000000000002274,
+                "updatedAt": 1788783466504
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.08,
+                "type": "lay",
+                "size": 160.60000000000002,
+                "updatedAt": 1788783412053
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.06,
+                "type": "lay",
+                "size": 746.0899999999999,
+                "updatedAt": 1788783408721
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.07,
+                "type": "back",
+                "size": 137.16,
+                "updatedAt": 1788783399459
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.06,
+                "type": "back",
+                "size": 1053.44,
+                "updatedAt": 1788783399459
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.07,
+                "type": "lay",
+                "size": 120.14999999999999,
+                "updatedAt": 1788783387334
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.09,
+                "type": "lay",
+                "size": 843.11,
+                "updatedAt": 1788783333665
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.1,
+                "type": "lay",
+                "size": 248.69,
+                "updatedAt": 1788783247117
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.08,
+                "type": "back",
+                "size": 53.26999999999999,
+                "updatedAt": 1788783232494
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.11,
+                "type": "lay",
+                "size": 3273.74,
+                "updatedAt": 1788783204394
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.1,
+                "type": "back",
+                "size": 43.10999999999999,
+                "updatedAt": 1788783073854
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.09,
+                "type": "back",
+                "size": 4.5,
+                "updatedAt": 1788783032573
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.11,
+                "type": "back",
+                "size": 399.07000000000005,
+                "updatedAt": 1788782977292
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.12,
+                "type": "lay",
+                "size": 615.84,
+                "updatedAt": 1788782963696
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.14,
+                "type": "back",
+                "size": 13.7,
+                "updatedAt": 1788782920501
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.13,
+                "type": "back",
+                "size": 744.38,
+                "updatedAt": 1788782920501
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.17,
+                "type": "lay",
+                "size": 8.12,
+                "updatedAt": 1788782879819
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.16,
+                "type": "lay",
+                "size": 9.51,
+                "updatedAt": 1788782856666
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.12,
+                "type": "back",
+                "size": 10.49,
+                "updatedAt": 1788782856666
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.21,
+                "type": "lay",
+                "size": 22062.14,
+                "updatedAt": 1788782845119
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.22,
+                "type": "back",
+                "size": 2.66,
+                "updatedAt": 1788782829038
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.34,
+                "type": "back",
+                "size": 5.750000000000017,
+                "updatedAt": 1788782600663
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.33,
+                "type": "lay",
+                "size": 41.070000000000164,
+                "updatedAt": 1788782493558
+              },
+              {
+                "team": "Colombo CC",
+                "price": 3,
+                "type": "lay",
+                "size": 0.060000000000002274,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.82,
+                "type": "lay",
+                "size": 0.01999999999999602,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.8,
+                "type": "lay",
+                "size": 0.01999999999999602,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.24,
+                "type": "lay",
+                "size": 0.01999999999999602,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.2,
+                "type": "lay",
+                "size": 0.030000000000001137,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.96,
+                "type": "lay",
+                "size": 57.510000000000005,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.86,
+                "type": "lay",
+                "size": 0.11000000000001364,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.76,
+                "type": "lay",
+                "size": 32.80999999999999,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.66,
+                "type": "lay",
+                "size": 0.52,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.59,
+                "type": "lay",
+                "size": 52.860000000000014,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.58,
+                "type": "lay",
+                "size": 8.740000000000009,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.57,
+                "type": "lay",
+                "size": 7.739999999999984,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.5,
+                "type": "lay",
+                "size": 320.91999999999985,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.39,
+                "type": "lay",
+                "size": 140.31000000000003,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.38,
+                "type": "lay",
+                "size": 43.92,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.37,
+                "type": "lay",
+                "size": 61.28,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.32,
+                "type": "lay",
+                "size": 893.87,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.3,
+                "type": "lay",
+                "size": 9.42999999999995,
+                "updatedAt": 1788782410591
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.33,
+                "type": "back",
+                "size": 894.7499999999999,
+                "updatedAt": 1788782345268
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.44,
+                "type": "lay",
+                "size": 13.17,
+                "updatedAt": 1788782243764
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.38,
+                "type": "back",
+                "size": 330.62999999999994,
+                "updatedAt": 1788782115176
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.4,
+                "type": "back",
+                "size": 50.02999999999986,
+                "updatedAt": 1788781747004
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.52,
+                "type": "back",
+                "size": 65.92,
+                "updatedAt": 1788781709702
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.49,
+                "type": "lay",
+                "size": 69.55,
+                "updatedAt": 1788781544379
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.68,
+                "type": "lay",
+                "size": 10.49,
+                "updatedAt": 1788781539348
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.59,
+                "type": "back",
+                "size": 71.92999999999999,
+                "updatedAt": 1788781457864
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.95,
+                "type": "lay",
+                "size": 83.92,
+                "updatedAt": 1788781348657
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.8,
+                "type": "lay",
+                "size": 19.46,
+                "updatedAt": 1788781348657
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.6,
+                "type": "lay",
+                "size": 8.919999999999998,
+                "updatedAt": 1788781348657
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.41,
+                "type": "back",
+                "size": 61.290000000000006,
+                "updatedAt": 1788781030100
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.36,
+                "type": "lay",
+                "size": 7.640000000000003,
+                "updatedAt": 1788780919474
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.43,
+                "type": "lay",
+                "size": 11.46,
+                "updatedAt": 1788780547394
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.37,
+                "type": "back",
+                "size": 10.340000000000002,
+                "updatedAt": 1788780284653
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.36,
+                "type": "back",
+                "size": 52.45,
+                "updatedAt": 1788780274088
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.53,
+                "type": "back",
+                "size": 39.09000000000003,
+                "updatedAt": 1788779010306
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.53,
+                "type": "lay",
+                "size": 118.51999999999998,
+                "updatedAt": 1788779005274
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.54,
+                "type": "back",
+                "size": 24.360000000000003,
+                "updatedAt": 1788778846347
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.87,
+                "type": "lay",
+                "size": 84.34999999999997,
+                "updatedAt": 1788778808755
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.55,
+                "type": "back",
+                "size": 33.010000000000005,
+                "updatedAt": 1788778568039
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.65,
+                "type": "lay",
+                "size": 83.48,
+                "updatedAt": 1788778030658
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.64,
+                "type": "back",
+                "size": 58.47,
+                "updatedAt": 1788778026647
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.39,
+                "type": "back",
+                "size": 59.83,
+                "updatedAt": 1788777802779
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.32,
+                "type": "back",
+                "size": 107.41,
+                "updatedAt": 1788777548661
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.3,
+                "type": "back",
+                "size": 951.4299999999998,
+                "updatedAt": 1788777300636
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.35,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788776052071
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.56,
+                "type": "back",
+                "size": 293.14,
+                "updatedAt": 1788775761123
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.58,
+                "type": "back",
+                "size": 480.08,
+                "updatedAt": 1788775726435
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.57,
+                "type": "back",
+                "size": 477.46000000000004,
+                "updatedAt": 1788775532899
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.62,
+                "type": "back",
+                "size": 21.429999999999993,
+                "updatedAt": 1788773928448
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.62,
+                "type": "lay",
+                "size": 77.73,
+                "updatedAt": 1788773883800
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.55,
+                "type": "lay",
+                "size": 1.34,
+                "updatedAt": 1788773811651
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.67,
+                "type": "lay",
+                "size": 6.27,
+                "updatedAt": 1788773655318
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.71,
+                "type": "lay",
+                "size": 55.77,
+                "updatedAt": 1788773641670
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.73,
+                "type": "back",
+                "size": 18.32,
+                "updatedAt": 1788773594141
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.73,
+                "type": "lay",
+                "size": 2.67,
+                "updatedAt": 1788773588532
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.76,
+                "type": "back",
+                "size": 169.90999999999997,
+                "updatedAt": 1788773560454
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.74,
+                "type": "lay",
+                "size": 15.15,
+                "updatedAt": 1788773532349
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.77,
+                "type": "back",
+                "size": 2.6599999999999997,
+                "updatedAt": 1788773518038
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.75,
+                "type": "back",
+                "size": 517.98,
+                "updatedAt": 1788773487510
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.7,
+                "type": "lay",
+                "size": 1.25,
+                "updatedAt": 1788773428190
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.78,
+                "type": "back",
+                "size": 4.22,
+                "updatedAt": 1788773402716
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.89,
+                "type": "lay",
+                "size": 5.36,
+                "updatedAt": 1788773348497
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.72,
+                "type": "lay",
+                "size": 24.64,
+                "updatedAt": 1788773348497
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.88,
+                "type": "back",
+                "size": 2.66,
+                "updatedAt": 1788773305897
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.87,
+                "type": "back",
+                "size": 316.24,
+                "updatedAt": 1788773305897
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.85,
+                "type": "lay",
+                "size": 172.17,
+                "updatedAt": 1788773280327
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.84,
+                "type": "lay",
+                "size": 2.67,
+                "updatedAt": 1788773280327
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.65,
+                "type": "back",
+                "size": 2.91,
+                "updatedAt": 1788734951816
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.91,
+                "type": "back",
+                "size": 1.05,
+                "updatedAt": 1788710700059
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.62,
+                "type": "lay",
+                "size": 1.54,
+                "updatedAt": 1788704829189
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.9,
+                "type": "back",
+                "size": 1.26,
+                "updatedAt": 1788679588009
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.86,
+                "type": "back",
+                "size": 0.83,
+                "updatedAt": 1788679588009
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.13,
+                "type": "lay",
+                "size": 16.07,
+                "updatedAt": 1788671998760
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.22,
+                "type": "back",
+                "size": 6.43,
+                "updatedAt": 1788671790654
+              },
+              {
+                "team": "Colombo CC",
+                "price": 2.2,
+                "type": "back",
+                "size": 1.08,
+                "updatedAt": 1788671790654
+              },
+              {
+                "team": "Colombo CC",
+                "price": 1.98,
+                "type": "lay",
+                "size": 3.85,
+                "updatedAt": 1788670175598
+              }
+            ],
+            "pnlIfWins": -6207.044699999987,
+            "totalBet": 48000.50780000001
+          },
+          "Sinhalese Sports Club": {
+            "trades": [
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.01,
+                "type": "lay",
+                "size": 2927.3600000000006,
+                "updatedAt": 1788785584835
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.01,
+                "type": "back",
+                "size": 895.7099999999998,
+                "updatedAt": 1788785557114
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.02,
+                "type": "lay",
+                "size": 456.38000000000005,
+                "updatedAt": 1788785544609
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.04,
+                "type": "lay",
+                "size": 63,
+                "updatedAt": 1788785497723
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.03,
+                "type": "lay",
+                "size": 2867.87,
+                "updatedAt": 1788785497723
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.05,
+                "type": "lay",
+                "size": 1197.98,
+                "updatedAt": 1788785484669
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.02,
+                "type": "back",
+                "size": 212.61999999999995,
+                "updatedAt": 1788785472586
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.15,
+                "type": "back",
+                "size": 41.849999999999994,
+                "updatedAt": 1788785442402
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.14,
+                "type": "back",
+                "size": 123.97,
+                "updatedAt": 1788785442402
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.8,
+                "type": "back",
+                "size": 616.87,
+                "updatedAt": 1788785432824
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.81,
+                "type": "lay",
+                "size": 9.499999999999998,
+                "updatedAt": 1788785430796
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.81,
+                "type": "back",
+                "size": 5.300000000000001,
+                "updatedAt": 1788785409696
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.8,
+                "type": "lay",
+                "size": 20.269999999999996,
+                "updatedAt": 1788785397628
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.3,
+                "type": "lay",
+                "size": 1261.63,
+                "updatedAt": 1788785375053
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.29,
+                "type": "lay",
+                "size": 90.07999999999998,
+                "updatedAt": 1788785375053
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.28,
+                "type": "lay",
+                "size": 66.25000000000001,
+                "updatedAt": 1788785372432
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.3,
+                "type": "back",
+                "size": 55.299999999999876,
+                "updatedAt": 1788785359854
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.29,
+                "type": "back",
+                "size": 86.4,
+                "updatedAt": 1788785353310
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.14,
+                "type": "lay",
+                "size": 95.97999999999999,
+                "updatedAt": 1788785330797
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.13,
+                "type": "lay",
+                "size": 966.26,
+                "updatedAt": 1788785324120
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.12,
+                "type": "lay",
+                "size": 42.769999999999996,
+                "updatedAt": 1788785324120
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.09,
+                "type": "back",
+                "size": 698.2400000000001,
+                "updatedAt": 1788785314548
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.08,
+                "type": "back",
+                "size": 66.81999999999998,
+                "updatedAt": 1788785314548
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.11,
+                "type": "back",
+                "size": 5.25,
+                "updatedAt": 1788785312552
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.08,
+                "type": "lay",
+                "size": 430.49,
+                "updatedAt": 1788785298387
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.07,
+                "type": "lay",
+                "size": 6.16,
+                "updatedAt": 1788785298387
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.07,
+                "type": "back",
+                "size": 10.54,
+                "updatedAt": 1788785276963
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.17,
+                "type": "back",
+                "size": 17.089999999999975,
+                "updatedAt": 1788785256022
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.17,
+                "type": "lay",
+                "size": 129.08,
+                "updatedAt": 1788785254493
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.15,
+                "type": "lay",
+                "size": 95.11000000000001,
+                "updatedAt": 1788785171883
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.05,
+                "type": "back",
+                "size": 125.26999999999998,
+                "updatedAt": 1788785089366
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.06,
+                "type": "back",
+                "size": 7.36,
+                "updatedAt": 1788785054972
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.03,
+                "type": "back",
+                "size": 11.849999999999982,
+                "updatedAt": 1788784994560
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.04,
+                "type": "back",
+                "size": 4.5,
+                "updatedAt": 1788784685019
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.09,
+                "type": "lay",
+                "size": 2600.5499999999997,
+                "updatedAt": 1788784636115
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.12,
+                "type": "back",
+                "size": 70.33,
+                "updatedAt": 1788784525325
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.1,
+                "type": "back",
+                "size": 2.4000000000000004,
+                "updatedAt": 1788784525325
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.16,
+                "type": "lay",
+                "size": 3.21,
+                "updatedAt": 1788784523828
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.16,
+                "type": "back",
+                "size": 2.08,
+                "updatedAt": 1788784515239
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.2,
+                "type": "back",
+                "size": 59.43,
+                "updatedAt": 1788784504671
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.19,
+                "type": "back",
+                "size": 104.9,
+                "updatedAt": 1788784504671
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.25,
+                "type": "back",
+                "size": 6.44,
+                "updatedAt": 1788784498644
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.24,
+                "type": "back",
+                "size": 55.22000000000001,
+                "updatedAt": 1788784498644
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.24,
+                "type": "lay",
+                "size": 120.8,
+                "updatedAt": 1788784490071
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.21,
+                "type": "back",
+                "size": 87.51,
+                "updatedAt": 1788784488071
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.2,
+                "type": "lay",
+                "size": 1.3200000000000003,
+                "updatedAt": 1788784483030
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.22,
+                "type": "back",
+                "size": 1.3199999999999932,
+                "updatedAt": 1788784464437
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.32,
+                "type": "lay",
+                "size": 10.49,
+                "updatedAt": 1788784454859
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.22,
+                "type": "lay",
+                "size": 92.2,
+                "updatedAt": 1788784454859
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.21,
+                "type": "lay",
+                "size": 2.7600000000000002,
+                "updatedAt": 1788784451330
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.28,
+                "type": "back",
+                "size": 9.199999999999996,
+                "updatedAt": 1788784434218
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.31,
+                "type": "back",
+                "size": 1031.27,
+                "updatedAt": 1788784396551
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.36,
+                "type": "lay",
+                "size": 17.840000000000003,
+                "updatedAt": 1788784390914
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.37,
+                "type": "back",
+                "size": 3.91,
+                "updatedAt": 1788784382903
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.36,
+                "type": "back",
+                "size": 40.65,
+                "updatedAt": 1788784382903
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.35,
+                "type": "back",
+                "size": 119.83,
+                "updatedAt": 1788784382903
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.34,
+                "type": "back",
+                "size": 69.06,
+                "updatedAt": 1788784374823
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.32,
+                "type": "back",
+                "size": 8.059999999999999,
+                "updatedAt": 1788784364255
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.31,
+                "type": "lay",
+                "size": 1046.71,
+                "updatedAt": 1788784350651
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.34,
+                "type": "lay",
+                "size": 42.55,
+                "updatedAt": 1788784328961
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.27,
+                "type": "lay",
+                "size": 1.34,
+                "updatedAt": 1788784299694
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.33,
+                "type": "lay",
+                "size": 1.3499999999999996,
+                "updatedAt": 1788784287129
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.46,
+                "type": "lay",
+                "size": 81.18,
+                "updatedAt": 1788784256395
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.45,
+                "type": "back",
+                "size": 3.0100000000000016,
+                "updatedAt": 1788784255890
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.45,
+                "type": "lay",
+                "size": 26.2,
+                "updatedAt": 1788784255385
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.56,
+                "type": "lay",
+                "size": 1.5799999999999983,
+                "updatedAt": 1788784246854
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.51,
+                "type": "lay",
+                "size": 57.69,
+                "updatedAt": 1788784244303
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.5,
+                "type": "lay",
+                "size": 2.090000000000032,
+                "updatedAt": 1788784244303
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.49,
+                "type": "lay",
+                "size": 11.429999999999998,
+                "updatedAt": 1788784240253
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.5,
+                "type": "back",
+                "size": 104.9899999999999,
+                "updatedAt": 1788784238774
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.61,
+                "type": "lay",
+                "size": 2.6799999999999997,
+                "updatedAt": 1788784227665
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.51,
+                "type": "back",
+                "size": 2.680000000000007,
+                "updatedAt": 1788784227665
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.62,
+                "type": "lay",
+                "size": 117.25999999999999,
+                "updatedAt": 1788784218125
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.63,
+                "type": "back",
+                "size": 12.17,
+                "updatedAt": 1788784213054
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.62,
+                "type": "back",
+                "size": 51.099999999999994,
+                "updatedAt": 1788784213054
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.69,
+                "type": "back",
+                "size": 74.74,
+                "updatedAt": 1788784210528
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.7,
+                "type": "lay",
+                "size": 224.55,
+                "updatedAt": 1788784199425
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.69,
+                "type": "lay",
+                "size": 6.64,
+                "updatedAt": 1788784199425
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.7,
+                "type": "back",
+                "size": 4.889999999999986,
+                "updatedAt": 1788784185839
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.73,
+                "type": "lay",
+                "size": 9.490000000000009,
+                "updatedAt": 1788784182806
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.74,
+                "type": "lay",
+                "size": 246.97,
+                "updatedAt": 1788784182315
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.79,
+                "type": "lay",
+                "size": 7.980000000000001,
+                "updatedAt": 1788784175247
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.79,
+                "type": "back",
+                "size": 200.61999999999998,
+                "updatedAt": 1788784172266
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.92,
+                "type": "lay",
+                "size": 5.42,
+                "updatedAt": 1788784163167
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.78,
+                "type": "back",
+                "size": 1679.4899999999998,
+                "updatedAt": 1788784144090
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.76,
+                "type": "back",
+                "size": 179.95,
+                "updatedAt": 1788784144090
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.73,
+                "type": "back",
+                "size": 4.299999999999997,
+                "updatedAt": 1788784144090
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.78,
+                "type": "lay",
+                "size": 70.82,
+                "updatedAt": 1788784137448
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.9,
+                "type": "lay",
+                "size": 7.960000000000001,
+                "updatedAt": 1788784130390
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.72,
+                "type": "lay",
+                "size": 2.42,
+                "updatedAt": 1788784071722
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.77,
+                "type": "lay",
+                "size": 2.2500000000000107,
+                "updatedAt": 1788784047395
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.77,
+                "type": "back",
+                "size": 208.01999999999998,
+                "updatedAt": 1788784045207
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.92,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788784033901
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.91,
+                "type": "back",
+                "size": 96.8,
+                "updatedAt": 1788784033901
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.91,
+                "type": "lay",
+                "size": 10.87,
+                "updatedAt": 1788784033270
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2,
+                "type": "lay",
+                "size": 32.32999999999811,
+                "updatedAt": 1788783979237
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2,
+                "type": "back",
+                "size": 20193.530000000002,
+                "updatedAt": 1788783976188
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.58,
+                "type": "back",
+                "size": 11.849999999999998,
+                "updatedAt": 1788783959035
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.58,
+                "type": "lay",
+                "size": 4.710000000000001,
+                "updatedAt": 1788783958436
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.78,
+                "type": "back",
+                "size": 0.3100000000000023,
+                "updatedAt": 1788783952991
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3,
+                "type": "lay",
+                "size": 302.12,
+                "updatedAt": 1788783940360
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.1,
+                "type": "lay",
+                "size": 37.63,
+                "updatedAt": 1788783883672
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.05,
+                "type": "lay",
+                "size": 94.13,
+                "updatedAt": 1788783883672
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.15,
+                "type": "lay",
+                "size": 337.22,
+                "updatedAt": 1788783852418
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.25,
+                "type": "back",
+                "size": 3.980000000000001,
+                "updatedAt": 1788783842849
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.2,
+                "type": "lay",
+                "size": 93.39000000000001,
+                "updatedAt": 1788783839833
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.9,
+                "type": "back",
+                "size": 9.43,
+                "updatedAt": 1788783806039
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.8,
+                "type": "back",
+                "size": 49.54000000000001,
+                "updatedAt": 1788783800025
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.8,
+                "type": "lay",
+                "size": 87.03,
+                "updatedAt": 1788783787920
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.5,
+                "type": "lay",
+                "size": 0.29000000000000004,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.3,
+                "type": "lay",
+                "size": 12.180000000000001,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.1,
+                "type": "lay",
+                "size": 8.43,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.2,
+                "type": "lay",
+                "size": 5.039999999999999,
+                "updatedAt": 1788783783855
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.1,
+                "type": "back",
+                "size": 6.03,
+                "updatedAt": 1788783687178
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5,
+                "type": "back",
+                "size": 12.060000000000006,
+                "updatedAt": 1788783687178
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.4,
+                "type": "back",
+                "size": 7.4399999999999995,
+                "updatedAt": 1788783619018
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.4,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788783511881
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.3,
+                "type": "back",
+                "size": 13.69,
+                "updatedAt": 1788783511881
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 6.2,
+                "type": "lay",
+                "size": 32.68,
+                "updatedAt": 1788783502256
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.9,
+                "type": "lay",
+                "size": 1.32,
+                "updatedAt": 1788783496716
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 6,
+                "type": "lay",
+                "size": 20.11,
+                "updatedAt": 1788783491695
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 6.4,
+                "type": "back",
+                "size": 15.47,
+                "updatedAt": 1788783429190
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 6.2,
+                "type": "back",
+                "size": 6.03,
+                "updatedAt": 1788783429190
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 15.5,
+                "type": "lay",
+                "size": 2.5900000000000003,
+                "updatedAt": 1788783387320
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 15.5,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788783382290
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 10.5,
+                "type": "lay",
+                "size": 9.61,
+                "updatedAt": 1788783247117
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 10.5,
+                "type": "back",
+                "size": 7.940000000000001,
+                "updatedAt": 1788783240074
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 13.5,
+                "type": "lay",
+                "size": 0.63,
+                "updatedAt": 1788783232509
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 10,
+                "type": "back",
+                "size": 1.1499999999999986,
+                "updatedAt": 1788783060343
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 14,
+                "type": "lay",
+                "size": 1.43,
+                "updatedAt": 1788783057230
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 9.4,
+                "type": "back",
+                "size": 2.66,
+                "updatedAt": 1788782948728
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 8.6,
+                "type": "lay",
+                "size": 1.32,
+                "updatedAt": 1788782920501
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 8,
+                "type": "lay",
+                "size": 1.58,
+                "updatedAt": 1788782856682
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 7,
+                "type": "lay",
+                "size": 1.58,
+                "updatedAt": 1788782856682
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.8,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788782834345
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5.7,
+                "type": "back",
+                "size": 0.08,
+                "updatedAt": 1788782834345
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 5,
+                "type": "lay",
+                "size": 77.38000000000001,
+                "updatedAt": 1788782648974
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4,
+                "type": "lay",
+                "size": 18.85,
+                "updatedAt": 1788782424181
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 10,
+                "type": "lay",
+                "size": 29.18,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.55,
+                "type": "lay",
+                "size": 2.9700000000000015,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.5,
+                "type": "lay",
+                "size": 111.72,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.15,
+                "type": "back",
+                "size": 0.03000000000002956,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3,
+                "type": "back",
+                "size": 0.7799999999999869,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.9,
+                "type": "back",
+                "size": 2.6600000000000006,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.6,
+                "type": "back",
+                "size": 5.659999999999997,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.46,
+                "type": "back",
+                "size": 0.010000000000001563,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.32,
+                "type": "back",
+                "size": 0.11999999999999211,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.67,
+                "type": "back",
+                "size": 0.01999999999998181,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.59,
+                "type": "back",
+                "size": 0.020000000000010232,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.49,
+                "type": "back",
+                "size": 0.019999999999999574,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.47,
+                "type": "back",
+                "size": 0.020000000000010232,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.41,
+                "type": "back",
+                "size": 0.10000000000013642,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.4,
+                "type": "back",
+                "size": 0.10999999999967258,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.39,
+                "type": "back",
+                "size": 0.2899999999999636,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.33,
+                "type": "back",
+                "size": 0.020000000000000462,
+                "updatedAt": 1788782410596
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.3,
+                "type": "lay",
+                "size": 5.47,
+                "updatedAt": 1788782359337
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.9,
+                "type": "lay",
+                "size": 5.690000000000001,
+                "updatedAt": 1788782359337
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.25,
+                "type": "lay",
+                "size": 4.66,
+                "updatedAt": 1788782243818
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.1,
+                "type": "lay",
+                "size": 31.450000000000003,
+                "updatedAt": 1788782166878
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.35,
+                "type": "lay",
+                "size": 2.6999999999999997,
+                "updatedAt": 1788781878034
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.96,
+                "type": "lay",
+                "size": 2.62,
+                "updatedAt": 1788781709702
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.9,
+                "type": "lay",
+                "size": 4.289999999999999,
+                "updatedAt": 1788781709702
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.98,
+                "type": "lay",
+                "size": 21.630000000000003,
+                "updatedAt": 1788781539348
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.05,
+                "type": "back",
+                "size": 10.520000000000001,
+                "updatedAt": 1788781082517
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.45,
+                "type": "lay",
+                "size": 1.8,
+                "updatedAt": 1788781022513
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.4,
+                "type": "lay",
+                "size": 2.42,
+                "updatedAt": 1788781022513
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.9,
+                "type": "back",
+                "size": 9.19,
+                "updatedAt": 1788780959689
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.75,
+                "type": "back",
+                "size": 3.14,
+                "updatedAt": 1788780919474
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.7,
+                "type": "back",
+                "size": 12.999999999999998,
+                "updatedAt": 1788780919474
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.2,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788780868685
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.1,
+                "type": "back",
+                "size": 3.08,
+                "updatedAt": 1788780676332
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.55,
+                "type": "back",
+                "size": 22.83,
+                "updatedAt": 1788780583650
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.1,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788780021895
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.98,
+                "type": "back",
+                "size": 1.4700000000000002,
+                "updatedAt": 1788779671745
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.72,
+                "type": "lay",
+                "size": 4.029999999999999,
+                "updatedAt": 1788779585501
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.68,
+                "type": "lay",
+                "size": 16.359999999999996,
+                "updatedAt": 1788779585501
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.8,
+                "type": "lay",
+                "size": 5.78,
+                "updatedAt": 1788778568039
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.72,
+                "type": "back",
+                "size": 0.78,
+                "updatedAt": 1788778320052
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.68,
+                "type": "back",
+                "size": 50.09,
+                "updatedAt": 1788778320052
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.66,
+                "type": "back",
+                "size": 1.58,
+                "updatedAt": 1788778295977
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.56,
+                "type": "lay",
+                "size": 17.880000000000003,
+                "updatedAt": 1788778181320
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.56,
+                "type": "back",
+                "size": 5.209999999999999,
+                "updatedAt": 1788778178290
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.54,
+                "type": "back",
+                "size": 7.960000000000001,
+                "updatedAt": 1788778030658
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.52,
+                "type": "back",
+                "size": 44.169999999999995,
+                "updatedAt": 1788778030658
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.65,
+                "type": "back",
+                "size": 13.040000000000001,
+                "updatedAt": 1788777876569
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.65,
+                "type": "lay",
+                "size": 9.37,
+                "updatedAt": 1788777865015
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.5,
+                "type": "back",
+                "size": 48.519999999999996,
+                "updatedAt": 1788777615914
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.2,
+                "type": "back",
+                "size": 0.5200000000000031,
+                "updatedAt": 1788777533306
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.6,
+                "type": "back",
+                "size": 1.79,
+                "updatedAt": 1788777506446
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.7,
+                "type": "lay",
+                "size": 0.38,
+                "updatedAt": 1788777420724
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.9,
+                "type": "lay",
+                "size": 4.35,
+                "updatedAt": 1788777395842
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 4.4,
+                "type": "lay",
+                "size": 0.39,
+                "updatedAt": 1788777339598
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.7,
+                "type": "lay",
+                "size": 40.96,
+                "updatedAt": 1788776824510
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.35,
+                "type": "back",
+                "size": 2.6500000000000004,
+                "updatedAt": 1788775862742
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 3.3,
+                "type": "back",
+                "size": 3.8,
+                "updatedAt": 1788775862742
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.7,
+                "type": "lay",
+                "size": 2.8099999999999987,
+                "updatedAt": 1788775594735
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.74,
+                "type": "lay",
+                "size": 2.66,
+                "updatedAt": 1788775514756
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.88,
+                "type": "back",
+                "size": 14.540000000000001,
+                "updatedAt": 1788774539510
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.88,
+                "type": "lay",
+                "size": 14.600000000000001,
+                "updatedAt": 1788774033796
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.6,
+                "type": "lay",
+                "size": 61.78,
+                "updatedAt": 1788773928448
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.52,
+                "type": "lay",
+                "size": 10.49,
+                "updatedAt": 1788773924166
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.78,
+                "type": "lay",
+                "size": 19.8,
+                "updatedAt": 1788773811651
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.54,
+                "type": "lay",
+                "size": 3.93,
+                "updatedAt": 1788773769524
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.48,
+                "type": "back",
+                "size": 4.22,
+                "updatedAt": 1788773655225
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.42,
+                "type": "back",
+                "size": 2.6399999999999997,
+                "updatedAt": 1788773641670
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.4,
+                "type": "back",
+                "size": 8.519999999999992,
+                "updatedAt": 1788773641670
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.4,
+                "type": "lay",
+                "size": 34.03,
+                "updatedAt": 1788773639173
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.38,
+                "type": "back",
+                "size": 10.040000000000003,
+                "updatedAt": 1788773609032
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.34,
+                "type": "lay",
+                "size": 10.27,
+                "updatedAt": 1788773532405
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.32,
+                "type": "lay",
+                "size": 100.46,
+                "updatedAt": 1788773487494
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.34,
+                "type": "back",
+                "size": 6.3,
+                "updatedAt": 1788773459823
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.42,
+                "type": "lay",
+                "size": 0.89,
+                "updatedAt": 1788773428190
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.28,
+                "type": "lay",
+                "size": 1.24,
+                "updatedAt": 1788773402716
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.38,
+                "type": "lay",
+                "size": 17.81,
+                "updatedAt": 1788773348497
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.12,
+                "type": "back",
+                "size": 4.78,
+                "updatedAt": 1788773348497
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.04,
+                "type": "back",
+                "size": 55.230000000000004,
+                "updatedAt": 1788773348497
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.16,
+                "type": "back",
+                "size": 2.66,
+                "updatedAt": 1788773310351
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.14,
+                "type": "back",
+                "size": 73.69,
+                "updatedAt": 1788773310351
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.14,
+                "type": "lay",
+                "size": 1.34,
+                "updatedAt": 1788773305897
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.02,
+                "type": "back",
+                "size": 10.21,
+                "updatedAt": 1788746420668
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.18,
+                "type": "back",
+                "size": 1.15,
+                "updatedAt": 1788710813594
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 2.1,
+                "type": "back",
+                "size": 0.95,
+                "updatedAt": 1788710699970
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.99,
+                "type": "lay",
+                "size": 5.62,
+                "updatedAt": 1788704898237
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.54,
+                "type": "back",
+                "size": 1.53,
+                "updatedAt": 1788679587979
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.53,
+                "type": "back",
+                "size": 2.4,
+                "updatedAt": 1788679587979
+              },
+              {
+                "team": "Sinhalese Sports Club",
+                "price": 1.83,
+                "type": "lay",
+                "size": 1.29,
+                "updatedAt": 1788671790763
+              }
+            ],
+            "pnlIfWins": -21983.35859999998,
+            "totalBet": 65657.87879999995
+          }
+        },
+        "Usr": "cricketloaduser56@gmail.com",
+        "competitionName": "SLC Major Clubs Limited Overs"
+      },
+      "predictedWinner": "Colombo CC",
+      "predictionTier": "SRILANKA_SPECIAL",
+      "predictionConfidence": "Sri Lanka Bookie Trap (Fade Public)",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36030276",
+      "marketId": "1.261987374",
+      "matchName": "Moors SC v Colts CC",
+      "competitionName": "SLC Major Clubs Limited Overs",
+      "team1": "Moors SC",
+      "team2": "Colts CC",
+      "startTime": 1788754500000,
+      "endedAt": "2026-09-07T14:28:18.341Z",
+      "capturedAt": "2026-09-07T14:28:18.341Z",
+      "snapshot": {
+        "serverTime": "2026-09-07T14:28:18.543Z",
+        "matchId": "36030276",
+        "matchName": "Moors SC v Colts CC",
+        "teamNames": [
+          "Moors SC",
+          "Colts CC"
+        ],
+        "inPlayPnl": {
+          "team1": -2010.2498000000064,
+          "team2": 2029.7371000000128
+        },
+        "inPlayTotalBets": {
+          "team1": 39531.71890000001,
+          "team2": 37430.463899999995
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 37322.19,
+            "lay": 16.14,
+            "total": 39499.200000000004
+          },
+          "team2": {
+            "back": 37485.79,
+            "lay": 2177.0099999999993,
+            "total": 37501.93
+          }
+        },
+        "preMatchPnl": {
+          "team1": null,
+          "team2": null
+        },
+        "preMatchTotalBets": {
+          "team1": null,
+          "team2": null
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": null,
+            "lay": null,
+            "total": null
+          },
+          "team2": {
+            "back": null,
+            "lay": null,
+            "total": null
+          }
+        },
+        "threeMinPnl": {
+          "team1": null,
+          "team2": null
+        },
+        "threeMinTotalBets": {
+          "team1": null,
+          "team2": null
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": null,
+            "lay": null,
+            "total": null
+          },
+          "team2": {
+            "back": null,
+            "lay": null,
+            "total": null
+          }
+        },
+        "matchLoadV2": {
+          "team1": 58,
+          "team2": 76
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 41430.44,
+            "lay": 9088.220000000005,
+            "totalVolume": 50518.66,
+            "backPercentage": 82.01017208294915
+          },
+          "team2": {
+            "back": 37605.46000000001,
+            "lay": 2335.449999999999,
+            "totalVolume": 39940.91,
+            "backPercentage": 94.15273713092667
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 37649.5768,
+            "lay": 657.9978000000019,
+            "totalBet": 38307.57460000001
+          },
+          "team2": {
+            "back": 38888.03769999999,
+            "lay": 3683.7799999999993,
+            "totalBet": 42571.81769999999
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 43765.89,
+            "support": 48.38171351024551
+          },
+          "team2": {
+            "supportMoney": 46693.68000000001,
+            "support": 51.61828648975448
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Colts CC",
+          "bookieFavouriteOutcome": "Moors SC",
+          "riskTeam": "Colts CC",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 3.2365729795089706,
+          "mostBettedTeam": "Moors SC",
+          "prediction": {
+            "team1TrueSupport": 39635.6759,
+            "team2TrueSupport": 37461.8071,
+            "ratio": 1.0580289358224795,
+            "bookiePnlTeam1": -37306.5129,
+            "bookiePnlTeam2": -35216.4626,
+            "prediction": "Moors SC",
+            "pattern": "Fair Market",
+            "reason": "Ratio (1.06) is low. Money is distributed naturally. Prediction follows Higher True Support."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 37298.4573,
+            "backExposure": 37347.488900000004,
+            "layExposure": 49.031600000001454,
+            "teamName": "Moors SC"
+          },
+          "team2": {
+            "netExposure": 35381.122299999995,
+            "backExposure": 37751.2896,
+            "layExposure": 2370.1672999999996,
+            "teamName": "Colts CC"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 37649.5768,
+            "A_lay_stake": 9088.220000000005,
+            "B_back_expo": 38888.03769999999,
+            "B_lay_stake": 2335.449999999999
+          },
+          "totals": {
+            "totalBetTeam1": 39985.0268,
+            "totalBetTeam2": 47976.2577
+          },
+          "simplePL": {
+            "team1_win": -28561.356799999998,
+            "team2_win": -36552.5877
+          },
+          "derivedPL": {
+            "team1_win": 7991.230900000002,
+            "team2_win": -7991.230900000002
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 41430.44,
+              "totalLayVol": 9088.220000000005,
+              "totalBet": 43765.89,
+              "profitLoss": 2927.790000000008
+            },
+            "team2": {
+              "totalBackVol": 37605.46000000001,
+              "totalLayVol": 2335.449999999999,
+              "totalBet": 46693.68000000001,
+              "profitLoss": -2927.790000000008
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 37649.5768,
+              "totalLayVol": 9088.220000000005,
+              "totalBet": 39985.0268,
+              "profitLoss": -1721.5689999999886
+            },
+            "team2": {
+              "totalBackExpo": 38888.03769999999,
+              "totalLayVol": 2335.449999999999,
+              "totalBet": 47976.2577,
+              "profitLoss": -2862.0377000000008
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 37649.5768,
+              "totalLayNetVol": 657.9978000000019,
+              "totalBet": 41333.3568,
+              "profitLoss": -1787.3213000000032
+            },
+            "team2": {
+              "totalBackNetVol": 38888.03769999999,
+              "totalLayNetVol": 3683.7799999999993,
+              "totalBet": 39546.0355,
+              "profitLoss": 1787.3213000000032
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 58,
+            "averageOdds": 5.1594827586206895,
+            "averageSize": 754.5843103448276,
+            "supportProduct": 3893.2647391498217
+          },
+          "teamB": {
+            "tradeCount": 76,
+            "averageOdds": 3.9398684210526316,
+            "averageSize": 614.3905263157892,
+            "supportProduct": 2420.6178328254837
+          },
+          "strongerTeam": "Moors SC",
+          "supportRatio": 1.6083764592469272
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 41430.44,
+            "oppoLayVolume": 2335.449999999999,
+            "layExposure": 657.9978000000019,
+            "netSupportValue": 43107.892199999995
+          },
+          "teamB": {
+            "totalBackVolume": 37605.46000000001,
+            "oppoLayVolume": 9088.220000000005,
+            "layExposure": 3683.7799999999993,
+            "netSupportValue": 43009.90000000001
+          },
+          "strongerTeam": "Moors SC",
+          "netSupportDifference": 97.99219999998604,
+          "percentageA": 50.05689428252666,
+          "percentageB": 49.943105717473344
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 32342.219999999998,
+            "syntheticSupport": 2335.449999999999,
+            "opponentLiabilityRejection": 3683.7799999999993,
+            "sentimentScore": 30993.89
+          },
+          "teamB": {
+            "directNetSupport": 35270.01000000001,
+            "syntheticSupport": 9088.220000000005,
+            "opponentLiabilityRejection": 657.9978000000019,
+            "sentimentScore": 43700.232200000006
+          },
+          "strongerTeam": "Colts CC",
+          "scoreDifference": 12706.342200000006,
+          "percentageA": 41.49441627684058,
+          "percentageB": 58.505583723159404
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Moors SC",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Colts CC",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Moors SC"
+        },
+        "teams": {
+          "Moors SC": {
+            "trades": [
+              {
+                "team": "Moors SC",
+                "price": 1.01,
+                "type": "lay",
+                "size": 714.5399999999998,
+                "updatedAt": 1788784459383
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.01,
+                "type": "back",
+                "size": 438.71000000000015,
+                "updatedAt": 1788784444150
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.02,
+                "type": "lay",
+                "size": 1567.55,
+                "updatedAt": 1788784444135
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.03,
+                "type": "back",
+                "size": 769.69,
+                "updatedAt": 1788784432263
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.04,
+                "type": "back",
+                "size": 324.6500000000001,
+                "updatedAt": 1788784423644
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.05,
+                "type": "back",
+                "size": 158.25999999999996,
+                "updatedAt": 1788784403509
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.03,
+                "type": "lay",
+                "size": 588.06,
+                "updatedAt": 1788784344087
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.02,
+                "type": "back",
+                "size": 473.49000000000007,
+                "updatedAt": 1788784247314
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.08,
+                "type": "lay",
+                "size": 503.45000000000005,
+                "updatedAt": 1788783646843
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.08,
+                "type": "back",
+                "size": 245.26000000000002,
+                "updatedAt": 1788783413065
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.09,
+                "type": "lay",
+                "size": 1587.49,
+                "updatedAt": 1788783393907
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.07,
+                "type": "lay",
+                "size": 15.950000000000008,
+                "updatedAt": 1788783330303
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.06,
+                "type": "back",
+                "size": 13.489999999999974,
+                "updatedAt": 1788783302085
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.07,
+                "type": "back",
+                "size": 156.07,
+                "updatedAt": 1788783294532
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.1,
+                "type": "lay",
+                "size": 818.9500000000002,
+                "updatedAt": 1788783243648
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.12,
+                "type": "back",
+                "size": 3.95999999999999,
+                "updatedAt": 1788783216908
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.12,
+                "type": "lay",
+                "size": 103.25,
+                "updatedAt": 1788783213518
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.11,
+                "type": "back",
+                "size": 242.8,
+                "updatedAt": 1788783143039
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.1,
+                "type": "back",
+                "size": 843.9699999999999,
+                "updatedAt": 1788783132441
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.11,
+                "type": "lay",
+                "size": 119,
+                "updatedAt": 1788783126979
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.23,
+                "type": "lay",
+                "size": 44.75000000000003,
+                "updatedAt": 1788783012978
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.23,
+                "type": "back",
+                "size": 290.32,
+                "updatedAt": 1788783010473
+              },
+              {
+                "team": "Moors SC",
+                "price": 2.04,
+                "type": "lay",
+                "size": 0.020000000000000018,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 2,
+                "type": "lay",
+                "size": 14.900000000001455,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.88,
+                "type": "lay",
+                "size": 0.010000000000000231,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.62,
+                "type": "lay",
+                "size": 0.010000000000000231,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.54,
+                "type": "lay",
+                "size": 0.020000000000000462,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.43,
+                "type": "lay",
+                "size": 0.030000000000001137,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.4,
+                "type": "lay",
+                "size": 0.01999999999999602,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.39,
+                "type": "lay",
+                "size": 0.030000000000001137,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.38,
+                "type": "lay",
+                "size": 0.010000000000005116,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.37,
+                "type": "lay",
+                "size": 0.01999999999998181,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.36,
+                "type": "lay",
+                "size": 0.029999999999972715,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.35,
+                "type": "lay",
+                "size": 0.030000000000001137,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.31,
+                "type": "lay",
+                "size": 44.910000000000025,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.3,
+                "type": "lay",
+                "size": 4.190000000000055,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.29,
+                "type": "lay",
+                "size": 0.01999999999999602,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.28,
+                "type": "lay",
+                "size": 84.90000000000003,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.27,
+                "type": "lay",
+                "size": 1.3499999999999943,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.26,
+                "type": "lay",
+                "size": 151.58999999999997,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.24,
+                "type": "lay",
+                "size": 8.830000000000005,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.22,
+                "type": "lay",
+                "size": 4.150000000000006,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.21,
+                "type": "lay",
+                "size": 0.01999999999999602,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.18,
+                "type": "lay",
+                "size": 2.6699999999999946,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.13,
+                "type": "lay",
+                "size": 87.32,
+                "updatedAt": 1788782226736
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.05,
+                "type": "lay",
+                "size": 913.81,
+                "updatedAt": 1788782115681
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.04,
+                "type": "lay",
+                "size": 343.41999999999996,
+                "updatedAt": 1788782035186
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.06,
+                "type": "lay",
+                "size": 1177.26,
+                "updatedAt": 1788781408550
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.25,
+                "type": "lay",
+                "size": 0.010000000000019327,
+                "updatedAt": 1788778816803
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.09,
+                "type": "back",
+                "size": 21.21,
+                "updatedAt": 1788777725011
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.13,
+                "type": "back",
+                "size": 12.570000000000007,
+                "updatedAt": 1788777611584
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.14,
+                "type": "lay",
+                "size": 132.82,
+                "updatedAt": 1788777593911
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.19,
+                "type": "back",
+                "size": 13.260000000000002,
+                "updatedAt": 1788775727949
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.18,
+                "type": "back",
+                "size": 58.51,
+                "updatedAt": 1788775686231
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.22,
+                "type": "back",
+                "size": 5.239999999999995,
+                "updatedAt": 1788775677731
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.19,
+                "type": "lay",
+                "size": 36.69,
+                "updatedAt": 1788774984450
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.26,
+                "type": "back",
+                "size": 36.79000000000002,
+                "updatedAt": 1788774067961
+              },
+              {
+                "team": "Moors SC",
+                "price": 2,
+                "type": "back",
+                "size": 37299.64,
+                "updatedAt": 1788751172806
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.53,
+                "type": "back",
+                "size": 1.05,
+                "updatedAt": 1788751172806
+              },
+              {
+                "team": "Moors SC",
+                "price": 2.28,
+                "type": "lay",
+                "size": 1.46,
+                "updatedAt": 1788719405790
+              },
+              {
+                "team": "Moors SC",
+                "price": 8.2,
+                "type": "back",
+                "size": 1.38,
+                "updatedAt": 1788674536371
+              },
+              {
+                "team": "Moors SC",
+                "price": 4,
+                "type": "lay",
+                "size": 2.81,
+                "updatedAt": 1788674531444
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.6,
+                "type": "back",
+                "size": 2.74,
+                "updatedAt": 1788674486663
+              },
+              {
+                "team": "Moors SC",
+                "price": 10.5,
+                "type": "back",
+                "size": 0.76,
+                "updatedAt": 1788674485483
+              },
+              {
+                "team": "Moors SC",
+                "price": 10.5,
+                "type": "lay",
+                "size": 0.17,
+                "updatedAt": 1788674484498
+              },
+              {
+                "team": "Moors SC",
+                "price": 3.15,
+                "type": "lay",
+                "size": 2.81,
+                "updatedAt": 1788674431658
+              },
+              {
+                "team": "Moors SC",
+                "price": 1.57,
+                "type": "back",
+                "size": 1.36,
+                "updatedAt": 1788674401510
+              },
+              {
+                "team": "Moors SC",
+                "price": 3.7,
+                "type": "back",
+                "size": 1.04,
+                "updatedAt": 1788674344670
+              },
+              {
+                "team": "Moors SC",
+                "price": 3.65,
+                "type": "back",
+                "size": 4.58,
+                "updatedAt": 1788674344670
+              },
+              {
+                "team": "Moors SC",
+                "price": 3.6,
+                "type": "back",
+                "size": 6.43,
+                "updatedAt": 1788674344670
+              },
+              {
+                "team": "Moors SC",
+                "price": 3,
+                "type": "lay",
+                "size": 6.08,
+                "updatedAt": 1788674280763
+              },
+              {
+                "team": "Moors SC",
+                "price": 2.98,
+                "type": "lay",
+                "size": 2.81,
+                "updatedAt": 1788674280763
+              },
+              {
+                "team": "Moors SC",
+                "price": 2.02,
+                "type": "back",
+                "size": 3.21,
+                "updatedAt": 1788673943854
+              }
+            ],
+            "pnlIfWins": -1721.5690000000068,
+            "totalBet": 39985.0268
+          },
+          "Colts CC": {
+            "trades": [
+              {
+                "team": "Colts CC",
+                "price": 34,
+                "type": "back",
+                "size": 4.73,
+                "updatedAt": 1788784182315
+              },
+              {
+                "team": "Colts CC",
+                "price": 21,
+                "type": "back",
+                "size": 3.6700000000000017,
+                "updatedAt": 1788783566277
+              },
+              {
+                "team": "Colts CC",
+                "price": 10.5,
+                "type": "lay",
+                "size": 0.89,
+                "updatedAt": 1788783143039
+              },
+              {
+                "team": "Colts CC",
+                "price": 9.4,
+                "type": "lay",
+                "size": 0.15,
+                "updatedAt": 1788783143039
+              },
+              {
+                "team": "Colts CC",
+                "price": 11,
+                "type": "back",
+                "size": 5.169999999999998,
+                "updatedAt": 1788783129914
+              },
+              {
+                "team": "Colts CC",
+                "price": 10,
+                "type": "back",
+                "size": 3.78,
+                "updatedAt": 1788783127010
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.62,
+                "type": "back",
+                "size": 20.46,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.54,
+                "type": "back",
+                "size": 11.660000000000002,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.5,
+                "type": "back",
+                "size": 17.740000000000002,
+                "updatedAt": 1788782409570
+              },
+              {
+                "team": "Colts CC",
+                "price": 11,
+                "type": "lay",
+                "size": 66.49,
+                "updatedAt": 1788782258840
+              },
+              {
+                "team": "Colts CC",
+                "price": 9.2,
+                "type": "lay",
+                "size": 0.94,
+                "updatedAt": 1788782226744
+              },
+              {
+                "team": "Colts CC",
+                "price": 8.6,
+                "type": "lay",
+                "size": 0.629999999999999,
+                "updatedAt": 1788782226744
+              },
+              {
+                "team": "Colts CC",
+                "price": 13.5,
+                "type": "lay",
+                "size": 4.15,
+                "updatedAt": 1788782186995
+              },
+              {
+                "team": "Colts CC",
+                "price": 21,
+                "type": "lay",
+                "size": 22,
+                "updatedAt": 1788781799160
+              },
+              {
+                "team": "Colts CC",
+                "price": 12,
+                "type": "lay",
+                "size": 3.7,
+                "updatedAt": 1788781752437
+              },
+              {
+                "team": "Colts CC",
+                "price": 17.5,
+                "type": "lay",
+                "size": 0.5199999999999958,
+                "updatedAt": 1788781408550
+              },
+              {
+                "team": "Colts CC",
+                "price": 15,
+                "type": "lay",
+                "size": 0.75,
+                "updatedAt": 1788781408550
+              },
+              {
+                "team": "Colts CC",
+                "price": 26,
+                "type": "lay",
+                "size": 1.6,
+                "updatedAt": 1788780980277
+              },
+              {
+                "team": "Colts CC",
+                "price": 34,
+                "type": "lay",
+                "size": 1.33,
+                "updatedAt": 1788780575112
+              },
+              {
+                "team": "Colts CC",
+                "price": 17.5,
+                "type": "back",
+                "size": 37.46,
+                "updatedAt": 1788779158726
+              },
+              {
+                "team": "Colts CC",
+                "price": 18,
+                "type": "back",
+                "size": 5.3,
+                "updatedAt": 1788778503282
+              },
+              {
+                "team": "Colts CC",
+                "price": 12.5,
+                "type": "back",
+                "size": 3.98,
+                "updatedAt": 1788777829008
+              },
+              {
+                "team": "Colts CC",
+                "price": 12,
+                "type": "back",
+                "size": 6.06,
+                "updatedAt": 1788777732998
+              },
+              {
+                "team": "Colts CC",
+                "price": 8.6,
+                "type": "back",
+                "size": 10.48,
+                "updatedAt": 1788777593911
+              },
+              {
+                "team": "Colts CC",
+                "price": 8.2,
+                "type": "back",
+                "size": 13.379999999999999,
+                "updatedAt": 1788777593911
+              },
+              {
+                "team": "Colts CC",
+                "price": 8,
+                "type": "back",
+                "size": 12.82,
+                "updatedAt": 1788777593911
+              },
+              {
+                "team": "Colts CC",
+                "price": 8.2,
+                "type": "lay",
+                "size": 8.240000000000002,
+                "updatedAt": 1788777578316
+              },
+              {
+                "team": "Colts CC",
+                "price": 9.2,
+                "type": "back",
+                "size": 0.51,
+                "updatedAt": 1788777573616
+              },
+              {
+                "team": "Colts CC",
+                "price": 11.5,
+                "type": "back",
+                "size": 2.64,
+                "updatedAt": 1788775884267
+              },
+              {
+                "team": "Colts CC",
+                "price": 5.5,
+                "type": "back",
+                "size": 0.3100000000000005,
+                "updatedAt": 1788774826168
+              },
+              {
+                "team": "Colts CC",
+                "price": 5.3,
+                "type": "back",
+                "size": 4.95,
+                "updatedAt": 1788774826168
+              },
+              {
+                "team": "Colts CC",
+                "price": 5.1,
+                "type": "back",
+                "size": 2.91,
+                "updatedAt": 1788774171581
+              },
+              {
+                "team": "Colts CC",
+                "price": 4.8,
+                "type": "lay",
+                "size": 11.04,
+                "updatedAt": 1788774067961
+              },
+              {
+                "team": "Colts CC",
+                "price": 4.2,
+                "type": "lay",
+                "size": 13.97999999999999,
+                "updatedAt": 1788773834701
+              },
+              {
+                "team": "Colts CC",
+                "price": 4.3,
+                "type": "lay",
+                "size": 0.3999999999999986,
+                "updatedAt": 1788773825181
+              },
+              {
+                "team": "Colts CC",
+                "price": 4.5,
+                "type": "lay",
+                "size": 21.269999999999996,
+                "updatedAt": 1788773730435
+              },
+              {
+                "team": "Colts CC",
+                "price": 4.7,
+                "type": "lay",
+                "size": 0.35999999999999943,
+                "updatedAt": 1788773704455
+              },
+              {
+                "team": "Colts CC",
+                "price": 4.8,
+                "type": "back",
+                "size": 1.4800000000000004,
+                "updatedAt": 1788773652731
+              },
+              {
+                "team": "Colts CC",
+                "price": 2.86,
+                "type": "lay",
+                "size": 3.27,
+                "updatedAt": 1788751172796
+              },
+              {
+                "team": "Colts CC",
+                "price": 2,
+                "type": "lay",
+                "size": 2092.1399999999994,
+                "updatedAt": 1788751172796
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.46,
+                "type": "back",
+                "size": 17.740000000000002,
+                "updatedAt": 1788751172796
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.14,
+                "type": "back",
+                "size": 4.690000000000001,
+                "updatedAt": 1788751172796
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.6,
+                "type": "back",
+                "size": 0.020000000000000018,
+                "updatedAt": 1788746589155
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.78,
+                "type": "lay",
+                "size": 9.15,
+                "updatedAt": 1788719405806
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.6,
+                "type": "lay",
+                "size": 3.96,
+                "updatedAt": 1788719375693
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.55,
+                "type": "back",
+                "size": 13.830000000000002,
+                "updatedAt": 1788675154768
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.54,
+                "type": "lay",
+                "size": 20.340000000000003,
+                "updatedAt": 1788674777686
+              },
+              {
+                "team": "Colts CC",
+                "price": 2,
+                "type": "back",
+                "size": 37351.85,
+                "updatedAt": 1788674636555
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.14,
+                "type": "lay",
+                "size": 20.61,
+                "updatedAt": 1788674536611
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.33,
+                "type": "back",
+                "size": 17.74,
+                "updatedAt": 1788674531650
+              },
+              {
+                "team": "Colts CC",
+                "price": 2.88,
+                "type": "lay",
+                "size": 0.56,
+                "updatedAt": 1788674486561
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.11,
+                "type": "lay",
+                "size": 7.16,
+                "updatedAt": 1788674485559
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.11,
+                "type": "back",
+                "size": 6.43,
+                "updatedAt": 1788674478935
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.46,
+                "type": "lay",
+                "size": 7.369999999999997,
+                "updatedAt": 1788674441592
+              },
+              {
+                "team": "Colts CC",
+                "price": 2.76,
+                "type": "lay",
+                "size": 0.77,
+                "updatedAt": 1788674401495
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.37,
+                "type": "lay",
+                "size": 2.81,
+                "updatedAt": 1788674344717
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.4,
+                "type": "back",
+                "size": 4.48,
+                "updatedAt": 1788674291130
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.99,
+                "type": "back",
+                "size": 0.030000000000001137,
+                "updatedAt": 1788674232675
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.53,
+                "type": "back",
+                "size": 2.74,
+                "updatedAt": 1788674232675
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.51,
+                "type": "back",
+                "size": 16.42,
+                "updatedAt": 1788674232675
+              },
+              {
+                "team": "Colts CC",
+                "price": 1.99,
+                "type": "lay",
+                "size": 8.87,
+                "updatedAt": 1788673943586
+              }
+            ],
+            "pnlIfWins": -2862.037700000001,
+            "totalBet": 47976.2577
+          }
+        },
+        "Usr": "cricketloaduser56@gmail.com",
+        "competitionName": "SLC Major Clubs Limited Overs"
+      },
+      "predictedWinner": "Moors SC",
+      "predictionTier": "SRILANKA_SPECIAL",
+      "predictionConfidence": "Sri Lanka Bookie Trap (Fade Public)",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
     }
   ]
 }
