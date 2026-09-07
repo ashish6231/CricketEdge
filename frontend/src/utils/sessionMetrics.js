@@ -93,7 +93,7 @@ export function formatVolStr(val) {
 export function fmtRs(n) {
   if (n === null || n === undefined) return '—'
   const sign = n >= 0 ? '+' : ''
-  return `${sign}₹${formatVolStr(n)}`
+  return `${sign}€${formatVolStr(n)}`
 }
 
 const LIQUIDITY = {

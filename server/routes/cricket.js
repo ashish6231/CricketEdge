@@ -27,6 +27,55 @@ function getMatchDataset() {
   return _matchDatasetCache;
 }
 
+// Persistent cache for completed/ended matches so their trades & amounts are served instantly (0ms)
+const ENDED_MATCHES_CACHE_FILE = path.join(__dirname, '../data/ended_matches_cache.json');
+const endedMatchesCache = new Map();
+
+function loadEndedMatchesCache() {
+  try {
+    if (fs.existsSync(ENDED_MATCHES_CACHE_FILE)) {
+      const raw = fs.readFileSync(ENDED_MATCHES_CACHE_FILE, 'utf8');
+      const obj = JSON.parse(raw);
+      for (const [k, v] of Object.entries(obj)) {
+        endedMatchesCache.set(String(k), v);
+      }
+    }
+  } catch (e) {
+    console.warn('Could not load ended matches cache:', e.message);
+  }
+}
+loadEndedMatchesCache();
+
+function saveEndedMatchesCache() {
+  try {
+    const obj = Object.fromEntries(endedMatchesCache.entries());
+    fs.mkdirSync(path.dirname(ENDED_MATCHES_CACHE_FILE), { recursive: true });
+    fs.writeFileSync(ENDED_MATCHES_CACHE_FILE, JSON.stringify(obj, null, 2), 'utf8');
+  } catch (e) {}
+}
+
+function alignScorecardTeams(scorecard, matchName) {
+  if (!scorecard || !scorecard.team1 || !scorecard.team2 || !matchName) return scorecard;
+  const parts = matchName.split(/\s+v(?:s)?\.?\s+/i);
+  const t1 = parts[0] || '';
+  const t2 = parts[1] || '';
+  if (!t1 || !t2) return scorecard;
+
+  const team1MatchesT1 = crexService.teamTokensMatch(t1, scorecard.team1.name, scorecard.team1.shortName);
+  const team1MatchesT2 = crexService.teamTokensMatch(t2, scorecard.team1.name, scorecard.team1.shortName);
+  const team2MatchesT1 = crexService.teamTokensMatch(t1, scorecard.team2.name, scorecard.team2.shortName);
+  const team2MatchesT2 = crexService.teamTokensMatch(t2, scorecard.team2.name, scorecard.team2.shortName);
+
+  if (team1MatchesT2 && team2MatchesT1 && !team1MatchesT1) {
+    return {
+      ...scorecard,
+      team1: scorecard.team2,
+      team2: scorecard.team1,
+    };
+  }
+  return scorecard;
+}
+
 async function getCrexForMatch(matchInfo, matchId = null) {
   try {
     const crexOverview = await crexService.getCrexOverview();
@@ -44,9 +93,13 @@ async function getCrexForMatch(matchInfo, matchId = null) {
     if (!matched) return null;
     if (matched.slug || matched.url) {
       const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
+      if (!detail) return matched;
+      const scorecard = alignScorecardTeams(detail.scorecard, matchInfo?.matchName);
       return {
         ...matched,
         ...detail,
+        scorecard: scorecard || detail.scorecard,
+        isReversed: Boolean(matched.isReversed),
       };
     }
     return matched;
@@ -69,9 +122,17 @@ function computeMatchLoad(snap, matchInfo) {
 
   const vol1 = tradeVol1 || snap?.teams?.[t1]?.totalBet || snap?.preMatchTotalBets?.team1 || snap?.preMatchVolume?.team1?.total || snap?.advancedMetrics?.team1?.totalVolume || matchInfo?.preMatchVolume?.team1?.total || 0;
   const vol2 = tradeVol2 || snap?.teams?.[t2]?.totalBet || snap?.preMatchTotalBets?.team2 || snap?.preMatchVolume?.team2?.total || snap?.advancedMetrics?.team2?.totalVolume || matchInfo?.preMatchVolume?.team2?.total || 0;
-  const total = vol1 + vol2;
+  let total = vol1 + vol2;
 
-  const pct1 = total > 0 ? Math.round((vol1 / total) * 100) : 50;
+  let finalVol1 = vol1;
+  let finalVol2 = vol2;
+  if (finalVol1 === 0 && finalVol2 === 0 && (matchInfo?.totalMatched || 0) > 0) {
+    finalVol1 = Math.round(matchInfo.totalMatched * 0.5);
+    finalVol2 = Math.round(matchInfo.totalMatched * 0.5);
+    total = matchInfo.totalMatched;
+  }
+
+  const pct1 = total > 0 ? Math.round((finalVol1 / total) * 100) : 50;
   const pct2 = total > 0 ? (100 - pct1) : 50;
 
   // MatchDetail logic: sortedTrades = [...trades].sort((a, b) => b.updatedAt - a.updatedAt); lastPrice = sortedTrades[0]?.price
@@ -97,14 +158,14 @@ function computeMatchLoad(snap, matchInfo) {
   return {
     team1: {
       name: t1,
-      money: Math.round(vol1),
+      money: Math.round(finalVol1),
       percent: pct1,
       odds: lastPrice1,
       trend: trend1,
     },
     team2: {
       name: t2,
-      money: Math.round(vol2),
+      money: Math.round(finalVol2),
       percent: pct2,
       odds: lastPrice2,
       trend: trend2,
@@ -164,7 +225,13 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
   try {
     const liveData = await scraper.getAllCricketMatches();
     if (Array.isArray(liveData) && liveData.length > 0) {
-      const activeLive = liveData.filter(m => m.status !== 'ended' && m.status !== 'verified' && m.status !== 'closed');
+      const isMatchEnded = (m) => {
+        const s = (m.status || '').toLowerCase();
+        return s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed';
+      };
+
+      const activeLive = liveData.filter(m => !isMatchEnded(m));
+      const endedLive = liveData.filter(m => isMatchEnded(m));
 
       // Fetch snapshots in parallel for active matches to compute live matchLoad with real money and odds
       await Promise.all(activeLive.map(async (m) => {
@@ -189,7 +256,43 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
         });
       }));
 
-      // Inactive/Ended live matches
+      // For ended matches: retrieve from persistent cache (0ms); if missing, fetch and cache
+      const uncachedEnded = endedLive.filter(m => !endedMatchesCache.has(String(m.matchId)));
+      if (uncachedEnded.length > 0) {
+        let hasNew = false;
+        await Promise.allSettled(uncachedEnded.map(async (m) => {
+          try {
+            const snap = await scraper.getCricketSnapshot(m.matchId);
+            const load = computeMatchLoad(snap, m);
+            endedMatchesCache.set(String(m.matchId), {
+              matchLoad: load,
+              runners: snap?.runners || m.runners || [],
+              totalMatched: load?.totalMatched || m.totalMatched || 0,
+            });
+            hasNew = true;
+          } catch (e) {}
+        }));
+        if (hasNew) saveEndedMatchesCache();
+      }
+
+      for (const m of endedLive) {
+        const cached = endedMatchesCache.get(String(m.matchId));
+        const load = cached?.matchLoad || computeMatchLoad(null, m);
+        matchesMap.set(String(m.matchId), {
+          matchId: String(m.matchId),
+          marketId: m.marketId,
+          matchName: m.matchName,
+          competitionName: m.competitionName || 'Other',
+          status: 'ended',
+          inPlay: false,
+          startTime: m.startTime || m.openDate || null,
+          totalMatched: cached?.totalMatched || load?.totalMatched || m.totalMatched || 0,
+          runners: cached?.runners || m.runners || [],
+          matchLoad: load,
+        });
+      }
+
+      // Any remaining matches
       for (const m of liveData) {
         if (!matchesMap.has(String(m.matchId))) {
           const load = computeMatchLoad(null, m);
@@ -236,6 +339,7 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
           matchedCrexIds.add(cm.crexMatchId);
           m.crex = {
             matched: true,
+            isReversed: Boolean(cm.isReversed),
             crexMatchId: cm.crexMatchId,
             slug: cm.slug,
             url: cm.url,
@@ -355,26 +459,6 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   let matchInfo = findMatchInfo(cricketMatches, matchId);
   let tossInfo = findMatchInfo(tossMatches, matchId);
 
-  // Now start CREX detail fetch using already-resolved overview (no extra round-trip)
-  const crexRawPromise = (async () => {
-    try {
-      let matched = null;
-      if (matchId && String(matchId).startsWith('crex-')) {
-        const rawId = String(matchId).replace(/^crex-/, '');
-        matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
-      }
-      if (!matched && matchInfo?.matchName) {
-        matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
-      }
-      if (!matched) return null;
-      if (matched.slug || matched.url) {
-        const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
-        return detail ? { ...matched, ...detail } : matched;
-      }
-      return matched;
-    } catch { return null; }
-  })();
-
   if (!matchInfo) {
     try {
       const md = getMatchDataset();
@@ -392,6 +476,33 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
       }
     } catch {}
   }
+
+  // Now start CREX detail fetch using already-resolved overview (no extra round-trip)
+  const crexRawPromise = (async () => {
+    try {
+      let matched = null;
+      if (matchId && String(matchId).startsWith('crex-')) {
+        const rawId = String(matchId).replace(/^crex-/, '');
+        matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
+      }
+      if (!matched && matchInfo?.matchName) {
+        matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
+      }
+      if (!matched) return null;
+      if (matched.slug || matched.url) {
+        const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
+        if (!detail) return matched;
+        const scorecard = alignScorecardTeams(detail.scorecard, matchInfo?.matchName);
+        return {
+          ...matched,
+          ...detail,
+          scorecard: scorecard || detail.scorecard,
+          isReversed: Boolean(matched.isReversed),
+        };
+      }
+      return matched;
+    } catch { return null; }
+  })();
 
   if (!guestMayViewMatch(matchInfo, req.user) && !guestMayViewFromInfos(req.user, [tossInfo, matchInfo])) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
@@ -424,7 +535,16 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
 router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
   const matches = await scraper.getAllCricketMatches();
-  const matchInfo = findMatchInfo(matches, matchId);
+  let matchInfo = findMatchInfo(matches, matchId);
+  if (!matchInfo) {
+    try {
+      const md = getMatchDataset();
+      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec) {
+        matchInfo = { matchId: String(rec.matchId), matchName: rec.matchName };
+      }
+    } catch {}
+  }
   const crex = await getCrexForMatch(matchInfo, matchId);
   res.json({ matchId, crex: crex || null });
 });

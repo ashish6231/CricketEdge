@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Activity, ChevronRight, LoaderCircle, Lock, Radio } from 'lucide-react'
+import { Activity, ChevronRight, LoaderCircle, Lock, Radio, Search } from 'lucide-react'
 import { getCricketMatches, getCricketOddsBulk, getTennisMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
@@ -53,6 +53,7 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
   const [loadError, setLoadError] = useState('')
   const [matches, setMatches] = useState([])
   const [oddsMap, setOddsMap] = useState({})
+  const [searchQuery, setSearchQuery] = useState('')
   const [sportFilter, setSportFilter] = useState(() => {
     try {
       const saved = sessionStorage.getItem(FILTER_KEY)
@@ -104,9 +105,18 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
   }, [isLoggedIn, authReady])
 
   const filtered = useMemo(() => {
-    if (sportFilter === 'all') return matches
-    return matches.filter((m) => m.sport === sportFilter)
-  }, [matches, sportFilter])
+    let list = sportFilter === 'all' ? matches : matches.filter((m) => m.sport === sportFilter)
+    const q = searchQuery.trim().toLowerCase()
+    if (q) {
+      list = list.filter((m) =>
+        (m.matchName || '').toLowerCase().includes(q) ||
+        (m.competitionName || '').toLowerCase().includes(q) ||
+        (m.team1 || '').toLowerCase().includes(q) ||
+        (m.team2 || '').toLowerCase().includes(q)
+      )
+    }
+    return list
+  }, [matches, sportFilter, searchQuery])
 
   const liveMatches = useMemo(
     () => filtered.filter(isLive).sort((a, b) => (b.totalMatched || 0) - (a.totalMatched || 0)),
@@ -216,35 +226,55 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
     <div className="live-desk min-h-[calc(100vh-57px)]">
       <div className="live-desk-glow" aria-hidden />
 
-      {/* Sport chips — sticky under top bar while scrolling */}
+      {/* Sport chips & Search — sticky under top bar while scrolling */}
       <div
         className="live-desk-filters sticky z-20"
         style={{ top: stickyTop }}
       >
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2 px-4 py-3">
-          {SPORT_FILTERS.map((f) => {
-            const active = sportFilter === f.id
-            return (
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-2 px-4 py-2">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            {SPORT_FILTERS.map((f) => {
+              const active = sportFilter === f.id
+              return (
+                <button
+                  key={f.id}
+                  type="button"
+                  onClick={() => setSportFilter(f.id)}
+                  className={`rounded-full px-3 py-1 text-xs font-bold tracking-wide transition-all ${
+                    active ? 'text-white shadow-sm' : 'text-slate-400 hover:text-white'
+                  }`}
+                  style={
+                    active
+                      ? { background: 'linear-gradient(135deg,#dc2626,#b91c1c)', boxShadow: '0 0 16px rgba(220,38,38,0.3)' }
+                      : { background: 'rgba(255,255,255,0.04)', border: '1px solid #1b2234' }
+                  }
+                >
+                  {f.label}
+                </button>
+              )
+            })}
+          </div>
+
+          {/* Search bar */}
+          <div className="relative flex-1 min-w-[170px] max-w-xs ml-auto">
+            <Search size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search all matches..."
+              className="w-full bg-[#080b14] border border-[#1b2234] focus:border-red-500/50 rounded-full pl-7 pr-7 py-1 text-xs text-white placeholder:text-slate-500 outline-none transition-all"
+            />
+            {searchQuery && (
               <button
-                key={f.id}
                 type="button"
-                onClick={() => setSportFilter(f.id)}
-                className={`rounded-full px-3.5 py-1.5 text-xs font-bold tracking-wide transition-all ${
-                  active ? 'text-white' : 'text-text-secondary hover:text-white'
-                }`}
-                style={
-                  active
-                    ? { background: 'linear-gradient(135deg,#dc2626,#b91c1c)', boxShadow: '0 0 20px rgba(220,38,38,0.25)' }
-                    : { background: 'rgba(255,255,255,0.05)', border: '1px solid #2c2c2e' }
-                }
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white text-xs"
               >
-                {f.label}
+                ✕
               </button>
-            )
-          })}
-          <span className="ml-auto text-[11px] font-medium text-text-muted">
-            {liveMatches.length} live · {upcomingMatches.length} upcoming
-          </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -328,40 +358,45 @@ function MatchRow({ match, live, odds, isPro, onOpen, style }) {
       className={`live-desk-row group w-full text-left ${live ? 'live-desk-row--live' : 'live-desk-row--up'}`}
       style={style}
     >
-      <div className="flex items-start gap-3">
-        <div className="mt-0.5 flex w-8 flex-col items-center gap-1">
-          <span className="text-base leading-none">{sportLabel}</span>
+      <div className="flex items-start gap-2.5">
+        <div className="mt-0.5 flex w-7 flex-col items-center gap-1 shrink-0">
+          <span className="text-sm leading-none">{sportLabel}</span>
           {live && (
-            <span className="text-[9px] font-black tracking-wider text-red-400">LIVE</span>
+            <span className="flex items-center gap-1 text-[8px] font-black tracking-wider text-rose-400 bg-rose-500/15 border border-rose-500/30 px-1 py-0.5 rounded-full">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+              LIVE
+            </span>
           )}
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className="mb-0.5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-            <span className="truncate">{league}</span>
+          <div className="mb-0.5 flex items-center justify-between gap-2 text-[10px] font-semibold text-slate-400">
+            <span className="truncate uppercase tracking-wider text-slate-400 font-bold">{league}</span>
             {when && !live && (
-              <>
-                <span className="opacity-40">·</span>
-                <span className="shrink-0 normal-case tracking-normal">{when}</span>
-              </>
+              <span className="shrink-0 text-slate-400 font-mono text-[10px]">{when}</span>
             )}
           </div>
-          <div className="text-sm font-bold leading-snug text-text-primary">{match.matchName}</div>
+          <div className="text-xs sm:text-sm font-bold text-white group-hover:text-sky-300 transition-colors truncate">
+            {match.matchName}
+          </div>
 
           {odds?.teamNames?.length >= 2 && (
-            <div className="mt-2 flex gap-1.5">
+            <div className="mt-1.5 flex gap-1.5">
               {odds.teamNames.map((tn) => {
                 const tod = odds.odds?.[tn]
                 return (
                   <div
                     key={tn}
-                    className="min-w-0 flex-1 rounded-lg px-2 py-1"
-                    style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid #2c2c2e' }}
+                    className="min-w-0 flex-1 rounded-lg px-2 py-1 bg-[#060810] border border-[#1b2234]"
                   >
-                    <div className="truncate text-[10px] font-semibold text-text-secondary">{tn}</div>
-                    <div className="mt-0.5 flex gap-1.5 text-[10px]">
-                      <span className="font-bold text-back">B {tod?.back ?? '—'}</span>
-                      <span className="font-bold text-loss">L {tod?.lay ?? '—'}</span>
+                    <div className="truncate text-[10px] font-bold text-slate-300">{tn}</div>
+                    <div className="mt-0.5 flex items-center justify-between gap-1 text-[10px] font-mono">
+                      <span className="font-bold text-sky-400 bg-sky-500/10 px-1 rounded border border-sky-500/20">
+                        B {tod?.back ?? '—'}
+                      </span>
+                      <span className="font-bold text-rose-400 bg-rose-500/10 px-1 rounded border border-rose-500/20">
+                        L {tod?.lay ?? '—'}
+                      </span>
                     </div>
                   </div>
                 )
@@ -369,26 +404,23 @@ function MatchRow({ match, live, odds, isPro, onOpen, style }) {
             </div>
           )}
 
-          <div className="mt-2 flex items-center justify-between gap-2">
-            <span className="text-[11px] text-text-muted">
-              Matched{' '}
-              <span className="font-semibold text-text-secondary">
-                ₹{(match.totalMatched || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}
-              </span>
+          <div className="mt-1.5 flex items-center justify-between gap-2 pt-1 border-t border-[#1b2234]/60">
+            <span className="text-[10px] text-slate-400 font-mono">
+              Matched: <b className="text-slate-200">€{(match.totalMatched || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</b>
             </span>
             {locked ? (
-              <span className="flex items-center gap-1 text-[11px] font-semibold text-red-400">
-                <Lock size={11} /> Pro
+              <span className="flex items-center gap-1 text-[9px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/30">
+                <Lock size={10} /> Pro
               </span>
             ) : (
-              <span className="text-[11px] font-semibold" style={{ color: '#10b981' }}>
-                {isPro && match.status !== 'ended' ? 'Pro' : 'Open'}
+              <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                {isPro && match.status !== 'ended' ? 'Pro Access' : 'Open'}
               </span>
             )}
           </div>
         </div>
 
-        <ChevronRight className="mt-1 h-4 w-4 shrink-0 text-text-muted transition-colors group-hover:text-primary" />
+        <ChevronRight className="mt-1 h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform group-hover:translate-x-0.5 group-hover:text-sky-400" />
       </div>
     </button>
   )

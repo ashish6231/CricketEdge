@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-06T17:48:34.921Z",
+  "updatedAt": "2026-09-07T00:48:58.436Z",
   "records": [
     {
       "matchId": "35901908",
@@ -32795,6 +32795,1673 @@
         {
           "reason": "Intl Inflow on Zimbabwe (₹2.4k Back, Lead: 2.1x)",
           "winner": "Zimbabwe",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36034385",
+      "marketId": "1.262019458",
+      "matchName": "Amsterdam Flames v Rotterdam Dockers",
+      "competitionName": "European T20 Premier League",
+      "team1": "Amsterdam Flames",
+      "team2": "Rotterdam Dockers",
+      "startTime": 1788700500000,
+      "endedAt": "2026-09-07T00:45:56.585Z",
+      "capturedAt": "2026-09-07T00:45:56.585Z",
+      "snapshot": {
+        "serverTime": "2026-09-07T00:45:56.720Z",
+        "matchId": "36034385",
+        "matchName": "Amsterdam Flames v Rotterdam Dockers",
+        "teamNames": [
+          "Amsterdam Flames",
+          "Rotterdam Dockers"
+        ],
+        "inPlayPnl": {
+          "team1": 39.29999999999998,
+          "team2": -25.10729999999998
+        },
+        "inPlayTotalBets": {
+          "team1": 131.53,
+          "team2": 158.57209999999998
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "total": 131.53
+          },
+          "team2": {
+            "back": 170.82999999999998,
+            "lay": 131.53,
+            "total": 170.82999999999998
+          }
+        },
+        "preMatchPnl": {
+          "team1": 39.29999999999998,
+          "team2": -25.10729999999998
+        },
+        "preMatchTotalBets": {
+          "team1": 131.53,
+          "team2": 158.57209999999998
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "total": 131.53
+          },
+          "team2": {
+            "back": 170.82999999999998,
+            "lay": 131.53,
+            "total": 170.82999999999998
+          }
+        },
+        "threeMinPnl": {
+          "team1": 39.29999999999998,
+          "team2": -25.10729999999998
+        },
+        "threeMinTotalBets": {
+          "team1": 131.53,
+          "team2": 158.57209999999998
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "total": 131.53
+          },
+          "team2": {
+            "back": 170.82999999999998,
+            "lay": 131.53,
+            "total": 170.82999999999998
+          }
+        },
+        "matchLoadV2": {
+          "team1": 2,
+          "team2": 5
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "totalVolume": 0,
+            "backPercentage": 0
+          },
+          "team2": {
+            "back": 170.82999999999998,
+            "lay": 131.53,
+            "totalVolume": 302.36,
+            "backPercentage": 56.49887551263394
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "totalBet": 0
+          },
+          "team2": {
+            "back": 158.57209999999998,
+            "lay": 133.4648,
+            "totalBet": 292.03689999999995
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 131.53,
+            "support": 43.50112448736605
+          },
+          "team2": {
+            "supportMoney": 170.82999999999998,
+            "support": 56.49887551263394
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Rotterdam Dockers",
+          "bookieFavouriteOutcome": "Amsterdam Flames",
+          "riskTeam": "Rotterdam Dockers",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 12.997751025267888,
+          "mostBettedTeam": "Rotterdam Dockers",
+          "prediction": {
+            "team1TrueSupport": 133.4648,
+            "team2TrueSupport": 158.57209999999998,
+            "ratio": 1.1881192644052962,
+            "bookiePnlTeam1": 0,
+            "bookiePnlTeam2": -27.042099999999976,
+            "prediction": "Amsterdam Flames",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.19) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 0,
+            "backExposure": 0,
+            "layExposure": 0,
+            "teamName": "Amsterdam Flames"
+          },
+          "team2": {
+            "netExposure": 25.10729999999998,
+            "backExposure": 158.57209999999998,
+            "layExposure": 133.4648,
+            "teamName": "Rotterdam Dockers"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 0,
+            "A_lay_stake": 0,
+            "B_back_expo": 158.57209999999998,
+            "B_lay_stake": 131.53
+          },
+          "totals": {
+            "totalBetTeam1": 131.53,
+            "totalBetTeam2": 158.57209999999998
+          },
+          "simplePL": {
+            "team1_win": 0,
+            "team2_win": -27.042099999999976
+          },
+          "derivedPL": {
+            "team1_win": 27.042099999999976,
+            "team2_win": -27.042099999999976
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 0,
+              "totalLayVol": 0,
+              "totalBet": 131.53,
+              "profitLoss": 39.29999999999998
+            },
+            "team2": {
+              "totalBackVol": 170.82999999999998,
+              "totalLayVol": 131.53,
+              "totalBet": 170.82999999999998,
+              "profitLoss": -39.29999999999998
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 0,
+              "totalLayVol": 0,
+              "totalBet": 131.53,
+              "profitLoss": 39.29999999999998
+            },
+            "team2": {
+              "totalBackExpo": 158.57209999999998,
+              "totalLayVol": 131.53,
+              "totalBet": 158.57209999999998,
+              "profitLoss": -25.10729999999998
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 0,
+              "totalLayNetVol": 0,
+              "totalBet": 133.4648,
+              "profitLoss": 25.10729999999998
+            },
+            "team2": {
+              "totalBackNetVol": 158.57209999999998,
+              "totalLayNetVol": 133.4648,
+              "totalBet": 158.57209999999998,
+              "profitLoss": -25.10729999999998
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 2,
+            "averageOdds": 2.01,
+            "averageSize": 65.765,
+            "supportProduct": 132.18765
+          },
+          "teamB": {
+            "tradeCount": 5,
+            "averageOdds": 1.886,
+            "averageSize": 34.166,
+            "supportProduct": 64.43707599999999
+          },
+          "strongerTeam": "Amsterdam Flames",
+          "supportRatio": 2.0514222277869965
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 0,
+            "oppoLayVolume": 131.53,
+            "layExposure": 0,
+            "netSupportValue": 131.53
+          },
+          "teamB": {
+            "totalBackVolume": 170.82999999999998,
+            "oppoLayVolume": 0,
+            "layExposure": 133.4648,
+            "netSupportValue": 37.36519999999999
+          },
+          "strongerTeam": "Amsterdam Flames",
+          "netSupportDifference": 94.16480000000001,
+          "percentageA": 77.87669513402395,
+          "percentageB": 22.123304865976053
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 0,
+            "syntheticSupport": 131.53,
+            "opponentLiabilityRejection": 133.4648,
+            "sentimentScore": -1.9347999999999956
+          },
+          "teamB": {
+            "directNetSupport": 39.29999999999998,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 39.29999999999998
+          },
+          "strongerTeam": "Rotterdam Dockers",
+          "scoreDifference": 41.23479999999998,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Amsterdam Flames",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Rotterdam Dockers",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Amsterdam Flames"
+        },
+        "teams": {
+          "Amsterdam Flames": {
+            "trades": [],
+            "pnlIfWins": 39.29999999999998,
+            "totalBet": 131.53
+          },
+          "Rotterdam Dockers": {
+            "trades": [
+              {
+                "team": "Rotterdam Dockers",
+                "price": 1.77,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788697654573
+              },
+              {
+                "team": "Rotterdam Dockers",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.94,
+                "updatedAt": 1788697638249
+              },
+              {
+                "team": "Rotterdam Dockers",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788697638249
+              },
+              {
+                "team": "Rotterdam Dockers",
+                "price": 1.93,
+                "type": "back",
+                "size": 26.73,
+                "updatedAt": 1788696926109
+              },
+              {
+                "team": "Rotterdam Dockers",
+                "price": 1.94,
+                "type": "lay",
+                "size": 61.34,
+                "updatedAt": 1788696559648
+              },
+              {
+                "team": "Rotterdam Dockers",
+                "price": 1.94,
+                "type": "back",
+                "size": 117.91999999999999,
+                "updatedAt": 1788696559315
+              },
+              {
+                "team": "Rotterdam Dockers",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.19,
+                "updatedAt": 1788695268197
+              }
+            ],
+            "pnlIfWins": -25.10729999999998,
+            "totalBet": 158.57209999999998
+          }
+        }
+      },
+      "predictedWinner": "Amsterdam Flames",
+      "predictionReason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹132 Lay, 131.5x) -> Faded to Amsterdam Flames",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹132 Lay, 131.5x) -> Faded to Amsterdam Flames"
+      },
+      "matchedRules": [
+        {
+          "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹132 Lay, 131.5x) -> Faded to Amsterdam Flames",
+          "winner": "Amsterdam Flames",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36023506",
+      "marketId": "1.261958206",
+      "matchName": "Guyana Amazon Warriors W v Jamaica Empress W",
+      "competitionName": "Women's Caribbean Premier League",
+      "team1": "Guyana Amazon Warriors W",
+      "team2": "Jamaica Empress W",
+      "startTime": 1788703200000,
+      "endedAt": "2026-09-07T00:45:57.923Z",
+      "capturedAt": "2026-09-07T00:45:57.923Z",
+      "snapshot": {
+        "serverTime": "2026-09-07T00:45:58.054Z",
+        "matchId": "36023506",
+        "matchName": "Guyana Amazon Warriors W v Jamaica Empress W",
+        "teamNames": [
+          "Guyana Amazon Warriors W",
+          "Jamaica Empress W"
+        ],
+        "inPlayPnl": {
+          "team1": 446.8352000000001,
+          "team2": -271.9902
+        },
+        "inPlayTotalBets": {
+          "team1": 472.1895999999999,
+          "team2": 774.8176000000001
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 455.04999999999995,
+            "lay": 36.420000000000016,
+            "total": 503.30999999999995
+          },
+          "team2": {
+            "back": 884.7900000000001,
+            "lay": 48.26,
+            "total": 921.21
+          }
+        },
+        "preMatchPnl": {
+          "team1": 446.8352000000001,
+          "team2": -271.9902
+        },
+        "preMatchTotalBets": {
+          "team1": 472.1895999999999,
+          "team2": 774.8176000000001
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 455.04999999999995,
+            "lay": 36.420000000000016,
+            "total": 503.30999999999995
+          },
+          "team2": {
+            "back": 884.7900000000001,
+            "lay": 48.26,
+            "total": 921.21
+          }
+        },
+        "threeMinPnl": {
+          "team1": 446.8352000000001,
+          "team2": -271.9902
+        },
+        "threeMinTotalBets": {
+          "team1": 472.1895999999999,
+          "team2": 774.8176000000001
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 455.04999999999995,
+            "lay": 36.420000000000016,
+            "total": 503.30999999999995
+          },
+          "team2": {
+            "back": 884.7900000000001,
+            "lay": 48.26,
+            "total": 921.21
+          }
+        },
+        "matchLoadV2": {
+          "team1": 5,
+          "team2": 6
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 455.04999999999995,
+            "lay": 36.420000000000016,
+            "totalVolume": 491.46999999999997,
+            "backPercentage": 92.58957820416302
+          },
+          "team2": {
+            "back": 884.7900000000001,
+            "lay": 48.26,
+            "totalVolume": 933.0500000000001,
+            "backPercentage": 94.82771555650822
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 423.92959999999994,
+            "lay": 34.234800000000014,
+            "totalBet": 458.16439999999994
+          },
+          "team2": {
+            "back": 738.3976,
+            "lay": 47.7774,
+            "totalBet": 786.175
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 503.30999999999995,
+            "support": 35.33190127200741
+          },
+          "team2": {
+            "supportMoney": 921.21,
+            "support": 64.6680987279926
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Jamaica Empress W",
+          "bookieFavouriteOutcome": "Guyana Amazon Warriors W",
+          "riskTeam": "Jamaica Empress W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 29.336197455985193,
+          "mostBettedTeam": "Jamaica Empress W",
+          "prediction": {
+            "team1TrueSupport": 471.70699999999994,
+            "team2TrueSupport": 771.0542,
+            "ratio": 1.6346041080586045,
+            "bookiePnlTeam1": -387.5095999999999,
+            "bookiePnlTeam2": -688.5594,
+            "prediction": "Guyana Amazon Warriors W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.63) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 389.69479999999993,
+            "backExposure": 423.92959999999994,
+            "layExposure": 34.234800000000014,
+            "teamName": "Guyana Amazon Warriors W"
+          },
+          "team2": {
+            "netExposure": 689.0419999999999,
+            "backExposure": 736.8194,
+            "layExposure": 47.7774,
+            "teamName": "Jamaica Empress W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 423.92959999999994,
+            "A_lay_stake": 36.420000000000016,
+            "B_back_expo": 738.3976,
+            "B_lay_stake": 48.26
+          },
+          "totals": {
+            "totalBetTeam1": 472.1895999999999,
+            "totalBetTeam2": 774.8176000000001
+          },
+          "simplePL": {
+            "team1_win": -387.5095999999999,
+            "team2_win": -690.1376
+          },
+          "derivedPL": {
+            "team1_win": 302.62800000000016,
+            "team2_win": -302.62800000000016
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 455.04999999999995,
+              "totalLayVol": 36.420000000000016,
+              "totalBet": 503.30999999999995,
+              "profitLoss": 417.9000000000001
+            },
+            "team2": {
+              "totalBackVol": 884.7900000000001,
+              "totalLayVol": 48.26,
+              "totalBet": 921.21,
+              "profitLoss": -417.9000000000001
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 423.92959999999994,
+              "totalLayVol": 36.420000000000016,
+              "totalBet": 472.1895999999999,
+              "profitLoss": 446.8352000000002
+            },
+            "team2": {
+              "totalBackExpo": 738.3976,
+              "totalLayVol": 48.26,
+              "totalBet": 774.8176000000001,
+              "profitLoss": -271.99020000000013
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 423.92959999999994,
+              "totalLayNetVol": 34.234800000000014,
+              "totalBet": 471.70699999999994,
+              "profitLoss": 300.92540000000014
+            },
+            "team2": {
+              "totalBackNetVol": 738.3976,
+              "totalLayNetVol": 47.7774,
+              "totalBet": 772.6324000000001,
+              "profitLoss": -300.92540000000014
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 5,
+            "averageOdds": 1.938,
+            "averageSize": 100.66199999999999,
+            "supportProduct": 195.08295599999997
+          },
+          "teamB": {
+            "tradeCount": 6,
+            "averageOdds": 1.6216666666666668,
+            "averageSize": 153.535,
+            "supportProduct": 248.98259166666668
+          },
+          "strongerTeam": "Jamaica Empress W",
+          "supportRatio": 1.276290849656116
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 455.04999999999995,
+            "oppoLayVolume": 48.26,
+            "layExposure": 34.234800000000014,
+            "netSupportValue": 469.07519999999994
+          },
+          "teamB": {
+            "totalBackVolume": 884.7900000000001,
+            "oppoLayVolume": 36.420000000000016,
+            "layExposure": 47.7774,
+            "netSupportValue": 873.4326000000001
+          },
+          "strongerTeam": "Jamaica Empress W",
+          "netSupportDifference": 404.35740000000015,
+          "percentageA": 34.940221576366255,
+          "percentageB": 65.05977842363374
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 418.62999999999994,
+            "syntheticSupport": 48.26,
+            "opponentLiabilityRejection": 47.7774,
+            "sentimentScore": 419.11259999999993
+          },
+          "teamB": {
+            "directNetSupport": 836.5300000000001,
+            "syntheticSupport": 36.420000000000016,
+            "opponentLiabilityRejection": 34.234800000000014,
+            "sentimentScore": 838.7152
+          },
+          "strongerTeam": "Jamaica Empress W",
+          "scoreDifference": 419.60260000000005,
+          "percentageA": 33.32034798404042,
+          "percentageB": 66.67965201595958
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Guyana Amazon Warriors W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Jamaica Empress W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Guyana Amazon Warriors W"
+        },
+        "teams": {
+          "Guyana Amazon Warriors W": {
+            "trades": [
+              {
+                "team": "Guyana Amazon Warriors W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.94,
+                "updatedAt": 1788700468240
+              },
+              {
+                "team": "Guyana Amazon Warriors W",
+                "price": 1.92,
+                "type": "back",
+                "size": 28.08,
+                "updatedAt": 1788700141224
+              },
+              {
+                "team": "Guyana Amazon Warriors W",
+                "price": 1.93,
+                "type": "back",
+                "size": 280.76,
+                "updatedAt": 1788700130455
+              },
+              {
+                "team": "Guyana Amazon Warriors W",
+                "price": 1.94,
+                "type": "lay",
+                "size": 36.420000000000016,
+                "updatedAt": 1788699544515
+              },
+              {
+                "team": "Guyana Amazon Warriors W",
+                "price": 1.94,
+                "type": "back",
+                "size": 131.26999999999998,
+                "updatedAt": 1788699544272
+              }
+            ],
+            "pnlIfWins": 446.8352000000001,
+            "totalBet": 472.1895999999999
+          },
+          "Jamaica Empress W": {
+            "trades": [
+              {
+                "team": "Jamaica Empress W",
+                "price": 1.01,
+                "type": "back",
+                "size": 8.42,
+                "updatedAt": 1788700848431
+              },
+              {
+                "team": "Jamaica Empress W",
+                "price": 1.99,
+                "type": "lay",
+                "size": 48.26,
+                "updatedAt": 1788700488643
+              },
+              {
+                "team": "Jamaica Empress W",
+                "price": 1.02,
+                "type": "back",
+                "size": 74.7,
+                "updatedAt": 1788700338438
+              },
+              {
+                "team": "Jamaica Empress W",
+                "price": 1.91,
+                "type": "back",
+                "size": 212.08,
+                "updatedAt": 1788700037665
+              },
+              {
+                "team": "Jamaica Empress W",
+                "price": 1.92,
+                "type": "back",
+                "size": 449.21,
+                "updatedAt": 1788699703272
+              },
+              {
+                "team": "Jamaica Empress W",
+                "price": 1.93,
+                "type": "back",
+                "size": 140.38,
+                "updatedAt": 1788699542533
+              }
+            ],
+            "pnlIfWins": -271.9902,
+            "totalBet": 774.8176000000001
+          }
+        }
+      },
+      "predictedWinner": "Jamaica Empress W",
+      "predictionReason": "CPL Smart Money Inflow on Jamaica Empress W (₹885 Back, Lead: 1.9x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "CPL Smart Money Inflow on Jamaica Empress W (₹885 Back, Lead: 1.9x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "CPL Smart Money Inflow on Jamaica Empress W (₹885 Back, Lead: 1.9x)",
+          "winner": "Jamaica Empress W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36023089",
+      "marketId": "1.261944345",
+      "matchName": "Bangladesh W v Sri Lanka W",
+      "competitionName": "Women's Asia Cup T20",
+      "team1": "Bangladesh W",
+      "team2": "Sri Lanka W",
+      "startTime": 1788705000000,
+      "endedAt": "2026-09-07T00:45:59.487Z",
+      "capturedAt": "2026-09-07T00:45:59.487Z",
+      "snapshot": {
+        "serverTime": "2026-09-07T00:45:59.617Z",
+        "matchId": "36023089",
+        "matchName": "Bangladesh W v Sri Lanka W",
+        "teamNames": [
+          "Bangladesh W",
+          "Sri Lanka W"
+        ],
+        "inPlayPnl": {
+          "team1": 408.3614,
+          "team2": -361.8884
+        },
+        "inPlayTotalBets": {
+          "team1": 274.5412,
+          "team2": 648.6858
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 232.83999999999997,
+            "lay": 94.54000000000002,
+            "total": 286.42999999999995
+          },
+          "team2": {
+            "back": 594.95,
+            "lay": 53.58999999999999,
+            "total": 689.49
+          }
+        },
+        "preMatchPnl": {
+          "team1": 408.3614,
+          "team2": -361.8884
+        },
+        "preMatchTotalBets": {
+          "team1": 274.5412,
+          "team2": 648.6858
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 232.83999999999997,
+            "lay": 94.54000000000002,
+            "total": 286.42999999999995
+          },
+          "team2": {
+            "back": 594.95,
+            "lay": 53.58999999999999,
+            "total": 689.49
+          }
+        },
+        "threeMinPnl": {
+          "team1": 408.3614,
+          "team2": -361.8884
+        },
+        "threeMinTotalBets": {
+          "team1": 274.5412,
+          "team2": 648.6858
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 232.83999999999997,
+            "lay": 94.54000000000002,
+            "total": 286.42999999999995
+          },
+          "team2": {
+            "back": 594.95,
+            "lay": 53.58999999999999,
+            "total": 689.49
+          }
+        },
+        "matchLoadV2": {
+          "team1": 8,
+          "team2": 5
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 232.83999999999997,
+            "lay": 94.54000000000002,
+            "totalVolume": 327.38,
+            "backPercentage": 71.12224326470768
+          },
+          "team2": {
+            "back": 594.95,
+            "lay": 53.58999999999999,
+            "totalVolume": 648.5400000000001,
+            "backPercentage": 91.73682425139545
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 220.9512,
+            "lay": 87.9526,
+            "totalBet": 308.9038
+          },
+          "team2": {
+            "back": 554.1458,
+            "lay": 53.95739999999999,
+            "totalBet": 608.1032
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 286.42999999999995,
+            "support": 29.349741782113288
+          },
+          "team2": {
+            "supportMoney": 689.49,
+            "support": 70.65025821788672
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Sri Lanka W",
+          "bookieFavouriteOutcome": "Bangladesh W",
+          "riskTeam": "Sri Lanka W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 41.30051643577343,
+          "mostBettedTeam": "Sri Lanka W",
+          "prediction": {
+            "team1TrueSupport": 274.9086,
+            "team2TrueSupport": 642.0984,
+            "ratio": 2.3356795676817677,
+            "bookiePnlTeam1": -126.41119999999998,
+            "bookiePnlTeam2": -500.55580000000003,
+            "prediction": "Bangladesh W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.34) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 132.9986,
+            "backExposure": 220.9512,
+            "layExposure": 87.9526,
+            "teamName": "Bangladesh W"
+          },
+          "team2": {
+            "netExposure": 500.1884,
+            "backExposure": 554.1458,
+            "layExposure": 53.95739999999999,
+            "teamName": "Sri Lanka W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 220.9512,
+            "A_lay_stake": 94.54000000000002,
+            "B_back_expo": 554.1458,
+            "B_lay_stake": 53.58999999999999
+          },
+          "totals": {
+            "totalBetTeam1": 274.5412,
+            "totalBetTeam2": 648.6858
+          },
+          "simplePL": {
+            "team1_win": -126.41119999999998,
+            "team2_win": -500.55580000000003
+          },
+          "derivedPL": {
+            "team1_win": 374.14459999999997,
+            "team2_win": -374.14459999999997
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 232.83999999999997,
+              "totalLayVol": 94.54000000000002,
+              "totalBet": 286.42999999999995,
+              "profitLoss": 403.06000000000006
+            },
+            "team2": {
+              "totalBackVol": 594.95,
+              "totalLayVol": 53.58999999999999,
+              "totalBet": 689.49,
+              "profitLoss": -403.06000000000006
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 220.9512,
+              "totalLayVol": 94.54000000000002,
+              "totalBet": 274.5412,
+              "profitLoss": 408.3614
+            },
+            "team2": {
+              "totalBackExpo": 554.1458,
+              "totalLayVol": 53.58999999999999,
+              "totalBet": 648.6858,
+              "profitLoss": -361.8884
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 220.9512,
+              "totalLayNetVol": 87.9526,
+              "totalBet": 274.9086,
+              "profitLoss": 367.1898
+            },
+            "team2": {
+              "totalBackNetVol": 554.1458,
+              "totalLayNetVol": 53.95739999999999,
+              "totalBet": 642.0984,
+              "profitLoss": -367.1898
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 8,
+            "averageOdds": 1.9612500000000002,
+            "averageSize": 35.80375,
+            "supportProduct": 70.22010468750001
+          },
+          "teamB": {
+            "tradeCount": 5,
+            "averageOdds": 1.9459999999999997,
+            "averageSize": 137.898,
+            "supportProduct": 268.34950799999996
+          },
+          "strongerTeam": "Sri Lanka W",
+          "supportRatio": 3.821548104979816
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 232.83999999999997,
+            "oppoLayVolume": 53.58999999999999,
+            "layExposure": 87.9526,
+            "netSupportValue": 198.47739999999993
+          },
+          "teamB": {
+            "totalBackVolume": 594.95,
+            "oppoLayVolume": 94.54000000000002,
+            "layExposure": 53.95739999999999,
+            "netSupportValue": 635.5326
+          },
+          "strongerTeam": "Sri Lanka W",
+          "netSupportDifference": 437.05520000000007,
+          "percentageA": 23.797964053188803,
+          "percentageB": 76.20203594681118
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 138.29999999999995,
+            "syntheticSupport": 53.58999999999999,
+            "opponentLiabilityRejection": 53.95739999999999,
+            "sentimentScore": 137.93259999999992
+          },
+          "teamB": {
+            "directNetSupport": 541.36,
+            "syntheticSupport": 94.54000000000002,
+            "opponentLiabilityRejection": 87.9526,
+            "sentimentScore": 547.9474000000001
+          },
+          "strongerTeam": "Sri Lanka W",
+          "scoreDifference": 410.0148000000002,
+          "percentageA": 20.11031084154661,
+          "percentageB": 79.88968915845338
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Bangladesh W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Sri Lanka W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Bangladesh W"
+        },
+        "teams": {
+          "Bangladesh W": {
+            "trades": [
+              {
+                "team": "Bangladesh W",
+                "price": 1.88,
+                "type": "lay",
+                "size": 68.11000000000001,
+                "updatedAt": 1788702396953
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.62,
+                "updatedAt": 1788702313104
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.94,
+                "updatedAt": 1788702225985
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.93,
+                "type": "back",
+                "size": 3.2,
+                "updatedAt": 1788701876653
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.94,
+                "type": "back",
+                "size": 151.1,
+                "updatedAt": 1788701726567
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 26.43,
+                "updatedAt": 1788701718442
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.99,
+                "type": "back",
+                "size": 57.980000000000004,
+                "updatedAt": 1788699488348
+              }
+            ],
+            "pnlIfWins": 408.3614,
+            "totalBet": 274.5412
+          },
+          "Sri Lanka W": {
+            "trades": [
+              {
+                "team": "Sri Lanka W",
+                "price": 2.12,
+                "type": "lay",
+                "size": 18.299999999999997,
+                "updatedAt": 1788702395105
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 7.22,
+                "updatedAt": 1788702224750
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.92,
+                "type": "back",
+                "size": 56.15,
+                "updatedAt": 1788701748741
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.94,
+                "type": "lay",
+                "size": 28.069999999999993,
+                "updatedAt": 1788701718332
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.93,
+                "type": "back",
+                "size": 398.42,
+                "updatedAt": 1788701679267
+              },
+              {
+                "team": "Sri Lanka W",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.38,
+                "updatedAt": 1788700741589
+              }
+            ],
+            "pnlIfWins": -361.8884,
+            "totalBet": 648.6858
+          }
+        }
+      },
+      "predictedWinner": "Sri Lanka W",
+      "predictionReason": "Women's Inflow on Sri Lanka W (₹595 Back, Lead: 2.6x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Women's Inflow on Sri Lanka W (₹595 Back, Lead: 2.6x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Women's Inflow on Sri Lanka W (₹595 Back, Lead: 2.6x)",
+          "winner": "Sri Lanka W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36029412",
+      "marketId": "1.261980115",
+      "matchName": "Guyana Amazon Warriors v St Kitts & Nevis Pats",
+      "competitionName": "Caribbean Premier League",
+      "team1": "Guyana Amazon Warriors",
+      "team2": "St Kitts & Nevis Pats",
+      "startTime": 1788721200000,
+      "endedAt": "2026-09-07T00:48:57.464Z",
+      "capturedAt": "2026-09-07T00:48:57.464Z",
+      "snapshot": {
+        "serverTime": "2026-09-07T00:48:57.493Z",
+        "matchId": "36029412",
+        "matchName": "Guyana Amazon Warriors v St Kitts & Nevis Pats",
+        "teamNames": [
+          "Guyana Amazon Warriors",
+          "St Kitts & Nevis Pats"
+        ],
+        "inPlayPnl": {
+          "team1": -1795.3199000000002,
+          "team2": 1939.1067
+        },
+        "inPlayTotalBets": {
+          "team1": 2104.2933,
+          "team2": 310.64979999999997
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 2154.08,
+            "lay": 25.819999999999972,
+            "total": 2243.35
+          },
+          "team2": {
+            "back": 284.27,
+            "lay": 89.27000000000001,
+            "total": 310.09
+          }
+        },
+        "preMatchPnl": {
+          "team1": -1795.3199000000002,
+          "team2": 1939.1067
+        },
+        "preMatchTotalBets": {
+          "team1": 2104.2933,
+          "team2": 310.64979999999997
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 2154.08,
+            "lay": 25.819999999999972,
+            "total": 2243.35
+          },
+          "team2": {
+            "back": 284.27,
+            "lay": 89.27000000000001,
+            "total": 310.09
+          }
+        },
+        "threeMinPnl": {
+          "team1": -1795.3199000000002,
+          "team2": 1939.1067
+        },
+        "threeMinTotalBets": {
+          "team1": 2104.2933,
+          "team2": 310.64979999999997
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 2154.08,
+            "lay": 25.819999999999972,
+            "total": 2243.35
+          },
+          "team2": {
+            "back": 284.27,
+            "lay": 89.27000000000001,
+            "total": 310.09
+          }
+        },
+        "matchLoadV2": {
+          "team1": 10,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 2154.08,
+            "lay": 25.819999999999972,
+            "totalVolume": 2179.9,
+            "backPercentage": 98.81554199733932
+          },
+          "team2": {
+            "back": 284.27,
+            "lay": 89.27000000000001,
+            "totalVolume": 373.53999999999996,
+            "backPercentage": 76.10162231621781
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 2015.0232999999998,
+            "lay": 24.703399999999974,
+            "totalBet": 2039.7266999999997
+          },
+          "team2": {
+            "back": 284.8298,
+            "lay": 95.67650000000002,
+            "totalBet": 380.5063
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 2243.35,
+            "support": 87.85599035027258
+          },
+          "team2": {
+            "supportMoney": 310.09,
+            "support": 12.144009649727424
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Guyana Amazon Warriors",
+          "bookieFavouriteOutcome": "St Kitts & Nevis Pats",
+          "riskTeam": "Guyana Amazon Warriors",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 75.71198070054515,
+          "mostBettedTeam": "Guyana Amazon Warriors",
+          "prediction": {
+            "team1TrueSupport": 2110.6998,
+            "team2TrueSupport": 309.53319999999997,
+            "ratio": 6.818977091956533,
+            "bookiePnlTeam1": -1989.2033,
+            "bookiePnlTeam2": -195.55979999999997,
+            "prediction": "St Kitts & Nevis Pats",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (6.82) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1990.3199,
+            "backExposure": 2015.0232999999998,
+            "layExposure": 24.703399999999974,
+            "teamName": "Guyana Amazon Warriors"
+          },
+          "team2": {
+            "netExposure": 189.15329999999994,
+            "backExposure": 284.8298,
+            "layExposure": 95.67650000000002,
+            "teamName": "St Kitts & Nevis Pats"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 2015.0232999999998,
+            "A_lay_stake": 25.819999999999972,
+            "B_back_expo": 284.8298,
+            "B_lay_stake": 89.27000000000001
+          },
+          "totals": {
+            "totalBetTeam1": 2104.2933,
+            "totalBetTeam2": 310.64979999999997
+          },
+          "simplePL": {
+            "team1_win": -1989.2033,
+            "team2_win": -195.55979999999997
+          },
+          "derivedPL": {
+            "team1_win": -1793.6435,
+            "team2_win": 1793.6435
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 2154.08,
+              "totalLayVol": 25.819999999999972,
+              "totalBet": 2243.35,
+              "profitLoss": -1933.26
+            },
+            "team2": {
+              "totalBackVol": 284.27,
+              "totalLayVol": 89.27000000000001,
+              "totalBet": 310.09,
+              "profitLoss": 1933.26
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 2015.0232999999998,
+              "totalLayVol": 25.819999999999972,
+              "totalBet": 2104.2933,
+              "profitLoss": -1795.3199
+            },
+            "team2": {
+              "totalBackExpo": 284.8298,
+              "totalLayVol": 89.27000000000001,
+              "totalBet": 310.64979999999997,
+              "profitLoss": 1939.1067
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 2015.0232999999998,
+              "totalLayNetVol": 24.703399999999974,
+              "totalBet": 2110.6998,
+              "profitLoss": -1801.1666
+            },
+            "team2": {
+              "totalBackNetVol": 284.8298,
+              "totalLayNetVol": 95.67650000000002,
+              "totalBet": 309.53319999999997,
+              "profitLoss": 1801.1666
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 10,
+            "averageOdds": 1.972,
+            "averageSize": 224.33499999999998,
+            "supportProduct": 442.38861999999995
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.99,
+            "averageSize": 44.29857142857143,
+            "supportProduct": 88.15415714285714
+          },
+          "strongerTeam": "Guyana Amazon Warriors",
+          "supportRatio": 5.018352331167916
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 2154.08,
+            "oppoLayVolume": 89.27000000000001,
+            "layExposure": 24.703399999999974,
+            "netSupportValue": 2218.6466
+          },
+          "teamB": {
+            "totalBackVolume": 284.27,
+            "oppoLayVolume": 25.819999999999972,
+            "layExposure": 95.67650000000002,
+            "netSupportValue": 214.41349999999994
+          },
+          "strongerTeam": "Guyana Amazon Warriors",
+          "netSupportDifference": 2004.2331000000001,
+          "percentageA": 91.18749676590397,
+          "percentageB": 8.812503234096022
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 2128.2599999999998,
+            "syntheticSupport": 89.27000000000001,
+            "opponentLiabilityRejection": 95.67650000000002,
+            "sentimentScore": 2121.8534999999997
+          },
+          "teamB": {
+            "directNetSupport": 194.99999999999997,
+            "syntheticSupport": 25.819999999999972,
+            "opponentLiabilityRejection": 24.703399999999974,
+            "sentimentScore": 196.11659999999995
+          },
+          "strongerTeam": "Guyana Amazon Warriors",
+          "scoreDifference": 1925.7368999999999,
+          "percentageA": 91.53929552413122,
+          "percentageB": 8.460704475868779
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Guyana Amazon Warriors",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "St Kitts & Nevis Pats",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Guyana Amazon Warriors"
+        },
+        "teams": {
+          "Guyana Amazon Warriors": {
+            "trades": [
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.9,
+                "type": "back",
+                "size": 89.98,
+                "updatedAt": 1788718200330
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.91,
+                "type": "back",
+                "size": 576.45,
+                "updatedAt": 1788717492369
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 2,
+                "type": "lay",
+                "size": 3.83,
+                "updatedAt": 1788717449272
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.71,
+                "updatedAt": 1788716005231
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.92,
+                "type": "lay",
+                "size": 11.279999999999973,
+                "updatedAt": 1788714829641
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.94,
+                "type": "back",
+                "size": 155.06,
+                "updatedAt": 1788713914314
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.93,
+                "type": "back",
+                "size": 345.78,
+                "updatedAt": 1788713914314
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.92,
+                "type": "back",
+                "size": 497.17,
+                "updatedAt": 1788713914314
+              },
+              {
+                "team": "Guyana Amazon Warriors",
+                "price": 1.99,
+                "type": "back",
+                "size": 489.64000000000004,
+                "updatedAt": 1788710300433
+              }
+            ],
+            "pnlIfWins": -1795.3199000000002,
+            "totalBet": 2104.2933
+          },
+          "St Kitts & Nevis Pats": {
+            "trades": [
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2,
+                "type": "lay",
+                "size": 1.4,
+                "updatedAt": 1788718954627
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.94,
+                "type": "back",
+                "size": 6.29,
+                "updatedAt": 1788718180860
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.99,
+                "type": "lay",
+                "size": 3.8500000000000227,
+                "updatedAt": 1788717449272
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 1.99,
+                "type": "back",
+                "size": 229.67999999999998,
+                "updatedAt": 1788716066384
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2.02,
+                "type": "back",
+                "size": 10.5,
+                "updatedAt": 1788715991744
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2.08,
+                "type": "back",
+                "size": 37.8,
+                "updatedAt": 1788714513062
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.19,
+                "updatedAt": 1788713822730
+              },
+              {
+                "team": "St Kitts & Nevis Pats",
+                "price": 2.06,
+                "type": "lay",
+                "size": 13.829999999999998,
+                "updatedAt": 1788713771713
+              }
+            ],
+            "pnlIfWins": 1939.1067,
+            "totalBet": 310.64979999999997
+          }
+        }
+      },
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictionReason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (5.0x Ratio)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (5.0x Ratio)"
+      },
+      "matchedRules": [
+        {
+          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (5.0x Ratio)",
+          "winner": "Guyana Amazon Warriors",
           "priority": 100,
           "selected": true
         }

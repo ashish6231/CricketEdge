@@ -794,44 +794,52 @@ export default function AdminSettings({ isSuperAdmin }) {
                   <div className="font-mono text-xs font-semibold text-white">{s.key}</div>
                   {s.description && <div className="text-xs text-[#777] mt-0.5">{s.description}</div>}
                   {editing === s.key ? (
-                    <div className="flex items-center gap-2 mt-2.5">
-                      <input
-                        value={editVal}
-                        onChange={e => setEditVal(e.target.value)}
-                        className="flex-1 rounded-xl px-3 py-1.5 text-xs outline-none text-white"
-                        style={{ background: '#181818', border: '1px solid #dc2626' }}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => save(s.key)}
-                        disabled={saving}
-                        className="p-1.5 rounded-lg text-emerald-400 disabled:opacity-50"
-                        style={{ background: 'rgba(16,185,129,0.15)' }}
-                      >
-                        {saving ? <LoaderCircle size={13} className="animate-spin" /> : <Check size={13} />}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditing(null)}
-                        className="p-1.5 rounded-lg text-[#888] hover:text-white"
-                        style={{ background: '#222' }}
-                      >
-                        <X size={13} />
-                      </button>
+                    <div className="flex flex-col gap-2 mt-2.5">
+                      {typeof s.value === 'object' && s.value !== null ? (
+                        <textarea
+                          rows={4}
+                          value={editVal}
+                          onChange={e => setEditVal(e.target.value)}
+                          className="w-full rounded-xl p-2.5 text-xs font-mono outline-none text-white leading-relaxed"
+                          style={{ background: '#181818', border: '1px solid #dc2626' }}
+                        />
+                      ) : (
+                        <input
+                          value={editVal}
+                          onChange={e => setEditVal(e.target.value)}
+                          className="w-full rounded-xl px-3 py-1.5 text-xs outline-none text-white"
+                          style={{ background: '#181818', border: '1px solid #dc2626' }}
+                        />
+                      )}
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => save(s.key)}
+                          disabled={saving}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-400 disabled:opacity-50"
+                          style={{ background: 'rgba(16,185,129,0.15)' }}
+                        >
+                          {saving ? <LoaderCircle size={13} className="animate-spin" /> : <Check size={13} />}
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setEditing(null)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#888] hover:text-white"
+                          style={{ background: '#222' }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   ) : (
-                    <div className="mt-1 text-xs font-mono text-[#aaa] break-all">
-                      {typeof s.value === 'boolean' ? (s.value ? '✓ true' : '✗ false') : String(s.value)}
-                    </div>
+                    renderSettingValue(s)
                   )}
                 </div>
                 {isSuperAdmin && editing !== s.key && (
                   <button
                     type="button"
-                    onClick={() => {
-                      setEditing(s.key)
-                      setEditVal(String(s.value))
-                    }}
+                    onClick={() => handleStartEdit(s)}
                     className="flex-shrink-0 p-2 rounded-xl text-[#888] hover:text-white transition-colors"
                     style={{ background: '#181818', border: '1px solid #242424' }}
                     title={`Edit ${s.key}`}

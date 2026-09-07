@@ -11,7 +11,7 @@ import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 
 const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
-const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}₹${fmt(n)}`
+const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}€${fmt(n)}`
 const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
 
 export default function TossDetail({ isEmbedded = false }) {
@@ -266,8 +266,8 @@ export default function TossDetail({ isEmbedded = false }) {
                 <div className="text-sm font-medium mb-2">{e.teamName || team}</div>
                 <div className="text-xs space-y-1">
                   <div className="flex justify-between"><span className="text-text-muted">Net exposure</span><span className={`font-bold ${pnlCls(e.netExposure)}`}>{fmtRs(e.netExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Back risk</span><span className="text-back">₹{fmt(e.backExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Lay risk</span><span className="text-loss">₹{fmt(e.layExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-text-muted">Back risk</span><span className="text-back">€{fmt(e.backExposure)}</span></div>
+                  <div className="flex justify-between"><span className="text-text-muted">Lay risk</span><span className="text-loss">€{fmt(e.layExposure)}</span></div>
                 </div>
               </div>
             ))}
@@ -316,7 +316,7 @@ export default function TossDetail({ isEmbedded = false }) {
           </div>
           <div className="text-xs text-text-muted text-center">
             Zyada support: <span className="text-profit font-bold">{sent.strongerTeam}</span> •{' '}
-            Difference: <span className="text-text-secondary">₹{fmt(sent.scoreDifference)}</span>
+            Difference: <span className="text-text-secondary">€{fmt(sent.scoreDifference)}</span>
           </div>
         </div>
       )}

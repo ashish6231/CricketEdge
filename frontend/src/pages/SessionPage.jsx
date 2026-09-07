@@ -211,7 +211,7 @@ export default function SessionPage() {
                           <div className="flex-1 rounded-lg px-2.5 py-2 text-center" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
                             <div className="text-[9px] text-[#8e8e93] uppercase tracking-wide">Matched</div>
                             <div className="text-sm font-black text-white">
-                              ₹{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 }) ?? '—'}
+                              €{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 }) ?? '—'}
                             </div>
                           </div>
                         </div>

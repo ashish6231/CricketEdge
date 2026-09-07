@@ -85,7 +85,6 @@ export default function TossPage() {
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
   const [now, setNow] = useState(() => Date.now())
-  const [currency, setCurrency] = useState('€') // '€' or '₹'
   const scrollRef = useRef(null)
 
   // Real-time 1s ticker for countdown clocks
@@ -214,7 +213,7 @@ export default function TossPage() {
     }).length
   }, [allMatches])
 
-  if (loading && !allMatches.length) {
+  if (!matchId && loading && !allMatches.length) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
         <div className="flex flex-col items-center gap-3">
@@ -225,7 +224,7 @@ export default function TossPage() {
     )
   }
 
-  if (loadError && !allMatches.length) {
+  if (!matchId && loadError && !allMatches.length) {
     return (
       <div className="flex h-[80vh] items-center justify-center px-6">
         <div className="max-w-md rounded-2xl border border-red-500/30 bg-red-500/10 px-6 py-5 text-center shadow-lg">
@@ -241,18 +240,13 @@ export default function TossPage() {
     )
   }
 
-  // Full-screen toss detail (old-style: no sidebar)
-  if (matchId) {
-    return <TossDetail />
-  }
-
   return (
     <div className="flex h-[calc(100vh-57px)] overflow-hidden bg-[#07090e]">
       {/* ── Sidebar: Toss Leagues ── */}
-      <aside className="hidden md:flex w-[220px] border-r border-[#1e2330] flex-col overflow-y-auto flex-shrink-0 bg-[#0c0e15]">
+      <aside className="hidden md:flex w-52 lg:w-56 border-r border-[#1e2330] flex-col overflow-y-auto flex-shrink-0 bg-[#0c0e15] select-none">
         {/* Header */}
-        <div className="px-4 py-3 border-b border-[#1e2330]">
-          <span className="text-[11px] font-black uppercase tracking-widest text-text-muted">🪙 Toss</span>
+        <div className="px-3 py-2.5 border-b border-[#1e2330]">
+          <span className="text-[11px] font-black uppercase tracking-widest text-text-muted">🪙 Toss Leagues</span>
         </div>
 
         {/* Categorized League List */}
@@ -268,21 +262,21 @@ export default function TossPage() {
             <button
               key={comp}
               onClick={() => handleCompSelect(comp)}
-              className={`w-full text-left px-4 py-3 transition-all border-l-[3px] flex items-start justify-between gap-2 ${
+              className={`w-full text-left px-3 py-2 transition-all border-l-[3px] flex items-start justify-between gap-1.5 ${
                 isSelected
                   ? 'border-[#10b981] bg-[#10b981]/8 text-white'
                   : 'border-transparent text-text-secondary hover:bg-white/5 hover:text-white'
               }`}
             >
               <div className="min-w-0 flex-1">
-                <div className={`text-[13px] font-bold leading-tight truncate ${isSelected ? 'text-white' : ''}`}>{comp}</div>
-                <div className="text-[11px] text-text-muted mt-0.5 flex items-center gap-1.5">
+                <div className={`text-[11px] font-bold leading-tight truncate ${isSelected ? 'text-white' : ''}`}>{comp}</div>
+                <div className="text-[9px] text-text-muted mt-0.5 flex items-center gap-1 font-mono">
                   {compMatches.length} matches
                   {compLiveCount > 0 && (
                     <>
                       <span className="text-text-muted">•</span>
-                      <span className="text-[#10b981] font-semibold flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#10b981] inline-block" />
+                      <span className="text-[#10b981] font-semibold flex items-center gap-0.5">
+                        <span className="h-1 w-1 rounded-full bg-[#10b981] inline-block" />
                         {compLiveCount} live
                       </span>
                     </>
@@ -308,10 +302,10 @@ export default function TossPage() {
             transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
           }}
         >
-          <div className="px-4 py-3 border-b border-[#1e2330] flex items-center justify-between">
-            <span className="text-[11px] font-black uppercase tracking-widest text-text-muted">🪙 Toss</span>
-            <button onClick={() => setMobileMenu && setMobileMenu(false)} className="text-text-muted hover:text-white">
-              <X size={18} />
+          <div className="px-3 py-2.5 border-b border-[#1e2330] flex items-center justify-between">
+            <span className="text-[11px] font-black uppercase tracking-widest text-text-muted">🪙 Toss Leagues</span>
+            <button onClick={() => setMobileMenu && setMobileMenu(false)} className="text-text-muted hover:text-white p-1">
+              <X size={15} />
             </button>
           </div>
 
@@ -327,24 +321,25 @@ export default function TossPage() {
                   handleCompSelect(comp)
                   if (setMobileMenu) setMobileMenu(false)
                 }}
-                className={`w-full text-left px-4 py-3 transition-all border-l-[3px] ${
+                className={`w-full text-left px-3 py-2 transition-all border-l-[3px] ${
                   selectedComp === comp
                     ? 'border-[#10b981] bg-[#10b981]/8 text-white'
                     : 'border-transparent text-text-secondary hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <div className="text-[13px] font-bold leading-tight truncate">{comp}</div>
-                <div className="text-[11px] text-text-muted mt-0.5 flex items-center gap-1.5">
-                  {compMatches.length} matches
-                  {compLiveCount > 0 && (
-                    <>
-                      <span className="text-text-muted">•</span>
-                      <span className="text-[#10b981] font-semibold flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#10b981] inline-block" />
-                        {compLiveCount} live
+                <div className="flex items-center justify-between gap-1.5">
+                  <span className={`text-[11px] font-bold truncate ${selectedComp === comp ? 'text-white' : ''}`}>
+                    {comp}
+                  </span>
+                  <div className="text-[9px] text-text-muted flex items-center gap-1 font-mono shrink-0">
+                    {compMatches.length}
+                    {compLiveCount > 0 && (
+                      <span className="text-[#10b981] font-semibold flex items-center gap-0.5">
+                        <span className="h-1 w-1 rounded-full bg-[#10b981] inline-block" />
+                        {compLiveCount}
                       </span>
-                    </>
-                  )}
+                    )}
+                  </div>
                 </div>
               </button>
             )
@@ -354,7 +349,10 @@ export default function TossPage() {
 
       {/* ── Main Content Area: Unconditional Toss Smart Money Table ── */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
-        <div className="p-3 sm:p-4 md:p-6 max-w-7xl mx-auto space-y-3 md:space-y-4 fade-in">
+        {matchId ? (
+          <TossDetail />
+        ) : (
+          <div className="p-2.5 sm:p-3 md:p-3.5 w-full space-y-3 md:space-y-4 fade-in">
 
 
           {/* Horizontal Scrollable Competition Pills Filter */}
@@ -553,6 +551,7 @@ export default function TossPage() {
             </div>
           )}
         </div>
+        )}
       </div>
     </div>
   )

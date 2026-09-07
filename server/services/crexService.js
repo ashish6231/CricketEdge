@@ -65,14 +65,15 @@ function cleanText(str) {
 
 /** Normalize team name tokens for fuzzy matching */
 function normalizeName(str) {
-  return (str || '')
+  const cleaned = (str || '')
     .toLowerCase()
-    .replace(/women|womens|\bw\b/g, '')
-    .replace(/cc|sc|rc|club|cricket|premier|league|t20|odi|matches|match|super|warriors|titans|royals|falcons|kings/g, '')
+    .replace(/\b(women|womens|w)\b/g, '')
+    .replace(/\b(cc|sc|rc|club|cricket|premier|league|t20|odi|matches|match|super|warriors|titans|royals|falcons|kings)\b/g, '')
     .replace(/st\./g, 'st')
     .replace(/[^a-z0-9]/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+  return cleaned.length >= 2 ? cleaned : (str || '').toLowerCase().replace(/[^a-z0-9]/g, ' ').trim();
 }
 
 function words(str) {
@@ -86,14 +87,18 @@ function teamTokensMatch(nameA, nameB, shortB) {
 
   if (!na || (!nb && !sb)) return false;
   if (na === nb) return true;
-  if (na.includes(nb) || nb.includes(na)) return true;
+
+  // Substring match only if meaningful length (>= 3 chars)
+  if (na.length >= 3 && nb.length >= 3) {
+    if (na.includes(nb) || nb.includes(na)) return true;
+  }
 
   // Short abbreviation check (e.g. SKNP, SLK, TKR, HAM, DUR, ENG)
   if (sb && sb.length >= 2) {
     const naClean = nameA.toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (naClean.includes(sb) || sb.includes(naClean)) return true;
-    const initialChars = nameA.split(/\s+/).map(w => w[0]?.toLowerCase()).join('');
-    if (initialChars && (initialChars === sb || initialChars.includes(sb))) return true;
+    if (naClean === sb) return true;
+    const initialChars = nameA.split(/[\s-]+/).map(w => w[0]?.toLowerCase()).join('');
+    if (initialChars && (initialChars === sb || initialChars.startsWith(sb))) return true;
   }
 
   // Common word tokens check
@@ -101,7 +106,8 @@ function teamTokensMatch(nameA, nameB, shortB) {
   const wb = words(nameB);
   if (wa.length > 0 && wb.length > 0) {
     const common = wa.filter(w => wb.includes(w));
-    if (common.length >= Math.min(wa.length, wb.length, 1)) return true;
+    if (common.length >= Math.min(wa.length, wb.length) && common.some(w => w.length >= 4)) return true;
+    if (common.length >= 2) return true;
   }
   return false;
 }
@@ -300,8 +306,35 @@ function findCrexMatch(matchName, crexMatches = []) {
     const direct = teamTokensMatch(t1, cm.team1Name, cm.team1Short) && teamTokensMatch(t2, cm.team2Name, cm.team2Short);
     const reverse = teamTokensMatch(t1, cm.team2Name, cm.team2Short) && teamTokensMatch(t2, cm.team1Name, cm.team1Short);
 
-    if (direct || reverse) {
-      return cm;
+    if (direct) {
+      return {
+        ...cm,
+        isReversed: false,
+      };
+    }
+    if (reverse) {
+      return {
+        ...cm,
+        isReversed: true,
+        team1Name: cm.team2Name,
+        team1Short: cm.team2Short,
+        team1Flag: cm.team2Flag,
+        team2Name: cm.team1Name,
+        team2Short: cm.team1Short,
+        team2Flag: cm.team1Flag,
+        score1: cm.score2,
+        score2: cm.score1,
+        _rawCrex: {
+          team1Name: cm.team1Name,
+          team1Short: cm.team1Short,
+          team1Flag: cm.team1Flag,
+          team2Name: cm.team2Name,
+          team2Short: cm.team2Short,
+          team2Flag: cm.team2Flag,
+          score1: cm.score1,
+          score2: cm.score2,
+        },
+      };
     }
   }
 
@@ -700,4 +733,5 @@ module.exports = {
   getCrexOverview,
   findCrexMatch,
   getCrexMatchDetail,
+  teamTokensMatch,
 };
