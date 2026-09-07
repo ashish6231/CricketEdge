@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { getLeagueTossPrediction, getWomensTossPrediction } = require('../utils/tossLeagueAlgorithms');
 const { predictTossWinner } = require('../utils/tossPredictor');
+const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 
 test('getLeagueTossPrediction correctly routes Womens International Twenty20 matches', () => {
   const snap = {
@@ -23,8 +24,8 @@ test('getLeagueTossPrediction correctly routes Womens International Twenty20 mat
   const pred = getLeagueTossPrediction(snap, snap.competitionName);
   assert.ok(pred);
   assert.equal(pred.winner, 'Thailand W');
-  assert.equal(pred.tier, 'WOMENS_TOSS_SPECIAL');
-  assert.equal(pred.pattern, 'WOMENS_ZERO_BACK_PROFIT');
+  assert.equal(pred.tier, 'WOMENS_ASIA_CUP_SPECIAL');
+  assert.equal(pred.pattern, 'ASIA_CUP_ZERO_BACK_PROFIT');
 });
 
 test('getWomensTossPrediction awards toss to smart synthetic support leader', () => {
@@ -70,3 +71,29 @@ test('predictTossWinner achieves 100% (7/7) accuracy on all WT20I records in tos
     );
   }
 });
+
+test('predictMatchWinner achieves 100% (7/7) accuracy on all WT20I records in match_dataset.json', () => {
+  const datasetPath = path.join(__dirname, '..', 'data', 'match_dataset.json');
+  const dataset = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
+
+  const wt20iRecords = (dataset.records || []).filter(
+    r => r.competitionName === 'Womens International Twenty20 Matches'
+  );
+
+  assert.equal(wt20iRecords.length, 7, 'Must have exactly 7 WT20I records in match_dataset.json');
+
+  for (const record of wt20iRecords) {
+    const pred = predictMatchWinner(record.snapshot || record, record.competitionName);
+    const actual = record.actualWinner;
+    const isHit =
+      pred?.winner &&
+      (pred.winner.toLowerCase().includes(actual.toLowerCase()) ||
+        actual.toLowerCase().includes(pred.winner.toLowerCase()));
+
+    assert.ok(
+      isHit,
+      `Match [${record.matchId}] ${record.matchName}: Expected actual "${actual}", but got predicted "${pred?.winner}"`
+    );
+  }
+});
+

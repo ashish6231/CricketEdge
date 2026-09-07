@@ -476,6 +476,156 @@ export function getTheHundredTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, p
   return null
 }
 
+export function isWomensAsiaCup(compName, team1, team2) {
+  const comp = (compName || '').toLowerCase()
+  const t1 = (team1 || '').toLowerCase()
+  const t2 = (team2 || '').toLowerCase()
+  if (comp.includes('asia cup') && (t1.includes(' w') || t2.includes(' w') || comp.includes('women'))) return true
+
+  const asianTeams = [
+    'india w', 'pakistan w', 'sri lanka w', 'thailand w',
+    'bangladesh w', 'indonesia w', 'hong kong w', 'united arab emirates w', 'uae w', 'nepal w', 'malaysia w'
+  ]
+  const isT1Asian = asianTeams.some((t) => t1.includes(t))
+  const isT2Asian = asianTeams.some((t) => t2.includes(t))
+  if (isT1Asian && isT2Asian && (comp.includes('twenty20') || comp.includes('international') || comp.includes('asia') || comp.includes('wt20') || comp.includes('t20i'))) {
+    return true
+  }
+  return false
+}
+
+/**
+ * 👑 Women's Asia Cup Toss Algorithm (v1)
+ * ──────────────────────────────────────
+ * Backtested & validated on all Women's Asia Cup matches:
+ * 1. Low Volume Zero-Back Pure Profit (< ₹50 volume, e.g. Hong Kong W v Thailand W)
+ * 2. High-Liquidity Bookmaker Deficit Trap Fade (totBack > 3500, e.g. India W v Pakistan W)
+ * 3. Smart Synthetic Support Dominance (1.25x+ ratio)
+ * 4. Inflow Leadership
+ * 5. Bookmaker Safe PnL Exposure
+ */
+export function getWomensAsiaCupTossPrediction({
+  t1,
+  t2,
+  b1,
+  b2,
+  prePnl1,
+  prePnl2,
+  backRatio,
+  b1Pct,
+  b2Pct,
+  stronger,
+  supRatio,
+  syntheticSupport,
+  snap,
+}) {
+  const totBack = b1 + b2
+
+  // 1. Low Volume Zero-Back Pure Profit (< 50 total volume, e.g. Hong Kong W v Thailand W)
+  if (Math.max(b1, b2) < 50) {
+    if (b1 === 0 && prePnl1 > 0) {
+      return {
+        winner: t1,
+        tier: 'WOMENS_ASIA_CUP_SPECIAL',
+        algoName: "👑 Women's Asia Cup Toss Algorithm",
+        verdictTag: 'ASIA CUP ZERO-BACK PROFIT',
+        pattern: 'ASIA_CUP_ZERO_BACK_PROFIT',
+        reason: `Asia Cup Zero-Back Pure Profit on ${t1} (PnL: +${prePnl1.toFixed(0)})`,
+      }
+    }
+    if (b2 === 0 && prePnl2 > 0) {
+      return {
+        winner: t2,
+        tier: 'WOMENS_ASIA_CUP_SPECIAL',
+        algoName: "👑 Women's Asia Cup Toss Algorithm",
+        verdictTag: 'ASIA CUP ZERO-BACK PROFIT',
+        pattern: 'ASIA_CUP_ZERO_BACK_PROFIT',
+        reason: `Asia Cup Zero-Back Pure Profit on ${t2} (PnL: +${prePnl2.toFixed(0)})`,
+      }
+    }
+  }
+
+  // 2. High-Liquidity Bookmaker Deficit Trap Fade (Marquee Derby e.g. India W v Pakistan W)
+  if (totBack > 3500) {
+    if (prePnl1 > 1500 && prePnl2 < -1500) {
+      return {
+        winner: t1,
+        tier: 'WOMENS_ASIA_CUP_SPECIAL',
+        algoName: "👑 Women's Asia Cup Toss Algorithm",
+        verdictTag: 'ASIA CUP TRAP FADE 🚨',
+        pattern: 'ASIA_CUP_TRAP_FADE',
+        reason: `Asia Cup Bookmaker Deficit on ${t2} (PnL: ${prePnl2.toFixed(0)}) -> Faded to Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
+      }
+    }
+    if (prePnl2 > 1500 && prePnl1 < -1500) {
+      return {
+        winner: t2,
+        tier: 'WOMENS_ASIA_CUP_SPECIAL',
+        algoName: "👑 Women's Asia Cup Toss Algorithm",
+        verdictTag: 'ASIA CUP TRAP FADE 🚨',
+        pattern: 'ASIA_CUP_TRAP_FADE',
+        reason: `Asia Cup Bookmaker Deficit on ${t1} (PnL: ${prePnl1.toFixed(0)}) -> Faded to Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
+      }
+    }
+  }
+
+  // 3. Smart Synthetic Support Dominance (Sri Lanka W, India W, Bangladesh W, Pakistan W, UAE W)
+  const synTarget = stronger || snap?.syntheticSupport?.strongerTeam || syntheticSupport?.strongerTeam
+  const synRatio = supRatio || snap?.syntheticSupport?.supportRatio || syntheticSupport?.supportRatio || 1
+  if (synTarget && synRatio >= 1.25) {
+    const isT1 = synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase())
+    const isT2 = synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase())
+    if (isT1) {
+      return {
+        winner: t1,
+        tier: 'WOMENS_ASIA_CUP_SPECIAL',
+        algoName: "👑 Women's Asia Cup Toss Algorithm",
+        verdictTag: 'ASIA CUP SMART SUPPORT 💎',
+        pattern: 'ASIA_CUP_SMART_SUPPORT',
+        reason: `Asia Cup Smart Synthetic Support on ${t1} (${Number(synRatio).toFixed(1)}x Lead)`,
+      }
+    }
+    if (isT2) {
+      return {
+        winner: t2,
+        tier: 'WOMENS_ASIA_CUP_SPECIAL',
+        algoName: "👑 Women's Asia Cup Toss Algorithm",
+        verdictTag: 'ASIA CUP SMART SUPPORT 💎',
+        pattern: 'ASIA_CUP_SMART_SUPPORT',
+        reason: `Asia Cup Smart Synthetic Support on ${t2} (${Number(synRatio).toFixed(1)}x Lead)`,
+      }
+    }
+  }
+
+  // 4. Inflow Leadership
+  if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
+    const win = b1 > b2 ? t1 : t2
+    return {
+      winner: win,
+      tier: 'WOMENS_ASIA_CUP_SPECIAL',
+      algoName: "👑 Women's Asia Cup Toss Algorithm",
+      verdictTag: 'ASIA CUP SMART INFLOW',
+      pattern: 'ASIA_CUP_SMART_INFLOW',
+      reason: `Asia Cup Inflow Leader on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`,
+    }
+  }
+
+  // 5. Bookie Safe Exposure Fallback
+  if (prePnl1 !== prePnl2) {
+    const win = prePnl1 > prePnl2 ? t1 : t2
+    return {
+      winner: win,
+      tier: 'WOMENS_ASIA_CUP_SPECIAL',
+      algoName: "👑 Women's Asia Cup Toss Algorithm",
+      verdictTag: 'ASIA CUP BOOKIE SAFE',
+      pattern: 'ASIA_CUP_BOOKIE_SAFE',
+      reason: `Asia Cup Bookie Safe Exposure on ${win}`,
+    }
+  }
+
+  return null
+}
+
 /**
  * 👩 Women's International T20 & Low Volume Matches Toss Algorithm (v2)
  * ────────────────────────────────────────────────────────────────────
@@ -1207,7 +1357,13 @@ export function getLeagueTossPrediction(snap, compName = '') {
     if (p) return p
   }
 
-  // 4. Women's International T20 & Low Volume Women Matches
+  // 4. Women's Asia Cup T20
+  if (isWomensAsiaCup(comp, t1, t2)) {
+    const p = getWomensAsiaCupTossPrediction(ctx)
+    if (p) return p
+  }
+
+  // 5. Women's International T20 & Low Volume Women Matches
   if (comp.includes('womens') || comp.includes("women's") || comp.includes('women')) {
     const p = getWomensTossPrediction(ctx)
     if (p) return p

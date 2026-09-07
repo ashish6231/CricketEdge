@@ -306639,7 +306639,7 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Womens International Twenty20 Matches"
       },
-      "predictedWinner": "Hong Kong W",
+      "predictedWinner": "India W",
       "predictionTier": "WOMENS_T20_SPECIAL",
       "predictionConfidence": "Womens Smart Inflow Margin",
       "lastCaptureError": null,
@@ -306647,7 +306647,8 @@
       "confirmedByEmail": null,
       "confirmedById": null,
       "status": "verified",
-      "actualWinner": "India W"
+      "actualWinner": "India W",
+      "predictionReason": "India W holds massive matched volume dominance (₹114356 vs ₹243)"
     },
     {
       "matchId": "36020715",

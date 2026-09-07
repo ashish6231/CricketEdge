@@ -15575,7 +15575,7 @@
         }
       },
       "predictedWinner": "Thailand W",
-      "predictionReason": "Women's Zero-Back Pure Profit on Thailand W (PnL: +7)",
+      "predictionReason": "Asia Cup Zero-Back Pure Profit on Thailand W (PnL: +7)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -15586,11 +15586,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Zero-Back Pure Profit on Thailand W (PnL: +7)"
+        "reason": "Asia Cup Zero-Back Pure Profit on Thailand W (PnL: +7)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Zero-Back Pure Profit on Thailand W (PnL: +7)",
+          "reason": "Asia Cup Zero-Back Pure Profit on Thailand W (PnL: +7)",
           "winner": "Thailand W",
           "priority": 100,
           "selected": true
@@ -15603,8 +15603,8 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Thailand W",
-      "verdictTag": "WOMENS ZERO-BACK PROFIT",
-      "pattern": "WOMENS_ZERO_BACK_PROFIT"
+      "verdictTag": "ASIA CUP ZERO-BACK PROFIT",
+      "pattern": "ASIA_CUP_ZERO_BACK_PROFIT"
     },
     {
       "matchId": "35986052",
@@ -17768,7 +17768,7 @@
         }
       },
       "predictedWinner": "Sri Lanka W",
-      "predictionReason": "Women's Smart Synthetic Support on Sri Lanka W (1.3x Lead)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on Sri Lanka W (1.3x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -17779,11 +17779,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Smart Synthetic Support on Sri Lanka W (1.3x Lead)"
+        "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (1.3x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Smart Synthetic Support on Sri Lanka W (1.3x Lead)",
+          "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (1.3x Lead)",
           "winner": "Sri Lanka W",
           "priority": 100,
           "selected": true
@@ -17796,8 +17796,8 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Sri Lanka W",
-      "verdictTag": "WOMENS SMART SUPPORT 💎",
-      "pattern": "WOMENS_SMART_SUPPORT"
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "35998885",
@@ -19047,7 +19047,7 @@
         }
       },
       "predictedWinner": "India W",
-      "predictionReason": "Women's Smart Synthetic Support on India W (1.6x Lead)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on India W (1.6x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -19058,11 +19058,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Smart Synthetic Support on India W (1.6x Lead)"
+        "reason": "Asia Cup Smart Synthetic Support on India W (1.6x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Smart Synthetic Support on India W (1.6x Lead)",
+          "reason": "Asia Cup Smart Synthetic Support on India W (1.6x Lead)",
           "winner": "India W",
           "priority": 100,
           "selected": true
@@ -19075,8 +19075,8 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "India W",
-      "verdictTag": "WOMENS SMART SUPPORT 💎",
-      "pattern": "WOMENS_SMART_SUPPORT"
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "35989000",
@@ -20556,7 +20556,7 @@
         }
       },
       "predictedWinner": "Bangladesh W",
-      "predictionReason": "Women's Smart Synthetic Support on Bangladesh W (2.5x Lead)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on Bangladesh W (2.5x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -20567,11 +20567,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Smart Synthetic Support on Bangladesh W (2.5x Lead)"
+        "reason": "Asia Cup Smart Synthetic Support on Bangladesh W (2.5x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Smart Synthetic Support on Bangladesh W (2.5x Lead)",
+          "reason": "Asia Cup Smart Synthetic Support on Bangladesh W (2.5x Lead)",
           "winner": "Bangladesh W",
           "priority": 100,
           "selected": true
@@ -20584,8 +20584,8 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Bangladesh W",
-      "verdictTag": "WOMENS SMART SUPPORT 💎",
-      "pattern": "WOMENS_SMART_SUPPORT"
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "36004104",
@@ -22686,7 +22686,7 @@
         }
       },
       "predictedWinner": "Pakistan W",
-      "predictionReason": "Women's Smart Synthetic Support on Pakistan W (1.4x Lead)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on Pakistan W (1.4x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -22697,11 +22697,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Smart Synthetic Support on Pakistan W (1.4x Lead)"
+        "reason": "Asia Cup Smart Synthetic Support on Pakistan W (1.4x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Smart Synthetic Support on Pakistan W (1.4x Lead)",
+          "reason": "Asia Cup Smart Synthetic Support on Pakistan W (1.4x Lead)",
           "winner": "Pakistan W",
           "priority": 100,
           "selected": true
@@ -22714,8 +22714,8 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Pakistan W",
-      "verdictTag": "WOMENS SMART SUPPORT 💎",
-      "pattern": "WOMENS_SMART_SUPPORT"
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "36004314",
@@ -24540,7 +24540,7 @@
         }
       },
       "predictedWinner": "Sri Lanka W",
-      "predictionReason": "Women's Smart Synthetic Support on Sri Lanka W (3.1x Lead)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.1x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -24551,11 +24551,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Smart Synthetic Support on Sri Lanka W (3.1x Lead)"
+        "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.1x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Smart Synthetic Support on Sri Lanka W (3.1x Lead)",
+          "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.1x Lead)",
           "winner": "Sri Lanka W",
           "priority": 100,
           "selected": true
@@ -24568,8 +24568,8 @@
       "confirmedById": 1,
       "status": "verified",
       "actualWinner": "Sri Lanka W",
-      "verdictTag": "WOMENS SMART SUPPORT 💎",
-      "pattern": "WOMENS_SMART_SUPPORT"
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "36018454",
@@ -26726,7 +26726,7 @@
         }
       },
       "predictedWinner": "India W",
-      "predictionReason": "Women's Smart Synthetic Support on India W (14.9x Lead)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on India W (14.9x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -26737,11 +26737,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Smart Synthetic Support on India W (14.9x Lead)"
+        "reason": "Asia Cup Smart Synthetic Support on India W (14.9x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Smart Synthetic Support on India W (14.9x Lead)",
+          "reason": "Asia Cup Smart Synthetic Support on India W (14.9x Lead)",
           "winner": "India W",
           "priority": 100,
           "selected": true
@@ -26754,8 +26754,8 @@
       "confirmedById": null,
       "status": "verified",
       "actualWinner": "India W",
-      "verdictTag": "WOMENS SMART SUPPORT 💎",
-      "pattern": "WOMENS_SMART_SUPPORT"
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "36019390",
@@ -28652,7 +28652,7 @@
         }
       },
       "predictedWinner": "United Arab Emirates W",
-      "predictionReason": "Smart Money Inflow (United Arab Emirates W: ₹841 Back, Lead: 5.1x)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on United Arab Emirates W (1.9x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -28663,11 +28663,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Inflow (United Arab Emirates W: ₹841 Back, Lead: 5.1x)"
+        "reason": "Asia Cup Smart Synthetic Support on United Arab Emirates W (1.9x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Inflow (United Arab Emirates W: ₹841 Back, Lead: 5.1x)",
+          "reason": "Asia Cup Smart Synthetic Support on United Arab Emirates W (1.9x Lead)",
           "winner": "United Arab Emirates W",
           "priority": 100,
           "selected": true
@@ -28679,7 +28679,9 @@
       "confirmedByEmail": null,
       "confirmedById": null,
       "status": "verified",
-      "actualWinner": "United Arab Emirates W"
+      "actualWinner": "United Arab Emirates W",
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "36019388",
@@ -30508,8 +30510,8 @@
           }
         }
       },
-      "predictedWinner": "Pakistan W",
-      "predictionReason": "Women's Inflow on Pakistan W (₹3.2k Back, Lead: 2.5x)",
+      "predictedWinner": "India W",
+      "predictionReason": "Asia Cup Bookmaker Deficit on Pakistan W (PnL: -1813) -> Faded to Safe Side India W (+2202)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -30520,12 +30522,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on Pakistan W (₹3.2k Back, Lead: 2.5x)"
+        "reason": "Asia Cup Bookmaker Deficit on Pakistan W (PnL: -1813) -> Faded to Safe Side India W (+2202)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on Pakistan W (₹3.2k Back, Lead: 2.5x)",
-          "winner": "Pakistan W",
+          "reason": "Asia Cup Bookmaker Deficit on Pakistan W (PnL: -1813) -> Faded to Safe Side India W (+2202)",
+          "winner": "India W",
           "priority": 100,
           "selected": true
         }
@@ -30536,7 +30538,9 @@
       "confirmedByEmail": null,
       "confirmedById": null,
       "status": "verified",
-      "actualWinner": "India W"
+      "actualWinner": "India W",
+      "verdictTag": "ASIA CUP TRAP FADE 🚨",
+      "pattern": "ASIA_CUP_TRAP_FADE"
     },
     {
       "matchId": "36023098",
@@ -34031,7 +34035,7 @@
         }
       },
       "predictedWinner": "Sri Lanka W",
-      "predictionReason": "Women's Inflow on Sri Lanka W (₹595 Back, Lead: 2.6x)",
+      "predictionReason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.8x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -34042,11 +34046,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on Sri Lanka W (₹595 Back, Lead: 2.6x)"
+        "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.8x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on Sri Lanka W (₹595 Back, Lead: 2.6x)",
+          "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.8x Lead)",
           "winner": "Sri Lanka W",
           "priority": 100,
           "selected": true
@@ -34058,7 +34062,9 @@
       "status": "verified",
       "confirmedAt": "2026-09-07T13:47:34.188Z",
       "confirmedByEmail": "admin@cricedge.com",
-      "confirmedById": 1
+      "confirmedById": 1,
+      "verdictTag": "ASIA CUP SMART SUPPORT 💎",
+      "pattern": "ASIA_CUP_SMART_SUPPORT"
     },
     {
       "matchId": "36029412",
