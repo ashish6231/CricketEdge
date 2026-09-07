@@ -45,3 +45,46 @@ test('getLeagueAlgorithmPrediction routes Women CPL to WCPL_SPECIAL and Men CPL 
   assert.equal(cplResult.winner, 'Trinbago Knight Riders');
   assert.equal(cplResult.tier, 'CPL_SPECIAL');
 });
+
+test('getCPLPrediction correctly predicts Guyana Amazon Warriors with Lay Shield & Volume Dominance (Match 36029412)', () => {
+  const cplSnap = {
+    matchId: '36029412',
+    competitionName: 'Caribbean Premier League',
+    teamNames: ['Guyana Amazon Warriors', 'St Kitts & Nevis Pats'],
+    preMatchVolume: {
+      team1: { back: 10012.13, lay: 24685.94 },
+      team2: { back: 2904.30, lay: 3051.09 }
+    },
+    preMatchPnl: { team1: 9150.19, team2: -14321.15 },
+    preMatchTotalBets: { team1: 9313, team2: 29327 },
+    smartMoney: {
+      derivedPL: {
+        'Guyana Amazon Warriors': 11840000,
+        'St Kitts & Nevis Pats': -11840000
+      }
+    }
+  };
+
+  const result = predictMatchWinner(cplSnap);
+  assert.equal(result.winner, 'Guyana Amazon Warriors');
+  assert.equal(result.tier, 'CPL_SPECIAL');
+  assert.match(result.confidence, /CPL Lay Shield & Volume Dominance/);
+});
+
+test('getWCPLPrediction correctly predicts Jamaica Empress W via Bookmaker Trap (Match 36023506)', () => {
+  const wcplSnap = {
+    matchId: '36023506',
+    competitionName: "Women's Caribbean Premier League",
+    teamNames: ['Guyana Amazon Warriors W', 'Jamaica Empress W'],
+    preMatchVolume: {
+      team1: { back: 324.97, lay: 39.01 },
+      team2: { back: 140.21, lay: 32.39 }
+    },
+    preMatchPnl: { team1: -166.31, team2: 186.53 }
+  };
+
+  const result = predictMatchWinner(wcplSnap);
+  assert.equal(result.winner, 'Jamaica Empress W');
+  assert.equal(result.tier, 'WCPL_SPECIAL');
+  assert.match(result.confidence, /WCPL Bookmaker Trap/);
+});

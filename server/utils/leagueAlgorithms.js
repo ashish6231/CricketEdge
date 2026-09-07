@@ -94,7 +94,17 @@ function getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Lay Resistance Dump (Fade Short Team)' };
   }
 
-  // 2. Dual Flow Dominance (Higher Back and Higher Lay with clean inflow)
+  // 2. 🚨 Bookmaker Deficit Trap (Fade Public Favorite when bookmaker is in deficit on that team)
+  // e.g. Match 36023506 (Guyana W vs Jamaica Empress W): Public backed Guyana W (b1: 324 vs b2: 140),
+  // but Bookmaker had deficit on Guyana W (epnl1: -166 vs epnl2: +186) -> Jamaica Empress W wins!
+  if (b1 > b2 && epnl1 < 0 && epnl2 > 0) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Trap (Fade Public Favorite)' };
+  }
+  if (b2 > b1 && epnl2 < 0 && epnl1 > 0) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Trap (Fade Public Favorite)' };
+  }
+
+  // 3. Dual Flow Dominance (Higher Back and Higher Lay with clean inflow)
   if (b1 > b2 && l1 > l2 && (b1 >= b2 * 1.25 || l1 >= l2 * 1.25)) {
     return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Dual Flow Advantage' };
   }
@@ -102,7 +112,7 @@ function getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Dual Flow Advantage' };
   }
 
-  // 3. Clear Back Inflow Margin (1.25x+)
+  // 4. Clear Back Inflow Margin (1.25x+)
   if (b1 >= (b2 || 1) * 1.25 && b1 > b2) {
     return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Smart Inflow Margin' };
   }
@@ -110,7 +120,7 @@ function getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Smart Inflow Margin' };
   }
 
-  // 4. Pre-Match Volume Leader
+  // 5. Pre-Match Volume Leader
   if (b1 > b2) {
     return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Volume Leader' };
   }
@@ -118,7 +128,7 @@ function getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Volume Leader' };
   }
 
-  // 5. Bookmaker Safe
+  // 6. Bookmaker Safe
   if (epnl1 > epnl2) {
     return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Safe' };
   }
@@ -145,15 +155,20 @@ function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   //   Favorite is shorted heavily in the lay market:
   //   (a) Classic short ratio: Lay >= 15k & Lay >= 1.7x Back & Lay >= opponent Lay * 2.0
   //   (b) Extreme Lay Short Resistance: Lay >= 30k & Lay > Back & (derivedPL favors opponent || pb2 >= pb1 * 1.5)
+  //   EXCEPTION: If smart money derived PL heavily favors a team (dpl >= 5M) with strong bookmaker profit (>5k)
+  //   and 3x total volume dominance, the high lay volume is Bookmaker Lay Absorption Shield (Rule 2), NOT a short fade!
   // ─────────────────────────────────────────────────────────────────────────
-  const dpl1 = snap?.deepMetrics?.derivedPL?.team1_win;
-  const dpl2 = snap?.deepMetrics?.derivedPL?.team2_win;
+  const dpl1 = snap?.deepMetrics?.derivedPL?.team1_win ?? (snap?.smartMoney?.derivedPL ? snap.smartMoney.derivedPL[team1] : null);
+  const dpl2 = snap?.deepMetrics?.derivedPL?.team2_win ?? (snap?.smartMoney?.derivedPL ? snap.smartMoney.derivedPL[team2] : null);
 
-  const l1Short = (l1 >= 15000 && l1 >= l2 * 2.0) && (
+  const t1Absorption = (dpl1 != null && dpl1 >= 5000000 && epnl1 > 5000 && tot1 >= tot2 * 3.0);
+  const t2Absorption = (dpl2 != null && dpl2 >= 5000000 && epnl2 > 5000 && tot2 >= tot1 * 3.0);
+
+  const l1Short = !t1Absorption && (l1 >= 15000 && l1 >= l2 * 2.0) && (
     (l1 >= b1 * 1.7) ||
     (l1 >= 30000 && l1 > b1 && (dpl1 != null ? (dpl1 < 0 && dpl2 > 0) : (pb2 >= pb1 * 1.5 && pb2 >= 5000 && epnl1 < 10000)))
   );
-  const l2Short = (l2 >= 15000 && l2 >= l1 * 2.0) && (
+  const l2Short = !t2Absorption && (l2 >= 15000 && l2 >= l1 * 2.0) && (
     (l2 >= b2 * 1.7) ||
     (l2 >= 30000 && l2 > b2 && (dpl2 != null ? (dpl2 < 0 && dpl1 > 0) : (pb1 >= pb2 * 1.5 && pb1 >= 5000 && epnl2 < 10000)))
   );
@@ -483,18 +498,17 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
   const snapL1 = l1;
   const snapL2 = l2;
 
-  if (snapL1 >= 500 && snapL1 >= snapL2 * 1.5 && totBet1 > totBet2) {
+  if (snapL1 >= 500 && snapL1 >= snapL2 * 1.5 && totBet1 > totBet2 && t1Pnl >= 0) {
     return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield & Activity Lead' };
   }
-  if (snapL2 >= 500 && snapL2 >= snapL1 * 1.5 && totBet2 > totBet1) {
+  if (snapL2 >= 500 && snapL2 >= snapL1 * 1.5 && totBet2 > totBet1 && t2Pnl >= 0) {
     return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield & Activity Lead' };
   }
 
   // 4. Primary Rule: Strict Bookie Profit Side (Fade Public Overload)
   // We need MINIMUM liability to avoid noise in small leagues
-  // A true trap is either massive liability (<= -300) or heavily one-sided moderate liability (<= -150 with 5x back volume skew)
-  const isTrap1 = t1Pnl <= -300 || (t1Pnl <= -150 && b1 >= 150 && b1 >= (b2 || 1) * 5);
-  const isTrap2 = t2Pnl <= -300 || (t2Pnl <= -150 && b2 >= 150 && b2 >= (b1 || 1) * 5);
+  const isTrap1 = t1Pnl <= -100 || (t1Pnl <= -150 && b1 >= 150 && b1 >= (b2 || 1) * 5);
+  const isTrap2 = t2Pnl <= -100 || (t2Pnl <= -150 && b2 >= 150 && b2 >= (b1 || 1) * 5);
 
   if (t1Pnl !== t2Pnl && (isTrap1 || isTrap2)) {
     if (t1Pnl > t2Pnl) {
