@@ -41,9 +41,13 @@ function extractWinnerFromText(text, team1, team2) {
   return null;
 }
 
-function shouldSkipExisting(existing) {
+const IGNORED_MATCH_IDS = new Set(['36038646', '36039151']);
+
+function shouldSkipExisting(existing, matchId) {
+  if (matchId && IGNORED_MATCH_IDS.has(String(matchId))) return true;
   if (!existing) return false;
   if (existing.status === 'verified') return true;
+
   if (
     existing.status === 'pending'
     && hasSuccessfulSnapshot(existing.snapshot)
@@ -94,7 +98,7 @@ async function captureEndedMatches({
     const matchId = String(match.matchId || match.id);
     const existing = byMatchId.get(matchId);
 
-    if (shouldSkipExisting(existing)) {
+    if (shouldSkipExisting(existing, matchId)) {
       summary.skipped += 1;
       continue;
     }

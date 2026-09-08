@@ -481,6 +481,20 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
   const t1Pnl = epnl1;
   const t2Pnl = epnl2;
 
+  // 0. 💥 Heavy Lay Liability Dump & Net Support Dominance (Fade Lay-Dumped Team)
+  // e.g. Match 36019307 (Fazilka ₹6097 Lay vs Amritsar ₹960 Lay, 100% Amritsar Net Support -> Amritsar wins)
+  // e.g. Match 36026793 (Ludhiana ₹3156 Lay vs Jalandhar ₹650 Lay, 85.8% Jalandhar Net Support -> Jalandhar wins)
+  const adv1 = snap?.advancedMetricsV2?.team1 || {};
+  const adv2 = snap?.advancedMetricsV2?.team2 || {};
+  const net = snap?.netSupport || {};
+
+  if (adv1.lay >= (adv1.back || 1) * 1.5 && adv1.lay >= 2500 && (adv2.lay || 0) < 1500 && net.strongerTeam === team2) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Dump & Net Support Dominance' };
+  }
+  if (adv2.lay >= (adv2.back || 1) * 1.5 && adv2.lay >= 2500 && (adv1.lay || 0) < 1500 && net.strongerTeam === team1) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Dump & Net Support Dominance' };
+  }
+
   // 1. 📉 Lay Resistance Dump / Short Fade (One team has heavy lay dump >= 50 & >= 1.5x its back, other team has clean back)
   // e.g. Bathinda vs Ludhiana: Bathinda has ₹74 Lay vs ₹0 on Ludhiana -> Faded to Ludhiana Lion
   if (l1 >= 50 && l1 >= b1 * 1.5 && b2 > b1 && l2 <= 20) {

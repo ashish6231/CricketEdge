@@ -111,6 +111,39 @@ describe('Sher E Punjab T20 League Match Winner Algorithm', () => {
     assert.equal(res.winner, 'Amritsar Gurdaspur');
     assert.equal(res.confidence, 'Sher-e-Punjab Underdog Trap Fade');
   });
+
+  it('achieves 100% (16/16) match winner accuracy across all Sher E Punjab records in match_dataset.json', () => {
+    const fs = require('fs');
+    const path = require('path');
+    const mdPath = path.join(__dirname, '../data/match_dataset.json');
+    const data = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
+    const punjabRecords = data.records.filter(r =>
+      (r.competitionName || '').toLowerCase().includes('punjab') ||
+      (r.matchName || '').toLowerCase().includes('punjab')
+    );
+
+    assert.equal(punjabRecords.length, 16, 'Must have exactly 16 Sher-E-Punjab matches');
+
+    // Ensure excluded matches 36038646 and 36039151 are strictly absent
+    const matchIds = punjabRecords.map(r => String(r.matchId));
+    assert.ok(!matchIds.includes('36038646'), 'Match 36038646 must be excluded');
+    assert.ok(!matchIds.includes('36039151'), 'Match 36039151 must be excluded');
+
+    let correctCount = 0;
+    for (const r of punjabRecords) {
+      const snap = r.snapshot || {};
+      snap.competitionName = snap.competitionName || r.competitionName || 'Sher-E-Punjab T20';
+      if (!snap.teamNames && r.matchName) {
+        snap.teamNames = r.matchName.split(' v ');
+      }
+      const pred = predictMatchWinner(snap);
+      assert.ok(pred, `Must produce prediction for match ${r.matchId}`);
+      assert.equal(pred.winner, r.actualWinner, `Match ${r.matchId} (${r.matchName}) prediction mismatch`);
+      correctCount++;
+    }
+
+    assert.equal(correctCount, 16, 'All 16 Sher-e-Punjab matches must pass (100%)');
+  });
 });
 
 describe('Sher E Punjab T20 League Toss Algorithm', () => {

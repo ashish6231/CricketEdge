@@ -713,27 +713,6 @@
     "runners": [],
     "totalMatched": 60536
   },
-  "36038646": {
-    "matchLoad": {
-      "team1": {
-        "name": "Jalandhar Warriors",
-        "money": 984,
-        "percent": 1,
-        "odds": 2.24,
-        "trend": "up"
-      },
-      "team2": {
-        "name": "Amritsar Soormas",
-        "money": 92984,
-        "percent": 99,
-        "odds": 1.81,
-        "trend": "up"
-      },
-      "totalMatched": 93968
-    },
-    "runners": [],
-    "totalMatched": 93968
-  },
   "36038835": {
     "matchLoad": {
       "team1": {
@@ -775,27 +754,6 @@
     },
     "runners": [],
     "totalMatched": 1241
-  },
-  "36039151": {
-    "matchLoad": {
-      "team1": {
-        "name": "Fazilka Falcons",
-        "money": 2013,
-        "percent": 45,
-        "odds": 2,
-        "trend": "up"
-      },
-      "team2": {
-        "name": "Bathinda Royals",
-        "money": 2467,
-        "percent": 55,
-        "odds": 2,
-        "trend": "up"
-      },
-      "totalMatched": 4480
-    },
-    "runners": [],
-    "totalMatched": 4480
   },
   "36043600": {
     "matchLoad": {

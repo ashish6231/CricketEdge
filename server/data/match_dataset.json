@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-07T20:55:26.953Z",
+  "updatedAt": "2026-09-08T03:45:21.101Z",
   "records": [
     {
       "matchId": "35901908",
@@ -124152,15 +124152,15 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Jalandhar Warriors",
+      "predictedWinner": "Fazilka Falcons",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Smart Back Margin",
+      "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Fazilka Falcons"
     },
     {
       "matchId": "36004150",
@@ -142976,13 +142976,13 @@
       },
       "predictedWinner": "Bathinda Royals",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
+      "predictionConfidence": "Sher-e-Punjab Lay Shield (Lay Absorbed)",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Bathinda Royals"
     },
     {
       "matchId": "36005017",
@@ -164752,15 +164752,15 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Bathinda Royals",
+      "predictedWinner": "Ludhiana Lion",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
+      "predictionConfidence": "Sher-e-Punjab Lay Resistance Dump (Fade to Clean Inflow)",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Ludhiana Lion"
     },
     {
       "matchId": "36004368",
@@ -198151,14 +198151,14 @@
         "competitionName": "Sher E Punjab T20 League"
       },
       "predictedWinner": "Jalandhar Warriors",
-      "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Underdog Trap Fade",
+      "predictionTier": 2,
+      "predictionConfidence": "75% Sure (Good Buy)",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Jalandhar Warriors"
     },
     {
       "matchId": "36017549",
@@ -221503,8 +221503,8 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Ludhiana Lion"
     },
     {
       "matchId": "36018427",
@@ -243870,15 +243870,15 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Fazilka Falcons",
+      "predictedWinner": "Amritsar Soormas",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Lay Shield & Activity Lead",
+      "predictionConfidence": "Sher-e-Punjab Lay Dump & Net Support Dominance",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Amritsar Soormas"
     },
     {
       "matchId": "36020634",
@@ -267697,8 +267697,8 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Jalandhar Warriors"
     },
     {
       "matchId": "36024122",
@@ -306051,15 +306051,15 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Fazilka Falcons",
-      "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Lay Shield & Activity Lead",
+      "predictedWinner": "Mohali Kings",
+      "predictionTier": 2,
+      "predictionConfidence": "82% Maximum Money Lead (73% Share)",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Mohali Kings"
     },
     {
       "matchId": "36021032",
@@ -321460,13 +321460,13 @@
       },
       "predictedWinner": "Bathinda Royals",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Lay Shield & Activity Lead",
+      "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Bathinda Royals"
     },
     {
       "matchId": "36028567",
@@ -340001,15 +340001,15 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Ludhiana Lion",
+      "predictedWinner": "Jalandhar Warriors",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Lay Shield & Activity Lead",
+      "predictionConfidence": "Sher-e-Punjab Lay Dump & Net Support Dominance",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null,
-      "status": "pending",
-      "actualWinner": null
+      "status": "verified",
+      "actualWinner": "Jalandhar Warriors"
     },
     {
       "matchId": "36029181",
@@ -365967,9 +365967,9 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Bathinda Royals",
-      "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
+      "predictedWinner": "Fazilka Falcons",
+      "predictionTier": 3,
+      "predictionConfidence": "68% Money Leader (53% Share)",
       "lastCaptureError": null,
       "confirmedAt": "2026-09-06T01:41:08.439Z",
       "confirmedByEmail": "crex-auto-backfill",
@@ -393384,9 +393384,9 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Jalandhar Warriors",
-      "predictionTier": 1,
-      "predictionConfidence": "99% Sure (Maximum Money + Back + Lay Alignment)",
+      "predictedWinner": "Mohali Kings",
+      "predictionTier": "PUNJAB_SPECIAL",
+      "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
       "lastCaptureError": null,
       "confirmedAt": "2026-09-06T01:41:09.494Z",
       "confirmedByEmail": "crex-auto-backfill",
@@ -417523,9 +417523,9 @@
       "predictedWinner": "Bathinda Royals",
       "predictionTier": 1,
       "predictionConfidence": "99% Sure (Maximum Money + Back + Lay Alignment)",
-      "actualWinner": null,
+      "actualWinner": "Bathinda Royals",
       "lastCaptureError": null,
-      "status": "pending",
+      "status": "verified",
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null
@@ -508721,1483 +508721,6 @@
       "confirmedAt": "2026-09-07T19:35:45.725Z",
       "confirmedByEmail": "crex-auto",
       "confirmedById": "system"
-    },
-    {
-      "matchId": "36039151",
-      "marketId": "1.262092110",
-      "matchName": "Fazilka Falcons v Bathinda Royals",
-      "competitionName": "Sher E Punjab T20 League",
-      "team1": "Fazilka Falcons",
-      "team2": "Bathinda Royals",
-      "startTime": 1788787800000,
-      "endedAt": "2026-09-07T19:35:46.005Z",
-      "capturedAt": "2026-09-07T19:35:46.005Z",
-      "snapshot": {
-        "serverTime": "2026-09-07T19:35:46.051Z",
-        "matchId": "36039151",
-        "matchName": "Fazilka Falcons v Bathinda Royals",
-        "teamNames": [
-          "Fazilka Falcons",
-          "Bathinda Royals"
-        ],
-        "inPlayPnl": {
-          "team1": 1370.4244999999732,
-          "team2": 1624.2244000000264
-        },
-        "inPlayTotalBets": {
-          "team1": 850.8821000000163,
-          "team2": 664.3512999999896
-        },
-        "inPlayVolume": {
-          "team1": {
-            "back": 1666.9100000000074,
-            "lay": 301.94999999998487,
-            "total": 1943.2700000000168
-          },
-          "team2": {
-            "back": 2154.8700000000053,
-            "lay": 276.36000000000934,
-            "total": 2456.81999999999
-          }
-        },
-        "preMatchPnl": {
-          "team1": 1512.1127999999567,
-          "team2": 1451.6406000000425
-        },
-        "preMatchTotalBets": {
-          "team1": 684.0241000000152,
-          "team2": 637.6718999999721
-        },
-        "preMatchVolume": {
-          "team1": {
-            "back": 1489.7200000000073,
-            "lay": 298.03999999998484,
-            "total": 1744.0900000000154
-          },
-          "team2": {
-            "back": 2133.1399999999876,
-            "lay": 254.37000000000816,
-            "total": 2431.1799999999726
-          }
-        },
-        "threeMinPnl": {
-          "team1": 1372.3642999999734,
-          "team2": 1621.4256000000262
-        },
-        "threeMinTotalBets": {
-          "team1": 845.3728000000164,
-          "team2": 660.7100999999896
-        },
-        "threeMinVolume": {
-          "team1": {
-            "back": 1660.4700000000073,
-            "lay": 300.40999999998485,
-            "total": 1936.8300000000168
-          },
-          "team2": {
-            "back": 2152.810000000005,
-            "lay": 276.36000000000934,
-            "total": 2453.21999999999
-          }
-        },
-        "matchLoadV2": {
-          "team1": 32,
-          "team2": 27
-        },
-        "advancedMetrics": {
-          "team1": {
-            "back": 1687.4500000000073,
-            "lay": 325.6299999999732,
-            "totalVolume": 2013.0799999999806,
-            "backPercentage": 83.82428914896694
-          },
-          "team2": {
-            "back": 2160.3300000000054,
-            "lay": 306.8900000000035,
-            "totalVolume": 2467.220000000009,
-            "backPercentage": 87.56130381563045
-          }
-        },
-        "advancedMetricsV2": {
-          "team1": {
-            "back": 585.428100000007,
-            "lay": 90.76179999997323,
-            "totalBet": 676.1898999999803
-          },
-          "team2": {
-            "back": 367.69590000000477,
-            "lay": 651.5305000000035,
-            "totalBet": 1019.2264000000082
-          }
-        },
-        "supportMetrics": {
-          "team1": {
-            "supportMoney": 1994.3400000000108,
-            "support": 44.51353703993071
-          },
-          "team2": {
-            "supportMoney": 2485.9599999999787,
-            "support": 55.4864629600693
-          }
-        },
-        "marketSignals": {
-          "moreBettedTeam": "Fazilka Falcons",
-          "bookieFavouriteOutcome": "Bathinda Royals",
-          "riskTeam": "Fazilka Falcons",
-          "trap": {
-            "level": "none",
-            "reason": "Support is not strongly one-sided."
-          },
-          "supportConfidence": 10.972925920138586,
-          "mostBettedTeam": "Fazilka Falcons",
-          "prediction": {
-            "team1TrueSupport": 605.3937000000105,
-            "team2TrueSupport": 332.23269999997785,
-            "ratio": 1.8221978149653868,
-            "bookiePnlTeam1": -381.1257000000338,
-            "bookiePnlTeam2": -105.02620000000113,
-            "prediction": "Bathinda Royals",
-            "pattern": "The Market Trap",
-            "reason": "Heavy crowd bias (1.82) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
-          }
-        },
-        "bookmakerExposure": {
-          "team1": {
-            "netExposure": 376.35120000003377,
-            "backExposure": 453.165700000007,
-            "layExposure": 76.81449999997324,
-            "teamName": "Fazilka Falcons"
-          },
-          "team2": {
-            "netExposure": 105.60820000000115,
-            "backExposure": 257.8362000000046,
-            "layExposure": 152.22800000000348,
-            "teamName": "Bathinda Royals"
-          }
-        },
-        "deepMetrics": {
-          "raw": {
-            "A_back_expo": 585.428100000007,
-            "A_lay_stake": 325.6299999999732,
-            "B_back_expo": 367.69590000000477,
-            "B_lay_stake": 306.8900000000035
-          },
-          "totals": {
-            "totalBetTeam1": 892.3181000000105,
-            "totalBetTeam2": 693.325899999978
-          },
-          "simplePL": {
-            "team1_win": -259.7981000000338,
-            "team2_win": -60.80590000000126
-          },
-          "derivedPL": {
-            "team1_win": -198.99220000003254,
-            "team2_win": 198.99220000003254
-          }
-        },
-        "marketAnalysis": {
-          "totalVolume": {
-            "team1": {
-              "totalBackVol": 1687.4500000000073,
-              "totalLayVol": 325.6299999999732,
-              "totalBet": 1994.3400000000108,
-              "profitLoss": 491.61999999996783
-            },
-            "team2": {
-              "totalBackVol": 2160.3300000000054,
-              "totalLayVol": 306.8900000000035,
-              "totalBet": 2485.9599999999787,
-              "profitLoss": -491.61999999996783
-            }
-          },
-          "normalTotalBet": {
-            "team1": {
-              "totalBackExpo": 585.428100000007,
-              "totalLayVol": 325.6299999999732,
-              "totalBet": 892.3181000000105,
-              "profitLoss": 1358.7736999999684
-            },
-            "team2": {
-              "totalBackExpo": 367.69590000000477,
-              "totalLayVol": 306.8900000000035,
-              "totalBet": 693.325899999978,
-              "profitLoss": 1645.6546000000326
-            }
-          },
-          "totalNetVolume": {
-            "team1": {
-              "totalBackNetVol": 585.428100000007,
-              "totalLayNetVol": 90.76179999997323,
-              "totalBet": 1236.9586000000104,
-              "profitLoss": -778.5009000000324
-            },
-            "team2": {
-              "totalBackNetVol": 367.69590000000477,
-              "totalLayNetVol": 651.5305000000035,
-              "totalBet": 458.457699999978,
-              "profitLoss": 778.5009000000324
-            }
-          }
-        },
-        "syntheticSupport": {
-          "teamA": {
-            "tradeCount": 32,
-            "averageOdds": 1.7118749999999996,
-            "averageSize": 62.32312500000034,
-            "supportProduct": 106.68939960937556
-          },
-          "teamB": {
-            "tradeCount": 27,
-            "averageOdds": 2.1396296296296295,
-            "averageSize": 92.0725925925918,
-            "supportProduct": 197.00124718792696
-          },
-          "strongerTeam": "Bathinda Royals",
-          "supportRatio": 1.8464931652930126
-        },
-        "netSupport": {
-          "teamA": {
-            "totalBackVolume": 1687.4500000000073,
-            "oppoLayVolume": 306.8900000000035,
-            "layExposure": 90.76179999997323,
-            "netSupportValue": 1903.5782000000377
-          },
-          "teamB": {
-            "totalBackVolume": 2160.3300000000054,
-            "oppoLayVolume": 325.6299999999732,
-            "layExposure": 651.5305000000035,
-            "netSupportValue": 1834.4294999999752
-          },
-          "strongerTeam": "Fazilka Falcons",
-          "netSupportDifference": 69.14870000006249,
-          "percentageA": 50.924940577303545,
-          "percentageB": 49.07505942269645
-        },
-        "sentimentScore": {
-          "teamA": {
-            "directNetSupport": 1361.820000000034,
-            "syntheticSupport": 306.8900000000035,
-            "opponentLiabilityRejection": 651.5305000000035,
-            "sentimentScore": 1017.1795000000341
-          },
-          "teamB": {
-            "directNetSupport": 1853.4400000000019,
-            "syntheticSupport": 325.6299999999732,
-            "opponentLiabilityRejection": 90.76179999997323,
-            "sentimentScore": 2088.3082000000018
-          },
-          "strongerTeam": "Bathinda Royals",
-          "scoreDifference": 1071.1286999999677,
-          "percentageA": 32.754259500046395,
-          "percentageB": 67.2457404999536
-        },
-        "trueMarketLoad": {
-          "team1": {
-            "name": "Fazilka Falcons",
-            "matchedVolume": 0,
-            "directBackVolume": 0,
-            "layLiability": 0,
-            "totalSupport": 0,
-            "supportPercentage": 50
-          },
-          "team2": {
-            "name": "Bathinda Royals",
-            "matchedVolume": 0,
-            "directBackVolume": 0,
-            "layLiability": 0,
-            "totalSupport": 0,
-            "supportPercentage": 50
-          },
-          "heavierSide": "Fazilka Falcons"
-        },
-        "teams": {
-          "Fazilka Falcons": {
-            "trades": [
-              {
-                "team": "Fazilka Falcons",
-                "price": 2,
-                "type": "lay",
-                "size": 45.939999999973224,
-                "updatedAt": 1788787961826
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.55,
-                "type": "back",
-                "size": 16.63,
-                "updatedAt": 1788787961826
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.45,
-                "type": "back",
-                "size": 3.91,
-                "updatedAt": 1788787961826
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 2.04,
-                "type": "lay",
-                "size": 16.13,
-                "updatedAt": 1788787926493
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.98,
-                "type": "lay",
-                "size": 1.51,
-                "updatedAt": 1788787741624
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.85,
-                "type": "back",
-                "size": 20.18,
-                "updatedAt": 1788787730554
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.99,
-                "type": "lay",
-                "size": 0.03,
-                "updatedAt": 1788787715622
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.86,
-                "type": "back",
-                "size": 4.8,
-                "updatedAt": 1788787715622
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.86,
-                "type": "lay",
-                "size": 0.20999999999999996,
-                "updatedAt": 1788787627098
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.81,
-                "type": "lay",
-                "size": 2.16,
-                "updatedAt": 1788787032130
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.8,
-                "type": "back",
-                "size": 132.22,
-                "updatedAt": 1788787028640
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.81,
-                "type": "back",
-                "size": 2,
-                "updatedAt": 1788787026098
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.9,
-                "type": "back",
-                "size": 17.99,
-                "updatedAt": 1788787015494
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.87,
-                "type": "back",
-                "size": 6.91,
-                "updatedAt": 1788785171386
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 2.36,
-                "type": "lay",
-                "size": 6.06,
-                "updatedAt": 1788784076989
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 2,
-                "type": "back",
-                "size": 291.070000000007,
-                "updatedAt": 1788783005948
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.5,
-                "type": "back",
-                "size": 0.6200000000000045,
-                "updatedAt": 1788782425177
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.25,
-                "type": "back",
-                "size": 348.42,
-                "updatedAt": 1788782425177
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.16,
-                "type": "back",
-                "size": 0.019999999999999574,
-                "updatedAt": 1788782425177
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.05,
-                "type": "back",
-                "size": 744.9200000000001,
-                "updatedAt": 1788782425177
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.06,
-                "type": "back",
-                "size": 20.16,
-                "updatedAt": 1788751069376
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.1,
-                "type": "back",
-                "size": 35.550000000000004,
-                "updatedAt": 1788747379463
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.03,
-                "type": "back",
-                "size": 30.58,
-                "updatedAt": 1788747379463
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.05,
-                "type": "lay",
-                "size": 248.29000000000002,
-                "updatedAt": 1788732096971
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 7.2,
-                "type": "lay",
-                "size": 0.39,
-                "updatedAt": 1788727886139
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.16,
-                "type": "lay",
-                "size": 4.83,
-                "updatedAt": 1788725525861
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 10.5,
-                "type": "lay",
-                "size": 0.08,
-                "updatedAt": 1788724502689
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.26,
-                "type": "back",
-                "size": 6.43,
-                "updatedAt": 1788721160544
-              },
-              {
-                "team": "Fazilka Falcons",
-                "price": 1.11,
-                "type": "back",
-                "size": 5.04,
-                "updatedAt": 1788719917079
-              }
-            ],
-            "pnlIfWins": 1358.7736999999672,
-            "totalBet": 892.3181000000105
-          },
-          "Bathinda Royals": {
-            "trades": [
-              {
-                "team": "Bathinda Royals",
-                "price": 2,
-                "type": "lay",
-                "size": 135.6600000000035,
-                "updatedAt": 1788787961826
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.97,
-                "type": "back",
-                "size": 5.3,
-                "updatedAt": 1788787926483
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.96,
-                "type": "back",
-                "size": 0.16000000000000014,
-                "updatedAt": 1788787926483
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.96,
-                "type": "lay",
-                "size": 16.63,
-                "updatedAt": 1788787915931
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 2.02,
-                "type": "back",
-                "size": 5.8,
-                "updatedAt": 1788787741628
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 2.16,
-                "type": "lay",
-                "size": 0.52,
-                "updatedAt": 1788787625620
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 2,
-                "type": "back",
-                "size": 237.38000000000466,
-                "updatedAt": 1788787192469
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 2.18,
-                "type": "back",
-                "size": 5.13,
-                "updatedAt": 1788787187391
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.79,
-                "type": "back",
-                "size": 3.12,
-                "updatedAt": 1788785143625
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.74,
-                "type": "back",
-                "size": 0.51,
-                "updatedAt": 1788784076989
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 10.5,
-                "type": "lay",
-                "size": 51.02,
-                "updatedAt": 1788782425192
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.5,
-                "type": "back",
-                "size": 0.6999999999999886,
-                "updatedAt": 1788782425192
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.1,
-                "type": "back",
-                "size": 505.44,
-                "updatedAt": 1788782425192
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.07,
-                "type": "back",
-                "size": 0.019999999999999574,
-                "updatedAt": 1788782425192
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.05,
-                "type": "back",
-                "size": 737.75,
-                "updatedAt": 1788782425192
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.04,
-                "type": "back",
-                "size": 34.489999999999995,
-                "updatedAt": 1788782425192
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.03,
-                "type": "back",
-                "size": 584.3800000000001,
-                "updatedAt": 1788782425192
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.11,
-                "type": "back",
-                "size": 21.380000000000003,
-                "updatedAt": 1788751069094
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.06,
-                "type": "back",
-                "size": 18.5,
-                "updatedAt": 1788751069094
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.22,
-                "type": "lay",
-                "size": 10.18,
-                "updatedAt": 1788732153413
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.25,
-                "type": "lay",
-                "size": 6.23,
-                "updatedAt": 1788731528522
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.2,
-                "type": "back",
-                "size": 0.27000000000000135,
-                "updatedAt": 1788731218618
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.26,
-                "type": "lay",
-                "size": 5.19,
-                "updatedAt": 1788731068178
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.24,
-                "type": "lay",
-                "size": 11.75,
-                "updatedAt": 1788730618335
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.2,
-                "type": "lay",
-                "size": 8.04,
-                "updatedAt": 1788729358768
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.05,
-                "type": "lay",
-                "size": 30.29000000000002,
-                "updatedAt": 1788728814168
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.16,
-                "type": "lay",
-                "size": 16.89,
-                "updatedAt": 1788727886812
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.07,
-                "type": "lay",
-                "size": 4.83,
-                "updatedAt": 1788725891540
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.04,
-                "type": "lay",
-                "size": 4.830000000000002,
-                "updatedAt": 1788723082957
-              },
-              {
-                "team": "Bathinda Royals",
-                "price": 1.06,
-                "type": "lay",
-                "size": 4.83,
-                "updatedAt": 1788720412077
-              }
-            ],
-            "pnlIfWins": 1645.654600000032,
-            "totalBet": 693.325899999978
-          }
-        },
-        "Usr": "cricketloaduser56@gmail.com",
-        "competitionName": "Sher E Punjab T20 League"
-      },
-      "predictedWinner": "Bathinda Royals",
-      "predictionTier": 2,
-      "predictionConfidence": "75% Sure (Good Buy)",
-      "actualWinner": null,
-      "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
-    },
-    {
-      "matchId": "36038646",
-      "marketId": "1.262065312",
-      "matchName": "Jalandhar Warriors v Amritsar Soormas",
-      "competitionName": "Sher E Punjab T20 League",
-      "team1": "Jalandhar Warriors",
-      "team2": "Amritsar Soormas",
-      "startTime": 1788787800000,
-      "endedAt": "2026-09-07T19:35:46.283Z",
-      "capturedAt": "2026-09-07T19:35:46.283Z",
-      "snapshot": {
-        "serverTime": "2026-09-07T19:35:46.324Z",
-        "matchId": "36038646",
-        "matchName": "Jalandhar Warriors v Amritsar Soormas",
-        "teamNames": [
-          "Jalandhar Warriors",
-          "Amritsar Soormas"
-        ],
-        "inPlayPnl": {
-          "team1": 84770.32000000004,
-          "team2": -65129.0131
-        },
-        "inPlayTotalBets": {
-          "team1": 4518.6781,
-          "team2": 68745.37470000001
-        },
-        "inPlayVolume": {
-          "team1": {
-            "back": 769,
-            "lay": 155.82,
-            "total": 4445.6900000000005
-          },
-          "team2": {
-            "back": 89092.29000000001,
-            "lay": 3676.69,
-            "total": 89248.11000000002
-          }
-        },
-        "preMatchPnl": {
-          "team1": 152.80489999999998,
-          "team2": -171.2508
-        },
-        "preMatchTotalBets": {
-          "team1": 25.937599999999996,
-          "team2": 207.52839999999998
-        },
-        "preMatchVolume": {
-          "team1": {
-            "back": 1.27,
-            "lay": 46.05,
-            "total": 26.089999999999996
-          },
-          "team2": {
-            "back": 139.6,
-            "lay": 24.819999999999997,
-            "total": 185.64999999999998
-          }
-        },
-        "threeMinPnl": {
-          "team1": 36838.3502,
-          "team2": -27565.475899999998
-        },
-        "threeMinTotalBets": {
-          "team1": 2966.5727000000006,
-          "team2": 29935.3204
-        },
-        "threeMinVolume": {
-          "team1": {
-            "back": 495.16,
-            "lay": 88.05999999999999,
-            "total": 2950.4600000000005
-          },
-          "team2": {
-            "back": 39723.99,
-            "lay": 2455.3000000000006,
-            "total": 39812.049999999996
-          }
-        },
-        "matchLoadV2": {
-          "team1": 28,
-          "team2": 34
-        },
-        "advancedMetrics": {
-          "team1": {
-            "back": 827.9300000000001,
-            "lay": 155.82,
-            "totalVolume": 983.75,
-            "backPercentage": 84.16060991105464
-          },
-          "team2": {
-            "back": 89092.29000000001,
-            "lay": 3891.730000000001,
-            "totalVolume": 92984.02,
-            "backPercentage": 95.81462492157256
-          }
-        },
-        "advancedMetricsV2": {
-          "team1": {
-            "back": 913.9575,
-            "lay": 196.7081,
-            "totalBet": 1110.6656
-          },
-          "team2": {
-            "back": 68589.55470000001,
-            "lay": 3021.4503000000004,
-            "totalBet": 71611.005
-          }
-        },
-        "supportMetrics": {
-          "team1": {
-            "supportMoney": 4719.660000000001,
-            "support": 5.022637016926122
-          },
-          "team2": {
-            "supportMoney": 89248.11000000002,
-            "support": 94.97736298307387
-          }
-        },
-        "marketSignals": {
-          "moreBettedTeam": "Amritsar Soormas",
-          "bookieFavouriteOutcome": "Jalandhar Warriors",
-          "riskTeam": "Amritsar Soormas",
-          "trap": {
-            "level": "high",
-            "reason": "Public heavy on one team, bookie loses if they win."
-          },
-          "supportConfidence": 89.95472596614775,
-          "mostBettedTeam": "Amritsar Soormas",
-          "prediction": {
-            "team1TrueSupport": 3935.4078000000004,
-            "team2TrueSupport": 68786.26280000001,
-            "ratio": 17.478814470002323,
-            "bookiePnlTeam1": -758.1375,
-            "bookiePnlTeam2": -64697.824700000005,
-            "prediction": "Jalandhar Warriors",
-            "pattern": "The Market Trap",
-            "reason": "Heavy crowd bias (17.48) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
-          }
-        },
-        "bookmakerExposure": {
-          "team1": {
-            "netExposure": 717.2493999999999,
-            "backExposure": 913.9575,
-            "layExposure": 196.7081,
-            "teamName": "Jalandhar Warriors"
-          },
-          "team2": {
-            "netExposure": 65568.10440000001,
-            "backExposure": 68589.55470000001,
-            "layExposure": 3021.4503000000004,
-            "teamName": "Amritsar Soormas"
-          }
-        },
-        "deepMetrics": {
-          "raw": {
-            "A_back_expo": 913.9575,
-            "A_lay_stake": 155.82,
-            "B_back_expo": 68589.55470000001,
-            "B_lay_stake": 3891.730000000001
-          },
-          "totals": {
-            "totalBetTeam1": 4805.687500000001,
-            "totalBetTeam2": 68745.37470000001
-          },
-          "simplePL": {
-            "team1_win": -758.1375,
-            "team2_win": -64697.824700000005
-          },
-          "derivedPL": {
-            "team1_win": 63939.687200000015,
-            "team2_win": -63939.687200000015
-          }
-        },
-        "marketAnalysis": {
-          "totalVolume": {
-            "team1": {
-              "totalBackVol": 827.9300000000001,
-              "totalLayVol": 155.82,
-              "totalBet": 4719.660000000001,
-              "profitLoss": 84528.45000000001
-            },
-            "team2": {
-              "totalBackVol": 89092.29000000001,
-              "totalLayVol": 3891.730000000001,
-              "totalBet": 89248.11000000002,
-              "profitLoss": -84528.45000000001
-            }
-          },
-          "normalTotalBet": {
-            "team1": {
-              "totalBackExpo": 913.9575,
-              "totalLayVol": 155.82,
-              "totalBet": 4805.687500000001,
-              "profitLoss": 84483.31060000001
-            },
-            "team2": {
-              "totalBackExpo": 68589.55470000001,
-              "totalLayVol": 3891.730000000001,
-              "totalBet": 68745.37470000001,
-              "profitLoss": -64895.99440000001
-            }
-          },
-          "totalNetVolume": {
-            "team1": {
-              "totalBackNetVol": 913.9575,
-              "totalLayNetVol": 196.7081,
-              "totalBet": 3935.4078000000004,
-              "profitLoss": 64850.85500000001
-            },
-            "team2": {
-              "totalBackNetVol": 68589.55470000001,
-              "totalLayNetVol": 3021.4503000000004,
-              "totalBet": 68786.26280000001,
-              "profitLoss": -64850.85500000001
-            }
-          }
-        },
-        "syntheticSupport": {
-          "teamA": {
-            "tradeCount": 28,
-            "averageOdds": 2.0439285714285718,
-            "averageSize": 168.55928571428575,
-            "supportProduct": 344.52314005102056
-          },
-          "teamB": {
-            "tradeCount": 34,
-            "averageOdds": 2.0438235294117644,
-            "averageSize": 2624.9444117647063,
-            "supportProduct": 5364.92315216263
-          },
-          "strongerTeam": "Amritsar Soormas",
-          "supportRatio": 15.572025586926138
-        },
-        "netSupport": {
-          "teamA": {
-            "totalBackVolume": 827.9300000000001,
-            "oppoLayVolume": 3891.730000000001,
-            "layExposure": 196.7081,
-            "netSupportValue": 4522.951900000001
-          },
-          "teamB": {
-            "totalBackVolume": 89092.29000000001,
-            "oppoLayVolume": 155.82,
-            "layExposure": 3021.4503000000004,
-            "netSupportValue": 86226.65970000002
-          },
-          "strongerTeam": "Amritsar Soormas",
-          "netSupportDifference": 81703.70780000002,
-          "percentageA": 4.983990366742242,
-          "percentageB": 95.01600963325775
-        },
-        "sentimentScore": {
-          "teamA": {
-            "directNetSupport": 672.1100000000001,
-            "syntheticSupport": 3891.730000000001,
-            "opponentLiabilityRejection": 3021.4503000000004,
-            "sentimentScore": 1542.3897000000006
-          },
-          "teamB": {
-            "directNetSupport": 85200.56000000001,
-            "syntheticSupport": 155.82,
-            "opponentLiabilityRejection": 196.7081,
-            "sentimentScore": 85159.67190000002
-          },
-          "strongerTeam": "Amritsar Soormas",
-          "scoreDifference": 83617.28220000002,
-          "percentageA": 1.7789538928333861,
-          "percentageB": 98.22104610716661
-        },
-        "trueMarketLoad": {
-          "team1": {
-            "name": "Jalandhar Warriors",
-            "matchedVolume": 0,
-            "directBackVolume": 0,
-            "layLiability": 0,
-            "totalSupport": 0,
-            "supportPercentage": 50
-          },
-          "team2": {
-            "name": "Amritsar Soormas",
-            "matchedVolume": 0,
-            "directBackVolume": 0,
-            "layLiability": 0,
-            "totalSupport": 0,
-            "supportPercentage": 50
-          },
-          "heavierSide": "Jalandhar Warriors"
-        },
-        "teams": {
-          "Jalandhar Warriors": {
-            "trades": [
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.24,
-                "type": "back",
-                "size": 6.5,
-                "updatedAt": 1788787955620
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.22,
-                "type": "back",
-                "size": 89.66999999999999,
-                "updatedAt": 1788787955620
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.9,
-                "type": "lay",
-                "size": 22.49,
-                "updatedAt": 1788787844790
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.88,
-                "type": "lay",
-                "size": 26.02,
-                "updatedAt": 1788787844790
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.28,
-                "type": "lay",
-                "size": 4.28,
-                "updatedAt": 1788787844790
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.26,
-                "type": "lay",
-                "size": 9.620000000000001,
-                "updatedAt": 1788787844790
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.22,
-                "type": "lay",
-                "size": 5.350000000000001,
-                "updatedAt": 1788787843778
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.2,
-                "type": "back",
-                "size": 219.61,
-                "updatedAt": 1788787800446
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.26,
-                "type": "back",
-                "size": 21.79,
-                "updatedAt": 1788787798444
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.32,
-                "type": "back",
-                "size": 58.81,
-                "updatedAt": 1788787628106
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2,
-                "type": "back",
-                "size": 408.13,
-                "updatedAt": 1788787215163
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.02,
-                "type": "back",
-                "size": 11.93,
-                "updatedAt": 1788787214661
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2.58,
-                "type": "lay",
-                "size": 0.89,
-                "updatedAt": 1788787196493
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 2,
-                "type": "lay",
-                "size": 27.72,
-                "updatedAt": 1788787165711
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 1.99,
-                "type": "lay",
-                "size": 9.86,
-                "updatedAt": 1788787165711
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 1.59,
-                "type": "back",
-                "size": 3.39,
-                "updatedAt": 1788786772844
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 1.78,
-                "type": "back",
-                "size": 1.77,
-                "updatedAt": 1788786764719
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 1.61,
-                "type": "back",
-                "size": 5.06,
-                "updatedAt": 1788786743467
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 1.82,
-                "type": "lay",
-                "size": 3.54,
-                "updatedAt": 1788786734938
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 1.88,
-                "type": "back",
-                "size": 1.27,
-                "updatedAt": 1788782501589
-              },
-              {
-                "team": "Jalandhar Warriors",
-                "price": 1.85,
-                "type": "lay",
-                "size": 46.05,
-                "updatedAt": 1788780887450
-              }
-            ],
-            "pnlIfWins": 84483.31060000003,
-            "totalBet": 4805.687500000001
-          },
-          "Amritsar Soormas": {
-            "trades": [
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.81,
-                "type": "lay",
-                "size": 243.80000000000055,
-                "updatedAt": 1788787987038
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.8,
-                "type": "lay",
-                "size": 601.4300000000004,
-                "updatedAt": 1788787987038
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.52,
-                "type": "back",
-                "size": 2.7,
-                "updatedAt": 1788787851337
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.8,
-                "type": "back",
-                "size": 14920.5,
-                "updatedAt": 1788787844805
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.79,
-                "type": "back",
-                "size": 5.44,
-                "updatedAt": 1788787844805
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.53,
-                "type": "back",
-                "size": 42.63,
-                "updatedAt": 1788787844805
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.83,
-                "type": "lay",
-                "size": 210.15000000000003,
-                "updatedAt": 1788787800461
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.82,
-                "type": "lay",
-                "size": 55.56,
-                "updatedAt": 1788787768743
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.81,
-                "type": "back",
-                "size": 7286.13,
-                "updatedAt": 1788787768240
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.77,
-                "type": "lay",
-                "size": 401.96999999999935,
-                "updatedAt": 1788787727886
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.77,
-                "type": "back",
-                "size": 27066.85,
-                "updatedAt": 1788787719337
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.78,
-                "type": "back",
-                "size": 44.05,
-                "updatedAt": 1788787681559
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.76,
-                "type": "lay",
-                "size": 851.8900000000003,
-                "updatedAt": 1788787677530
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.76,
-                "type": "back",
-                "size": 12850.369999999999,
-                "updatedAt": 1788787672948
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.75,
-                "type": "lay",
-                "size": 1375.0600000000002,
-                "updatedAt": 1788787665031
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.75,
-                "type": "back",
-                "size": 12614.929999999998,
-                "updatedAt": 1788787664442
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.74,
-                "type": "back",
-                "size": 14020.050000000001,
-                "updatedAt": 1788787664442
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.74,
-                "type": "lay",
-                "size": 114.38999999999942,
-                "updatedAt": 1788787658395
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.73,
-                "type": "back",
-                "size": 69.5,
-                "updatedAt": 1788787656376
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.7,
-                "type": "back",
-                "size": 0.03,
-                "updatedAt": 1788787656376
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.83,
-                "type": "back",
-                "size": 2.81,
-                "updatedAt": 1788787270190
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.98,
-                "type": "back",
-                "size": 5.62,
-                "updatedAt": 1788787213667
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.98,
-                "type": "lay",
-                "size": 5.63,
-                "updatedAt": 1788787198652
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 1.63,
-                "type": "lay",
-                "size": 1.41,
-                "updatedAt": 1788787196501
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2,
-                "type": "back",
-                "size": 11.89,
-                "updatedAt": 1788787165711
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.5,
-                "type": "back",
-                "size": 4.16,
-                "updatedAt": 1788786905304
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.36,
-                "type": "back",
-                "size": 3.54,
-                "updatedAt": 1788786782421
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.38,
-                "type": "lay",
-                "size": 6.92,
-                "updatedAt": 1788786764734
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.3,
-                "type": "back",
-                "size": 1.38,
-                "updatedAt": 1788786764734
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.2,
-                "type": "back",
-                "size": 23.64,
-                "updatedAt": 1788786689915
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.6,
-                "type": "lay",
-                "size": 3.54,
-                "updatedAt": 1788786676712
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.12,
-                "type": "back",
-                "size": 19.42,
-                "updatedAt": 1788783772815
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.26,
-                "type": "back",
-                "size": 4.84,
-                "updatedAt": 1788782611743
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.4,
-                "type": "lay",
-                "size": 4.84,
-                "updatedAt": 1788782528771
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.14,
-                "type": "back",
-                "size": 63.57,
-                "updatedAt": 1788782501589
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.62,
-                "type": "lay",
-                "size": 0.9,
-                "updatedAt": 1788782377890
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.18,
-                "type": "back",
-                "size": 8.27,
-                "updatedAt": 1788782190519
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.48,
-                "type": "lay",
-                "size": 4.84,
-                "updatedAt": 1788782154827
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.18,
-                "type": "lay",
-                "size": 4.5600000000000005,
-                "updatedAt": 1788782103116
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.56,
-                "type": "lay",
-                "size": 4.84,
-                "updatedAt": 1788781990499
-              },
-              {
-                "team": "Amritsar Soormas",
-                "price": 2.16,
-                "type": "back",
-                "size": 19.97,
-                "updatedAt": 1788780887450
-              }
-            ],
-            "pnlIfWins": -64895.9944,
-            "totalBet": 68745.37470000001
-          }
-        },
-        "Usr": "cricketloaduser56@gmail.com",
-        "competitionName": "Sher E Punjab T20 League"
-      },
-      "predictedWinner": "Jalandhar Warriors",
-      "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Lay Shield (Lay Absorbed)",
-      "actualWinner": null,
-      "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
     },
     {
       "matchId": "36039088",
