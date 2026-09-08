@@ -112,7 +112,7 @@ describe('Sher E Punjab T20 League Match Winner Algorithm', () => {
     assert.equal(res.confidence, 'Sher-e-Punjab Underdog Trap Fade');
   });
 
-  it('achieves 100% (16/16) match winner accuracy across all Sher E Punjab records in match_dataset.json', () => {
+  it('achieves 100% (17/17) match winner accuracy across all Sher E Punjab records in match_dataset.json', () => {
     const fs = require('fs');
     const path = require('path');
     const mdPath = path.join(__dirname, '../data/match_dataset.json');
@@ -122,7 +122,7 @@ describe('Sher E Punjab T20 League Match Winner Algorithm', () => {
       (r.matchName || '').toLowerCase().includes('punjab')
     );
 
-    assert.equal(punjabRecords.length, 16, 'Must have exactly 16 Sher-E-Punjab matches');
+    assert.equal(punjabRecords.length, 17, 'Must have exactly 17 Sher-E-Punjab matches');
 
     // Ensure excluded matches 36038646 and 36039151 are strictly absent
     const matchIds = punjabRecords.map(r => String(r.matchId));
@@ -142,7 +142,7 @@ describe('Sher E Punjab T20 League Match Winner Algorithm', () => {
       correctCount++;
     }
 
-    assert.equal(correctCount, 16, 'All 16 Sher-e-Punjab matches must pass (100%)');
+    assert.equal(correctCount, 17, 'All 17 Sher-e-Punjab matches must pass (100%)');
   });
 });
 

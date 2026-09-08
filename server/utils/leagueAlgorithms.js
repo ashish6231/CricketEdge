@@ -495,6 +495,17 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
     return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Dump & Net Support Dominance' };
   }
 
+  // 0.1 📊 Total Market Volume Dominance & Net Support Alignment
+  // e.g. Match 36043141: Amritsar has ₹1.24L total bet vs Mohali ₹49k (2.5x) & Amritsar holds Net Support Lead
+  const tot1 = adv1.totalBet || 0;
+  const tot2 = adv2.totalBet || 0;
+  if (tot1 >= 40000 && tot1 >= tot2 * 2.0 && net.strongerTeam === team1) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Market Volume Dominance' };
+  }
+  if (tot2 >= 40000 && tot2 >= tot1 * 2.0 && net.strongerTeam === team2) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Market Volume Dominance' };
+  }
+
   // 1. 📉 Lay Resistance Dump / Short Fade (One team has heavy lay dump >= 50 & >= 1.5x its back, other team has clean back)
   // e.g. Bathinda vs Ludhiana: Bathinda has ₹74 Lay vs ₹0 on Ludhiana -> Faded to Ludhiana Lion
   if (l1 >= 50 && l1 >= b1 * 1.5 && b2 > b1 && l2 <= 20) {
