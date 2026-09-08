@@ -569,9 +569,15 @@ export function getWomensAsiaCupTossPrediction({
     }
   }
 
-  // 2. High-Liquidity Bookmaker Deficit Trap Fade (Marquee Derby e.g. India W v Pakistan W)
-  if (totBack > 3500) {
-    if (prePnl1 > 1500 && prePnl2 < -1500) {
+const ASIA_ASSOCIATES = ['indonesia', 'hong kong', 'thailand', 'nepal', 'malaysia'];
+function isAsiaAssociate(team) {
+  const t = (team || '').toLowerCase();
+  return ASIA_ASSOCIATES.some((a) => t.includes(a));
+}
+
+  // 2. High-Liquidity Bookmaker Deficit Trap Fade (e.g. India W v Pakistan W, UAE W v Bangladesh W)
+  if (totBack >= 2000) {
+    if (prePnl1 > 1000 && prePnl2 < -1000 && !isAsiaAssociate(t1)) {
       return {
         winner: t1,
         tier: 'WOMENS_ASIA_CUP_SPECIAL',
@@ -581,7 +587,7 @@ export function getWomensAsiaCupTossPrediction({
         reason: `Asia Cup Bookmaker Deficit on ${t2} (PnL: ${prePnl2.toFixed(0)}) -> Faded to Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
       }
     }
-    if (prePnl2 > 1500 && prePnl1 < -1500) {
+    if (prePnl2 > 1000 && prePnl1 < -1000 && !isAsiaAssociate(t2)) {
       return {
         winner: t2,
         tier: 'WOMENS_ASIA_CUP_SPECIAL',

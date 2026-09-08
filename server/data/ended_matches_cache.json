@@ -860,6 +860,27 @@
     "runners": [],
     "totalMatched": 93339
   },
+  "36039256": {
+    "matchLoad": {
+      "team1": {
+        "name": "Kenya",
+        "money": 66071,
+        "percent": 98,
+        "odds": 1.11,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Sierra Leone",
+        "money": 1162,
+        "percent": 2,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 67234
+    },
+    "runners": [],
+    "totalMatched": 67234
+  },
   "36042373": {
     "matchLoad": {
       "team1": {

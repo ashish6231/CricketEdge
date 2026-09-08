@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-08T16:44:35.365Z",
+  "updatedAt": "2026-09-08T17:28:56.699Z",
   "records": [
     {
       "matchId": "35901908",
@@ -528769,6 +528769,1028 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null
+    },
+    {
+      "matchId": "36039256",
+      "marketId": "1.262091989",
+      "matchName": "Kenya v Sierra Leone",
+      "competitionName": "T20 African Continental Cup",
+      "team1": "Kenya",
+      "team2": "Sierra Leone",
+      "startTime": 1788867000000,
+      "endedAt": "2026-09-08T17:28:56.642Z",
+      "capturedAt": "2026-09-08T17:28:56.642Z",
+      "snapshot": {
+        "serverTime": "2026-09-08T17:28:56.600Z",
+        "matchId": "36039256",
+        "matchName": "Kenya v Sierra Leone",
+        "teamNames": [
+          "Kenya",
+          "Sierra Leone"
+        ],
+        "inPlayPnl": {
+          "team1": 385.42879999999997,
+          "team2": -2329.9400000000005
+        },
+        "inPlayTotalBets": {
+          "team1": 579.2540000000004,
+          "team2": 9608.695
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 5678.4800000000005,
+            "lay": 7249.959999999999,
+            "total": 5797.900000000001
+          },
+          "team2": {
+            "back": 171.39,
+            "lay": 119.41999999999999,
+            "total": 7421.349999999999
+          }
+        },
+        "preMatchPnl": {
+          "team1": 375.6143,
+          "team2": -2448.620000000001
+        },
+        "preMatchTotalBets": {
+          "team1": 439.7447000000003,
+          "team2": 7641.085000000001
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 4324.09,
+            "lay": 6575.740000000001,
+            "total": 4391.21
+          },
+          "team2": {
+            "back": 75.81,
+            "lay": 67.12,
+            "total": 6651.550000000001
+          }
+        },
+        "threeMinPnl": {
+          "team1": 412.3650999999999,
+          "team2": -2773.2349999999997
+        },
+        "threeMinTotalBets": {
+          "team1": 551.2432000000003,
+          "team2": 9593.345000000001
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 5328.8,
+            "lay": 7234.610000000001,
+            "total": 5441.1900000000005
+          },
+          "team2": {
+            "back": 171.39,
+            "lay": 112.38999999999999,
+            "total": 7406.000000000001
+          }
+        },
+        "matchLoadV2": {
+          "team1": 49,
+          "team2": 52
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 29519.609999999993,
+            "lay": 36551.87999999999,
+            "totalVolume": 66071.48999999999,
+            "backPercentage": 44.678287109916845
+          },
+          "team2": {
+            "back": 775.0200000000001,
+            "lay": 387.47999999999996,
+            "totalVolume": 1162.5,
+            "backPercentage": 66.66838709677421
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1276.1167000000012,
+            "lay": 1825.2786000000015,
+            "totalBet": 3101.395300000003
+          },
+          "team2": {
+            "back": 99428.475,
+            "lay": 14503.950000000003,
+            "totalBet": 113932.425
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 29907.089999999993,
+            "support": 44.48209900974195
+          },
+          "team2": {
+            "supportMoney": 37326.89999999999,
+            "support": 55.51790099025805
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Sierra Leone",
+          "bookieFavouriteOutcome": "Kenya",
+          "riskTeam": "Sierra Leone",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 11.035801980516098,
+          "mostBettedTeam": "Sierra Leone",
+          "prediction": {
+            "team1TrueSupport": 0,
+            "team2TrueSupport": 285.0499999999999,
+            "ratio": 999,
+            "bookiePnlTeam1": 570.0999999999998,
+            "bookiePnlTeam2": 0,
+            "prediction": "No Prediction",
+            "pattern": "None",
+            "reason": "Market metrics do not match any known pattern."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -285.0499999999999,
+            "backExposure": 0,
+            "layExposure": 285.0499999999999,
+            "teamName": "Kenya"
+          },
+          "team2": {
+            "netExposure": 99.27,
+            "backExposure": 99.27,
+            "layExposure": 0,
+            "teamName": "Sierra Leone"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1276.1167000000012,
+            "A_lay_stake": 36551.87999999999,
+            "B_back_expo": 99428.475,
+            "B_lay_stake": 387.47999999999996
+          },
+          "totals": {
+            "totalBetTeam1": 1663.5967000000012,
+            "totalBetTeam2": 135980.35499999998
+          },
+          "simplePL": {
+            "team1_win": 35275.76329999999,
+            "team2_win": -99040.99500000001
+          },
+          "derivedPL": {
+            "team1_win": 134316.7583,
+            "team2_win": -134316.7583
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 29519.609999999993,
+              "totalLayVol": 36551.87999999999,
+              "totalBet": 29907.089999999993,
+              "profitLoss": 7419.809999999994
+            },
+            "team2": {
+              "totalBackVol": 775.0200000000001,
+              "totalLayVol": 387.47999999999996,
+              "totalBet": 37326.89999999999,
+              "profitLoss": -7419.809999999994
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1276.1167000000012,
+              "totalLayVol": 36551.87999999999,
+              "totalBet": 1663.5967000000012,
+              "profitLoss": 936.7019000000003
+            },
+            "team2": {
+              "totalBackExpo": 99428.475,
+              "totalLayVol": 387.47999999999996,
+              "totalBet": 135980.35499999998,
+              "profitLoss": -91956.79499999998
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1276.1167000000012,
+              "totalLayNetVol": 1825.2786000000015,
+              "totalBet": 15780.066700000003,
+              "profitLoss": 85473.6869
+            },
+            "team2": {
+              "totalBackNetVol": 99428.475,
+              "totalLayNetVol": 14503.950000000003,
+              "totalBet": 101253.75360000001,
+              "profitLoss": -85473.6869
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 49,
+            "averageOdds": 51.06448979591836,
+            "averageSize": 610.3487755102041,
+            "supportProduct": 31167.148818992082
+          },
+          "teamB": {
+            "tradeCount": 52,
+            "averageOdds": 63.54057692307693,
+            "averageSize": 717.8249999999997,
+            "supportProduct": 45611.01462980767
+          },
+          "strongerTeam": "Sierra Leone",
+          "supportRatio": 1.4634323753738439
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 29519.609999999993,
+            "oppoLayVolume": 387.47999999999996,
+            "layExposure": 1825.2786000000015,
+            "netSupportValue": 28081.81139999999
+          },
+          "teamB": {
+            "totalBackVolume": 775.0200000000001,
+            "oppoLayVolume": 36551.87999999999,
+            "layExposure": 14503.950000000003,
+            "netSupportValue": 22822.949999999983
+          },
+          "strongerTeam": "Kenya",
+          "netSupportDifference": 5258.861400000009,
+          "percentageA": 55.16539244598052,
+          "percentageB": 44.834607554019485
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -7032.269999999997,
+            "syntheticSupport": 387.47999999999996,
+            "opponentLiabilityRejection": 14503.950000000003,
+            "sentimentScore": -21148.739999999998
+          },
+          "teamB": {
+            "directNetSupport": 387.54000000000013,
+            "syntheticSupport": 36551.87999999999,
+            "opponentLiabilityRejection": 1825.2786000000015,
+            "sentimentScore": 35114.14139999999
+          },
+          "strongerTeam": "Sierra Leone",
+          "scoreDifference": 56262.88139999999,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Kenya",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Sierra Leone",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Kenya"
+        },
+        "teams": {
+          "Kenya": {
+            "trades": [
+              {
+                "team": "Kenya",
+                "price": 1.11,
+                "type": "lay",
+                "size": 142.98999999999998,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.09,
+                "type": "lay",
+                "size": 2295.4799999999996,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.08,
+                "type": "lay",
+                "size": 2976.04,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.07,
+                "type": "lay",
+                "size": 4164.280000000001,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.06,
+                "type": "lay",
+                "size": 1230.92,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.05,
+                "type": "lay",
+                "size": 6957.979999999997,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.04,
+                "type": "lay",
+                "size": 1804.8500000000001,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.03,
+                "type": "lay",
+                "size": 3365.6800000000007,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.02,
+                "type": "lay",
+                "size": 5616.04,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.01,
+                "type": "lay",
+                "size": 7360.55,
+                "updatedAt": 1788879966588
+              },
+              {
+                "team": "Kenya",
+                "price": 1.5,
+                "type": "lay",
+                "size": 570.0999999999998,
+                "updatedAt": 1788876006407
+              },
+              {
+                "team": "Kenya",
+                "price": 1.1,
+                "type": "lay",
+                "size": 57.070000000000164,
+                "updatedAt": 1788876006407
+              },
+              {
+                "team": "Kenya",
+                "price": 1.01,
+                "type": "back",
+                "size": 5694.44,
+                "updatedAt": 1788872444247
+              },
+              {
+                "team": "Kenya",
+                "price": 1.02,
+                "type": "back",
+                "size": 3452.609999999999,
+                "updatedAt": 1788872356473
+              },
+              {
+                "team": "Kenya",
+                "price": 1.03,
+                "type": "back",
+                "size": 3574.1400000000003,
+                "updatedAt": 1788872049564
+              },
+              {
+                "team": "Kenya",
+                "price": 1.04,
+                "type": "back",
+                "size": 4745.429999999999,
+                "updatedAt": 1788870381639
+              },
+              {
+                "team": "Kenya",
+                "price": 1.05,
+                "type": "back",
+                "size": 2256.8200000000006,
+                "updatedAt": 1788870092465
+              },
+              {
+                "team": "Kenya",
+                "price": 1.06,
+                "type": "back",
+                "size": 1628.5499999999997,
+                "updatedAt": 1788869747710
+              },
+              {
+                "team": "Kenya",
+                "price": 1.07,
+                "type": "back",
+                "size": 3978.82,
+                "updatedAt": 1788869716386
+              },
+              {
+                "team": "Kenya",
+                "price": 1.08,
+                "type": "back",
+                "size": 2450.0799999999995,
+                "updatedAt": 1788869693720
+              },
+              {
+                "team": "Kenya",
+                "price": 1.09,
+                "type": "back",
+                "size": 806.7799999999997,
+                "updatedAt": 1788850270464
+              },
+              {
+                "team": "Kenya",
+                "price": 1.11,
+                "type": "back",
+                "size": 219.66999999999996,
+                "updatedAt": 1788837372158
+              },
+              {
+                "team": "Kenya",
+                "price": 1.12,
+                "type": "lay",
+                "size": 7.12,
+                "updatedAt": 1788836754793
+              },
+              {
+                "team": "Kenya",
+                "price": 1.1,
+                "type": "back",
+                "size": 712.2700000000001,
+                "updatedAt": 1788798010234
+              },
+              {
+                "team": "Kenya",
+                "price": 1.33,
+                "type": "lay",
+                "size": 2.78,
+                "updatedAt": 1788737382642
+              }
+            ],
+            "pnlIfWins": 936.7018999999999,
+            "totalBet": 1663.5967000000012
+          },
+          "Sierra Leone": {
+            "trades": [
+              {
+                "team": "Sierra Leone",
+                "price": 1000,
+                "type": "back",
+                "size": 64.11000000000001,
+                "updatedAt": 1788879966086
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 42,
+                "type": "back",
+                "size": 68.24000000000001,
+                "updatedAt": 1788879966086
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 16.5,
+                "type": "back",
+                "size": 3.2800000000000016,
+                "updatedAt": 1788879966086
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 12.5,
+                "type": "back",
+                "size": 12.020000000000003,
+                "updatedAt": 1788879966086
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 120,
+                "type": "back",
+                "size": 46.239999999999995,
+                "updatedAt": 1788876006190
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 34,
+                "type": "back",
+                "size": 52.790000000000006,
+                "updatedAt": 1788876006190
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 13.5,
+                "type": "back",
+                "size": 30.17000000000001,
+                "updatedAt": 1788876006190
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 1000,
+                "type": "lay",
+                "size": 2.82,
+                "updatedAt": 1788875798229
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 200,
+                "type": "back",
+                "size": 4.17,
+                "updatedAt": 1788875239565
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 150,
+                "type": "back",
+                "size": 4.11,
+                "updatedAt": 1788875239565
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 300,
+                "type": "back",
+                "size": 2.82,
+                "updatedAt": 1788874845685
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 220,
+                "type": "back",
+                "size": 5.1,
+                "updatedAt": 1788874445381
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 140,
+                "type": "back",
+                "size": 11.260000000000002,
+                "updatedAt": 1788874154715
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 120,
+                "type": "lay",
+                "size": 3.4100000000000037,
+                "updatedAt": 1788874096042
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 110,
+                "type": "lay",
+                "size": 7.220000000000006,
+                "updatedAt": 1788874096042
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 110,
+                "type": "back",
+                "size": 39.98,
+                "updatedAt": 1788874093017
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 100,
+                "type": "lay",
+                "size": 0.9500000000000028,
+                "updatedAt": 1788873569379
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 100,
+                "type": "back",
+                "size": 14.75,
+                "updatedAt": 1788873556748
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 140,
+                "type": "lay",
+                "size": 2.8199999999999994,
+                "updatedAt": 1788873402212
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 130,
+                "type": "back",
+                "size": 1.6300000000000008,
+                "updatedAt": 1788872587132
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 130,
+                "type": "lay",
+                "size": 5.1,
+                "updatedAt": 1788872526541
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 42,
+                "type": "lay",
+                "size": 3.94,
+                "updatedAt": 1788872105308
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 36,
+                "type": "back",
+                "size": 5.299999999999999,
+                "updatedAt": 1788872048353
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 50,
+                "type": "back",
+                "size": 69.05000000000001,
+                "updatedAt": 1788871978403
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 55,
+                "type": "back",
+                "size": 15.489999999999998,
+                "updatedAt": 1788871974813
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 55,
+                "type": "lay",
+                "size": 14.07,
+                "updatedAt": 1788871966723
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 70,
+                "type": "back",
+                "size": 1.55,
+                "updatedAt": 1788871930932
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 75,
+                "type": "back",
+                "size": 52.17,
+                "updatedAt": 1788871919371
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 85,
+                "type": "back",
+                "size": 7.149999999999999,
+                "updatedAt": 1788871760399
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 85,
+                "type": "lay",
+                "size": 21,
+                "updatedAt": 1788871746322
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 75,
+                "type": "lay",
+                "size": 4.14,
+                "updatedAt": 1788871694859
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 60,
+                "type": "back",
+                "size": 11.26,
+                "updatedAt": 1788871670641
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 50,
+                "type": "lay",
+                "size": 0.32,
+                "updatedAt": 1788870692847
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 36,
+                "type": "lay",
+                "size": 5.550000000000001,
+                "updatedAt": 1788870659619
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 34,
+                "type": "lay",
+                "size": 40.35,
+                "updatedAt": 1788870659619
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 32,
+                "type": "lay",
+                "size": 6.88,
+                "updatedAt": 1788870511442
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 25,
+                "type": "lay",
+                "size": 2.84,
+                "updatedAt": 1788870176931
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 21,
+                "type": "back",
+                "size": 54.06000000000002,
+                "updatedAt": 1788870175734
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 20,
+                "type": "lay",
+                "size": 32.22,
+                "updatedAt": 1788870106198
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 17.5,
+                "type": "back",
+                "size": 31.61,
+                "updatedAt": 1788870086417
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 17.5,
+                "type": "lay",
+                "size": 14.04,
+                "updatedAt": 1788870026854
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 17,
+                "type": "lay",
+                "size": 7.970000000000001,
+                "updatedAt": 1788870026854
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 16,
+                "type": "lay",
+                "size": 2.209999999999999,
+                "updatedAt": 1788870026854
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 15,
+                "type": "back",
+                "size": 17.689999999999998,
+                "updatedAt": 1788869725293
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 13.5,
+                "type": "lay",
+                "size": 15.059999999999995,
+                "updatedAt": 1788869693720
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 15.5,
+                "type": "lay",
+                "size": 2.79,
+                "updatedAt": 1788869522628
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 21,
+                "type": "lay",
+                "size": 27.409999999999993,
+                "updatedAt": 1788869439863
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 18,
+                "type": "back",
+                "size": 0.7999999999999998,
+                "updatedAt": 1788869439863
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 14,
+                "type": "back",
+                "size": 24.17,
+                "updatedAt": 1788869402511
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 15,
+                "type": "lay",
+                "size": 31.5,
+                "updatedAt": 1788869279299
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 28,
+                "type": "lay",
+                "size": 21.04,
+                "updatedAt": 1788869269739
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 26,
+                "type": "lay",
+                "size": 17.549999999999997,
+                "updatedAt": 1788869269739
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 29,
+                "type": "lay",
+                "size": 0.31,
+                "updatedAt": 1788868176258
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 27,
+                "type": "back",
+                "size": 16.990000000000002,
+                "updatedAt": 1788868158076
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 30,
+                "type": "lay",
+                "size": 0.14,
+                "updatedAt": 1788867485203
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 27,
+                "type": "lay",
+                "size": 3.270000000000001,
+                "updatedAt": 1788867485203
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 26,
+                "type": "back",
+                "size": 6.3500000000000005,
+                "updatedAt": 1788867354329
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 22,
+                "type": "back",
+                "size": 9.04,
+                "updatedAt": 1788867224553
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 22,
+                "type": "lay",
+                "size": 0.5,
+                "updatedAt": 1788867118398
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 24,
+                "type": "lay",
+                "size": 0.14,
+                "updatedAt": 1788867069360
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 23,
+                "type": "lay",
+                "size": 0.04,
+                "updatedAt": 1788867069360
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 16.5,
+                "type": "lay",
+                "size": 7.030000000000001,
+                "updatedAt": 1788866914533
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 16,
+                "type": "back",
+                "size": 14.33,
+                "updatedAt": 1788866826007
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 17,
+                "type": "back",
+                "size": 22.820000000000004,
+                "updatedAt": 1788866388251
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 14.5,
+                "type": "back",
+                "size": 0.10999999999999943,
+                "updatedAt": 1788866220775
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 14.5,
+                "type": "lay",
+                "size": 24.13,
+                "updatedAt": 1788866213710
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 12,
+                "type": "back",
+                "size": 33.24,
+                "updatedAt": 1788865850668
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 18,
+                "type": "lay",
+                "size": 1.27,
+                "updatedAt": 1788865079192
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 19,
+                "type": "lay",
+                "size": 6.45,
+                "updatedAt": 1788865076184
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 18.5,
+                "type": "lay",
+                "size": 5.63,
+                "updatedAt": 1788865076184
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 13,
+                "type": "lay",
+                "size": 2.3499999999999996,
+                "updatedAt": 1788864452984
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 13,
+                "type": "back",
+                "size": 6.08,
+                "updatedAt": 1788863583448
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 10,
+                "type": "back",
+                "size": 11.03,
+                "updatedAt": 1788850976661
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 12.5,
+                "type": "lay",
+                "size": 43.019999999999996,
+                "updatedAt": 1788845171629
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 10.5,
+                "type": "back",
+                "size": 1.32,
+                "updatedAt": 1788836840455
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 15.5,
+                "type": "back",
+                "size": 2.74,
+                "updatedAt": 1788810132633
+              }
+            ],
+            "pnlIfWins": -91956.79500000001,
+            "totalBet": 135980.35499999998
+          }
+        },
+        "Usr": "cricketloaduser56@gmail.com",
+        "competitionName": "T20 African Continental Cup"
+      },
+      "predictedWinner": "Kenya",
+      "predictionTier": 2,
+      "predictionConfidence": "82% Maximum Money Lead (99% Share)",
+      "actualWinner": "Kenya",
+      "lastCaptureError": null,
+      "status": "verified",
+      "confirmedAt": "2026-09-08T17:28:56.642Z",
+      "confirmedByEmail": "crex-auto",
+      "confirmedById": "system"
     }
   ]
 }

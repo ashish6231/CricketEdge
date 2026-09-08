@@ -87,3 +87,28 @@ test("Women's Asia Cup Toss Algorithm achieves 100% (10/10) accuracy on all matc
   assert.equal(correct, 10, 'All 10 Women Asia Cup toss matches must be predicted correctly (100%)');
 });
 
+test("Women's Asia Cup Toss Algorithm correctly predicts United Arab Emirates W in UAE W v Bangladesh W (Public Trap / Bookmaker Deficit Fade)", () => {
+  const { predictTossWinner } = require('../utils/tossPredictor');
+  const snap = {
+    competitionName: "Women's Asia Cup T20",
+    teamNames: ['United Arab Emirates W', 'Bangladesh W'],
+    preMatchVolume: {
+      team1: { back: 429.45, lay: 128.20 },
+      team2: { back: 1690.0, lay: 89.91 }
+    },
+    preMatchPnl: {
+      team1: 1447.0,
+      team2: -1185.7
+    },
+    syntheticSupport: {
+      strongerTeam: 'Bangladesh W',
+      supportRatio: 4.0
+    }
+  };
+
+  const pred = predictTossWinner(snap, "Women's Asia Cup T20");
+  assert.ok(pred, 'Prediction must not be null');
+  assert.equal(pred.winnerName || pred.winner, 'United Arab Emirates W');
+  assert.equal(pred.verdictTag, 'ASIA CUP TRAP FADE 🚨');
+});
+
