@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-07T14:25:42.742Z",
+  "updatedAt": "2026-09-08T03:15:02.917Z",
   "records": [
     {
       "matchId": "35901908",
@@ -425,7 +425,7 @@
         }
       },
       "predictedWinner": "Guyana Amazon Warriors",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (4.7x Ratio)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -436,25 +436,13 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (4.7x Ratio)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (4.7x Ratio)",
           "winner": "Guyana Amazon Warriors",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Jamaica Kingsmen",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Guyana Amazon Warriors",
-          "priority": 80,
           "selected": true
         }
       ],
@@ -861,7 +849,7 @@
         }
       },
       "predictedWinner": "Sunrisers Leeds W",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "The Hundred Stronger Safe on Sunrisers Leeds W (PnL: +278)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -872,26 +860,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "The Hundred Stronger Safe on Sunrisers Leeds W (PnL: +278)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "The Hundred Stronger Safe on Sunrisers Leeds W (PnL: +278)",
           "winner": "Sunrisers Leeds W",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Southern Brave W",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Southern Brave W",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
@@ -1353,7 +1329,7 @@
         }
       },
       "predictedWinner": "Sunrisers Leeds",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "The Hundred Lay Shield on Sunrisers Leeds (Lay: ₹381, PnL: +2176)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -1364,32 +1340,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "The Hundred Lay Shield on Sunrisers Leeds (Lay: ₹381, PnL: +2176)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "The Hundred Lay Shield on Sunrisers Leeds (Lay: ₹381, PnL: +2176)",
           "winner": "Sunrisers Leeds",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Sunrisers Leeds",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Manchester Super Giants",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Manchester Super Giants",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
@@ -1809,7 +1767,7 @@
         }
       },
       "predictedWinner": "St. Lucia Kings",
-      "predictionReason": "Higher Lay Trades",
+      "predictionReason": "CPL Smart Money Inflow on St. Lucia Kings (₹1.1k Back, Lead: 1.1x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -1820,26 +1778,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Higher Lay Trades"
+        "reason": "CPL Smart Money Inflow on St. Lucia Kings (₹1.1k Back, Lead: 1.1x)"
       },
       "matchedRules": [
         {
-          "reason": "Higher Lay Trades",
+          "reason": "CPL Smart Money Inflow on St. Lucia Kings (₹1.1k Back, Lead: 1.1x)",
           "winner": "St. Lucia Kings",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "St. Lucia Kings",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Antigua & Barbuda Falcons",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
@@ -2224,36 +2170,24 @@
         }
       },
       "predictedWinner": "India",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "Intl Inflow on India (₹1.3k Back, Lead: 1.8x)",
       "predictionRisk": {
-        "tier": "low",
-        "label": "Low Risk",
-        "shortLabel": "Low",
-        "color": "text-[#22c55e]",
-        "hex": "#22c55e",
-        "bg": "rgba(34,197,94,0.12)",
-        "border": "rgba(34,197,94,0.35)",
-        "emoji": "🟢",
-        "wrongPct": "~10–15%",
-        "reason": "Clear Lay Vol Edge"
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Intl Inflow on India (₹1.3k Back, Lead: 1.8x)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "Intl Inflow on India (₹1.3k Back, Lead: 1.8x)",
           "winner": "India",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "India",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "India",
-          "priority": 85,
           "selected": true
         }
       ],
@@ -2716,7 +2650,7 @@
         }
       },
       "predictedWinner": "Afghanistan",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "Intl Inflow on Afghanistan (₹1.2k Back, Lead: 1.9x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -2727,25 +2661,13 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "Intl Inflow on Afghanistan (₹1.2k Back, Lead: 1.9x)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "Intl Inflow on Afghanistan (₹1.2k Back, Lead: 1.9x)",
           "winner": "Afghanistan",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Afghanistan",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Afghanistan",
-          "priority": 80,
           "selected": true
         }
       ],
@@ -3215,7 +3137,7 @@
         }
       },
       "predictedWinner": "Jamaica Kingsmen",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "CPL Strong Synthetic Support on Jamaica Kingsmen (3.2x Ratio)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -3226,26 +3148,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "CPL Strong Synthetic Support on Jamaica Kingsmen (3.2x Ratio)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "CPL Strong Synthetic Support on Jamaica Kingsmen (3.2x Ratio)",
           "winner": "Jamaica Kingsmen",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Jamaica Kingsmen",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Trinbago Knight Riders",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
@@ -3637,7 +3547,7 @@
         }
       },
       "predictedWinner": "Trent Rockets W",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "The Hundred Smart Inflow on Trent Rockets W (₹2.0k Back, Lead: 2.1x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -3648,25 +3558,13 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "The Hundred Smart Inflow on Trent Rockets W (₹2.0k Back, Lead: 2.1x)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "The Hundred Smart Inflow on Trent Rockets W (₹2.0k Back, Lead: 2.1x)",
           "winner": "Trent Rockets W",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Sunrisers Leeds W",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Trent Rockets W",
-          "priority": 80,
           "selected": true
         }
       ],
@@ -4115,7 +4013,7 @@
         }
       },
       "predictedWinner": "Manchester Super Giants",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "The Hundred Smart Inflow on Manchester Super Giants (₹2.6k Back, Lead: 2.3x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -4126,25 +4024,13 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "The Hundred Smart Inflow on Manchester Super Giants (₹2.6k Back, Lead: 2.3x)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "The Hundred Smart Inflow on Manchester Super Giants (₹2.6k Back, Lead: 2.3x)",
           "winner": "Manchester Super Giants",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Manchester Super Giants",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Manchester Super Giants",
-          "priority": 80,
           "selected": true
         }
       ],
@@ -4677,7 +4563,7 @@
         }
       },
       "predictedWinner": "St. Lucia Kings",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "CPL Bookie Lay Shield on St. Lucia Kings (Lay: ₹1.3k, PnL: +1690)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -4688,32 +4574,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "CPL Bookie Lay Shield on St. Lucia Kings (Lay: ₹1.3k, PnL: +1690)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "CPL Bookie Lay Shield on St. Lucia Kings (Lay: ₹1.3k, PnL: +1690)",
           "winner": "St. Lucia Kings",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "St. Lucia Kings",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Barbados Tridents",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Barbados Tridents",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
@@ -5238,7 +5106,7 @@
         }
       },
       "predictedWinner": "St. Kitts and Nevis Patriots",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (3.0x Ratio)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -5249,25 +5117,13 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (3.0x Ratio)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (3.0x Ratio)",
           "winner": "St. Kitts and Nevis Patriots",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Jamaica Kingsmen",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "St. Kitts and Nevis Patriots",
-          "priority": 80,
           "selected": true
         }
       ],
@@ -5741,32 +5597,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "Intl Inflow on England (₹3.1k Back, Lead: 1.9x)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
-          "winner": "Pakistan",
+          "reason": "Intl Inflow on England (₹3.1k Back, Lead: 1.9x)",
+          "winner": "England",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Pakistan",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Pakistan",
-          "priority": 80,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "England",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v7-layvol-stronger",
@@ -6137,7 +5975,7 @@
         }
       },
       "predictedWinner": "Dindigul Dragons",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "TNPL Critical Public Overload on Ruby Trichy Warriors (94% Load) -> Faded to Dindigul Dragons",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -6148,32 +5986,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "TNPL Critical Public Overload on Ruby Trichy Warriors (94% Load) -> Faded to Dindigul Dragons"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "TNPL Critical Public Overload on Ruby Trichy Warriors (94% Load) -> Faded to Dindigul Dragons",
           "winner": "Dindigul Dragons",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Dindigul Dragons",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Ruby Trichy Warriors",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Ruby Trichy Warriors",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -6621,7 +6441,7 @@
         }
       },
       "predictedWinner": "Guyana Amazon Warriors",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (1.8x Ratio)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -6632,26 +6452,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (1.8x Ratio)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (1.8x Ratio)",
           "winner": "Guyana Amazon Warriors",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Guyana Amazon Warriors",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "St. Lucia Kings",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -7008,42 +6816,24 @@
         }
       },
       "predictedWinner": "Tiruppur Tamizhans",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "TNPL Smart Money Inflow on Tiruppur Tamizhans (₹639 Back, Lead: 2.9x)",
       "predictionRisk": {
-        "tier": "low",
-        "label": "Low Risk",
-        "shortLabel": "Low",
-        "color": "text-[#22c55e]",
-        "hex": "#22c55e",
-        "bg": "rgba(34,197,94,0.12)",
-        "border": "rgba(34,197,94,0.35)",
-        "emoji": "🟢",
-        "wrongPct": "~10–15%",
-        "reason": "Clear Lay Vol Edge"
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "TNPL Smart Money Inflow on Tiruppur Tamizhans (₹639 Back, Lead: 2.9x)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "TNPL Smart Money Inflow on Tiruppur Tamizhans (₹639 Back, Lead: 2.9x)",
           "winner": "Tiruppur Tamizhans",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Tiruppur Tamizhans",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Tiruppur Tamizhans",
-          "priority": 80,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Tiruppur Tamizhans",
-          "priority": 85,
           "selected": true
         }
       ],
@@ -7531,26 +7321,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "TNPL Smart Money Inflow on Salem Spartans (₹1.7k Back, Lead: 1.5x)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
-          "winner": "Nellai Royal Kings",
+          "reason": "TNPL Smart Money Inflow on Salem Spartans (₹1.7k Back, Lead: 1.5x)",
+          "winner": "Salem Spartans",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Salem Spartans",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Salem Spartans",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -8054,7 +7832,7 @@
         }
       },
       "predictedWinner": "Antigua & Barbuda Falco",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "CPL Bookie Lay Shield on Antigua & Barbuda Falco (Lay: ₹8.4k, PnL: +5291)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -8065,31 +7843,13 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "CPL Bookie Lay Shield on Antigua & Barbuda Falco (Lay: ₹8.4k, PnL: +5291)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "CPL Bookie Lay Shield on Antigua & Barbuda Falco (Lay: ₹8.4k, PnL: +5291)",
           "winner": "Antigua & Barbuda Falco",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Antigua & Barbuda Falco",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "St. Kitts and Nevis Pat",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Antigua & Barbuda Falco",
-          "priority": 85,
           "selected": true
         }
       ],
@@ -8458,32 +8218,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "TNPL Smart Money Inflow on Dindigul Dragons (₹915 Back, Lead: 4.0x)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
-          "winner": "Lyca Kovai Kings",
+          "reason": "TNPL Smart Money Inflow on Dindigul Dragons (₹915 Back, Lead: 4.0x)",
+          "winner": "Dindigul Dragons",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Lyca Kovai Kings",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Dindigul Dragons",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Dindigul Dragons",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -8917,7 +8659,7 @@
         }
       },
       "predictedWinner": "Ruby Trichy Warriors",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "TNPL Bookie Lay Shield on Ruby Trichy Warriors (Lay: ₹589, PnL: +2072)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -8928,32 +8670,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "TNPL Bookie Lay Shield on Ruby Trichy Warriors (Lay: ₹589, PnL: +2072)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "TNPL Bookie Lay Shield on Ruby Trichy Warriors (Lay: ₹589, PnL: +2072)",
           "winner": "Ruby Trichy Warriors",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Ruby Trichy Warriors",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Chepauk Super Gillies",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Chepauk Super Gillies",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -9524,32 +9248,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "CPL Strong Synthetic Support on St. Lucia Kings (4.8x Ratio)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
-          "winner": "Jamaica Kingsmen",
+          "reason": "CPL Strong Synthetic Support on St. Lucia Kings (4.8x Ratio)",
+          "winner": "St. Lucia Kings",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Jamaica Kingsmen",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Jamaica Kingsmen",
-          "priority": 80,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "St. Lucia Kings",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -10067,7 +9773,7 @@
         }
       },
       "predictedWinner": "Australia",
-      "predictionReason": "Stronger Support Team",
+      "predictionReason": "Intl Strong Synthetic Support on Australia (5.3x Lead, ₹4.2k Back)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -10078,26 +9784,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Stronger Support Team"
+        "reason": "Intl Strong Synthetic Support on Australia (5.3x Lead, ₹4.2k Back)"
       },
       "matchedRules": [
         {
-          "reason": "Stronger Support Team",
+          "reason": "Intl Strong Synthetic Support on Australia (5.3x Lead, ₹4.2k Back)",
           "winner": "Australia",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Bangladesh",
-          "priority": 40,
-          "selected": false
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Bangladesh",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -10461,7 +10155,7 @@
         }
       },
       "predictedWinner": "Salem Spartans",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "TNPL Micro Liquidity Bookie Safe on Salem Spartans (PnL: +240 vs -234)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -10472,32 +10166,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "TNPL Micro Liquidity Bookie Safe on Salem Spartans (PnL: +240 vs -234)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "TNPL Micro Liquidity Bookie Safe on Salem Spartans (PnL: +240 vs -234)",
           "winner": "Salem Spartans",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Salem Spartans",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Salem Spartans",
-          "priority": 80,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Tiruppur Tamizhans",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -10884,40 +10560,22 @@
       "predictedWinner": "Madurai Panthers",
       "predictionReason": "TNPL Pure Profit on Madurai Panthers (Zero Back Exposure, PnL: +581)",
       "predictionRisk": {
-        "tier": "low",
-        "label": "Low Risk",
-        "shortLabel": "Low",
-        "color": "text-[#22c55e]",
-        "hex": "#22c55e",
-        "bg": "rgba(34,197,94,0.12)",
-        "border": "rgba(34,197,94,0.35)",
-        "emoji": "🟢",
-        "wrongPct": "~10–15%",
-        "reason": "Clear Lay Vol Edge"
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "TNPL Pure Profit on Madurai Panthers (Zero Back Exposure, PnL: +581)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
-          "winner": "Nellai Royal Kings",
+          "reason": "TNPL Pure Profit on Madurai Panthers (Zero Back Exposure, PnL: +581)",
+          "winner": "Madurai Panthers",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Nellai Royal Kings",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Nellai Royal Kings",
-          "priority": 80,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Nellai Royal Kings",
-          "priority": 85,
           "selected": true
         }
       ],
@@ -11331,7 +10989,7 @@
         }
       },
       "predictedWinner": "Lyca Kovai Kings",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "TNPL Smart Money Inflow on Lyca Kovai Kings (₹1.5k Back, Lead: 1.1x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -11342,26 +11000,14 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Clear Lay Vol Edge"
+        "reason": "TNPL Smart Money Inflow on Lyca Kovai Kings (₹1.5k Back, Lead: 1.1x)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "TNPL Smart Money Inflow on Lyca Kovai Kings (₹1.5k Back, Lead: 1.1x)",
           "winner": "Lyca Kovai Kings",
           "priority": 100,
           "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Lyca Kovai Kings",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Tiruppur Tamizhans",
-          "priority": 40,
-          "selected": false
         }
       ],
       "predictorVersion": "toss-v8-layvol-ratio-gate",
@@ -11907,42 +11553,24 @@
         }
       },
       "predictedWinner": "Barbados Tridents",
-      "predictionReason": "Clear Lay Vol Edge",
+      "predictionReason": "CPL Smart Money Inflow on Barbados Tridents (₹3.5k Back, Lead: 2.1x)",
       "predictionRisk": {
-        "tier": "low",
-        "label": "Low Risk",
-        "shortLabel": "Low",
-        "color": "text-[#22c55e]",
-        "hex": "#22c55e",
-        "bg": "rgba(34,197,94,0.12)",
-        "border": "rgba(34,197,94,0.35)",
-        "emoji": "🟢",
-        "wrongPct": "~10–15%",
-        "reason": "Clear Lay Vol Edge"
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "CPL Smart Money Inflow on Barbados Tridents (₹3.5k Back, Lead: 2.1x)"
       },
       "matchedRules": [
         {
-          "reason": "Clear Lay Vol Edge",
+          "reason": "CPL Smart Money Inflow on Barbados Tridents (₹3.5k Back, Lead: 2.1x)",
           "winner": "Barbados Tridents",
           "priority": 100,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Vol",
-          "winner": "Barbados Tridents",
-          "priority": 90,
-          "selected": true
-        },
-        {
-          "reason": "Higher Lay Trades",
-          "winner": "Barbados Tridents",
-          "priority": 80,
-          "selected": true
-        },
-        {
-          "reason": "Stronger Support Team",
-          "winner": "Barbados Tridents",
-          "priority": 85,
           "selected": true
         }
       ],
@@ -12447,7 +12075,7 @@
         }
       },
       "predictedWinner": "Trinbago Knight Riders",
-      "predictionReason": "Smart Money Inflow (Trinbago Knight Riders: ₹1.7k Back, Lead: 2.1x)",
+      "predictionReason": "CPL Strong Synthetic Support on Trinbago Knight Riders (1.7x Ratio)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -12458,11 +12086,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Inflow (Trinbago Knight Riders: ₹1.7k Back, Lead: 2.1x)"
+        "reason": "CPL Strong Synthetic Support on Trinbago Knight Riders (1.7x Ratio)"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Inflow (Trinbago Knight Riders: ₹1.7k Back, Lead: 2.1x)",
+          "reason": "CPL Strong Synthetic Support on Trinbago Knight Riders (1.7x Ratio)",
           "winner": "Trinbago Knight Riders",
           "priority": 100,
           "selected": true
@@ -12829,7 +12457,7 @@
         }
       },
       "predictedWinner": "Belfast Wolves",
-      "predictionReason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians",
+      "predictionReason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Belfast Wolves",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -12840,12 +12468,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians"
+        "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Belfast Wolves"
       },
       "matchedRules": [
         {
-          "reason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians",
-          "winner": "Dublin Guardians",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Belfast Wolves",
+          "winner": "Belfast Wolves",
           "priority": 100,
           "selected": true
         }
@@ -13302,12 +12930,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Inflow (England: ₹2.0k Back, Lead: 2.4x)"
+        "reason": "Intl High Trap Counter on England (PnL: -957) -> Bookie Safe Side Pakistan (+1043)"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Inflow (England: ₹2.0k Back, Lead: 2.4x)",
-          "winner": "England",
+          "reason": "Intl High Trap Counter on England (PnL: -957) -> Bookie Safe Side Pakistan (+1043)",
+          "winner": "Pakistan",
           "priority": 100,
           "selected": true
         }
@@ -13680,7 +13308,7 @@
         }
       },
       "predictedWinner": "Edinburgh Castle Rockers",
-      "predictionReason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)",
+      "predictionReason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -13691,11 +13319,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)"
+        "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)",
           "winner": "Edinburgh Castle Rockers",
           "priority": 100,
           "selected": true
@@ -14301,7 +13929,7 @@
         }
       },
       "predictedWinner": "St. Kitts and Nevis Patriots",
-      "predictionReason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹12.5L Back, Lead: 1.7x)",
+      "predictionReason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (2.2x Ratio)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -14312,11 +13940,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹12.5L Back, Lead: 1.7x)"
+        "reason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (2.2x Ratio)"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹12.5L Back, Lead: 1.7x)",
+          "reason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (2.2x Ratio)",
           "winner": "St. Kitts and Nevis Patriots",
           "priority": 100,
           "selected": true
@@ -14696,7 +14324,7 @@
         }
       },
       "predictedWinner": "South Africa",
-      "predictionReason": "Critical Public Overload on Namibia (100% Load, 99.0x Lead) -> Faded to South Africa",
+      "predictionReason": "Intl High Trap Counter on Namibia (PnL: -591) -> Bookie Safe Side South Africa (+635)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -14707,11 +14335,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Critical Public Overload on Namibia (100% Load, 99.0x Lead) -> Faded to South Africa"
+        "reason": "Intl High Trap Counter on Namibia (PnL: -591) -> Bookie Safe Side South Africa (+635)"
       },
       "matchedRules": [
         {
-          "reason": "Critical Public Overload on Namibia (100% Load, 99.0x Lead) -> Faded to South Africa",
+          "reason": "Intl High Trap Counter on Namibia (PnL: -591) -> Bookie Safe Side South Africa (+635)",
           "winner": "South Africa",
           "priority": 100,
           "selected": true
@@ -15225,7 +14853,7 @@
         }
       },
       "predictedWinner": "Edinburgh Castle Rockers",
-      "predictionReason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.5k Back, Lead: 1.8x)",
+      "predictionReason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Amsterdam Flames)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -15236,11 +14864,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.5k Back, Lead: 1.8x)"
+        "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Amsterdam Flames)"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.5k Back, Lead: 1.8x)",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Amsterdam Flames)",
           "winner": "Edinburgh Castle Rockers",
           "priority": 100,
           "selected": true
@@ -16082,12 +15710,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Smart Money Inflow (Barbados Tridents: ₹2.0k Back, Lead: 1.6x)"
+        "reason": "CPL Trap Bookie Safe on Trinbago Knight Riders (PnL: +732)"
       },
       "matchedRules": [
         {
-          "reason": "Smart Money Inflow (Barbados Tridents: ₹2.0k Back, Lead: 1.6x)",
-          "winner": "Barbados Tridents",
+          "reason": "CPL Trap Bookie Safe on Trinbago Knight Riders (PnL: +732)",
+          "winner": "Trinbago Knight Riders",
           "priority": 100,
           "selected": true
         }
@@ -16481,7 +16109,7 @@
         }
       },
       "predictedWinner": "Glasgow Cosmic",
-      "predictionReason": "ECS Smart Inflow on Dublin Guardians (₹1.3k Back, Lead: 1.9x)",
+      "predictionReason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Glasgow Cosmic",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -16492,12 +16120,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Dublin Guardians (₹1.3k Back, Lead: 1.9x)"
+        "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Glasgow Cosmic"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Dublin Guardians (₹1.3k Back, Lead: 1.9x)",
-          "winner": "Dublin Guardians",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Glasgow Cosmic",
+          "winner": "Glasgow Cosmic",
           "priority": 100,
           "selected": true
         }
@@ -17354,7 +16982,7 @@
         }
       },
       "predictedWinner": "Belfast Wolves",
-      "predictionReason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay) -> Faded to Belfast Wolves",
+      "predictionReason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay, 2.8x) -> Faded to Belfast Wolves",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -17365,11 +16993,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay) -> Faded to Belfast Wolves"
+        "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay, 2.8x) -> Faded to Belfast Wolves"
       },
       "matchedRules": [
         {
-          "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay) -> Faded to Belfast Wolves",
+          "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay, 2.8x) -> Faded to Belfast Wolves",
           "winner": "Belfast Wolves",
           "priority": 100,
           "selected": true
@@ -18222,7 +17850,7 @@
         }
       },
       "predictedWinner": "Belfast Wolves",
-      "predictionReason": "ECS Smart Inflow on Belfast Wolves (₹410 Back, Lead: 3.8x)",
+      "predictionReason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 1.5x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -18233,11 +17861,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Belfast Wolves (₹410 Back, Lead: 3.8x)"
+        "reason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 1.5x)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Belfast Wolves (₹410 Back, Lead: 3.8x)",
+          "reason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 1.5x)",
           "winner": "Belfast Wolves",
           "priority": 100,
           "selected": true
@@ -18640,7 +18268,7 @@
         }
       },
       "predictedWinner": "Edinburgh Castle Rockers",
-      "predictionReason": "ECS Smart Inflow on Dublin Guardians (₹372 Back, Lead: 1.2x)",
+      "predictionReason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -18651,12 +18279,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Dublin Guardians (₹372 Back, Lead: 1.2x)"
+        "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Dublin Guardians (₹372 Back, Lead: 1.2x)",
-          "winner": "Dublin Guardians",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)",
+          "winner": "Edinburgh Castle Rockers",
           "priority": 100,
           "selected": true
         }
@@ -19592,7 +19220,7 @@
         }
       },
       "predictedWinner": "Antigua & Barbuda Falcs",
-      "predictionReason": "CPL Strong Synthetic Support on St Kitts & Nevis Pats (5.7x Ratio)",
+      "predictionReason": "CPL Naked Public Overload on St Kitts & Nevis Pats (₹3.0k Back, ₹15 Lay) Faded to Antigua & Barbuda Falcs (₹431 Lay, PnL: +2924)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -19603,12 +19231,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "CPL Strong Synthetic Support on St Kitts & Nevis Pats (5.7x Ratio)"
+        "reason": "CPL Naked Public Overload on St Kitts & Nevis Pats (₹3.0k Back, ₹15 Lay) Faded to Antigua & Barbuda Falcs (₹431 Lay, PnL: +2924)"
       },
       "matchedRules": [
         {
-          "reason": "CPL Strong Synthetic Support on St Kitts & Nevis Pats (5.7x Ratio)",
-          "winner": "St Kitts & Nevis Pats",
+          "reason": "CPL Naked Public Overload on St Kitts & Nevis Pats (₹3.0k Back, ₹15 Lay) Faded to Antigua & Barbuda Falcs (₹431 Lay, PnL: +2924)",
+          "winner": "Antigua & Barbuda Falcs",
           "priority": 100,
           "selected": true
         }
@@ -20150,12 +19778,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Intl Inflow on Zimbabwe (₹1.3k Back, Lead: 1.1x)"
+        "reason": "Intl Heavy Lay Absorption Lead on Namibia (₹254 Lay) -> Safe Winner"
       },
       "matchedRules": [
         {
-          "reason": "Intl Inflow on Zimbabwe (₹1.3k Back, Lead: 1.1x)",
-          "winner": "Zimbabwe",
+          "reason": "Intl Heavy Lay Absorption Lead on Namibia (₹254 Lay) -> Safe Winner",
+          "winner": "Namibia",
           "priority": 100,
           "selected": true
         }
@@ -21028,12 +20656,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "CPL Smart Money Inflow on Guyana Amazon Warriors (₹1.2k Back, Lead: 1.1x)"
+        "reason": "CPL Lay Resistance Dump on Guyana Amazon Warriors (₹312 Lay vs ₹31) -> Faded to Trinbago Knight Riders"
       },
       "matchedRules": [
         {
-          "reason": "CPL Smart Money Inflow on Guyana Amazon Warriors (₹1.2k Back, Lead: 1.1x)",
-          "winner": "Guyana Amazon Warriors",
+          "reason": "CPL Lay Resistance Dump on Guyana Amazon Warriors (₹312 Lay vs ₹31) -> Faded to Trinbago Knight Riders",
+          "winner": "Trinbago Knight Riders",
           "priority": 100,
           "selected": true
         }
@@ -21427,7 +21055,7 @@
         }
       },
       "predictedWinner": "England W",
-      "predictionReason": "Women's Inflow on England W (₹982 Back, Lead: 1.6x)",
+      "predictionReason": "Women's Smart Synthetic Support on England W (1.3x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -21438,11 +21066,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on England W (₹982 Back, Lead: 1.6x)"
+        "reason": "Women's Smart Synthetic Support on England W (1.3x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on England W (₹982 Back, Lead: 1.6x)",
+          "reason": "Women's Smart Synthetic Support on England W (1.3x Lead)",
           "winner": "England W",
           "priority": 100,
           "selected": true
@@ -21848,12 +21476,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Intl Inflow on Zimbabwe (₹1.2k Back, Lead: 4.7x)"
+        "reason": "Intl High Trap Counter on Zimbabwe (PnL: -598) -> Bookie Safe Side South Africa (+648)"
       },
       "matchedRules": [
         {
-          "reason": "Intl Inflow on Zimbabwe (₹1.2k Back, Lead: 4.7x)",
-          "winner": "Zimbabwe",
+          "reason": "Intl High Trap Counter on Zimbabwe (PnL: -598) -> Bookie Safe Side South Africa (+648)",
+          "winner": "South Africa",
           "priority": 100,
           "selected": true
         }
@@ -22282,7 +21910,7 @@
         }
       },
       "predictedWinner": "Rotterdam Dockers",
-      "predictionReason": "ECS Smart Inflow on Rotterdam Dockers (₹433 Back, Lead: 7.8x)",
+      "predictionReason": "ECS Synthetic Smart Support Dominance on Rotterdam Dockers (Ratio: 8.0x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -22293,11 +21921,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Rotterdam Dockers (₹433 Back, Lead: 7.8x)"
+        "reason": "ECS Synthetic Smart Support Dominance on Rotterdam Dockers (Ratio: 8.0x)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Rotterdam Dockers (₹433 Back, Lead: 7.8x)",
+          "reason": "ECS Synthetic Smart Support Dominance on Rotterdam Dockers (Ratio: 8.0x)",
           "winner": "Rotterdam Dockers",
           "priority": 100,
           "selected": true
@@ -23585,7 +23213,7 @@
         }
       },
       "predictedWinner": "Rotterdam Dockers",
-      "predictionReason": "ECS Smart Inflow on Rotterdam Dockers (₹643 Back, Lead: 228.7x)",
+      "predictionReason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Rotterdam Dockers",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -23596,11 +23224,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Rotterdam Dockers (₹643 Back, Lead: 228.7x)"
+        "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Rotterdam Dockers"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Rotterdam Dockers (₹643 Back, Lead: 228.7x)",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Rotterdam Dockers",
           "winner": "Rotterdam Dockers",
           "priority": 100,
           "selected": true
@@ -24052,7 +23680,7 @@
         }
       },
       "predictedWinner": "Edinburgh Castle Rockers",
-      "predictionReason": "ECS Public Overload Fade on Belfast Wolves (93% Load, PnL: -1387) -> Faded to Edinburgh Castle Rockers (PnL: +1491)",
+      "predictionReason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Belfast Wolves)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -24063,11 +23691,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Public Overload Fade on Belfast Wolves (93% Load, PnL: -1387) -> Faded to Edinburgh Castle Rockers (PnL: +1491)"
+        "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Belfast Wolves)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Public Overload Fade on Belfast Wolves (93% Load, PnL: -1387) -> Faded to Edinburgh Castle Rockers (PnL: +1491)",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Belfast Wolves)",
           "winner": "Edinburgh Castle Rockers",
           "priority": 100,
           "selected": true
@@ -25445,8 +25073,8 @@
           }
         }
       },
-      "predictedWinner": "Ireland W",
-      "predictionReason": "Women's Heavy Trap on England W (PnL: -852) -> Bookie Safe Side Ireland W (+950)",
+      "predictedWinner": "England W",
+      "predictionReason": "Women's Smart Synthetic Support on England W (3.0x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -25457,12 +25085,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Heavy Trap on England W (PnL: -852) -> Bookie Safe Side Ireland W (+950)"
+        "reason": "Women's Smart Synthetic Support on England W (3.0x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Heavy Trap on England W (PnL: -852) -> Bookie Safe Side Ireland W (+950)",
-          "winner": "Ireland W",
+          "reason": "Women's Smart Synthetic Support on England W (3.0x Lead)",
+          "winner": "England W",
           "priority": 100,
           "selected": true
         }
@@ -25862,8 +25490,8 @@
           }
         }
       },
-      "predictedWinner": "Namibia",
-      "predictionReason": "Intl Heavy Lay Absorption Lead on Namibia (₹322 Lay) -> Safe Winner",
+      "predictedWinner": "Zimbabwe",
+      "predictionReason": "Intl Strong Synthetic Support on Zimbabwe (5.8x Lead, ₹1.1k Back)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -25874,12 +25502,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Intl Heavy Lay Absorption Lead on Namibia (₹322 Lay) -> Safe Winner"
+        "reason": "Intl Strong Synthetic Support on Zimbabwe (5.8x Lead, ₹1.1k Back)"
       },
       "matchedRules": [
         {
-          "reason": "Intl Heavy Lay Absorption Lead on Namibia (₹322 Lay) -> Safe Winner",
-          "winner": "Namibia",
+          "reason": "Intl Strong Synthetic Support on Zimbabwe (5.8x Lead, ₹1.1k Back)",
+          "winner": "Zimbabwe",
           "priority": 100,
           "selected": true
         }
@@ -26308,7 +25936,7 @@
         }
       },
       "predictedWinner": "Amsterdam Flames",
-      "predictionReason": "ECS Smart Inflow on Amsterdam Flames (₹1673 Back, Lead: 3.8x)",
+      "predictionReason": "ECS Synthetic Smart Support Dominance on Amsterdam Flames (Ratio: 3.1x)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -26319,11 +25947,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Amsterdam Flames (₹1673 Back, Lead: 3.8x)"
+        "reason": "ECS Synthetic Smart Support Dominance on Amsterdam Flames (Ratio: 3.1x)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Amsterdam Flames (₹1673 Back, Lead: 3.8x)",
+          "reason": "ECS Synthetic Smart Support Dominance on Amsterdam Flames (Ratio: 3.1x)",
           "winner": "Amsterdam Flames",
           "priority": 100,
           "selected": true
@@ -27326,8 +26954,8 @@
           }
         }
       },
-      "predictedWinner": "St Kitts & Nevis Pats",
-      "predictionReason": "CPL Lay Resistance Dump on St. Lucia Kings (₹2.3k Lay vs ₹416) -> Faded to St Kitts & Nevis Pats",
+      "predictedWinner": "St. Lucia Kings",
+      "predictionReason": "CPL Trap Bookie Safe on St. Lucia Kings (PnL: +854)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -27338,12 +26966,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "CPL Lay Resistance Dump on St. Lucia Kings (₹2.3k Lay vs ₹416) -> Faded to St Kitts & Nevis Pats"
+        "reason": "CPL Trap Bookie Safe on St. Lucia Kings (PnL: +854)"
       },
       "matchedRules": [
         {
-          "reason": "CPL Lay Resistance Dump on St. Lucia Kings (₹2.3k Lay vs ₹416) -> Faded to St Kitts & Nevis Pats",
-          "winner": "St Kitts & Nevis Pats",
+          "reason": "CPL Trap Bookie Safe on St. Lucia Kings (PnL: +854)",
+          "winner": "St. Lucia Kings",
           "priority": 100,
           "selected": true
         }
@@ -28189,7 +27817,7 @@
         }
       },
       "predictedWinner": "Belfast Wolves",
-      "predictionReason": "ECS Smart Inflow on Glasgow Cosmic (₹1248 Back, Lead: 2.3x)",
+      "predictionReason": "Glasgow Cosmic toss liability choke (PnL: -709 vs +808) -> Bookie Safe to Belfast Wolves",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -28200,12 +27828,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Glasgow Cosmic (₹1248 Back, Lead: 2.3x)"
+        "reason": "Glasgow Cosmic toss liability choke (PnL: -709 vs +808) -> Bookie Safe to Belfast Wolves"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Glasgow Cosmic (₹1248 Back, Lead: 2.3x)",
-          "winner": "Glasgow Cosmic",
+          "reason": "Glasgow Cosmic toss liability choke (PnL: -709 vs +808) -> Bookie Safe to Belfast Wolves",
+          "winner": "Belfast Wolves",
           "priority": 100,
           "selected": true
         }
@@ -29585,7 +29213,7 @@
         }
       },
       "predictedWinner": "Edinburgh Castle Rockers",
-      "predictionReason": "ECS Smart Inflow on Rotterdam Dockers (₹809 Back, Lead: 1.4x)",
+      "predictionReason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Rotterdam Dockers)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -29596,12 +29224,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Rotterdam Dockers (₹809 Back, Lead: 1.4x)"
+        "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Rotterdam Dockers)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Rotterdam Dockers (₹809 Back, Lead: 1.4x)",
-          "winner": "Rotterdam Dockers",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Rotterdam Dockers)",
+          "winner": "Edinburgh Castle Rockers",
           "priority": 100,
           "selected": true
         }
@@ -29978,7 +29606,7 @@
         }
       },
       "predictedWinner": "Amsterdam Flames",
-      "predictionReason": "ECS Smart Inflow on Dublin Guardians (₹706 Back, Lead: 2.0x)",
+      "predictionReason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Amsterdam Flames",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -29989,12 +29617,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Dublin Guardians (₹706 Back, Lead: 2.0x)"
+        "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Amsterdam Flames"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Dublin Guardians (₹706 Back, Lead: 2.0x)",
-          "winner": "Dublin Guardians",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Amsterdam Flames",
+          "winner": "Amsterdam Flames",
           "priority": 100,
           "selected": true
         }
@@ -31901,8 +31529,8 @@
           }
         }
       },
-      "predictedWinner": "England W",
-      "predictionReason": "Women's Inflow on England W (₹1.3k Back, Lead: 1.9x)",
+      "predictedWinner": "Ireland W",
+      "predictionReason": "Women's Lay Resistance on England W (₹248 Lay, PnL: -465) Faded to Bookie Safe Side Ireland W (+586)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -31913,12 +31541,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Women's Inflow on England W (₹1.3k Back, Lead: 1.9x)"
+        "reason": "Women's Lay Resistance on England W (₹248 Lay, PnL: -465) Faded to Bookie Safe Side Ireland W (+586)"
       },
       "matchedRules": [
         {
-          "reason": "Women's Inflow on England W (₹1.3k Back, Lead: 1.9x)",
-          "winner": "England W",
+          "reason": "Women's Lay Resistance on England W (₹248 Lay, PnL: -465) Faded to Bookie Safe Side Ireland W (+586)",
+          "winner": "Ireland W",
           "priority": 100,
           "selected": true
         }
@@ -32319,7 +31947,7 @@
         }
       },
       "predictedWinner": "Edinburgh Castle Rockers",
-      "predictionReason": "ECS Smart Inflow on Edinburgh Castle Rockers (₹1162 Back, Lead: 7.5x)",
+      "predictionReason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -32330,11 +31958,11 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Smart Inflow on Edinburgh Castle Rockers (₹1162 Back, Lead: 7.5x)"
+        "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Smart Inflow on Edinburgh Castle Rockers (₹1162 Back, Lead: 7.5x)",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)",
           "winner": "Edinburgh Castle Rockers",
           "priority": 100,
           "selected": true
@@ -32819,8 +32447,8 @@
           }
         }
       },
-      "predictedWinner": "Zimbabwe",
-      "predictionReason": "Intl Inflow on Zimbabwe (₹2.4k Back, Lead: 2.1x)",
+      "predictedWinner": "South Africa",
+      "predictionReason": "Intl Retail Loading Deficit on Zimbabwe (PnL: -906) Faded to Bookie Safe Side South Africa (+1159)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -32831,12 +32459,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Intl Inflow on Zimbabwe (₹2.4k Back, Lead: 2.1x)"
+        "reason": "Intl Retail Loading Deficit on Zimbabwe (PnL: -906) Faded to Bookie Safe Side South Africa (+1159)"
       },
       "matchedRules": [
         {
-          "reason": "Intl Inflow on Zimbabwe (₹2.4k Back, Lead: 2.1x)",
-          "winner": "Zimbabwe",
+          "reason": "Intl Retail Loading Deficit on Zimbabwe (PnL: -906) Faded to Bookie Safe Side South Africa (+1159)",
+          "winner": "South Africa",
           "priority": 100,
           "selected": true
         }
@@ -34488,8 +34116,8 @@
           }
         }
       },
-      "predictedWinner": "Guyana Amazon Warriors",
-      "predictionReason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (5.0x Ratio)",
+      "predictedWinner": "St Kitts & Nevis Pats",
+      "predictionReason": "CPL Naked Public Overload on Guyana Amazon Warriors (₹2.2k Back, ₹26 Lay) Faded to St Kitts & Nevis Pats (₹89 Lay, PnL: +1939)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -34500,12 +34128,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (5.0x Ratio)"
+        "reason": "CPL Naked Public Overload on Guyana Amazon Warriors (₹2.2k Back, ₹26 Lay) Faded to St Kitts & Nevis Pats (₹89 Lay, PnL: +1939)"
       },
       "matchedRules": [
         {
-          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (5.0x Ratio)",
-          "winner": "Guyana Amazon Warriors",
+          "reason": "CPL Naked Public Overload on Guyana Amazon Warriors (₹2.2k Back, ₹26 Lay) Faded to St Kitts & Nevis Pats (₹89 Lay, PnL: +1939)",
+          "winner": "St Kitts & Nevis Pats",
           "priority": 100,
           "selected": true
         }
@@ -34996,8 +34624,8 @@
           }
         }
       },
-      "predictedWinner": "St. Lucia Kings",
-      "predictionReason": "CPL Smart Money Inflow on St. Lucia Kings (₹1.6k Back, Lead: 2.4x)",
+      "predictedWinner": "Barbados Tridents",
+      "predictionReason": "CPL Retail Loading Deficit on St. Lucia Kings (PnL: -874) Faded to Bookie Safe Side Barbados Tridents (+818)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -35008,12 +34636,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "CPL Smart Money Inflow on St. Lucia Kings (₹1.6k Back, Lead: 2.4x)"
+        "reason": "CPL Retail Loading Deficit on St. Lucia Kings (PnL: -874) Faded to Bookie Safe Side Barbados Tridents (+818)"
       },
       "matchedRules": [
         {
-          "reason": "CPL Smart Money Inflow on St. Lucia Kings (₹1.6k Back, Lead: 2.4x)",
-          "winner": "St. Lucia Kings",
+          "reason": "CPL Retail Loading Deficit on St. Lucia Kings (PnL: -874) Faded to Bookie Safe Side Barbados Tridents (+818)",
+          "winner": "Barbados Tridents",
           "priority": 100,
           "selected": true
         }
@@ -35023,6 +34651,493 @@
       "lastCaptureError": null,
       "status": "verified",
       "confirmedAt": "2026-09-07T13:47:55.520Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
+    },
+    {
+      "matchId": "36034463",
+      "marketId": "1.262019813",
+      "matchName": "Hong Kong W v Pakistan W",
+      "competitionName": "Women's Asia Cup T20",
+      "team1": "Hong Kong W",
+      "team2": "Pakistan W",
+      "startTime": 1788791400000,
+      "endedAt": "2026-09-07T20:55:26.956Z",
+      "capturedAt": "2026-09-07T20:55:26.956Z",
+      "snapshot": {
+        "serverTime": "2026-09-07T20:55:26.895Z",
+        "matchId": "36034463",
+        "matchName": "Hong Kong W v Pakistan W",
+        "teamNames": [
+          "Hong Kong W",
+          "Pakistan W"
+        ],
+        "inPlayPnl": {
+          "team1": 828.0670000000001,
+          "team2": -763.1946
+        },
+        "inPlayTotalBets": {
+          "team1": 552.8734999999998,
+          "team2": 1330.5194
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 455.98,
+            "lay": 112.41,
+            "total": 561.8399999999999
+          },
+          "team2": {
+            "back": 1275.96,
+            "lay": 105.85999999999989,
+            "total": 1388.3700000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": 828.0670000000001,
+          "team2": -763.1946
+        },
+        "preMatchTotalBets": {
+          "team1": 552.8734999999998,
+          "team2": 1330.5194
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 455.98,
+            "lay": 112.41,
+            "total": 561.8399999999999
+          },
+          "team2": {
+            "back": 1275.96,
+            "lay": 105.85999999999989,
+            "total": 1388.3700000000001
+          }
+        },
+        "threeMinPnl": {
+          "team1": 828.0670000000001,
+          "team2": -763.1946
+        },
+        "threeMinTotalBets": {
+          "team1": 552.8734999999998,
+          "team2": 1330.5194
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 455.98,
+            "lay": 112.41,
+            "total": 561.8399999999999
+          },
+          "team2": {
+            "back": 1275.96,
+            "lay": 105.85999999999989,
+            "total": 1388.3700000000001
+          }
+        },
+        "matchLoadV2": {
+          "team1": 12,
+          "team2": 10
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 455.98,
+            "lay": 112.41,
+            "totalVolume": 568.39,
+            "backPercentage": 80.2230862611939
+          },
+          "team2": {
+            "back": 1275.96,
+            "lay": 105.85999999999989,
+            "totalVolume": 1381.82,
+            "backPercentage": 92.33908902751445
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 447.0134999999999,
+            "lay": 104.9805,
+            "totalBet": 551.9939999999999
+          },
+          "team2": {
+            "back": 1218.1093999999998,
+            "lay": 111.34479999999988,
+            "totalBet": 1329.4541999999997
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 561.8399999999999,
+            "support": 28.809205162520957
+          },
+          "team2": {
+            "supportMoney": 1388.3700000000001,
+            "support": 71.19079483747905
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Pakistan W",
+          "bookieFavouriteOutcome": "Hong Kong W",
+          "riskTeam": "Pakistan W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 42.38158967495809,
+          "mostBettedTeam": "Pakistan W",
+          "prediction": {
+            "team1TrueSupport": 558.3582999999998,
+            "team2TrueSupport": 1323.0899,
+            "ratio": 2.3696072933813297,
+            "bookiePnlTeam1": -334.60349999999994,
+            "bookiePnlTeam2": -1112.2494,
+            "prediction": "Hong Kong W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.37) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 342.0329999999999,
+            "backExposure": 447.0134999999999,
+            "layExposure": 104.9805,
+            "teamName": "Hong Kong W"
+          },
+          "team2": {
+            "netExposure": 1106.7646,
+            "backExposure": 1218.1093999999998,
+            "layExposure": 111.34479999999988,
+            "teamName": "Pakistan W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 447.0134999999999,
+            "A_lay_stake": 112.41,
+            "B_back_expo": 1218.1093999999998,
+            "B_lay_stake": 105.85999999999989
+          },
+          "totals": {
+            "totalBetTeam1": 552.8734999999998,
+            "totalBetTeam2": 1330.5194
+          },
+          "simplePL": {
+            "team1_win": -334.60349999999994,
+            "team2_win": -1112.2494
+          },
+          "derivedPL": {
+            "team1_win": 777.6459000000001,
+            "team2_win": -777.6459000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 455.98,
+              "totalLayVol": 112.41,
+              "totalBet": 561.8399999999999,
+              "profitLoss": 826.5300000000002
+            },
+            "team2": {
+              "totalBackVol": 1275.96,
+              "totalLayVol": 105.85999999999989,
+              "totalBet": 1388.3700000000001,
+              "profitLoss": -826.5300000000002
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 447.0134999999999,
+              "totalLayVol": 112.41,
+              "totalBet": 552.8734999999998,
+              "profitLoss": 828.0670000000003
+            },
+            "team2": {
+              "totalBackExpo": 1218.1093999999998,
+              "totalLayVol": 105.85999999999989,
+              "totalBet": 1330.5194,
+              "profitLoss": -763.1946
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 447.0134999999999,
+              "totalLayNetVol": 104.9805,
+              "totalBet": 558.3582999999998,
+              "profitLoss": 764.7316000000002
+            },
+            "team2": {
+              "totalBackNetVol": 1218.1093999999998,
+              "totalLayNetVol": 111.34479999999988,
+              "totalBet": 1323.0899,
+              "profitLoss": -764.7316000000002
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 12,
+            "averageOdds": 1.9933333333333334,
+            "averageSize": 46.81999999999999,
+            "supportProduct": 93.32786666666665
+          },
+          "teamB": {
+            "tradeCount": 10,
+            "averageOdds": 1.9349999999999998,
+            "averageSize": 138.837,
+            "supportProduct": 268.649595
+          },
+          "strongerTeam": "Pakistan W",
+          "supportRatio": 2.8785571190598307
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 455.98,
+            "oppoLayVolume": 105.85999999999989,
+            "layExposure": 104.9805,
+            "netSupportValue": 456.8594999999999
+          },
+          "teamB": {
+            "totalBackVolume": 1275.96,
+            "oppoLayVolume": 112.41,
+            "layExposure": 111.34479999999988,
+            "netSupportValue": 1277.0252000000003
+          },
+          "strongerTeam": "Pakistan W",
+          "netSupportDifference": 820.1657000000004,
+          "percentageA": 26.348897363244504,
+          "percentageB": 73.65110263675551
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 343.57000000000005,
+            "syntheticSupport": 105.85999999999989,
+            "opponentLiabilityRejection": 111.34479999999988,
+            "sentimentScore": 338.0852000000001
+          },
+          "teamB": {
+            "directNetSupport": 1170.1000000000001,
+            "syntheticSupport": 112.41,
+            "opponentLiabilityRejection": 104.9805,
+            "sentimentScore": 1177.5295
+          },
+          "strongerTeam": "Pakistan W",
+          "scoreDifference": 839.4443,
+          "percentageA": 22.306803965414172,
+          "percentageB": 77.69319603458584
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Hong Kong W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Pakistan W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Hong Kong W"
+        },
+        "teams": {
+          "Hong Kong W": {
+            "trades": [
+              {
+                "team": "Hong Kong W",
+                "price": 1.77,
+                "type": "back",
+                "size": 9.259999999999994,
+                "updatedAt": 1788789288703
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.88,
+                "type": "lay",
+                "size": 23.79,
+                "updatedAt": 1788789124630
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.88,
+                "type": "back",
+                "size": 11.25,
+                "updatedAt": 1788789112150
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.99,
+                "type": "back",
+                "size": 205.50999999999996,
+                "updatedAt": 1788788940297
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.77,
+                "type": "lay",
+                "size": 34.11,
+                "updatedAt": 1788788795849
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.95,
+                "type": "back",
+                "size": 21.34,
+                "updatedAt": 1788788273428
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 1.94,
+                "type": "back",
+                "size": 41.66,
+                "updatedAt": 1788788273428
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 54.51,
+                "updatedAt": 1788785198634
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 2,
+                "type": "back",
+                "size": 160.21,
+                "updatedAt": 1788783949957
+              },
+              {
+                "team": "Hong Kong W",
+                "price": 2.02,
+                "type": "back",
+                "size": 6.75,
+                "updatedAt": 1788783812099
+              }
+            ],
+            "pnlIfWins": 828.0670000000001,
+            "totalBet": 552.8734999999998
+          },
+          "Pakistan W": {
+            "trades": [
+              {
+                "team": "Pakistan W",
+                "price": 2.12,
+                "type": "lay",
+                "size": 2.01,
+                "updatedAt": 1788788816611
+              },
+              {
+                "team": "Pakistan W",
+                "price": 2.28,
+                "type": "lay",
+                "size": 19.459999999999997,
+                "updatedAt": 1788788795849
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.99,
+                "updatedAt": 1788788671433
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.92,
+                "type": "back",
+                "size": 159.2,
+                "updatedAt": 1788788231807
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.93,
+                "type": "back",
+                "size": 281.3,
+                "updatedAt": 1788786073231
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.94,
+                "type": "back",
+                "size": 236.95,
+                "updatedAt": 1788785198634
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 6.89,
+                "updatedAt": 1788783812091
+              },
+              {
+                "team": "Pakistan W",
+                "price": 2,
+                "type": "lay",
+                "size": 70.75999999999999,
+                "updatedAt": 1788783286969
+              },
+              {
+                "team": "Pakistan W",
+                "price": 2,
+                "type": "back",
+                "size": 8.729999999999997,
+                "updatedAt": 1788783277362
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.95,
+                "type": "back",
+                "size": 102.74,
+                "updatedAt": 1788783231989
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.99,
+                "type": "lay",
+                "size": 6.739999999999895,
+                "updatedAt": 1788776782413
+              },
+              {
+                "team": "Pakistan W",
+                "price": 1.99,
+                "type": "back",
+                "size": 472.05,
+                "updatedAt": 1788773452538
+              }
+            ],
+            "pnlIfWins": -763.1946,
+            "totalBet": 1330.5194
+          }
+        }
+      },
+      "predictedWinner": "Pakistan W",
+      "predictionReason": "Asia Cup Smart Synthetic Support on Pakistan W (2.9x Lead)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Asia Cup Smart Synthetic Support on Pakistan W (2.9x Lead)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Asia Cup Smart Synthetic Support on Pakistan W (2.9x Lead)",
+          "winner": "Pakistan W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": "Pakistan W",
+      "lastCaptureError": null,
+      "status": "verified",
+      "confirmedAt": "2026-09-08T03:15:02.917Z",
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1
     }

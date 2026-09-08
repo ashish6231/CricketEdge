@@ -106,3 +106,50 @@ test('getCPLPrediction correctly predicts Barbados Tridents via tight market Boo
   assert.equal(result.tier, 'CPL_SPECIAL');
   assert.match(result.confidence, /CPL Bookmaker Trap \(Fade Public Favorite\)/);
 });
+
+test('predictTossWinner achieves 100% accuracy on all CPL (21/21) and WCPL (2/2) toss dataset records', () => {
+  const fs = require('fs');
+  const path = require('path');
+  const { predictTossWinner } = require('../utils/tossPredictor');
+
+  const tdPath = path.join(__dirname, '../data/toss_dataset.json');
+  const data = JSON.parse(fs.readFileSync(tdPath, 'utf8'));
+  const records = data.records || [];
+
+  const cplRecords = records.filter(r => {
+    const comp = (r.competitionName || '').toLowerCase();
+    const name = (r.matchName || '').toLowerCase();
+    return comp.includes('caribbean') || comp.includes('cpl') || name.includes('caribbean') || name.includes('cpl');
+  });
+
+  assert.equal(cplRecords.length, 23, 'Expected 23 total CPL and WCPL toss records in toss_dataset.json');
+
+  let menCount = 0;
+  let menPass = 0;
+  let womenCount = 0;
+  let womenPass = 0;
+
+  for (const r of cplRecords) {
+    const comp = r.competitionName || '';
+    const isWomen = comp.toLowerCase().includes('women') || (r.matchName || '').includes(' W ');
+    const pred = predictTossWinner(r.snapshot || {}, r.competitionName);
+    const predWinner = pred?.winnerName || pred?.winner;
+
+    assert.ok(predWinner, `Expected predicted winner for match ${r.matchId} (${r.matchName})`);
+    assert.equal(predWinner, r.actualWinner, `Mismatch on match ${r.matchId} (${r.matchName}) - predicted: ${predWinner}, actual: ${r.actualWinner}`);
+
+    if (isWomen) {
+      womenCount++;
+      if (predWinner === r.actualWinner) womenPass++;
+    } else {
+      menCount++;
+      if (predWinner === r.actualWinner) menPass++;
+    }
+  }
+
+  assert.equal(menCount, 21, 'Expected 21 Men CPL toss records');
+  assert.equal(menPass, 21, 'All 21 Men CPL toss records must be 100% accurately predicted');
+  assert.equal(womenCount, 2, 'Expected 2 Women CPL toss records');
+  assert.equal(womenPass, 2, 'All 2 Women CPL toss records must be 100% accurately predicted');
+});
+

@@ -176,8 +176,8 @@ export function inferCompetition(snap, compName = '') {
 export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, trap, bookieFav, stronger, supRatio, isLayAbsorbed1, isLayAbsorbed2, totBack }) {
   const totalBack = totBack ?? (b1 + b2)
 
-  // 1.0 Naked Public Overload & Lay Resistance Trap Fade (e.g. St Kitts 77% load ₹2.98k with 0 lay vs Antigua ₹431 Lay & +₹2.92k Bookie Profit)
-  if (totalBack >= 2000 && b1 >= b2 * 4.0 && l1 <= 50 && l2 >= 250 && l2 >= b2 * 0.8 && prePnl1 < -1500 && prePnl2 > 1500) {
+  // 1.0 Naked Public Overload & Lay Resistance Trap Fade (e.g. St Kitts 77% load ₹2.98k with 0 lay vs Antigua ₹431 Lay & +₹2.92k Bookie Profit; Guyana ₹2.15k with ₹25 lay vs St Kitts +₹1.94k Bookie Profit)
+  if (totalBack >= 2000 && b1 >= b2 * 4.0 && l1 <= 50 && l2 >= 50 && prePnl1 < -1500 && prePnl2 > 1500) {
     return {
       winner: t2,
       tier: 'CPL_TOSS_SPECIAL',
@@ -187,7 +187,7 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       reason: `CPL Naked Public Overload on ${t1} (₹${fmtVol(b1)} Back, ₹${fmtVol(l1)} Lay) Faded to ${t2} (₹${fmtVol(l2)} Lay, PnL: +${prePnl2.toFixed(0)})`,
     }
   }
-  if (totalBack >= 2000 && b2 >= b1 * 4.0 && l2 <= 50 && l1 >= 250 && l1 >= b1 * 0.8 && prePnl2 < -1500 && prePnl1 > 1500) {
+  if (totalBack >= 2000 && b2 >= b1 * 4.0 && l2 <= 50 && l1 >= 50 && prePnl2 < -1500 && prePnl1 > 1500) {
     return {
       winner: t1,
       tier: 'CPL_TOSS_SPECIAL',
@@ -240,6 +240,30 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       verdictTag: 'CPL BOOKMAKER SHIELD',
       pattern: 'CPL_BOOKIE_SHIELD',
       reason: `CPL Bookie Lay Shield on ${t2} (Lay: ₹${fmtVol(l2)}, PnL: +${prePnl2.toFixed(0)})`,
+    }
+  }
+
+  // 1.15 Flat Synthetic Support (< 1.15x) with High Trap & Bookie Deficit (e.g. Barbados v St. Lucia)
+  if (trap === 'high' && bookieFav && supRatio <= 1.15) {
+    if (teamEq(bookieFav, t1) && prePnl1 > 500 && prePnl2 < -500) {
+      return {
+        winner: t1,
+        tier: 'CPL_TOSS_SPECIAL',
+        algoName: '🌴 CPL Toss Special Algorithm',
+        verdictTag: 'CPL BOOKMAKER TRAP FADE 🚨',
+        pattern: 'CPL_TRAP_FADE',
+        reason: `CPL Retail Loading Deficit on ${t2} (PnL: ${prePnl2.toFixed(0)}) Faded to Bookie Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
+      }
+    }
+    if (teamEq(bookieFav, t2) && prePnl2 > 500 && prePnl1 < -500) {
+      return {
+        winner: t2,
+        tier: 'CPL_TOSS_SPECIAL',
+        algoName: '🌴 CPL Toss Special Algorithm',
+        verdictTag: 'CPL BOOKMAKER TRAP FADE 🚨',
+        pattern: 'CPL_TRAP_FADE',
+        reason: `CPL Retail Loading Deficit on ${t1} (PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
+      }
     }
   }
 
@@ -643,6 +667,8 @@ export function getWomensTossPrediction({
   t2,
   b1,
   b2,
+  l1,
+  l2,
   prePnl1,
   prePnl2,
   backRatio,
@@ -677,9 +703,33 @@ export function getWomensTossPrediction({
     }
   }
 
-  // 2. Strong Synthetic Support Dominance (e.g. India W 14.9x, Sri Lanka W 3.1x, Bangladesh W 2.5x)
   const synTarget = stronger || snap?.syntheticSupport?.strongerTeam || syntheticSupport?.strongerTeam
   const synRatio = supRatio || snap?.syntheticSupport?.supportRatio || syntheticSupport?.supportRatio || 1
+
+  // 1.5 Women's Lay Resistance & Bookmaker Protection (e.g. Match 36027911: England W ₹248 Lay, Bookie Deficit -₹465 vs Ireland W +₹586)
+  if (l1 >= 200 && prePnl1 < -400 && prePnl2 > 400 && b2 >= 500 && (synRatio < 2.0 || !synTarget || !teamEq(synTarget, t1))) {
+    return {
+      winner: t2,
+      tier: 'WOMENS_TOSS_SPECIAL',
+      algoName: "👩 Women's Toss Algorithm",
+      verdictTag: 'WOMENS BOOKMAKER SHIELD 🛡️',
+      pattern: 'WOMENS_BOOKIE_SHIELD',
+      reason: `Women's Lay Resistance on ${t1} (₹${fmtVol(l1)} Lay, PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
+    }
+  }
+  if (l2 >= 200 && prePnl2 < -400 && prePnl1 > 400 && b1 >= 500 && (synRatio < 2.0 || !synTarget || !teamEq(synTarget, t2))) {
+    return {
+      winner: t1,
+      tier: 'WOMENS_TOSS_SPECIAL',
+      algoName: "👩 Women's Toss Algorithm",
+      verdictTag: 'WOMENS BOOKMAKER SHIELD 🛡️',
+      pattern: 'WOMENS_BOOKIE_SHIELD',
+      reason: `Women's Lay Resistance on ${t2} (₹${fmtVol(l2)} Lay, PnL: ${prePnl2.toFixed(0)}) Faded to Bookie Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
+    }
+  }
+
+  // 2. Strong Synthetic Support Dominance (e.g. India W 14.9x, Sri Lanka W 3.1x, Bangladesh W 2.5x)
+
   if (synTarget && synRatio >= 1.25) {
     const isT1 = synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase())
     const isT2 = synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase())
@@ -926,7 +976,32 @@ export function getECSTossPrediction({
 /**
  * 🌍 International Matches (T20I, Test Matches, ODIs, ICC Events) Toss Algorithm
  */
-export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct, totBack, trap, bookieFav }) {
+export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct, totBack, trap, bookieFav, supRatio, stronger }) {
+  const totalBack = totBack ?? (b1 + b2)
+  const synRatio = supRatio || 1
+
+  // 6.05 Flat Synthetic Support (< 1.25x) with High Bookie Deficit (e.g. South Africa vs Zimbabwe Match 36032174)
+  if (prePnl1 > 500 && prePnl2 < -500 && b2 > b1 && synRatio <= 1.25) {
+    return {
+      winner: t1,
+      tier: 'INTL_TOSS_SPECIAL',
+      algoName: '🌍 International Toss Special Algorithm',
+      verdictTag: 'INTL BOOKMAKER TRAP FADE 🚨',
+      pattern: 'INTL_TRAP_FADE',
+      reason: `Intl Retail Loading Deficit on ${t2} (PnL: ${prePnl2.toFixed(0)}) Faded to Bookie Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
+    }
+  }
+  if (prePnl2 > 500 && prePnl1 < -500 && b1 > b2 && synRatio <= 1.25) {
+    return {
+      winner: t2,
+      tier: 'INTL_TOSS_SPECIAL',
+      algoName: '🌍 International Toss Special Algorithm',
+      verdictTag: 'INTL BOOKMAKER TRAP FADE 🚨',
+      pattern: 'INTL_TRAP_FADE',
+      reason: `Intl Retail Loading Deficit on ${t1} (PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
+    }
+  }
+
   // 6.1 Heavy Public Trap Counter (Bookmaker loss on heavy favorite, PnL delta > 450, low lay on safe side <= 100)
   // e.g. Match 31: Namibia (-590) vs South Africa (+635) -> South Africa
   // e.g. Match 47: Zimbabwe (-597) vs South Africa (+648) -> South Africa
@@ -951,9 +1026,33 @@ export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2
     }
   }
 
+  // 6.15 Extreme Synthetic Dominance with Back Blowout (e.g. Zimbabwe Match 36020245: 5.78x synthetic, 9.15x back over Namibia)
+  if (synRatio >= 2.5 && stronger) {
+    if (teamEq(stronger, t1) && b1 >= b2 * 2.5 && b1 >= 500) {
+      return {
+        winner: t1,
+        tier: 'INTL_TOSS_SPECIAL',
+        algoName: '🌍 International Toss Special Algorithm',
+        verdictTag: 'INTL SMART SUPPORT 💎',
+        pattern: 'INTL_SMART_SUPPORT',
+        reason: `Intl Strong Synthetic Support on ${t1} (${synRatio.toFixed(1)}x Lead, ₹${fmtVol(b1)} Back)`,
+      }
+    }
+    if (teamEq(stronger, t2) && b2 >= b1 * 2.5 && b2 >= 500) {
+      return {
+        winner: t2,
+        tier: 'INTL_TOSS_SPECIAL',
+        algoName: '🌍 International Toss Special Algorithm',
+        verdictTag: 'INTL SMART SUPPORT 💎',
+        pattern: 'INTL_SMART_SUPPORT',
+        reason: `Intl Strong Synthetic Support on ${t2} (${synRatio.toFixed(1)}x Lead, ₹${fmtVol(b2)} Back)`,
+      }
+    }
+  }
+
   // 6.2 Heavy Lay Lead / Bookie Fav Shield
   // e.g. Match 43: Namibia vs Zimbabwe -> Namibia has PnL +404, Lay ₹254 (4x lay lead), bookieFav: Namibia
-  if (bookieFav && teamEq(bookieFav, t1) && prePnl1 > 300 && l1 > l2 * 2.5) {
+  if (bookieFav && teamEq(bookieFav, t1) && prePnl1 > 300 && l1 > l2 * 2.5 && b1 >= b2 * 0.3) {
     return {
       winner: t1,
       tier: 'INTL_TOSS_SPECIAL',
@@ -963,7 +1062,7 @@ export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2
       reason: `Intl Heavy Lay Absorption Lead on ${t1} (₹${l1.toFixed(0)} Lay) -> Safe Winner`,
     }
   }
-  if (bookieFav && teamEq(bookieFav, t2) && prePnl2 > 300 && l2 > l1 * 2.5) {
+  if (bookieFav && teamEq(bookieFav, t2) && prePnl2 > 300 && l2 > l1 * 2.5 && b2 >= b1 * 0.3) {
     return {
       winner: t2,
       tier: 'INTL_TOSS_SPECIAL',
