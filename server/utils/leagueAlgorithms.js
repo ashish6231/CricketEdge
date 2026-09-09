@@ -12,7 +12,6 @@ function isInternationalT20(compName) {
     comp.includes('t20 international') ||
     comp.includes('twenty20 matches') ||
     comp.includes('t20i') ||
-    comp.includes('acc mens premier cup') ||
     comp.includes('icc men') ||
     comp.includes('icc t20')
   );
@@ -638,6 +637,66 @@ function getWomensAsiaCupPrediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, tea
   };
 }
 
+function isACCPremierCup(compName, team1, team2) {
+  const comp = (compName || '').toLowerCase();
+  if (comp.includes('acc')) return true;
+  if (comp.includes('premier cup')) return true;
+  if (comp.includes('premier') && comp.includes('cup')) return true;
+  return false;
+}
+
+function getACCPremierCupPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const spl = snap?.deepMetrics?.simplePL || {};
+  const p1 = spl.team1_win ?? epnl1 ?? 0;
+  const p2 = spl.team2_win ?? epnl2 ?? 0;
+  const net = snap?.netSupport || {};
+  const t1Pnl = epnl1 ?? 0;
+  const t2Pnl = epnl2 ?? 0;
+  const snapL1 = l1 ?? snap?.preMatchVolume?.team1?.lay ?? 0;
+  const snapL2 = l2 ?? snap?.preMatchVolume?.team2?.lay ?? 0;
+
+  // 1. Lay Absorption Shield & Naked Public Trap (e.g. Qatar l2=65 vs b2=13, Kuwait b1=137 & l1=0, PnL: +265 vs -110)
+  if (snapL2 >= 50 && snapL2 >= (b2 || 1) * 3.0 && t2Pnl > 0 && t1Pnl < 0) {
+    return {
+      winner: team2,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Lay Shield & Deficit Fade'
+    };
+  }
+  if (snapL1 >= 50 && snapL1 >= (b1 || 1) * 3.0 && t1Pnl > 0 && t2Pnl < 0) {
+    return {
+      winner: team1,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Lay Shield & Deficit Fade'
+    };
+  }
+
+  // 2. High SimplePL Dominance (Math.abs(p1 - p2) >= 5000)
+  if (Math.abs(p1 - p2) >= 5000) {
+    return {
+      winner: p1 > p2 ? team1 : team2,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Bookie Profit Side (Deficit Fade)'
+    };
+  }
+
+  // 3. Net Support Dominance (for close simplePL diff < 5000: Matches 9, 12, 16)
+  if (net?.strongerTeam) {
+    return {
+      winner: net.strongerTeam,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Net Support Leader'
+    };
+  }
+
+  // 4. PnL Fallback
+  return {
+    winner: p1 >= p2 ? team1 : team2,
+    tier: 'ACC_SPECIAL',
+    confidence: 'ACC Bookie Safe PnL'
+  };
+}
+
 function isWomenMatch(compName, team1, team2) {
   const comp = (compName || '').toLowerCase();
   if (comp.includes('women') || comp.includes("women's") || comp.includes('womens') || comp.includes('wcpl')) {
@@ -668,6 +727,12 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
   if (isWomensAsiaCup(compName, team1, team2)) {
     const asiaPred = getWomensAsiaCupPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
     if (asiaPred) return asiaPred;
+  }
+
+  // 🏆 LEAGUE SPECIFIC RULE: ACC Men's Premier Cup
+  if (isACCPremierCup(compName, team1, team2)) {
+    const accPred = getACCPremierCupPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (accPred) return accPred;
   }
 
   // 🌍 LEAGUE SPECIFIC RULE: International Twenty20 Matches (T20I)
@@ -877,6 +942,8 @@ module.exports = {
   getUPT20Prediction,
   getKeralaPrediction,
   getSherEPunjabPrediction,
+  isACCPremierCup,
+  getACCPremierCupPrediction,
   getLeagueAlgorithmPrediction,
   getDefaultAlgorithmPrediction
 };

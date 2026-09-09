@@ -110,7 +110,7 @@ async function hasUsedTrial(prisma, userId) {
 
 async function grantTrialIfEligible(prisma, userId, { force = false, now = new Date() } = {}) {
   // First expire any lapsed pro/trial so stale subPlanSlug doesn't block grant
-  await expireTrialIfNeeded(prisma, userId);
+  await expireTrialIfNeeded(prisma, userId, now);
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return { granted: false, user: null, reason: 'not_found' };
   if (user.role !== 'user') return { granted: false, user, reason: 'not_user' };
@@ -168,8 +168,7 @@ async function grantTrialToAllEligible(prisma) {
   return { eligible: users.length, granted };
 }
 
-async function expireTrialIfNeeded(prisma, userId) {
-  const now = new Date();
+async function expireTrialIfNeeded(prisma, userId, now = new Date()) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return user;
 

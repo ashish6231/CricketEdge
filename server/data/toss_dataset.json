@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-08T03:15:02.917Z",
+  "updatedAt": "2026-09-09T00:40:03.909Z",
   "records": [
     {
       "matchId": "35901908",
@@ -35140,6 +35140,479 @@
       "confirmedAt": "2026-09-08T03:15:02.917Z",
       "confirmedByEmail": "admin@cricedge.com",
       "confirmedById": 1
+    },
+    {
+      "matchId": "36039351",
+      "marketId": "1.262087184",
+      "matchName": "United Arab Emirates W v Bangladesh W",
+      "competitionName": "Women's Asia Cup T20",
+      "team1": "United Arab Emirates W",
+      "team2": "Bangladesh W",
+      "startTime": 1788877800000,
+      "endedAt": "2026-09-09T00:40:02.962Z",
+      "capturedAt": "2026-09-09T00:40:02.962Z",
+      "snapshot": {
+        "serverTime": "2026-09-09T00:40:02.910Z",
+        "matchId": "36039351",
+        "matchName": "United Arab Emirates W v Bangladesh W",
+        "teamNames": [
+          "United Arab Emirates W",
+          "Bangladesh W"
+        ],
+        "inPlayPnl": {
+          "team1": 1447.0494999999999,
+          "team2": -1185.6778999999997
+        },
+        "inPlayTotalBets": {
+          "team1": 516.8568999999999,
+          "team2": 1806.7248999999997
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 531.14,
+            "lay": 120.16,
+            "total": 618.55
+          },
+          "team2": {
+            "back": 1835.71,
+            "lay": 87.41,
+            "total": 1955.8700000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1447.0494999999999,
+          "team2": -1185.6778999999997
+        },
+        "preMatchTotalBets": {
+          "team1": 516.8568999999999,
+          "team2": 1806.7248999999997
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 531.14,
+            "lay": 120.16,
+            "total": 618.55
+          },
+          "team2": {
+            "back": 1835.71,
+            "lay": 87.41,
+            "total": 1955.8700000000001
+          }
+        },
+        "threeMinPnl": {
+          "team1": 1447.0494999999999,
+          "team2": -1185.6778999999997
+        },
+        "threeMinTotalBets": {
+          "team1": 516.8568999999999,
+          "team2": 1806.7248999999997
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 531.14,
+            "lay": 120.16,
+            "total": 618.55
+          },
+          "team2": {
+            "back": 1835.71,
+            "lay": 87.41,
+            "total": 1955.8700000000001
+          }
+        },
+        "matchLoadV2": {
+          "team1": 11,
+          "team2": 9
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 531.14,
+            "lay": 120.16,
+            "totalVolume": 651.3,
+            "backPercentage": 81.55074466451713
+          },
+          "team2": {
+            "back": 1835.71,
+            "lay": 87.41,
+            "totalVolume": 1923.1200000000001,
+            "backPercentage": 95.45478181288739
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 429.4468999999999,
+            "lay": 128.1964,
+            "totalBet": 557.6433
+          },
+          "team2": {
+            "back": 1686.5648999999996,
+            "lay": 89.90699999999998,
+            "totalBet": 1776.4718999999996
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 618.55,
+            "support": 24.026771078534193
+          },
+          "team2": {
+            "supportMoney": 1955.8700000000001,
+            "support": 75.9732289214658
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Bangladesh W",
+          "bookieFavouriteOutcome": "United Arab Emirates W",
+          "riskTeam": "Bangladesh W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 51.94645784293161,
+          "mostBettedTeam": "Bangladesh W",
+          "prediction": {
+            "team1TrueSupport": 518.6047999999998,
+            "team2TrueSupport": 1814.7612999999997,
+            "ratio": 3.4993145069231915,
+            "bookiePnlTeam1": -308.53779999999995,
+            "bookiePnlTeam2": -1599.1548999999995,
+            "prediction": "United Arab Emirates W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (3.50) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 300.5013999999999,
+            "backExposure": 428.6977999999999,
+            "layExposure": 128.1964,
+            "teamName": "United Arab Emirates W"
+          },
+          "team2": {
+            "netExposure": 1596.6578999999997,
+            "backExposure": 1686.5648999999996,
+            "layExposure": 89.90699999999998,
+            "teamName": "Bangladesh W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 429.4468999999999,
+            "A_lay_stake": 120.16,
+            "B_back_expo": 1686.5648999999996,
+            "B_lay_stake": 87.41
+          },
+          "totals": {
+            "totalBetTeam1": 516.8568999999999,
+            "totalBetTeam2": 1806.7248999999997
+          },
+          "simplePL": {
+            "team1_win": -309.28689999999995,
+            "team2_win": -1599.1548999999995
+          },
+          "derivedPL": {
+            "team1_win": 1289.868,
+            "team2_win": -1289.868
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 531.14,
+              "totalLayVol": 120.16,
+              "totalBet": 618.55,
+              "profitLoss": 1337.3200000000002
+            },
+            "team2": {
+              "totalBackVol": 1835.71,
+              "totalLayVol": 87.41,
+              "totalBet": 1955.8700000000001,
+              "profitLoss": -1337.3200000000002
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 429.4468999999999,
+              "totalLayVol": 120.16,
+              "totalBet": 516.8568999999999,
+              "profitLoss": 1447.0495
+            },
+            "team2": {
+              "totalBackExpo": 1686.5648999999996,
+              "totalLayVol": 87.41,
+              "totalBet": 1806.7248999999997,
+              "profitLoss": -1185.6778999999997
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 429.4468999999999,
+              "totalLayNetVol": 128.1964,
+              "totalBet": 519.3538999999998,
+              "profitLoss": 1295.4073999999998
+            },
+            "team2": {
+              "totalBackNetVol": 1686.5648999999996,
+              "totalLayNetVol": 89.90699999999998,
+              "totalBet": 1814.7612999999997,
+              "profitLoss": -1295.4073999999998
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 11,
+            "averageOdds": 1.887272727272727,
+            "averageSize": 56.23181818181818,
+            "supportProduct": 106.12477685950411
+          },
+          "teamB": {
+            "tradeCount": 9,
+            "averageOdds": 1.9733333333333332,
+            "averageSize": 217.3188888888889,
+            "supportProduct": 428.8426074074074
+          },
+          "strongerTeam": "Bangladesh W",
+          "supportRatio": 4.040928236533691
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 531.14,
+            "oppoLayVolume": 87.41,
+            "layExposure": 128.1964,
+            "netSupportValue": 490.3535999999999
+          },
+          "teamB": {
+            "totalBackVolume": 1835.71,
+            "oppoLayVolume": 120.16,
+            "layExposure": 89.90699999999998,
+            "netSupportValue": 1865.9630000000002
+          },
+          "strongerTeam": "Bangladesh W",
+          "netSupportDifference": 1375.6094000000003,
+          "percentageA": 20.810174659890777,
+          "percentageB": 79.18982534010922
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 410.98,
+            "syntheticSupport": 87.41,
+            "opponentLiabilityRejection": 89.90699999999998,
+            "sentimentScore": 408.483
+          },
+          "teamB": {
+            "directNetSupport": 1748.3,
+            "syntheticSupport": 120.16,
+            "opponentLiabilityRejection": 128.1964,
+            "sentimentScore": 1740.2636
+          },
+          "strongerTeam": "Bangladesh W",
+          "scoreDifference": 1331.7806,
+          "percentageA": 19.010291860380374,
+          "percentageB": 80.98970813961964
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "United Arab Emirates W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Bangladesh W",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "United Arab Emirates W"
+        },
+        "teams": {
+          "United Arab Emirates W": {
+            "trades": [
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.01,
+                "type": "back",
+                "size": 74.91,
+                "updatedAt": 1788875628943
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2,
+                "type": "lay",
+                "size": 2.669999999999998,
+                "updatedAt": 1788875622846
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.91,
+                "type": "back",
+                "size": 14.99,
+                "updatedAt": 1788874830532
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.94,
+                "type": "back",
+                "size": 210.78,
+                "updatedAt": 1788874794703
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2.02,
+                "type": "lay",
+                "size": 10.47,
+                "updatedAt": 1788874422586
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2.08,
+                "type": "lay",
+                "size": 70.29,
+                "updatedAt": 1788872434005
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.95,
+                "type": "back",
+                "size": 59.059999999999995,
+                "updatedAt": 1788872011995
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 36.73,
+                "updatedAt": 1788870329098
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.93,
+                "type": "back",
+                "size": 151.13,
+                "updatedAt": 1788870221841
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 2,
+                "type": "back",
+                "size": 19.85,
+                "updatedAt": 1788869498735
+              },
+              {
+                "team": "United Arab Emirates W",
+                "price": 1.99,
+                "type": "back",
+                "size": 0.41999999999999993,
+                "updatedAt": 1788857603900
+              }
+            ],
+            "pnlIfWins": 1447.0494999999999,
+            "totalBet": 516.8568999999999
+          },
+          "Bangladesh W": {
+            "trades": [
+              {
+                "team": "Bangladesh W",
+                "price": 2,
+                "type": "lay",
+                "size": 8.45,
+                "updatedAt": 1788875622846
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 48.48,
+                "updatedAt": 1788874794499
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.9,
+                "type": "back",
+                "size": 195.64,
+                "updatedAt": 1788874593238
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.7,
+                "updatedAt": 1788874422570
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.91,
+                "type": "back",
+                "size": 578.07,
+                "updatedAt": 1788873681042
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.92,
+                "type": "back",
+                "size": 498.58,
+                "updatedAt": 1788872433958
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.94,
+                "type": "back",
+                "size": 177.10000000000002,
+                "updatedAt": 1788870328989
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.93,
+                "type": "back",
+                "size": 386.32,
+                "updatedAt": 1788870328989
+              },
+              {
+                "team": "Bangladesh W",
+                "price": 1.99,
+                "type": "lay",
+                "size": 19.78,
+                "updatedAt": 1788861541742
+              }
+            ],
+            "pnlIfWins": -1185.6778999999997,
+            "totalBet": 1806.7248999999997
+          }
+        }
+      },
+      "predictedWinner": "United Arab Emirates W",
+      "predictionReason": "Asia Cup Bookmaker Deficit on Bangladesh W (PnL: -1186) -> Faded to Safe Side United Arab Emirates W (+1447)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Asia Cup Bookmaker Deficit on Bangladesh W (PnL: -1186) -> Faded to Safe Side United Arab Emirates W (+1447)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Asia Cup Bookmaker Deficit on Bangladesh W (PnL: -1186) -> Faded to Safe Side United Arab Emirates W (+1447)",
+          "winner": "United Arab Emirates W",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
     }
   ]
 }
