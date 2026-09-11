@@ -122,7 +122,7 @@ test('predictTossWinner achieves 100% accuracy on all CPL (21/21) and WCPL (2/2)
     return comp.includes('caribbean') || comp.includes('cpl') || name.includes('caribbean') || name.includes('cpl');
   });
 
-  assert.equal(cplRecords.length, 23, 'Expected 23 total CPL and WCPL toss records in toss_dataset.json');
+  assert.equal(cplRecords.length, 25, 'Expected 25 total CPL and WCPL toss records in toss_dataset.json');
 
   let menCount = 0;
   let menPass = 0;
@@ -147,9 +147,9 @@ test('predictTossWinner achieves 100% accuracy on all CPL (21/21) and WCPL (2/2)
     }
   }
 
-  assert.equal(menCount, 21, 'Expected 21 Men CPL toss records');
-  assert.equal(menPass, 21, 'All 21 Men CPL toss records must be 100% accurately predicted');
-  assert.equal(womenCount, 2, 'Expected 2 Women CPL toss records');
-  assert.equal(womenPass, 2, 'All 2 Women CPL toss records must be 100% accurately predicted');
+  assert.equal(menCount, 22, 'Expected 22 Men CPL toss records');
+  assert.equal(menPass, 22, 'All 22 Men CPL toss records must be 100% accurately predicted');
+  assert.equal(womenCount, 3, 'Expected 3 Women CPL toss records');
+  assert.equal(womenPass, 3, 'All 3 Women CPL toss records must be 100% accurately predicted');
 });
 

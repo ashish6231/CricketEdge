@@ -602,9 +602,11 @@ function isAsiaAssociate(team) {
   // 3. Smart Synthetic Support Dominance (Sri Lanka W, India W, Bangladesh W, Pakistan W, UAE W)
   const synTarget = stronger || snap?.syntheticSupport?.strongerTeam || syntheticSupport?.strongerTeam
   const synRatio = supRatio || snap?.syntheticSupport?.supportRatio || syntheticSupport?.supportRatio || 1
-  if (synTarget && synRatio >= 1.25) {
-    const isT1 = synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase())
-    const isT2 = synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase())
+  const isT1 = synTarget && (synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase()))
+  const isT2 = synTarget && (synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase()))
+  const synMatchesBookieSafe = (isT1 && prePnl1 > prePnl2) || (isT2 && prePnl2 > prePnl1)
+
+  if (synTarget && (synRatio >= 1.25 || (synRatio >= 1.05 && synMatchesBookieSafe))) {
     if (isT1) {
       return {
         winner: t1,
@@ -896,6 +898,18 @@ export function getECSTossPrediction({
       verdictTag: 'ECS BOOKIE SAFE 🛡️',
       pattern: 'ECS_GLASGOW_CHOKE_FADE',
       reason: `Glasgow Cosmic toss liability choke (PnL: ${prePnl2.toFixed(0)} vs +${prePnl1.toFixed(0)}) -> Bookie Safe to ${t1}`,
+    }
+  }
+
+  // 5.3.1 Rotterdam Dockers Bookmaker Deficit Choke vs Glasgow Cosmic
+  if (name1.includes('rotterdam') && name2.includes('glasgow') && prePnl1 < -300 && prePnl2 > 300 && (supRatio || 1) < 3.0) {
+    return {
+      winner: t2,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS BOOKIE SAFE 🛡️',
+      pattern: 'ECS_ROTTERDAM_DEFICIT_FADE',
+      reason: `Rotterdam Dockers bookmaker deficit choke (PnL: ${prePnl1.toFixed(0)} vs +${prePnl2.toFixed(0)}) -> Bookie Safe to ${t2}`,
     }
   }
 

@@ -902,6 +902,48 @@
     "runners": [],
     "totalMatched": 18656726
   },
+  "36040032": {
+    "matchLoad": {
+      "team1": {
+        "name": "Rotterdam Dockers",
+        "money": 50087849,
+        "percent": 76,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Glasgow Cosmic",
+        "money": 15572939,
+        "percent": 24,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 65660788
+    },
+    "runners": [],
+    "totalMatched": 65660788
+  },
+  "36040305": {
+    "matchLoad": {
+      "team1": {
+        "name": "Jamaica Empress W",
+        "money": 63335,
+        "percent": 1,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Trinbago Knight Riders W",
+        "money": 5453983,
+        "percent": 99,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "totalMatched": 5517319
+    },
+    "runners": [],
+    "totalMatched": 5517319
+  },
   "36042373": {
     "matchLoad": {
       "team1": {
@@ -1069,5 +1111,299 @@
     },
     "runners": [],
     "totalMatched": 41396
+  },
+  "36045828": {
+    "matchLoad": {
+      "team1": {
+        "name": "Guyana Amazon Warriors",
+        "money": 35086,
+        "percent": 91,
+        "odds": 1.56,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "St. Lucia Kings",
+        "money": 3373,
+        "percent": 9,
+        "odds": 2.72,
+        "trend": "down"
+      },
+      "totalMatched": 38459
+    },
+    "runners": [],
+    "totalMatched": 38459
+  },
+  "36045869": {
+    "matchLoad": {
+      "team1": {
+        "name": "Belfast Wolves",
+        "money": 58014555,
+        "percent": 97,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Amsterdam Flames",
+        "money": 2022052,
+        "percent": 3,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 60036606
+    },
+    "runners": [],
+    "totalMatched": 60036606
+  },
+  "36046905": {
+    "matchLoad": {
+      "team1": {
+        "name": "Nepal",
+        "money": 301797,
+        "percent": 96,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Oman",
+        "money": 12991,
+        "percent": 4,
+        "odds": 200,
+        "trend": "down"
+      },
+      "totalMatched": 314787
+    },
+    "runners": [],
+    "totalMatched": 314787
+  },
+  "36046908": {
+    "matchLoad": {
+      "team1": {
+        "name": "United Arab Emirates",
+        "money": 17,
+        "percent": 87,
+        "odds": 1.52,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Hong Kong",
+        "money": 3,
+        "percent": 13,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 19
+    },
+    "runners": [],
+    "totalMatched": 19
+  },
+  "36049475": {
+    "matchLoad": {
+      "team1": {
+        "name": "India W",
+        "money": 30519303,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Bangladesh W",
+        "money": 136131,
+        "percent": 0,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 30655434
+    },
+    "runners": [],
+    "totalMatched": 30655434
+  },
+  "36051784": {
+    "matchLoad": {
+      "team1": {
+        "name": "Botswana",
+        "money": 447,
+        "percent": 1,
+        "odds": 19.5,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Uganda",
+        "money": 29516,
+        "percent": 99,
+        "odds": 1.27,
+        "trend": "up"
+      },
+      "totalMatched": 29963
+    },
+    "runners": [],
+    "totalMatched": 29963
+  },
+  "36051787": {
+    "matchLoad": {
+      "team1": {
+        "name": "Rwanda",
+        "money": 26663,
+        "percent": 99,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Sierra Leone",
+        "money": 189,
+        "percent": 1,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 26852
+    },
+    "runners": [],
+    "totalMatched": 26852
+  },
+  "36052400": {
+    "matchLoad": {
+      "team1": {
+        "name": "Jalandhar Warriors",
+        "money": 342387,
+        "percent": 77,
+        "odds": 600,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Amritsar Soormas",
+        "money": 102795,
+        "percent": 23,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "totalMatched": 445183
+    },
+    "runners": [],
+    "totalMatched": 445183
+  },
+  "36052409": {
+    "matchLoad": {
+      "team1": {
+        "name": "Fazilka Falcons",
+        "money": 157742,
+        "percent": 54,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Bathinda Royals",
+        "money": 134176,
+        "percent": 46,
+        "odds": 55,
+        "trend": "up"
+      },
+      "totalMatched": 291918
+    },
+    "runners": [],
+    "totalMatched": 291918
+  },
+  "36052556": {
+    "matchLoad": {
+      "team1": {
+        "name": "Kruibeke Polders",
+        "money": 3198,
+        "percent": 32,
+        "odds": 3,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Lokeren Super Giants",
+        "money": 6775,
+        "percent": 68,
+        "odds": 1.56,
+        "trend": "up"
+      },
+      "totalMatched": 9973
+    },
+    "runners": [],
+    "totalMatched": 9973
+  },
+  "36052562": {
+    "matchLoad": {
+      "team1": {
+        "name": "Kruibeke Polders",
+        "money": 1320,
+        "percent": 55,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Beveren Cc",
+        "money": 1076,
+        "percent": 45,
+        "odds": 8,
+        "trend": "up"
+      },
+      "totalMatched": 2396
+    },
+    "runners": [],
+    "totalMatched": 2396
+  },
+  "36052590": {
+    "matchLoad": {
+      "team1": {
+        "name": "Temse Knight Riders",
+        "money": 395,
+        "percent": 25,
+        "odds": 4.9,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Lokeren Super Giants",
+        "money": 1214,
+        "percent": 75,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "totalMatched": 1609
+    },
+    "runners": [],
+    "totalMatched": 1609
+  },
+  "36052594": {
+    "matchLoad": {
+      "team1": {
+        "name": "Beveren Cc",
+        "money": 1505,
+        "percent": 94,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Temse Knight Riders",
+        "money": 100,
+        "percent": 6,
+        "odds": 7.2,
+        "trend": "up"
+      },
+      "totalMatched": 1604
+    },
+    "runners": [],
+    "totalMatched": 1604
+  },
+  "36053722": {
+    "matchLoad": {
+      "team1": {
+        "name": "Mustafa Fragrance",
+        "money": 610,
+        "percent": 2,
+        "odds": 10.5,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Ias Invincibles",
+        "money": 39650,
+        "percent": 98,
+        "odds": 1.48,
+        "trend": "up"
+      },
+      "totalMatched": 40260
+    },
+    "runners": [],
+    "totalMatched": 40260
   }
 }

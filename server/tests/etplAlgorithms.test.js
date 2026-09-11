@@ -91,7 +91,7 @@ test('predictTossWinner achieves 100% accuracy on all completed ETPL toss datase
     );
   }).filter(r => r.status === 'verified' && r.actualWinner && r.actualWinner !== 'No Result');
 
-  assert.equal(etplRecords.length, 16, 'Should have exactly 16 completed verified ETPL toss records');
+  assert.equal(etplRecords.length, 18, 'Should have exactly 18 completed verified ETPL toss records');
 
   for (const record of etplRecords) {
     const pred = predictTossWinner(record.snapshot || {}, record.competitionName);
