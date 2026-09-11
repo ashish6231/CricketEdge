@@ -197,7 +197,7 @@ function findMatchInfo(matchesData, matchId) {
   return matches.find(m => String(m.matchId) === id || String(m.marketId) === id) || null;
 }
 
-function attachMatchMeta(data, matchInfo) {
+function attachMatchMeta(data, matchInfo, isToss = false) {
   if (!matchInfo || !data || data.error) return data;
   data.inPlay = matchInfo.inPlay;
   data.competitionName = matchInfo.competitionName ?? data.competitionName;
@@ -210,9 +210,11 @@ function attachMatchMeta(data, matchInfo) {
     null;
   if (start != null && start !== '') data.startTime = start;
   
-  const prediction = predictMatchWinner(data);
-  if (prediction) {
-    data.aiPrediction = prediction;
+  if (!isToss) {
+    const prediction = predictMatchWinner(data);
+    if (prediction) {
+      data.aiPrediction = prediction;
+    }
   }
 
   return data;
@@ -534,10 +536,49 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   if (!cricket && cricketRaw?.error) {
     cricket = { error: cricketRaw.error };
   }
+  if (cricket && !cricket.error) {
+    try {
+      const md = getMatchDataset();
+      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec?.actualWinner && !cricket.actualWinner) {
+        cricket.actualWinner = rec.actualWinner;
+      }
+    } catch {}
+  }
 
-  const toss = !tossRaw || tossRaw.error
+  let toss = (!tossRaw || tossRaw.error)
     ? null
-    : attachMatchMeta(tossRaw, tossInfo || matchInfo);
+    : attachMatchMeta(tossRaw, tossInfo || matchInfo, true);
+
+  if (!toss) {
+    try {
+      const store = getDefaultStore();
+      const ds = await store.load();
+      const rec = (ds.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec && rec.snapshot) {
+        const tossData = JSON.parse(JSON.stringify(rec.snapshot));
+        if (!tossData.competitionName) tossData.competitionName = rec.competitionName;
+        if (!tossData.startTime) tossData.startTime = rec.startTime;
+        toss = attachMatchMeta(tossData, tossInfo || matchInfo, true);
+        if (rec.actualWinner) toss.actualWinner = rec.actualWinner;
+        if (rec.predictedWinner) toss.predictedWinner = rec.predictedWinner;
+      }
+    } catch {}
+  }
+  if (toss && !toss.error) {
+    try {
+      const store = getDefaultStore();
+      const ds = await store.load();
+      const rec = (ds.records || []).find(x => String(x.matchId) === String(matchId));
+      if (rec) {
+        if (rec.actualWinner && !toss.actualWinner) toss.actualWinner = rec.actualWinner;
+        if (rec.predictedWinner && !toss.predictedWinner) toss.predictedWinner = rec.predictedWinner;
+      }
+    } catch {}
+  }
+  if (!toss && tossRaw?.error) {
+    toss = { error: tossRaw.error };
+  }
 
   const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
 
@@ -762,7 +803,7 @@ router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
   }
 
   if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data available for this match' });
-  res.json(attachMatchMeta(data, tossInfo || cricketInfo));
+  res.json(attachMatchMeta(data, tossInfo || cricketInfo, true));
 });
 
 router.get('/session/matches', optionalAuth, async (req, res) => {

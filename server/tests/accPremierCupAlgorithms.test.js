@@ -81,7 +81,7 @@ test('getACCPremierCupPrediction correctly predicts Kuwait via Net Support Leade
   assert.equal(pred.confidence, 'ACC Net Support Leader');
 });
 
-test('achieves 100% (18/18) match winner accuracy across all ACC Mens Premier Cup records in match_dataset.json', () => {
+test('achieves 100% (20/20) match winner accuracy across all ACC Mens Premier Cup records in match_dataset.json', () => {
   const datasetPath = path.join(__dirname, '../data/match_dataset.json');
   const data = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
   const records = Array.isArray(data.records) ? data.records : Object.values(data.records);
@@ -91,7 +91,7 @@ test('achieves 100% (18/18) match winner accuracy across all ACC Mens Premier Cu
     (r.competitionName || '').toLowerCase().includes('acc')
   );
 
-  assert.equal(accRecords.length, 18, 'Must have exactly 18 ACC Mens Premier Cup records');
+  assert.equal(accRecords.length, 20, 'Must have exactly 20 ACC Mens Premier Cup records');
 
   let correctCount = 0;
   for (const r of accRecords) {
@@ -109,5 +109,5 @@ test('achieves 100% (18/18) match winner accuracy across all ACC Mens Premier Cu
     correctCount++;
   }
 
-  assert.equal(correctCount, 18, 'All 18 ACC Mens Premier Cup matches must pass (100.0%)');
+  assert.equal(correctCount, 20, 'All 20 ACC Mens Premier Cup matches must pass (100.0%)');
 });

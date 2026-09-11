@@ -455,6 +455,17 @@ function getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
     return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 ThreeMin Net Short Fade' };
   }
 
+  // 2b. Three-minute volume surge dominance when pre-match volumes are small (< 500)
+  // (e.g. Belfast Wolves b=124 vs Amsterdam b=174, but 3-min Belfast b=1329 vs Amsterdam b=308, +507 Bookie safe)
+  if (b1 < 500 && b2 < 500) {
+    if (tb1 > tb2 * 1.5 && epnl1 >= epnl2) {
+      return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 3Min Inflow & Bookie Safe' };
+    }
+    if (tb2 > tb1 * 1.5 && epnl2 >= epnl1) {
+      return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 3Min Inflow & Bookie Safe' };
+    }
+  }
+
   // 3. Pre-Match Back Inflow / Volume Dominance
   // In ETPL, clean back volume wins!
   if (b1 > b2) {
