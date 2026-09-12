@@ -1374,37 +1374,6 @@ export default function MatchDetail({ sport }) {
             </div>
           ) : (
             <>
-              {/* 🪙 Toss Market Quick Bar */}
-              {sport === 'cricket' && hasTossData && (
-                <button
-                  type="button"
-                  onClick={() => setActiveTab('toss')}
-                  className="w-full text-left rounded-xl p-2.5 sm:p-3 border border-purple-500/30 bg-purple-500/[0.08] hover:bg-purple-500/[0.14] transition-all flex items-center justify-between gap-2 shadow-sm mb-3"
-                >
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-base">🪙</span>
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-white flex items-center gap-2">
-                        <span>Toss Market Data Available</span>
-                        {tossPrediction?.winnerName && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                            Winner: {tossPrediction.winnerName}
-                          </span>
-                        )}
-                      </div>
-                      {(tossT1BookiePL != null || tossT2BookiePL != null) && (
-                        <div className="text-[10px] text-slate-400 truncate mt-0.5 font-mono">
-                          📈 Toss Bookie P/L: <span className={pnlCls(tossT1BookiePL)}>{tossT1Name} ({fmtTossRs(tossT1BookiePL)})</span> • <span className={pnlCls(tossT2BookiePL)}>{tossT2Name} ({fmtTossRs(tossT2BookiePL)})</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  <span className="text-[11px] font-bold text-purple-400 flex items-center gap-1 shrink-0 font-sans">
-                    View Toss Section →
-                  </span>
-                </button>
-              )}
-
               {/* ━━━━━━━━━━ 🤖 QUANT AI PREDICTION ━━━━━━━━━━ */}
               {snapshot.aiPrediction && snapshot.aiPrediction.winner && (() => {
                 const pv = getPredictionVisuals(snapshot.aiPrediction)
