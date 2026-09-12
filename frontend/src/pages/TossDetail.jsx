@@ -276,7 +276,7 @@ export default function TossDetail({ isEmbedded = false }) {
       )}
 
       {/* Bookie P/L from Trades (Exact Betfair Formula) */}
-      {(t1Trades.length > 0 || t2Trades.length > 0) && (
+      {(t1BookiePL != null || t2BookiePL != null || t1Trades.length > 0 || t2Trades.length > 0) && (
         <div className="glass-card rounded-2xl p-4">
           <div className="text-xs font-bold text-text-muted uppercase mb-3">
             📈 Bookie P/L (Agar Team Jeete){plSource === 'api' ? ' • API' : ' • Trades'}

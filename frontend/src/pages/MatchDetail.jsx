@@ -38,6 +38,12 @@ const fmtRs = (n) => {
   return `${sign}€${fmt(n)}`
 }
 
+const fmtTossRs = (n) => {
+  if (n === null || n === undefined) return '—'
+  const rounded = Math.round(Number(n))
+  return `${rounded >= 0 ? '+' : ''}€${rounded.toLocaleString('en-IN')}`
+}
+
 const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
 
 const fmtVol = (n) => {
@@ -739,7 +745,14 @@ export default function MatchDetail({ sport }) {
             } else if (isInitial) {
               setFetchError(data?.error || data?.message || 'Match data load nahi ho paya')
             }
-            if (bundle?.toss && !bundle.toss.error) setTossSnapshot(bundle.toss)
+            if (bundle?.toss && !bundle.toss.error) {
+              setTossSnapshot(bundle.toss)
+            } else if (sport === 'cricket') {
+              getTossSnapshot(matchId).catch(() => null).then(tossData => {
+                if (cancelled || !tossData || tossData.error) return
+                setTossSnapshot(tossData)
+              })
+            }
             if (bundle?.session) applySessionData(bundle.session)
             if (sport === 'cricket') {
               if (bundle?.crex) {
@@ -845,8 +858,10 @@ export default function MatchDetail({ sport }) {
     const hasOdds = Array.isArray(tossSnapshot.odds) && tossSnapshot.odds.length > 0
     const hasPnl = Boolean(tossSnapshot.preMatchPnl && (tossSnapshot.preMatchPnl.team1 !== undefined || tossSnapshot.preMatchPnl.team2 !== undefined))
     const hasSynthetic = Boolean(tossSnapshot.syntheticSupport && (tossSnapshot.syntheticSupport.teamA || tossSnapshot.syntheticSupport.strongerTeam))
+    const hasSimplePl = Boolean(tossSnapshot.deepMetrics?.simplePL && (tossSnapshot.deepMetrics.simplePL.team1_win !== undefined || tossSnapshot.deepMetrics.simplePL.team2_win !== undefined))
+    const hasTeamPl = Boolean(tossSnapshot.teams && Object.values(tossSnapshot.teams).some(t => t?.pnlIfWins !== undefined || (Array.isArray(t?.trades) && t.trades.length > 0)))
 
-    return Boolean(mTotal > 0 || hasTrades || hasOdds || hasPnl || hasSynthetic)
+    return Boolean(mTotal > 0 || hasTrades || hasOdds || hasPnl || hasSynthetic || hasSimplePl || hasTeamPl)
   }, [sport, tossSnapshot])
 
   const hasSessionData = useMemo(() => {
@@ -1034,6 +1049,12 @@ export default function MatchDetail({ sport }) {
   const tossSup1 = tossSnap?.supportMetrics?.team1
   const tossSup2 = tossSnap?.supportMetrics?.team2
 
+  const tossTrades1 = (tossSnap?.teams?.[tossT1Name] || {}).trades || []
+  const tossTrades2 = (tossSnap?.teams?.[tossT2Name] || {}).trades || []
+  const { pl1: tossT1BookiePL, pl2: tossT2BookiePL, source: tossPlSource } = tossSnap
+    ? getBookiePl(tossSnap, tossT1Name, tossT2Name)
+    : {}
+
   const tossT1GraphData = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], effectiveTimeFilter) : null
   const tossT2GraphData = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], effectiveTimeFilter) : null
   const tossMarketVol = (tossT1GraphData?.totalBet || 0) + (tossT2GraphData?.totalBet || 0)
@@ -1047,6 +1068,8 @@ export default function MatchDetail({ sport }) {
   // Bookie P/L on graph — same source as Simple Book (simplePL), not sampled-trade pnlIfWins
   if (t1GraphData) t1GraphData.bookieProfitIfWins = pl1
   if (t2GraphData) t2GraphData.bookieProfitIfWins = pl2
+  if (tossT1GraphData) tossT1GraphData.bookieProfitIfWins = tossT1BookiePL
+  if (tossT2GraphData) tossT2GraphData.bookieProfitIfWins = tossT2BookiePL
   const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
   const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
   const t2PctVol = marketVol > 0 ? ((t2GraphData?.totalBet || 0) / marketVol) * 100 : 50
@@ -1264,93 +1287,36 @@ export default function MatchDetail({ sport }) {
                   </div>
                 </div>
 
-                {/* 1. PRE-MATCH INFLOW BREAKDOWN */}
-                {(() => {
-                  const b1 = tossM1?.back ?? 0
-                  const l1 = tossM1?.lay ?? 0
-                  const b2 = tossM2?.back ?? 0
-                  const l2 = tossM2?.lay ?? 0
-                  const pnl1 = tossSnap?.preMatchPnl?.team1 ?? (l1 - b1)
-                  const pnl2 = tossSnap?.preMatchPnl?.team2 ?? (l2 - b2)
-                  const totBack = b1 + b2
-                  const b1Pct = totBack > 0 ? (b1 / totBack) * 100 : 50
-                  const b2Pct = totBack > 0 ? (b2 / totBack) * 100 : 50
-
-                  return (
-                    <div className="rounded-lg p-2.5 sm:p-3 border border-[#1b2234] bg-[#080b14]">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
-                          📌 1. Pre-Match Back Accumulation & Inflow
-                        </span>
-                        <span className="text-[9px] text-slate-400 font-semibold">Toss Inflow Base</span>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        {/* Team 1 Pre-match */}
-                        <div
-                          className="rounded-lg p-2.5 border transition-all"
-                          style={{
-                            background: b1 >= b2 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.02)',
-                            borderColor: b1 >= b2 ? 'rgba(16, 185, 129, 0.45)' : '#1b2234',
-                          }}
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-bold text-white truncate">{tossT1Name}</span>
-                            <span
-                              className={`text-[8px] font-black px-1.5 py-0.5 rounded ${b1 >= b2
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                  : 'bg-slate-700/30 text-slate-400 border border-slate-700/40'
-                                }`}
-                            >
-                              {b1 >= b2 ? '🔥 Back Leader' : 'Secondary Inflow'}
-                            </span>
-                          </div>
-                          <div className="flex items-baseline justify-between font-mono">
-                            <span className="text-[9px] text-slate-400">Back Inflow:</span>
-                            <span className={`text-xs sm:text-sm font-black ${b1 >= b2 ? 'text-emerald-400' : 'text-white'}`}>
-                              €{formatVolStr(b1)} <span className="text-[10px] text-slate-500">({b1Pct.toFixed(0)}%)</span>
-                            </span>
-                          </div>
-                          <div className="mt-1.5 pt-1.5 border-t border-[#1b2234] text-[9px] font-mono flex justify-between text-slate-400">
-                            <span>Lay: <b className="text-slate-200">€{formatVolStr(l1)}</b></span>
-                            <span>P/L: <b className={pnl1 >= 0 ? 'text-emerald-400' : 'text-rose-400'}>{pnl1 >= 0 ? `+${pnl1.toFixed(1)}` : pnl1.toFixed(1)}</b></span>
-                          </div>
-                        </div>
-
-                        {/* Team 2 Pre-match */}
-                        <div
-                          className="rounded-lg p-2.5 border transition-all"
-                          style={{
-                            background: b2 > b1 ? 'rgba(16, 185, 129, 0.08)' : 'rgba(255, 255, 255, 0.02)',
-                            borderColor: b2 > b1 ? 'rgba(16, 185, 129, 0.45)' : '#1b2234',
-                          }}
-                        >
-                          <div className="flex items-center justify-between mb-1">
-                            <span className="text-xs font-bold text-white truncate">{tossT2Name}</span>
-                            <span
-                              className={`text-[8px] font-black px-1.5 py-0.5 rounded ${b2 > b1
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                                  : 'bg-slate-700/30 text-slate-400 border border-slate-700/40'
-                                }`}
-                            >
-                              {b2 > b1 ? '🔥 Back Leader' : 'Secondary Inflow'}
-                            </span>
-                          </div>
-                          <div className="flex items-baseline justify-between font-mono">
-                            <span className="text-[9px] text-slate-400">Back Inflow:</span>
-                            <span className={`text-xs sm:text-sm font-black ${b2 > b1 ? 'text-emerald-400' : 'text-white'}`}>
-                              €{formatVolStr(b2)} <span className="text-[10px] text-slate-500">({b2Pct.toFixed(0)}%)</span>
-                            </span>
-                          </div>
-                          <div className="mt-1.5 pt-1.5 border-t border-[#1b2234] text-[9px] font-mono flex justify-between text-slate-400">
-                            <span>Lay: <b className="text-slate-200">€{formatVolStr(l2)}</b></span>
-                            <span>P/L: <b className={pnl2 >= 0 ? 'text-emerald-400' : 'text-rose-400'}>{pnl2 >= 0 ? `+${pnl2.toFixed(1)}` : pnl2.toFixed(1)}</b></span>
-                          </div>
-                        </div>
-                      </div>
+                {/* 📈 Bookie P/L (Agar Team Jeete) — Just below Predicted Winner */}
+                {(tossT1BookiePL != null || tossT2BookiePL != null || tossTrades1.length > 0 || tossTrades2.length > 0) && (
+                  <div className="rounded-lg p-3 sm:p-3.5 border border-[#1b2234] bg-[#080b14]">
+                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
+                      <span>📈 Bookie P/L (Agar Team Jeete){tossPlSource === 'api' ? ' • API' : ' • Trades'}</span>
+                      <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono">
+                        TOSS P/L
+                      </span>
                     </div>
-                  )
-                })()}
+                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+                      {[{ name: tossT1Name, pl: tossT1BookiePL }, { name: tossT2Name, pl: tossT2BookiePL }].map(({ name, pl }) => {
+                        const isProf = (pl ?? 0) >= 0
+                        return (
+                          <div
+                            key={name}
+                            className="rounded-xl p-3 text-center border transition-all"
+                            style={{
+                              background: isProf ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)',
+                              border: `1px solid ${isProf ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}`
+                            }}
+                          >
+                            <div className="text-sm sm:text-base font-bold text-white mb-1 truncate">{name}</div>
+                            <div className={`text-xl font-black font-mono ${pnlCls(pl)}`}>{fmtTossRs(pl)}</div>
+                            <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{isProf ? '✅ PROFIT' : '❌ LOSS'}</div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 {/* 2. 6-Metric Breakdown Table */}
                 <div className="pt-1">
@@ -1408,6 +1374,37 @@ export default function MatchDetail({ sport }) {
             </div>
           ) : (
             <>
+              {/* 🪙 Toss Market Quick Bar */}
+              {sport === 'cricket' && hasTossData && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('toss')}
+                  className="w-full text-left rounded-xl p-2.5 sm:p-3 border border-purple-500/30 bg-purple-500/[0.08] hover:bg-purple-500/[0.14] transition-all flex items-center justify-between gap-2 shadow-sm mb-3"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-base">🪙</span>
+                    <div className="min-w-0">
+                      <div className="text-xs font-bold text-white flex items-center gap-2">
+                        <span>Toss Market Data Available</span>
+                        {tossPrediction?.winnerName && (
+                          <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            Winner: {tossPrediction.winnerName}
+                          </span>
+                        )}
+                      </div>
+                      {(tossT1BookiePL != null || tossT2BookiePL != null) && (
+                        <div className="text-[10px] text-slate-400 truncate mt-0.5 font-mono">
+                          📈 Toss Bookie P/L: <span className={pnlCls(tossT1BookiePL)}>{tossT1Name} ({fmtTossRs(tossT1BookiePL)})</span> • <span className={pnlCls(tossT2BookiePL)}>{tossT2Name} ({fmtTossRs(tossT2BookiePL)})</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <span className="text-[11px] font-bold text-purple-400 flex items-center gap-1 shrink-0 font-sans">
+                    View Toss Section →
+                  </span>
+                </button>
+              )}
+
               {/* ━━━━━━━━━━ 🤖 QUANT AI PREDICTION ━━━━━━━━━━ */}
               {snapshot.aiPrediction && snapshot.aiPrediction.winner && (() => {
                 const pv = getPredictionVisuals(snapshot.aiPrediction)
