@@ -36422,8 +36422,8 @@
           }
         }
       },
-      "predictedWinner": "Rotterdam Dockers",
-      "predictionReason": "ECS Synthetic Smart Support Dominance on Rotterdam Dockers (Ratio: 2.1x)",
+      "predictedWinner": "Glasgow Cosmic",
+      "predictionReason": "Rotterdam Dockers bookmaker deficit choke (PnL: -392 vs +444) -> Bookie Safe to Glasgow Cosmic",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -36434,12 +36434,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Synthetic Smart Support Dominance on Rotterdam Dockers (Ratio: 2.1x)"
+        "reason": "Rotterdam Dockers bookmaker deficit choke (PnL: -392 vs +444) -> Bookie Safe to Glasgow Cosmic"
       },
       "matchedRules": [
         {
-          "reason": "ECS Synthetic Smart Support Dominance on Rotterdam Dockers (Ratio: 2.1x)",
-          "winner": "Rotterdam Dockers",
+          "reason": "Rotterdam Dockers bookmaker deficit choke (PnL: -392 vs +444) -> Bookie Safe to Glasgow Cosmic",
+          "winner": "Glasgow Cosmic",
           "priority": 100,
           "selected": true
         }
@@ -37792,8 +37792,8 @@
           }
         }
       },
-      "predictedWinner": "India W",
-      "predictionReason": "Asia Cup Inflow Leader on India W (₹1.1k Back, Lead: 1.2x)",
+      "predictedWinner": "Bangladesh W",
+      "predictionReason": "Asia Cup Smart Synthetic Support on Bangladesh W (1.1x Lead)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -37804,12 +37804,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Asia Cup Inflow Leader on India W (₹1.1k Back, Lead: 1.2x)"
+        "reason": "Asia Cup Smart Synthetic Support on Bangladesh W (1.1x Lead)"
       },
       "matchedRules": [
         {
-          "reason": "Asia Cup Inflow Leader on India W (₹1.1k Back, Lead: 1.2x)",
-          "winner": "India W",
+          "reason": "Asia Cup Smart Synthetic Support on Bangladesh W (1.1x Lead)",
+          "winner": "Bangladesh W",
           "priority": 100,
           "selected": true
         }
@@ -38894,8 +38894,8 @@
           }
         }
       },
-      "predictedWinner": "Edinburgh Castle Rockers",
-      "predictionReason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)",
+      "predictedWinner": "Dublin Guardians",
+      "predictionReason": "Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: -917 vs +1043) -> Faded to Dublin Guardians",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -38906,12 +38906,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)"
+        "reason": "Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: -917 vs +1043) -> Faded to Dublin Guardians"
       },
       "matchedRules": [
         {
-          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)",
-          "winner": "Edinburgh Castle Rockers",
+          "reason": "Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: -917 vs +1043) -> Faded to Dublin Guardians",
+          "winner": "Dublin Guardians",
           "priority": 100,
           "selected": true
         }
@@ -40300,8 +40300,8 @@
         "status": "ended",
         "startTime": 1789205400000
       },
-      "predictedWinner": "Belfast Wolves",
-      "predictionReason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 3.4x)",
+      "predictedWinner": "Rotterdam Dockers",
+      "predictionReason": "ECS Micro-volume trap safe to Rotterdam Dockers (PnL: +123)",
       "predictionRisk": {
         "tier": "medium",
         "label": "Medium Risk",
@@ -40312,12 +40312,12 @@
         "border": "rgba(234,179,8,0.35)",
         "emoji": "🟡",
         "wrongPct": "~20–27%",
-        "reason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 3.4x)"
+        "reason": "ECS Micro-volume trap safe to Rotterdam Dockers (PnL: +123)"
       },
       "matchedRules": [
         {
-          "reason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 3.4x)",
-          "winner": "Belfast Wolves",
+          "reason": "ECS Micro-volume trap safe to Rotterdam Dockers (PnL: +123)",
+          "winner": "Rotterdam Dockers",
           "priority": 100,
           "selected": true
         }

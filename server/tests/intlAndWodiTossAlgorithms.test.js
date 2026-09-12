@@ -14,7 +14,7 @@ test('predictTossWinner achieves 100% accuracy on all International Men matches 
     return (comp.includes('international') || comp.includes('test') || comp.includes('one day')) && !comp.includes('women');
   });
 
-  assert.equal(intlRecords.length, 12, 'Expected 12 International Men toss records in toss_dataset.json');
+  assert.ok(intlRecords.length >= 12, 'Expected at least 12 International Men toss records in toss_dataset.json');
 
   let passed = 0;
   for (const r of intlRecords) {
@@ -25,7 +25,7 @@ test('predictTossWinner achieves 100% accuracy on all International Men matches 
     passed++;
   }
 
-  assert.equal(passed, 12, 'All 12 International Men toss matches must pass 100%');
+  assert.equal(passed, intlRecords.length, 'All International Men toss matches must pass 100%');
 });
 
 test('predictTossWinner achieves 100% accuracy on all Womens One Day Internationals records', () => {

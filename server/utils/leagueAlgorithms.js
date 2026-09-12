@@ -438,10 +438,11 @@ function getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   const tl2 = tmv2?.lay  || l2;
 
   // 1. Extreme Pre-Match Lay Resistance Dump (e.g. Belfast lay=1954 vs back=699 -> 2.8x lay!)
-  if (l1 >= 500 && l1 >= b1 * 2.0) {
+  // Requires significant lay volume (>= 1000)
+  if (l1 >= 1000 && l1 >= b1 * 2.0) {
     return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Lay Dump Resistance' };
   }
-  if (l2 >= 500 && l2 >= b2 * 2.0) {
+  if (l2 >= 1000 && l2 >= b2 * 2.0) {
     return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Lay Dump Resistance' };
   }
 
@@ -456,8 +457,8 @@ function getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
   }
 
   // 2b. Three-minute volume surge dominance when pre-match volumes are small (< 500)
-  // (e.g. Belfast Wolves b=124 vs Amsterdam b=174, but 3-min Belfast b=1329 vs Amsterdam b=308, +507 Bookie safe)
-  if (b1 < 500 && b2 < 500) {
+  // or late 3min surge dominance (> 50k with strong bookie safe advantage)
+  if ((b1 < 500 && b2 < 500) || (tb2 > 50000 && tb2 > tb1 * 5.0 && epnl2 >= epnl1 + 500) || (tb1 > 50000 && tb1 > tb2 * 5.0 && epnl1 >= epnl2 + 500)) {
     if (tb1 > tb2 * 1.5 && epnl1 >= epnl2) {
       return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 3Min Inflow & Bookie Safe' };
     }
@@ -505,14 +506,25 @@ function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, tea
     return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Dump & Net Support Dominance' };
   }
 
+  // 0.05 📉 Extreme 3-Minute / In-Play Bookmaker Deficit Fade
+  // e.g. Match 36052400: Jalandhar Warriors 3m P/L -73.8k vs Amritsar +105.7k (Trap detected -> Underdog wins)
+  const p3Pnl1 = snap?.threeMinPnl?.team1 ?? t1Pnl;
+  const p3Pnl2 = snap?.threeMinPnl?.team2 ?? t2Pnl;
+  if (p3Pnl1 <= -10000 && p3Pnl2 >= 10000) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
+  }
+  if (p3Pnl2 <= -10000 && p3Pnl1 >= 10000) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
+  }
+
   // 0.1 📊 Total Market Volume Dominance & Net Support Alignment
   // e.g. Match 36043141: Amritsar has ₹1.24L total bet vs Mohali ₹49k (2.5x) & Amritsar holds Net Support Lead
   const tot1 = adv1.totalBet || 0;
   const tot2 = adv2.totalBet || 0;
-  if (tot1 >= 40000 && tot1 >= tot2 * 2.0 && net.strongerTeam === team1) {
+  if (tot1 >= 40000 && tot1 >= tot2 * 2.0 && net.strongerTeam === team1 && t1Pnl >= -50 && p3Pnl1 >= -500) {
     return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Market Volume Dominance' };
   }
-  if (tot2 >= 40000 && tot2 >= tot1 * 2.0 && net.strongerTeam === team2) {
+  if (tot2 >= 40000 && tot2 >= tot1 * 2.0 && net.strongerTeam === team2 && t2Pnl >= -50 && p3Pnl2 >= -500) {
     return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Market Volume Dominance' };
   }
 

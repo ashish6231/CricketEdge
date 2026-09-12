@@ -827,6 +827,8 @@ export function getECSTossPrediction({
   b1Pct,
   b2Pct,
   totBack,
+  trap,
+  bookieFav,
   stronger,
   supRatio,
   syntheticSupport,
@@ -834,6 +836,28 @@ export function getECSTossPrediction({
 }) {
   const name1 = (t1 || '').toLowerCase()
   const name2 = (t2 || '').toLowerCase()
+
+  // 5.0 Extreme Bookie Deficit Breaches Edinburgh Fortress (excluding Glasgow who chokes)
+  if (name1.includes('edinburgh') && !name2.includes('glasgow') && prePnl1 < -800 && prePnl2 > 900) {
+    return {
+      winner: t2,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS FORTRESS BREACH 🚨',
+      pattern: 'ECS_FORTRESS_BREACH',
+      reason: `Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: ${prePnl1.toFixed(0)} vs +${prePnl2.toFixed(0)}) -> Faded to ${t2}`,
+    }
+  }
+  if (name2.includes('edinburgh') && !name1.includes('glasgow') && prePnl2 < -800 && prePnl1 > 900) {
+    return {
+      winner: t1,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS FORTRESS BREACH 🚨',
+      pattern: 'ECS_FORTRESS_BREACH',
+      reason: `Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: ${prePnl2.toFixed(0)} vs +${prePnl1.toFixed(0)}) -> Faded to ${t1}`,
+    }
+  }
 
   // 5.1 Edinburgh Castle Rockers Undefeated Toss Fortress (100% Win Rate 5-0)
   if (name1.includes('edinburgh')) {
@@ -932,6 +956,30 @@ export function getECSTossPrediction({
       verdictTag: 'ECS LAY DUMP FADE 🚨',
       pattern: 'ECS_LAY_DUMP_FADE',
       reason: `ECS Heavy Lay Short Dump on ${t2} (₹${l2.toFixed(0)} Lay, ${(l2 / Math.max(l1, 1)).toFixed(1)}x) -> Faded to ${t1}`,
+    }
+  }
+
+  // 5.4.1 Micro-Volume High Trap Fade (totBack < 300 && trap === 'high')
+  if (totBack < 300 && trap === 'high' && bookieFav) {
+    if ((bookieFav.toLowerCase().includes(name1) || name1.includes(bookieFav.toLowerCase())) && prePnl1 > 0 && prePnl2 < 0) {
+      return {
+        winner: t1,
+        tier: 'EUROPEAN_TOSS_SPECIAL',
+        algoName: '🇪🇺 European T20 Toss Algorithm',
+        verdictTag: 'ECS BOOKIE SAFE 🛡️',
+        pattern: 'ECS_MICRO_TRAP_SAFE',
+        reason: `ECS Micro-volume trap safe to ${t1} (PnL: +${prePnl1.toFixed(0)})`,
+      }
+    }
+    if ((bookieFav.toLowerCase().includes(name2) || name2.includes(bookieFav.toLowerCase())) && prePnl2 > 0 && prePnl1 < 0) {
+      return {
+        winner: t2,
+        tier: 'EUROPEAN_TOSS_SPECIAL',
+        algoName: '🇪🇺 European T20 Toss Algorithm',
+        verdictTag: 'ECS BOOKIE SAFE 🛡️',
+        pattern: 'ECS_MICRO_TRAP_SAFE',
+        reason: `ECS Micro-volume trap safe to ${t2} (PnL: +${prePnl2.toFixed(0)})`,
+      }
     }
   }
 

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-12T16:00:44.465Z",
+  "updatedAt": "2026-09-12T16:58:43.953Z",
   "records": [
     {
       "matchId": "35901908",
@@ -238183,9 +238183,9 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "European T20 Premier League"
       },
-      "predictedWinner": "Belfast Wolves",
+      "predictedWinner": "Edinburgh Castle Rockers",
       "predictionTier": "ECS_SPECIAL",
-      "predictionConfidence": "European T20 Dual Flow Inflow Lead",
+      "predictionConfidence": "European T20 Lay Dump Resistance",
       "lastCaptureError": null,
       "confirmedAt": null,
       "confirmedByEmail": null,
@@ -376924,9 +376924,9 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "European T20 Premier League"
       },
-      "predictedWinner": "Rotterdam Dockers",
+      "predictedWinner": "Edinburgh Castle Rockers",
       "predictionTier": "ECS_SPECIAL",
-      "predictionConfidence": "European T20 Dual Flow Inflow Lead",
+      "predictionConfidence": "European T20 ThreeMin Net Short Fade",
       "lastCaptureError": null,
       "confirmedAt": "2026-09-06T01:41:08.494Z",
       "confirmedByEmail": "crex-auto-backfill",
@@ -552546,9 +552546,9 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Jalandhar Warriors",
+      "predictedWinner": "Amritsar Soormas",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Market Volume Dominance",
+      "predictionConfidence": "Sher-e-Punjab Bookie Trap (Fade Public)",
       "actualWinner": "Amritsar Soormas",
       "lastCaptureError": null,
       "status": "verified",
@@ -570256,9 +570256,9 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "Sher E Punjab T20 League"
       },
-      "predictedWinner": "Bathinda Royals",
+      "predictedWinner": "Fazilka Falcons",
       "predictionTier": "PUNJAB_SPECIAL",
-      "predictionConfidence": "Sher-e-Punjab Market Volume Dominance",
+      "predictionConfidence": "Sher-e-Punjab Lay Shield (Lay Absorbed)",
       "actualWinner": "Fazilka Falcons",
       "lastCaptureError": null,
       "status": "verified",
@@ -628991,9 +628991,9 @@
         "Usr": "cricketloaduser56@gmail.com",
         "competitionName": "European T20 Premier League"
       },
-      "predictedWinner": "Belfast Wolves",
+      "predictedWinner": "Rotterdam Dockers",
       "predictionTier": "ECS_SPECIAL",
-      "predictionConfidence": "European T20 Lay Dump Resistance",
+      "predictionConfidence": "European T20 3Min Inflow & Bookie Safe",
       "actualWinner": "Rotterdam Dockers",
       "lastCaptureError": null,
       "status": "verified",
@@ -632473,6 +632473,4556 @@
       "predictedWinner": "England",
       "predictionTier": 2,
       "predictionConfidence": "82% Maximum Money Lead (96% Share)",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36052441",
+      "marketId": "1.262250019",
+      "matchName": "Yorkshire W v Lancashire Thunder W",
+      "competitionName": "Metro Bank Womens One Day Cup",
+      "team1": "Yorkshire W",
+      "team2": "Lancashire Thunder W",
+      "startTime": 1789205400000,
+      "endedAt": "2026-09-12T16:58:42.988Z",
+      "capturedAt": "2026-09-12T16:58:42.988Z",
+      "snapshot": {
+        "serverTime": "2026-09-12T16:58:42.950Z",
+        "matchId": "36052441",
+        "matchName": "Yorkshire W v Lancashire Thunder W",
+        "teamNames": [
+          "Yorkshire W",
+          "Lancashire Thunder W"
+        ],
+        "inPlayPnl": {
+          "team1": 24098.772000000004,
+          "team2": -14667.473399999999
+        },
+        "inPlayTotalBets": {
+          "team1": 5528.231600000001,
+          "team2": 18208.5535
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 218.26000000000002,
+            "lay": 1123.6999999999998,
+            "total": 5410.990000000001
+          },
+          "team2": {
+            "back": 27920.030000000002,
+            "lay": 5192.7300000000005,
+            "total": 29043.730000000003
+          }
+        },
+        "preMatchPnl": {
+          "team1": 6.0897999999999985,
+          "team2": -3.4396
+        },
+        "preMatchTotalBets": {
+          "team1": 3.9901999999999997,
+          "team2": 6.2496
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 2.81,
+            "lay": 0,
+            "total": 2.81
+          },
+          "team2": {
+            "back": 10.079999999999998,
+            "lay": 0,
+            "total": 10.079999999999998
+          }
+        },
+        "threeMinPnl": {
+          "team1": 14775.532199999998,
+          "team2": -8861.9632
+        },
+        "threeMinTotalBets": {
+          "team1": 2106.0278000000008,
+          "team2": 10160.005400000002
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 130.17000000000002,
+            "lay": 0,
+            "total": 2033.9300000000007
+          },
+          "team2": {
+            "back": 16881.56,
+            "lay": 1903.7600000000007,
+            "total": 16881.56
+          }
+        },
+        "matchLoadV2": {
+          "team1": 159,
+          "team2": 155
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 2655.1900000000014,
+            "lay": 4490.919999999998,
+            "totalVolume": 7146.11,
+            "backPercentage": 37.15573927633358
+          },
+          "team2": {
+            "back": 94710.11000000004,
+            "lay": 34345.99000000001,
+            "totalVolume": 129056.10000000006,
+            "backPercentage": 73.38677520861083
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 10946.226899999998,
+            "lay": 11949.7852,
+            "totalBet": 22896.0121
+          },
+          "team2": {
+            "back": 51306.048600000024,
+            "lay": 14906.005900000002,
+            "totalBet": 66212.05450000003
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 37001.180000000015,
+            "support": 27.166358020181907
+          },
+          "team2": {
+            "supportMoney": 99201.03000000004,
+            "support": 72.8336419798181
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Lancashire Thunder W",
+          "bookieFavouriteOutcome": "Yorkshire W",
+          "riskTeam": "Lancashire Thunder W",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 45.667283959636194,
+          "mostBettedTeam": "Lancashire Thunder W",
+          "prediction": {
+            "team1TrueSupport": 17677.682800000002,
+            "team2TrueSupport": 54350.349500000026,
+            "ratio": 3.074517747314711,
+            "bookiePnlTeam1": -23.072900000001482,
+            "bookiePnlTeam2": -27416.847300000016,
+            "prediction": "Yorkshire W",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (3.07) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": -2196.2832999999982,
+            "backExposure": 4154.1169,
+            "layExposure": 6350.400199999998,
+            "teamName": "Yorkshire W"
+          },
+          "team2": {
+            "netExposure": 34830.43490000002,
+            "backExposure": 48382.97580000002,
+            "layExposure": 13552.540900000002,
+            "teamName": "Lancashire Thunder W"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 10946.226899999998,
+            "A_lay_stake": 4490.919999999998,
+            "B_back_expo": 51306.048600000024,
+            "B_lay_stake": 34345.99000000001
+          },
+          "totals": {
+            "totalBetTeam1": 45292.216900000014,
+            "totalBetTeam2": 55796.96860000002
+          },
+          "simplePL": {
+            "team1_win": -6455.3069,
+            "team2_win": -16960.05860000001
+          },
+          "derivedPL": {
+            "team1_win": 10504.751700000008,
+            "team2_win": -10504.751700000008
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 2655.1900000000014,
+              "totalLayVol": 4490.919999999998,
+              "totalBet": 37001.180000000015,
+              "profitLoss": 62199.85000000003
+            },
+            "team2": {
+              "totalBackVol": 94710.11000000004,
+              "totalLayVol": 34345.99000000001,
+              "totalBet": 99201.03000000004,
+              "profitLoss": -62199.85000000003
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 10946.226899999998,
+              "totalLayVol": 4490.919999999998,
+              "totalBet": 45292.216900000014,
+              "profitLoss": 61367.67830000003
+            },
+            "team2": {
+              "totalBackExpo": 51306.048600000024,
+              "totalLayVol": 34345.99000000001,
+              "totalBet": 55796.96860000002,
+              "profitLoss": -38235.772700000016
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 10946.226899999998,
+              "totalLayNetVol": 11949.7852,
+              "totalBet": 25852.232799999998,
+              "profitLoss": 37403.601000000024
+            },
+            "team2": {
+              "totalBackNetVol": 51306.048600000024,
+              "totalLayNetVol": 14906.005900000002,
+              "totalBet": 63255.83380000002,
+              "profitLoss": -37403.601000000024
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 159,
+            "averageOdds": 8.147987421383649,
+            "averageSize": 232.71182389937115,
+            "supportProduct": 1896.1330139393228
+          },
+          "teamB": {
+            "tradeCount": 155,
+            "averageOdds": 3.7481290322580647,
+            "averageSize": 640.0066451612905,
+            "supportProduct": 2398.8274875671186
+          },
+          "strongerTeam": "Lancashire Thunder W",
+          "supportRatio": 1.26511561685402
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 2655.1900000000014,
+            "oppoLayVolume": 34345.99000000001,
+            "layExposure": 11949.7852,
+            "netSupportValue": 25051.394800000016
+          },
+          "teamB": {
+            "totalBackVolume": 94710.11000000004,
+            "oppoLayVolume": 4490.919999999998,
+            "layExposure": 14906.005900000002,
+            "netSupportValue": 84295.02410000004
+          },
+          "strongerTeam": "Lancashire Thunder W",
+          "netSupportDifference": 59243.62930000002,
+          "percentageA": 22.91011909855971,
+          "percentageB": 77.0898809014403
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -1835.7299999999968,
+            "syntheticSupport": 34345.99000000001,
+            "opponentLiabilityRejection": 14906.005900000002,
+            "sentimentScore": 17604.254100000013
+          },
+          "teamB": {
+            "directNetSupport": 60364.12000000003,
+            "syntheticSupport": 4490.919999999998,
+            "opponentLiabilityRejection": 11949.7852,
+            "sentimentScore": 52905.25480000003
+          },
+          "strongerTeam": "Lancashire Thunder W",
+          "scoreDifference": 35301.00070000002,
+          "percentageA": 24.967205664369622,
+          "percentageB": 75.03279433563038
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Yorkshire W",
+            "matchedVolume": 7172.309999999995,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 7172.309999999995,
+            "supportPercentage": 5.255388995550401
+          },
+          "team2": {
+            "name": "Lancashire Thunder W",
+            "matchedVolume": 129303.03,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 129303.03,
+            "supportPercentage": 94.7446110044496
+          },
+          "heavierSide": "Lancashire Thunder W"
+        },
+        "teams": {
+          "Yorkshire W": {
+            "trades": [
+              {
+                "team": "Yorkshire W",
+                "price": 260,
+                "type": "back",
+                "size": 0.96,
+                "updatedAt": 1789227156482
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 170,
+                "type": "back",
+                "size": 2.82,
+                "updatedAt": 1789226647981
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 150,
+                "type": "back",
+                "size": 2.42,
+                "updatedAt": 1789226647981
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 110,
+                "type": "back",
+                "size": 8.42,
+                "updatedAt": 1789226541355
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 90,
+                "type": "lay",
+                "size": 3.2,
+                "updatedAt": 1789225405391
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 50,
+                "type": "back",
+                "size": 0.4500000000000002,
+                "updatedAt": 1789225309490
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 46,
+                "type": "back",
+                "size": 2.31,
+                "updatedAt": 1789224983431
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 44,
+                "type": "back",
+                "size": 8.41,
+                "updatedAt": 1789224983431
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 50,
+                "type": "lay",
+                "size": 4.630000000000001,
+                "updatedAt": 1789223912443
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 27,
+                "type": "back",
+                "size": 11.55,
+                "updatedAt": 1789223912443
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 15.5,
+                "type": "back",
+                "size": 101.01,
+                "updatedAt": 1789222857879
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 16,
+                "type": "back",
+                "size": 140.07,
+                "updatedAt": 1789222620938
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 12.5,
+                "type": "back",
+                "size": 2.66,
+                "updatedAt": 1789222541576
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 12,
+                "type": "back",
+                "size": 3.6500000000000004,
+                "updatedAt": 1789222541576
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 16.5,
+                "type": "back",
+                "size": 1.32,
+                "updatedAt": 1789222503669
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 17.5,
+                "type": "lay",
+                "size": 0.10000000000000009,
+                "updatedAt": 1789222337769
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 15.5,
+                "type": "lay",
+                "size": 11.96,
+                "updatedAt": 1789222321047
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 16,
+                "type": "lay",
+                "size": 265.24,
+                "updatedAt": 1789222244421
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 15,
+                "type": "lay",
+                "size": 42.76,
+                "updatedAt": 1789221822345
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 17.5,
+                "type": "back",
+                "size": 1.01,
+                "updatedAt": 1789221346677
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 17,
+                "type": "lay",
+                "size": 1.58,
+                "updatedAt": 1789221228127
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 13.5,
+                "type": "lay",
+                "size": 1.1900000000000004,
+                "updatedAt": 1789220908243
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 11,
+                "type": "lay",
+                "size": 27.93,
+                "updatedAt": 1789220620577
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 10,
+                "type": "lay",
+                "size": 1.32,
+                "updatedAt": 1789220589292
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 8.6,
+                "type": "lay",
+                "size": 1.2,
+                "updatedAt": 1789220507944
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 13.5,
+                "type": "back",
+                "size": 3.3,
+                "updatedAt": 1789220457962
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 11,
+                "type": "back",
+                "size": 28.39,
+                "updatedAt": 1789220457962
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 12,
+                "type": "lay",
+                "size": 1.4499999999999997,
+                "updatedAt": 1789219760052
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 11.5,
+                "type": "back",
+                "size": 0.18,
+                "updatedAt": 1789219506080
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 9.4,
+                "type": "back",
+                "size": 5.28,
+                "updatedAt": 1789219428732
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 7.6,
+                "type": "lay",
+                "size": 53.08,
+                "updatedAt": 1789219381124
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 7.6,
+                "type": "back",
+                "size": 2.82,
+                "updatedAt": 1789219300480
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 6.6,
+                "type": "lay",
+                "size": 7.2,
+                "updatedAt": 1789219244458
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 5,
+                "type": "lay",
+                "size": 107.33999999999999,
+                "updatedAt": 1789219103504
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.9,
+                "type": "lay",
+                "size": 1.3199999999999998,
+                "updatedAt": 1789219085351
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.4,
+                "type": "lay",
+                "size": 30.93,
+                "updatedAt": 1789219058449
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.3,
+                "type": "lay",
+                "size": 5.39,
+                "updatedAt": 1789219058449
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.1,
+                "type": "lay",
+                "size": 24.64,
+                "updatedAt": 1789218888757
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.95,
+                "type": "lay",
+                "size": 0.9300000000000006,
+                "updatedAt": 1789218888757
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.6,
+                "type": "back",
+                "size": 7.9,
+                "updatedAt": 1789218871762
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.65,
+                "type": "back",
+                "size": 1.41,
+                "updatedAt": 1789218827258
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.55,
+                "type": "back",
+                "size": 23.339999999999996,
+                "updatedAt": 1789218665207
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.5,
+                "type": "lay",
+                "size": 25.89,
+                "updatedAt": 1789218609408
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.4,
+                "type": "lay",
+                "size": 2.61,
+                "updatedAt": 1789218606365
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.5,
+                "type": "back",
+                "size": 77.15,
+                "updatedAt": 1789218587321
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.35,
+                "type": "back",
+                "size": 34.92,
+                "updatedAt": 1789218554060
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.3,
+                "type": "back",
+                "size": 13.84,
+                "updatedAt": 1789218554060
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.25,
+                "type": "back",
+                "size": 33.05,
+                "updatedAt": 1789218554060
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.2,
+                "type": "back",
+                "size": 511.79,
+                "updatedAt": 1789218516712
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.35,
+                "type": "lay",
+                "size": 20.41,
+                "updatedAt": 1789218414208
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.4,
+                "type": "back",
+                "size": 1,
+                "updatedAt": 1789218371071
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.15,
+                "type": "back",
+                "size": 5.56,
+                "updatedAt": 1789217934522
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.05,
+                "type": "back",
+                "size": 2.6599999999999997,
+                "updatedAt": 1789217925182
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3,
+                "type": "back",
+                "size": 10.36,
+                "updatedAt": 1789217925182
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.45,
+                "type": "back",
+                "size": 0.58,
+                "updatedAt": 1789217712418
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.15,
+                "type": "lay",
+                "size": 1.85,
+                "updatedAt": 1789217613236
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.3,
+                "type": "lay",
+                "size": 2.09,
+                "updatedAt": 1789217461661
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.75,
+                "type": "back",
+                "size": 4.59,
+                "updatedAt": 1789217364402
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.7,
+                "type": "lay",
+                "size": 3.97,
+                "updatedAt": 1789217186673
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.2,
+                "type": "lay",
+                "size": 3.2800000000000322,
+                "updatedAt": 1789217090052
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.2,
+                "type": "back",
+                "size": 9.8,
+                "updatedAt": 1789217068666
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.95,
+                "type": "back",
+                "size": 4.93,
+                "updatedAt": 1789216969433
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.2,
+                "type": "lay",
+                "size": 1.41,
+                "updatedAt": 1789216895717
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.1,
+                "type": "back",
+                "size": 1.41,
+                "updatedAt": 1789216793522
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.55,
+                "type": "lay",
+                "size": 2.450000000000002,
+                "updatedAt": 1789216677432
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4,
+                "type": "lay",
+                "size": 1.73,
+                "updatedAt": 1789216025397
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 5,
+                "type": "back",
+                "size": 3.13,
+                "updatedAt": 1789215817909
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.9,
+                "type": "back",
+                "size": 2.14,
+                "updatedAt": 1789215817909
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.8,
+                "type": "back",
+                "size": 210.04,
+                "updatedAt": 1789215790962
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 4.5,
+                "type": "back",
+                "size": 0.9,
+                "updatedAt": 1789215532021
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.85,
+                "type": "lay",
+                "size": 11.530000000000001,
+                "updatedAt": 1789215415441
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.8,
+                "type": "lay",
+                "size": 0.48,
+                "updatedAt": 1789215415441
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.05,
+                "type": "lay",
+                "size": 2.65,
+                "updatedAt": 1789215039579
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3,
+                "type": "lay",
+                "size": 1.22,
+                "updatedAt": 1789215034930
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.94,
+                "type": "back",
+                "size": 8.2,
+                "updatedAt": 1789215011207
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.92,
+                "type": "lay",
+                "size": 1.34,
+                "updatedAt": 1789214979158
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.8,
+                "type": "lay",
+                "size": 1.32,
+                "updatedAt": 1789214894620
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.28,
+                "type": "back",
+                "size": 6.450000000000001,
+                "updatedAt": 1789214766403
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.26,
+                "type": "back",
+                "size": 23.950000000000003,
+                "updatedAt": 1789214766403
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.3,
+                "type": "lay",
+                "size": 340.92999999999995,
+                "updatedAt": 1789214593263
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 28.879999999999995,
+                "updatedAt": 1789214593263
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.06,
+                "type": "back",
+                "size": 3.92,
+                "updatedAt": 1789214532706
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.22,
+                "type": "back",
+                "size": 5.59,
+                "updatedAt": 1789214351562
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.2,
+                "type": "lay",
+                "size": 6.9,
+                "updatedAt": 1789214339742
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.36,
+                "type": "back",
+                "size": 4.94,
+                "updatedAt": 1789214227081
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.42,
+                "type": "back",
+                "size": 7.74,
+                "updatedAt": 1789214172002
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.82,
+                "type": "lay",
+                "size": 4.23,
+                "updatedAt": 1789214159297
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.76,
+                "type": "lay",
+                "size": 4.23,
+                "updatedAt": 1789214159297
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 15.05,
+                "updatedAt": 1789214104925
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.98,
+                "type": "back",
+                "size": 4.77,
+                "updatedAt": 1789214077706
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2,
+                "type": "lay",
+                "size": 10.09,
+                "updatedAt": 1789214062649
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.4,
+                "type": "lay",
+                "size": 1.49,
+                "updatedAt": 1789213621646
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.04,
+                "type": "lay",
+                "size": 5.93,
+                "updatedAt": 1789213594047
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.14,
+                "type": "back",
+                "size": 5.780000000000001,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.12,
+                "type": "back",
+                "size": 63.300000000000026,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2,
+                "type": "back",
+                "size": 2.82,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.83,
+                "type": "back",
+                "size": 5.08,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.82,
+                "type": "back",
+                "size": 113.09,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.74,
+                "type": "back",
+                "size": 420.14,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.12,
+                "type": "lay",
+                "size": 229.31999999999996,
+                "updatedAt": 1789213277826
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.73,
+                "type": "back",
+                "size": 6.08,
+                "updatedAt": 1789213064622
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.84,
+                "type": "back",
+                "size": 2.04,
+                "updatedAt": 1789213026238
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 1.85,
+                "type": "back",
+                "size": 1.45,
+                "updatedAt": 1789213013443
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.5,
+                "type": "lay",
+                "size": 262.55999999999995,
+                "updatedAt": 1789212825731
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.34,
+                "type": "lay",
+                "size": 11.25,
+                "updatedAt": 1789212825731
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.78,
+                "type": "back",
+                "size": 4.23,
+                "updatedAt": 1789212693631
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.58,
+                "type": "lay",
+                "size": 184.41,
+                "updatedAt": 1789212547285
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.36,
+                "type": "lay",
+                "size": 4.21,
+                "updatedAt": 1789212499400
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.22,
+                "type": "lay",
+                "size": 2.8200000000000003,
+                "updatedAt": 1789212499400
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.32,
+                "type": "back",
+                "size": 6.66,
+                "updatedAt": 1789211993880
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.3,
+                "type": "back",
+                "size": 134.96,
+                "updatedAt": 1789211993880
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.32,
+                "type": "lay",
+                "size": 3.9499999999999993,
+                "updatedAt": 1789211898676
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.48,
+                "type": "lay",
+                "size": 2.73,
+                "updatedAt": 1789211849421
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.54,
+                "type": "back",
+                "size": 5.39,
+                "updatedAt": 1789211843840
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.52,
+                "type": "back",
+                "size": 200.2700000000001,
+                "updatedAt": 1789211843840
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.98,
+                "type": "back",
+                "size": 8.44,
+                "updatedAt": 1789211712768
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.38,
+                "type": "lay",
+                "size": 2.65,
+                "updatedAt": 1789211390027
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.28,
+                "type": "lay",
+                "size": 14.49,
+                "updatedAt": 1789211342852
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.56,
+                "type": "lay",
+                "size": 1.41,
+                "updatedAt": 1789210602975
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.14,
+                "type": "lay",
+                "size": 11.7,
+                "updatedAt": 1789210469097
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.6,
+                "type": "back",
+                "size": 1.41,
+                "updatedAt": 1789209853589
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.58,
+                "type": "back",
+                "size": 1.97,
+                "updatedAt": 1789209853589
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.92,
+                "type": "back",
+                "size": 0.7,
+                "updatedAt": 1789209236149
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.9,
+                "type": "back",
+                "size": 4.06,
+                "updatedAt": 1789209236149
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.9,
+                "type": "back",
+                "size": 1.04,
+                "updatedAt": 1789209224811
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.85,
+                "type": "back",
+                "size": 2.68,
+                "updatedAt": 1789209223820
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.88,
+                "type": "back",
+                "size": 79.68,
+                "updatedAt": 1789209223820
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 3.75,
+                "type": "lay",
+                "size": 1.54,
+                "updatedAt": 1789209221213
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.88,
+                "type": "lay",
+                "size": 1.41,
+                "updatedAt": 1789209158604
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.26,
+                "type": "lay",
+                "size": 1.32,
+                "updatedAt": 1789208994590
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.1,
+                "type": "back",
+                "size": 118.50000000000001,
+                "updatedAt": 1789208894567
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.18,
+                "type": "lay",
+                "size": 1242.0600000000002,
+                "updatedAt": 1789208784855
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.16,
+                "type": "lay",
+                "size": 73.84,
+                "updatedAt": 1789207632391
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.1,
+                "type": "lay",
+                "size": 100.61,
+                "updatedAt": 1789207128454
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.18,
+                "type": "back",
+                "size": 32.1,
+                "updatedAt": 1789205920391
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.46,
+                "type": "lay",
+                "size": 168.11999999999998,
+                "updatedAt": 1789205814058
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.44,
+                "type": "lay",
+                "size": 3.99,
+                "updatedAt": 1789205798807
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.46,
+                "type": "back",
+                "size": 3.55,
+                "updatedAt": 1789205640692
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.52,
+                "type": "lay",
+                "size": 1071.1799999999998,
+                "updatedAt": 1789205330235
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.5,
+                "type": "back",
+                "size": 33.15,
+                "updatedAt": 1789205267326
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.64,
+                "type": "back",
+                "size": 15.46,
+                "updatedAt": 1789205157816
+              },
+              {
+                "team": "Yorkshire W",
+                "price": 2.62,
+                "type": "back",
+                "size": 28.07,
+                "updatedAt": 1789204352719
+              }
+            ],
+            "pnlIfWins": 61367.67829999999,
+            "totalBet": 45292.216900000014
+          },
+          "Lancashire Thunder W": {
+            "trades": [
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.01,
+                "type": "lay",
+                "size": 11.230000000000018,
+                "updatedAt": 1789227167951
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.01,
+                "type": "back",
+                "size": 344.90999999999997,
+                "updatedAt": 1789226541239
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.02,
+                "type": "lay",
+                "size": 2194.2899999999995,
+                "updatedAt": 1789226052469
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.02,
+                "type": "back",
+                "size": 2086.5000000000005,
+                "updatedAt": 1789225058493
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.04,
+                "type": "lay",
+                "size": 58.260000000000005,
+                "updatedAt": 1789225034279
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.03,
+                "type": "lay",
+                "size": 570.59,
+                "updatedAt": 1789224983701
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.03,
+                "type": "back",
+                "size": 18.660000000000004,
+                "updatedAt": 1789224533800
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.05,
+                "type": "lay",
+                "size": 561.3000000000001,
+                "updatedAt": 1789224477301
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.06,
+                "type": "lay",
+                "size": 1923.2499999999998,
+                "updatedAt": 1789224329923
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.06,
+                "type": "back",
+                "size": 1227.5800000000002,
+                "updatedAt": 1789224163253
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.04,
+                "type": "back",
+                "size": 21.41,
+                "updatedAt": 1789223170309
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.05,
+                "type": "back",
+                "size": 35.66,
+                "updatedAt": 1789223122110
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.07,
+                "type": "back",
+                "size": 2232.09,
+                "updatedAt": 1789222856687
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.09,
+                "type": "lay",
+                "size": 80.06999999999995,
+                "updatedAt": 1789222538153
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.07,
+                "type": "lay",
+                "size": 634.14,
+                "updatedAt": 1789222355953
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.08,
+                "type": "back",
+                "size": 29.710000000000015,
+                "updatedAt": 1789221530303
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.08,
+                "type": "lay",
+                "size": 111.31,
+                "updatedAt": 1789221492963
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.1,
+                "type": "lay",
+                "size": 1298.75,
+                "updatedAt": 1789220620378
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.11,
+                "type": "lay",
+                "size": 27.21999999999997,
+                "updatedAt": 1789220589071
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.11,
+                "type": "back",
+                "size": 110.35000000000002,
+                "updatedAt": 1789220540666
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.13,
+                "type": "lay",
+                "size": 9.08,
+                "updatedAt": 1789220507833
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.09,
+                "type": "back",
+                "size": 1074.2,
+                "updatedAt": 1789219759378
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.1,
+                "type": "back",
+                "size": 737.98,
+                "updatedAt": 1789219672081
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.12,
+                "type": "lay",
+                "size": 2231.18,
+                "updatedAt": 1789219428557
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.15,
+                "type": "lay",
+                "size": 2506.05,
+                "updatedAt": 1789219381124
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.15,
+                "type": "back",
+                "size": 8378.77,
+                "updatedAt": 1789219325221
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.18,
+                "type": "back",
+                "size": 105.05,
+                "updatedAt": 1789219291332
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.2,
+                "type": "lay",
+                "size": 432.72,
+                "updatedAt": 1789219278163
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.19,
+                "type": "lay",
+                "size": 22.53,
+                "updatedAt": 1789219278163
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.17,
+                "type": "lay",
+                "size": 40.58,
+                "updatedAt": 1789219244032
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.22,
+                "type": "back",
+                "size": 226.9,
+                "updatedAt": 1789219208652
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.2,
+                "type": "back",
+                "size": 8.45,
+                "updatedAt": 1789219208652
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.25,
+                "type": "back",
+                "size": 56.02000000000001,
+                "updatedAt": 1789219141321
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.24,
+                "type": "back",
+                "size": 425.61,
+                "updatedAt": 1789219141321
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.25,
+                "type": "lay",
+                "size": 424.98999999999995,
+                "updatedAt": 1789219094010
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.26,
+                "type": "back",
+                "size": 2930.9,
+                "updatedAt": 1789219074231
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.3,
+                "type": "back",
+                "size": 344.46,
+                "updatedAt": 1789219058984
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.31,
+                "type": "lay",
+                "size": 67.77,
+                "updatedAt": 1789219031804
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.31,
+                "type": "back",
+                "size": 37.08,
+                "updatedAt": 1789219026035
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.38,
+                "type": "back",
+                "size": 54.76,
+                "updatedAt": 1789218981617
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.33,
+                "type": "back",
+                "size": 105.74,
+                "updatedAt": 1789218948081
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.34,
+                "type": "back",
+                "size": 47.76,
+                "updatedAt": 1789218888773
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.39,
+                "type": "lay",
+                "size": 32.56,
+                "updatedAt": 1789218871332
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.35,
+                "type": "lay",
+                "size": 53.059999999999995,
+                "updatedAt": 1789218822470
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.4,
+                "type": "lay",
+                "size": 114.71000000000001,
+                "updatedAt": 1789218664898
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.42,
+                "type": "back",
+                "size": 10.4,
+                "updatedAt": 1789218605802
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.33,
+                "type": "lay",
+                "size": 30.200000000000003,
+                "updatedAt": 1789218583406
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.43,
+                "type": "back",
+                "size": 20.39,
+                "updatedAt": 1789218568195
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.45,
+                "type": "back",
+                "size": 124.62999999999988,
+                "updatedAt": 1789218553916
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.44,
+                "type": "back",
+                "size": 83.22,
+                "updatedAt": 1789218553916
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.46,
+                "type": "back",
+                "size": 98.20000000000005,
+                "updatedAt": 1789218515354
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.46,
+                "type": "lay",
+                "size": 1109.95,
+                "updatedAt": 1789218484708
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.45,
+                "type": "lay",
+                "size": 3025.04,
+                "updatedAt": 1789218453642
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.47,
+                "type": "lay",
+                "size": 2.8199999999999994,
+                "updatedAt": 1789218447228
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.47,
+                "type": "back",
+                "size": 7.04,
+                "updatedAt": 1789218440760
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.42,
+                "type": "lay",
+                "size": 138.07,
+                "updatedAt": 1789218414160
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.36,
+                "type": "back",
+                "size": 39.29,
+                "updatedAt": 1789218385667
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.41,
+                "type": "lay",
+                "size": 12.590000000000002,
+                "updatedAt": 1789218371055
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.37,
+                "type": "back",
+                "size": 6.970000000000001,
+                "updatedAt": 1789218327499
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.41,
+                "type": "back",
+                "size": 8.42,
+                "updatedAt": 1789218256099
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.32,
+                "type": "back",
+                "size": 112.39,
+                "updatedAt": 1789218037028
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.5,
+                "type": "lay",
+                "size": 42.8,
+                "updatedAt": 1789217925010
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.49,
+                "type": "lay",
+                "size": 1.32,
+                "updatedAt": 1789217925010
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.4,
+                "type": "back",
+                "size": 46.29,
+                "updatedAt": 1789217858955
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.44,
+                "type": "lay",
+                "size": 2.960000000000001,
+                "updatedAt": 1789217654146
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.39,
+                "type": "back",
+                "size": 13.419999999999993,
+                "updatedAt": 1789217538199
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.43,
+                "type": "lay",
+                "size": 42.25,
+                "updatedAt": 1789217493339
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.38,
+                "type": "lay",
+                "size": 41.52,
+                "updatedAt": 1789217404760
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.36,
+                "type": "lay",
+                "size": 33.52,
+                "updatedAt": 1789217364309
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.37,
+                "type": "lay",
+                "size": 14.9,
+                "updatedAt": 1789217186626
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.32,
+                "type": "lay",
+                "size": 12.489999999999995,
+                "updatedAt": 1789217158107
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.35,
+                "type": "back",
+                "size": 12.68,
+                "updatedAt": 1789216377266
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.29,
+                "type": "lay",
+                "size": 8.32,
+                "updatedAt": 1789215958386
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.3,
+                "type": "lay",
+                "size": 4.17,
+                "updatedAt": 1789215782797
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.27,
+                "type": "lay",
+                "size": 4.17,
+                "updatedAt": 1789215754527
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.28,
+                "type": "back",
+                "size": 12.49,
+                "updatedAt": 1789215677018
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.27,
+                "type": "back",
+                "size": 2.76,
+                "updatedAt": 1789215677018
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.29,
+                "type": "back",
+                "size": 3.13,
+                "updatedAt": 1789215531980
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.5,
+                "type": "back",
+                "size": 5.25,
+                "updatedAt": 1789215034252
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.52,
+                "type": "lay",
+                "size": 1997.8399999999992,
+                "updatedAt": 1789214986940
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.53,
+                "type": "back",
+                "size": 679.4000000000002,
+                "updatedAt": 1789214978223
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.52,
+                "type": "back",
+                "size": 14968.78,
+                "updatedAt": 1789214978223
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.56,
+                "type": "back",
+                "size": 12.94,
+                "updatedAt": 1789214894058
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.55,
+                "type": "back",
+                "size": 632.58,
+                "updatedAt": 1789214894058
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.55,
+                "type": "lay",
+                "size": 76.28,
+                "updatedAt": 1789214857472
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.79,
+                "type": "lay",
+                "size": 74.77000000000035,
+                "updatedAt": 1789214769519
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.78,
+                "type": "lay",
+                "size": 737.7499999999986,
+                "updatedAt": 1789214766341
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.94,
+                "type": "back",
+                "size": 82.60999999999999,
+                "updatedAt": 1789214593026
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.83,
+                "type": "back",
+                "size": 233.38,
+                "updatedAt": 1789214593026
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.76,
+                "type": "back",
+                "size": 68.36000000000001,
+                "updatedAt": 1789214593026
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.94,
+                "type": "lay",
+                "size": 14.240000000000004,
+                "updatedAt": 1789214532706
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.83,
+                "type": "lay",
+                "size": 26.420000000000016,
+                "updatedAt": 1789214360409
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.82,
+                "type": "back",
+                "size": 45.260000000000005,
+                "updatedAt": 1789214351306
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.81,
+                "type": "lay",
+                "size": 12.33999999999999,
+                "updatedAt": 1789214308022
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.74,
+                "type": "lay",
+                "size": 6.71,
+                "updatedAt": 1789214226893
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.71,
+                "type": "lay",
+                "size": 6.969999999999999,
+                "updatedAt": 1789214171955
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.54,
+                "type": "back",
+                "size": 10.55,
+                "updatedAt": 1789214169163
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.8,
+                "type": "back",
+                "size": 78.16999999999999,
+                "updatedAt": 1789214159278
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.79,
+                "type": "back",
+                "size": 3078.99,
+                "updatedAt": 1789214159278
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.78,
+                "type": "back",
+                "size": 11455.600000000002,
+                "updatedAt": 1789214159278
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.61,
+                "type": "back",
+                "size": 5771.859999999999,
+                "updatedAt": 1789214159278
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.59,
+                "type": "back",
+                "size": 5652.05,
+                "updatedAt": 1789214159278
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.02,
+                "type": "back",
+                "size": 23.04,
+                "updatedAt": 1789214105289
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2,
+                "type": "back",
+                "size": 23.1,
+                "updatedAt": 1789214080989
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.02,
+                "type": "lay",
+                "size": 4.68,
+                "updatedAt": 1789214077420
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2,
+                "type": "lay",
+                "size": 20.29,
+                "updatedAt": 1789214062508
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.99,
+                "type": "lay",
+                "size": 324.78999999999996,
+                "updatedAt": 1789214062508
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.92,
+                "type": "back",
+                "size": 23.45,
+                "updatedAt": 1789214062056
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.91,
+                "type": "back",
+                "size": 8.3,
+                "updatedAt": 1789214046958
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.9,
+                "type": "back",
+                "size": 58.86999999999989,
+                "updatedAt": 1789214046958
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.85,
+                "type": "back",
+                "size": 18.76999999999989,
+                "updatedAt": 1789214016929
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.84,
+                "type": "back",
+                "size": 398.9,
+                "updatedAt": 1789214016929
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.81,
+                "type": "back",
+                "size": 89.01,
+                "updatedAt": 1789213909637
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.71,
+                "type": "back",
+                "size": 217.35,
+                "updatedAt": 1789213621646
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.7,
+                "type": "back",
+                "size": 166.58,
+                "updatedAt": 1789213621646
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.96,
+                "type": "back",
+                "size": 7.45,
+                "updatedAt": 1789213594197
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.2,
+                "type": "lay",
+                "size": 15.360000000000001,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.89,
+                "type": "lay",
+                "size": 120.83,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.88,
+                "type": "lay",
+                "size": 233.51999999999998,
+                "updatedAt": 1789213530689
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.88,
+                "type": "back",
+                "size": 7.760000000000019,
+                "updatedAt": 1789213337623
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.93,
+                "type": "back",
+                "size": 2.82,
+                "updatedAt": 1789213178431
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.5,
+                "type": "lay",
+                "size": 67.83,
+                "updatedAt": 1789213064332
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.38,
+                "type": "lay",
+                "size": 4.42,
+                "updatedAt": 1789213064332
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.18,
+                "type": "lay",
+                "size": 39.04,
+                "updatedAt": 1789213064332
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.18,
+                "type": "back",
+                "size": 3,
+                "updatedAt": 1789213016774
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.2,
+                "type": "back",
+                "size": 0.5399999999999991,
+                "updatedAt": 1789213013443
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.22,
+                "type": "lay",
+                "size": 84.26,
+                "updatedAt": 1789213000654
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.99,
+                "type": "back",
+                "size": 10.350000000000023,
+                "updatedAt": 1789212852983
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.06,
+                "type": "back",
+                "size": 1.4400000000000004,
+                "updatedAt": 1789212847871
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 2.06,
+                "type": "lay",
+                "size": 2.79,
+                "updatedAt": 1789212842727
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.98,
+                "type": "lay",
+                "size": 3.15,
+                "updatedAt": 1789212828563
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.75,
+                "type": "back",
+                "size": 20.669999999999998,
+                "updatedAt": 1789212825473
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.95,
+                "type": "lay",
+                "size": 27.01,
+                "updatedAt": 1789212696554
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.74,
+                "type": "back",
+                "size": 5.7,
+                "updatedAt": 1789212499210
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.82,
+                "type": "lay",
+                "size": 9.58,
+                "updatedAt": 1789212138308
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.77,
+                "type": "lay",
+                "size": 514.7400000000016,
+                "updatedAt": 1789211993880
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.76,
+                "type": "lay",
+                "size": 12.68,
+                "updatedAt": 1789211993880
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.68,
+                "type": "back",
+                "size": 5.740000000000009,
+                "updatedAt": 1789211849406
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.66,
+                "type": "lay",
+                "size": 2089.06,
+                "updatedAt": 1789211843729
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.65,
+                "type": "lay",
+                "size": 1593.5900000000001,
+                "updatedAt": 1789211843729
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.65,
+                "type": "back",
+                "size": 416.9699999999998,
+                "updatedAt": 1789211692838
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.66,
+                "type": "back",
+                "size": 1088.5000000000002,
+                "updatedAt": 1789211649166
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.72,
+                "type": "back",
+                "size": 568.85,
+                "updatedAt": 1789211580938
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.73,
+                "type": "back",
+                "size": 7.97,
+                "updatedAt": 1789211444648
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.77,
+                "type": "back",
+                "size": 11509.269999999999,
+                "updatedAt": 1789211342725
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.75,
+                "type": "lay",
+                "size": 21.23,
+                "updatedAt": 1789210958479
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.63,
+                "type": "back",
+                "size": 6038.31,
+                "updatedAt": 1789210958133
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.64,
+                "type": "back",
+                "size": 11.510000000000002,
+                "updatedAt": 1789210697824
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.64,
+                "type": "lay",
+                "size": 21.830000000000002,
+                "updatedAt": 1789210608027
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.87,
+                "type": "back",
+                "size": 11.750000000000002,
+                "updatedAt": 1789210469082
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.86,
+                "type": "back",
+                "size": 53.95000000000014,
+                "updatedAt": 1789210437133
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.89,
+                "type": "back",
+                "size": 3.0900000000000034,
+                "updatedAt": 1789210399848
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.63,
+                "type": "lay",
+                "size": 14.55999999999949,
+                "updatedAt": 1789209848340
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.59,
+                "type": "lay",
+                "size": 2.0900000000001455,
+                "updatedAt": 1789209848340
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.53,
+                "type": "lay",
+                "size": 1889.8999999999999,
+                "updatedAt": 1789209372165
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.67,
+                "type": "back",
+                "size": 9.41,
+                "updatedAt": 1789209135957
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.67,
+                "type": "lay",
+                "size": 2.66,
+                "updatedAt": 1789209130866
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.9,
+                "type": "lay",
+                "size": 1666.45,
+                "updatedAt": 1789208894441
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.8,
+                "type": "lay",
+                "size": 208.21,
+                "updatedAt": 1789208151347
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.86,
+                "type": "lay",
+                "size": 733.4,
+                "updatedAt": 1789207594408
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.85,
+                "type": "lay",
+                "size": 1099.0900000000001,
+                "updatedAt": 1789207431131
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.87,
+                "type": "lay",
+                "size": 44.57,
+                "updatedAt": 1789207128454
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.84,
+                "type": "lay",
+                "size": 38.03,
+                "updatedAt": 1789205920581
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.68,
+                "type": "lay",
+                "size": 212.16,
+                "updatedAt": 1789205814217
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.69,
+                "type": "back",
+                "size": 8.029999999999973,
+                "updatedAt": 1789205798930
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.69,
+                "type": "lay",
+                "size": 622.72,
+                "updatedAt": 1789205671603
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.62,
+                "type": "back",
+                "size": 5074.01,
+                "updatedAt": 1789205220753
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.62,
+                "type": "lay",
+                "size": 563.35,
+                "updatedAt": 1789205208329
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.61,
+                "type": "lay",
+                "size": 307.0500000000005,
+                "updatedAt": 1789205208329
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.6,
+                "type": "back",
+                "size": 4797.49,
+                "updatedAt": 1789205194034
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.6,
+                "type": "lay",
+                "size": 845.02,
+                "updatedAt": 1789205157863
+              },
+              {
+                "team": "Lancashire Thunder W",
+                "price": 1.57,
+                "type": "back",
+                "size": 0.11,
+                "updatedAt": 1789204411679
+              }
+            ],
+            "pnlIfWins": -38235.77270000001,
+            "totalBet": 55796.96860000002
+          }
+        },
+        "Usr": "cricketloaduser56@gmail.com",
+        "competitionName": "Metro Bank Womens One Day Cup"
+      },
+      "predictedWinner": "Lancashire Thunder W",
+      "predictionTier": "WOMENS_T20_SPECIAL",
+      "predictionConfidence": "Womens Smart Inflow Margin",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36061140",
+      "marketId": "1.262317141",
+      "matchName": "Beveren Cc v Lokeren Super Giants",
+      "competitionName": "European Cricket Series",
+      "team1": "Beveren Cc",
+      "team2": "Lokeren Super Giants",
+      "startTime": 1789212600000,
+      "endedAt": "2026-09-12T16:58:43.333Z",
+      "capturedAt": "2026-09-12T16:58:43.333Z",
+      "snapshot": {
+        "serverTime": "2026-09-12T16:58:43.303Z",
+        "matchId": "36061140",
+        "matchName": "Beveren Cc v Lokeren Super Giants",
+        "teamNames": [
+          "Beveren Cc",
+          "Lokeren Super Giants"
+        ],
+        "inPlayPnl": {
+          "team1": 49.45,
+          "team2": -49.45
+        },
+        "inPlayTotalBets": {
+          "team1": 0,
+          "team2": 49.45
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 26.03,
+            "total": 0
+          },
+          "team2": {
+            "back": 23.42,
+            "lay": 0,
+            "total": 49.45
+          }
+        },
+        "preMatchPnl": {
+          "team1": 49.45,
+          "team2": -49.45
+        },
+        "preMatchTotalBets": {
+          "team1": 0,
+          "team2": 49.45
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 26.03,
+            "total": 0
+          },
+          "team2": {
+            "back": 23.42,
+            "lay": 0,
+            "total": 49.45
+          }
+        },
+        "threeMinPnl": {
+          "team1": 49.45,
+          "team2": -49.45
+        },
+        "threeMinTotalBets": {
+          "team1": 0,
+          "team2": 49.45
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 26.03,
+            "total": 0
+          },
+          "team2": {
+            "back": 23.42,
+            "lay": 0,
+            "total": 49.45
+          }
+        },
+        "matchLoadV2": {
+          "team1": 57,
+          "team2": 56
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 390.3500000000001,
+            "lay": 352.21000000000015,
+            "totalVolume": 742.5600000000002,
+            "backPercentage": 52.568142641672054
+          },
+          "team2": {
+            "back": 57.41,
+            "lay": 38.03999999999999,
+            "totalVolume": 95.44999999999999,
+            "backPercentage": 60.14667365112625
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 154.91670000000002,
+            "lay": 164.6221,
+            "totalBet": 319.53880000000004
+          },
+          "team2": {
+            "back": 79.162,
+            "lay": 44.2102,
+            "totalBet": 123.3722
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 428.3900000000001,
+            "support": 51.1199150368134
+          },
+          "team2": {
+            "supportMoney": 409.6200000000001,
+            "support": 48.8800849631866
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Lokeren Super Giants",
+          "bookieFavouriteOutcome": "Beveren Cc",
+          "riskTeam": "Lokeren Super Giants",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 2.2398300736268055,
+          "mostBettedTeam": "Lokeren Super Giants",
+          "prediction": {
+            "team1TrueSupport": 181.29540000000003,
+            "team2TrueSupport": 172.1551,
+            "ratio": 1.0530934024028333,
+            "bookiePnlTeam1": -15.495199999999997,
+            "bookiePnlTeam2": -25.426000000000016,
+            "prediction": "Beveren Cc",
+            "pattern": "Fair Market",
+            "reason": "Ratio (1.05) is low. Money is distributed naturally. Prediction follows Higher True Support."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 27.153500000000037,
+            "backExposure": 135.84260000000003,
+            "layExposure": 108.6891,
+            "teamName": "Beveren Cc"
+          },
+          "team2": {
+            "netExposure": 34.951800000000006,
+            "backExposure": 79.162,
+            "layExposure": 44.2102,
+            "teamName": "Lokeren Super Giants"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 154.91670000000002,
+            "A_lay_stake": 352.21000000000015,
+            "B_back_expo": 79.162,
+            "B_lay_stake": 38.03999999999999
+          },
+          "totals": {
+            "totalBetTeam1": 192.9567,
+            "totalBetTeam2": 431.3720000000002
+          },
+          "simplePL": {
+            "team1_win": 197.29330000000013,
+            "team2_win": -41.122000000000014
+          },
+          "derivedPL": {
+            "team1_win": 238.41530000000017,
+            "team2_win": -238.41530000000017
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 390.3500000000001,
+              "totalLayVol": 352.21000000000015,
+              "totalBet": 428.3900000000001,
+              "profitLoss": -18.769999999999982
+            },
+            "team2": {
+              "totalBackVol": 57.41,
+              "totalLayVol": 38.03999999999999,
+              "totalBet": 409.6200000000001,
+              "profitLoss": 18.769999999999982
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 154.91670000000002,
+              "totalLayVol": 352.21000000000015,
+              "totalBet": 192.9567,
+              "profitLoss": 29.075399999999973
+            },
+            "team2": {
+              "totalBackExpo": 79.162,
+              "totalLayVol": 38.03999999999999,
+              "totalBet": 431.3720000000002,
+              "profitLoss": 3.188199999999881
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 154.91670000000002,
+              "totalLayNetVol": 164.6221,
+              "totalBet": 199.12690000000003,
+              "profitLoss": 44.65719999999996
+            },
+            "team2": {
+              "totalBackNetVol": 79.162,
+              "totalLayNetVol": 44.2102,
+              "totalBet": 243.7841,
+              "profitLoss": -44.65719999999996
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 57,
+            "averageOdds": 1.666315789473684,
+            "averageSize": 7.515614035087722,
+            "supportProduct": 12.523386334256697
+          },
+          "teamB": {
+            "tradeCount": 56,
+            "averageOdds": 1.9573214285714287,
+            "averageSize": 7.314642857142858,
+            "supportProduct": 14.317107206632656
+          },
+          "strongerTeam": "Lokeren Super Giants",
+          "supportRatio": 1.1432297003781942
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 390.3500000000001,
+            "oppoLayVolume": 38.03999999999999,
+            "layExposure": 164.6221,
+            "netSupportValue": 263.7679000000001
+          },
+          "teamB": {
+            "totalBackVolume": 57.41,
+            "oppoLayVolume": 352.21000000000015,
+            "layExposure": 44.2102,
+            "netSupportValue": 365.40980000000013
+          },
+          "strongerTeam": "Lokeren Super Giants",
+          "netSupportDifference": 101.64190000000002,
+          "percentageA": 41.92263966125945,
+          "percentageB": 58.07736033874056
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 38.13999999999993,
+            "syntheticSupport": 38.03999999999999,
+            "opponentLiabilityRejection": 44.2102,
+            "sentimentScore": 31.96979999999992
+          },
+          "teamB": {
+            "directNetSupport": 19.370000000000005,
+            "syntheticSupport": 352.21000000000015,
+            "opponentLiabilityRejection": 164.6221,
+            "sentimentScore": 206.95790000000017
+          },
+          "strongerTeam": "Lokeren Super Giants",
+          "scoreDifference": 174.98810000000026,
+          "percentageA": 13.380533106877065,
+          "percentageB": 86.61946689312295
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Beveren Cc",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Lokeren Super Giants",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Beveren Cc"
+        },
+        "teams": {
+          "Beveren Cc": {
+            "trades": [
+              {
+                "team": "Beveren Cc",
+                "price": 1.01,
+                "type": "back",
+                "size": 103.09,
+                "updatedAt": 1789218601308
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.06,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218589864
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.05,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218589864
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.04,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218589864
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.03,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218589864
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.02,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218589864
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.09,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218581188
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.08,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218581188
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.07,
+                "type": "back",
+                "size": 4.51,
+                "updatedAt": 1789218581188
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.32,
+                "type": "lay",
+                "size": 108.64,
+                "updatedAt": 1789218499007
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.14,
+                "type": "lay",
+                "size": 5.599999999999998,
+                "updatedAt": 1789218261313
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.14,
+                "type": "back",
+                "size": 24.69,
+                "updatedAt": 1789218233083
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.12,
+                "type": "lay",
+                "size": 5.37,
+                "updatedAt": 1789218197396
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.57,
+                "type": "lay",
+                "size": 9.660000000000004,
+                "updatedAt": 1789218133021
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.3,
+                "type": "lay",
+                "size": 17.17,
+                "updatedAt": 1789218133021
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.3,
+                "type": "back",
+                "size": 7.859999999999999,
+                "updatedAt": 1789218131777
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.35,
+                "type": "back",
+                "size": 2.79,
+                "updatedAt": 1789218113235
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.53,
+                "type": "back",
+                "size": 5.56,
+                "updatedAt": 1789218088792
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.55,
+                "type": "back",
+                "size": 21.64,
+                "updatedAt": 1789218083038
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.52,
+                "type": "back",
+                "size": 3.27,
+                "updatedAt": 1789218066435
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.49,
+                "type": "back",
+                "size": 1.41,
+                "updatedAt": 1789217983947
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.57,
+                "type": "back",
+                "size": 60.48,
+                "updatedAt": 1789217886939
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2,
+                "type": "back",
+                "size": 3.620000000000001,
+                "updatedAt": 1789217869298
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.04,
+                "type": "back",
+                "size": 1.5700000000000003,
+                "updatedAt": 1789217856357
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.7,
+                "type": "back",
+                "size": 2.79,
+                "updatedAt": 1789217856357
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.42,
+                "type": "lay",
+                "size": 3.38,
+                "updatedAt": 1789217832180
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.4,
+                "type": "lay",
+                "size": 7.49,
+                "updatedAt": 1789217832180
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.02,
+                "type": "back",
+                "size": 4.15,
+                "updatedAt": 1789217813094
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2,
+                "type": "lay",
+                "size": 27.07,
+                "updatedAt": 1789217803982
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.18,
+                "type": "lay",
+                "size": 2.62,
+                "updatedAt": 1789217772846
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.06,
+                "type": "lay",
+                "size": 6.040000000000001,
+                "updatedAt": 1789217694499
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.04,
+                "type": "lay",
+                "size": 5.37,
+                "updatedAt": 1789217694499
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.2,
+                "type": "lay",
+                "size": 1.17,
+                "updatedAt": 1789217652662
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.4,
+                "type": "lay",
+                "size": 4.9,
+                "updatedAt": 1789217652662
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.16,
+                "type": "lay",
+                "size": 2.08,
+                "updatedAt": 1789217619632
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.15,
+                "type": "lay",
+                "size": 20.28,
+                "updatedAt": 1789217611991
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.14,
+                "type": "lay",
+                "size": 6.96,
+                "updatedAt": 1789217611991
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.13,
+                "type": "lay",
+                "size": 10.819999999999999,
+                "updatedAt": 1789217611991
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.12,
+                "type": "lay",
+                "size": 9.620000000000001,
+                "updatedAt": 1789217609465
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.11,
+                "type": "lay",
+                "size": 11.03,
+                "updatedAt": 1789217609465
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.1,
+                "type": "back",
+                "size": 6.6,
+                "updatedAt": 1789217591625
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.17,
+                "type": "back",
+                "size": 4.76,
+                "updatedAt": 1789217587498
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.44,
+                "type": "back",
+                "size": 0.46,
+                "updatedAt": 1789217571830
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.65,
+                "type": "lay",
+                "size": 3.56,
+                "updatedAt": 1789217558404
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.64,
+                "type": "lay",
+                "size": 2.6900000000000004,
+                "updatedAt": 1789217556237
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.42,
+                "type": "back",
+                "size": 2.08,
+                "updatedAt": 1789217539118
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.4,
+                "type": "back",
+                "size": 0.73,
+                "updatedAt": 1789217539118
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.3,
+                "type": "back",
+                "size": 2.0900000000000003,
+                "updatedAt": 1789217365208
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.5,
+                "type": "back",
+                "size": 0.7000000000000002,
+                "updatedAt": 1789217303528
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.88,
+                "type": "lay",
+                "size": 3.41,
+                "updatedAt": 1789217230727
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.64,
+                "type": "back",
+                "size": 2.79,
+                "updatedAt": 1789217085010
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.6,
+                "type": "back",
+                "size": 7.6000000000000005,
+                "updatedAt": 1789217085010
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.46,
+                "type": "back",
+                "size": 1.49,
+                "updatedAt": 1789216874353
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.44,
+                "type": "back",
+                "size": 2.99,
+                "updatedAt": 1789216853053
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.67,
+                "type": "back",
+                "size": 1.56,
+                "updatedAt": 1789216839966
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.66,
+                "type": "back",
+                "size": 1.5799999999999996,
+                "updatedAt": 1789216839966
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.9,
+                "type": "lay",
+                "size": 2.11,
+                "updatedAt": 1789216794278
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.75,
+                "type": "lay",
+                "size": 2.08,
+                "updatedAt": 1789216699627
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.6,
+                "type": "lay",
+                "size": 2.79,
+                "updatedAt": 1789216665445
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.21,
+                "type": "lay",
+                "size": 2.08,
+                "updatedAt": 1789216632650
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.18,
+                "type": "back",
+                "size": 2.08,
+                "updatedAt": 1789216605640
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.89,
+                "type": "lay",
+                "size": 2.66,
+                "updatedAt": 1789216489415
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.5,
+                "type": "lay",
+                "size": 4.27,
+                "updatedAt": 1789216446267
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.35,
+                "type": "lay",
+                "size": 4.1,
+                "updatedAt": 1789216383369
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.25,
+                "type": "lay",
+                "size": 0.10999999999999988,
+                "updatedAt": 1789215525794
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.1,
+                "type": "lay",
+                "size": 22.259999999999998,
+                "updatedAt": 1789215517385
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.12,
+                "type": "back",
+                "size": 22.810000000000002,
+                "updatedAt": 1789215454827
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.13,
+                "type": "back",
+                "size": 2.8000000000000007,
+                "updatedAt": 1789215377313
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.14,
+                "type": "back",
+                "size": 2.79,
+                "updatedAt": 1789215318441
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.28,
+                "type": "lay",
+                "size": 1.39,
+                "updatedAt": 1789215279315
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.33,
+                "type": "back",
+                "size": 3.27,
+                "updatedAt": 1789215122459
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.19,
+                "type": "back",
+                "size": 0.85,
+                "updatedAt": 1789214549869
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.38,
+                "type": "back",
+                "size": 3.27,
+                "updatedAt": 1789214296847
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.25,
+                "type": "back",
+                "size": 2.79,
+                "updatedAt": 1789213662664
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.24,
+                "type": "back",
+                "size": 15.92,
+                "updatedAt": 1789213662664
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.24,
+                "type": "lay",
+                "size": 14.08,
+                "updatedAt": 1789213629151
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.59,
+                "type": "lay",
+                "size": 1.37,
+                "updatedAt": 1789213569773
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.26,
+                "type": "back",
+                "size": 1.49,
+                "updatedAt": 1789213537881
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.55,
+                "type": "lay",
+                "size": 5.32,
+                "updatedAt": 1789213407259
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.66,
+                "type": "lay",
+                "size": 2.73,
+                "updatedAt": 1789213214986
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.86,
+                "type": "lay",
+                "size": 5.45,
+                "updatedAt": 1789213069867
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.36,
+                "type": "back",
+                "size": 4.17,
+                "updatedAt": 1789213059968
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.34,
+                "type": "back",
+                "size": 4.08,
+                "updatedAt": 1789213059968
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.32,
+                "type": "back",
+                "size": 4.08,
+                "updatedAt": 1789213059968
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.69,
+                "type": "lay",
+                "size": 4.48,
+                "updatedAt": 1789213003081
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 1.75,
+                "type": "back",
+                "size": 2.79,
+                "updatedAt": 1789212984088
+              },
+              {
+                "team": "Beveren Cc",
+                "price": 2.38,
+                "type": "back",
+                "size": 2.73,
+                "updatedAt": 1789212805866
+              }
+            ],
+            "pnlIfWins": 29.075400000000002,
+            "totalBet": 192.9567
+          },
+          "Lokeren Super Giants": {
+            "trades": [
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.88,
+                "type": "back",
+                "size": 5.29,
+                "updatedAt": 1789218261378
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.74,
+                "type": "back",
+                "size": 2.8899999999999997,
+                "updatedAt": 1789218004955
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 3.05,
+                "type": "back",
+                "size": 4.01,
+                "updatedAt": 1789217982369
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.74,
+                "type": "lay",
+                "size": 2.42,
+                "updatedAt": 1789217886656
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2,
+                "type": "back",
+                "size": 27.040000000000003,
+                "updatedAt": 1789217869195
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2,
+                "type": "lay",
+                "size": 1.0399999999999991,
+                "updatedAt": 1789217803872
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.75,
+                "type": "lay",
+                "size": 5.54,
+                "updatedAt": 1789217783776
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.75,
+                "type": "back",
+                "size": 4.61,
+                "updatedAt": 1789217775671
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.84,
+                "type": "back",
+                "size": 1.39,
+                "updatedAt": 1789217652239
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 5.8,
+                "type": "back",
+                "size": 3.27,
+                "updatedAt": 1789217638853
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 4.3,
+                "type": "back",
+                "size": 1.28,
+                "updatedAt": 1789217638853
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 3,
+                "type": "lay",
+                "size": 0.35999999999999993,
+                "updatedAt": 1789217303023
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.14,
+                "type": "back",
+                "size": 0.65,
+                "updatedAt": 1789217230883
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.92,
+                "type": "back",
+                "size": 0.73,
+                "updatedAt": 1789217188800
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.78,
+                "type": "back",
+                "size": 0.03,
+                "updatedAt": 1789217177551
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.32,
+                "type": "back",
+                "size": 0.08,
+                "updatedAt": 1789216953745
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.69,
+                "type": "lay",
+                "size": 5.63,
+                "updatedAt": 1789216874161
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.67,
+                "type": "lay",
+                "size": 9.11,
+                "updatedAt": 1789216874161
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.52,
+                "type": "back",
+                "size": 1.04,
+                "updatedAt": 1789216839951
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.5,
+                "type": "back",
+                "size": 1.0500000000000003,
+                "updatedAt": 1789216839951
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.12,
+                "type": "back",
+                "size": 0.03,
+                "updatedAt": 1789216489147
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 4.9,
+                "type": "back",
+                "size": 0.38,
+                "updatedAt": 1789213537521
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.8,
+                "type": "lay",
+                "size": 10.62,
+                "updatedAt": 1789213406361
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 2.5,
+                "type": "lay",
+                "size": 3.32,
+                "updatedAt": 1789213214889
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.76,
+                "type": "back",
+                "size": 1.8,
+                "updatedAt": 1789212909514
+              },
+              {
+                "team": "Lokeren Super Giants",
+                "price": 1.74,
+                "type": "back",
+                "size": 1.84,
+                "updatedAt": 1789212896108
+              }
+            ],
+            "pnlIfWins": 3.188200000000018,
+            "totalBet": 431.3720000000002
+          }
+        },
+        "Usr": "cricketloaduser56@gmail.com",
+        "competitionName": "European Cricket Series"
+      },
+      "predictedWinner": "Lokeren Super Giants",
+      "predictionTier": "ECS_SPECIAL",
+      "predictionConfidence": "European T20 Back Volume Leader",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36058639",
+      "marketId": "1.262297580",
+      "matchName": "Botswana v Sierra Leone",
+      "competitionName": "International Twenty20 Matches",
+      "team1": "Botswana",
+      "team2": "Sierra Leone",
+      "startTime": 1789212600000,
+      "endedAt": "2026-09-12T16:58:43.666Z",
+      "capturedAt": "2026-09-12T16:58:43.666Z",
+      "snapshot": {
+        "serverTime": "2026-09-12T16:58:43.629Z",
+        "matchId": "36058639",
+        "matchName": "Botswana v Sierra Leone",
+        "teamNames": [
+          "Botswana",
+          "Sierra Leone"
+        ],
+        "inPlayPnl": {
+          "team1": 18.4881,
+          "team2": -68.444
+        },
+        "inPlayTotalBets": {
+          "team1": 34.060100000000006,
+          "team2": 216.473
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 135.38,
+            "lay": 140.7,
+            "total": 138.71
+          },
+          "team2": {
+            "back": 19.850000000000005,
+            "lay": 3.3300000000000005,
+            "total": 160.54999999999998
+          }
+        },
+        "preMatchPnl": {
+          "team1": -2.505499999999994,
+          "team2": 23.069999999999993
+        },
+        "preMatchTotalBets": {
+          "team1": 23.0051,
+          "team2": 74.709
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 85.13,
+            "lay": 14.07,
+            "total": 88.46
+          },
+          "team2": {
+            "back": 16.560000000000002,
+            "lay": 3.3300000000000005,
+            "total": 30.630000000000003
+          }
+        },
+        "threeMinPnl": {
+          "team1": 11.604100000000004,
+          "team2": -41.244000000000014
+        },
+        "threeMinTotalBets": {
+          "team1": 33.4441,
+          "team2": 186.473
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 132.57999999999998,
+            "lay": 110.69999999999999,
+            "total": 135.91
+          },
+          "team2": {
+            "back": 19.850000000000005,
+            "lay": 3.3300000000000005,
+            "total": 130.54999999999998
+          }
+        },
+        "matchLoadV2": {
+          "team1": 41,
+          "team2": 47
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 12417.070000000003,
+            "lay": 24596.210000000003,
+            "totalVolume": 37013.280000000006,
+            "backPercentage": 33.547607777532825
+          },
+          "team2": {
+            "back": 267.73,
+            "lay": 127.79999999999998,
+            "totalVolume": 395.53,
+            "backPercentage": 67.68892372260007
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 573.1500000000004,
+            "lay": 970.5681000000009,
+            "totalBet": 1543.7181000000014
+          },
+          "team2": {
+            "back": 7893.698,
+            "lay": 3454.353,
+            "totalBet": 11348.051
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 12544.870000000003,
+            "support": 33.534533710107326
+          },
+          "team2": {
+            "supportMoney": 24863.940000000002,
+            "support": 66.46546628989267
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Sierra Leone",
+          "bookieFavouriteOutcome": "Botswana",
+          "riskTeam": "Sierra Leone",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 32.93093257978535,
+          "mostBettedTeam": "Sierra Leone",
+          "prediction": {
+            "team1TrueSupport": 12.649000000000003,
+            "team2TrueSupport": 59.413999999999994,
+            "ratio": 4.697130207921574,
+            "bookiePnlTeam1": 0,
+            "bookiePnlTeam2": -56.083999999999996,
+            "prediction": "Botswana",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (4.70) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 0,
+            "backExposure": 0,
+            "layExposure": 0,
+            "teamName": "Botswana"
+          },
+          "team2": {
+            "netExposure": 48.37000000000002,
+            "backExposure": 84.14300000000001,
+            "layExposure": 35.772999999999996,
+            "teamName": "Sierra Leone"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 573.1500000000004,
+            "A_lay_stake": 24596.210000000003,
+            "B_back_expo": 7893.698,
+            "B_lay_stake": 127.79999999999998
+          },
+          "totals": {
+            "totalBetTeam1": 700.9500000000004,
+            "totalBetTeam2": 32489.908000000003
+          },
+          "simplePL": {
+            "team1_win": 24023.06,
+            "team2_win": -7765.898
+          },
+          "derivedPL": {
+            "team1_win": 31788.958000000002,
+            "team2_win": -31788.958000000002
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 12417.070000000003,
+              "totalLayVol": 24596.210000000003,
+              "totalBet": 12544.870000000003,
+              "profitLoss": 12319.07
+            },
+            "team2": {
+              "totalBackVol": 267.73,
+              "totalLayVol": 127.79999999999998,
+              "totalBet": 24863.940000000002,
+              "profitLoss": -12319.07
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 573.1500000000004,
+              "totalLayVol": 24596.210000000003,
+              "totalBet": 700.9500000000004,
+              "profitLoss": 537.3481000000005
+            },
+            "team2": {
+              "totalBackExpo": 7893.698,
+              "totalLayVol": 127.79999999999998,
+              "totalBet": 32489.908000000003,
+              "profitLoss": -16618.485
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 573.1500000000004,
+              "totalLayNetVol": 970.5681000000009,
+              "totalBet": 4027.5030000000006,
+              "profitLoss": 4836.7631
+            },
+            "team2": {
+              "totalBackNetVol": 7893.698,
+              "totalLayNetVol": 3454.353,
+              "totalBet": 8864.2661,
+              "profitLoss": -4836.7631
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 41,
+            "averageOdds": 12.203414634146343,
+            "averageSize": 305.9724390243902,
+            "supportProduct": 3733.908540035693
+          },
+          "teamB": {
+            "tradeCount": 47,
+            "averageOdds": 29.942765957446806,
+            "averageSize": 529.02,
+            "supportProduct": 15840.32204680851
+          },
+          "strongerTeam": "Sierra Leone",
+          "supportRatio": 4.2422897821319125
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 12417.070000000003,
+            "oppoLayVolume": 127.79999999999998,
+            "layExposure": 970.5681000000009,
+            "netSupportValue": 11574.301900000002
+          },
+          "teamB": {
+            "totalBackVolume": 267.73,
+            "oppoLayVolume": 24596.210000000003,
+            "layExposure": 3454.353,
+            "netSupportValue": 21409.587000000003
+          },
+          "strongerTeam": "Sierra Leone",
+          "netSupportDifference": 9835.285100000001,
+          "percentageA": 35.090773968742056,
+          "percentageB": 64.90922603125794
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": -12179.14,
+            "syntheticSupport": 127.79999999999998,
+            "opponentLiabilityRejection": 3454.353,
+            "sentimentScore": -15505.693
+          },
+          "teamB": {
+            "directNetSupport": 139.93000000000004,
+            "syntheticSupport": 24596.210000000003,
+            "opponentLiabilityRejection": 970.5681000000009,
+            "sentimentScore": 23765.571900000003
+          },
+          "strongerTeam": "Sierra Leone",
+          "scoreDifference": 39271.2649,
+          "percentageA": 0,
+          "percentageB": 100
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Botswana",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Sierra Leone",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Botswana"
+        },
+        "teams": {
+          "Botswana": {
+            "trades": [
+              {
+                "team": "Botswana",
+                "price": 1.01,
+                "type": "lay",
+                "size": 4885.549999999999,
+                "updatedAt": 1789224329724
+              },
+              {
+                "team": "Botswana",
+                "price": 1.03,
+                "type": "back",
+                "size": 3347.33,
+                "updatedAt": 1789223102288
+              },
+              {
+                "team": "Botswana",
+                "price": 1.02,
+                "type": "back",
+                "size": 1705.6400000000006,
+                "updatedAt": 1789223102288
+              },
+              {
+                "team": "Botswana",
+                "price": 1.01,
+                "type": "back",
+                "size": 1464.41,
+                "updatedAt": 1789223102288
+              },
+              {
+                "team": "Botswana",
+                "price": 1.02,
+                "type": "lay",
+                "size": 5934.87,
+                "updatedAt": 1789223024684
+              },
+              {
+                "team": "Botswana",
+                "price": 1.05,
+                "type": "lay",
+                "size": 7210.14,
+                "updatedAt": 1789222927084
+              },
+              {
+                "team": "Botswana",
+                "price": 1.07,
+                "type": "lay",
+                "size": 575.9799999999999,
+                "updatedAt": 1789222913614
+              },
+              {
+                "team": "Botswana",
+                "price": 1.05,
+                "type": "back",
+                "size": 431.87000000000046,
+                "updatedAt": 1789222899641
+              },
+              {
+                "team": "Botswana",
+                "price": 1.09,
+                "type": "back",
+                "size": 288.53999999999996,
+                "updatedAt": 1789222865934
+              },
+              {
+                "team": "Botswana",
+                "price": 1.08,
+                "type": "back",
+                "size": 719.1800000000001,
+                "updatedAt": 1789222830250
+              },
+              {
+                "team": "Botswana",
+                "price": 1.06,
+                "type": "lay",
+                "size": 251.22,
+                "updatedAt": 1789222656620
+              },
+              {
+                "team": "Botswana",
+                "price": 1.07,
+                "type": "back",
+                "size": 1659.14,
+                "updatedAt": 1789222614363
+              },
+              {
+                "team": "Botswana",
+                "price": 1.1,
+                "type": "back",
+                "size": 763.0300000000004,
+                "updatedAt": 1789222556352
+              },
+              {
+                "team": "Botswana",
+                "price": 1.14,
+                "type": "back",
+                "size": 3.62,
+                "updatedAt": 1789222552844
+              },
+              {
+                "team": "Botswana",
+                "price": 1.11,
+                "type": "back",
+                "size": 5.48,
+                "updatedAt": 1789222552844
+              },
+              {
+                "team": "Botswana",
+                "price": 1.1,
+                "type": "lay",
+                "size": 2210.25,
+                "updatedAt": 1789222542465
+              },
+              {
+                "team": "Botswana",
+                "price": 1.12,
+                "type": "lay",
+                "size": 23.14,
+                "updatedAt": 1789222521305
+              },
+              {
+                "team": "Botswana",
+                "price": 1.08,
+                "type": "lay",
+                "size": 318.0999999999999,
+                "updatedAt": 1789222512853
+              },
+              {
+                "team": "Botswana",
+                "price": 1.06,
+                "type": "back",
+                "size": 596.0100000000001,
+                "updatedAt": 1789222394721
+              },
+              {
+                "team": "Botswana",
+                "price": 1.04,
+                "type": "lay",
+                "size": 992.5000000000002,
+                "updatedAt": 1789222118709
+              },
+              {
+                "team": "Botswana",
+                "price": 1.04,
+                "type": "back",
+                "size": 1256.78,
+                "updatedAt": 1789221967932
+              },
+              {
+                "team": "Botswana",
+                "price": 1.03,
+                "type": "lay",
+                "size": 1997.5399999999997,
+                "updatedAt": 1789221877318
+              },
+              {
+                "team": "Botswana",
+                "price": 1.09,
+                "type": "lay",
+                "size": 45.73999999999999,
+                "updatedAt": 1789217288161
+              },
+              {
+                "team": "Botswana",
+                "price": 1.11,
+                "type": "lay",
+                "size": 8.32,
+                "updatedAt": 1789216059805
+              },
+              {
+                "team": "Botswana",
+                "price": 1.14,
+                "type": "lay",
+                "size": 0.08,
+                "updatedAt": 1789215856276
+              },
+              {
+                "team": "Botswana",
+                "price": 1.3,
+                "type": "back",
+                "size": 12.49,
+                "updatedAt": 1789213914286
+              },
+              {
+                "team": "Botswana",
+                "price": 1.24,
+                "type": "lay",
+                "size": 2.08,
+                "updatedAt": 1789213440801
+              },
+              {
+                "team": "Botswana",
+                "price": 1.18,
+                "type": "back",
+                "size": 2.65,
+                "updatedAt": 1789212938322
+              },
+              {
+                "team": "Botswana",
+                "price": 1.17,
+                "type": "back",
+                "size": 25.52,
+                "updatedAt": 1789212938322
+              },
+              {
+                "team": "Botswana",
+                "price": 1.25,
+                "type": "lay",
+                "size": 30.000000000000004,
+                "updatedAt": 1789212600763
+              },
+              {
+                "team": "Botswana",
+                "price": 1.22,
+                "type": "back",
+                "size": 52.95000000000002,
+                "updatedAt": 1789212486709
+              },
+              {
+                "team": "Botswana",
+                "price": 1.22,
+                "type": "lay",
+                "size": 96.63,
+                "updatedAt": 1789211808185
+              },
+              {
+                "team": "Botswana",
+                "price": 1.21,
+                "type": "back",
+                "size": 51.26,
+                "updatedAt": 1789209270958
+              },
+              {
+                "team": "Botswana",
+                "price": 1.25,
+                "type": "back",
+                "size": 8.44,
+                "updatedAt": 1789161977132
+              },
+              {
+                "team": "Botswana",
+                "price": 1.27,
+                "type": "back",
+                "size": 5.23,
+                "updatedAt": 1789158266483
+              },
+              {
+                "team": "Botswana",
+                "price": 1.26,
+                "type": "back",
+                "size": 5.28,
+                "updatedAt": 1789158266483
+              },
+              {
+                "team": "Botswana",
+                "price": 1.28,
+                "type": "back",
+                "size": 12.219999999999999,
+                "updatedAt": 1789155941769
+              },
+              {
+                "team": "Botswana",
+                "price": 1.28,
+                "type": "lay",
+                "size": 14.07,
+                "updatedAt": 1789150186927
+              }
+            ],
+            "pnlIfWins": 537.3481000000002,
+            "totalBet": 700.9500000000004
+          },
+          "Sierra Leone": {
+            "trades": [
+              {
+                "team": "Sierra Leone",
+                "price": 230,
+                "type": "back",
+                "size": 5.63,
+                "updatedAt": 1789224003808
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 220,
+                "type": "back",
+                "size": 2.45,
+                "updatedAt": 1789224003808
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 260,
+                "type": "back",
+                "size": 3.87,
+                "updatedAt": 1789223801024
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 100,
+                "type": "back",
+                "size": 0.39,
+                "updatedAt": 1789223243943
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 120,
+                "type": "back",
+                "size": 4.15,
+                "updatedAt": 1789223164185
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 55,
+                "type": "back",
+                "size": 2.82,
+                "updatedAt": 1789223024149
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 20,
+                "type": "lay",
+                "size": 5.72,
+                "updatedAt": 1789222926094
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 21,
+                "type": "lay",
+                "size": 18.610000000000003,
+                "updatedAt": 1789222899657
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 18,
+                "type": "back",
+                "size": 2.39,
+                "updatedAt": 1789222656240
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 12,
+                "type": "back",
+                "size": 2.51,
+                "updatedAt": 1789222556713
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 11,
+                "type": "lay",
+                "size": 4.899999999999993,
+                "updatedAt": 1789222524691
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 9.2,
+                "type": "lay",
+                "size": 2.82,
+                "updatedAt": 1789222520958
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 13.5,
+                "type": "back",
+                "size": 14.18,
+                "updatedAt": 1789222512853
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 15,
+                "type": "back",
+                "size": 3.3,
+                "updatedAt": 1789222385359
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 26,
+                "type": "lay",
+                "size": 5.18,
+                "updatedAt": 1789222118725
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 27,
+                "type": "back",
+                "size": 5.7,
+                "updatedAt": 1789222063335
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 50,
+                "type": "back",
+                "size": 4.39,
+                "updatedAt": 1789221582043
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 85,
+                "type": "lay",
+                "size": 8.45,
+                "updatedAt": 1789221135324
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 34,
+                "type": "back",
+                "size": 22.6,
+                "updatedAt": 1789220999711
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 36,
+                "type": "back",
+                "size": 1.86,
+                "updatedAt": 1789220973575
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 29,
+                "type": "back",
+                "size": 25.21,
+                "updatedAt": 1789220710382
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 80,
+                "type": "lay",
+                "size": 8.39,
+                "updatedAt": 1789220592113
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 46,
+                "type": "lay",
+                "size": 2.82,
+                "updatedAt": 1789220523735
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 21,
+                "type": "back",
+                "size": 11.049999999999997,
+                "updatedAt": 1789220089208
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 22,
+                "type": "back",
+                "size": 43.81,
+                "updatedAt": 1789220086249
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 22,
+                "type": "lay",
+                "size": 3.6499999999999986,
+                "updatedAt": 1789218831705
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 26,
+                "type": "back",
+                "size": 1.7400000000000002,
+                "updatedAt": 1789218452065
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 25,
+                "type": "lay",
+                "size": 18.67,
+                "updatedAt": 1789217754224
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 19,
+                "type": "back",
+                "size": 5.24,
+                "updatedAt": 1789217653294
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 24,
+                "type": "lay",
+                "size": 4.83,
+                "updatedAt": 1789217543925
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 12.5,
+                "type": "back",
+                "size": 0.46,
+                "updatedAt": 1789217481384
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 11.5,
+                "type": "back",
+                "size": 17.529999999999998,
+                "updatedAt": 1789217347319
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 11,
+                "type": "back",
+                "size": 65.67,
+                "updatedAt": 1789217347319
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 11.5,
+                "type": "lay",
+                "size": 6.3100000000000005,
+                "updatedAt": 1789216721210
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 12,
+                "type": "lay",
+                "size": 8.8,
+                "updatedAt": 1789216059820
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 10,
+                "type": "back",
+                "size": 0.93,
+                "updatedAt": 1789216059820
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 15.5,
+                "type": "lay",
+                "size": 17.73,
+                "updatedAt": 1789215701832
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 15,
+                "type": "lay",
+                "size": 2.46,
+                "updatedAt": 1789215701832
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 34,
+                "type": "lay",
+                "size": 5.13,
+                "updatedAt": 1789215142910
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 5.6,
+                "type": "back",
+                "size": 3.290000000000001,
+                "updatedAt": 1789211976075
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 6,
+                "type": "back",
+                "size": 0.010000000000001563,
+                "updatedAt": 1789201585876
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 5.7,
+                "type": "back",
+                "size": 0.25,
+                "updatedAt": 1789162051744
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 5,
+                "type": "back",
+                "size": 2.03,
+                "updatedAt": 1789161977132
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 4.9,
+                "type": "back",
+                "size": 5.630000000000001,
+                "updatedAt": 1789161972603
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 5,
+                "type": "lay",
+                "size": 0.08,
+                "updatedAt": 1789158271648
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 4.9,
+                "type": "lay",
+                "size": 1.35,
+                "updatedAt": 1789158271648
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 4.8,
+                "type": "lay",
+                "size": 1.38,
+                "updatedAt": 1789158271648
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 4.5,
+                "type": "lay",
+                "size": 0.5200000000000005,
+                "updatedAt": 1789155941769
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 4.2,
+                "type": "back",
+                "size": 3.01,
+                "updatedAt": 1789150239958
+              },
+              {
+                "team": "Sierra Leone",
+                "price": 4.5,
+                "type": "back",
+                "size": 5.63,
+                "updatedAt": 1789150186787
+              }
+            ],
+            "pnlIfWins": -16618.485000000004,
+            "totalBet": 32489.908000000003
+          }
+        },
+        "Usr": "cricketloaduser56@gmail.com",
+        "competitionName": "International Twenty20 Matches"
+      },
+      "predictedWinner": "Botswana",
+      "predictionTier": "INTERNATIONAL_T20_SPECIAL",
+      "predictionConfidence": "T20I Dual Flow Inflow Dominance",
       "actualWinner": null,
       "lastCaptureError": null,
       "status": "pending",

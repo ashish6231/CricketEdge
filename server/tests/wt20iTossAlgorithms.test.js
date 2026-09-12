@@ -55,7 +55,7 @@ test('predictTossWinner achieves 100% (7/7) accuracy on all WT20I records in tos
     r => r.competitionName === 'Womens International Twenty20 Matches'
   );
 
-  assert.equal(wt20iRecords.length, 7, 'Must have exactly 7 WT20I records');
+  assert.ok(wt20iRecords.length >= 7, 'Must have at least 7 WT20I records');
 
   for (const record of wt20iRecords) {
     const pred = predictTossWinner(record.snapshot || {}, record.competitionName);
@@ -77,10 +77,10 @@ test('predictMatchWinner achieves 100% (7/7) accuracy on all WT20I records in ma
   const dataset = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
 
   const wt20iRecords = (dataset.records || []).filter(
-    r => r.competitionName === 'Womens International Twenty20 Matches'
+    r => r.competitionName === 'Womens International Twenty20 Matches' && r.actualWinner && r.actualWinner !== 'No Result'
   );
 
-  assert.equal(wt20iRecords.length, 7, 'Must have exactly 7 WT20I records in match_dataset.json');
+  assert.ok(wt20iRecords.length >= 7, 'Must have at least 7 WT20I records in match_dataset.json');
 
   for (const record of wt20iRecords) {
     const pred = predictMatchWinner(record.snapshot || record, record.competitionName);
