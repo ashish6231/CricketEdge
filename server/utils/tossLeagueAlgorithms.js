@@ -173,10 +173,11 @@ export function inferCompetition(snap, compName = '') {
 /**
  * 🌴 Caribbean Premier League (CPL) Toss Algorithm
  */
-export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, trap, bookieFav, stronger, supRatio, isLayAbsorbed1, isLayAbsorbed2, totBack }) {
+export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, trap, bookieFav, stronger, supRatio, totBack }) {
   const totalBack = totBack ?? (b1 + b2)
+  const normBackRatio = backRatio >= 1 ? backRatio : (1 / Math.max(backRatio, 0.01))
 
-  // 1.0 Naked Public Overload & Lay Resistance Trap Fade (e.g. St Kitts 77% load ₹2.98k with 0 lay vs Antigua ₹431 Lay & +₹2.92k Bookie Profit; Guyana ₹2.15k with ₹25 lay vs St Kitts +₹1.94k Bookie Profit)
+  // 1.0 Naked Public Overload Trap Fade
   if (totalBack >= 2000 && b1 >= b2 * 4.0 && l1 <= 50 && l2 >= 50 && prePnl1 < -1500 && prePnl2 > 1500) {
     return {
       winner: t2,
@@ -198,9 +199,30 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
     }
   }
 
-  // 1.05 Pre-Match Lay Resistance Dump Fade (near-flat back lead < 1.35x, heavy lay dump on one team)
-  // Smart money shorts the team being laid, but bookie won't allow this if their liability on the other side is too massive (> 1000)
-  if (backRatio < 1.35 && l2 >= 150 && l2 >= l1 * 2.5 && prePnl1 >= -1000) {
+  // 1.02 High Trap Deficit Fade (Bookie deep deficit < -1400, safe side lay dump >= 3x)
+  if (trap === 'high' && prePnl1 < -1400 && prePnl2 > 1400 && l2 >= l1 * 3.0) {
+    return {
+      winner: t2,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL TRAP DEFICIT FADE 🚨',
+      pattern: 'CPL_TRAP_DEFICIT_FADE',
+      reason: `CPL High Trap Deficit on ${t1} (PnL: ${prePnl1.toFixed(0)}) -> Faded to Safe Side ${t2} (₹${fmtVol(l2)} Lay)`,
+    }
+  }
+  if (trap === 'high' && prePnl2 < -1400 && prePnl1 > 1400 && l1 >= l2 * 3.0) {
+    return {
+      winner: t1,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL TRAP DEFICIT FADE 🚨',
+      pattern: 'CPL_TRAP_DEFICIT_FADE',
+      reason: `CPL High Trap Deficit on ${t2} (PnL: ${prePnl2.toFixed(0)}) -> Faded to Safe Side ${t1} (₹${fmtVol(l1)} Lay)`,
+    }
+  }
+
+  // 1.05 Lay Resistance Dump Fade (near-flat back < 1.35x, heavy lay dump 2.5x)
+  if (normBackRatio < 1.35 && l2 >= 150 && l2 >= l1 * 2.5 && prePnl1 >= -1000) {
     return {
       winner: t1,
       tier: 'CPL_TOSS_SPECIAL',
@@ -210,7 +232,7 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       reason: `CPL Lay Resistance Dump on ${t2} (₹${fmtVol(l2)} Lay vs ₹${fmtVol(l1)}) -> Faded to ${t1}`,
     }
   }
-  if (backRatio < 1.35 && l1 >= 150 && l1 >= l2 * 2.5 && prePnl2 >= -1000) {
+  if (normBackRatio < 1.35 && l1 >= 150 && l1 >= l2 * 2.5 && prePnl2 >= -1000) {
     return {
       winner: t2,
       tier: 'CPL_TOSS_SPECIAL',
@@ -221,8 +243,8 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
     }
   }
 
-  // 1.1 Lay absorption shield
-  if (isLayAbsorbed1 && !isLayAbsorbed2 && prePnl1 > 1000) {
+  // 1.1 Heavy Lay Absorption Shield (Lay must exceed team's own back to be true absorption)
+  if (l1 >= 1000 && prePnl1 > 1000 && l1 > l2 && l1 > b1) {
     return {
       winner: t1,
       tier: 'CPL_TOSS_SPECIAL',
@@ -232,7 +254,7 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       reason: `CPL Bookie Lay Shield on ${t1} (Lay: ₹${fmtVol(l1)}, PnL: +${prePnl1.toFixed(0)})`,
     }
   }
-  if (isLayAbsorbed2 && !isLayAbsorbed1 && prePnl2 > 1000) {
+  if (l2 >= 1000 && prePnl2 > 1000 && l2 > l1 && l2 > b2) {
     return {
       winner: t2,
       tier: 'CPL_TOSS_SPECIAL',
@@ -243,33 +265,47 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
     }
   }
 
-  // 1.15 Flat Synthetic Support (< 1.15x) with High Trap & Bookie Deficit (e.g. Barbados v St. Lucia)
-  if (trap === 'high' && bookieFav && supRatio <= 1.15) {
-    if (teamEq(bookieFav, t1) && prePnl1 > 500 && prePnl2 < -500) {
-      return {
-        winner: t1,
-        tier: 'CPL_TOSS_SPECIAL',
-        algoName: '🌴 CPL Toss Special Algorithm',
-        verdictTag: 'CPL BOOKMAKER TRAP FADE 🚨',
-        pattern: 'CPL_TRAP_FADE',
-        reason: `CPL Retail Loading Deficit on ${t2} (PnL: ${prePnl2.toFixed(0)}) Faded to Bookie Safe Side ${t1} (+${prePnl1.toFixed(0)})`,
-      }
-    }
-    if (teamEq(bookieFav, t2) && prePnl2 > 500 && prePnl1 < -500) {
-      return {
-        winner: t2,
-        tier: 'CPL_TOSS_SPECIAL',
-        algoName: '🌴 CPL Toss Special Algorithm',
-        verdictTag: 'CPL BOOKMAKER TRAP FADE 🚨',
-        pattern: 'CPL_TRAP_FADE',
-        reason: `CPL Retail Loading Deficit on ${t1} (PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
-      }
+  // 1.15 Flat Synth (<= 1.15x) with High Trap & PnL Deficit > 1000
+  if (trap === 'high' && supRatio <= 1.15 && Math.abs(prePnl1 - prePnl2) > 1000) {
+    const safeWinner = prePnl1 > prePnl2 ? t1 : t2
+    return {
+      winner: safeWinner,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL BOOKMAKER TRAP FADE 🚨',
+      pattern: 'CPL_TRAP_FADE',
+      reason: `CPL Flat Synth Trap Fade -> Bookie Safe Side ${safeWinner}`,
     }
   }
 
-  // 1.2 High Trap with Strong Synthetic Support (>= 1.5x)
-  if (trap === 'high' && supRatio >= 1.5 && stronger) {
-    const win = teamEq(stronger, t1) ? t1 : t2
+  // 1.2 High Trap with Weak Synth (< 1.5x) & Tight Back Lead (< 1.65x) -> Bookie Fav Safe
+  if (trap === 'high' && bookieFav && supRatio < 1.5 && normBackRatio < 1.65) {
+    return {
+      winner: bookieFav,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL BOOKIE FAV SAFE',
+      pattern: 'CPL_BOOKIE_FAV_SAFE',
+      reason: `CPL Trap Bookie Safe on ${bookieFav}`,
+    }
+  }
+
+  // 1.25 Flat Market Inflow (normBackRatio < 1.15 -> follow actual back lead)
+  if (normBackRatio < 1.15 && b1 !== b2 && (b1 > 0 || b2 > 0)) {
+    const win = b1 > b2 ? t1 : t2
+    return {
+      winner: win,
+      tier: 'CPL_TOSS_SPECIAL',
+      algoName: '🌴 CPL Toss Special Algorithm',
+      verdictTag: 'CPL SMART INFLOW',
+      pattern: 'CPL_SMART_INFLOW',
+      reason: `CPL Flat Market Inflow Leader ${win} (₹${fmtVol(Math.max(b1, b2))} Back)`,
+    }
+  }
+
+  // 1.3 Strong Synthetic Support (>= 1.5x)
+  if (supRatio >= 1.5 && stronger) {
+    const win = stronger.toLowerCase().includes((t1 || '').toLowerCase()) ? t1 : t2
     return {
       winner: win,
       tier: 'CPL_TOSS_SPECIAL',
@@ -277,30 +313,6 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       verdictTag: 'CPL SMART MONEY SUPPORT',
       pattern: 'CPL_SMART_SUPPORT',
       reason: `CPL Strong Synthetic Support on ${win} (${supRatio.toFixed(1)}x Ratio)`,
-    }
-  }
-
-  // 1.3 High Trap with Weak Synthetic Support (< 1.5x) & Non-Blowout Back Lead (< 1.65x) -> Fade Public to Bookie Safe Side
-  if (trap === 'high' && bookieFav && supRatio < 1.5 && backRatio < 1.65) {
-    if (teamEq(bookieFav, t1) && prePnl1 > 0) {
-      return {
-        winner: t1,
-        tier: 'CPL_TOSS_SPECIAL',
-        algoName: '🌴 CPL Toss Special Algorithm',
-        verdictTag: 'CPL BOOKIE FAV SAFE',
-        pattern: 'CPL_BOOKIE_FAV_SAFE',
-        reason: `CPL Trap Bookie Safe on ${t1} (PnL: +${prePnl1.toFixed(0)})`,
-      }
-    }
-    if (teamEq(bookieFav, t2) && prePnl2 > 0) {
-      return {
-        winner: t2,
-        tier: 'CPL_TOSS_SPECIAL',
-        algoName: '🌴 CPL Toss Special Algorithm',
-        verdictTag: 'CPL BOOKIE FAV SAFE',
-        pattern: 'CPL_BOOKIE_FAV_SAFE',
-        reason: `CPL Trap Bookie Safe on ${t2} (PnL: +${prePnl2.toFixed(0)})`,
-      }
     }
   }
 
@@ -313,7 +325,7 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       algoName: '🌴 CPL Toss Special Algorithm',
       verdictTag: 'CPL SMART INFLOW',
       pattern: 'CPL_SMART_INFLOW',
-      reason: `CPL Smart Money Inflow on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`,
+      reason: `CPL Smart Money Inflow on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${normBackRatio.toFixed(1)}x)`,
     }
   }
 
@@ -528,24 +540,10 @@ export function isWomensAsiaCup(compName, team1, team2) {
  * 4. Inflow Leadership
  * 5. Bookmaker Safe PnL Exposure
  */
-export function getWomensAsiaCupTossPrediction({
-  t1,
-  t2,
-  b1,
-  b2,
-  prePnl1,
-  prePnl2,
-  backRatio,
-  b1Pct,
-  b2Pct,
-  stronger,
-  supRatio,
-  syntheticSupport,
-  snap,
-}) {
+export function getWomensAsiaCupTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl2, stronger, supRatio }) {
   const totBack = b1 + b2
 
-  // 1. Low Volume Zero-Back Pure Profit (< 50 total volume, e.g. Hong Kong W v Thailand W)
+  // 1. Low Volume Zero-Back Pure Profit (< 50 total volume)
   if (Math.max(b1, b2) < 50) {
     if (b1 === 0 && prePnl1 > 0) {
       return {
@@ -569,13 +567,13 @@ export function getWomensAsiaCupTossPrediction({
     }
   }
 
-const ASIA_ASSOCIATES = ['indonesia', 'hong kong', 'thailand', 'nepal', 'malaysia'];
+const ASIA_ASSOCIATES = ['indonesia', 'hong kong', 'thailand', 'nepal', 'malaysia']
 function isAsiaAssociate(team) {
-  const t = (team || '').toLowerCase();
-  return ASIA_ASSOCIATES.some((a) => t.includes(a));
+  const t = (team || '').toLowerCase()
+  return ASIA_ASSOCIATES.some((a) => t.includes(a))
 }
 
-  // 2. High-Liquidity Bookmaker Deficit Trap Fade (e.g. India W v Pakistan W, UAE W v Bangladesh W)
+  // 2. High-Liquidity Bookmaker Deficit Trap Fade (Volume >= 2000 & Deficit < -1000, excluding Associates)
   if (totBack >= 2000) {
     if (prePnl1 > 1000 && prePnl2 < -1000 && !isAsiaAssociate(t1)) {
       return {
@@ -599,9 +597,9 @@ function isAsiaAssociate(team) {
     }
   }
 
-  // 3. Smart Synthetic Support Dominance (Sri Lanka W, India W, Bangladesh W, Pakistan W, UAE W)
-  const synTarget = stronger || snap?.syntheticSupport?.strongerTeam || syntheticSupport?.strongerTeam
-  const synRatio = supRatio || snap?.syntheticSupport?.supportRatio || syntheticSupport?.supportRatio || 1
+  // 3. Smart Synthetic Support Dominance
+  const synTarget = stronger || ''
+  const synRatio = Number(supRatio || 1)
   const isT1 = synTarget && (synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase()))
   const isT2 = synTarget && (synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase()))
   const synMatchesBookieSafe = (isT1 && prePnl1 > prePnl2) || (isT2 && prePnl2 > prePnl1)
@@ -614,7 +612,7 @@ function isAsiaAssociate(team) {
         algoName: "👑 Women's Asia Cup Toss Algorithm",
         verdictTag: 'ASIA CUP SMART SUPPORT 💎',
         pattern: 'ASIA_CUP_SMART_SUPPORT',
-        reason: `Asia Cup Smart Synthetic Support on ${t1} (${Number(synRatio).toFixed(1)}x Lead)`,
+        reason: `Asia Cup Smart Synthetic Support on ${t1} (${synRatio.toFixed(1)}x Lead)`,
       }
     }
     if (isT2) {
@@ -624,38 +622,21 @@ function isAsiaAssociate(team) {
         algoName: "👑 Women's Asia Cup Toss Algorithm",
         verdictTag: 'ASIA CUP SMART SUPPORT 💎',
         pattern: 'ASIA_CUP_SMART_SUPPORT',
-        reason: `Asia Cup Smart Synthetic Support on ${t2} (${Number(synRatio).toFixed(1)}x Lead)`,
+        reason: `Asia Cup Smart Synthetic Support on ${t2} (${synRatio.toFixed(1)}x Lead)`,
       }
     }
   }
 
-  // 4. Inflow Leadership
-  if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
-    const win = b1 > b2 ? t1 : t2
-    return {
-      winner: win,
-      tier: 'WOMENS_ASIA_CUP_SPECIAL',
-      algoName: "👑 Women's Asia Cup Toss Algorithm",
-      verdictTag: 'ASIA CUP SMART INFLOW',
-      pattern: 'ASIA_CUP_SMART_INFLOW',
-      reason: `Asia Cup Inflow Leader on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`,
-    }
+  // 4. Inflow Leader Fallback
+  const win = b1 >= b2 ? t1 : t2
+  return {
+    winner: win,
+    tier: 'WOMENS_ASIA_CUP_SPECIAL',
+    algoName: "👑 Women's Asia Cup Toss Algorithm",
+    verdictTag: 'ASIA CUP INFLOW FALLBACK',
+    pattern: 'ASIA_CUP_INFLOW_FALLBACK',
+    reason: `Asia Cup Inflow Leader Fallback on ${win}`,
   }
-
-  // 5. Bookie Safe Exposure Fallback
-  if (prePnl1 !== prePnl2) {
-    const win = prePnl1 > prePnl2 ? t1 : t2
-    return {
-      winner: win,
-      tier: 'WOMENS_ASIA_CUP_SPECIAL',
-      algoName: "👑 Women's Asia Cup Toss Algorithm",
-      verdictTag: 'ASIA CUP BOOKIE SAFE',
-      pattern: 'ASIA_CUP_BOOKIE_SAFE',
-      reason: `Asia Cup Bookie Safe Exposure on ${win}`,
-    }
-  }
-
-  return null
 }
 
 /**
@@ -814,26 +795,7 @@ export function getWomensTossPrediction({
  * 6. Clean Back Volume Dominance.
  * 7. Bookmaker Safe Exposure Fallback.
  */
-export function getECSTossPrediction({
-  t1,
-  t2,
-  b1,
-  b2,
-  l1,
-  l2,
-  prePnl1,
-  prePnl2,
-  backRatio,
-  b1Pct,
-  b2Pct,
-  totBack,
-  trap,
-  bookieFav,
-  stronger,
-  supRatio,
-  syntheticSupport,
-  snap,
-}) {
+export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, stronger, supRatio, totBack, trap, bookieFav }) {
   const name1 = (t1 || '').toLowerCase()
   const name2 = (t2 || '').toLowerCase()
 
@@ -859,7 +821,7 @@ export function getECSTossPrediction({
     }
   }
 
-  // 5.1 Edinburgh Castle Rockers Undefeated Toss Fortress (100% Win Rate 5-0)
+  // 5.1 Edinburgh Castle Rockers Undefeated Toss Fortress
   if (name1.includes('edinburgh')) {
     return {
       winner: t1,
@@ -881,7 +843,29 @@ export function getECSTossPrediction({
     }
   }
 
-  // 5.2 Dublin Guardians Coin Toss Trap Fade (0% Win Rate 0-5)
+  // 5.15 Dublin vs Glasgow Clash: Glasgow Liability Choke (Glasgow negative PnL vs Dublin positive PnL)
+  if (name1.includes('dublin') && name2.includes('glasgow') && prePnl1 > 0 && prePnl2 < 0) {
+    return {
+      winner: t1,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS BOOKIE SAFE 🛡️',
+      pattern: 'ECS_GLASGOW_CHOKE_FADE',
+      reason: `Glasgow Cosmic toss liability choke against Dublin (PnL: ${prePnl2.toFixed(0)} vs +${prePnl1.toFixed(0)}) -> Bookie Safe to ${t1}`,
+    }
+  }
+  if (name2.includes('dublin') && name1.includes('glasgow') && prePnl2 > 0 && prePnl1 < 0) {
+    return {
+      winner: t2,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS BOOKIE SAFE 🛡️',
+      pattern: 'ECS_GLASGOW_CHOKE_FADE',
+      reason: `Glasgow Cosmic toss liability choke against Dublin (PnL: ${prePnl1.toFixed(0)} vs +${prePnl2.toFixed(0)}) -> Bookie Safe to ${t2}`,
+    }
+  }
+
+  // 5.2 Dublin Guardians 0% Trap Fade
   if (name1.includes('dublin')) {
     return {
       winner: t2,
@@ -903,7 +887,7 @@ export function getECSTossPrediction({
     }
   }
 
-  // 5.3 Glasgow Cosmic Coin Choke vs Upper Tier (16.7% Win Rate 1-5, Bookie Safe)
+  // 5.3 Glasgow Cosmic Choke (Negative PnL vs Bookie Safe Opponent)
   if (name1.includes('glasgow') && prePnl2 > prePnl1) {
     return {
       winner: t2,
@@ -925,8 +909,8 @@ export function getECSTossPrediction({
     }
   }
 
-  // 5.3.1 Rotterdam Dockers Bookmaker Deficit Choke vs Glasgow Cosmic
-  if (name1.includes('rotterdam') && name2.includes('glasgow') && prePnl1 < -300 && prePnl2 > 300 && (supRatio || 1) < 3.0) {
+  // 5.3.1 Rotterdam Deficit Choke vs Glasgow
+  if (name1.includes('rotterdam') && name2.includes('glasgow') && prePnl1 < -300 && prePnl2 > 300) {
     return {
       winner: t2,
       tier: 'EUROPEAN_TOSS_SPECIAL',
@@ -937,7 +921,7 @@ export function getECSTossPrediction({
     }
   }
 
-  // 5.4 Lay Dump Resistance Fade – min ₹100 lay, 2.5x dominance, negative PnL on dumped team
+  // 5.4 Lay Dump Resistance Fade (₹100+ Lay dump, 2.5x dominance, negative PnL)
   if (l1 >= 100 && l1 >= l2 * 2.5 && prePnl1 < 0) {
     return {
       winner: t2,
@@ -959,85 +943,42 @@ export function getECSTossPrediction({
     }
   }
 
-  // 5.4.1 Micro-Volume High Trap Fade (totBack < 300 && trap === 'high')
-  if (totBack < 300 && trap === 'high' && bookieFav) {
-    if ((bookieFav.toLowerCase().includes(name1) || name1.includes(bookieFav.toLowerCase())) && prePnl1 > 0 && prePnl2 < 0) {
-      return {
-        winner: t1,
-        tier: 'EUROPEAN_TOSS_SPECIAL',
-        algoName: '🇪🇺 European T20 Toss Algorithm',
-        verdictTag: 'ECS BOOKIE SAFE 🛡️',
-        pattern: 'ECS_MICRO_TRAP_SAFE',
-        reason: `ECS Micro-volume trap safe to ${t1} (PnL: +${prePnl1.toFixed(0)})`,
-      }
-    }
-    if ((bookieFav.toLowerCase().includes(name2) || name2.includes(bookieFav.toLowerCase())) && prePnl2 > 0 && prePnl1 < 0) {
-      return {
-        winner: t2,
-        tier: 'EUROPEAN_TOSS_SPECIAL',
-        algoName: '🇪🇺 European T20 Toss Algorithm',
-        verdictTag: 'ECS BOOKIE SAFE 🛡️',
-        pattern: 'ECS_MICRO_TRAP_SAFE',
-        reason: `ECS Micro-volume trap safe to ${t2} (PnL: +${prePnl2.toFixed(0)})`,
-      }
-    }
-  }
-
-  // 5.5 Synthetic Support & Smart Money Dominance
-  const synTarget = stronger || snap?.syntheticSupport?.strongerTeam || syntheticSupport?.strongerTeam
-  const synRatio = supRatio || snap?.syntheticSupport?.supportRatio || syntheticSupport?.supportRatio || 1.5
-  if (synTarget) {
-    const isT1 = synTarget.toLowerCase().includes(name1) || name1.includes(synTarget.toLowerCase())
-    const isT2 = synTarget.toLowerCase().includes(name2) || name2.includes(synTarget.toLowerCase())
-    if (isT1) {
-      return {
-        winner: t1,
-        tier: 'EUROPEAN_TOSS_SPECIAL',
-        algoName: '🇪🇺 European T20 Toss Algorithm',
-        verdictTag: 'ECS SYNTHETIC SUPPORT 💎',
-        pattern: 'ECS_SYNTHETIC_DOMINANCE',
-        reason: `ECS Synthetic Smart Support Dominance on ${t1} (Ratio: ${Number(synRatio).toFixed(1)}x)`,
-      }
-    }
-    if (isT2) {
-      return {
-        winner: t2,
-        tier: 'EUROPEAN_TOSS_SPECIAL',
-        algoName: '🇪🇺 European T20 Toss Algorithm',
-        verdictTag: 'ECS SYNTHETIC SUPPORT 💎',
-        pattern: 'ECS_SYNTHETIC_DOMINANCE',
-        reason: `ECS Synthetic Smart Support Dominance on ${t2} (Ratio: ${Number(synRatio).toFixed(1)}x)`,
-      }
-    }
-  }
-
-  // 5.6 Clean Back Volume Leader
-  if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
-    const win = b1 > b2 ? t1 : t2
-    return {
-      winner: win,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS SMART INFLOW',
-      pattern: 'ECS_SMART_INFLOW',
-      reason: `ECS Smart Inflow on ${win} (₹${Math.max(b1, b2).toFixed(0)} Back, Lead: ${backRatio.toFixed(1)}x)`,
-    }
-  }
-
-  // 5.7 Bookmaker Safe Exposure Fallback
-  if (prePnl1 !== prePnl2) {
+  // 5.45 Micro-Volume High Trap Safe (totBack < 350 && trap === 'high')
+  if (totBack < 350 && trap === 'high') {
     const win = prePnl1 > prePnl2 ? t1 : t2
     return {
       winner: win,
       tier: 'EUROPEAN_TOSS_SPECIAL',
       algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS BOOKIE SAFE',
-      pattern: 'ECS_BOOKIE_SAFE',
-      reason: `ECS Bookie Exposure Safe Side on ${win}`,
+      verdictTag: 'ECS BOOKIE SAFE 🛡️',
+      pattern: 'ECS_MICRO_TRAP_SAFE',
+      reason: `ECS Micro-volume trap safe to ${win} (PnL: +${Math.max(prePnl1, prePnl2).toFixed(0)})`,
     }
   }
 
-  return null
+  // 5.5 Synthetic Dominance (Neutral matches)
+  if (supRatio >= 1.3 && stronger) {
+    const win = stronger.toLowerCase().includes(name1) || name1.includes(stronger.toLowerCase()) ? t1 : t2
+    return {
+      winner: win,
+      tier: 'EUROPEAN_TOSS_SPECIAL',
+      algoName: '🇪🇺 European T20 Toss Algorithm',
+      verdictTag: 'ECS SYNTHETIC SUPPORT 💎',
+      pattern: 'ECS_SYNTHETIC_DOMINANCE',
+      reason: `ECS Synthetic Smart Support Dominance on ${win} (Ratio: ${Number(supRatio).toFixed(1)}x)`,
+    }
+  }
+
+  // 5.6 Micro-Volume Trap Safe Fallback
+  const win = prePnl1 > prePnl2 ? t1 : t2
+  return {
+    winner: win,
+    tier: 'EUROPEAN_TOSS_SPECIAL',
+    algoName: '🇪🇺 European T20 Toss Algorithm',
+    verdictTag: 'ECS BOOKIE SAFE',
+    pattern: 'ECS_MICRO_TRAP_SAFE',
+    reason: `ECS Bookie Exposure Safe Side on ${win}`,
+  }
 }
 
 
