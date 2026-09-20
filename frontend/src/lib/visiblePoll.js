@@ -1,6 +1,6 @@
 /** Poll only when tab is visible — cuts Neon/upstream burn from background tabs. */
-export const LIVE_POLL_MS = 6000
-export const CREX_POLL_MS = 2500
+export const LIVE_POLL_MS = 5000
+export const CREX_POLL_MS = 1000
 
 export function startVisibleInterval(fn, ms = LIVE_POLL_MS) {
   const tick = () => {

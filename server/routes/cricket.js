@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
+const dataCache = require('../services/dataCache');
 const { optionalAuth, requireProSubscription, assertProAccess } = require('../middleware/auth');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
@@ -225,7 +226,7 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
 
   // Fetch live matches from scraper only — no dataset/crex fallback for list
   try {
-    const liveData = await scraper.getAllCricketMatches();
+    const liveData = await dataCache.getCricketMatches();
     if (Array.isArray(liveData) && liveData.length > 0) {
       const isMatchEnded = (m) => {
         const s = (m.status || '').toLowerCase();
@@ -239,7 +240,7 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
       await Promise.all(activeLive.map(async (m) => {
         let snap = null;
         try {
-          snap = await scraper.getCricketSnapshot(m.matchId);
+          snap = await dataCache.getCricketSnapshot(m.matchId);
           if (snap?.error) snap = null;
         } catch (e) {}
 
@@ -264,7 +265,7 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
         let hasNew = false;
         await Promise.allSettled(uncachedEnded.map(async (m) => {
           try {
-            const snap = await scraper.getCricketSnapshot(m.matchId);
+            const snap = await dataCache.getCricketSnapshot(m.matchId);
             const load = computeMatchLoad(snap, m);
             endedMatchesCache.set(String(m.matchId), {
               matchLoad: load,
@@ -332,7 +333,10 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
   });
   // Enrich matches with CREX live score, status, and odds
   try {
-    const crexOverview = await crexService.getCrexOverview();
+    const cachedOverview = dataCache.getCrexOverview();
+    const crexOverview = Array.isArray(cachedOverview) && cachedOverview.length > 0
+      ? cachedOverview
+      : await crexService.getCrexOverview();
     if (Array.isArray(crexOverview) && crexOverview.length > 0) {
       const matchedCrexIds = new Set();
       for (const m of allMatches) {
@@ -388,7 +392,7 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
 router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
 
-  const matches = await scraper.getAllCricketMatches();
+  const matches = await dataCache.getCricketMatches();
   let matchInfo = findMatchInfo(matches, matchId);
   if (!matchInfo) {
     try {
@@ -412,7 +416,7 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
   }
   let data = null;
   try {
-    data = await scraper.getCricketSnapshot(matchId);
+    data = await dataCache.getCricketSnapshot(matchId);
   } catch (e) {
     data = null;
   }
@@ -444,19 +448,10 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
 router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
 
-  // Fire ALL upstream calls immediately in parallel — including CREX overview
-  const cricketMatchesPromise = scraper.getAllCricketMatches();
-  const tossMatchesPromise = scraper.getAllTossMatches();
-  const cricketRawPromise = scraper.getCricketSnapshot(matchId);
-  const tossRawPromise = scraper.getTossSnapshot(matchId).catch(() => null);
-  const sessionRawPromise = scraper.getSessionTrades(matchId).catch(() => null);
-  const crexOverviewPromise = crexService.getCrexOverview().catch(() => []);
-
-  const [cricketMatches, tossMatches, crexOverview] = await Promise.all([
-    cricketMatchesPromise,
-    tossMatchesPromise,
-    crexOverviewPromise,
-  ]);
+  // Check memory cache first for 0ms instant response
+  const cricketMatches = dataCache.getCricketMatches();
+  const tossMatches = dataCache.getTossMatches();
+  const cachedCrex = dataCache.getCrexDetail(matchId);
 
   let matchInfo = findMatchInfo(cricketMatches, matchId);
   let tossInfo = findMatchInfo(tossMatches, matchId);
@@ -479,32 +474,39 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
     } catch {}
   }
 
-  // Now start CREX detail fetch using already-resolved overview (no extra round-trip)
-  const crexRawPromise = (async () => {
-    try {
-      let matched = null;
-      if (matchId && String(matchId).startsWith('crex-')) {
-        const rawId = String(matchId).replace(/^crex-/, '');
-        matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
-      }
-      if (!matched && matchInfo?.matchName) {
-        matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
-      }
-      if (!matched) return null;
-      if (matched.slug || matched.url) {
-        const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
-        if (!detail) return matched;
-        const scorecard = alignScorecardTeams(detail.scorecard, matchInfo?.matchName);
-        return {
-          ...matched,
-          ...detail,
-          scorecard: scorecard || detail.scorecard,
-          isReversed: Boolean(matched.isReversed),
-        };
-      }
-      return matched;
-    } catch { return null; }
-  })();
+  const cricketRawPromise = dataCache.getCricketSnapshot(matchId);
+  const tossRawPromise = dataCache.getTossSnapshot(matchId).catch(() => null);
+  const sessionRawPromise = dataCache.getSessionTrades(matchId).catch(() => null);
+  const crexRawPromise = cachedCrex
+    ? Promise.resolve(cachedCrex)
+    : (async () => {
+        try {
+          const crexOverview = dataCache.getCrexOverview().length > 0
+            ? dataCache.getCrexOverview()
+            : await crexService.getCrexOverview().catch(() => []);
+          let matched = null;
+          if (matchId && String(matchId).startsWith('crex-')) {
+            const rawId = String(matchId).replace(/^crex-/, '');
+            matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
+          }
+          if (!matched && matchInfo?.matchName) {
+            matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
+          }
+          if (!matched) return null;
+          if (matched.slug || matched.url) {
+            const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
+            if (!detail) return matched;
+            const scorecard = alignScorecardTeams(detail.scorecard, matchInfo?.matchName);
+            return {
+              ...matched,
+              ...detail,
+              scorecard: scorecard || detail.scorecard,
+              isReversed: Boolean(matched.isReversed),
+            };
+          }
+          return matched;
+        } catch { return null; }
+      })();
 
   if (!guestMayViewMatch(matchInfo, req.user) && !guestMayViewFromInfos(req.user, [tossInfo, matchInfo])) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
@@ -588,7 +590,11 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
 
 router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  const matches = await scraper.getAllCricketMatches();
+  const cachedCrex = dataCache.getCrexDetail(matchId);
+  if (cachedCrex) {
+    return res.json({ matchId, crex: cachedCrex });
+  }
+  const matches = dataCache.getCricketMatches();
   let matchInfo = findMatchInfo(matches, matchId);
   if (!matchInfo) {
     try {
@@ -709,13 +715,13 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
 
   // 1. Try fetching live toss matches from scraper
   try {
-    const liveData = await scraper.getAllTossMatches();
+    const liveData = await dataCache.getTossMatches();
     if (Array.isArray(liveData)) {
       await Promise.all(liveData.map(async (m) => {
         const id = String(m.matchId);
         let snap = null;
         try {
-          snap = await scraper.getTossSnapshot(m.matchId);
+          snap = await dataCache.getTossSnapshot(m.matchId);
           if (snap?.error) snap = null;
         } catch (e) {
           // ignore
@@ -769,17 +775,15 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
 
 router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
   const matchId = String(req.params.matchId);
-  const [tossMatches, cricketMatches] = await Promise.all([
-    scraper.getAllTossMatches().catch(() => []),
-    scraper.getAllCricketMatches().catch(() => []),
-  ]);
+  const tossMatches = dataCache.getTossMatches();
+  const cricketMatches = dataCache.getCricketMatches();
   const tossInfo = findMatchInfo(tossMatches, matchId);
   const cricketInfo = findMatchInfo(cricketMatches, matchId);
 
   // 1. Try scraper snapshot
   let data = null;
   try {
-    data = await scraper.getTossSnapshot(matchId);
+    data = await dataCache.getTossSnapshot(matchId);
   } catch (e) {
     data = null;
   }
@@ -802,12 +806,15 @@ router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
     }
   }
 
-  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No toss data available for this match' });
+  if (!data || data.error) {
+    const status = (data?.upstreamStatus === 404 || data?.notFound || !data) ? 404 : 502;
+    return res.status(status).json({ error: data?.error || 'No toss data available for this match', matchId });
+  }
   res.json(attachMatchMeta(data, tossInfo || cricketInfo, true));
 });
 
 router.get('/session/matches', optionalAuth, async (req, res) => {
-  const data = await scraper.getAllSessionMatches();
+  const data = await dataCache.getSessionMatches();
   if (data?.error) return res.status(502).json({ error: data.error });
   const matches = Array.isArray(data) ? data : [];
   const filtered = filterMatchesForViewer(matches, req.user);
@@ -818,8 +825,8 @@ router.get('/session/matches', optionalAuth, async (req, res) => {
 router.get('/session/trades/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
   const [sessionMatches, cricketMatches] = await Promise.all([
-    scraper.getAllSessionMatches(),
-    scraper.getAllCricketMatches(),
+    dataCache.getSessionMatches(),
+    dataCache.getCricketMatches(),
   ]);
   const sessionInfo = findMatchInfo(sessionMatches, matchId);
   const cricketInfo = findMatchInfo(cricketMatches, matchId);
@@ -829,13 +836,16 @@ router.get('/session/trades/:matchId', optionalAuth, async (req, res) => {
   }
   const isEnded = isEndedMatch(sessionInfo) || isEndedMatch(cricketInfo);
   if (!isEnded && !assertProAccess(req, res)) return;
-  const data = await scraper.getSessionTrades(matchId);
-  if (!data || data.error) return res.status(502).json({ error: data?.error || 'No session data' });
+  const data = await dataCache.getSessionTrades(matchId);
+  if (!data || data.error) {
+    const status = (data?.upstreamStatus === 404 || data?.notFound || !data) ? 404 : 502;
+    return res.status(status).json({ error: data?.error || 'No session data', matchId });
+  }
   res.json(data);
 });
 
 router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) => {
-  const data = await scraper.getCricketSnapshot(req.params.matchId);
+  const data = await dataCache.getCricketSnapshot(req.params.matchId);
   if (data?.error) return res.json({ error: data.error });
   const teams = data.teams || {};
   const result = {};
@@ -894,7 +904,7 @@ async function _getOrFetchOdds(id) {
     // SWR: return immediately and refresh in background
     if (!cached.refreshing) {
       cached.refreshing = true;
-      scraper.getCricketSnapshot(id).then(data => {
+      dataCache.getCricketSnapshot(id).then(data => {
         const parsed = _extractOddsFromSnapshot(data);
         if (parsed) _oddsCache.set(id, { data: parsed, ts: Date.now(), refreshing: false });
         else _oddsCache.set(id, { ...cached, ts: Date.now(), refreshing: false });
@@ -906,7 +916,7 @@ async function _getOrFetchOdds(id) {
     return cached.data;
   }
 
-  const data = await scraper.getCricketSnapshot(id);
+  const data = await dataCache.getCricketSnapshot(id);
   const parsed = _extractOddsFromSnapshot(data);
   if (parsed) {
     _oddsCache.set(id, { data: parsed, ts: Date.now(), refreshing: false });
@@ -927,30 +937,32 @@ router.get('/cricket/odds-bulk', requireProSubscription, async (req, res) => {
   res.json(results);
 });
 
-router.get('/cricket/full', requireProSubscription, async (req, res) => {
-  const includeSnapshots = req.query.include_snapshots !== 'false';
-  res.json(await scraper.getCricketFullData(includeSnapshots));
+// ──── Full Data Dump (Debug / Admin) ────
+
+router.get(['/cricket/all-data', '/cricket/full'], requireProSubscription, async (req, res) => {
+  const includeSnapshots = req.query.snapshots !== 'false' && req.query.include_snapshots !== 'false';
+  res.json(await dataCache.getCricketFullData(includeSnapshots));
 });
 
 // ──── Tennis ────
 
 router.get('/tennis/matches', optionalAuth, async (req, res) => {
-  const data = await scraper.getAllTennisMatches();
+  const data = await dataCache.getTennisMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   const matches = asMatchList(data);
   const filtered = filterMatchesForViewer(matches, req.user);
-  res.json({ total: filtered.length, matches: filtered });
+  res.json(filtered);
 });
 
 router.get('/tennis/match/:matchId', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
-  const matches = await scraper.getAllTennisMatches();
+  const matches = await dataCache.getTennisMatches();
   const matchInfo = findMatchInfo(matches, matchId);
   if (!guestMayViewMatch(matchInfo, req.user)) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
-  const data = await scraper.getTennisSnapshot(matchId);
-  const isEnded = matchInfo?.status === 'ended';
+  const data = await dataCache.getTennisSnapshot(matchId);
+  const isEnded = isEndedMatch(matchInfo);
   if (!isEnded && !assertProAccess(req, res)) return;
   if (!data) return upstreamUnavailable(res, { error: 'No data returned from upstream' });
   if (data?.error) return upstreamUnavailable(res, data);
@@ -961,7 +973,7 @@ router.get('/tennis/match/:matchId', optionalAuth, async (req, res) => {
 // ──── Live Odds ────
 
 router.get('/live-odds/:matchId', requireProSubscription, async (req, res) => {
-  res.json(await scraper.getLiveOdds(req.params.matchId));
+  res.json(await dataCache.getLiveOdds(req.params.matchId));
 });
 
 module.exports = router;

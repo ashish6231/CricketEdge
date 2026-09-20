@@ -167,22 +167,15 @@ async function loadSavedSession() {
     };
   }
 
-  // 1. Try PostgreSQL DB first
+  // Collect candidate cookies from DB, process.env, and local file
+  let dbCookie = null;
   try {
     if (prisma && typeof prisma.siteSettings?.findUnique === 'function') {
       const dbRow = await prisma.siteSettings.findUnique({
         where: { key: 'TENNIS_SESSION_COOKIES' },
       });
       if (dbRow?.value?.cookie) {
-        const dbCookie = String(dbRow.value.cookie).trim();
-        const dbExpiry = getCookieExpiryMs(dbCookie);
-        // If DB has a non-expired cookie, adopt it
-        if (dbExpiry > 0 || dbExpiry === -1) {
-          _sessionCookies = dbCookie;
-          process.env.TENNIS_SESSION_COOKIES = dbCookie;
-          console.log(`✅ tennisliveload: loaded valid session from PostgreSQL (expires in ${(dbExpiry / 3600000).toFixed(1)}h)`);
-          return;
-        }
+        dbCookie = String(dbRow.value.cookie).trim();
       }
 
       // Also restore daily attempts state from DB if present
@@ -197,30 +190,56 @@ async function loadSavedSession() {
     // ignore DB connection startup errors
   }
 
-  // 2. Try env variable
   const envCookie = (process.env.TENNIS_SESSION_COOKIES || '').trim();
-  if (envCookie) {
-    const envExpiry = getCookieExpiryMs(envCookie);
-    if (envExpiry > 0 || envExpiry === -1) {
-      _sessionCookies = envCookie;
-      return;
-    }
-  }
-
-  // 3. Try local file
+  let fileCookie = null;
   try {
     if (fs.existsSync(COOKIES_FILE)) {
       const fileData = JSON.parse(fs.readFileSync(COOKIES_FILE, 'utf8'));
-      if (fileData?.cookies) {
-        const fileExpiry = getCookieExpiryMs(fileData.cookies);
-        if (fileExpiry > 0 || fileExpiry === -1) {
-          _sessionCookies = fileData.cookies;
-          process.env.TENNIS_SESSION_COOKIES = fileData.cookies;
-          return;
-        }
-      }
+      if (fileData?.cookies) fileCookie = String(fileData.cookies).trim();
     }
   } catch {}
+
+  const candidates = [envCookie, dbCookie, fileCookie]
+    .filter(Boolean)
+    .map(c => ({
+      cookie: c,
+      ts: getCookieExpiryTimestamp(c) || 0,
+      msLeft: getCookieExpiryMs(c),
+    }))
+    .filter(c => c.msLeft === -1 || c.msLeft > 0);
+
+  if (candidates.length > 0) {
+    // Pick the freshest cookie (highest expiry timestamp)
+    candidates.sort((a, b) => b.ts - a.ts);
+    const best = candidates[0].cookie;
+    _sessionCookies = best;
+    process.env.TENNIS_SESSION_COOKIES = best;
+
+    // If best differs from DB, sync across DB & disk so everything stays consistent
+    if (best !== dbCookie) {
+      console.log('🔄 tennisliveload: adopting newer cookie from env/file, syncing to DB...');
+      await saveSession(best);
+    } else {
+      console.log(`✅ tennisliveload: loaded valid session (expires in ${(candidates[0].msLeft / 3600000).toFixed(1)}h)`);
+    }
+    return;
+  }
+}
+
+async function invalidateCookie(badCookie) {
+  if (!badCookie) return;
+  const current = getCookies();
+  const cleaned = String(badCookie).replace(/^Cookie:\s*/i, '').trim();
+  if (current && (current === cleaned || cleaned.includes(current) || current.includes(cleaned))) {
+    console.warn('⚠️  tennisliveload: active cookie marked expired (received 401 from upstream)');
+    _sessionCookies = '';
+    process.env.TENNIS_SESSION_COOKIES = '';
+    try {
+      if (prisma && typeof prisma.siteSettings?.delete === 'function') {
+        await prisma.siteSettings.delete({ where: { key: 'TENNIS_SESSION_COOKIES' } }).catch(() => {});
+      }
+    } catch {}
+  }
 }
 
 async function _saveDailyAttemptsToDb() {
@@ -440,5 +459,6 @@ module.exports = {
   updateCookiesManually,
   getStatus,
   startAutoLogin,
+  invalidateCookie,
   _browserHeaders,
 };

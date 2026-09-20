@@ -3,7 +3,12 @@ export const SIGNUP_MODE_KEY = 'signupMode'
 export const SIGNUP_SETTING_KEY = 'allowSignups'
 export const SIGNUP_MODES = ['admin_only', 'public', 'both']
 export const DEFAULT_SIGNUP_MODE = 'admin_only'
-export const CARD_SETTING_KEYS = new Set([...TRIAL_KEYS, SIGNUP_MODE_KEY, SIGNUP_SETTING_KEY])
+
+export const SITE_MODE_KEY = 'siteMode'
+export const SITE_MODES = ['paid', 'free']
+export const DEFAULT_SITE_MODE = 'paid'
+
+export const CARD_SETTING_KEYS = new Set([...TRIAL_KEYS, SIGNUP_MODE_KEY, SIGNUP_SETTING_KEY, SITE_MODE_KEY])
 export const TRIAL_UNITS = ['minutes', 'hours', 'days']
 export const TRIAL_FORM_DEFAULTS = { enabled: true, value: 30, unit: 'minutes' }
 
@@ -93,3 +98,35 @@ export function formatSignupModeMessage(mode) {
       return 'Signup mode: Admin only — new accounts are created by Superadmin only.'
   }
 }
+
+export const SITE_MODE_LABELS = {
+  paid: {
+    label: 'Paid Mode (Subscription Required)',
+    description: 'Current behavior: Ended matches are free. Live & upcoming matches require an active Pro subscription.',
+  },
+  free: {
+    label: 'Free Mode (No Subscription Needed)',
+    description: 'Free access: Ended matches are free. Live & upcoming matches require only login/signup (no subscription needed).',
+  },
+}
+
+export const SITE_MODE_OPTIONS = SITE_MODES.map((value) => ({
+  value,
+  ...SITE_MODE_LABELS[value],
+}))
+
+export function hydrateSiteMode(rows = []) {
+  const row = findRow(rows, SITE_MODE_KEY)
+  if (row && typeof row.value === 'string' && SITE_MODES.includes(row.value)) {
+    return row.value
+  }
+  return DEFAULT_SITE_MODE
+}
+
+export function formatSiteModeMessage(mode) {
+  if (mode === 'free') {
+    return 'Website is in Free Mode — users can view live & upcoming matches just by logging in without any subscription. Ended matches are open to everyone.'
+  }
+  return 'Website is in Paid Mode — users must have an active Pro subscription to view live & upcoming matches.'
+}
+

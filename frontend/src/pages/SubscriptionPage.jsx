@@ -11,7 +11,7 @@ const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-dig
 export default function SubscriptionPage() {
   const navigate = useNavigate()
   const toast = useToast()
-  const { isLoggedIn, user } = useOutletContext()
+  const { isLoggedIn, user, isFreeMode } = useOutletContext() || {}
   const [plan, setPlan] = useState(null)
   const [mySub, setMySub] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -87,7 +87,24 @@ export default function SubscriptionPage() {
     <div className="max-w-2xl mx-auto p-4 space-y-4 fade-in">
       <h1 className="text-2xl font-black text-text-primary">Subscription</h1>
 
-      {onTrial && (
+      {/* Free Mode Announcement */}
+      {isFreeMode && (
+        <div
+          className="rounded-2xl p-5 text-center mb-6"
+          style={{
+            background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.04))',
+            border: '1px solid rgba(16,185,129,0.3)',
+          }}
+        >
+          <div className="text-3xl mb-2">🎉</div>
+          <h2 className="text-base font-bold text-white mb-1">CricketEdge is Currently in Free Mode!</h2>
+          <p className="text-xs text-emerald-400 max-w-md mx-auto leading-relaxed">
+            All live matches, upcoming fixtures, real-time Betfair odds, and predictions are completely free for all logged-in users. No subscription required!
+          </p>
+        </div>
+      )}
+
+      {onTrial && !isFreeMode && (
         <div className="rounded-2xl px-4 py-3 text-sm font-semibold"
           style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
           🎁 Your free trial is active. You have full live match access for {formatTrialTimeLeft(trialMinutesLeft)} more.

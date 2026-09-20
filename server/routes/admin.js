@@ -12,6 +12,9 @@ const {
   SIGNUP_MODE_KEY,
   LEGACY_SIGNUP_KEY,
   validateSignupModeValue,
+  SITE_MODE_KEY,
+  validateSiteModeValue,
+  invalidateSiteSettingsCache,
 } = require('../lib/siteSettings');
 const { getDefaultStore } = require('../services/tossDatasetStore');
 const { runTossCaptureNow } = require('../services/tossCaptureWorker');
@@ -633,6 +636,12 @@ router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
       settingValue = v.value;
     }
 
+    if (settingKey === SITE_MODE_KEY) {
+      const v = validateSiteModeValue(settingValue);
+      if (!v.ok) return res.status(400).json({ success: false, message: v.message });
+      settingValue = v.value;
+    }
+
     if (trialKeys.has(req.params.key)) {
       const checked = validateTrialSetting(req.params.key, req.body.value);
       if (!checked.ok) return res.status(400).json({ success: false, message: checked.message });
@@ -657,6 +666,7 @@ router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
       update: { value: settingValue, updatedBy: req.user.userId },
       create: { key: settingKey, value: settingValue, updatedBy: req.user.userId }
     });
+    invalidateSiteSettingsCache();
     await auditLog(req.user, 'settings_update', 'settings', setting.id, setting.key, { before, after: setting }, req.body.reason, req);
     res.json({ success: true, data: setting });
   } catch (err) {

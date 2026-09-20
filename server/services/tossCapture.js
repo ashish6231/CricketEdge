@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
 const { getDefaultStore } = require('./tossDatasetStore');
-const scraperModule = require('./scraper');
+const dataCache = require('./dataCache');
 const { getCrexOverview, findCrexMatch, getCrexMatchDetail } = require('./crexService');
 
 let cachedPredictorVersion = 'toss-v8-layvol-ratio-gate';
@@ -94,7 +94,7 @@ function shouldSkipExisting(existing) {
 }
 
 async function captureEndedTosses({
-  scraper = scraperModule,
+  scraper = dataCache,
   store = getDefaultStore(),
   predictTossWinner,
   now = () => new Date(),
@@ -104,7 +104,7 @@ async function captureEndedTosses({
 
   let matches;
   try {
-    matches = await scraper.getAllTossMatches();
+    matches = scraper.getTossMatches ? await scraper.getTossMatches() : await scraper.getAllTossMatches();
   } catch {
     return { scanned: 0, captured: 0, skipped: 0, failed: 1 };
   }
@@ -138,7 +138,7 @@ async function captureEndedTosses({
 
     let snapshot;
     try {
-      snapshot = await scraper.getTossSnapshot(match.matchId);
+      snapshot = scraper.getTossSnapshot ? await scraper.getTossSnapshot(match.matchId) : await scraper.fetchTossSnapshot(match.matchId);
     } catch (err) {
       snapshot = { error: err.message };
     }

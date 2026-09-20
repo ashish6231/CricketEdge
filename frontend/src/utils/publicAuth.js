@@ -50,3 +50,16 @@ export function splitSiteName(name, fallback = 'CricketEdge') {
   }
   return { prefix: n, suffix: '' }
 }
+
+export function resolveSiteMode(payload) {
+  const data = payload?.data && typeof payload.data === 'object' && !Array.isArray(payload.data)
+    ? payload.data
+    : payload
+  if (data?.siteMode === 'free' || data?.isFreeMode === true) return 'free'
+  return 'paid'
+}
+
+export function isFreeMode(siteMode) {
+  return siteMode === 'free'
+}
+

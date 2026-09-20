@@ -609,7 +609,7 @@ export default function MatchDetail({ sport }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn } = useOutletContext()
+  const { isLoggedIn, isFreeMode } = useOutletContext() || {}
   const [snapshot, setSnapshot] = useState(null)
   const [loading, setLoading] = useState(true)
   const [fetchError, setFetchError] = useState(null)
@@ -706,18 +706,6 @@ export default function MatchDetail({ sport }) {
       setActiveSessions(activeSessionNames)
     }
 
-    const fetchSecondary = () => {
-      if (sport !== 'cricket') return
-      getTossSnapshot(matchId).catch(() => null).then(tossData => {
-        if (cancelled || !tossData || tossData.error) return
-        setTossSnapshot(tossData)
-      })
-      getSessionTrades(matchId).catch(() => null).then(sessionData => {
-        if (cancelled) return
-        applySessionData(sessionData)
-      })
-    }
-
     const fetchData = (isInitial = false) => {
       if (typeof document !== 'undefined' && document.hidden && !isInitial) return
       if (isInitial) {
@@ -747,11 +735,8 @@ export default function MatchDetail({ sport }) {
             }
             if (bundle?.toss && !bundle.toss.error) {
               setTossSnapshot(bundle.toss)
-            } else if (sport === 'cricket') {
-              getTossSnapshot(matchId).catch(() => null).then(tossData => {
-                if (cancelled || !tossData || tossData.error) return
-                setTossSnapshot(tossData)
-              })
+            } else {
+              setTossSnapshot(null)
             }
             if (bundle?.session) applySessionData(bundle.session)
             if (sport === 'cricket') {
@@ -769,7 +754,7 @@ export default function MatchDetail({ sport }) {
             if (cancelled) return
             if (isLoginRequiredError(err)) {
               setRequiresLogin(true)
-            } else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) {
+            } else if ((err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) && !isFreeMode) {
               setRequiresPro(true)
             } else if (isInitial) {
               setFetchError(err?.detail || 'Network error — dubara try karo')
@@ -800,15 +785,13 @@ export default function MatchDetail({ sport }) {
           if (cancelled) return
           if (isLoginRequiredError(err)) {
             setRequiresLogin(true)
-          } else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) {
+          } else if ((err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) && !isFreeMode) {
             setRequiresPro(true)
           } else if (isInitial) {
             setFetchError(err?.detail || 'Network error — dubara try karo')
           }
           if (isInitial) setLoading(false)
         })
-
-      fetchSecondary()
     }
 
     fetchData(true)
@@ -879,7 +862,7 @@ export default function MatchDetail({ sport }) {
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 
-  if (requiresPro) {
+  if (requiresPro && !isFreeMode) {
     return (
       <div className="flex h-[80vh] items-center justify-center p-4">
         <div className="rounded-2xl p-8 max-w-sm w-full text-center" style={{ background: '#fff', border: '2px solid #fbbf24', boxShadow: '0 4px 32px rgba(251,191,36,0.15)' }}>

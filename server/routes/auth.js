@@ -13,7 +13,7 @@ const {
   syncUserTrialState,
   refreshUserSubscriptionState,
 } = require('../lib/subscriptionAccess');
-const { areSignupsAllowed, getSignupMode, isPublicSignupAllowed, getSiteName } = require('../lib/siteSettings');
+const { areSignupsAllowed, getSignupMode, isPublicSignupAllowed, getSiteName, getSiteMode, isFreeMode } = require('../lib/siteSettings');
 
 let emailEnabled = false;
 let transporter = null;
@@ -103,13 +103,19 @@ function clearOtpFails(email) {
 // ─── PUBLIC SIGNUP STATUS ───
 router.get('/signup-status', async (_req, res) => {
   try {
-    const [mode, siteName] = await Promise.all([getSignupMode(prisma), getSiteName(prisma)]);
+    const [mode, siteName, siteMode] = await Promise.all([
+      getSignupMode(prisma),
+      getSiteName(prisma),
+      getSiteMode(prisma),
+    ]);
     res.json({
       success: true,
       data: {
         signupMode: mode,
         allowSignups: isPublicSignupAllowed(mode),
         siteName,
+        siteMode,
+        isFreeMode: isFreeMode(siteMode),
       },
     });
   } catch (err) {
@@ -120,6 +126,8 @@ router.get('/signup-status', async (_req, res) => {
         signupMode: 'admin_only',
         allowSignups: false,
         siteName: 'CricketEdge',
+        siteMode: 'paid',
+        isFreeMode: false,
       },
     });
   }

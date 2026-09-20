@@ -3,7 +3,7 @@ import { Activity, Menu, X, Shield, LogOut, User, ChevronDown } from 'lucide-rea
 import { useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout, getSignupStatus } from '../api'
 import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
-import { guestPathAfterLogout, resolveSiteName, splitSiteName } from '../utils/publicAuth'
+import { guestPathAfterLogout, resolveSiteName, splitSiteName, resolveSiteMode, isFreeMode } from '../utils/publicAuth'
 import LoginPage from '../pages/LoginPage'
 
 const NAV_ITEMS = [
@@ -23,6 +23,7 @@ export default function MainLayout() {
   const [lastUpdated, setLastUpdated] = useState(null)
   const [dropdown, setDropdown]     = useState(false)
   const [siteName, setSiteName]     = useState('CricketEdge')
+  const [siteMode, setSiteMode]     = useState('paid')
   const dropRef = useRef(null)
 
   useEffect(() => {
@@ -77,6 +78,7 @@ export default function MainLayout() {
         const name = resolveSiteName(res)
         setSiteName(name)
         document.title = `${name} — Live Cricket Analytics`
+        setSiteMode(resolveSiteMode(res))
       })
       .catch(() => {})
   }, [])
@@ -127,6 +129,7 @@ export default function MainLayout() {
   }
 
   const isAdmin = authUser?.role === 'admin' || authUser?.role === 'superadmin'
+  const isFree = isFreeMode(siteMode)
   const onTrial = isActiveTrial(authUser)
   const paidPro = isPaidPro(authUser)
   const planLabel = getPlanLabel(authUser)
@@ -249,13 +252,15 @@ export default function MainLayout() {
                           </span>
                         )}
                         <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
-                          onTrial
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : paidPro
-                              ? 'bg-yellow-100 text-yellow-700'
-                              : 'bg-gray-100 text-gray-500'
+                          isFree
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : onTrial
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : paidPro
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-gray-100 text-gray-500'
                         }`}>
-                          {planLabel}
+                          {isFree ? 'Free Access' : planLabel}
                         </span>
                       </div>
                     </div>
@@ -270,7 +275,7 @@ export default function MainLayout() {
                     <Link to="/subscription" onClick={() => setDropdown(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-[#1a1a1a] transition-colors">
                       <span className="text-yellow-500 text-sm">⭐</span>
-                      {paidPro ? 'Manage Subscription' : onTrial ? 'Upgrade Before Trial Ends' : 'Upgrade to Pro'}
+                      {isFree ? 'Free Access Active' : paidPro ? 'Manage Subscription' : onTrial ? 'Upgrade Before Trial Ends' : 'Upgrade to Pro'}
                     </Link>
 
                     {/* Logout */}
@@ -294,7 +299,7 @@ export default function MainLayout() {
       </header>
 
       {/* Trial banner */}
-      {onTrial && (
+      {onTrial && !isFree && (
         <div className="fixed top-[53px] left-0 right-0 z-30 px-4 py-2 text-center text-xs font-semibold"
           style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(220,38,38,0.1))', borderBottom: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
           🎁 Free trial active — {formatTrialTimeLeft(getTrialMinutesLeft(authUser))} left with full live match access.
@@ -303,8 +308,8 @@ export default function MainLayout() {
       )}
 
       {/* Content */}
-      <main className={`flex-1 w-full ${onTrial ? 'pt-[88px]' : 'pt-14'}`}>
-        <Outlet context={{ isLoggedIn, user: authUser, authReady, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
+      <main className={`flex-1 w-full ${(onTrial && !isFree) ? 'pt-[88px]' : 'pt-14'}`}>
+        <Outlet context={{ isLoggedIn, user: authUser, authReady, siteMode, isFreeMode: isFree, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
       </main>
 
       {loginOpen && (

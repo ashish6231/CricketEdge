@@ -13,7 +13,8 @@ import {
   Sliders,
   UserPlus,
   Gift,
-  Server
+  Server,
+  Globe
 } from 'lucide-react'
 import {
   adminGetSettings,
@@ -27,13 +28,18 @@ import {
   filterTrialSettings,
   hydrateTrialForm,
   hydrateSignupMode,
+  hydrateSiteMode,
   trialSavePatches,
   formatTrialSaveMessage,
   formatSignupModeMessage,
+  formatSiteModeMessage,
   TRIAL_UNITS,
   SIGNUP_MODE_KEY,
   SIGNUP_MODES,
   SIGNUP_MODE_OPTIONS,
+  SITE_MODE_KEY,
+  SITE_MODES,
+  SITE_MODE_OPTIONS,
 } from '../../utils/trialSettingsAdmin'
 
 export default function AdminSettings({ isSuperAdmin }) {
@@ -49,6 +55,8 @@ export default function AdminSettings({ isSuperAdmin }) {
   const [trialSaving, setTrialSaving] = useState(false)
   const [signupMode, setSignupMode] = useState('admin_only')
   const [signupModeSaving, setSignupModeSaving] = useState(false)
+  const [siteMode, setSiteMode] = useState('paid')
+  const [siteModeSaving, setSiteModeSaving] = useState(false)
 
   // Upstream Scraper Session & Expiry Countdown State
   const [scraperStatus, setScraperStatus] = useState(null)
@@ -66,6 +74,7 @@ export default function AdminSettings({ isSuperAdmin }) {
     setTrialValue(trial.value)
     setTrialUnit(trial.unit)
     setSignupMode(hydrateSignupMode(list))
+    setSiteMode(hydrateSiteMode(list))
   }
 
   const load = ({ quiet = false } = {}) => {
@@ -337,6 +346,19 @@ export default function AdminSettings({ isSuperAdmin }) {
     }
   }
 
+  const saveSiteMode = async () => {
+    setSiteModeSaving(true)
+    try {
+      await adminUpdateSetting(SITE_MODE_KEY, siteMode, 'Update website access mode')
+      toast.success(formatSiteModeMessage(siteMode))
+      load({ quiet: true })
+    } catch (e) {
+      toast.error(e.detail || 'Failed to update website access mode')
+    } finally {
+      setSiteModeSaving(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex justify-center py-16">
@@ -365,7 +387,119 @@ export default function AdminSettings({ isSuperAdmin }) {
       )}
 
       {/* ──────────────────────────────────────────────────────────── */}
-      {/* 1. UPSTREAM SCRAPER SESSION & EXPIRY COUNTDOWN CARD */}
+      {/* 1. WEBSITE ACCESS MODE (FREE vs PAID) */}
+      {/* ──────────────────────────────────────────────────────────── */}
+      <div
+        className="rounded-2xl overflow-hidden transition-all"
+        style={{ background: '#111111', border: '1px solid #1e1e1e' }}
+      >
+        <div
+          className="px-5 py-3.5 flex items-center justify-between border-b"
+          style={{
+            background: siteMode === 'free'
+              ? 'linear-gradient(90deg, rgba(16,185,129,0.12) 0%, rgba(16,185,129,0.02) 100%)'
+              : 'linear-gradient(90deg, rgba(220,38,38,0.12) 0%, rgba(220,38,38,0.02) 100%)',
+            borderColor: '#1e1e1e'
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center text-white"
+              style={{
+                background: siteMode === 'free'
+                  ? 'linear-gradient(135deg, #059669, #10b981)'
+                  : 'linear-gradient(135deg, #dc2626, #f59e0b)'
+              }}
+            >
+              <Globe size={14} />
+            </div>
+            <div>
+              <h2 className="font-bold text-white text-sm">Website Access Mode</h2>
+              <p className="text-[11px] text-[#666]">Control whether users need a paid subscription or free access to live matches</p>
+            </div>
+          </div>
+          <span
+            className={`text-xs font-bold px-3 py-1 rounded-full ${
+              siteMode === 'free'
+                ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'
+                : 'bg-amber-500/15 text-amber-400 border border-amber-500/30'
+            }`}
+          >
+            {siteMode === 'free' ? '🎉 FREE MODE' : '⭐ PAID MODE'}
+          </span>
+        </div>
+
+        <div className="p-5 space-y-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {SITE_MODE_OPTIONS.map(option => {
+              const selected = siteMode === option.value
+              const isFree = option.value === 'free'
+              return (
+                <label
+                  key={option.value}
+                  className={`flex cursor-pointer flex-col rounded-xl p-4 transition-all ${
+                    !isSuperAdmin || siteModeSaving ? 'cursor-not-allowed opacity-60' : ''
+                  }`}
+                  style={{
+                    background: selected
+                      ? (isFree ? 'rgba(16,185,129,0.08)' : 'rgba(220,38,38,0.08)')
+                      : '#161616',
+                    border: selected
+                      ? (isFree ? '1px solid #10b981' : '1px solid #dc2626')
+                      : '1px solid #222222',
+                  }}
+                >
+                  <span className="flex items-center gap-2.5">
+                    <input
+                      type="radio"
+                      name="siteMode"
+                      value={option.value}
+                      checked={selected}
+                      onChange={e => setSiteMode(e.target.value)}
+                      disabled={!isSuperAdmin || siteModeSaving}
+                      className={isFree ? 'accent-emerald-500' : 'accent-red-500'}
+                    />
+                    <span className="text-sm font-bold text-white">{option.label}</span>
+                  </span>
+                  <span className="mt-2 pl-6 text-xs text-[#888] leading-relaxed">
+                    {option.description}
+                  </span>
+                </label>
+              )
+            })}
+          </div>
+
+          <div
+            className="p-3 rounded-xl text-xs flex items-center gap-2.5"
+            style={{
+              background: siteMode === 'free' ? 'rgba(16,185,129,0.07)' : 'rgba(245,158,11,0.07)',
+              border: siteMode === 'free' ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(245,158,11,0.2)',
+              color: siteMode === 'free' ? '#34d399' : '#fbbf24',
+            }}
+          >
+            <span>{siteMode === 'free' ? '🔓' : '🔒'}</span>
+            <span>{formatSiteModeMessage(siteMode)}</span>
+          </div>
+
+          {isSuperAdmin && (
+            <div className="pt-1">
+              <button
+                type="button"
+                onClick={saveSiteMode}
+                disabled={siteModeSaving || !SITE_MODES.includes(siteMode)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white disabled:opacity-50 transition-all"
+                style={{ background: 'linear-gradient(135deg, #dc2626, #10b981)' }}
+              >
+                {siteModeSaving ? <LoaderCircle size={14} className="animate-spin" /> : <Check size={14} />}
+                Save Website Mode
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ──────────────────────────────────────────────────────────── */}
+      {/* 2. UPSTREAM SCRAPER SESSION & EXPIRY COUNTDOWN CARD */}
       {/* ──────────────────────────────────────────────────────────── */}
       <div
         className="rounded-2xl overflow-hidden transition-all"

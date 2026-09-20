@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const prisma = require('../db/prisma');
 const { hasProAccess } = require('../lib/subscriptionAccess');
+const { getSiteModeSync } = require('../lib/siteSettings');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
@@ -145,6 +146,9 @@ async function optionalAuth(req, res, next) {
 
 function requireProSubscription(req, res, next) {
   verifyToken(req, res, () => {
+    const role = req.user?.role;
+    if (role === 'admin' || role === 'superadmin') return next();
+    if (getSiteModeSync() === 'free') return next();
     if (hasProAccess(req.user)) return next();
     return res.status(403).json({
       success: false, message: 'Pro subscription required',
@@ -161,6 +165,7 @@ function assertProAccess(req, res) {
     res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.' });
     return false;
   }
+  if (getSiteModeSync() === 'free') return true;
   if (hasProAccess(req.user)) return true;
   res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
   return false;

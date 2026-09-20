@@ -16,6 +16,7 @@ const cricketRoutes = require('./routes/cricket');
 const { verifyToken } = require('./middleware/auth');
 const tennisLogin = require('./services/tennisLogin');
 const scraper = require('./services/scraper');
+const dataCache = require('./services/dataCache');
 const prisma = require('./db/prisma');
 const { setIo } = require('./socketInstance');
 const { getAllowedOrigins } = require('./lib/publicUrl');
@@ -196,6 +197,7 @@ function shutdown(signal) {
   console.log(`\n${signal} received, shutting down...`);
   tossCaptureWorker?.stop();
   matchCaptureWorker?.stop();
+  dataCache.stop();
   scraper.stopSessionKeepAlive();
 
   server.close(async closeError => {
@@ -226,6 +228,14 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 
     const { seedDatabase } = require('./seedAdmin');
     await seedDatabase();
+
+    // Pre-warm site settings (siteMode, siteName, signupMode)
+    const { getSiteMode, getSiteName, getSignupMode } = require('./lib/siteSettings');
+    await Promise.all([
+      getSiteMode(prisma).catch(() => {}),
+      getSiteName(prisma).catch(() => {}),
+      getSignupMode(prisma).catch(() => {}),
+    ]);
   } catch (e) {
     console.log('⚠️  DB seed skipped:', e.message);
   }
@@ -248,10 +258,7 @@ process.on('SIGINT', () => shutdown('SIGINT'));
   });
 
   tennisLogin.startAutoLogin();
-  scraper.warmup();
-  scraper.startSessionKeepAlive();
-  // Pre-warm CREX cache so first bundle request is fast
-  const crexService = require('./services/crexService');
-  crexService.getCrexOverview().catch(() => {});
-  setInterval(() => crexService.getCrexOverview().catch(() => {}), 9000);
+  // Start centralized dataCache poller (every 3s)
+  dataCache.start();
 })();
+

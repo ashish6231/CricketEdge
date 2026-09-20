@@ -1,5 +1,5 @@
 const { getDefaultStore } = require('./matchDatasetStore');
-const scraperModule = require('./scraper');
+const dataCache = require('./dataCache');
 const { predictMatchWinner: defaultPredictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { getCrexOverview, findCrexMatch, getCrexMatchDetail } = require('./crexService');
 
@@ -18,10 +18,8 @@ function hasSuccessfulSnapshot(snapshot) {
 
 function parseTeamsFromMatchName(matchName) {
   if (!matchName) return [null, null];
-  const parts = String(matchName).split(/\s+v\s+/i);
-  if (parts.length >= 2) {
-    return [parts[0].trim(), parts[1].trim()];
-  }
+  const parts = matchName.split(/\s+v(?:s)?\.?\s+/i);
+  if (parts.length >= 2) return [parts[0].trim(), parts[1].trim()];
   return [null, null];
 }
 
@@ -59,7 +57,7 @@ function shouldSkipExisting(existing, matchId) {
 }
 
 async function captureEndedMatches({
-  scraper = scraperModule,
+  scraper = dataCache,
   store = getDefaultStore(),
   predictMatchWinner = defaultPredictMatchWinner,
   now = () => new Date(),
@@ -68,7 +66,7 @@ async function captureEndedMatches({
 
   let res;
   try {
-    res = await scraper.getAllCricketMatches();
+    res = scraper.getCricketMatches ? scraper.getCricketMatches() : await scraper.getAllCricketMatches();
   } catch {
     return { scanned: 0, captured: 0, skipped: 0, failed: 1 };
   }

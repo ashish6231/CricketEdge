@@ -5,37 +5,59 @@
  */
 
 const https = require('https');
+const zlib = require('zlib');
 
 const CREX_BASE = 'https://crex.com';
 const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
 
+const httpsAgent = new https.Agent({
+  keepAlive: true,
+  maxSockets: 50,
+  maxFreeSockets: 10,
+  timeout: 8000,
+});
+
 let overviewCache = null;
 let overviewCacheTime = 0;
-const OVERVIEW_TTL = 10000; // 10 seconds
+const OVERVIEW_TTL = 1000; // 1 second — live score needs to be fresh
+
+let schedStateCache = null;
+let schedCacheTime = 0;
+const SCHEDULE_TTL = 60000; // 60 seconds (fixtures don't change every second)
 
 const detailCache = new Map();
-const DETAIL_TTL = 2500; // 3 seconds — live score needs to be fresh
+const DETAIL_TTL = 1000; // 1 second — live score needs to be fresh
+
+const _inFlightDetail = new Map();
 
 function fetchHttps(url) {
-  return new Promise((resolve, reject) => {
-    https.get(url, {
+  return new Promise((resolve) => {
+    const req = https.get(url, {
+      agent: httpsAgent,
       headers: {
         'User-Agent': USER_AGENT,
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate',
         'Origin': CREX_BASE,
         'Referer': CREX_BASE + '/',
       },
-      timeout: 8000,
+      timeout: 5000,
     }, (res) => {
-      if (res.statusCode >= 400) {
-        return resolve(null);
-      }
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve(data));
-    }).on('error', (err) => {
-      console.warn('CREX fetch error on ' + url + ':', err.message);
+      if (res.statusCode >= 400) return resolve(null);
+      let stream = res;
+      const enc = res.headers['content-encoding'];
+      if (enc === 'gzip') stream = res.pipe(zlib.createGunzip());
+      else if (enc === 'deflate') stream = res.pipe(zlib.createInflate());
+
+      const chunks = [];
+      stream.on('data', chunk => chunks.push(chunk));
+      stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
+      stream.on('error', () => resolve(null));
+    });
+    req.on('error', () => resolve(null));
+    req.on('timeout', () => {
+      req.destroy();
       resolve(null);
     });
   });
@@ -43,16 +65,21 @@ function fetchHttps(url) {
 
 function parseState(html) {
   if (!html) return null;
-  const stateMatch = html.match(/<script id="app-root-state"[^>]*>([\s\S]*?)<\/script>/);
-  if (!stateMatch) return null;
-  const unescaped = stateMatch[1]
+  const marker = '<script id="app-root-state"';
+  const start = html.indexOf(marker);
+  if (start === -1) return null;
+  const tagEnd = html.indexOf('>', start + marker.length);
+  if (tagEnd === -1) return null;
+  const close = html.indexOf('</script>', tagEnd);
+  if (close === -1) return null;
+  const raw = html.slice(tagEnd + 1, close)
     .replace(/&q;/g, '"')
     .replace(/&a;/g, '&')
     .replace(/&s;/g, "'")
     .replace(/&l;/g, '<')
     .replace(/&g;/g, '>');
   try {
-    return JSON.parse(unescaped);
+    return JSON.parse(raw);
   } catch (e) {
     return null;
   }
@@ -122,13 +149,30 @@ async function getCrexOverview(forceRefresh = false) {
   }
 
   try {
-    const [homeHtml, schedHtml] = await Promise.all([
-      fetchHttps('https://crex.com/'),
-      fetchHttps('https://crex.com/schedule'),
-    ]);
+    const needSched = !schedStateCache || (now - schedCacheTime >= SCHEDULE_TTL);
+    let homeHtml = null;
+    let schedHtml = null;
+
+    if (needSched) {
+      const res = await Promise.all([
+        fetchHttps('https://crex.com/'),
+        fetchHttps('https://crex.com/schedule'),
+      ]);
+      homeHtml = res[0];
+      schedHtml = res[1];
+    } else {
+      homeHtml = await fetchHttps('https://crex.com/');
+    }
 
     const homeState = parseState(homeHtml);
-    const schedState = parseState(schedHtml);
+    if (schedHtml) {
+      const parsedSched = parseState(schedHtml);
+      if (parsedSched) {
+        schedStateCache = parsedSched;
+        schedCacheTime = now;
+      }
+    }
+    const schedState = schedStateCache;
 
     const matchesList = [];
     const seenSlugs = new Set();
@@ -358,10 +402,15 @@ async function getCrexMatchDetail(slugOrUrl) {
     }
   }
 
-  try {
-    const url = `${CREX_BASE}${cleanSlug}`;
-    const html = await fetchHttps(url);
-    if (!html) return detailCache.get(cacheKey)?.data || null;
+  if (_inFlightDetail.has(cacheKey)) {
+    return _inFlightDetail.get(cacheKey);
+  }
+
+  const promise = (async () => {
+    try {
+      const url = `${CREX_BASE}${cleanSlug}`;
+      const html = await fetchHttps(url);
+      if (!html) return detailCache.get(cacheKey)?.data || null;
 
     const state = parseState(html);
     if (!state) return null;
@@ -726,7 +775,13 @@ async function getCrexMatchDetail(slugOrUrl) {
   } catch (err) {
     console.error('Error in getCrexMatchDetail:', err);
     return detailCache.get(cacheKey)?.data || null;
+  } finally {
+    _inFlightDetail.delete(cacheKey);
   }
+  })();
+
+  _inFlightDetail.set(cacheKey, promise);
+  return promise;
 }
 
 module.exports = {
