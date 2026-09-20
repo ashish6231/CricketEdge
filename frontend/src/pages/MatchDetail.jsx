@@ -73,8 +73,29 @@ const formatVolTooltip = (val) => {
 }
 
 const formatOdds = (val) => {
-  if (!val) return '—'
-  return val.toFixed(2)
+  if (val === null || val === undefined || val === 0 || isNaN(Number(val))) return '—'
+  return Number(val).toFixed(2)
+}
+
+function extractTossOdds(trades, fallback = null) {
+  if (!Array.isArray(trades) || trades.length === 0) return fallback
+  const tossTrades = trades.filter((t) => {
+    const p = parseFloat(t.price)
+    return !isNaN(p) && p >= 1.70 && p <= 2.30
+  })
+  if (tossTrades.length > 0) {
+    const sorted = [...tossTrades].sort((a, b) => b.updatedAt - a.updatedAt)
+    return parseFloat(sorted[0].price)
+  }
+  const broader = trades.filter((t) => {
+    const p = parseFloat(t.price)
+    return !isNaN(p) && p >= 1.60 && p <= 2.40
+  })
+  if (broader.length > 0) {
+    const sorted = [...broader].sort((a, b) => b.updatedAt - a.updatedAt)
+    return parseFloat(sorted[0].price)
+  }
+  return fallback
 }
 
 /** Match scheduled start — not live clock / serverTime */
@@ -1044,6 +1065,19 @@ export default function MatchDetail({ sport }) {
   const tossT1PctVol = tossMarketVol > 0 ? ((tossT1GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
   const tossT2PctVol = tossMarketVol > 0 ? ((tossT2GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
 
+  const tossTradeVol1 = tossTrades1.length > 0 ? tossTrades1.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
+  const tossTradeVol2 = tossTrades2.length > 0 ? tossTrades2.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
+
+  const tossVol1 = tossTradeVol1 || tossT1GraphData?.totalBet || tossM1?.totalBet || tossSnap?.preMatchTotalBets?.team1 || 0
+  const tossVol2 = tossTradeVol2 || tossT2GraphData?.totalBet || tossM2?.totalBet || tossSnap?.preMatchTotalBets?.team2 || 0
+
+  const tossOdds1 = extractTossOdds(tossTrades1) || (tossSnap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(tossSnap.syntheticSupport.teamA.averageOdds.toFixed(2)) : null) || (tossSnap?.runners?.[0]?.price && tossSnap.runners[0].price >= 1.60 && tossSnap.runners[0].price <= 2.40 ? tossSnap.runners[0].price : null) || null
+  const tossOdds2 = extractTossOdds(tossTrades2) || (tossSnap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(tossSnap.syntheticSupport.teamB.averageOdds.toFixed(2)) : null) || (tossSnap?.runners?.[1]?.price && tossSnap.runners[1].price >= 1.60 && tossSnap.runners[1].price <= 2.40 ? tossSnap.runners[1].price : null) || null
+
+  const tossTot = tossVol1 + tossVol2
+  const tossPct1 = (tossTot > 0) ? Math.round((tossVol1 / tossTot) * 100) : (tossT1PctVol ? Math.round(tossT1PctVol) : 50)
+  const tossPct2 = (tossTot > 0) ? (100 - tossPct1) : (100 - tossPct1)
+
   const tossPrediction = tossSnap ? predictTossWinner(tossSnap, tossSnap?.competitionName || snapshot?.competitionName || '') : null
   const predictedTossWinner = tossPrediction?.winnerName || 'Waiting for more data...'
   const tossPredictionReason = tossPrediction?.reason || ''
@@ -1066,24 +1100,33 @@ export default function MatchDetail({ sport }) {
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-300 hover:text-white bg-[#141824] hover:bg-[#1a2030] border border-[#222a3e] transition-all shadow-sm"
+          className="flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white bg-[#141824] hover:bg-[#1a2030] border border-[#222a3e] transition-all shadow-sm shrink-0"
         >
-          <ArrowLeft size={13} /> <span>Back</span>
+          <ArrowLeft size={12} className="sm:w-[13px] sm:h-[13px]" /> <span>Back</span>
         </button>
 
-        <div className="flex rounded-lg p-0.5 gap-1 overflow-x-auto max-w-[calc(100vw-90px)] bg-[#10131e] border border-[#1f273b]">
+        <div className="flex items-center rounded-lg p-0.5 gap-0.5 sm:gap-1 overflow-x-auto no-scrollbar max-w-[calc(100vw-75px)] sm:max-w-none bg-[#10131e] border border-[#1f273b]">
           {[
-            { key: 'simple', label: 'Simple Book' },
-            { key: 'graph', label: 'Graphs', icon: <BarChart3 size={11} /> },
-            sport === 'cricket' && crexData ? { key: 'crex', label: 'Live & Commentary', icon: <Radio size={11} className="text-red-400 animate-pulse" /> } : null,
-            sport === 'cricket' && hasTossData ? { key: 'toss', label: 'Toss Market' } : null,
-          ].filter(Boolean).map(({ key, label, icon }) => {
+            { key: 'simple', label: 'Simple Book', mobileLabel: 'Simple Book' },
+            { key: 'graph', label: 'Graphs', mobileLabel: 'Graphs', icon: <BarChart3 className="w-2.5 h-2.5 sm:w-[11px] sm:h-[11px]" /> },
+            sport === 'cricket' && crexData ? {
+              key: 'crex',
+              label: 'Live & Commentary',
+              mobileLabel: 'Live Comm',
+              icon: <Radio className="w-2.5 h-2.5 sm:w-[11px] sm:h-[11px] text-red-400 animate-pulse" />
+            } : null,
+            sport === 'cricket' && hasTossData ? {
+              key: 'toss',
+              label: 'Toss Market',
+              mobileLabel: 'Toss'
+            } : null,
+          ].filter(Boolean).map(({ key, label, mobileLabel, icon }) => {
             const isActive = activeTab === key
             return (
               <button
                 key={key}
                 onClick={() => handleTabChange(key)}
-                className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
+                className={`px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[10.5px] sm:text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
                   isActive
                     ? 'text-white shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -1096,7 +1139,9 @@ export default function MatchDetail({ sport }) {
                           : 'linear-gradient(135deg,#dc2626,#ea580c)'
                 } : {}}
               >
-                {icon}{label}
+                {icon}
+                <span className="hidden sm:inline">{label}</span>
+                <span className="sm:hidden">{mobileLabel || label}</span>
               </button>
             )
           })}
@@ -1185,34 +1230,85 @@ export default function MatchDetail({ sport }) {
         </div>
       ) : activeTab === 'toss' ? (
         <div className="space-y-4">
-          {/* Crex Toss Winner Banner */}
-          {crexData?.scorecard?.statusEquation && /opt|chose|elected|toss/i.test(crexData.scorecard.statusEquation) && (
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400">
-              <span>🪙</span>
-              <span>{crexData.scorecard.statusEquation}</span>
-            </div>
-          )}
+          {/* Toss Winner / Decision Banner */}
+          {(() => {
+            const tossBannerText =
+              crexData?.scorecard?.tossText ||
+              crexData?.toss?.text ||
+              crexData?.tossText ||
+              (crexData?.scorecard?.statusEquation && /opt|chose|elected|toss/i.test(crexData.scorecard.statusEquation) ? crexData.scorecard.statusEquation : null) ||
+              tossSnapshot?.tossText ||
+              (tossSnapshot?.actualWinner ? `Toss Winner: ${tossSnapshot.actualWinner}` : null) ||
+              (tossSnapshot?.tossWinner ? `Toss Winner: ${tossSnapshot.tossWinner}` : null) ||
+              null;
+            if (!tossBannerText) return null;
+            return (
+              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400">
+                <span>🪙</span>
+                <span>{tossBannerText}</span>
+              </div>
+            );
+          })()}
           {tossSnapshot ? (
             <>
-              {/* Toss Odds Total Bar */}
-              <div className="mb-4 mt-2">
-                <div className="flex justify-between items-center mb-2.5">
-                  <h2 className="text-white font-extrabold text-sm sm:text-base tracking-wide flex items-center gap-2">
-                    <span>🪙</span> Toss Market Load
-                  </h2>
-                  <span className="text-xs text-slate-400 font-semibold font-mono">
-                    Total: <b className="text-white">€{formatVolStr(tossMarketVol)}</b>
-                  </span>
+              {/* Toss Team Comparison Card (100% Width) */}
+              <div className="w-full rounded-xl border border-[#1e2536] bg-[#0c1018] py-2.5 px-4 sm:px-6 shadow-md mb-3">
+                <div className="flex items-center justify-around gap-4 sm:gap-12 w-full">
+                  {/* Team 1 Column */}
+                  <div className="flex flex-col items-center flex-1 min-w-0 text-center">
+                    <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
+                      {tossT1Name}
+                    </span>
+                    <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
+                      {formatVolStr(tossVol1)}
+                    </span>
+                    {/* Percentage Badge */}
+                    <span
+                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
+                        tossPct1 >= 50
+                          ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
+                          : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
+                      }`}
+                    >
+                      {tossPct1}%
+                    </span>
+                    {/* Odds */}
+                    <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+                      <span className="text-[9px]">▲</span>
+                      <span>{formatOdds(tossOdds1)}</span>
+                    </div>
+                  </div>
+
+                  {/* Team 2 Column */}
+                  <div className="flex flex-col items-center flex-1 min-w-0 text-center">
+                    <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
+                      {tossT2Name}
+                    </span>
+                    <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
+                      {formatVolStr(tossVol2)}
+                    </span>
+                    {/* Percentage Badge */}
+                    <span
+                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
+                        tossPct2 >= 50
+                          ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
+                          : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
+                      }`}
+                    >
+                      {tossPct2}%
+                    </span>
+                    {/* Odds */}
+                    <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+                      <span className="text-[9px]">▲</span>
+                      <span>{formatOdds(tossOdds2)}</span>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Progress Bar */}
-                <div className="h-2 w-full bg-[#07090e] border border-[#1b2234] mb-2 flex rounded-full overflow-hidden">
-                  <div className="bg-purple-500 h-full transition-all duration-500" style={{ width: `${tossT1PctVol}%` }} />
-                  <div className="bg-sky-500 h-full transition-all duration-500" style={{ width: `${tossT2PctVol}%` }} />
-                </div>
-                <div className="flex justify-between text-[11px] font-bold font-mono">
-                  <span className="text-purple-400">{tossT1Name} <span className="text-white ml-1">{tossT1PctVol.toFixed(0)}%</span></span>
-                  <span className="text-sky-400">{tossT2Name} <span className="text-white ml-1">{tossT2PctVol.toFixed(0)}%</span></span>
+                {/* Micro Inflow Bar */}
+                <div className="mt-2 h-1.5 w-full bg-[#1b2234] rounded-full overflow-hidden flex">
+                  <div style={{ width: `${tossPct1}%` }} className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-300" />
+                  <div style={{ width: `${tossPct2}%` }} className="bg-gradient-to-r from-sky-500 to-blue-500 h-full transition-all duration-300" />
                 </div>
               </div>
 

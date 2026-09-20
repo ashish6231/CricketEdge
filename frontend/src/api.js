@@ -10,14 +10,23 @@ const getAuthHeader = () => {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+const getTelegramHeader = () => {
+  const token = localStorage.getItem('telegram_verify_token')
+  return token ? { 'x-telegram-token': token } : {}
+}
+
 async function getAPIError(res) {
   const errData = await res.json().catch(() => ({ detail: `HTTP ${res.status}` }))
   const raw = errData.detail || errData.message || errData.error || `HTTP ${res.status}`
   const detail = String(raw).replace(/tennisliveload\.com/gi, 'live feed')
+  if (errData.error === 'telegram_required' || errData.code === 'TELEGRAM_REQUIRED' || errData.code === 'LEFT_GROUP' || errData.code === 'TELEGRAM_NOT_LINKED') {
+    window.dispatchEvent(new CustomEvent('telegram-gate-required', { detail: errData }))
+  }
   return {
     status: res.status,
     detail,
     code: errData.code,
+    raw: errData,
   }
 }
 
@@ -29,7 +38,7 @@ async function fetchAPI(endpoint, options = {}) {
     const res = await fetch(`${API_BASE}${endpoint}`, {
       ...fetchOptions,
       signal: controller.signal,
-      headers: { 'Accept-Encoding': 'gzip, deflate', ...getAuthHeader(), ...fetchOptions.headers }
+      headers: { 'Accept-Encoding': 'gzip, deflate', ...getAuthHeader(), ...getTelegramHeader(), ...fetchOptions.headers }
     })
     if (!res.ok) {
       throw await getAPIError(res)
@@ -169,10 +178,15 @@ export async function getAuthStatus() {
   } catch (err) {
     // Only clear session on real auth rejection — never on timeout/network blips
     // (tab background → focus often times out and was logging users out)
+    const isTelegramGate =
+      err.code === 'TELEGRAM_NOT_LINKED' ||
+      err.code === 'LEFT_GROUP' ||
+      err.raw?.error === 'telegram_required'
     const hardFail =
-      err.status === 401 ||
-      err.status === 403 ||
-      AUTH_HARD_FAIL_CODES.has(err.code)
+      !isTelegramGate &&
+      (err.status === 401 ||
+       err.status === 403 ||
+       AUTH_HARD_FAIL_CODES.has(err.code))
     if (hardFail) {
       localStorage.removeItem('auth_token')
       if (err.code === 'SESSION_REPLACED' && typeof window !== 'undefined') {
@@ -444,5 +458,20 @@ export async function adminTriggerEmergencyLogin() {
   return fetchAPI('/admin/scraper/emergency-login', {
     method: 'POST',
   })
+}
+
+// ──── Telegram Membership Gate ────
+
+export async function initiateTelegramSession() {
+  return fetchAPI('/telegram/initiate', { method: 'POST' })
+}
+
+export async function checkTelegramStatus(token) {
+  const q = token ? `?token=${encodeURIComponent(token)}` : ''
+  return fetchAPI(`/telegram/status${q}`)
+}
+
+export async function getTelegramSettings() {
+  return fetchAPI('/telegram/settings')
 }
 

@@ -23,6 +23,8 @@ const { getAllowedOrigins } = require('./lib/publicUrl');
 const { startTossCaptureWorker } = require('./services/tossCaptureWorker');
 const { startMatchCaptureWorker } = require('./services/matchCaptureWorker');
 const { expireAllTrials } = require('./lib/subscriptionAccess');
+const telegramRoutes = require('./routes/telegram');
+const telegramService = require('./services/telegramService');
 
 const allowedOrigins = getAllowedOrigins();
 
@@ -99,6 +101,7 @@ app.use('/api/admin', adminLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/telegram', telegramRoutes);
 app.use('/api', cricketRoutes);
 
 app.get('/api/health', (req, res) => {
@@ -198,6 +201,7 @@ function shutdown(signal) {
   tossCaptureWorker?.stop();
   matchCaptureWorker?.stop();
   dataCache.stop();
+  telegramService.stopBotPoller();
   scraper.stopSessionKeepAlive();
 
   server.close(async closeError => {
@@ -260,5 +264,7 @@ process.on('SIGINT', () => shutdown('SIGINT'));
   tennisLogin.startAutoLogin();
   // Start centralized dataCache poller (every 3s)
   dataCache.start();
+  // Start Telegram bot updates poller
+  telegramService.startBotPoller();
 })();
 

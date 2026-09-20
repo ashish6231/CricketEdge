@@ -190,7 +190,11 @@ async function _crexPollCycle() {
       if (cricketActive.length > 0) {
         const crexDetailPromises = [];
         for (const m of cricketActive) {
-          const cm = crexService.findCrexMatch(m.matchName, _crexOverview);
+          const cm = crexService.findCrexMatch(m.matchName, _crexOverview, {
+            startTime: m.startTime || m.openDate || m.marketStartTime,
+            status: m.status,
+            inPlay: m.inPlay,
+          });
           if (cm && (cm.slug || cm.url)) {
             crexDetailPromises.push(
               crexService.getCrexMatchDetail(cm.slug || cm.url)

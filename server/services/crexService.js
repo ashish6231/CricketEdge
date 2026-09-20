@@ -29,6 +29,7 @@ const detailCache = new Map();
 const DETAIL_TTL = 1000; // 1 second — live score needs to be fresh
 
 const _inFlightDetail = new Map();
+const matchTossCache = new Map();
 
 function fetchHttps(url) {
   return new Promise((resolve) => {
@@ -90,6 +91,15 @@ function cleanText(str) {
   return str.replace(/<[^>]*>?/gm, '').trim();
 }
 
+/** Extract toss statement (e.g. "ZIM opt to Bat", "RNO opt to Bowl", "won the toss and elected to bat") */
+function extractTossString(str) {
+  if (!str || typeof str !== 'string') return null;
+  const cleaned = cleanText(str);
+  if (!cleaned) return null;
+  const m = cleaned.match(/([a-zA-Z0-9\s\-]{2,35}?\s+(?:opt(?:ed)?|chose|elected)\s+to\s+(?:bat|bowl|field)|[a-zA-Z0-9\s\-]{2,35}?\s+won\s+(?:the\s+)?toss[^\.\,\n\<]{0,50})/i);
+  return m ? m[0].trim() : null;
+}
+
 /** Normalize team name tokens for fuzzy matching */
 function normalizeName(str) {
   const cleaned = (str || '')
@@ -107,7 +117,36 @@ function words(str) {
   return normalizeName(str).split(' ').filter(w => w.length > 2);
 }
 
+function getTeamCategory(name, short) {
+  const n = (name || '').trim();
+  const s = (short || '').trim();
+  const combined = `${n} ${s}`.toLowerCase();
+  const isWomen = /\b(women|womens|woman|ladies)\b/i.test(combined) ||
+                  /\b[a-z0-9]{2,5}[-_]?w\b/i.test(s) ||
+                  /\b[a-z0-9]+w[-_][a-z0-9]+\b/i.test(s) ||
+                  /\b[a-z0-9]+\s+w\b/i.test(n);
+  const isU19 = /\b(u[-_]?19|under[-_ ]?19)\b/i.test(combined);
+  const isU23 = /\b(u[-_]?23|under[-_ ]?23)\b/i.test(combined);
+  const isATeam = /\b(team\s*a)\b/i.test(combined) ||
+                  /\b[a-z0-9]{2,5}[-_]a\b/i.test(s) ||
+                  /\b[a-z0-9]+a[-_][a-z0-9]+\b/i.test(s) ||
+                  /\b[a-z0-9]+\s+a(\s+|$)/i.test(n);
+  return { isWomen, isU19, isU23, isATeam };
+}
+
+function categoriesCompatible(catA, catB) {
+  if (catA.isWomen !== catB.isWomen) return false;
+  if (catA.isU19 !== catB.isU19) return false;
+  if (catA.isU23 !== catB.isU23) return false;
+  if (catA.isATeam !== catB.isATeam) return false;
+  return true;
+}
+
 function teamTokensMatch(nameA, nameB, shortB) {
+  const catA = getTeamCategory(nameA, '');
+  const catB = getTeamCategory(nameB, shortB);
+  if (!categoriesCompatible(catA, catB)) return false;
+
   const na = normalizeName(nameA);
   const nb = normalizeName(nameB);
   const sb = (shortB || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -315,7 +354,20 @@ async function getCrexOverview(forceRefresh = false) {
         status: isLive ? 'live' : (isCompleted ? 'completed' : 'upcoming'),
         statusText: m.res || (isLive ? 'Live' : ''),
         format: m.fo || '',
-        startTime: m.ti || null,
+        startTime: (() => {
+          if (typeof m.ti === 'number' && !isNaN(m.ti)) return m.ti < 10000000000 ? m.ti * 1000 : m.ti;
+          if (typeof m.ti === 'string') {
+            const trimmed = m.ti.trim();
+            if (/^\d{10,13}$/.test(trimmed)) {
+              const num = Number(trimmed);
+              return num < 10000000000 ? num * 1000 : num;
+            }
+            const parsed = Date.parse(trimmed);
+            if (!isNaN(parsed)) return parsed;
+            if (/m\s*:\s*\d+s/i.test(trimmed) || isLive || isCompleted) return Date.now();
+          }
+          return m.ti || null;
+        })(),
         odds: {
           rate: favoriteRate,
           rate2: favoriteRate2 != null ? favoriteRate2 : favoriteRate,
@@ -336,9 +388,58 @@ async function getCrexOverview(forceRefresh = false) {
 }
 
 /**
- * Match a local match with CREX matches
+ * Parse any date/time representation into an epoch millisecond timestamp
  */
-function findCrexMatch(matchName, crexMatches = []) {
+function parseMatchTimestamp(timeVal) {
+  if (timeVal == null || timeVal === '') return null;
+  if (typeof timeVal === 'number' && !isNaN(timeVal)) {
+    return timeVal < 10000000000 ? timeVal * 1000 : timeVal;
+  }
+  if (typeof timeVal === 'string') {
+    const trimmed = timeVal.trim();
+    if (/^\d{10,13}$/.test(trimmed)) {
+      const num = Number(trimmed);
+      return num < 10000000000 ? num * 1000 : num;
+    }
+    const parsed = Date.parse(trimmed);
+    if (!isNaN(parsed)) return parsed;
+    // In CREX live matches, countdown string like "0-10m : 0-29s" means it is happening today (now)
+    if (/m\s*:\s*\d+s/i.test(trimmed) || /live/i.test(trimmed)) {
+      return Date.now();
+    }
+  }
+  if (timeVal instanceof Date && !isNaN(timeVal.getTime())) {
+    return timeVal.getTime();
+  }
+  return null;
+}
+
+/**
+ * Check if two timestamps fall on the same calendar day in UTC or IST (+5:30)
+ */
+function isSameCalendarDay(ts1, ts2) {
+  if (!ts1 || !ts2) return false;
+  // Check UTC date
+  const d1UTC = new Date(ts1).toISOString().slice(0, 10);
+  const d2UTC = new Date(ts2).toISOString().slice(0, 10);
+  if (d1UTC === d2UTC) return true;
+
+  // Check IST date (UTC + 5:30)
+  const d1IST = new Date(ts1 + 19800000).toISOString().slice(0, 10);
+  const d2IST = new Date(ts2 + 19800000).toISOString().slice(0, 10);
+  if (d1IST === d2IST) return true;
+
+  // Within 18 hours difference
+  return Math.abs(ts1 - ts2) <= 18 * 3600 * 1000;
+}
+
+/**
+ * Match a local match with CREX matches on the basis of Team Names AND Match Date/Time
+ * options can be:
+ *   - Object: { startTime, openDate, marketStartTime, matchDate, status, inPlay }
+ *   - Or a direct timestamp/date value
+ */
+function findCrexMatch(matchName, crexMatches = [], options = null) {
   if (!matchName || !Array.isArray(crexMatches) || crexMatches.length === 0) return null;
 
   const parts = matchName.split(/\s+v(?:s)?\.?\s+/i);
@@ -346,43 +447,144 @@ function findCrexMatch(matchName, crexMatches = []) {
   const t2 = parts[1] || '';
   if (!t1 || !t2) return null;
 
+  // Parse target options
+  let targetStartTime = null;
+  let targetStatus = null;
+  let targetInPlay = false;
+
+  if (options && typeof options === 'object' && !(options instanceof Date)) {
+    targetStartTime = options.startTime || options.openDate || options.marketStartTime || options.matchDate || null;
+    targetStatus = options.status || null;
+    targetInPlay = Boolean(options.inPlay);
+  } else if (options != null) {
+    targetStartTime = options;
+  }
+
+  const parsedTargetTime = parseMatchTimestamp(targetStartTime);
+
+  // 1. Gather all candidates matching both team tokens
+  const candidates = [];
   for (const cm of crexMatches) {
     const direct = teamTokensMatch(t1, cm.team1Name, cm.team1Short) && teamTokensMatch(t2, cm.team2Name, cm.team2Short);
     const reverse = teamTokensMatch(t1, cm.team2Name, cm.team2Short) && teamTokensMatch(t2, cm.team1Name, cm.team1Short);
 
     if (direct) {
-      return {
-        ...cm,
+      candidates.push({
+        rawMatch: cm,
         isReversed: false,
-      };
-    }
-    if (reverse) {
-      return {
-        ...cm,
-        isReversed: true,
-        team1Name: cm.team2Name,
-        team1Short: cm.team2Short,
-        team1Flag: cm.team2Flag,
-        team2Name: cm.team1Name,
-        team2Short: cm.team1Short,
-        team2Flag: cm.team1Flag,
-        score1: cm.score2,
-        score2: cm.score1,
-        _rawCrex: {
-          team1Name: cm.team1Name,
-          team1Short: cm.team1Short,
-          team1Flag: cm.team1Flag,
-          team2Name: cm.team2Name,
-          team2Short: cm.team2Short,
-          team2Flag: cm.team2Flag,
-          score1: cm.score1,
-          score2: cm.score2,
+        formatted: {
+          ...cm,
+          isReversed: false,
         },
-      };
+      });
+    } else if (reverse) {
+      candidates.push({
+        rawMatch: cm,
+        isReversed: true,
+        formatted: {
+          ...cm,
+          isReversed: true,
+          team1Name: cm.team2Name,
+          team1Short: cm.team2Short,
+          team1Flag: cm.team2Flag,
+          team2Name: cm.team1Name,
+          team2Short: cm.team1Short,
+          team2Flag: cm.team1Flag,
+          score1: cm.score2,
+          score2: cm.score1,
+          _rawCrex: {
+            team1Name: cm.team1Name,
+            team1Short: cm.team1Short,
+            team1Flag: cm.team1Flag,
+            team2Name: cm.team2Name,
+            team2Short: cm.team2Short,
+            team2Flag: cm.team2Flag,
+            score1: cm.score1,
+            score2: cm.score2,
+          },
+        },
+      });
     }
   }
 
-  return null;
+  if (candidates.length === 0) return null;
+
+  // 2. If target start time is known:
+  if (parsedTargetTime != null) {
+    // Filter out candidates that are clearly on a DIFFERENT match date (> 30 hours apart and not same calendar day)
+    const MAX_TIME_DIFF_MS = 30 * 3600 * 1000; // 30 hours
+
+    const scored = [];
+    for (const cand of candidates) {
+      const candTime = parseMatchTimestamp(cand.rawMatch.startTime);
+      let diffMs = Infinity;
+      let sameDay = false;
+
+      if (candTime != null) {
+        diffMs = Math.abs(candTime - parsedTargetTime);
+        sameDay = isSameCalendarDay(candTime, parsedTargetTime);
+      }
+
+      // If diff is greater than 30 hours and NOT on the same calendar day, this candidate is from another date!
+      // (e.g. 2 Sep match when target is 4 Sep match, which is 48h apart)
+      if (candTime != null && diffMs > MAX_TIME_DIFF_MS && !sameDay) {
+        continue; // Discard candidate from different date
+      }
+
+      // Compute ranking score (lower is better)
+      let score = diffMs !== Infinity ? diffMs / (60 * 1000) : 10000; // minutes difference
+      if (sameDay) {
+        score -= 50000; // High bonus for same calendar day
+      }
+
+      // Status alignment bonuses
+      const candStatus = (cand.rawMatch.status || '').toLowerCase();
+      const isTargetLive = targetInPlay || (targetStatus && targetStatus.toLowerCase() === 'live');
+      const isTargetCompleted = targetStatus && (targetStatus.toLowerCase() === 'ended' || targetStatus.toLowerCase() === 'completed' || targetStatus.toLowerCase() === 'verified');
+
+      if (isTargetLive) {
+        if (candStatus === 'live') score -= 20000;
+        else if (candStatus === 'completed') score += 50000;
+      } else if (isTargetCompleted) {
+        if (candStatus === 'completed') score -= 20000;
+        else if (candStatus === 'live') score += 50000;
+      }
+
+      scored.push({ cand, score });
+    }
+
+    if (scored.length > 0) {
+      scored.sort((a, b) => a.score - b.score);
+      return scored[0].cand.formatted;
+    }
+
+    // If all candidates were discarded because they belong to completely different dates
+    // (e.g. 2 Sep match exists, but target is 4 Sep match which hasn't been listed yet in Crex),
+    // return null so we don't display the wrong match!
+    return null;
+  }
+
+  // 3. If target start time is NOT provided (fallback mode):
+  if (candidates.length === 1) {
+    return candidates[0].formatted;
+  }
+
+  // Multiple candidates and no target start time: score by status & recency to now
+  const now = Date.now();
+  const scored = candidates.map(cand => {
+    let score = 0;
+    const candTime = parseMatchTimestamp(cand.rawMatch.startTime);
+    if (candTime != null) {
+      score += Math.abs(candTime - now) / (60 * 1000);
+    }
+    const candStatus = (cand.rawMatch.status || '').toLowerCase();
+    const isTargetLive = targetInPlay || (targetStatus && targetStatus.toLowerCase() === 'live');
+    if (isTargetLive && candStatus === 'live') score -= 100000;
+    return { cand, score };
+  });
+
+  scored.sort((a, b) => a.score - b.score);
+  return scored[0].cand.formatted;
 }
 
 /**
@@ -709,6 +911,33 @@ async function getCrexMatchDetail(slugOrUrl) {
       statusEquation = '';
     }
 
+    // ── Persistent Toss Extraction ──
+    const t1Norm = normalizeName(sv3.team1_f_n || sv3.team1 || meta?.team1?.n || '');
+    const t2Norm = normalizeName(sv3.team2_f_n || sv3.team2 || meta?.team2?.n || '');
+    const matchKey1 = (t1Norm && t2Norm) ? `${t1Norm}_vs_${t2Norm}` : null;
+    const matchKey2 = (t1Norm && t2Norm) ? `${t2Norm}_vs_${t1Norm}` : null;
+
+    let extractedToss = extractTossString(statusEquation) ||
+      extractTossString(sv3.comment1) ||
+      extractTossString(sv3.B) ||
+      extractTossString(sv3.res) ||
+      extractTossString(sv3.comment2) ||
+      extractTossString(html);
+
+    if (extractedToss) {
+      matchTossCache.set(cacheKey, extractedToss);
+      matchTossCache.set(cleanSlug, extractedToss);
+      if (matchKey1) matchTossCache.set(matchKey1, extractedToss);
+      if (matchKey2) matchTossCache.set(matchKey2, extractedToss);
+    }
+
+    const finalTossText = extractedToss ||
+      matchTossCache.get(cacheKey) ||
+      matchTossCache.get(cleanSlug) ||
+      (matchKey1 ? matchTossCache.get(matchKey1) : null) ||
+      (matchKey2 ? matchTossCache.get(matchKey2) : null) ||
+      null;
+
     let finalStatusText = isCompletedMatch ? (bStr || cleanText(sv3.comment1 || sv3.res || '') || 'Completed') : (matchStatus === 'live' ? 'Live' : 'Upcoming');
     if (/^bowl:/i.test(finalStatusText) || (sv3.bname && finalStatusText.includes(sv3.bname))) {
       finalStatusText = 'Live';
@@ -718,10 +947,12 @@ async function getCrexMatchDetail(slugOrUrl) {
       status: matchStatus,
       statusText: finalStatusText,
       runningBall,
+      tossText: finalTossText,
       scorecard: {
         status: matchStatus,
         matchResult: isCompletedMatch ? (bStr || cleanText(sv3.comment1 || sv3.res || '')) : null,
         statusEquation,
+        tossText: finalTossText,
         runningBall,
         currentOverBalls,
         target: sv3.target || null,
@@ -789,4 +1020,5 @@ module.exports = {
   findCrexMatch,
   getCrexMatchDetail,
   teamTokensMatch,
+  extractTossString,
 };

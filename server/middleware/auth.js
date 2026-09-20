@@ -67,6 +67,8 @@ async function resolveBearerUser(token) {
       subPlanSlug: true,
       subStatus: true,
       subExpiresAt: true,
+      telegramId: true,
+      telegramUsername: true,
     },
   });
   if (!user || user.status === 'banned') {
@@ -95,6 +97,8 @@ async function resolveBearerUser(token) {
       subPlanSlug: user.subPlanSlug,
       subStatus: user.subStatus,
       subExpiresAt: user.subExpiresAt,
+      telegramId: user.telegramId,
+      telegramUsername: user.telegramUsername,
     },
   };
   setCachedAuth(token, result);
@@ -171,6 +175,49 @@ function assertProAccess(req, res) {
   return false;
 }
 
+/** Check compulsory Telegram membership for protected data */
+async function assertTelegramMembership(req, res, next) {
+  const telegramService = require('../services/telegramService');
+  if (!telegramService.GATE_ENABLED) return next();
+
+  // Admin bypass
+  const role = req.user?.role;
+  if (role === 'admin' || role === 'superadmin') return next();
+
+  // If user is logged in: Check if account has Telegram linked & is in the group
+  if (req.user) {
+    const telegramId = req.user.telegramId;
+    if (!telegramId) {
+      return res.status(403).json({
+        success: false,
+        error: 'telegram_required',
+        code: 'TELEGRAM_NOT_LINKED',
+        message: 'CricketEdge website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.',
+        groupUrl: `https://t.me/${telegramService.CHAT_ID.replace('@', '')}`,
+        userId: req.user.userId,
+      });
+    }
+
+    const check = await telegramService.checkMembership(telegramId);
+    if (!check.isMember) {
+      return res.status(403).json({
+        success: false,
+        error: 'telegram_required',
+        code: 'LEFT_GROUP',
+        message: 'Aapne @cricedge_online Telegram channel chhod diya hai! Dobara join karein tabhi access milega.',
+        groupUrl: `https://t.me/${telegramService.CHAT_ID.replace('@', '')}`,
+        userId: req.user.userId,
+      });
+    }
+
+    return next();
+  }
+
+  // If visitor is NOT logged in: do NOT block.
+  // Telegram linking and group membership is checked AFTER the user logs in.
+  return next();
+}
+
 /** Strip secrets from a User row before sending to clients. */
 function sanitizeUserRecord(user) {
   if (!user || typeof user !== 'object') return user;
@@ -193,6 +240,7 @@ module.exports = {
   optionalAuth,
   requireProSubscription,
   assertProAccess,
+  assertTelegramMembership,
   sanitizeUserRecord,
   invalidateAuthCache,
   clearAuthCache,

@@ -49,7 +49,9 @@ model User {
   oddsFormat    String   @default("decimal")
   language      String   @default("en")
   notifEmail    Boolean  @default(true)
-  notifPush     Boolean  @default(true)
+  // Telegram Link
+  telegramId        String?
+  telegramUsername  String?
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

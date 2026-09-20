@@ -145,12 +145,16 @@ async function captureEndedMatches({
     // Auto-resolve actual winner from CREX
     let actualWinner = null;
     if (crexOverview && Array.isArray(crexOverview) && crexOverview.length > 0) {
-      const crexMatch = findCrexMatch(matchName, crexOverview);
+      const crexMatch = findCrexMatch(matchName, crexOverview, {
+        startTime: match.startTime || match.openDate || match.marketStartTime,
+        status: match.status,
+        inPlay: match.inPlay,
+      });
       if (crexMatch) {
         let resultText = crexMatch.statusText;
         if (!resultText || !resultText.toLowerCase().includes('won by')) {
           try {
-             const detail = await getCrexMatchDetail(crexMatch.id || crexMatch.crexMatchId, crexMatch.matchIndex);
+             const detail = await getCrexMatchDetail(crexMatch.slug || crexMatch.url);
              resultText = detail?.scorecard?.matchResult || resultText;
           } catch(e) {
              console.error('Failed to fetch crex match detail for actual winner', e.message);

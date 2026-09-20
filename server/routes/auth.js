@@ -57,6 +57,8 @@ function sanitizeUser(user) {
     role: user.role || 'user',
     createdAt: user.createdAt,
     authProvider: user.authProvider,
+    telegramId: user.telegramId || null,
+    telegramUsername: user.telegramUsername || null,
     subscription: {
       planSlug: user.subPlanSlug || 'free',
       status: user.subStatus || 'active',

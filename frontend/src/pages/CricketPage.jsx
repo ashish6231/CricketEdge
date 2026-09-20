@@ -555,51 +555,37 @@ export default function CricketPage() {
           <>
             {/* Compact Cricket Hub Sticky Control Bar */}
             <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#07090e]/95 border-b border-[#1b2030] px-3 sm:px-4 py-2">
-          <div className="flex items-center justify-between gap-2.5 flex-wrap">
-            {/* Leagues Drawer Trigger Button — Only on mobile */}
-            <button
-              type="button"
-              onClick={toggleSidebar}
-              className="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#121624] hover:bg-[#1a2034] border border-[#1f263c] hover:border-amber-500/50 text-xs font-bold text-white transition-all shrink-0 active:scale-95 shadow-sm group"
-              title="Browse cricket leagues and tournaments"
-            >
-              <Menu size={14} className="text-amber-400 group-hover:scale-110 transition-transform" />
-              <span>Leagues</span>
-              <span className="text-[10px] font-mono text-amber-300 font-semibold bg-amber-500/15 border border-amber-500/30 px-1.5 py-0.2 rounded-full max-w-[130px] truncate">
-                {selectedComp === 'ALL' ? 'All Matches' : selectedComp}
-              </span>
-            </button>
+              <div className="flex items-center justify-between gap-2.5 flex-wrap">
+                {/* Desktop Active League Indicator */}
+                <div className="hidden md:flex items-center gap-2 shrink-0">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">League:</span>
+                  <span className="text-xs font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2.5 py-1 rounded-lg">
+                    {selectedComp === 'ALL' ? 'All Tournaments' : selectedComp}
+                  </span>
+                </div>
 
-            {/* Desktop Active League Indicator */}
-            <div className="hidden md:flex items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">League:</span>
-              <span className="text-xs font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2.5 py-1 rounded-lg">
-                {selectedComp === 'ALL' ? 'All Tournaments' : selectedComp}
-              </span>
+                {/* Global Search Input */}
+                <div className="relative w-full md:flex-1">
+                  <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search any team or match across all leagues..."
+                    className="w-full bg-[#101420] border border-[#1f273b] focus:border-amber-500/60 rounded-lg pl-8 pr-7 py-1.5 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5"
+                    >
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
-
-            {/* Global Search Input */}
-            <div className="relative flex-1 min-w-[200px] max-w-md ml-auto">
-              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search any team or match across all leagues..."
-                className="w-full bg-[#101420] border border-[#1f273b] focus:border-amber-500/60 rounded-lg pl-8 pr-7 py-1 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5"
-                >
-                  <X size={12} />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Search status banner if query is typed */}
         {hasSearch && (

@@ -14,6 +14,43 @@ const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}€${fmt(n)}`
 const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
 
+const formatVolStr = (val) => {
+  if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
+  const num = Number(val)
+  if (isNaN(num)) return val.toString()
+  const abs = Math.abs(num)
+  if (abs >= 10000000) return `${num < 0 ? '-' : ''}${(abs / 10000000).toFixed(2)}Cr`
+  if (abs >= 100000) return `${num < 0 ? '-' : ''}${(abs / 100000).toFixed(2)}L`
+  if (abs >= 1000) return `${num < 0 ? '-' : ''}${(abs / 1000).toFixed(2)}k`
+  return num.toFixed(2)
+}
+
+const formatOdds = (val) => {
+  if (val === null || val === undefined || val === 0 || isNaN(Number(val))) return '—'
+  return Number(val).toFixed(2)
+}
+
+function extractTossOdds(trades, fallback = null) {
+  if (!Array.isArray(trades) || trades.length === 0) return fallback
+  const tossTrades = trades.filter((t) => {
+    const p = parseFloat(t.price)
+    return !isNaN(p) && p >= 1.70 && p <= 2.30
+  })
+  if (tossTrades.length > 0) {
+    const sorted = [...tossTrades].sort((a, b) => b.updatedAt - a.updatedAt)
+    return parseFloat(sorted[0].price)
+  }
+  const broader = trades.filter((t) => {
+    const p = parseFloat(t.price)
+    return !isNaN(p) && p >= 1.60 && p <= 2.40
+  })
+  if (broader.length > 0) {
+    const sorted = [...broader].sort((a, b) => b.updatedAt - a.updatedAt)
+    return parseFloat(sorted[0].price)
+  }
+  return fallback
+}
+
 export default function TossDetail({ isEmbedded = false }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
@@ -100,6 +137,19 @@ export default function TossDetail({ isEmbedded = false }) {
 
   const { pl1: t1BookiePL, pl2: t2BookiePL, source: plSource } = getBookiePl(snap, t1, t2)
 
+  const tradeVol1 = t1Trades.length > 0 ? t1Trades.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
+  const tradeVol2 = t2Trades.length > 0 ? t2Trades.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
+
+  const vol1 = tradeVol1 || am1?.totalBet || t1Bets || snap?.preMatchTotalBets?.team1 || 0
+  const vol2 = tradeVol2 || am2?.totalBet || t2Bets || snap?.preMatchTotalBets?.team2 || 0
+
+  const tossOdds1 = extractTossOdds(t1Trades) || (snap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(snap.syntheticSupport.teamA.averageOdds.toFixed(2)) : null) || (snap?.runners?.[0]?.price && snap.runners[0].price >= 1.60 && snap.runners[0].price <= 2.40 ? snap.runners[0].price : null) || null
+  const tossOdds2 = extractTossOdds(t2Trades) || (snap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(snap.syntheticSupport.teamB.averageOdds.toFixed(2)) : null) || (snap?.runners?.[1]?.price && snap.runners[1].price >= 1.60 && snap.runners[1].price <= 2.40 ? snap.runners[1].price : null) || null
+
+  const totVol = vol1 + vol2
+  const pct1 = totVol > 0 ? Math.round((vol1 / totVol) * 100) : 50
+  const pct2 = totVol > 0 ? (100 - pct1) : 50
+
   const tossPrediction = predictTossWinner(snap, snap?.competitionName || snap?.seriesName || '')
   const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
   const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snap)
@@ -123,6 +173,87 @@ export default function TossDetail({ isEmbedded = false }) {
               <span className="pulse-dot h-2 w-2 rounded-full" style={{ background: '#dc2626' }} /> LIVE
             </span>
           )}
+        </div>
+      </div>
+
+      {/* Toss Result Banner */}
+      {(() => {
+        const tossBannerText =
+          snap?.tossText ||
+          snap?.crex?.scorecard?.tossText ||
+          snap?.crex?.toss?.text ||
+          snap?.crex?.tossText ||
+          (snap?.crex?.scorecard?.statusEquation && /opt|chose|elected|toss/i.test(snap.crex.scorecard.statusEquation) ? snap.crex.scorecard.statusEquation : null) ||
+          (snap?.actualWinner ? `Toss Winner: ${snap.actualWinner}` : null) ||
+          (snap?.tossWinner ? `Toss Winner: ${snap.tossWinner}` : null) ||
+          null;
+        if (!tossBannerText) return null;
+        return (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400 mb-3">
+            <span>🪙</span>
+            <span>{tossBannerText}</span>
+          </div>
+        );
+      })()}
+
+      {/* Toss Team Comparison Card (100% Width) */}
+      <div className="w-full rounded-xl border border-[#1e2536] bg-[#0c1018] py-2.5 px-4 sm:px-6 shadow-md mb-3">
+        <div className="flex items-center justify-around gap-4 sm:gap-12 w-full">
+          {/* Team 1 Column */}
+          <div className="flex flex-col items-center flex-1 min-w-0 text-center">
+            <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
+              {t1}
+            </span>
+            <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
+              {formatVolStr(vol1)}
+            </span>
+            {/* Percentage Badge */}
+            <span
+              className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
+                pct1 >= 50
+                  ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
+                  : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
+              }`}
+            >
+              {pct1}%
+            </span>
+            {/* Odds */}
+            <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+              <span className="text-[9px]">▲</span>
+              <span>{formatOdds(tossOdds1)}</span>
+            </div>
+          </div>
+
+          {/* Team 2 Column */}
+          <div className="flex flex-col items-center flex-1 min-w-0 text-center">
+            <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
+              {t2}
+            </span>
+            <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
+              {formatVolStr(vol2)}
+            </span>
+            {/* Percentage Badge */}
+            <span
+              className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
+                pct2 >= 50
+                  ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
+                  : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
+              }`}
+            >
+              {pct2}%
+            </span>
+            {/* Odds */}
+            <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+              <span className="text-[9px]">▲</span>
+              <span>{formatOdds(tossOdds2)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Micro Inflow Bar */}
+        <div className="mt-2 h-1.5 w-full bg-[#1b2234] rounded-full overflow-hidden flex">
+          <div style={{ width: `${pct1}%` }} className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-300" />
+          <div style={{ width: `${pct2}%` }} className="bg-gradient-to-r from-sky-500 to-blue-500 h-full transition-all duration-300" />
         </div>
       </div>
 

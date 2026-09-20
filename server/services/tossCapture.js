@@ -37,11 +37,25 @@ function extractTeams(snapshot, match) {
   return parseTeamsFromMatchName(match.matchName);
 }
 
-function extractWinnerFromText(text, team1, team2) {
+function extractWinnerFromText(text, team1, team2, short1, short2) {
   if (!text) return null;
   const lowerText = text.toLowerCase();
+  
+  // 1. Direct match
   if (team1 && lowerText.includes(team1.toLowerCase())) return team1;
   if (team2 && lowerText.includes(team2.toLowerCase())) return team2;
+  
+  // 2. Short name match
+  if (short1 && lowerText.includes(short1.toLowerCase())) return team1;
+  if (short2 && lowerText.includes(short2.toLowerCase())) return team2;
+  
+  // 3. Extract candidate team prefix before opt/chose/elected/won
+  const m = text.match(/^\s*([a-zA-Z0-9\s\-]+?)\s+(?:opt(?:ed)?|chose|elected|won)/i);
+  if (m) {
+    const cand = m[1].trim().toLowerCase();
+    if (team1 && (team1.toLowerCase().startsWith(cand) || cand.startsWith(team1.toLowerCase().slice(0, 3)))) return team1;
+    if (team2 && (team2.toLowerCase().startsWith(cand) || cand.startsWith(team2.toLowerCase().slice(0, 3)))) return team2;
+  }
   return null;
 }
 
@@ -179,14 +193,18 @@ async function captureEndedTosses({
 
     let actualWinner = null;
     if (crexOverview && Array.isArray(crexOverview) && crexOverview.length > 0) {
-      const crexMatch = findCrexMatch(matchName, crexOverview);
+      const crexMatch = findCrexMatch(matchName, crexOverview, {
+        startTime: match.startTime || match.openDate || match.marketStartTime,
+        status: match.status,
+        inPlay: match.inPlay,
+      });
       if (crexMatch) {
         try {
-          const detail = await getCrexMatchDetail(crexMatch.id || crexMatch.crexMatchId, crexMatch.matchIndex);
-          const tossText = detail?.scorecard?.statusEquation;
+          const detail = await getCrexMatchDetail(crexMatch.slug || crexMatch.url);
+          const tossText = detail?.scorecard?.tossText || detail?.tossText || detail?.scorecard?.statusEquation;
           
-          if (tossText && tossText.toLowerCase().includes('won the toss')) {
-            actualWinner = extractWinnerFromText(tossText, team1, team2);
+          if (tossText && /(?:opt(?:ed)?|chose|elected|won\s+(?:the\s+)?toss)/i.test(tossText)) {
+            actualWinner = extractWinnerFromText(tossText, team1, team2, crexMatch.team1Short, crexMatch.team2Short);
             if (!actualWinner) {
                const shortWinner = extractWinnerFromText(tossText, crexMatch.team1Short, crexMatch.team2Short);
                let crexWinnerName = null;

@@ -1,14 +1,14 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Activity, Menu, X, Shield, LogOut, User, ChevronDown } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
-import { getAuthStatus, logout, getSignupStatus } from '../api'
+import { getAuthStatus, logout, getSignupStatus, getTelegramSettings, checkTelegramStatus } from '../api'
 import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 import { guestPathAfterLogout, resolveSiteName, splitSiteName, resolveSiteMode, isFreeMode } from '../utils/publicAuth'
 import LoginPage from '../pages/LoginPage'
+import TelegramGateModal from './TelegramGateModal'
 
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
-  { path: '/tennis',  label: 'Tennis',  icon: '🎾' },
   { path: '/toss',    label: 'Toss',    icon: '🪙' },
 ]
 
@@ -24,6 +24,9 @@ export default function MainLayout() {
   const [dropdown, setDropdown]     = useState(false)
   const [siteName, setSiteName]     = useState('CricketEdge')
   const [siteMode, setSiteMode]     = useState('paid')
+  const [telegramGateRequired, setTelegramGateRequired] = useState(false)
+  const [telegramLockReason, setTelegramLockReason]     = useState(null)
+  const [telegramGateEnabled, setTelegramGateEnabled]   = useState(true)
   const dropRef = useRef(null)
 
   useEffect(() => {
@@ -113,9 +116,127 @@ export default function MainLayout() {
     return () => window.removeEventListener('data-refreshed', handler)
   }, [])
 
+  const isAdmin = authUser?.role === 'admin' || authUser?.role === 'superadmin'
+  const isFree = isFreeMode(siteMode)
+  const onTrial = isActiveTrial(authUser)
+  const paidPro = isPaidPro(authUser)
+  const planLabel = getPlanLabel(authUser)
+  const initials = authUser?.name?.[0]?.toUpperCase() || '?'
+
+  // Clear Telegram Gate immediately if visitor is NOT logged in, or if Admin
+  useEffect(() => {
+    if (!isLoggedIn || isAdmin) {
+      setTelegramGateRequired(false)
+      setTelegramLockReason(null)
+    }
+  }, [isLoggedIn, isAdmin])
+
+  // ─── Telegram Membership Gate Check: ONLY for Logged-In Non-Admin Users ───
+  useEffect(() => {
+    let cancelled = false
+
+    // If not logged in, or if admin: NEVER show popup on website open!
+    if (!isLoggedIn || !authUser || isAdmin) {
+      setTelegramGateRequired(false)
+      setTelegramLockReason(null)
+      return
+    }
+
+    getTelegramSettings().then(settings => {
+      if (cancelled || !isLoggedIn || isAdmin) return
+      const enabled = settings?.gateEnabled !== false
+      setTelegramGateEnabled(enabled)
+      if (!enabled) return
+
+      // Check if user account has Telegram verified
+      if (!authUser.telegramId) {
+        setTelegramGateRequired(true)
+        setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
+        return
+      }
+
+      // If Telegram is verified, check live membership in @cricedge_online
+      checkTelegramStatus().then(statusRes => {
+        if (cancelled || !isLoggedIn || isAdmin) return
+        if (!statusRes.isVerified || statusRes.leftGroup || !statusRes.isLinked) {
+          setTelegramGateRequired(true)
+          if (statusRes.leftGroup) {
+            setTelegramLockReason('Aapne @cricedge_online Telegram channel chhod diya hai! Dobara join karein.')
+          } else {
+            setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
+          }
+        } else {
+          setTelegramGateRequired(false)
+          setTelegramLockReason(null)
+        }
+      }).catch(() => {})
+    }).catch(() => {})
+
+    const onGateReq = (e) => {
+      if (!isLoggedIn || isAdmin) return
+      setTelegramGateRequired(true)
+      if (e.detail?.code === 'LEFT_GROUP') {
+        setTelegramLockReason('Aapne @cricedge_online Telegram channel chhod diya hai! Dobara join karein.')
+      } else {
+        setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
+      }
+    }
+    window.addEventListener('telegram-gate-required', onGateReq)
+
+    return () => {
+      cancelled = true
+      window.removeEventListener('telegram-gate-required', onGateReq)
+    }
+  }, [isLoggedIn, authUser, isAdmin])
+
+  // Background Heartbeat: Check membership status every 25s (ONLY for logged-in regular users)
+  useEffect(() => {
+    if (!telegramGateEnabled || !isLoggedIn || !authUser || isAdmin) return
+    const interval = setInterval(async () => {
+      if (!isLoggedIn || isAdmin) return
+      try {
+        const res = await checkTelegramStatus()
+        if (res.success) {
+          if (!res.isVerified || res.leftGroup || !res.isLinked) {
+            setTelegramGateRequired(true)
+            if (res.leftGroup) {
+              setTelegramLockReason('Aapne @cricedge_online Telegram channel chhod diya hai! Dobara join karein.')
+            } else {
+              setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
+            }
+          } else {
+            setTelegramGateRequired(false)
+            setTelegramLockReason(null)
+          }
+        }
+      } catch {}
+    }, 25000)
+
+    return () => clearInterval(interval)
+  }, [telegramGateEnabled, isLoggedIn, authUser, isAdmin])
+
+  const handleTelegramVerified = (statusRes) => {
+    setTelegramGateRequired(false)
+    setTelegramLockReason(null)
+    // Refresh user state so telegramId is stored in authUser
+    getAuthStatus().then(data => {
+      if (data.isLoggedIn && data.user) {
+        setAuthUser(data.user)
+      }
+    }).catch(() => {})
+    window.dispatchEvent(new CustomEvent('data-refreshed'))
+  }
+
   const handleLoginSuccess = (email, user) => {
     setIsLoggedIn(true)
     setAuthUser(user || null)
+    if (user?.role === 'admin' || user?.role === 'superadmin') {
+      setTelegramGateRequired(false)
+      setTelegramLockReason(null)
+    } else if (!user?.telegramId) {
+      setTelegramGateRequired(true)
+      setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
+    }
     setLoginOpen(false)
   }
 
@@ -127,13 +248,6 @@ export default function MainLayout() {
     setLoginOpen(false)
     navigate(guestPathAfterLogout(location.pathname), { replace: true })
   }
-
-  const isAdmin = authUser?.role === 'admin' || authUser?.role === 'superadmin'
-  const isFree = isFreeMode(siteMode)
-  const onTrial = isActiveTrial(authUser)
-  const paidPro = isPaidPro(authUser)
-  const planLabel = getPlanLabel(authUser)
-  const initials = authUser?.name?.[0]?.toUpperCase() || '?'
 
   const isMatchDetail = /\/(cricket|tennis|toss)\/match\//.test(location.pathname)
   const isShellBypass =
@@ -155,7 +269,7 @@ export default function MainLayout() {
       {/* Header */}
       <header className="fixed top-1 left-0 right-0 z-40 border-b border-[#2c2c2e]"
         style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(20px)', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center h-13 px-4 gap-3">
+        <div className="flex items-center h-12 sm:h-13 px-3 sm:px-4 gap-2 sm:gap-3">
           {/* Leagues drawer toggle — mobile only */}
           {!hideSportNav && (
             <button
@@ -165,17 +279,17 @@ export default function MainLayout() {
               aria-label="Toggle leagues drawer"
               title="Toggle leagues"
             >
-              {mobileMenu ? <X size={20} /> : <Menu size={20} />}
+              {mobileMenu ? <X size={18} /> : <Menu size={18} />}
             </button>
           )}
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+          <Link to="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center"
               style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
-              <Activity className="h-4 w-4 text-white" />
+              <Activity className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
             </div>
-            <span className="font-black text-lg tracking-tight text-text-primary">
+            <span className="font-black text-sm sm:text-lg tracking-tight text-text-primary">
               {(() => {
                 const { prefix, suffix } = splitSiteName(siteName)
                 return suffix ? <>{prefix}<span className="text-primary">{suffix}</span></> : prefix
@@ -185,24 +299,30 @@ export default function MainLayout() {
 
           {/* Nav */}
           {!hideSportNav && (
-            <nav className="flex items-center gap-1.5 ml-2 overflow-x-auto no-scrollbar">
+            <nav className="flex items-center gap-1.5 sm:gap-2 ml-1 sm:ml-2">
               {NAV_ITEMS.map(item => (
                 <Link key={item.path} to={item.path}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-full text-[13px] font-semibold tracking-wide transition-all ${
+                  onClick={() => {
+                    if (item.path === '/toss') {
+                      try { localStorage.setItem('toss_selected_comp', 'ALL') } catch (_) {}
+                    }
+                  }}
+                  className={`flex-shrink-0 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs sm:text-[13px] font-semibold tracking-normal sm:tracking-wide transition-all flex items-center gap-1.5 ${
                     location.pathname.startsWith(item.path) ? 'text-white shadow-sm' : 'text-text-secondary hover:text-primary'
                   }`}
                   style={location.pathname.startsWith(item.path)
                     ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' }
                     : { background: 'rgba(255,255,255,0.05)' }
                   }>
-                  {item.icon} {item.label}
+                  <span className="text-xs sm:text-sm">{item.icon}</span>
+                  <span>{item.label}</span>
                 </Link>
               ))}
             </nav>
           )}
 
           {/* Right side */}
-          <div className="ml-auto flex items-center gap-2">
+          <div className="ml-auto flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
 
             {/* Admin button — navbar me */}
             {isAdmin && (
@@ -225,7 +345,7 @@ export default function MainLayout() {
               /* ── Profile dropdown ── */
               <div className="relative" ref={dropRef}>
                 <button onClick={() => setDropdown(d => !d)}
-                  className="flex items-center gap-1.5 px-2 py-1 rounded-full transition-all"
+                  className="flex items-center gap-1 sm:gap-1.5 p-1 sm:px-2 sm:py-1 rounded-full transition-all"
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #2c2c2e' }}>
                   {/* Avatar circle */}
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-black"
@@ -289,7 +409,7 @@ export default function MainLayout() {
             ) : authReady ? (
               /* ── Login button ── */
               <button type="button" onClick={() => setLoginOpen(true)}
-                className="flex items-center gap-1.5 px-3 h-8 rounded-full text-xs font-semibold text-white"
+                className="flex items-center gap-1 px-2.5 h-7 sm:px-3 sm:h-8 rounded-full text-[11px] sm:text-xs font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
                 Login
               </button>
@@ -300,7 +420,7 @@ export default function MainLayout() {
 
       {/* Trial banner */}
       {onTrial && !isFree && (
-        <div className="fixed top-[53px] left-0 right-0 z-30 px-4 py-2 text-center text-xs font-semibold"
+        <div className="fixed top-[49px] sm:top-[53px] left-0 right-0 z-30 px-4 py-1.5 sm:py-2 text-center text-[11px] sm:text-xs font-semibold"
           style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(220,38,38,0.1))', borderBottom: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
           🎁 Free trial active — {formatTrialTimeLeft(getTrialMinutesLeft(authUser))} left with full live match access.
           {' '}<Link to="/subscription" className="underline text-white">Upgrade to Pro</Link> before trial ends.
@@ -308,9 +428,21 @@ export default function MainLayout() {
       )}
 
       {/* Content */}
-      <main className={`flex-1 w-full ${(onTrial && !isFree) ? 'pt-[88px]' : 'pt-14'}`}>
+      <main className={`flex-1 w-full ${(onTrial && !isFree) ? 'pt-[80px] sm:pt-[88px]' : 'pt-12 sm:pt-14'}`}>
         <Outlet context={{ isLoggedIn, user: authUser, authReady, siteMode, isFreeMode: isFree, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
       </main>
+
+      {/* Compulsory Telegram Gate Modal: ONLY for logged-in non-admin users */}
+      {telegramGateRequired && telegramGateEnabled && isLoggedIn && !isAdmin && (
+        <TelegramGateModal
+          authUser={authUser}
+          onVerified={handleTelegramVerified}
+          onLogout={handleLogout}
+          onOpenLogin={() => setLoginOpen(true)}
+          isLocked={telegramGateRequired}
+          lockReason={telegramLockReason}
+        />
+      )}
 
       {loginOpen && (
         <div

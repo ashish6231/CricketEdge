@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 const scraper = require('../services/scraper');
 const dataCache = require('../services/dataCache');
-const { optionalAuth, requireProSubscription, assertProAccess } = require('../middleware/auth');
+const { optionalAuth, requireProSubscription, assertProAccess, assertTelegramMembership } = require('../middleware/auth');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { getDefaultStore } = require('../services/tossDatasetStore');
@@ -88,7 +88,11 @@ async function getCrexForMatch(matchInfo, matchId = null) {
     }
 
     if (!matched && matchInfo?.matchName) {
-      matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
+      matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview, {
+        startTime: matchInfo.startTime || matchInfo.openDate || matchInfo.marketStartTime,
+        status: matchInfo.status,
+        inPlay: matchInfo.inPlay,
+      });
     }
 
     if (!matched) return null;
@@ -100,6 +104,7 @@ async function getCrexForMatch(matchInfo, matchId = null) {
         ...matched,
         ...detail,
         scorecard: scorecard || detail.scorecard,
+        tossText: detail.tossText || detail.scorecard?.tossText || null,
         isReversed: Boolean(matched.isReversed),
       };
     }
@@ -221,7 +226,7 @@ function attachMatchMeta(data, matchInfo, isToss = false) {
   return data;
 }
 
-router.get('/cricket/matches', optionalAuth, async (req, res) => {
+router.get('/cricket/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchesMap = new Map();
 
   // Fetch live matches from scraper only — no dataset/crex fallback for list
@@ -340,7 +345,11 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
     if (Array.isArray(crexOverview) && crexOverview.length > 0) {
       const matchedCrexIds = new Set();
       for (const m of allMatches) {
-        const cm = crexService.findCrexMatch(m.matchName, crexOverview);
+        const cm = crexService.findCrexMatch(m.matchName, crexOverview, {
+          startTime: m.startTime || m.openDate || m.marketStartTime,
+          status: m.status,
+          inPlay: m.inPlay,
+        });
         if (cm) {
           matchedCrexIds.add(cm.crexMatchId);
           m.crex = {
@@ -389,7 +398,7 @@ router.get('/cricket/matches', optionalAuth, async (req, res) => {
   });
 });
 
-router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
+router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchId = req.params.matchId;
 
   const matches = await dataCache.getCricketMatches();
@@ -445,7 +454,7 @@ router.get('/cricket/match/:matchId', optionalAuth, async (req, res) => {
 });
 
 /** One request for MatchDetail poll — cricket + toss + session (single auth). */
-router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
+router.get('/cricket/match/:matchId/bundle', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchId = req.params.matchId;
 
   // Check memory cache first for 0ms instant response
@@ -490,7 +499,11 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
             matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
           }
           if (!matched && matchInfo?.matchName) {
-            matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview);
+            matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview, {
+              startTime: matchInfo.startTime || matchInfo.openDate || matchInfo.marketStartTime,
+              status: matchInfo.status,
+              inPlay: matchInfo.inPlay,
+            });
           }
           if (!matched) return null;
           if (matched.slug || matched.url) {
@@ -501,6 +514,7 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, async (req, res) => {
               ...matched,
               ...detail,
               scorecard: scorecard || detail.scorecard,
+              tossText: detail.tossText || detail.scorecard?.tossText || null,
               isReversed: Boolean(matched.isReversed),
             };
           }
@@ -601,7 +615,15 @@ router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
       const md = getMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
       if (rec) {
-        matchInfo = { matchId: String(rec.matchId), matchName: rec.matchName };
+        matchInfo = {
+          matchId: String(rec.matchId),
+          marketId: rec.marketId,
+          matchName: rec.matchName,
+          competitionName: rec.competitionName,
+          status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
+          startTime: rec.startTime,
+          inPlay: false,
+        };
       }
     } catch {}
   }
@@ -696,7 +718,7 @@ function computeTossLoad(snap, matchInfo) {
   };
 }
 
-router.get('/toss/matches', optionalAuth, async (req, res) => {
+router.get('/toss/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchesMap = new Map();
 
   let datasetRecords = [];
@@ -759,6 +781,26 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
   const allMatches = Array.from(matchesMap.values());
   const filtered = filterMatchesForViewer(allMatches, req.user);
 
+  // Sort: Live (1) -> Upcoming (2, soonest starting first) -> Ended (3, most recently ended first)
+  const getTossTier = (m) => {
+    const s = (m.status || '').toLowerCase();
+    const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed';
+    if (isEnded) return 3;
+    const isLive = m.inPlay || s === 'in-play' || s === 'live';
+    if (isLive) return 1;
+    return 2;
+  };
+
+  filtered.sort((a, b) => {
+    const tierA = getTossTier(a);
+    const tierB = getTossTier(b);
+    if (tierA !== tierB) return tierA - tierB;
+    if (tierA === 2) {
+      return (a.startTime || 0) - (b.startTime || 0);
+    }
+    return (b.startTime || 0) - (a.startTime || 0);
+  });
+
   // Extract unique competitions that have live or upcoming toss data
   const compsSet = new Set();
   filtered.forEach(m => {
@@ -773,7 +815,7 @@ router.get('/toss/matches', optionalAuth, async (req, res) => {
   });
 });
 
-router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
+router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchId = String(req.params.matchId);
   const tossMatches = dataCache.getTossMatches();
   const cricketMatches = dataCache.getCricketMatches();
@@ -810,10 +852,21 @@ router.get('/toss/match/:matchId', optionalAuth, async (req, res) => {
     const status = (data?.upstreamStatus === 404 || data?.notFound || !data) ? 404 : 502;
     return res.status(status).json({ error: data?.error || 'No toss data available for this match', matchId });
   }
-  res.json(attachMatchMeta(data, tossInfo || cricketInfo, true));
+
+  const matchInfo = tossInfo || cricketInfo || { matchId, matchName: data.matchName || (data.teamNames ? data.teamNames.join(' v ') : null) };
+  const meta = attachMatchMeta(data, matchInfo, true);
+  try {
+    const crex = await getCrexForMatch(matchInfo, matchId);
+    if (crex) {
+      meta.crex = crex;
+      meta.tossText = crex.scorecard?.tossText || crex.tossText || (crex.scorecard?.statusEquation && /opt|chose|elected|toss/i.test(crex.scorecard.statusEquation) ? crex.scorecard.statusEquation : null);
+    }
+  } catch (e) {}
+
+  res.json(meta);
 });
 
-router.get('/session/matches', optionalAuth, async (req, res) => {
+router.get('/session/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const data = await dataCache.getSessionMatches();
   if (data?.error) return res.status(502).json({ error: data.error });
   const matches = Array.isArray(data) ? data : [];
@@ -822,7 +875,7 @@ router.get('/session/matches', optionalAuth, async (req, res) => {
   res.json({ total: filtered.length, matches: filtered });
 });
 
-router.get('/session/trades/:matchId', optionalAuth, async (req, res) => {
+router.get('/session/trades/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchId = req.params.matchId;
   const [sessionMatches, cricketMatches] = await Promise.all([
     dataCache.getSessionMatches(),
@@ -946,7 +999,7 @@ router.get(['/cricket/all-data', '/cricket/full'], requireProSubscription, async
 
 // ──── Tennis ────
 
-router.get('/tennis/matches', optionalAuth, async (req, res) => {
+router.get('/tennis/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const data = await dataCache.getTennisMatches();
   if (data?.error) return res.status(502).json({ detail: data.error });
   const matches = asMatchList(data);
@@ -954,7 +1007,7 @@ router.get('/tennis/matches', optionalAuth, async (req, res) => {
   res.json(filtered);
 });
 
-router.get('/tennis/match/:matchId', optionalAuth, async (req, res) => {
+router.get('/tennis/match/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchId = req.params.matchId;
   const matches = await dataCache.getTennisMatches();
   const matchInfo = findMatchInfo(matches, matchId);
