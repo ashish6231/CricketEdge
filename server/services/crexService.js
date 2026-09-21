@@ -91,13 +91,77 @@ function cleanText(str) {
   return str.replace(/<[^>]*>?/gm, '').trim();
 }
 
-/** Extract toss statement (e.g. "ZIM opt to Bat", "RNO opt to Bowl", "won the toss and elected to bat") */
-function extractTossString(str) {
+/** Extract and clean toss statement (e.g. "Toss Winner: England (opt to Bowl)", "Toss Winner: ZIM (opt to Bat)") */
+function extractTossString(str, team1 = '', team2 = '', short1 = '', short2 = '') {
   if (!str || typeof str !== 'string') return null;
-  const cleaned = cleanText(str);
+
+  // Remove HTML tags with space separation
+  let cleaned = str.replace(/<[^>]*>?/gm, ' ').trim();
+
+  // Strip trailing junk: Player of the Match, scores, commentary, ellipsis
+  cleaned = cleaned
+    .replace(/Player\s+of\s+the\s+Match.*$/i, '')
+    .replace(/\b\d+\/\d+\s*\(.*$/i, '')
+    .replace(/Com$/i, '')
+    .replace(/[\u2026\.\s]+$/, '')
+    .trim();
+
   if (!cleaned) return null;
-  const m = cleaned.match(/([a-zA-Z0-9\s\-]{2,35}?\s+(?:opt(?:ed)?|chose|elected)\s+to\s+(?:bat|bowl|field)|[a-zA-Z0-9\s\-]{2,35}?\s+won\s+(?:the\s+)?toss[^\.\,\n\<]{0,50})/i);
-  return m ? m[0].trim() : null;
+
+  // Check if string contains toss or opt to bat/bowl
+  const hasTossKeyword = /(?:opt(?:ed)?|chose|elected|decided|won\s+(?:the\s+)?toss)/i.test(cleaned);
+  if (!hasTossKeyword) return null;
+
+  // Extract decision if present (bat or bowl/field)
+  let decision = null;
+  const decMatch = cleaned.match(/(?:opt(?:ed)?|chose|elected|decided)\s+to\s+(bat|bowl|field)/i);
+  if (decMatch) {
+    const d = decMatch[1].toLowerCase();
+    decision = (d === 'field' || d === 'bowl') ? 'opt to Bowl' : 'opt to Bat';
+  }
+
+  // Extract winner team name
+  let winner = null;
+  const t1 = (team1 || '').trim();
+  const t2 = (team2 || '').trim();
+  const s1 = (short1 || '').trim();
+  const s2 = (short2 || '').trim();
+
+  // 1. Team mentioned before opt/won/elected
+  const preMatch = cleaned.match(/^\s*([a-zA-Z0-9\s\-]+?)\s+(?:have\s+)?(?:opt(?:ed)?|chose|elected|decided|won\s+(?:the\s+)?toss)/i);
+  if (preMatch) {
+    const cand = preMatch[1].trim();
+    const candLow = cand.toLowerCase();
+    if (t1 && (candLow === t1.toLowerCase() || t1.toLowerCase().includes(candLow) || candLow.includes(t1.toLowerCase()))) winner = t1;
+    else if (t2 && (candLow === t2.toLowerCase() || t2.toLowerCase().includes(candLow) || candLow.includes(t2.toLowerCase()))) winner = t2;
+    else if (s1 && (candLow === s1.toLowerCase() || s1.toLowerCase().includes(candLow))) winner = t1 || s1;
+    else if (s2 && (candLow === s2.toLowerCase() || s2.toLowerCase().includes(candLow))) winner = t2 || s2;
+    else winner = cand;
+  }
+
+  // 2. Direct team match
+  if (!winner) {
+    if (t1 && cleaned.toLowerCase().includes(t1.toLowerCase())) winner = t1;
+    else if (t2 && cleaned.toLowerCase().includes(t2.toLowerCase())) winner = t2;
+    else if (s1 && cleaned.toLowerCase().includes(s1.toLowerCase())) winner = t1 || s1;
+    else if (s2 && cleaned.toLowerCase().includes(s2.toLowerCase())) winner = t2 || s2;
+  }
+
+  // 3. Short format like 'ZIM opt to Bat'
+  if (!winner) {
+    const shortM = cleaned.match(/^([a-zA-Z0-9\s\-]{2,30}?)\s+opt\s+to\s+(bat|bowl)/i);
+    if (shortM) {
+      winner = shortM[1].trim();
+      decision = shortM[2].toLowerCase() === 'bowl' ? 'opt to Bowl' : 'opt to Bat';
+    }
+  }
+
+  if (!winner) return null;
+
+  if (decision) {
+    return `Toss Winner: ${winner} (${decision})`;
+  }
+  return `Toss Winner: ${winner}`;
 }
 
 /** Normalize team name tokens for fuzzy matching */
@@ -917,12 +981,27 @@ async function getCrexMatchDetail(slugOrUrl) {
     const matchKey1 = (t1Norm && t2Norm) ? `${t1Norm}_vs_${t2Norm}` : null;
     const matchKey2 = (t1Norm && t2Norm) ? `${t2Norm}_vs_${t1Norm}` : null;
 
-    let extractedToss = extractTossString(statusEquation) ||
-      extractTossString(sv3.comment1) ||
-      extractTossString(sv3.B) ||
-      extractTossString(sv3.res) ||
-      extractTossString(sv3.comment2) ||
-      extractTossString(html);
+    const t1Name = sv3.team1_f_n || sv3.team1 || meta?.team1?.n || '';
+    const t2Name = sv3.team2_f_n || sv3.team2 || meta?.team2?.n || '';
+    const t1Short = sv3.team1short || sv3.team1 || meta?.team1?.sn || '';
+    const t2Short = sv3.team2short || sv3.team2 || meta?.team2?.sn || '';
+
+    // Check alt or title attributes in html first (has clean untruncated sentence)
+    let altToss = null;
+    if (html) {
+      const altM = html.match(/(?:alt|title)=["']([^"']*?(?:opt(?:ed)?|won\s+(?:the\s+)?toss)[^"']*?)["']/i);
+      if (altM && altM[1]) {
+        altToss = extractTossString(altM[1], t1Name, t2Name, t1Short, t2Short);
+      }
+    }
+
+    let extractedToss = altToss ||
+      extractTossString(statusEquation, t1Name, t2Name, t1Short, t2Short) ||
+      extractTossString(sv3.comment1, t1Name, t2Name, t1Short, t2Short) ||
+      extractTossString(sv3.B, t1Name, t2Name, t1Short, t2Short) ||
+      extractTossString(sv3.res, t1Name, t2Name, t1Short, t2Short) ||
+      extractTossString(sv3.comment2, t1Name, t2Name, t1Short, t2Short) ||
+      extractTossString(html, t1Name, t2Name, t1Short, t2Short);
 
     if (extractedToss) {
       matchTossCache.set(cacheKey, extractedToss);

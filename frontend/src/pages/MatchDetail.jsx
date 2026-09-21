@@ -1232,7 +1232,7 @@ export default function MatchDetail({ sport }) {
         <div className="space-y-4">
           {/* Toss Winner / Decision Banner */}
           {(() => {
-            const tossBannerText =
+            const rawToss =
               crexData?.scorecard?.tossText ||
               crexData?.toss?.text ||
               crexData?.tossText ||
@@ -1241,7 +1241,44 @@ export default function MatchDetail({ sport }) {
               (tossSnapshot?.actualWinner ? `Toss Winner: ${tossSnapshot.actualWinner}` : null) ||
               (tossSnapshot?.tossWinner ? `Toss Winner: ${tossSnapshot.tossWinner}` : null) ||
               null;
-            if (!tossBannerText) return null;
+            if (!rawToss) return null;
+
+            let cleaned = String(rawToss)
+              .replace(/<[^>]*>?/gm, ' ')
+              .replace(/Player\s+of\s+the\s+Match.*$/i, '')
+              .replace(/\b\d+\/\d+\s*\(.*$/i, '')
+              .replace(/Com$/i, '')
+              .replace(/[\u2026\.\s]+$/, '')
+              .trim();
+
+            if (!cleaned) return null;
+
+            let tossBannerText = cleaned;
+            const decMatch = cleaned.match(/(?:opt(?:ed)?|chose|elected|decided)\s+to\s+(bat|bowl|field)/i);
+            const decision = decMatch ? ((decMatch[1].toLowerCase() === 'field' || decMatch[1].toLowerCase() === 'bowl') ? 'opt to Bowl' : 'opt to Bat') : null;
+
+            const t1 = tossT1Name || t1Name || '';
+            const t2 = tossT2Name || t2Name || '';
+            let winner = null;
+
+            const preMatch = cleaned.match(/^\s*([a-zA-Z0-9\s\-]+?)\s+(?:have\s+)?(?:opt(?:ed)?|chose|elected|decided|won\s+(?:the\s+)?toss)/i);
+            if (preMatch) {
+              const cand = preMatch[1].trim();
+              if (t1 && (cand.toLowerCase() === t1.toLowerCase() || t1.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(t1.toLowerCase()))) winner = t1;
+              else if (t2 && (cand.toLowerCase() === t2.toLowerCase() || t2.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(t2.toLowerCase()))) winner = t2;
+              else winner = cand;
+            } else if (/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i.test(cleaned)) {
+              winner = cleaned.match(/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i)[1].trim();
+            } else if (t1 && cleaned.toLowerCase().includes(t1.toLowerCase())) {
+              winner = t1;
+            } else if (t2 && cleaned.toLowerCase().includes(t2.toLowerCase())) {
+              winner = t2;
+            }
+
+            if (winner) {
+              tossBannerText = decision ? `Toss Winner: ${winner} (${decision})` : `Toss Winner: ${winner}`;
+            }
+
             return (
               <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400">
                 <span>🪙</span>

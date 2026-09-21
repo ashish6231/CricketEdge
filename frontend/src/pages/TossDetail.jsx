@@ -178,7 +178,7 @@ export default function TossDetail({ isEmbedded = false }) {
 
       {/* Toss Result Banner */}
       {(() => {
-        const tossBannerText =
+        const rawToss =
           snap?.tossText ||
           snap?.crex?.scorecard?.tossText ||
           snap?.crex?.toss?.text ||
@@ -187,7 +187,44 @@ export default function TossDetail({ isEmbedded = false }) {
           (snap?.actualWinner ? `Toss Winner: ${snap.actualWinner}` : null) ||
           (snap?.tossWinner ? `Toss Winner: ${snap.tossWinner}` : null) ||
           null;
-        if (!tossBannerText) return null;
+        if (!rawToss) return null;
+
+        let cleaned = String(rawToss)
+          .replace(/<[^>]*>?/gm, ' ')
+          .replace(/Player\s+of\s+the\s+Match.*$/i, '')
+          .replace(/\b\d+\/\d+\s*\(.*$/i, '')
+          .replace(/Com$/i, '')
+          .replace(/[\u2026\.\s]+$/, '')
+          .trim();
+
+        if (!cleaned) return null;
+
+        let tossBannerText = cleaned;
+        const decMatch = cleaned.match(/(?:opt(?:ed)?|chose|elected|decided)\s+to\s+(bat|bowl|field)/i);
+        const decision = decMatch ? ((decMatch[1].toLowerCase() === 'field' || decMatch[1].toLowerCase() === 'bowl') ? 'opt to Bowl' : 'opt to Bat') : null;
+
+        const team1 = t1 || '';
+        const team2 = t2 || '';
+        let winner = null;
+
+        const preMatch = cleaned.match(/^\s*([a-zA-Z0-9\s\-]+?)\s+(?:have\s+)?(?:opt(?:ed)?|chose|elected|decided|won\s+(?:the\s+)?toss)/i);
+        if (preMatch) {
+          const cand = preMatch[1].trim();
+          if (team1 && (cand.toLowerCase() === team1.toLowerCase() || team1.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(team1.toLowerCase()))) winner = team1;
+          else if (team2 && (cand.toLowerCase() === team2.toLowerCase() || team2.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(team2.toLowerCase()))) winner = team2;
+          else winner = cand;
+        } else if (/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i.test(cleaned)) {
+          winner = cleaned.match(/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i)[1].trim();
+        } else if (team1 && cleaned.toLowerCase().includes(team1.toLowerCase())) {
+          winner = team1;
+        } else if (team2 && cleaned.toLowerCase().includes(team2.toLowerCase())) {
+          winner = team2;
+        }
+
+        if (winner) {
+          tossBannerText = decision ? `Toss Winner: ${winner} (${decision})` : `Toss Winner: ${winner}`;
+        }
+
         return (
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400 mb-3">
             <span>🪙</span>
