@@ -12,6 +12,7 @@ const { getDefaultStore: getDefaultTossStore } = require('./tossDatasetStore');
 const { isEndedMatch, guestMayViewMatch, guestMayViewFromInfos } = require('../lib/guestMatchAccess');
 const { hasProAccess } = require('../lib/subscriptionAccess');
 const { getSiteModeSync } = require('../lib/siteSettings');
+const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 
 // In-memory cache for toss dataset (prevents reading 1.4MB JSON from disk on every call)
 let _tossDatasetCache = null;
@@ -181,6 +182,12 @@ function attachMatchMeta(snapshot, matchInfo, isToss = false) {
     if (!result.status && matchInfo.status) result.status = matchInfo.status;
     if (result.inPlay === undefined && matchInfo.inPlay !== undefined) result.inPlay = matchInfo.inPlay;
     if (!result.matchName && matchInfo.matchName) result.matchName = matchInfo.matchName;
+  }
+  if (!isToss) {
+    try {
+      const prediction = predictMatchWinner(result);
+      if (prediction) result.aiPrediction = prediction;
+    } catch {}
   }
   return result;
 }
