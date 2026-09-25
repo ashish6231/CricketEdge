@@ -40,6 +40,16 @@ router.post('/initiate', optionalAuth, (req, res) => {
  * Check if the given token or logged-in user account is verified and still in @cricedge_online
  */
 router.get('/status', optionalAuth, async (req, res) => {
+  if (!telegramService.GATE_ENABLED) {
+    return res.json({
+      success: true,
+      gateEnabled: false,
+      isVerified: true,
+      leftGroup: false,
+      isLinked: true,
+    })
+  }
+
   const role = req.user?.role
   if (role === 'admin' || role === 'superadmin') {
     return res.json({

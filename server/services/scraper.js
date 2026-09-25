@@ -21,7 +21,8 @@ const BASE_URL = process.env.TENNIS_BASE_URL || 'https://tennisliveload.com';
 
 // ──── Proxy setup ────
 // Set SCRAPER_PROXY in env: http://user:pass@host:port  or  socks5://user:pass@host:port
-const PROXY_URL = process.env.SCRAPER_PROXY || null;
+const _rawProxy = (process.env.SCRAPER_PROXY || '').trim();
+const PROXY_URL = _rawProxy && _rawProxy.startsWith('http') ? _rawProxy : null;
 
 function _makeAgents() {
   if (PROXY_URL) {

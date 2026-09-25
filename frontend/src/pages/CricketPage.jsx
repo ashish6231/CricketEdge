@@ -555,7 +555,7 @@ export default function CricketPage() {
           <>
             {/* Compact Cricket Hub Sticky Control Bar */}
             <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#07090e]/95 border-b border-[#1b2030] px-3 sm:px-4 py-2">
-              <div className="flex items-center justify-between gap-2.5 flex-wrap">
+              <div className="flex items-center justify-between gap-2.5">
                 {/* Desktop Active League Indicator */}
                 <div className="hidden md:flex items-center gap-2 shrink-0">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">League:</span>
@@ -565,7 +565,7 @@ export default function CricketPage() {
                 </div>
 
                 {/* Global Search Input */}
-                <div className="relative w-full md:flex-1">
+                <div className="relative flex-1 min-w-0">
                   <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
@@ -584,6 +584,25 @@ export default function CricketPage() {
                     </button>
                   )}
                 </div>
+
+                {/* Join Telegram Button */}
+                <a
+                  href="https://t.me/cricedge_online"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-white shrink-0 transition-all hover:scale-105 active:scale-95 shadow-md shadow-[#0088cc]/20"
+                  style={{
+                    background: 'linear-gradient(135deg, #0088cc, #24A1DE)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                  }}
+                  title="Join official Telegram channel @cricedge_online"
+                >
+                  <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                  </svg>
+                  <span className="hidden xs:inline">Join Telegram</span>
+                  <span className="xs:hidden">Telegram</span>
+                </a>
               </div>
             </div>
 
@@ -601,6 +620,40 @@ export default function CricketPage() {
             </button>
           </div>
         )}
+
+        {/* ── Official Telegram Channel Homescreen Card ── */}
+        <div className="px-2.5 sm:px-3 md:px-3.5 pt-2.5">
+          <div className="rounded-xl p-2.5 sm:p-3 flex items-center justify-between gap-3 border border-[#0088cc]/30 bg-gradient-to-r from-[#0088cc]/15 via-[#0b101c] to-[#24a1de]/10 backdrop-blur-md shadow-sm">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#0088cc] to-[#24a1de] flex items-center justify-center shrink-0 shadow-md">
+                <svg className="w-4 h-4 text-white fill-current" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
+                </svg>
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold text-white">Join CricketEdge Official Telegram</span>
+                  <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#0088cc]/20 text-[#38bdf8] border border-[#0088cc]/35">
+                    @cricedge_online
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400 truncate hidden xs:block">
+                  Live cricket updates, signals, predictions & daily discussion.
+                </p>
+              </div>
+            </div>
+            <a
+              href="https://t.me/cricedge_online"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-white shrink-0 transition-all hover:scale-105 active:scale-95 shadow-md shadow-[#0088cc]/20"
+              style={{ background: 'linear-gradient(135deg, #0088cc, #24A1DE)' }}
+            >
+              <span>Join Channel</span>
+              <ChevronRight size={13} />
+            </a>
+          </div>
+        </div>
 
         {/* ── Match Cards Grid (Compact & Sleek) ── */}
         <div className="p-2.5 sm:p-3 md:p-3.5 w-full space-y-3.5 fade-in">

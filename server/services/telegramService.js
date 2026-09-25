@@ -9,7 +9,7 @@ const crypto = require('crypto')
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '8692519919:AAH6R6qnPqsXcCNV9zhTRrTV4v8X0vhYLCQ'
 const BOT_USERNAME = process.env.TELEGRAM_BOT_USERNAME || 'cricedge_verify_bot'
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '@cricedge_online'
-const GATE_ENABLED = process.env.TELEGRAM_GATE_ENABLED !== 'false'
+const GATE_ENABLED = process.env.TELEGRAM_GATE_ENABLED === 'true'
 
 // In-memory verification sessions: token -> session object
 const sessions = new Map()

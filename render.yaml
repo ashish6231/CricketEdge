@@ -55,7 +55,7 @@ services:
       - key: TELEGRAM_CHAT_ID
         value: "@cricedge_online"
       - key: TELEGRAM_GATE_ENABLED
-        value: true
+        value: false
 
   # ─── Frontend: Vite/React Static Site ───
   - type: web
