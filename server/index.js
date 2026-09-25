@@ -38,8 +38,12 @@ const io = new (require('socket.io').Server)(server, {
       if (!origin || allowedOrigins.includes(origin)) cb(null, true);
       else cb(null, false);
     },
+    methods: ['GET', 'POST'],
     credentials: true,
   },
+  transports: ['websocket'],
+  pingTimeout: 60000,
+  pingInterval: 25000,
 });
 const socketService = require('./services/socketService');
 setIo(io);

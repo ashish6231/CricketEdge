@@ -12,27 +12,31 @@ export function getSocket() {
   const token = localStorage.getItem('auth_token') || null;
 
   socket = io(serverUrl, {
-    transports: ['websocket', 'polling'],
+    transports: ['websocket'],
     auth: {
       token,
     },
     reconnection: true,
     reconnectionAttempts: Infinity,
-    reconnectionDelay: 1000,
-    reconnectionDelayMax: 5000,
-    timeout: 10000,
+    reconnectionDelay: 2000,
+    reconnectionDelayMax: 10000,
+    timeout: 20000,
   });
 
   socket.on('connect', () => {
-    // console.log('🟢 WebSocket connected:', socket.id);
+    console.log('🟢 WebSocket connected:', socket.id, '| transport:', socket.io.engine.transport.name);
   });
 
   socket.on('disconnect', (reason) => {
-    // console.log('🔴 WebSocket disconnected:', reason);
+    console.log('🔴 WebSocket disconnected:', reason);
   });
 
   socket.on('connect_error', (error) => {
-    // console.warn('⚠️ WebSocket connect error:', error.message);
+    console.warn('⚠️ WebSocket connect error:', error.message);
+  });
+
+  socket.io.engine.on('upgrade', (transport) => {
+    console.log('⬆️ Transport upgraded to:', transport.name);
   });
 
   return socket;
