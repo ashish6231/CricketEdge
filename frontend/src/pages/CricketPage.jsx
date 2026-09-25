@@ -632,7 +632,7 @@ export default function CricketPage() {
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-xs sm:text-sm font-bold text-white">Join CricketEdge Official Telegram</span>
+                  <span className="text-xs sm:text-sm font-bold text-white">Join CricEdge Official Telegram</span>
                   <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#0088cc]/20 text-[#38bdf8] border border-[#0088cc]/35">
                     @cricedge_online
                   </span>
