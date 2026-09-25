@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock, BarChart3 } from 'lucide-react'
-import { getSessionMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import SessionDetail from './SessionDetail'
+import { getSocket } from '../socket'
 
 const STORAGE_KEY = 'session_selected_comp'
 const SCROLL_KEY = 'session_scroll_pos'
@@ -22,36 +22,48 @@ export default function SessionPage() {
   const { isLoggedIn, user, mobileMenu, setMobileMenu } = useOutletContext()
   const isPro = hasProAccess(user)
   const [matches, setMatches] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || null)
   const scrollRef = useRef(null)
 
   useEffect(() => {
-    getSessionMatches().then(data => {
-      if (data?.matches) {
-        setMatches(data.matches)
-        const grouped = {}
-        data.matches.forEach(m => {
-          const comp = m.competitionName || 'Other'
-          if (!grouped[comp]) grouped[comp] = []
-          grouped[comp].push(m)
+    const socket = getSocket()
+
+    const onSessionUpdate = (payload) => {
+      if (!payload?.matches) return
+      setMatches(payload.matches)
+      const grouped = {}
+      payload.matches.forEach(m => {
+        const comp = m.competitionName || 'Other'
+        if (!grouped[comp]) grouped[comp] = []
+        grouped[comp].push(m)
+      })
+      Object.keys(grouped).forEach(comp => {
+        grouped[comp].sort((a, b) => {
+          const aLive = a.inPlay && a.status !== 'ended' ? 0 : 1
+          const bLive = b.inPlay && b.status !== 'ended' ? 0 : 1
+          return aLive - bLive
         })
-        // Live matches pehle
-        Object.keys(grouped).forEach(comp => {
-          grouped[comp].sort((a, b) => {
-            const aLive = a.inPlay && a.status !== 'ended' ? 0 : 1
-            const bLive = b.inPlay && b.status !== 'ended' ? 0 : 1
-            return aLive - bLive
-          })
-        })
-        setCompetitions(grouped)
-        const saved = localStorage.getItem(STORAGE_KEY)
-        if (saved && grouped[saved]) setSelectedComp(saved)
-        else setSelectedComp(Object.keys(grouped)[0] || null)
-      }
+      })
+      setCompetitions(grouped)
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved && grouped[saved]) setSelectedComp(saved)
+      else setSelectedComp(Object.keys(grouped)[0] || null)
       setLoading(false)
-    })
+    }
+
+    socket.on('session:matches', onSessionUpdate)
+
+    if (socket.connected) {
+      socket.emit('feed:session')
+    } else {
+      socket.once('connect', () => socket.emit('feed:session'))
+    }
+
+    return () => {
+      socket.off('session:matches', onSessionUpdate)
+    }
   }, [])
 
   const handleCompSelect = (comp) => {

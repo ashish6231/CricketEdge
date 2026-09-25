@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Info, ChevronRight, Coins, Radio, Activity, X, Trophy, Search, Menu } from 'lucide-react'
-import { getTossMatches, getTossSnapshot } from '../api'
+import { getTossMatches } from '../api'
 import TossDetail from './TossDetail'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 import { getSocket, requestTossFeed } from '../socket'
@@ -98,7 +98,7 @@ export default function TossPage() {
   const { mobileMenu, setMobileMenu } = useOutletContext() || {}
   const { matchId } = useParams()
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [loadError, setLoadError] = useState('')
   const [allMatches, setAllMatches] = useState([])
   const [competitions, setCompetitions] = useState({})
@@ -170,19 +170,7 @@ export default function TossPage() {
     setLoading(false)
   }
 
-  const fetchMatches = () => {
-    getTossMatches()
-      .then((data) => {
-        processMatches(data)
-      })
-      .catch((err) => {
-        setLoadError(err?.detail || 'Live toss data is temporarily unavailable. Please try again.')
-        setLoading(false)
-      })
-  }
-
   useEffect(() => {
-    setLoading(true)
     const socket = getSocket()
 
     const onTossUpdate = (payload) => {
@@ -190,42 +178,17 @@ export default function TossPage() {
     }
 
     socket.on('toss:matches', onTossUpdate)
-    requestTossFeed()
 
-    // Initial HTTP fetch
-    fetchMatches()
-
-    // Gentle fallback poll every 25s ONLY if disconnected and not on matchId
-    const fallbackTimer = setInterval(() => {
-      if (!socket.connected && !matchId) {
-        fetchMatches()
-      }
-    }, 25000)
+    if (socket.connected) {
+      requestTossFeed()
+    } else {
+      socket.once('connect', () => requestTossFeed())
+    }
 
     return () => {
-      clearInterval(fallbackTimer)
       socket.off('toss:matches', onTossUpdate)
     }
   }, [matchId])
-
-  // Auto-fetch snapshot for any match missing snapshot to ensure exact graph volume
-  useEffect(() => {
-    if (!allMatches.length) return
-    const missing = allMatches.filter((m) => !m.snapshot)
-    if (!missing.length) return
-
-    missing.slice(0, 15).forEach((m) => {
-      getTossSnapshot(m.matchId)
-        .then((snap) => {
-          if (snap && !snap.error && snap.teams) {
-            setAllMatches((prev) =>
-              prev.map((item) => (item.matchId === m.matchId ? { ...item, snapshot: snap } : item))
-            )
-          }
-        })
-        .catch(() => {})
-    })
-  }, [allMatches.length])
 
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)
@@ -392,14 +355,14 @@ export default function TossPage() {
       <div
         key={match.matchId}
         className="px-3 py-2 md:px-4 md:py-2.5 hover:bg-[#121824]/80 transition-colors flex items-center justify-between gap-2 md:gap-4 cursor-pointer group"
-        onClick={() => navigate(`/toss/match/${match.matchId}`)}
+        onClick={() => navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } })}
       >
         {/* Left: Info icon */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation()
-            navigate(`/toss/match/${match.matchId}`)
+            navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } })
           }}
           className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full border border-white/20 hover:border-amber-400/60 text-white/50 hover:text-amber-300 flex items-center justify-center transition-colors bg-white/5"
           title="View Toss AI Predictions & Smart Money Flow"
@@ -517,7 +480,7 @@ export default function TossPage() {
         <div className="max-w-md rounded-2xl border border-red-500/30 bg-red-500/10 px-6 py-5 text-center shadow-lg">
           <p className="text-sm font-bold text-red-400 mb-2">{loadError}</p>
           <button
-            onClick={() => fetchMatches()}
+            onClick={() => window.location.reload()}
             className="mt-4 rounded-xl bg-red-600 px-6 py-2 text-sm font-bold text-white hover:bg-red-500 transition-colors shadow-md"
           >
             Retry

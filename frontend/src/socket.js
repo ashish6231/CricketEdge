@@ -2,6 +2,18 @@ import { io } from 'socket.io-client';
 
 let socket = null;
 
+// Global prefetch cache — stores match bundles pushed by server on connect
+// MatchDetail reads from this for instant zero-wait rendering
+const matchBundleCache = new Map();
+
+export function getMatchBundle(matchId) {
+  return matchBundleCache.get(String(matchId)) || null;
+}
+
+export function setMatchBundle(matchId, bundle) {
+  matchBundleCache.set(String(matchId), bundle);
+}
+
 export function getSocket() {
   if (socket) return socket;
 
@@ -39,15 +51,53 @@ export function getSocket() {
     console.log('⬆️ Transport upgraded to:', transport.name);
   });
 
+  // Cache all prefetched match bundles pushed by server on connect
+  socket.on('match:prefetch', (bundle) => {
+    if (bundle?.matchId) setMatchBundle(bundle.matchId, bundle);
+  });
+
+  // Also cache bundles received via normal subscribe flow
+  socket.on('match:bundle', (bundle) => {
+    if (bundle?.matchId) setMatchBundle(bundle.matchId, bundle);
+  });
+
+  // When cricket list arrives, seed bundle cache from each match's embedded snapshot
+  // This is instant — no extra server calls needed
+  socket.on('cricket:matches', (payload) => {
+    const matches = payload?.matches || [];
+    matches.forEach(m => {
+      if (!m?.matchId || !m?.snapshot) return;
+      const existing = matchBundleCache.get(String(m.matchId));
+      // Only seed if no real bundle cached yet
+      if (!existing || existing._seeded) {
+        matchBundleCache.set(String(m.matchId), {
+          matchId: String(m.matchId),
+          cricket: {
+            ...m.snapshot,
+            teamNames: m.snapshot?.teamNames || m.matchName?.split(' v ').map(s => s.trim()) || [],
+            competitionName: m.competitionName || m.snapshot?.competitionName || '',
+            startTime: m.startTime || m.snapshot?.startTime || null,
+            inPlay: m.inPlay || false,
+            status: m.status || '',
+            totalMatched: m.totalMatched || 0,
+          },
+          toss: null,
+          session: null,
+          crex: m.crex || null,
+          _seeded: true,
+        });
+      }
+    });
+  });
+
   return socket;
 }
 
 export function updateSocketAuth(token) {
   if (socket) {
     socket.auth = { token };
-    if (socket.connected) {
-      socket.disconnect().connect();
-    }
+    // Don't reconnect — just update auth for next reconnect cycle.
+    // Reconnecting causes 1-2s black screen on login.
   }
 }
 

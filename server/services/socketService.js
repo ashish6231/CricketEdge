@@ -38,15 +38,42 @@ function init(io) {
   io.on('connection', async (socket) => {
     // console.log(`🔌 Client connected [${socket.id}], guest: ${Boolean(socket.isGuest)}`);
 
-    // Immediately push current in-memory cache to the newly connected client (0ms)
+    // Immediately push ALL cached data to the newly connected client (0ms)
     try {
-      const [cricket, crexOverview] = await Promise.all([
+      const [cricket, toss, tennis, session, crexOverview] = await Promise.all([
         matchPayloadService.getCricketMatchesPayload().catch(() => null),
-        dataCache.getCrexOverview(),
+        matchPayloadService.getTossMatchesPayload().catch(() => null),
+        matchPayloadService.getTennisMatchesPayload().catch(() => null),
+        matchPayloadService.getSessionMatchesPayload().catch(() => null),
+        Promise.resolve(dataCache.getCrexOverview()),
       ]);
 
       if (cricket) socket.emit('cricket:matches', cricket);
+      if (toss) socket.emit('toss:matches', toss);
+      if (tennis) socket.emit('tennis:matches', tennis);
+      if (session) socket.emit('session:matches', session);
       if (crexOverview?.length > 0) socket.emit('crex:overview', crexOverview);
+
+      // Prefetch all active match bundles and push to client instantly
+      // So when user opens any match, data is already cached on client
+      const allMatches = [
+        ...(cricket?.matches || []),
+        ...(toss?.matches || []),
+      ];
+      const activeMatchIds = [...new Set(
+        allMatches
+          .filter(m => m.inPlay || (m.status !== 'ended' && m.status !== 'completed' && m.status !== 'closed'))
+          .map(m => m.matchId)
+      )].slice(0, 20); // cap at 20 to avoid overload
+
+      if (activeMatchIds.length > 0) {
+        const bundlePromises = activeMatchIds.map(mid =>
+          matchPayloadService.getMatchBundlePayload(mid, socket.user, 'cricket')
+            .then(bundle => { if (bundle && !bundle.error) socket.emit('match:prefetch', bundle) })
+            .catch(() => {})
+        );
+        Promise.all(bundlePromises).catch(() => {});
+      }
     } catch (e) {}
 
     // Match Room Subscription (When user opens MatchDetail)
@@ -89,6 +116,13 @@ function init(io) {
       try {
         const tennis = await matchPayloadService.getTennisMatchesPayload();
         socket.emit('tennis:matches', tennis);
+      } catch {}
+    });
+
+    socket.on('feed:session', async () => {
+      try {
+        const session = await matchPayloadService.getSessionMatchesPayload();
+        socket.emit('session:matches', session);
       } catch {}
     });
   });

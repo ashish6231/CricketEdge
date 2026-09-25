@@ -243,6 +243,7 @@ async function getCricketMatchesPayload() {
         totalMatched: load?.totalMatched || m.totalMatched || 0,
         runners: snap?.runners || m.runners || [],
         matchLoad: load,
+        snapshot: snap || null,
       });
     }
 
@@ -446,6 +447,17 @@ async function getTossMatchesPayload() {
   };
 }
 
+async function getSessionMatchesPayload() {
+  const data = dataCache.getSessionMatches();
+  const matches = Array.isArray(data) ? data : [];
+  return {
+    total: matches.length,
+    matches,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+
 /**
  * Builds the tennis matches feed payload
  */
@@ -581,6 +593,7 @@ module.exports = {
   getCricketMatchesPayload,
   getTossMatchesPayload,
   getTennisMatchesPayload,
+  getSessionMatchesPayload,
   getMatchBundlePayload,
   computeMatchLoad,
   computeTossLoad,

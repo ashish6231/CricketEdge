@@ -18,7 +18,7 @@ import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetr
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { startVisibleInterval, LIVE_POLL_MS, CREX_POLL_MS } from '../lib/visiblePoll'
-import { getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
+import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -632,17 +632,57 @@ export default function MatchDetail({ sport }) {
   const navigate = useNavigate()
   const location = useLocation()
   const { isLoggedIn, isFreeMode } = useOutletContext() || {}
-  const [snapshot, setSnapshot] = useState(null)
-  const [loading, setLoading] = useState(true)
+
+  // Try to get prefetched bundle from socket cache (server pushes all active bundles on connect)
+  const prefetched = getMatchBundle(matchId)
+  const seedData = location.state?.matchData || null
+  const seedCrex = prefetched?.crex || seedData?.crex || null
+
+  // Build initial snapshot: prefetch cache first, then navigation state fallback
+  const buildInitialSnapshot = () => {
+    // prefetched?.cricket from cricket:matches snapshot — real data, no skeleton needed
+    if (prefetched?.cricket && !prefetched._seeded) return prefetched.cricket
+    // seeded bundle from cricket:matches list
+    if (prefetched?.cricket) return { ...prefetched.cricket, _seeded: true }
+    const m = seedData
+    if (!m?.matchName) return null
+    const parts = m.matchName.split(' v ')
+    const t1 = parts[0]?.trim() || 'Team 1'
+    const t2 = parts[1]?.trim() || 'Team 2'
+    return {
+      teamNames: [t1, t2],
+      competitionName: m.competitionName || '',
+      startTime: m.startTime || null,
+      inPlay: m.inPlay || false,
+      status: m.status || '',
+      totalMatched: m.totalMatched || 0,
+      teams: m.snapshot?.teams || {},
+      deepMetrics: m.snapshot?.deepMetrics || {},
+      advancedMetrics: m.snapshot?.advancedMetrics || {},
+      preMatchPnl: m.snapshot?.preMatchPnl || {},
+      preMatchTotalBets: m.snapshot?.preMatchTotalBets || {},
+      inPlayPnl: m.snapshot?.inPlayPnl || {},
+      inPlayTotalBets: m.snapshot?.inPlayTotalBets || {},
+      preMatchVolume: m.snapshot?.preMatchVolume || {},
+      inPlayVolume: m.snapshot?.inPlayVolume || {},
+      bookmakerExposure: m.snapshot?.bookmakerExposure || {},
+      netSupport: m.snapshot?.netSupport || {},
+      sentimentScore: m.snapshot?.sentimentScore || {},
+      aiPrediction: m.snapshot?.aiPrediction || null,
+      _seeded: true,
+    }
+  }
+
+  const [snapshot, setSnapshot] = useState(buildInitialSnapshot)
+  const [loading, setLoading] = useState(false)
   const [fetchError, setFetchError] = useState(null)
   const [requiresLogin, setRequiresLogin] = useState(false)
   const [requiresPro, setRequiresPro] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
-  const [crexData, setCrexData] = useState(null)
-  const crexDataRef = useRef(null)
+  const [crexData, setCrexData] = useState(seedCrex)
+  const crexDataRef = useRef(seedCrex)
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem(`tab_${matchId}`) || 'simple')
-
   const handleTabChange = (key) => {
     sessionStorage.setItem(`tab_${matchId}`, key)
     setActiveTab(key)
@@ -650,7 +690,7 @@ export default function MatchDetail({ sport }) {
   const [timeFilter, setTimeFilter] = useState('all')
   const [marketType, setMarketType] = useState('match_odds')
   const [showMarketMenu, setShowMarketMenu] = useState(false)
-  const [tossSnapshot, setTossSnapshot] = useState(null)
+  const [tossSnapshot, setTossSnapshot] = useState(prefetched?.toss || null)
   const [lockedStartPred, setLockedStartPred] = useState(() => {
     try {
       const saved = sessionStorage.getItem(`match_start_rawvol_${matchId}`)
@@ -730,6 +770,8 @@ export default function MatchDetail({ sport }) {
 
     const handleBundle = (bundle) => {
       if (cancelled || !bundle) return
+      // Update cache with latest data
+      if (bundle.matchId) setMatchBundle(bundle.matchId, bundle)
       if (isLoginRequiredError(bundle) || bundle?.error === 'login_required') {
         setRequiresLogin(true)
         setLoading(false)
@@ -839,9 +881,8 @@ export default function MatchDetail({ sport }) {
         })
     }
 
-    // 1. WebSocket Room Subscription
+    // WebSocket Room Subscription
     const socket = getSocket()
-    subscribeMatch(matchId, sport)
 
     const onSpecificBundle = (bundle) => {
       if (String(bundle?.matchId) === String(matchId)) {
@@ -856,19 +897,21 @@ export default function MatchDetail({ sport }) {
     socket.on('match:bundle', onSpecificBundle)
     socket.on(`match:crex:${matchId}`, onSpecificCrex)
 
-    // 2. Immediate fetch as initial fallback
-    fetchData(true)
+    if (socket.connected) {
+      subscribeMatch(matchId, sport)
+    } else {
+      setLoading(true)
+      socket.once('connect', () => subscribeMatch(matchId, sport))
+    }
 
-    // 3. Fallback poll ONLY if socket is disconnected (every 20s, very gentle)
-    const fallbackPoll = setInterval(() => {
-      if (!socket.connected) {
-        fetchData(false)
-      }
-    }, 20000)
+    // Safety timeout — agar 10s mein data nahi aaya toh loading hatao
+    const loadingTimeout = setTimeout(() => {
+      if (!cancelled) setLoading(false)
+    }, 10000)
 
     return () => {
       cancelled = true
-      clearInterval(fallbackPoll)
+      clearTimeout(loadingTimeout)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, onSpecificBundle)
       socket.off('match:bundle', onSpecificBundle)
@@ -923,7 +966,11 @@ export default function MatchDetail({ sport }) {
     }
   }, [loading, activeTab, hasTossData])
 
-  if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
+  if (loading) return (
+    <div className="flex h-[80vh] items-center justify-center">
+      <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
+    </div>
+  )
 
   if (requiresPro && !isFreeMode) {
     return (
@@ -972,7 +1019,43 @@ export default function MatchDetail({ sport }) {
     )
   }
 
-  if (!snapshot) return null
+  if (!snapshot || snapshot._seeded) return (
+    <div className="p-3 sm:p-4 space-y-3 animate-pulse">
+      {/* Header skeleton */}
+      <div className="h-10 rounded-xl bg-[#0f1422] border border-[#1b2234]" />
+      {/* Score banner skeleton */}
+      <div className="h-16 rounded-xl bg-[#0f1422] border border-[#1b2234]" />
+      {/* Main card skeleton */}
+      <div className="rounded-xl bg-[#0c101d] border border-[#1e2538] p-4 space-y-3">
+        <div className="h-4 w-1/3 rounded bg-[#1b2234]" />
+        <div className="h-8 rounded bg-[#1b2234]" />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="h-16 rounded-lg bg-[#1b2234]" />
+          <div className="h-16 rounded-lg bg-[#1b2234]" />
+        </div>
+        <div className="h-4 rounded bg-[#1b2234]" />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="h-16 rounded-lg bg-[#1b2234]" />
+          <div className="h-16 rounded-lg bg-[#1b2234]" />
+        </div>
+      </div>
+      {/* Stats skeleton */}
+      <div className="rounded-xl bg-[#0c101d] border border-[#1e2538] p-4 space-y-2">
+        <div className="h-4 w-1/4 rounded bg-[#1b2234]" />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="h-12 rounded-lg bg-[#1b2234]" />
+          <div className="h-12 rounded-lg bg-[#1b2234]" />
+        </div>
+      </div>
+      <div className="rounded-xl bg-[#0c101d] border border-[#1e2538] p-4 space-y-2">
+        <div className="h-4 w-1/4 rounded bg-[#1b2234]" />
+        <div className="grid grid-cols-2 gap-2">
+          <div className="h-12 rounded-lg bg-[#1b2234]" />
+          <div className="h-12 rounded-lg bg-[#1b2234]" />
+        </div>
+      </div>
+    </div>
+  )
 
   const cachedStart =
     location.state?.startTime ??

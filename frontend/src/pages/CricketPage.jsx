@@ -96,7 +96,7 @@ export default function CricketPage() {
   const isPro = hasProAccess(user)
   const { matchId } = useParams()
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [loadError, setLoadError] = useState('')
   const [allMatches, setAllMatches] = useState([])
   const [competitions, setCompetitions] = useState({})
@@ -240,7 +240,6 @@ export default function CricketPage() {
   }
 
   useEffect(() => {
-    setLoading(true)
     const socket = getSocket()
 
     const onMatchesUpdate = (payload) => {
@@ -249,18 +248,9 @@ export default function CricketPage() {
 
     socket.on('cricket:matches', onMatchesUpdate)
 
-    // Fetch initial data
-    fetchMatches()
 
-    // Gentle fallback poll every 25s ONLY if disconnected and not on matchId
-    const fallbackTimer = setInterval(() => {
-      if (!socket.connected && !matchId) {
-        fetchMatches()
-      }
-    }, 25000)
 
     return () => {
-      clearInterval(fallbackTimer)
       socket.off('cricket:matches', onMatchesUpdate)
     }
   }, [matchId])
@@ -747,7 +737,7 @@ export default function CricketPage() {
               return (
                 <div
                   key={match.matchId}
-                  onClick={() => navigate(`/cricket/match/${match.matchId}`, { state: { startTime: match.startTime ?? null } })}
+                  onClick={() => navigate(`/cricket/match/${match.matchId}`, { state: { startTime: match.startTime ?? null, matchData: match } })}
                   className="rounded-xl border border-amber-500/40 hover:border-amber-400 bg-[#090c16] hover:bg-[#0f1320] p-2.5 sm:p-3 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-md hover:shadow-amber-500/10 flex flex-col gap-2"
                 >
                   {/* Top Row: League + Status Badge */}

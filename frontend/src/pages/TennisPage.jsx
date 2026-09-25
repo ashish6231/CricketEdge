@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Activity, ChevronRight, Lock } from 'lucide-react'
-import { getTennisMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
 import { getSocket, requestTennisFeed } from '../socket'
@@ -21,7 +20,7 @@ export default function TennisPage() {
   const { isLoggedIn, authReady, user, mobileMenu, setMobileMenu } = useOutletContext()
   const isPro = hasProAccess(user)
   const { matchId } = useParams()
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [loadError, setLoadError] = useState('')
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || null)
@@ -47,7 +46,6 @@ export default function TennisPage() {
 
   useEffect(() => {
     if (!authReady) return
-    setLoading(true)
     const socket = getSocket()
 
     const onTennisUpdate = (payload) => {
@@ -55,14 +53,12 @@ export default function TennisPage() {
     }
 
     socket.on('tennis:matches', onTennisUpdate)
-    requestTennisFeed()
 
-    getTennisMatches().then(data => {
-      processMatches(data)
-    }).catch(err => {
-      setLoadError(err?.detail || 'Live matches load nahi ho paaye. Thodi der baad dubara try karo.')
-      setLoading(false)
-    })
+    if (socket.connected) {
+      requestTennisFeed()
+    } else {
+      socket.once('connect', () => requestTennisFeed())
+    }
 
     return () => {
       socket.off('tennis:matches', onTennisUpdate)
@@ -172,7 +168,7 @@ export default function TennisPage() {
                           sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
                         }
                         navigate(`/tennis/match/${match.matchId}`, {
-                          state: { startTime: match.startTime ?? null },
+                          state: { startTime: match.startTime ?? null, matchData: match },
                         })
                       }}
                       className={`glass-card rounded-xl p-4 transition-all text-left group hover:bg-bg-card-hover`}
