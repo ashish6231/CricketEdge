@@ -4,6 +4,7 @@ import { LoaderCircle, Info, ChevronRight, Coins, Radio, Activity, X, Trophy, Se
 import { getTossMatches, getTossSnapshot } from '../api'
 import TossDetail from './TossDetail'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
+import { getSocket, requestTossFeed } from '../socket'
 
 const STORAGE_KEY = 'toss_selected_comp'
 
@@ -114,58 +115,65 @@ export default function TossPage() {
     return () => clearInterval(timer)
   }, [])
 
+  const processMatches = (data) => {
+    if (!data) return
+    setLoadError('')
+    const rawList = Array.isArray(data?.matches)
+      ? data.matches
+      : Array.isArray(data?.matches?.matches)
+      ? data.matches.matches
+      : Array.isArray(data)
+      ? data
+      : []
+
+    // Sort: Live (1) → Upcoming (2, soonest start first) → Ended (3, most recently ended first)
+    const sorted = rawList.slice().sort((a, b) => {
+      const tierA = getMatchTier(a)
+      const tierB = getMatchTier(b)
+
+      if (tierA !== tierB) {
+        return tierA - tierB
+      }
+
+      // Live matches (Tier 1): most recent first
+      if (tierA === 1) {
+        return (b.startTime || 0) - (a.startTime || 0)
+      }
+
+      // Upcoming matches (Tier 2): earliest scheduled first (soonest match at top)
+      if (tierA === 2) {
+        return (a.startTime || 0) - (b.startTime || 0)
+      }
+
+      // Ended matches (Tier 3): most recently ended first
+      return (b.startTime || 0) - (a.startTime || 0)
+    })
+
+    setAllMatches(sorted)
+
+    // Group matches by competition
+    const grouped = {}
+    sorted.forEach((m) => {
+      const comp = m.competitionName || 'Other'
+      if (!grouped[comp]) grouped[comp] = []
+      grouped[comp].push(m)
+    })
+
+    setCompetitions(grouped)
+
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved && (saved === 'ALL' || grouped[saved])) {
+      setSelectedComp(saved)
+    } else {
+      setSelectedComp('ALL')
+    }
+    setLoading(false)
+  }
+
   const fetchMatches = () => {
     getTossMatches()
       .then((data) => {
-        setLoadError('')
-        const rawList = Array.isArray(data?.matches)
-          ? data.matches
-          : Array.isArray(data?.matches?.matches)
-          ? data.matches.matches
-          : []
-
-        // Sort: Live (1) → Upcoming (2, soonest start first) → Ended (3, most recently ended first)
-        const sorted = rawList.slice().sort((a, b) => {
-          const tierA = getMatchTier(a)
-          const tierB = getMatchTier(b)
-
-          if (tierA !== tierB) {
-            return tierA - tierB
-          }
-
-          // Live matches (Tier 1): most recent first
-          if (tierA === 1) {
-            return (b.startTime || 0) - (a.startTime || 0)
-          }
-
-          // Upcoming matches (Tier 2): earliest scheduled first (soonest match at top)
-          if (tierA === 2) {
-            return (a.startTime || 0) - (b.startTime || 0)
-          }
-
-          // Ended matches (Tier 3): most recently ended first
-          return (b.startTime || 0) - (a.startTime || 0)
-        })
-
-        setAllMatches(sorted)
-
-        // Group matches by competition
-        const grouped = {}
-        sorted.forEach((m) => {
-          const comp = m.competitionName || 'Other'
-          if (!grouped[comp]) grouped[comp] = []
-          grouped[comp].push(m)
-        })
-
-        setCompetitions(grouped)
-
-        const saved = localStorage.getItem(STORAGE_KEY)
-        if (saved && (saved === 'ALL' || grouped[saved])) {
-          setSelectedComp(saved)
-        } else {
-          setSelectedComp('ALL')
-        }
-        setLoading(false)
+        processMatches(data)
       })
       .catch((err) => {
         setLoadError(err?.detail || 'Live toss data is temporarily unavailable. Please try again.')
@@ -175,9 +183,30 @@ export default function TossPage() {
 
   useEffect(() => {
     setLoading(true)
+    const socket = getSocket()
+
+    const onTossUpdate = (payload) => {
+      processMatches(payload)
+    }
+
+    socket.on('toss:matches', onTossUpdate)
+    requestTossFeed()
+
+    // Initial HTTP fetch
     fetchMatches()
-    return startVisibleInterval(fetchMatches, LIVE_POLL_MS)
-  }, [])
+
+    // Gentle fallback poll every 25s ONLY if disconnected and not on matchId
+    const fallbackTimer = setInterval(() => {
+      if (!socket.connected && !matchId) {
+        fetchMatches()
+      }
+    }, 25000)
+
+    return () => {
+      clearInterval(fallbackTimer)
+      socket.off('toss:matches', onTossUpdate)
+    }
+  }, [matchId])
 
   // Auto-fetch snapshot for any match missing snapshot to ensure exact graph volume
   useEffect(() => {

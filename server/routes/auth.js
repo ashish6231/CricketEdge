@@ -3,8 +3,9 @@ const { getFrontendUrl } = require('../lib/publicUrl');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const router = express.Router();
-const { generateToken, clearAuthCache } = require('../middleware/auth');
+const { generateToken, clearAuthCache, invalidateAuthCache, optionalAuth } = require('../middleware/auth');
 const prisma = require('../db/prisma');
+const socketService = require('../services/socketService');
 const {
   grantTrialToNewUser,
   getTrialConfig,
@@ -169,6 +170,7 @@ router.post('/register', async (req, res) => {
     const token = generateToken(freshUser);
     clearAuthCache();
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
+    socketService.notifySessionReplaced(user.id, token);
     res.json({
       success: true,
       message: result.granted
@@ -207,6 +209,7 @@ router.post('/login', async (req, res) => {
     const token = generateToken(freshUser || user);
     clearAuthCache();
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
+    socketService.notifySessionReplaced(user.id, token);
     res.json({
       success: true,
       message: trialGranted ? `Login successful! ${cfg.label} free trial activated.` : 'Login successful',
@@ -342,25 +345,61 @@ router.get('/me', async (req, res) => {
       return res.status(401).json({ success: false, message: 'No token' });
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, JWT_SECRET);
-
-    const now = Date.now();
-    const cached = _userMeCache.get(decoded.userId);
-    if (cached && (now - cached.ts) < ME_CACHE_TTL) {
-      return res.json({ success: true, user: cached.user });
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ success: false, message: 'Invalid or expired token', code: 'INVALID_TOKEN' });
     }
 
-    const user = await refreshUserSubscriptionState(prisma, decoded.userId);
+    let user;
+    try {
+      user = await refreshUserSubscriptionState(prisma, decoded.userId);
+    } catch (dbErr) {
+      console.error('⚠️ DB error in /auth/me:', dbErr.message);
+      return res.status(503).json({ success: false, message: 'Service temporarily unavailable', code: 'AUTH_UNAVAILABLE' });
+    }
+
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
     if (user.status === 'banned')
       return res.status(403).json({ success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' });
+    if (user.status === 'suspended')
+      return res.status(403).json({ success: false, message: 'Account suspended', code: 'ACCOUNT_SUSPENDED' });
+
+    // Single-session enforcement
+    if (user.activeToken && user.activeToken !== token) {
+      return res.status(401).json({
+        success: false,
+        message: 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.',
+        code: 'SESSION_REPLACED'
+      });
+    }
 
     const sanitized = sanitizeUser(user);
-    _userMeCache.set(decoded.userId, { user: sanitized, ts: now });
-
     res.json({ success: true, user: sanitized });
   } catch (err) {
-    res.status(401).json({ success: false, message: 'Invalid token' });
+    res.status(500).json({ success: false, message: 'Server auth error' });
+  }
+});
+
+// ─── LOGOUT ───
+router.post('/logout', optionalAuth, async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      invalidateAuthCache(token);
+    }
+    if (req.user?.userId) {
+      await prisma.user.update({
+        where: { id: req.user.userId },
+        data: { activeToken: null },
+      });
+      socketService.notifySessionReplaced(req.user.userId, null);
+    }
+    res.json({ success: true, message: 'Logged out successfully' });
+  } catch (err) {
+    res.json({ success: true });
   }
 });
 
@@ -413,6 +452,7 @@ router.post('/google/verify', async (req, res) => {
     const token = generateToken(freshUser || user);
     clearAuthCache();
     await prisma.user.update({ where: { id: user.id }, data: { activeToken: token } });
+    socketService.notifySessionReplaced(user.id, token);
     res.json({ success: true, token, user: sanitizeUser(freshUser || user) });
   } catch (err) {
     console.error('Google verify error:', err.message);
@@ -450,7 +490,11 @@ router.get('/google/callback',
   (req, res) => {
     const token = generateToken(req.user);
     clearAuthCache();
-    prisma.user.update({ where: { id: req.user.id }, data: { activeToken: token, lastLoginAt: new Date() } }).catch(() => {});
+    prisma.user.update({ where: { id: req.user.id }, data: { activeToken: token, lastLoginAt: new Date() } })
+      .then(() => {
+        socketService.notifySessionReplaced(req.user.id, token);
+      })
+      .catch(() => {});
     const redirectTo = getFrontendUrl();
     // JSON.stringify escapes quotes/newlines so token/URL cannot break out of the script
     res.type('html').send(`<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><script>

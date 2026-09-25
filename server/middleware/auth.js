@@ -47,7 +47,7 @@ function generateToken(user) {
   return jwt.sign(
     { userId: user.id, email: user.email, role: user.role, plan: user.subPlanSlug },
     JWT_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: '3650d' } // Never expires on its own — persists until manual logout or 2nd device login
   );
 }
 
@@ -55,22 +55,36 @@ async function resolveBearerUser(token) {
   const cached = getCachedAuth(token);
   if (cached) return cached;
 
-  const decoded = jwt.verify(token, JWT_SECRET);
-  const user = await prisma.user.findUnique({
-    where: { id: decoded.userId },
-    select: {
-      id: true,
-      email: true,
-      role: true,
-      status: true,
-      activeToken: true,
-      subPlanSlug: true,
-      subStatus: true,
-      subExpiresAt: true,
-      telegramId: true,
-      telegramUsername: true,
-    },
-  });
+  let decoded;
+  try {
+    decoded = jwt.verify(token, JWT_SECRET);
+  } catch (jwtErr) {
+    return { errorStatus: 401, errorBody: { success: false, message: 'Invalid or expired token', code: 'INVALID_TOKEN' } };
+  }
+
+  let user;
+  try {
+    user = await prisma.user.findUnique({
+      where: { id: decoded.userId },
+      select: {
+        id: true,
+        email: true,
+        role: true,
+        status: true,
+        activeToken: true,
+        subPlanSlug: true,
+        subStatus: true,
+        subExpiresAt: true,
+        telegramId: true,
+        telegramUsername: true,
+      },
+    });
+  } catch (dbErr) {
+    console.error('⚠️ DB error during resolveBearerUser:', dbErr.message);
+    // Transient DB error: return 503 instead of 401 so client does not wipe user session!
+    return { errorStatus: 503, errorBody: { success: false, message: 'Auth service temporarily unavailable', code: 'AUTH_UNAVAILABLE' } };
+  }
+
   if (!user || user.status === 'banned') {
     const result = { errorStatus: 403, errorBody: { success: false, message: 'Account banned', code: 'ACCOUNT_BANNED' } };
     setCachedAuth(token, result);
@@ -83,7 +97,7 @@ async function resolveBearerUser(token) {
   }
   // Single-session enforcement: only the latest token is valid
   if (user.activeToken && user.activeToken !== token) {
-    const result = { errorStatus: 401, errorBody: { success: false, message: 'Session replaced. Please login again.', code: 'SESSION_REPLACED' } };
+    const result = { errorStatus: 401, errorBody: { success: false, message: 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.', code: 'SESSION_REPLACED' } };
     setCachedAuth(token, result);
     return result;
   }
@@ -119,7 +133,7 @@ async function verifyToken(req, res, next) {
     }
     return res.status(result.errorStatus).json(result.errorBody);
   } catch (err) {
-    return res.status(401).json({ success: false, message: 'Invalid or expired token' });
+    return res.status(500).json({ success: false, message: 'Server auth error' });
   }
 }
 

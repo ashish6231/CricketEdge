@@ -6,6 +6,7 @@ import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTria
 import { guestPathAfterLogout, resolveSiteName, splitSiteName, resolveSiteMode, isFreeMode } from '../utils/publicAuth'
 import LoginPage from '../pages/LoginPage'
 import TelegramGateModal from './TelegramGateModal'
+import { getSocket, updateSocketAuth } from '../socket'
 
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: '🏏' },
@@ -102,6 +103,34 @@ export default function MainLayout() {
     }
     return () => window.removeEventListener('open-login-modal', open)
   }, [location.search])
+
+  // Real-time session replacement: when 2nd device logs in, instantly log out on this device!
+  useEffect(() => {
+    const socket = getSocket()
+    const onSessionReplaced = (data) => {
+      localStorage.removeItem('auth_token')
+      updateSocketAuth(null)
+      setIsLoggedIn(false)
+      setAuthUser(null)
+      sessionStorage.setItem('session_replaced_msg', data?.message || 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.')
+      setLoginOpen(true)
+    }
+    socket.on('session:replaced', onSessionReplaced)
+
+    const onCustomSessionReplaced = (e) => {
+      updateSocketAuth(null)
+      setIsLoggedIn(false)
+      setAuthUser(null)
+      sessionStorage.setItem('session_replaced_msg', e?.detail?.message || 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.')
+      setLoginOpen(true)
+    }
+    window.addEventListener('session-replaced', onCustomSessionReplaced)
+
+    return () => {
+      socket.off('session:replaced', onSessionReplaced)
+      window.removeEventListener('session-replaced', onCustomSessionReplaced)
+    }
+  }, [])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -234,6 +263,7 @@ export default function MainLayout() {
   const handleLoginSuccess = (email, user) => {
     setIsLoggedIn(true)
     setAuthUser(user || null)
+    updateSocketAuth(localStorage.getItem('auth_token'))
     if (user?.role === 'admin' || user?.role === 'superadmin') {
       setTelegramGateRequired(false)
       setTelegramLockReason(null)
@@ -246,6 +276,7 @@ export default function MainLayout() {
 
   const handleLogout = async () => {
     await logout()
+    updateSocketAuth(null)
     setIsLoggedIn(false)
     setAuthUser(null)
     setDropdown(false)

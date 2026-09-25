@@ -6,6 +6,7 @@ import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
 import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 import { CricketBallIcon, formatRateBox, MarketRateDisplay, RunningBallBadge } from '../components/CrexLiveSection'
+import { getSocket } from '../socket'
 
 const STORAGE_KEY = 'cricket_selected_comp'
 
@@ -166,64 +167,71 @@ export default function CricketPage() {
       .catch(() => {})
   }, [])
 
+  const processMatches = (data) => {
+    if (!data) return
+    setLoadError('')
+    const rawList = Array.isArray(data?.matches)
+      ? data.matches
+      : Array.isArray(data?.matches?.matches)
+      ? data.matches.matches
+      : Array.isArray(data)
+      ? data
+      : []
+
+    const getMatchTier = (m) => {
+      const s = (m.status || '').toLowerCase()
+      const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
+        || m.crex?.status === 'completed'
+        || m.crex?.scorecard?.status === 'completed'
+        || /won by|won the|match drawn|match tied|no result/i.test(m.crex?.statusText || '')
+      if (isEnded) return 3
+      const isLive = m.inPlay || s === 'in-play' || s === 'live'
+      if (isLive) return 1
+      return 2
+    }
+
+    // Sort: Live (1) → Upcoming (2) → Ended (3)
+    const sorted = rawList.slice().sort((a, b) => {
+      const tierA = getMatchTier(a)
+      const tierB = getMatchTier(b)
+      if (tierA !== tierB) return tierA - tierB
+      return (a.startTime || 0) - (b.startTime || 0)
+    })
+
+    setAllMatches(sorted)
+
+    // Group matches by competition
+    const grouped = {}
+    const validComps = new Set()
+    sorted.forEach((m) => {
+      if (!String(m.matchId).startsWith('crex-')) {
+        validComps.add(m.competitionName || 'Other')
+      }
+    })
+
+    sorted.forEach((m) => {
+      const comp = m.competitionName || 'Other'
+      if (validComps.has(comp)) {
+        if (!grouped[comp]) grouped[comp] = []
+        grouped[comp].push(m)
+      }
+    })
+
+    setCompetitions(grouped)
+
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved && (saved === 'ALL' || grouped[saved])) {
+      setSelectedComp(saved)
+    } else {
+      setSelectedComp('ALL')
+    }
+    setLoading(false)
+  }
+
   const fetchMatches = () => {
     getCricketMatches()
       .then((data) => {
-        setLoadError('')
-        const rawList = Array.isArray(data?.matches)
-          ? data.matches
-          : Array.isArray(data?.matches?.matches)
-          ? data.matches.matches
-          : []
-
-        const getMatchTier = (m) => {
-          const s = (m.status || '').toLowerCase()
-          const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-            || m.crex?.status === 'completed'
-            || m.crex?.scorecard?.status === 'completed'
-            || /won by|won the|match drawn|match tied|no result/i.test(m.crex?.statusText || '')
-          if (isEnded) return 3
-          const isLive = m.inPlay || s === 'in-play' || s === 'live'
-          if (isLive) return 1
-          return 2
-        }
-
-        // Sort: Live (1) → Upcoming (2) → Ended (3)
-        const sorted = rawList.slice().sort((a, b) => {
-          const tierA = getMatchTier(a)
-          const tierB = getMatchTier(b)
-          if (tierA !== tierB) return tierA - tierB
-          return (a.startTime || 0) - (b.startTime || 0)
-        })
-
-        setAllMatches(sorted)
-
-        // Group matches by competition
-        const grouped = {}
-        const validComps = new Set()
-        sorted.forEach((m) => {
-          if (!String(m.matchId).startsWith('crex-')) {
-            validComps.add(m.competitionName || 'Other')
-          }
-        })
-
-        sorted.forEach((m) => {
-          const comp = m.competitionName || 'Other'
-          if (validComps.has(comp)) {
-            if (!grouped[comp]) grouped[comp] = []
-            grouped[comp].push(m)
-          }
-        })
-
-        setCompetitions(grouped)
-
-        const saved = localStorage.getItem(STORAGE_KEY)
-        if (saved && (saved === 'ALL' || grouped[saved])) {
-          setSelectedComp(saved)
-        } else {
-          setSelectedComp('ALL')
-        }
-        setLoading(false)
+        processMatches(data)
       })
       .catch((err) => {
         setLoadError(err?.detail || 'Live match data is temporarily unavailable. Please try again.')
@@ -233,9 +241,29 @@ export default function CricketPage() {
 
   useEffect(() => {
     setLoading(true)
+    const socket = getSocket()
+
+    const onMatchesUpdate = (payload) => {
+      processMatches(payload)
+    }
+
+    socket.on('cricket:matches', onMatchesUpdate)
+
+    // Fetch initial data
     fetchMatches()
-    return startVisibleInterval(fetchMatches, LIVE_POLL_MS)
-  }, [])
+
+    // Gentle fallback poll every 25s ONLY if disconnected and not on matchId
+    const fallbackTimer = setInterval(() => {
+      if (!socket.connected && !matchId) {
+        fetchMatches()
+      }
+    }, 25000)
+
+    return () => {
+      clearInterval(fallbackTimer)
+      socket.off('cricket:matches', onMatchesUpdate)
+    }
+  }, [matchId])
 
   // Bulk odds for cards
   useEffect(() => {

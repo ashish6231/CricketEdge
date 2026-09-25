@@ -4,6 +4,7 @@ import { LoaderCircle, Activity, ChevronRight, Lock } from 'lucide-react'
 import { getTennisMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
+import { getSocket, requestTennisFeed } from '../socket'
 
 const STORAGE_KEY = 'tennis_selected_comp'
 
@@ -27,27 +28,45 @@ export default function TennisPage() {
   const scrollRef = useRef(null)
   const SCROLL_KEY = 'tennis_scroll_pos'
 
+  const processMatches = (data) => {
+    setLoadError('')
+    const matches = Array.isArray(data?.matches) ? data.matches : (Array.isArray(data) ? data : [])
+    if (matches.length > 0) {
+      const grouped = {}
+      matches.forEach(m => {
+        const comp = m.competitionName || 'Other'
+        if (!grouped[comp]) grouped[comp] = []
+        grouped[comp].push(m)
+      })
+      setCompetitions(grouped)
+      const saved = localStorage.getItem(STORAGE_KEY)
+      setSelectedComp(saved && grouped[saved] ? saved : Object.keys(grouped)[0] || null)
+    }
+    setLoading(false)
+  }
+
   useEffect(() => {
     if (!authReady) return
     setLoading(true)
+    const socket = getSocket()
+
+    const onTennisUpdate = (payload) => {
+      processMatches(payload)
+    }
+
+    socket.on('tennis:matches', onTennisUpdate)
+    requestTennisFeed()
+
     getTennisMatches().then(data => {
-      setLoadError('')
-      if (data?.matches) {
-        const grouped = {}
-        data.matches.forEach(m => {
-          const comp = m.competitionName || 'Other'
-          if (!grouped[comp]) grouped[comp] = []
-          grouped[comp].push(m)
-        })
-        setCompetitions(grouped)
-        const saved = localStorage.getItem(STORAGE_KEY)
-        setSelectedComp(saved && grouped[saved] ? saved : Object.keys(grouped)[0] || null)
-      }
-      setLoading(false)
+      processMatches(data)
     }).catch(err => {
       setLoadError(err?.detail || 'Live matches load nahi ho paaye. Thodi der baad dubara try karo.')
       setLoading(false)
     })
+
+    return () => {
+      socket.off('tennis:matches', onTennisUpdate)
+    }
   }, [isLoggedIn, authReady])
 
   const handleCompSelect = (comp) => {

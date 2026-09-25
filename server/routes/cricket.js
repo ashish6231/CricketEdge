@@ -9,6 +9,7 @@ const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEnde
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { getDefaultStore } = require('../services/tossDatasetStore');
 const crexService = require('../services/crexService');
+const matchPayloadService = require('../services/matchPayloadService');
 
 // In-memory cache for match_dataset.json — avoids disk read on every request
 let _matchDatasetCache = null;
@@ -227,175 +228,9 @@ function attachMatchMeta(data, matchInfo, isToss = false) {
 }
 
 router.get('/cricket/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
-  const matchesMap = new Map();
-
-  // Fetch live matches from scraper only — no dataset/crex fallback for list
-  try {
-    const liveData = await dataCache.getCricketMatches();
-    if (Array.isArray(liveData) && liveData.length > 0) {
-      const isMatchEnded = (m) => {
-        const s = (m.status || '').toLowerCase();
-        return s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed';
-      };
-
-      const activeLive = liveData.filter(m => !isMatchEnded(m));
-      const endedLive = liveData.filter(m => isMatchEnded(m));
-
-      // Fetch snapshots in parallel for active matches to compute live matchLoad with real money and odds
-      await Promise.all(activeLive.map(async (m) => {
-        let snap = null;
-        try {
-          snap = await dataCache.getCricketSnapshot(m.matchId);
-          if (snap?.error) snap = null;
-        } catch (e) {}
-
-        const load = computeMatchLoad(snap, m);
-        matchesMap.set(String(m.matchId), {
-          matchId: String(m.matchId),
-          marketId: m.marketId,
-          matchName: m.matchName,
-          competitionName: m.competitionName || 'Other',
-          status: m.status || (m.inPlay ? 'in-play' : 'upcoming'),
-          inPlay: Boolean(m.inPlay),
-          startTime: m.startTime || m.openDate || null,
-          totalMatched: load?.totalMatched || m.totalMatched || 0,
-          runners: snap?.runners || m.runners || [],
-          matchLoad: load,
-        });
-      }));
-
-      // For ended matches: retrieve from persistent cache (0ms); if missing, fetch and cache
-      const uncachedEnded = endedLive.filter(m => !endedMatchesCache.has(String(m.matchId)));
-      if (uncachedEnded.length > 0) {
-        let hasNew = false;
-        await Promise.allSettled(uncachedEnded.map(async (m) => {
-          try {
-            const snap = await dataCache.getCricketSnapshot(m.matchId);
-            const load = computeMatchLoad(snap, m);
-            endedMatchesCache.set(String(m.matchId), {
-              matchLoad: load,
-              runners: snap?.runners || m.runners || [],
-              totalMatched: load?.totalMatched || m.totalMatched || 0,
-            });
-            hasNew = true;
-          } catch (e) {}
-        }));
-        if (hasNew) saveEndedMatchesCache();
-      }
-
-      for (const m of endedLive) {
-        const cached = endedMatchesCache.get(String(m.matchId));
-        const load = cached?.matchLoad || computeMatchLoad(null, m);
-        matchesMap.set(String(m.matchId), {
-          matchId: String(m.matchId),
-          marketId: m.marketId,
-          matchName: m.matchName,
-          competitionName: m.competitionName || 'Other',
-          status: 'ended',
-          inPlay: false,
-          startTime: m.startTime || m.openDate || null,
-          totalMatched: cached?.totalMatched || load?.totalMatched || m.totalMatched || 0,
-          runners: cached?.runners || m.runners || [],
-          matchLoad: load,
-        });
-      }
-
-      // Any remaining matches
-      for (const m of liveData) {
-        if (!matchesMap.has(String(m.matchId))) {
-          const load = computeMatchLoad(null, m);
-          matchesMap.set(String(m.matchId), {
-            matchId: String(m.matchId),
-            marketId: m.marketId,
-            matchName: m.matchName,
-            competitionName: m.competitionName || 'Other',
-            status: m.status || (m.inPlay ? 'in-play' : 'upcoming'),
-            inPlay: Boolean(m.inPlay),
-            startTime: m.startTime || m.openDate || null,
-            totalMatched: m.totalMatched || 0,
-            runners: m.runners || [],
-            matchLoad: load,
-          });
-        }
-      }
-    }
-  } catch (err) {
-    // ignore upstream live failure
-  }
-
-  const allMatches = Array.from(matchesMap.values()).map((m) => {
-    const isEnded =
-      m.status === 'ended' ||
-      m.status === 'verified' ||
-      m.status === 'pending' ||
-      m.status === 'completed' ||
-      m.status === 'closed';
-    if (isEnded) {
-      m.status = 'ended';
-      m.inPlay = false;
-    }
-    return m;
-  });
-  // Enrich matches with CREX live score, status, and odds
-  try {
-    const cachedOverview = dataCache.getCrexOverview();
-    const crexOverview = Array.isArray(cachedOverview) && cachedOverview.length > 0
-      ? cachedOverview
-      : await crexService.getCrexOverview();
-    if (Array.isArray(crexOverview) && crexOverview.length > 0) {
-      const matchedCrexIds = new Set();
-      for (const m of allMatches) {
-        const cm = crexService.findCrexMatch(m.matchName, crexOverview, {
-          startTime: m.startTime || m.openDate || m.marketStartTime,
-          status: m.status,
-          inPlay: m.inPlay,
-        });
-        if (cm) {
-          matchedCrexIds.add(cm.crexMatchId);
-          m.crex = {
-            matched: true,
-            isReversed: Boolean(cm.isReversed),
-            crexMatchId: cm.crexMatchId,
-            slug: cm.slug,
-            url: cm.url,
-            team1Name: cm.team1Name,
-            team1Short: cm.team1Short,
-            team1Flag: cm.team1Flag,
-            team2Name: cm.team2Name,
-            team2Short: cm.team2Short,
-            team2Flag: cm.team2Flag,
-            score1: cm.score1,
-            score2: cm.score2,
-            status: cm.status,
-            statusText: cm.statusText,
-            venue: cm.venue,
-            odds: cm.odds,
-            runningBall: cm.runningBall || null,
-          };
-          // CREX only provides score data — do NOT override scraper's inPlay/status
-        }
-      }
-
-      // Do NOT add crex-only matches — only enrich existing scraper matches with crex score data
-    }
-  } catch (err) {
-    console.warn('Error enriching CREX in /cricket/matches:', err.message);
-  }
-
-  const filtered = filterMatchesForViewer(allMatches, req.user);
-
-  // Extract unique competitions
-  const compsSet = new Set();
-  filtered.forEach(m => {
-    if (m.competitionName) compsSet.add(m.competitionName);
-  });
-
-  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
-  res.json({
-    total: filtered.length,
-    matches: filtered,
-    competitions: Array.from(compsSet).sort()
-  });
+  const payload = await matchPayloadService.getCricketMatchesPayload(req.user);
+  res.set('Cache-Control', 'public, max-age=3, stale-while-revalidate=8');
+  res.json(payload);
 });
 
 router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
@@ -456,150 +291,18 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
 /** One request for MatchDetail poll — cricket + toss + session (single auth). */
 router.get('/cricket/match/:matchId/bundle', optionalAuth, assertTelegramMembership, async (req, res) => {
   const matchId = req.params.matchId;
-
-  // Check memory cache first for 0ms instant response
-  const cricketMatches = dataCache.getCricketMatches();
-  const tossMatches = dataCache.getTossMatches();
-  const cachedCrex = dataCache.getCrexDetail(matchId);
-
-  let matchInfo = findMatchInfo(cricketMatches, matchId);
-  let tossInfo = findMatchInfo(tossMatches, matchId);
-
-  if (!matchInfo) {
-    try {
-      const md = getMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec) {
-        matchInfo = {
-          matchId: String(rec.matchId),
-          marketId: rec.marketId,
-          matchName: rec.matchName,
-          competitionName: rec.competitionName,
-          status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
-          startTime: rec.startTime,
-          inPlay: false,
-        };
-      }
-    } catch {}
+  const payload = await matchPayloadService.getMatchBundlePayload(matchId, req.user);
+  if (!payload) {
+    return res.status(404).json({ error: 'Match not found', matchId });
   }
-
-  const cricketRawPromise = dataCache.getCricketSnapshot(matchId);
-  const tossRawPromise = dataCache.getTossSnapshot(matchId).catch(() => null);
-  const sessionRawPromise = dataCache.getSessionTrades(matchId).catch(() => null);
-  const crexRawPromise = cachedCrex
-    ? Promise.resolve(cachedCrex)
-    : (async () => {
-        try {
-          const crexOverview = dataCache.getCrexOverview().length > 0
-            ? dataCache.getCrexOverview()
-            : await crexService.getCrexOverview().catch(() => []);
-          let matched = null;
-          if (matchId && String(matchId).startsWith('crex-')) {
-            const rawId = String(matchId).replace(/^crex-/, '');
-            matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
-          }
-          if (!matched && matchInfo?.matchName) {
-            matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview, {
-              startTime: matchInfo.startTime || matchInfo.openDate || matchInfo.marketStartTime,
-              status: matchInfo.status,
-              inPlay: matchInfo.inPlay,
-            });
-          }
-          if (!matched) return null;
-          if (matched.slug || matched.url) {
-            const detail = await crexService.getCrexMatchDetail(matched.slug || matched.url);
-            if (!detail) return matched;
-            const scorecard = alignScorecardTeams(detail.scorecard, matchInfo?.matchName);
-            return {
-              ...matched,
-              ...detail,
-              scorecard: scorecard || detail.scorecard,
-              tossText: detail.tossText || detail.scorecard?.tossText || null,
-              isReversed: Boolean(matched.isReversed),
-            };
-          }
-          return matched;
-        } catch { return null; }
-      })();
-
-  if (!guestMayViewMatch(matchInfo, req.user) && !guestMayViewFromInfos(req.user, [tossInfo, matchInfo])) {
-    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
+  if (payload.error === 'login_required') {
+    return res.status(401).json(payload);
   }
-
-  const isEnded = isEndedMatch(matchInfo) || isEndedMatch(tossInfo);
-  if (!isEnded && !assertProAccess(req, res)) return;
-
-  const [cricketRaw, tossRaw, sessionRaw, crexRaw] = await Promise.all([
-    cricketRawPromise,
-    tossRawPromise,
-    sessionRawPromise,
-    crexRawPromise,
-  ]);
-
-  let cricket = (!cricketRaw || cricketRaw.error)
-    ? null
-    : attachMatchMeta(cricketRaw, matchInfo);
-
-  if (!cricket) {
-    try {
-      const md = getMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec && rec.snapshot) {
-        cricket = attachMatchMeta(JSON.parse(JSON.stringify(rec.snapshot)), matchInfo);
-      }
-    } catch {}
+  if (payload.error === 'subscription_required') {
+    return res.status(403).json(payload);
   }
-  if (!cricket && cricketRaw?.error) {
-    cricket = { error: cricketRaw.error };
-  }
-  if (cricket && !cricket.error) {
-    try {
-      const md = getMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec?.actualWinner && !cricket.actualWinner) {
-        cricket.actualWinner = rec.actualWinner;
-      }
-    } catch {}
-  }
-
-  let toss = (!tossRaw || tossRaw.error)
-    ? null
-    : attachMatchMeta(tossRaw, tossInfo || matchInfo, true);
-
-  if (!toss) {
-    try {
-      const store = getDefaultStore();
-      const ds = await store.load();
-      const rec = (ds.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec && rec.snapshot) {
-        const tossData = JSON.parse(JSON.stringify(rec.snapshot));
-        if (!tossData.competitionName) tossData.competitionName = rec.competitionName;
-        if (!tossData.startTime) tossData.startTime = rec.startTime;
-        toss = attachMatchMeta(tossData, tossInfo || matchInfo, true);
-        if (rec.actualWinner) toss.actualWinner = rec.actualWinner;
-        if (rec.predictedWinner) toss.predictedWinner = rec.predictedWinner;
-      }
-    } catch {}
-  }
-  if (toss && !toss.error) {
-    try {
-      const store = getDefaultStore();
-      const ds = await store.load();
-      const rec = (ds.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec) {
-        if (rec.actualWinner && !toss.actualWinner) toss.actualWinner = rec.actualWinner;
-        if (rec.predictedWinner && !toss.predictedWinner) toss.predictedWinner = rec.predictedWinner;
-      }
-    } catch {}
-  }
-  if (!toss && tossRaw?.error) {
-    toss = { error: tossRaw.error };
-  }
-
-  const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
-
   res.set('Cache-Control', 'private, max-age=3, stale-while-revalidate=8');
-  res.json({ matchId, cricket, toss, session, crex: crexRaw });
+  res.json(payload);
 });
 
 router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
@@ -719,99 +422,14 @@ function computeTossLoad(snap, matchInfo) {
 }
 
 router.get('/toss/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
-  const matchesMap = new Map();
-
-  let datasetRecords = [];
-  try {
-    const store = getDefaultStore();
-    const dataset = await store.load();
-    datasetRecords = Array.isArray(dataset?.records) ? dataset.records : [];
-  } catch (err) {
-    console.error('Error reading toss dataset in /toss/matches:', err);
-  }
-
-  const datasetMap = new Map();
-  datasetRecords.forEach(r => {
-    if (r.matchId) datasetMap.set(String(r.matchId), r);
-  });
-
-  // 1. Try fetching live toss matches from scraper
-  try {
-    const liveData = await dataCache.getTossMatches();
-    if (Array.isArray(liveData)) {
-      await Promise.all(liveData.map(async (m) => {
-        const id = String(m.matchId);
-        let snap = null;
-        try {
-          snap = await dataCache.getTossSnapshot(m.matchId);
-          if (snap?.error) snap = null;
-        } catch (e) {
-          // ignore
-        }
-
-        const dsRec = datasetMap.get(id);
-        if (!snap && dsRec?.snapshot) {
-          snap = dsRec.snapshot;
-        }
-
-        const load = computeTossLoad(snap, m);
-        const isEnded = m.status === 'ended' || m.status === 'verified' || m.status === 'closed' || dsRec?.status === 'ended' || dsRec?.status === 'verified';
-        const matchStatus = isEnded ? 'ended' : (m.status || (m.inPlay ? 'in-play' : 'upcoming'));
-
-        matchesMap.set(id, {
-          matchId: id,
-          marketId: m.marketId,
-          matchName: m.matchName,
-          competitionName: m.competitionName || snap?.competitionName || dsRec?.competitionName || 'Other',
-          status: matchStatus,
-          inPlay: !isEnded && Boolean(m.inPlay || m.status === 'in-play'),
-          startTime: m.startTime || m.openDate || snap?.startTime || dsRec?.startTime || null,
-          totalMatched: load?.totalMatched || m.totalMatched || 0,
-          runners: m.runners || [],
-          tossLoad: load,
-          predictedWinner: dsRec?.predictedWinner,
-          actualWinner: dsRec?.actualWinner,
-        });
-      }));
-    }
-  } catch (err) {
-    // ignore upstream live failure
-  }
-
-  const allMatches = Array.from(matchesMap.values());
-  const filtered = filterMatchesForViewer(allMatches, req.user);
-
-  // Sort: Live (1) -> Upcoming (2, soonest starting first) -> Ended (3, most recently ended first)
-  const getTossTier = (m) => {
-    const s = (m.status || '').toLowerCase();
-    const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed';
-    if (isEnded) return 3;
-    const isLive = m.inPlay || s === 'in-play' || s === 'live';
-    if (isLive) return 1;
-    return 2;
-  };
-
-  filtered.sort((a, b) => {
-    const tierA = getTossTier(a);
-    const tierB = getTossTier(b);
-    if (tierA !== tierB) return tierA - tierB;
-    if (tierA === 2) {
-      return (a.startTime || 0) - (b.startTime || 0);
-    }
-    return (b.startTime || 0) - (a.startTime || 0);
-  });
-
-  // Extract unique competitions that have live or upcoming toss data
-  const compsSet = new Set();
-  filtered.forEach(m => {
-    if (m.competitionName) compsSet.add(m.competitionName);
-  });
-
+  const payload = await matchPayloadService.getTossMatchesPayload();
+  const filtered = filterMatchesForViewer(payload.matches, req.user);
   res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
   res.json({
     total: filtered.length,
     matches: filtered,
-    competitions: Array.from(compsSet).sort()
+    competitions: payload.competitions,
+    updatedAt: payload.updatedAt,
   });
 });
 
@@ -1000,11 +618,14 @@ router.get(['/cricket/all-data', '/cricket/full'], requireProSubscription, async
 // ──── Tennis ────
 
 router.get('/tennis/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
-  const data = await dataCache.getTennisMatches();
-  if (data?.error) return res.status(502).json({ detail: data.error });
-  const matches = asMatchList(data);
-  const filtered = filterMatchesForViewer(matches, req.user);
-  res.json(filtered);
+  const payload = await matchPayloadService.getTennisMatchesPayload();
+  const filtered = filterMatchesForViewer(payload.matches, req.user);
+  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
+  res.json({
+    total: filtered.length,
+    matches: filtered,
+    updatedAt: payload.updatedAt,
+  });
 });
 
 router.get('/tennis/match/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {

@@ -18,6 +18,7 @@ import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetr
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { startVisibleInterval, LIVE_POLL_MS, CREX_POLL_MS } from '../lib/visiblePoll'
+import { getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
 
 // Map sport to the right API function
 const API_MAP = {
@@ -727,6 +728,56 @@ export default function MatchDetail({ sport }) {
       setActiveSessions(activeSessionNames)
     }
 
+    const handleBundle = (bundle) => {
+      if (cancelled || !bundle) return
+      if (isLoginRequiredError(bundle) || bundle?.error === 'login_required') {
+        setRequiresLogin(true)
+        setLoading(false)
+        return
+      }
+      if ((bundle?.code === 'SUBSCRIPTION_REQUIRED' || bundle?.status === 403 || bundle?.error === 'subscription_required') && !isFreeMode) {
+        setRequiresPro(true)
+        setLoading(false)
+        return
+      }
+
+      const data = bundle?.cricket
+      if (isLoginRequiredError(data)) {
+        setRequiresLogin(true)
+      } else if (data && !data.error) {
+        setSnapshot(data)
+        setFetchError(null)
+        const now = new Date()
+        setLastUpdated(now)
+        window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: now } }))
+      } else if (!snapshot && data?.error) {
+        setFetchError(data.error)
+      }
+
+      if (bundle?.toss && !bundle.toss.error) {
+        setTossSnapshot(bundle.toss)
+      } else if (bundle?.toss === null) {
+        setTossSnapshot(null)
+      }
+
+      if (bundle?.session) applySessionData(bundle.session)
+
+      if (bundle?.crex) {
+        crexDataRef.current = bundle.crex
+        setCrexData(bundle.crex)
+      } else if (data?.crex) {
+        crexDataRef.current = data.crex
+        setCrexData(data.crex)
+      }
+      setLoading(false)
+    }
+
+    const handleCrex = (crex) => {
+      if (cancelled || !crex) return
+      crexDataRef.current = crex
+      setCrexData(crex)
+    }
+
     const fetchData = (isInitial = false) => {
       if (typeof document !== 'undefined' && document.hidden && !isInitial) return
       if (isInitial) {
@@ -742,34 +793,7 @@ export default function MatchDetail({ sport }) {
         getCricketMatchBundle(matchId)
           .then(bundle => {
             if (cancelled) return
-            const data = bundle?.cricket
-            if (isLoginRequiredError(data) || isLoginRequiredError(bundle)) {
-              setRequiresLogin(true)
-            } else if (data && !data.error) {
-              setSnapshot(data)
-              setFetchError(null)
-              const now = new Date()
-              setLastUpdated(now)
-              window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: now } }))
-            } else if (isInitial) {
-              setFetchError(data?.error || data?.message || 'Match data load nahi ho paya')
-            }
-            if (bundle?.toss && !bundle.toss.error) {
-              setTossSnapshot(bundle.toss)
-            } else {
-              setTossSnapshot(null)
-            }
-            if (bundle?.session) applySessionData(bundle.session)
-            if (sport === 'cricket') {
-              if (bundle?.crex) {
-                crexDataRef.current = bundle.crex
-                setCrexData(bundle.crex)
-              } else if (data?.crex) {
-                crexDataRef.current = data.crex
-                setCrexData(data.crex)
-              }
-            }
-            if (isInitial) setLoading(false)
+            handleBundle(bundle)
           })
           .catch(err => {
             if (cancelled) return
@@ -785,7 +809,7 @@ export default function MatchDetail({ sport }) {
         return
       }
 
-      // Tennis / other — single snapshot + optional secondary
+      // Tennis / other
       apiFn(matchId)
         .then(data => {
           if (cancelled) return
@@ -815,23 +839,41 @@ export default function MatchDetail({ sport }) {
         })
     }
 
+    // 1. WebSocket Room Subscription
+    const socket = getSocket()
+    subscribeMatch(matchId, sport)
+
+    const onSpecificBundle = (bundle) => {
+      if (String(bundle?.matchId) === String(matchId)) {
+        handleBundle(bundle)
+      }
+    }
+    const onSpecificCrex = (crex) => {
+      handleCrex(crex)
+    }
+
+    socket.on(`match:bundle:${matchId}`, onSpecificBundle)
+    socket.on('match:bundle', onSpecificBundle)
+    socket.on(`match:crex:${matchId}`, onSpecificCrex)
+
+    // 2. Immediate fetch as initial fallback
     fetchData(true)
-    const stopPoll = startVisibleInterval(() => fetchData(false), LIVE_POLL_MS)
 
-    // Dedicated fast CREX poll — runs independently so scores update without waiting for bundle
-    let crexCancelled = false
-    const stopCrexPoll = sport === 'cricket'
-      ? startVisibleInterval(() => {
-        if (crexCancelled) return
-        getCrexMatchDetail(matchId).catch(() => null).then(res => {
-          if (crexCancelled || !res?.crex) return
-          crexDataRef.current = res.crex
-          setCrexData(res.crex)
-        })
-      }, CREX_POLL_MS)
-      : () => { }
+    // 3. Fallback poll ONLY if socket is disconnected (every 20s, very gentle)
+    const fallbackPoll = setInterval(() => {
+      if (!socket.connected) {
+        fetchData(false)
+      }
+    }, 20000)
 
-    return () => { cancelled = true; crexCancelled = true; stopPoll(); stopCrexPoll() }
+    return () => {
+      cancelled = true
+      clearInterval(fallbackPoll)
+      unsubscribeMatch(matchId)
+      socket.off(`match:bundle:${matchId}`, onSpecificBundle)
+      socket.off('match:bundle', onSpecificBundle)
+      socket.off(`match:crex:${matchId}`, onSpecificCrex)
+    }
   }, [matchId, sport, isLoggedIn])
 
   const liveStartPred = useMemo(() => {

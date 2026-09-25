@@ -41,19 +41,9 @@ const io = new (require('socket.io').Server)(server, {
     credentials: true,
   },
 });
+const socketService = require('./services/socketService');
 setIo(io);
-io.use((socket, next) => {
-  const token = socket.handshake.auth?.token;
-  if (!token) return next(new Error('No token'));
-  try {
-    const { JWT_SECRET } = require('./middleware/auth');
-    const jwt = require('jsonwebtoken');
-    const decoded = jwt.verify(token, JWT_SECRET);
-    socket.userId = decoded.userId;
-    socket.join(`user:${decoded.userId}`);
-    next();
-  } catch { next(new Error('Invalid token')); }
-});
+socketService.init(io);
 
 // ─── MIDDLEWARE ───
 // Gzip all responses — biggest win for 3G/4G clients

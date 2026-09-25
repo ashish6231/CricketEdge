@@ -176,29 +176,28 @@ export async function getAuthStatus() {
     if (!res) return { isLoggedIn: true, softFail: true }
     return { isLoggedIn: true, email: res.user?.email, user: res.user }
   } catch (err) {
-    // Only clear session on real auth rejection — never on timeout/network blips
-    // (tab background → focus often times out and was logging users out)
-    const isTelegramGate =
-      err.code === 'TELEGRAM_NOT_LINKED' ||
-      err.code === 'LEFT_GROUP' ||
-      err.raw?.error === 'telegram_required'
-    const hardFail =
-      !isTelegramGate &&
-      (err.status === 401 ||
-       err.status === 403 ||
-       AUTH_HARD_FAIL_CODES.has(err.code))
-    if (hardFail) {
+    // Only clear session on true session replacement or permanently invalid token
+    // NEVER clear on network glitches, timeouts, or 403 subscription gates
+    const isSessionReplaced = err.code === 'SESSION_REPLACED'
+    const isTokenPermanentlyInvalid = err.code === 'INVALID_TOKEN' || err.code === 'ACCOUNT_BANNED'
+    
+    if (isSessionReplaced || isTokenPermanentlyInvalid) {
       localStorage.removeItem('auth_token')
-      if (err.code === 'SESSION_REPLACED' && typeof window !== 'undefined') {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('session-replaced', { detail: { reason: err.code, message: err.detail } }))
         window.dispatchEvent(new CustomEvent('open-login-modal'))
       }
-      return { isLoggedIn: false }
+      return { isLoggedIn: false, reason: err.code }
     }
+    // Any other error (DB timeout, 503, network drop) is a soft fail — preserve login session!
     return { isLoggedIn: true, softFail: true }
   }
 }
 
 export async function logout() {
+  try {
+    await fetchAPI('/auth/logout', { method: 'POST' }).catch(() => {})
+  } catch {}
   localStorage.removeItem('auth_token')
   return { success: true }
 }

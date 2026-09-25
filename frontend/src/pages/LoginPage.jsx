@@ -19,7 +19,15 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
   const [allowSignups, setAllowSignups] = useState(false)
   const [siteName, setSiteName] = useState(siteNameProp || 'CricketEdge')
 
-  const sessionReplaced = new URLSearchParams(window.location.search).get('reason') === 'session_replaced'
+  const [sessionReplacedMsg, setSessionReplacedMsg] = useState(() => {
+    const urlReason = new URLSearchParams(window.location.search).get('reason') === 'session_replaced'
+    const saved = sessionStorage.getItem('session_replaced_msg')
+    if (saved) {
+      sessionStorage.removeItem('session_replaced_msg')
+      return saved
+    }
+    return urlReason ? 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.' : ''
+  })
   const signupsDisabledRedirect = new URLSearchParams(window.location.search).get('error') === 'signups_disabled'
 
   const reset = () => { setError(''); setSuccess(''); setName(''); setEmail(''); setPassword('') }
@@ -132,9 +140,9 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
           </div>
 
           {/* Alerts */}
-          {sessionReplaced && (
+          {Boolean(sessionReplacedMsg) && (
             <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4 text-[11px] text-orange-400 bg-orange-500/10 border border-orange-500/20">
-              <AlertTriangle size={14} className="flex-shrink-0" /> Aapka session hat gaya.
+              <AlertTriangle size={14} className="flex-shrink-0" /> {sessionReplacedMsg}
             </div>
           )}
           {signupsDisabledRedirect && (

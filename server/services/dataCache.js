@@ -12,7 +12,7 @@ const scraper = require('./scraper');
 const crexService = require('./crexService');
 
 const TENNIS_POLL_INTERVAL_MS = parseInt(process.env.DATA_POLL_INTERVAL_MS, 10) || 5000;
-const CREX_POLL_INTERVAL_MS = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 1000;
+const CREX_POLL_INTERVAL_MS = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 3000;
 
 // ──── In-memory cache ────
 let _cricketMatches = [];
@@ -166,6 +166,12 @@ async function _tennisliveloadPollCycle() {
       const active = cricketActive.length + tossActive.length + sessionActive.length + tennisActive.length;
       console.log(`📡 dataCache (tennisliveload #${_tennisPollCount}): ${active} active matches, ${elapsed}ms`);
     }
+
+    // Broadcast updated matches and active match rooms over WebSocket
+    try {
+      const socketService = require('./socketService');
+      socketService.broadcastAllMatches();
+    } catch (e) {}
   } catch (err) {
     console.error('❌ dataCache tennisliveload poll error:', err.message);
   } finally {
@@ -173,7 +179,7 @@ async function _tennisliveloadPollCycle() {
   }
 }
 
-// ──── CREX Background Poll Cycle (every 1s) ────
+// ──── CREX Background Poll Cycle ────
 async function _crexPollCycle() {
   if (_crexRunning) return;
   _crexRunning = true;
@@ -213,6 +219,12 @@ async function _crexPollCycle() {
       }
     }
     _crexPollCount++;
+
+    // Broadcast CREX score updates & active match details over WebSocket
+    try {
+      const socketService = require('./socketService');
+      socketService.broadcastCrexUpdates();
+    } catch (e) {}
   } catch (err) {
     console.error('❌ dataCache CREX poll error:', err.message);
   } finally {
