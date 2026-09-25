@@ -2309,6 +2309,27 @@
     "runners": [],
     "totalMatched": 1476269
   },
+  "36075949": {
+    "matchLoad": {
+      "team1": {
+        "name": "Keonjhar Miners",
+        "money": 287,
+        "percent": 28,
+        "odds": 2.24,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Bhubaneswar Tigers",
+        "money": 735,
+        "percent": 72,
+        "odds": 1.7,
+        "trend": "down"
+      },
+      "totalMatched": 1021
+    },
+    "runners": [],
+    "totalMatched": 1021
+  },
   "36078863": {
     "matchLoad": {
       "team1": {

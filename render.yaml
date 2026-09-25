@@ -1,0 +1,73 @@
+services:
+  # ─── Backend: Node/Express API ───
+  - type: web
+    name: cricedge-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install && npx prisma generate
+    startCommand: node index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: FRONTEND_URL
+        value: https://www.cricedge.in
+      - key: API_PUBLIC_URL
+        value: https://api.cricedge.in
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: TENNIS_BASE_URL
+        value: https://tennisliveload.com
+      - key: TENNIS_SESSION_COOKIES
+        sync: false
+      - key: SCRAPER_PROXY
+        sync: false
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: TELEGRAM_BOT_USERNAME
+        value: cricedge_verify_bot
+      - key: TELEGRAM_CHAT_ID
+        value: "@cricedge_online"
+      - key: TELEGRAM_GATE_ENABLED
+        value: true
+
+  # ─── Frontend: Vite/React Static Site ───
+  - type: web
+    name: cricedge-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://api.cricedge.in
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
