@@ -41,7 +41,7 @@ const io = new (require('socket.io').Server)(server, {
     methods: ['GET', 'POST'],
     credentials: true,
   },
-  transports: ['websocket'],
+  transports: ['polling', 'websocket'],
   pingTimeout: 60000,
   pingInterval: 25000,
 });

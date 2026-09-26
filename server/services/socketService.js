@@ -138,15 +138,17 @@ async function broadcastAllMatches() {
   if (!_io) return;
 
   try {
-    const [cricketPayload, tossPayload, tennisPayload] = await Promise.all([
+    const [cricketPayload, tossPayload, tennisPayload, sessionPayload] = await Promise.all([
       matchPayloadService.getCricketMatchesPayload().catch(() => null),
       matchPayloadService.getTossMatchesPayload().catch(() => null),
       matchPayloadService.getTennisMatchesPayload().catch(() => null),
+      matchPayloadService.getSessionMatchesPayload().catch(() => null),
     ]);
 
     if (cricketPayload) _io.emit('cricket:matches', cricketPayload);
     if (tossPayload) _io.emit('toss:matches', tossPayload);
     if (tennisPayload) _io.emit('tennis:matches', tennisPayload);
+    if (sessionPayload) _io.emit('session:matches', sessionPayload);
 
     // Active Match Rooms Broadcast
     // Only compute bundles for rooms that have actual connected subscribers!

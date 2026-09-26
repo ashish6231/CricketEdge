@@ -24,7 +24,7 @@ export function getSocket() {
   const token = localStorage.getItem('auth_token') || null;
 
   socket = io(serverUrl, {
-    transports: ['websocket'],
+    transports: ['polling', 'websocket'],
     auth: {
       token,
     },

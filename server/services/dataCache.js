@@ -68,7 +68,7 @@ async function _tennisliveloadPollCycle() {
     else if (toss && !toss.error) _tossMatches = toss;
 
     if (Array.isArray(session)) _sessionMatches = session;
-    else if (session && !session.error) _sessionMatches = session;
+    else if (session && !session.error) _sessionMatches = Array.isArray(session.matches) ? session.matches : session;
 
     if (Array.isArray(tennis)) _tennisMatches = tennis;
     else if (tennis && !tennis.error) _tennisMatches = tennis;
