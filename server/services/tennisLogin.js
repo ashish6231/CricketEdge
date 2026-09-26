@@ -36,7 +36,7 @@ function _browserHeaders(extraHeaders = {}) {
   };
 }
 
-let _sessionCookies = (process.env.TENNIS_SESSION_COOKIES || '').trim();
+let _sessionCookies = (process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^"|"$/g, '');
 let _reloginInProgress = null;
 
 // Track daily automated login attempts (STRICT MAX: 1 attempt per day)
@@ -75,7 +75,7 @@ function getCookieExpiryTimestamp(cookie = _sessionCookies) {
 }
 
 function getCookies() {
-  return (_sessionCookies || process.env.TENNIS_SESSION_COOKIES || '').trim();
+  return (_sessionCookies || process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^"|"$/g, '');
 }
 
 function isConnected() {
@@ -190,7 +190,7 @@ async function loadSavedSession() {
     // ignore DB connection startup errors
   }
 
-  const envCookie = (process.env.TENNIS_SESSION_COOKIES || '').trim();
+  const envCookie = (process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^"|"$/g, '');
   let fileCookie = null;
   try {
     if (fs.existsSync(COOKIES_FILE)) {

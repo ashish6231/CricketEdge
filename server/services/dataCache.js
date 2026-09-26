@@ -69,6 +69,7 @@ async function _tennisliveloadPollCycle() {
 
     if (Array.isArray(session)) _sessionMatches = session;
     else if (session && !session.error) _sessionMatches = Array.isArray(session.matches) ? session.matches : session;
+    else console.warn('[dataCache] session fetch failed:', JSON.stringify(session)?.slice(0, 200));
 
     if (Array.isArray(tennis)) _tennisMatches = tennis;
     else if (tennis && !tennis.error) _tennisMatches = tennis;
