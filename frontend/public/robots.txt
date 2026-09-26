@@ -1,0 +1,32 @@
+# robots.txt for CricEdge (https://www.cricedge.in)
+User-agent: *
+Allow: /
+Allow: /cricket
+Allow: /toss
+Allow: /tennis
+Allow: /favicon.ico
+Allow: /favicon.svg
+Allow: /favicon*.png
+Allow: /icon*.png
+Allow: /apple-touch-icon.png
+Allow: /og-image.png
+Allow: /site.webmanifest
+Disallow: /admin
+Disallow: /admin/
+Disallow: /profile
+Disallow: /subscription
+
+# Explicit crawler access for search bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Googlebot-Favicons
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+Sitemap: https://www.cricedge.in/sitemap.xml

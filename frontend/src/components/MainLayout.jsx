@@ -17,13 +17,13 @@ export default function MainLayout() {
   const location = useLocation()
   const navigate  = useNavigate()
   const [mobileMenu, setMobileMenu] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('auth_token'))
   const [authUser, setAuthUser]     = useState(null)
-  const [authReady, setAuthReady]   = useState(false)
+  const [authReady, setAuthReady]   = useState(() => !localStorage.getItem('auth_token'))
   const [loginOpen, setLoginOpen]   = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [dropdown, setDropdown]     = useState(false)
-  const [siteName, setSiteName]     = useState('CricketEdge')
+  const [siteName, setSiteName]     = useState('CricEdge')
   const [siteMode, setSiteMode]     = useState('paid')
   const [telegramGateRequired, setTelegramGateRequired] = useState(false)
   const [telegramLockReason, setTelegramLockReason]     = useState(null)
@@ -81,7 +81,7 @@ export default function MainLayout() {
       .then((res) => {
         const name = resolveSiteName(res)
         setSiteName(name)
-        document.title = `${name} — Live Cricket Analytics`
+        document.title = `${name} — Live Cricket Scores, Analytics & Toss Prediction`
         setSiteMode(resolveSiteMode(res))
       })
       .catch(() => {})
@@ -113,6 +113,7 @@ export default function MainLayout() {
       setIsLoggedIn(false)
       setAuthUser(null)
       sessionStorage.setItem('session_replaced_msg', data?.message || 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.')
+      navigate('/', { replace: true })
       setLoginOpen(true)
     }
     socket.on('session:replaced', onSessionReplaced)
@@ -272,6 +273,7 @@ export default function MainLayout() {
       setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
     }
     setLoginOpen(false)
+    navigate('/cricket', { replace: true })
   }
 
   const handleLogout = async () => {
@@ -320,10 +322,7 @@ export default function MainLayout() {
 
           {/* Logo */}
           <Link to="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
-              <Activity className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
-            </div>
+            <img src="/favicon-48x48.png" alt="CricEdge" className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-contain border border-white/10 shadow-sm" />
             <span className="font-black text-sm sm:text-lg tracking-tight text-text-primary">
               {(() => {
                 const { prefix, suffix } = splitSiteName(siteName)
@@ -376,24 +375,6 @@ export default function MainLayout() {
               </div>
             )}
 
-            {/* Telegram Channel Button */}
-            <a
-              href="https://t.me/cricedge_online"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-2.5 sm:px-3 h-7 sm:h-8 rounded-full text-[11px] sm:text-xs font-bold text-white transition-all hover:scale-105 active:scale-95 shadow-sm"
-              style={{
-                background: 'linear-gradient(135deg, #0088cc, #24A1DE)',
-                boxShadow: '0 2px 8px rgba(0, 136, 204, 0.3)',
-              }}
-              title="Join our official Telegram Channel @cricedge_online"
-            >
-              <svg className="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
-              </svg>
-              <span className="hidden sm:inline">Join Telegram</span>
-              <span className="sm:hidden">Telegram</span>
-            </a>
 
             {authReady && isLoggedIn && authUser ? (
               /* ── Profile dropdown ── */

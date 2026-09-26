@@ -7,8 +7,48 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../middleware/auth');
 const dataCache = require('./dataCache');
 const matchPayloadService = require('./matchPayloadService');
+const prisma = require('../db/prisma');
 
 let _io = null;
+
+// userId -> activeToken cache, refreshed every broadcast cycle
+const _activeTokenCache = new Map();
+let _tokenCacheUpdatedAt = 0;
+
+async function _refreshActiveTokenCache() {
+  // Collect all authenticated userIds currently connected
+  if (!_io) return;
+  const userIds = new Set();
+  for (const [, socket] of _io.sockets.sockets) {
+    if (socket.userId) userIds.add(socket.userId);
+  }
+  if (!userIds.size) return;
+
+  try {
+    const rows = await prisma.user.findMany({
+      where: { id: { in: [...userIds] } },
+      select: { id: true, activeToken: true },
+    });
+    rows.forEach(r => _activeTokenCache.set(r.id, r.activeToken));
+    _tokenCacheUpdatedAt = Date.now();
+  } catch {}
+}
+
+function _checkSessionsAndKickStale() {
+  if (!_io) return;
+  for (const [, socket] of _io.sockets.sockets) {
+    if (!socket.userId || !socket.token) continue;
+    const activeToken = _activeTokenCache.get(socket.userId);
+    if (activeToken === undefined) continue; // not in cache yet
+    if (activeToken && activeToken !== socket.token) {
+      socket.emit('session:replaced', {
+        code: 'SESSION_REPLACED',
+        message: 'Aapka account kisi doosre device par login ho gaya hai. Yahan se logout ho gaya.',
+      });
+      socket.disconnect(true);
+    }
+  }
+}
 
 function init(io) {
   _io = io;
@@ -150,6 +190,10 @@ async function broadcastAllMatches() {
     if (tennisPayload) _io.emit('tennis:matches', tennisPayload);
     if (sessionPayload) _io.emit('session:matches', sessionPayload);
 
+    // Check stale sessions every broadcast cycle
+    await _refreshActiveTokenCache();
+    _checkSessionsAndKickStale();
+
     // Active Match Rooms Broadcast
     // Only compute bundles for rooms that have actual connected subscribers!
     const rooms = _io.sockets.adapter?.rooms;
@@ -204,6 +248,9 @@ function broadcastCrexUpdates() {
 }
 
 function notifySessionReplaced(userId, newActiveToken) {
+  // Invalidate cache so next broadcast cycle picks up the new token immediately
+  if (userId) _activeTokenCache.delete(userId);
+
   if (!_io || !userId) return;
   const userRoom = `user:${userId}`;
   const room = _io.sockets.adapter?.rooms?.get(userRoom);

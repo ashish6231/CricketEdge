@@ -30,11 +30,11 @@ try {
 } catch { /* nodemailer not installed */ }
 
 async function sendOTP(email, otp, name) {
-  const subject = 'CricketEdge - Password Reset OTP';
+  const subject = 'CricEdge - Password Reset OTP';
   const html = `
     <div style="font-family:Inter,sans-serif;max-width:480px;margin:0 auto;padding:32px;background:#0f172a;color:#fff;border-radius:16px;">
       <h2 style="margin:0 0 8px;font-size:24px;">🔐 Password Reset</h2>
-      <p style="color:#94a3b8;margin:0 0 24px;">Hi ${name}, use this OTP to reset your CricketEdge password.</p>
+      <p style="color:#94a3b8;margin:0 0 24px;">Hi ${name}, use this OTP to reset your CricEdge password.</p>
       <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);border-radius:12px;padding:20px;text-align:center;margin-bottom:24px;">
         <div style="font-size:36px;font-weight:800;letter-spacing:8px;color:#6366f1;">${otp}</div>
         <div style="font-size:12px;color:#64748b;margin-top:8px;">Valid for 10 minutes</div>
@@ -128,7 +128,7 @@ router.get('/signup-status', async (_req, res) => {
       data: {
         signupMode: 'admin_only',
         allowSignups: false,
-        siteName: 'CricketEdge',
+        siteName: 'CricEdge',
         siteMode: 'paid',
         isFreeMode: false,
       },
@@ -152,7 +152,7 @@ router.post('/register', async (req, res) => {
     const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
     if (existing) return res.status(409).json({ success: false, message: 'Account already exists with this email' });
 
-    const hashed = await bcrypt.hash(password, 12);
+    const hashed = await bcrypt.hash(password, 10);
     const now = new Date();
 
     const user = await prisma.user.create({
@@ -297,7 +297,7 @@ router.post('/reset-password', async (req, res) => {
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        password: await bcrypt.hash(newPassword, 12),
+        password: await bcrypt.hash(newPassword, 10),
         otpCode: null, otpExpiresAt: null, otpPurpose: null,
         resetToken: null, resetTokenExpires: null
       }

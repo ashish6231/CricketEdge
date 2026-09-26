@@ -1,5 +1,5 @@
 const SITE_NAME_KEY = 'siteName';
-const DEFAULT_SITE_NAME = 'CricketEdge';
+const DEFAULT_SITE_NAME = 'CricEdge';
 const SIGNUP_MODE_KEY = 'signupMode';
 const LEGACY_SIGNUP_KEY = 'allowSignups';
 const SIGNUP_SETTING_KEY = LEGACY_SIGNUP_KEY; // backward compat export

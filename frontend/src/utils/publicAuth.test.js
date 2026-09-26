@@ -85,7 +85,7 @@ test('isLoginRequiredError ignores subscription and network errors', () => {
 test('resolveSiteName reads siteName from payload', () => {
   assert.equal(resolveSiteName({ siteName: 'CricEdge' }), 'CricEdge')
   assert.equal(resolveSiteName({ data: { siteName: ' Odds ' } }), 'Odds')
-  assert.equal(resolveSiteName({}), 'CricketEdge')
+  assert.equal(resolveSiteName({}), 'CricEdge')
 })
 
 test('splitSiteName highlights trailing Edge', () => {

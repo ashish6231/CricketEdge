@@ -17,7 +17,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [allowSignups, setAllowSignups] = useState(false)
-  const [siteName, setSiteName] = useState(siteNameProp || 'CricketEdge')
+  const [siteName, setSiteName] = useState(siteNameProp || 'CricEdge')
 
   const [sessionReplacedMsg, setSessionReplacedMsg] = useState(() => {
     const urlReason = new URLSearchParams(window.location.search).get('reason') === 'session_replaced'
@@ -45,7 +45,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
     getSignupStatus()
       .then((res) => {
         setAllowSignups(resolveAllowSignups(res))
-        setSiteName(resolveSiteName(res, siteNameProp || 'CricketEdge'))
+        setSiteName(resolveSiteName(res, siteNameProp || 'CricEdge'))
       })
       .catch(() => setAllowSignups(false))
   }, [siteNameProp])
@@ -110,10 +110,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2"
-            style={{ background: 'linear-gradient(135deg, #16a34a, #10b981)' }}>
-            <Activity className="h-5 w-5 text-white" />
-          </div>
+          <img src="/favicon-96x96.png" alt="CricEdge" className="w-16 h-16 rounded-2xl object-contain mb-2 border border-white/10 shadow-lg" />
           <h1 className="text-xl font-bold text-white tracking-tight">
             {(() => {
               const { prefix, suffix } = splitSiteName(siteName)

@@ -160,8 +160,8 @@ export default function TelegramGateModal({
 
         <p className="mt-2 text-xs sm:text-sm text-slate-300 leading-relaxed">
           {isLeftGroup
-            ? 'Aapne hamara official Telegram channel chhod diya hai. CricketEdge live data continue karne ke liye channel dobara join karein.'
-            : 'CricketEdge ke live match odds, toss signals & smart predictions use karne ke liye hamara official Telegram channel join karein.'}
+            ? 'Aapne hamara official Telegram channel chhod diya hai. CricEdge live data continue karne ke liye channel dobara join karein.'
+            : 'CricEdge ke live match odds, toss signals & smart predictions use karne ke liye hamara official Telegram channel join karein.'}
         </p>
 
         {/* Error / Warning Alert */}

@@ -248,7 +248,7 @@ async function handleIncomingMessage(msg) {
   if (!match) {
     await sendBotMessage(
       chatId,
-      `👋 <b>Hello ${firstName}!</b>\n\nI am the official <b>CricketEdge Verification Bot</b>.\n\nTo access CricketEdge live match & toss data, please join our official Telegram group:\n👉 <b>${CHAT_ID}</b>\n\nIf you came from the website, please click the <b>Verify</b> button on CricketEdge to unlock your session.`
+      `👋 <b>Hello ${firstName}!</b>\n\nI am the official <b>CricEdge Verification Bot</b>.\n\nTo access CricEdge live match & toss data, please join our official Telegram group:\n👉 <b>${CHAT_ID}</b>\n\nIf you came from the website, please click the <b>Verify</b> button on CricEdge to unlock your session.`
     )
     return
   }
@@ -259,7 +259,7 @@ async function handleIncomingMessage(msg) {
     // Plain /start without token
     await sendBotMessage(
       chatId,
-      `👋 <b>Welcome to CricketEdge!</b>\n\n1️⃣ Join our official group: <b>${CHAT_ID}</b>\n2️⃣ Visit <a href="http://localhost:3000">CricketEdge</a> and click <b>"Verify Access"</b> to unlock live match predictions.`
+      `👋 <b>Welcome to CricEdge!</b>\n\n1️⃣ Join our official group: <b>${CHAT_ID}</b>\n2️⃣ Visit <a href="http://localhost:3000">CricEdge</a> and click <b>"Verify Access"</b> to unlock live match predictions.`
     )
     return
   }
@@ -295,7 +295,7 @@ async function handleIncomingMessage(msg) {
     session.status = check.status
     session.lastChecked = Date.now()
 
-    // If session is tied to a CricketEdge user account, save telegramId in DB!
+    // If session is tied to a CricEdge user account, save telegramId in DB!
     if (session.userId) {
       try {
         const prisma = require('../db/prisma')
@@ -318,7 +318,7 @@ async function handleIncomingMessage(msg) {
 
     await sendBotMessage(
       chatId,
-      `🎉 <b>Verification Successful!</b>\n\n✅ You are confirmed as an active member of <b>${CHAT_ID}</b>.\n\n🔓 <b>Your CricketEdge access is now UNLOCKED!</b>\n\nYou can switch back to your browser now — all live cricket, odds, and toss predictions are ready for you.`
+      `🎉 <b>Verification Successful!</b>\n\n✅ You are confirmed as an active member of <b>${CHAT_ID}</b>.\n\n🔓 <b>Your CricEdge access is now UNLOCKED!</b>\n\nYou can switch back to your browser now — all live cricket, odds, and toss predictions are ready for you.`
     )
     console.log(`[TelegramService] User ${username || userId} verified token ${token} successfully!`)
   } else {

@@ -27,7 +27,7 @@ const DEFAULT_PLANS = [
 ];
 
 const DEFAULT_SETTINGS = [
-  { key: 'siteName', value: 'CricketEdge', category: 'general', description: 'Site name displayed across platform', isPublic: true },
+  { key: 'siteName', value: 'CricEdge', category: 'general', description: 'Site name displayed across platform', isPublic: true },
   { key: 'maintenanceMode', value: false, category: 'maintenance', description: 'Put site in maintenance mode', isPublic: true },
   { key: 'signupMode', value: 'admin_only', category: 'general', description: 'Who can create accounts: admin_only | public | both', isPublic: true },
   { key: 'allowSignups', value: false, category: 'general', description: 'Allow new user registrations', isPublic: true },

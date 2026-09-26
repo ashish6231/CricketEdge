@@ -37,7 +37,7 @@ export default function SubscriptionPage() {
         key: order.keyId,
         amount: order.amount,
         currency: order.currency,
-        name: 'CricketEdge Pro',
+        name: 'CricEdge Pro',
         description: `Pro Plan - ${cycle}`,
         order_id: order.orderId,
         handler: async (response) => {
@@ -97,7 +97,7 @@ export default function SubscriptionPage() {
           }}
         >
           <div className="text-3xl mb-2">🎉</div>
-          <h2 className="text-base font-bold text-white mb-1">CricketEdge is Currently in Free Mode!</h2>
+          <h2 className="text-base font-bold text-white mb-1">CricEdge is Currently in Free Mode!</h2>
           <p className="text-xs text-emerald-400 max-w-md mx-auto leading-relaxed">
             All live matches, upcoming fixtures, real-time Betfair odds, and predictions are completely free for all logged-in users. No subscription required!
           </p>

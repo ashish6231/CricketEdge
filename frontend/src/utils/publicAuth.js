@@ -34,7 +34,7 @@ export function isLoginRequiredError(err) {
   return err.error === 'login_required' || err.code === 'login_required' || err.detail === 'login_required'
 }
 
-export function resolveSiteName(payload, fallback = 'CricketEdge') {
+export function resolveSiteName(payload, fallback = 'CricEdge') {
   const data = payload?.data && typeof payload.data === 'object' && !Array.isArray(payload.data)
     ? payload.data
     : payload
@@ -43,7 +43,7 @@ export function resolveSiteName(payload, fallback = 'CricketEdge') {
   return fallback
 }
 
-export function splitSiteName(name, fallback = 'CricketEdge') {
+export function splitSiteName(name, fallback = 'CricEdge') {
   const n = (typeof name === 'string' && name.trim() ? name.trim() : fallback)
   if (/edge$/i.test(n) && n.length > 4) {
     return { prefix: n.slice(0, -4), suffix: n.slice(-4) }

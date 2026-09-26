@@ -64,6 +64,9 @@ export function getSocket() {
   // When cricket list arrives, seed bundle cache from each match's embedded snapshot
   // This is instant — no extra server calls needed
   socket.on('cricket:matches', (payload) => {
+    if (payload?.updatedAt) {
+      window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: new Date(payload.updatedAt) } }))
+    }
     const matches = payload?.matches || [];
     matches.forEach(m => {
       if (!m?.matchId || !m?.snapshot) return;
@@ -96,8 +99,7 @@ export function getSocket() {
 export function updateSocketAuth(token) {
   if (socket) {
     socket.auth = { token };
-    // Don't reconnect — just update auth for next reconnect cycle.
-    // Reconnecting causes 1-2s black screen on login.
+    socket.disconnect().connect();
   }
 }
 

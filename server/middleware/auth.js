@@ -206,7 +206,7 @@ async function assertTelegramMembership(req, res, next) {
         success: false,
         error: 'telegram_required',
         code: 'TELEGRAM_NOT_LINKED',
-        message: 'CricketEdge website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.',
+        message: 'CricEdge website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.',
         groupUrl: `https://t.me/${telegramService.CHAT_ID.replace('@', '')}`,
         userId: req.user.userId,
       });

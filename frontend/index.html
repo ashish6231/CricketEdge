@@ -1,13 +1,122 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-4" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CricEdge — Live Cricket Analytics</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Primary Page Title & Brand -->
+  <title>CricEdge — Live Cricket Scores, Analytics &amp; Toss Prediction</title>
+  <meta name="title" content="CricEdge — Live Cricket Scores, Analytics &amp; Toss Prediction" />
+  <meta name="description"
+    content="CricEdge (cricedge.in) delivers ultra-fast live cricket scores, AI-driven toss predictions, real-time match odds, session analytics, and comprehensive head-to-head stats." />
+  <meta name="keywords"
+    content="CricEdge, cricedge.in, cricket live line, toss prediction, cricket analytics, live cricket score, match odds, ball by ball, IPL toss prediction" />
+  <meta name="author" content="CricEdge" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+
+  <!-- Google Search Console Verification -->
+  <meta name="google-site-verification" content="0xshNlfCsjNbVruneHqqohuQbEB9YopebROkASLAlfE" />
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://www.cricedge.in/" />
+
+  <!-- Google Search & Browser Favicons (Standard 48x48 multiples & ICO) -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <!-- Mobile & PWA Theme Colors -->
+  <meta name="theme-color" content="#000000" />
+  <meta name="msapplication-TileColor" content="#000000" />
+  <meta name="apple-mobile-web-app-title" content="CricEdge" />
+  <meta name="application-name" content="CricEdge" />
+
+  <!-- Open Graph / Facebook / WhatsApp / Telegram -->
+  <meta property="og:site_name" content="CricEdge" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.cricedge.in/" />
+  <meta property="og:title" content="CricEdge — Live Cricket Analytics &amp; Toss Prediction" />
+  <meta property="og:description"
+    content="Ultra-fast live cricket scores, AI-driven toss predictions, real-time match odds, and ball-by-ball analysis on CricEdge." />
+  <meta property="og:image" content="https://www.cricedge.in/og-image.png" />
+  <meta property="og:image:secure_url" content="https://www.cricedge.in/og-image.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="CricEdge — Live Cricket Analytics" />
+  <meta property="og:locale" content="en_IN" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@cricedge_online" />
+  <meta name="twitter:creator" content="@cricedge_online" />
+  <meta name="twitter:title" content="CricEdge — Live Cricket Analytics &amp; Toss Prediction" />
+  <meta name="twitter:description"
+    content="Ultra-fast live cricket scores, AI toss predictions, real-time match odds, and ball-by-ball analysis." />
+  <meta name="twitter:image" content="https://www.cricedge.in/og-image.png" />
+
+  <!-- Schema.org WebSite Structured Data (REQUIRED by Google to show Site Name instead of URL) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "CricEdge",
+      "alternateName": [
+        "CricketEdge",
+        "CricEdge India",
+        "cricedge.in",
+        "Cric Edge"
+      ],
+      "url": "https://www.cricedge.in/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://www.cricedge.in/cricket?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+  <!-- Schema.org Organization Structured Data (Helps Google knowledge panel and logo recognition) -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "CricEdge",
+      "url": "https://www.cricedge.in/",
+      "logo": "https://www.cricedge.in/icon-512x512.png",
+      "sameAs": [
+        "https://t.me/cricedge_online"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://t.me/cricedge_online"
+      }
+    }
+    </script>
+</head>
+
+<body>
+  <!-- Fallback semantic content for search engine bots -->
+  <noscript>
+    <div style="padding: 20px; font-family: sans-serif; background: #000; color: #fff;">
+      <h1>CricEdge — Live Cricket Analytics, Toss Prediction &amp; Match Odds</h1>
+      <p>CricEdge (https://www.cricedge.in) provides real-time cricket scores, AI toss prediction, ball-by-ball odds,
+        session analysis, and live match coverage.</p>
+      <p>Please enable JavaScript to enjoy the full live interactive experience.</p>
+    </div>
+  </noscript>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

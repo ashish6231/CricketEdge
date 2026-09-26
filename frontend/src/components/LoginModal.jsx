@@ -20,13 +20,8 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, onLogoutSu
 
     try {
       const result = await login(inputEmail, inputPassword)
-      console.log('[Login] success:', result)
-      setSuccess(result.message || '✅ Login successful!')
-      if (onLoginSuccess) onLoginSuccess(result.user?.email || inputEmail)
-      setTimeout(() => {
-        onClose()
-        setSuccess('')
-      }, 1500)
+      if (onLoginSuccess) onLoginSuccess(result.user?.email || inputEmail, result.user)
+      onClose()
     } catch (err) {
       console.error('[Login] error:', err)
       if (err.status === 429) {
@@ -84,7 +79,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, onLogoutSu
                 <Lock className="h-6 w-6 text-primary" />
               </div>
               <h2 className="text-lg font-bold text-text-primary">Login</h2>
-              <p className="text-xs text-text-muted mt-1">Apna CricketEdge account login karo</p>
+              <p className="text-xs text-text-muted mt-1">Apna CricEdge account login karo</p>
             </div>
 
             {error && (
