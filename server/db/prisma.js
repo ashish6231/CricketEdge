@@ -11,7 +11,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-const adapter = new PrismaPg(pool);
+const adapter = new PrismaPg(pool, { pgbouncer: true });
 
 const prisma = new PrismaClient({
   adapter,

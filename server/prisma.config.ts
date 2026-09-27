@@ -15,7 +15,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-const adapter = new PrismaPg(pool);
+const adapter = new PrismaPg(pool, { pgbouncer: true });
 
 export default defineConfig({
   schema: "prisma/schema.prisma",
