@@ -47,6 +47,10 @@
   "engines": {
     "node": ">=20.19.0"
   },
+  "overrides": {
+    "agent-base": "^7.1.1",
+    "https-proxy-agent": "^7.0.0"
+  },
   "allowScripts": {
     "prisma@7.9.0": true,
     "@prisma/engines@7.9.0": true
