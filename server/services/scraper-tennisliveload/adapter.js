@@ -23,16 +23,31 @@ const ENDPOINTS = {
   LIVE_ODDS:        '/api/live-odds',
 };
 
-const { HttpsProxyAgent } = require('https-proxy-agent');
-
 const _rawProxy = (process.env.SCRAPER_PROXY || '').trim();
 const PROXY_URL = _rawProxy && _rawProxy.startsWith('http') ? _rawProxy : null;
+
+let HttpsProxyAgent = null;
+if (PROXY_URL) {
+  try {
+    const proxyModule = require('https-proxy-agent');
+    HttpsProxyAgent = proxyModule.HttpsProxyAgent || proxyModule;
+  } catch (err) {
+    console.warn('[TennisLiveLoad] Warning: Failed to load https-proxy-agent, falling back to direct connection:', err.message);
+  }
+}
 
 class TennisLiveLoadAdapter extends SourceAdapter {
   constructor() {
     super('tennisliveload');
     this.session = session;
-    const agent = PROXY_URL ? new HttpsProxyAgent(PROXY_URL) : undefined;
+    let agent;
+    if (PROXY_URL && HttpsProxyAgent) {
+      try {
+        agent = new HttpsProxyAgent(PROXY_URL);
+      } catch (err) {
+        console.warn('[TennisLiveLoad] Warning: Failed to initialize HttpsProxyAgent:', err.message);
+      }
+    }
     this.axiosInstance = axios.create({
       timeout: 10000,
       httpAgent: agent,

@@ -1,3 +1,4 @@
+require('./scripts/fix-agent-base');
 require('dotenv').config();
 
 const fs = require('fs');
