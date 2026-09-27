@@ -24,15 +24,15 @@ export function getSocket() {
   const token = localStorage.getItem('auth_token') || null;
 
   socket = io(serverUrl, {
-    transports: ['polling', 'websocket'],
+    transports: ['websocket', 'polling'],
     auth: {
       token,
     },
     reconnection: true,
     reconnectionAttempts: Infinity,
-    reconnectionDelay: 2000,
-    reconnectionDelayMax: 10000,
-    timeout: 20000,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 8000,
+    timeout: 10000,
   });
 
   socket.on('connect', () => {

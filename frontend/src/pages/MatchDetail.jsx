@@ -837,8 +837,9 @@ export default function MatchDetail({ sport }) {
     if (socket.connected) {
       subscribeMatch(matchId, sport)
     } else {
-      setLoading(true)
-      socket.once('connect', () => subscribeMatch(matchId, sport))
+      socket.once('connect', () => {
+        if (!cancelled) subscribeMatch(matchId, sport)
+      })
     }
 
     // One-time HTTP fetch only if no prefetch cache available
@@ -851,10 +852,10 @@ export default function MatchDetail({ sport }) {
         .catch(() => { })
     }
 
-    // Safety timeout — agar 10s mein data nahi aaya toh loading hatao
+    // Safety timeout — agar 8s mein data nahi aaya toh loading hatao
     const loadingTimeout = setTimeout(() => {
       if (!cancelled) setLoading(false)
-    }, 10000)
+    }, 8000)
 
     return () => {
       cancelled = true

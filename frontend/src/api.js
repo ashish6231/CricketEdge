@@ -2,7 +2,7 @@ import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
 const API_TIMEOUT_MS = 15000
-const AUTH_TIMEOUT_MS = 10000
+const AUTH_TIMEOUT_MS = 15000
 const AUTH_HARD_FAIL_CODES = new Set(['SESSION_REPLACED', 'ACCOUNT_BANNED', 'ACCOUNT_SUSPENDED'])
 
 const getAuthHeader = () => {
