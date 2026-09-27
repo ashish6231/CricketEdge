@@ -398,7 +398,7 @@ export default function MainLayout() {
             )}
 
 
-            {authReady && isLoggedIn && authUser ? (
+            {isLoggedIn && authUser ? (
               /* ── Profile dropdown ── */
               <div className="relative" ref={dropRef}>
                 <button onClick={() => setDropdown(d => !d)}
@@ -463,14 +463,17 @@ export default function MainLayout() {
                   </div>
                 )}
               </div>
-            ) : authReady ? (
-              /* ── Login button ── */
+            ) : isLoggedIn && !authUser ? (
+              /* ── Token exists but authUser not yet loaded — show avatar skeleton ── */
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full animate-pulse bg-[#1e2538]" />
+            ) : (
+              /* ── Not logged in — show login button immediately ── */
               <button type="button" onClick={() => setLoginOpen(true)}
                 className="flex items-center gap-1 px-2.5 h-7 sm:px-3 sm:h-8 rounded-full text-[11px] sm:text-xs font-semibold text-white"
                 style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
                 Login
               </button>
-            ) : null}
+            )}
           </div>
         </div>
       </header>

@@ -181,9 +181,29 @@ export default function CricketPage() {
   const isPro = hasProAccess(user)
   const { matchId } = useParams()
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => {
+    // If we have cached matches, don't show full-page loader
+    try {
+      const raw = sessionStorage.getItem('_cx_matches_list')
+      if (raw) {
+        const list = JSON.parse(raw)
+        if (Array.isArray(list) && list.length > 0) return false
+      }
+    } catch { }
+    return true
+  })
   const [loadError, setLoadError] = useState('')
-  const [allMatches, setAllMatches] = useState([])
+  const [allMatches, setAllMatches] = useState(() => {
+    // Restore cached matches list from sessionStorage for instant render
+    try {
+      const raw = sessionStorage.getItem('_cx_matches_list')
+      if (raw) {
+        const list = JSON.parse(raw)
+        if (Array.isArray(list) && list.length > 0) return list
+      }
+    } catch { }
+    return []
+  })
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
   const [now, setNow] = useState(() => Date.now())
@@ -305,6 +325,9 @@ export default function CricketPage() {
             p.inPlay === m.inPlay &&
             p.totalMatched === m.totalMatched
         })
+      if (!sameStructure) {
+        try { sessionStorage.setItem('_cx_matches_list', JSON.stringify(sorted)) } catch { }
+      }
       return sameStructure ? prev : sorted
     })
 

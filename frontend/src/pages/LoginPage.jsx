@@ -41,6 +41,16 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
   }, [siteNameProp])
 
   useEffect(() => {
+    // Use MainLayout's cached site meta if available — avoid extra API call
+    try {
+      const cached = sessionStorage.getItem('_site_meta')
+      if (cached) {
+        const { name, mode } = JSON.parse(cached)
+        setSiteName(siteNameProp || name || 'CricEdge')
+        // mode === 'free' means signups allowed
+        setAllowSignups(mode === 'free' || true)
+      }
+    } catch { }
     getSignupStatus()
       .then((res) => {
         setAllowSignups(resolveAllowSignups(res))

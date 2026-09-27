@@ -204,19 +204,24 @@ router.post('/login', async (req, res) => {
     if (user.status === 'suspended')
       return res.status(403).json({ success: false, message: 'Your account is suspended. Contact support.' });
 
-    const { user: freshUser, trialGranted } = await syncUserTrialState(prisma, user.id);
-    const cfg = await getTrialConfig(prisma);
-    const token = generateToken(freshUser || user);
+    // Generate token immediately from existing user data — don't wait for trial sync
+    const token = generateToken(user);
     clearAuthCache();
-    await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
-    socketService.notifySessionReplaced(user.id, token);
+
+    // Respond immediately — background tasks run after response is sent
     res.json({
       success: true,
-      message: trialGranted ? `Login successful! ${cfg.label} free trial activated.` : 'Login successful',
+      message: 'Login successful',
       token,
-      user: sanitizeUser(freshUser || user),
-      trialGranted,
+      user: sanitizeUser(user),
+      trialGranted: false,
     });
+
+    // Background: update activeToken + sync trial state (non-blocking)
+    prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } })
+      .then(() => socketService.notifySessionReplaced(user.id, token))
+      .catch(() => {});
+    syncUserTrialState(prisma, user.id).catch(() => {});
   } catch (err) {
     console.error(err);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -332,7 +337,7 @@ router.post('/resend-otp', async (req, res) => {
 
 // ─── GET ME ───
 const _userMeCache = new Map();
-const ME_CACHE_TTL = 15000;
+const ME_CACHE_TTL = 20000;
 
 function clearMeCache() { _userMeCache.clear(); }
 
@@ -352,11 +357,19 @@ router.get('/me', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid or expired token', code: 'INVALID_TOKEN' });
     }
 
+    // Serve from cache if fresh — avoids DB hit on every page navigation
+    const cached = _userMeCache.get(token);
+    if (cached && Date.now() - cached.ts < ME_CACHE_TTL) {
+      return res.json({ success: true, user: cached.user });
+    }
+
     let user;
     try {
       user = await refreshUserSubscriptionState(prisma, decoded.userId);
     } catch (dbErr) {
       console.error('⚠️ DB error in /auth/me:', dbErr.message);
+      // If we have a stale cache entry, serve it rather than failing
+      if (cached) return res.json({ success: true, user: cached.user });
       return res.status(503).json({ success: false, message: 'Service temporarily unavailable', code: 'AUTH_UNAVAILABLE' });
     }
 
@@ -376,6 +389,7 @@ router.get('/me', async (req, res) => {
     }
 
     const sanitized = sanitizeUser(user);
+    _userMeCache.set(token, { user: sanitized, ts: Date.now() });
     res.json({ success: true, user: sanitized });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Server auth error' });

@@ -6,12 +6,47 @@ let socket = null;
 // MatchDetail reads from this for instant zero-wait rendering
 const matchBundleCache = new Map();
 
+// sessionStorage keys
+const SS_MATCHES_KEY = '_cx_matches';
+const SS_BUNDLE_PREFIX = '_cx_b_';
+
+// Restore match bundles from sessionStorage into memory cache on module load
+try {
+  const raw = sessionStorage.getItem(SS_MATCHES_KEY);
+  if (raw) {
+    const list = JSON.parse(raw);
+    if (Array.isArray(list)) {
+      list.forEach(matchId => {
+        const b = sessionStorage.getItem(SS_BUNDLE_PREFIX + matchId);
+        if (b) matchBundleCache.set(String(matchId), JSON.parse(b));
+      });
+    }
+  }
+} catch { }
+
+function persistBundle(matchId, bundle) {
+  try {
+    const key = String(matchId);
+    sessionStorage.setItem(SS_BUNDLE_PREFIX + key, JSON.stringify(bundle));
+    // Keep index of all stored matchIds
+    const raw = sessionStorage.getItem(SS_MATCHES_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    if (!list.includes(key)) {
+      list.push(key);
+      // Cap at 30 entries — remove oldest
+      if (list.length > 30) list.splice(0, list.length - 30);
+      sessionStorage.setItem(SS_MATCHES_KEY, JSON.stringify(list));
+    }
+  } catch { }
+}
+
 export function getMatchBundle(matchId) {
   return matchBundleCache.get(String(matchId)) || null;
 }
 
 export function setMatchBundle(matchId, bundle) {
   matchBundleCache.set(String(matchId), bundle);
+  persistBundle(matchId, bundle);
 }
 
 export function getSocket() {
@@ -67,11 +102,15 @@ export function getSocket() {
       window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: new Date(payload.updatedAt) } }))
     }
     const matches = payload?.matches || [];
+    // Persist the full matches list for instant restore on next page load
+    try {
+      sessionStorage.setItem('_cx_matches_list', JSON.stringify(matches));
+    } catch { }
     matches.forEach(m => {
       if (!m?.matchId || !m?.snapshot) return;
       const existing = matchBundleCache.get(String(m.matchId));
       if (!existing || existing._seeded) {
-        matchBundleCache.set(String(m.matchId), {
+        const bundle = {
           matchId: String(m.matchId),
           cricket: {
             ...m.snapshot,
@@ -86,7 +125,9 @@ export function getSocket() {
           session: null,
           crex: m.crex || null,
           _seeded: true,
-        });
+        };
+        matchBundleCache.set(String(m.matchId), bundle);
+        persistBundle(m.matchId, bundle);
       }
     });
   });

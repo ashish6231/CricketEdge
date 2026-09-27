@@ -2,7 +2,8 @@ import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
 const API_TIMEOUT_MS = 12000
-const AUTH_TIMEOUT_MS = 12000
+const AUTH_TIMEOUT_MS = 8000
+const LOGIN_TIMEOUT_MS = 15000
 const AUTH_HARD_FAIL_CODES = new Set(['SESSION_REPLACED', 'ACCOUNT_BANNED', 'ACCOUNT_SUSPENDED'])
 
 const getAuthHeader = () => {
@@ -135,10 +136,13 @@ export async function getTossSnapshot(matchId) {
 // ──── Auth ────
 
 export async function login(email, password) {
+  // No retries on login — POST is not idempotent, double submit causes issues
   const res = await fetchAPI('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
+    timeoutMs: LOGIN_TIMEOUT_MS,
+    retries: 0,
   })
   if (res.token) localStorage.setItem('auth_token', res.token)
   return res
