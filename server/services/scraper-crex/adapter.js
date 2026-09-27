@@ -16,7 +16,7 @@ class CrexAdapter extends SourceAdapter {
 
   async getMatches() {
     try {
-      const overview = await crexService.getOverview();
+      const overview = await crexService.getCrexOverview();
       if (!Array.isArray(overview) || !overview.length) return [];
 
       return overview.map(m => {
@@ -47,7 +47,7 @@ class CrexAdapter extends SourceAdapter {
   async getSnapshot(slugOrId) {
     try {
       const cleanSlug = String(slugOrId).replace(/^crex-/, '');
-      return await crexService.getMatchDetail(cleanSlug);
+      return await crexService.getCrexMatchDetail(cleanSlug);
     } catch (err) {
       console.warn(`⚠️  [CREX-Adapter] error fetching snapshot for ${slugOrId}:`, err.message);
       return null;

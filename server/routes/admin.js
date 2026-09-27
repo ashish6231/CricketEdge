@@ -20,7 +20,7 @@ const { getDefaultStore } = require('../services/tossDatasetStore');
 const { runTossCaptureNow } = require('../services/tossCaptureWorker');
 const { getDefaultStore: getDefaultMatchStore } = require('../services/matchDatasetStore');
 const { runMatchCaptureNow } = require('../services/matchCaptureWorker');
-const tennisLogin = require('../services/tennisLogin');
+
 
 function parseUserId(raw) {
   const id = parseInt(raw, 10);
@@ -888,8 +888,7 @@ router.post('/scraper/cookie', requireSuperAdmin, async (req, res) => {
   }
   const tllSession = require('../services/scraper-tennisliveload/session');
   await tllSession.saveSession(cookie.trim());
-  const ok = await tennisLogin.updateCookiesManually(cookie);
-  res.json({ success: ok, message: 'Session cookie updated and persisted to DB & disk' });
+  res.json({ success: true, message: 'Session cookie updated and persisted to DB & disk' });
 });
 
 module.exports = router;
