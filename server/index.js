@@ -67,9 +67,26 @@ app.use(cors({
 }));
 app.use(express.json({ limit: '50kb' }));
 
-const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: { success: false, message: 'Too many attempts, try again after 15 minutes' } });
-const otpLimiter = rateLimit({ windowMs: 10 * 60 * 1000, max: 5, message: { success: false, message: 'Too many OTP requests, try again after 10 minutes' } });
-const adminLimiter = rateLimit({ windowMs: 60 * 1000, max: 60, message: { success: false, message: 'Too many admin requests' } });
+// Render sits behind a reverse proxy — extract real client IP from leftmost x-forwarded-for
+const clientIp = (req) => {
+  const fwd = req.headers['x-forwarded-for']
+  return (fwd ? fwd.split(',')[0] : req.ip || 'unknown').trim()
+}
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  keyGenerator: clientIp,
+  skip: () => process.env.NODE_ENV !== 'production',
+  message: { success: false, message: 'Too many attempts, try again after 15 minutes' }
+})
+const otpLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 10,
+  keyGenerator: clientIp,
+  skip: () => process.env.NODE_ENV !== 'production',
+  message: { success: false, message: 'Too many OTP requests, try again after 10 minutes' }
+})
+const adminLimiter = rateLimit({ windowMs: 60 * 1000, max: 120, keyGenerator: clientIp, message: { success: false, message: 'Too many admin requests' } })
 app.use(session({
   secret: process.env.SESSION_SECRET || (() => { throw new Error('SESSION_SECRET env var not set!'); })(),
   resave: false,

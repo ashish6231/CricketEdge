@@ -24,6 +24,8 @@ services:
         sync: false
       - key: FRONTEND_URL
         value: https://www.cricedge.in
+      - key: ALLOWED_ORIGINS
+        value: https://www.cricedge.in,https://cricedge.in
       - key: API_PUBLIC_URL
         value: https://api.cricedge.in
       - key: GOOGLE_CLIENT_ID

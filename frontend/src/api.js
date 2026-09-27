@@ -3,7 +3,7 @@ import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
 const API_TIMEOUT_MS = 12000
 const AUTH_TIMEOUT_MS = 8000
-const LOGIN_TIMEOUT_MS = 15000
+const LOGIN_TIMEOUT_MS = 20000
 const AUTH_HARD_FAIL_CODES = new Set(['SESSION_REPLACED', 'ACCOUNT_BANNED', 'ACCOUNT_SUSPENDED'])
 
 const getAuthHeader = () => {
@@ -136,7 +136,10 @@ export async function getTossSnapshot(matchId) {
 // ──── Auth ────
 
 export async function login(email, password) {
-  // No retries on login — POST is not idempotent, double submit causes issues
+  // Fire a health ping first to wake Render from sleep (free tier cold start)
+  // Don't await — just kick the server awake, login request follows immediately
+  fetch(`${API_BASE}/health`, { method: 'GET' }).catch(() => {})
+  // No retries on login — POST is not idempotent
   const res = await fetchAPI('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

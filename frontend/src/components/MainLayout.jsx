@@ -32,6 +32,9 @@ export default function MainLayout() {
 
   useEffect(() => {
     try { localStorage.removeItem('live_desk_mode') } catch { /* ignore */ }
+    // Ping server on app load to wake Render from cold start
+    // Non-blocking — just fires and forgets
+    fetch((import.meta.env?.VITE_API_URL || '') + '/api/health').catch(() => {})
   }, [])
 
   useEffect(() => {

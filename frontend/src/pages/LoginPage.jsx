@@ -18,6 +18,12 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
   const [allowSignups, setAllowSignups] = useState(false)
   const [siteName, setSiteName] = useState(siteNameProp || 'CricEdge')
 
+  // Pre-warm server as soon as login modal mounts — reduces cold start delay on submit
+  useEffect(() => {
+    const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
+    fetch(`${API_BASE}/health`, { method: 'GET', cache: 'no-store' }).catch(() => {})
+  }, [])
+
   const [sessionReplacedMsg, setSessionReplacedMsg] = useState(() => {
     const urlReason = new URLSearchParams(window.location.search).get('reason') === 'session_replaced'
     const saved = sessionStorage.getItem('session_replaced_msg')
