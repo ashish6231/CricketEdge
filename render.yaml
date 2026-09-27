@@ -4,7 +4,7 @@ services:
     name: cricedge-api
     runtime: node
     rootDir: server
-    buildCommand: npm install && npx prisma generate
+    buildCommand: rm -rf node_modules && npm install && npx prisma generate
     startCommand: node index.js
     healthCheckPath: /api/health
     envVars:
