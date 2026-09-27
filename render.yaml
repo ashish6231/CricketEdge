@@ -4,8 +4,8 @@ services:
     name: cricedge-api
     runtime: node
     rootDir: server
-    buildCommand: rm -rf node_modules && npm install && npx prisma generate
-    startCommand: rm -rf node_modules/agent-base && npm install --prefix . agent-base@7.1.1 && node index.js
+    buildCommand: npm install && npx prisma generate
+    startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV

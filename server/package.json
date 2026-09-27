@@ -27,7 +27,6 @@
     "express-rate-limit": "^8.6.1",
     "express-session": "^1.17.3",
     "google-auth-library": "^10.9.0",
-    "agent-base": "^7.1.1",
     "https-proxy-agent": "^7.0.0",
     "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
@@ -46,10 +45,6 @@
   },
   "engines": {
     "node": ">=20.19.0"
-  },
-  "overrides": {
-    "agent-base": "^7.1.1",
-    "https-proxy-agent": "^7.0.0"
   },
   "allowScripts": {
     "prisma@7.9.0": true,
