@@ -808,12 +808,10 @@ export default function MatchDetail({ sport }) {
       const prev = crexDataRef.current
       // Never replace a live full scorecard with a stale/partial one
       // A full scorecard has team1/team2 objects; a partial one (odds-only) does not
-      const prevIsLive = prev?.scorecard?.status === 'live' || prev?.status === 'live'
-      const newIsLive = crex?.scorecard?.status === 'live' || crex?.status === 'live'
       const newHasScorecard = Boolean(crex?.scorecard?.team1 || crex?.scorecard?.team2)
       const prevHasScorecard = Boolean(prev?.scorecard?.team1 || prev?.scorecard?.team2)
-      // Skip update if: prev is live+full and new is completed+partial (transient CREX API gap)
-      if (prevIsLive && prevHasScorecard && !newIsLive && !newHasScorecard) return
+      // Skip update if prev has full scorecard but new is partial/lightweight (seed data or transient gap)
+      if (prevHasScorecard && !newHasScorecard) return
       crexDataRef.current = crex
       setCrexData(crex)
     }
@@ -918,8 +916,9 @@ export default function MatchDetail({ sport }) {
     }
   }, [loading, activeTab, hasTossData])
 
-  // Wait for auth check before rendering — prevents flash of content with stale token
-  if (!authReady) return null
+  // On slow networks: if token exists, show skeleton instead of blank null
+  // authReady false only blocks when no token at all (truly logged out)
+  if (!authReady && !localStorage.getItem('auth_token')) return null
 
   if (requiresPro && !isFreeMode) {
     return (

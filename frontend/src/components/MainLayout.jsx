@@ -49,15 +49,22 @@ export default function MainLayout() {
         localStorage.setItem('auth_token', pendingToken)
         sessionStorage.removeItem('pending_token')
       }
+
+      // On slow networks: if token exists, mark authReady immediately with optimistic login
+      // so the page renders without waiting for the server round-trip
+      const hasToken = !!localStorage.getItem('auth_token')
+      if (hasToken && force) {
+        setIsLoggedIn(true)
+        // authReady stays false until server confirms — but we show content optimistically
+      }
+
       getAuthStatus().then(data => {
         if (cancelled) return
         if (data.softFail) {
-          // network/timeout — keep current session, mark ready
           if (localStorage.getItem('auth_token')) setIsLoggedIn(true)
           setAuthReady(true)
           return
         }
-        // Set all three atomically so no intermediate render shows login button
         setAuthUser(data.user || null)
         setIsLoggedIn(data.isLoggedIn || false)
         setAuthReady(true)
@@ -80,12 +87,24 @@ export default function MainLayout() {
   }, [])
 
   useEffect(() => {
+    // Use sessionStorage cache to avoid re-fetching on every navigation
+    const cached = sessionStorage.getItem('_site_meta')
+    if (cached) {
+      try {
+        const { name, mode } = JSON.parse(cached)
+        setSiteName(name)
+        document.title = `${name} — Live Cricket Scores, Analytics & Toss Prediction`
+        setSiteMode(mode)
+      } catch { /* ignore bad cache */ }
+    }
     getSignupStatus()
       .then((res) => {
         const name = resolveSiteName(res)
+        const mode = resolveSiteMode(res)
         setSiteName(name)
         document.title = `${name} — Live Cricket Scores, Analytics & Toss Prediction`
-        setSiteMode(resolveSiteMode(res))
+        setSiteMode(mode)
+        try { sessionStorage.setItem('_site_meta', JSON.stringify({ name, mode })) } catch { /* ignore */ }
       })
       .catch(() => {})
   }, [])
@@ -226,7 +245,7 @@ export default function MainLayout() {
     }
   }, [isLoggedIn, authUser, isAdmin, telegramGateEnabled])
 
-  // Background Heartbeat: Check membership status every 25s (ONLY for logged-in regular users)
+  // Background Heartbeat: Check membership status every 60s (ONLY for logged-in regular users)
   useEffect(() => {
     if (!telegramGateEnabled || !isLoggedIn || !authUser || isAdmin) return
     const interval = setInterval(async () => {
@@ -236,19 +255,16 @@ export default function MainLayout() {
         if (res.success) {
           if (!res.isVerified || res.leftGroup || !res.isLinked) {
             setTelegramGateRequired(true)
-            if (res.leftGroup) {
-              setTelegramLockReason('Aapne @cricedge_online Telegram channel chhod diya hai! Dobara join karein.')
-            } else {
-              setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
-            }
+            setTelegramLockReason(res.leftGroup
+              ? 'Aapne @cricedge_online Telegram channel chhod diya hai! Dobara join karein.'
+              : 'Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
           } else {
             setTelegramGateRequired(false)
             setTelegramLockReason(null)
           }
         }
       } catch {}
-    }, 25000)
-
+    }, 60000)
     return () => clearInterval(interval)
   }, [telegramGateEnabled, isLoggedIn, authUser, isAdmin])
 

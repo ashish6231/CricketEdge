@@ -18,37 +18,37 @@ export function getSocket() {
   if (socket) return socket;
 
   const rawUrl = import.meta.env?.VITE_API_URL || '';
-  // If VITE_API_URL is provided with trailing slash or /api, clean it up
   const serverUrl = rawUrl ? rawUrl.replace(/\/api\/?$/, '').replace(/\/$/, '') : window.location.origin;
 
   const token = localStorage.getItem('auth_token') || null;
 
   socket = io(serverUrl, {
-    transports: ['websocket', 'polling'],
-    auth: {
-      token,
-    },
+    // polling first — works on ALL networks including slow/restricted ones.
+    // Socket.IO auto-upgrades to websocket once polling handshake succeeds.
+    transports: ['polling', 'websocket'],
+    auth: { token },
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,
-    reconnectionDelayMax: 8000,
-    timeout: 10000,
+    reconnectionDelayMax: 10000,
+    // Exponential backoff factor
+    randomizationFactor: 0.5,
+    timeout: 20000,
+    // Reuse existing connection — don't create new socket on hot reload
+    forceNew: false,
   });
 
   socket.on('connect', () => {
-    console.log('🟢 WebSocket connected:', socket.id, '| transport:', socket.io.engine.transport.name);
+    // Upgrade transport log only in dev
+    if (import.meta.env.DEV) {
+      console.log('🟢 Socket connected:', socket.id, '| transport:', socket.io.engine.transport.name);
+    }
   });
 
-  socket.on('disconnect', (reason) => {
-    console.log('🔴 WebSocket disconnected:', reason);
-  });
-
-  socket.on('connect_error', (error) => {
-    console.warn('⚠️ WebSocket connect error:', error.message);
-  });
-
-  socket.io.engine.on('upgrade', (transport) => {
-    console.log('⬆️ Transport upgraded to:', transport.name);
+  socket.io.engine.on('upgrade', () => {
+    if (import.meta.env.DEV) {
+      console.log('⬆️ Transport upgraded to websocket');
+    }
   });
 
   // Cache all prefetched match bundles pushed by server on connect
@@ -62,7 +62,6 @@ export function getSocket() {
   });
 
   // When cricket list arrives, seed bundle cache from each match's embedded snapshot
-  // This is instant — no extra server calls needed
   socket.on('cricket:matches', (payload) => {
     if (payload?.updatedAt) {
       window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: new Date(payload.updatedAt) } }))
@@ -71,7 +70,6 @@ export function getSocket() {
     matches.forEach(m => {
       if (!m?.matchId || !m?.snapshot) return;
       const existing = matchBundleCache.get(String(m.matchId));
-      // Only seed if no real bundle cached yet
       if (!existing || existing._seeded) {
         matchBundleCache.set(String(m.matchId), {
           matchId: String(m.matchId),
@@ -97,9 +95,13 @@ export function getSocket() {
 }
 
 export function updateSocketAuth(token) {
-  if (socket) {
-    socket.auth = { token };
+  if (!socket) return;
+  socket.auth = { token };
+  // Only reconnect if currently connected — avoids double-connect on slow networks
+  if (socket.connected) {
     socket.disconnect().connect();
+  } else {
+    socket.connect();
   }
 }
 
@@ -119,14 +121,10 @@ export function unsubscribeMatch(matchId) {
 
 export function requestTossFeed() {
   const s = getSocket();
-  if (s) {
-    s.emit('feed:toss');
-  }
+  if (s) s.emit('feed:toss');
 }
 
 export function requestTennisFeed() {
   const s = getSocket();
-  if (s) {
-    s.emit('feed:tennis');
-  }
+  if (s) s.emit('feed:tennis');
 }

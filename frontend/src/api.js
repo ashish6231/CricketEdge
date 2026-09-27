@@ -1,8 +1,8 @@
 import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
-const API_TIMEOUT_MS = 15000
-const AUTH_TIMEOUT_MS = 15000
+const API_TIMEOUT_MS = 12000
+const AUTH_TIMEOUT_MS = 12000
 const AUTH_HARD_FAIL_CODES = new Set(['SESSION_REPLACED', 'ACCOUNT_BANNED', 'ACCOUNT_SUSPENDED'])
 
 const getAuthHeader = () => {
@@ -31,27 +31,41 @@ async function getAPIError(res) {
 }
 
 async function fetchAPI(endpoint, options = {}) {
-  const { timeoutMs = API_TIMEOUT_MS, ...fetchOptions } = options
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
-  try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
-      ...fetchOptions,
-      signal: controller.signal,
-      headers: { 'Accept-Encoding': 'gzip, deflate', ...getAuthHeader(), ...getTelegramHeader(), ...fetchOptions.headers }
-    })
-    if (!res.ok) {
-      throw await getAPIError(res)
+  const { timeoutMs = API_TIMEOUT_MS, retries = 1, ...fetchOptions } = options
+
+  const attempt = async () => {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const res = await fetch(`${API_BASE}${endpoint}`, {
+        ...fetchOptions,
+        signal: controller.signal,
+        headers: { 'Accept-Encoding': 'gzip, deflate', ...getAuthHeader(), ...getTelegramHeader(), ...fetchOptions.headers }
+      })
+      if (!res.ok) throw await getAPIError(res)
+      return await res.json()
+    } catch (err) {
+      if (err.name === 'AbortError') throw { detail: 'Request timeout — server slow hai, dubara try karo' }
+      if (err.detail) throw err
+      throw { detail: 'Network error' }
+    } finally {
+      clearTimeout(timer)
     }
-    return await res.json()
-  } catch (err) {
-    if (err.name === 'AbortError') throw { detail: 'Request timeout — server slow hai, dubara try karo' }
-    if (err.detail) throw err
-    console.error(`API Error: ${endpoint}`, err)
-    throw { detail: 'Network error' }
-  } finally {
-    clearTimeout(timer)
   }
+
+  let lastErr
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await attempt()
+    } catch (err) {
+      lastErr = err
+      // Only retry on network/timeout errors, not on API errors (4xx/5xx)
+      if (err.status || i === retries) throw err
+      // Brief pause before retry — 800ms
+      await new Promise(r => setTimeout(r, 800))
+    }
+  }
+  throw lastErr
 }
 
 // ──── Cricket ────
