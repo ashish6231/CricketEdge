@@ -122,12 +122,19 @@ function init(io) {
       const sport = typeof data === 'object' ? (data?.sport || 'cricket') : 'cricket';
       if (!matchId) return;
 
-      const room = `match:${matchId}`;
-      socket.join(room);
-
       // Instantly deliver the latest cached bundle to this subscriber
       try {
         const bundle = await matchPayloadService.getMatchBundlePayload(matchId, socket.user, sport);
+        if (bundle?.error) {
+          // If login or subscription is required, emit error directly and do not join room
+          socket.emit(`match:bundle:${matchId}`, bundle);
+          socket.emit('match:bundle', bundle);
+          return;
+        }
+
+        const room = `match:${matchId}`;
+        socket.join(room);
+
         if (bundle) {
           socket.emit(`match:bundle:${matchId}`, bundle);
           socket.emit('match:bundle', bundle); // Generic listener support
@@ -202,7 +209,7 @@ async function broadcastAllMatches() {
         if (roomName.startsWith('match:') && socketSet.size > 0) {
           const matchId = roomName.replace('match:', '');
           try {
-            const bundle = await matchPayloadService.getMatchBundlePayload(matchId, null);
+            const bundle = await matchPayloadService.getMatchBundlePayload(matchId, { isBroadcaster: true, role: 'admin' });
             if (bundle && !bundle.error) {
               _io.to(roomName).emit(`match:bundle:${matchId}`, bundle);
               _io.to(roomName).emit('match:bundle', bundle);
@@ -224,28 +231,29 @@ async function broadcastCrexUpdates() {
   if (!_io) return;
 
   try {
-    const overview = dataCache.getCrexOverview();
-    if (Array.isArray(overview) && overview.length > 0) {
-      _io.emit('crex:overview', overview);
-    }
-
-    // Re-broadcast cricket matches list with fresh crex scores embedded
-    // This updates score1/score2/statusText on match cards in real-time
-    const cricketPayload = await matchPayloadService.getCricketMatchesPayload().catch(() => null);
-    if (cricketPayload) _io.emit('cricket:matches', cricketPayload);
-
-    const rooms = _io.sockets.adapter?.rooms;
-    if (rooms) {
-      for (const [roomName, socketSet] of rooms.entries()) {
-        if (roomName.startsWith('match:') && socketSet.size > 0) {
-          const matchId = roomName.replace('match:', '');
-          const detail = dataCache.getCrexDetail(matchId);
-          if (detail) {
-            _io.to(roomName).emit(`match:crex:${matchId}`, detail);
-            _io.to(roomName).emit('match:crex', detail);
-          }
-        }
-      }
+    // Broadcast crex details globally so match cards update without room subscription
+    const cricketMatches = dataCache.getCricketMatches();
+    for (const m of cricketMatches) {
+      const mid = String(m.id || m.matchId);
+      const detail = dataCache.getCrexDetail(mid);
+      if (!detail) continue;
+      const payload = {
+        matchId: mid,
+        score1: detail.scorecard?.team1?.score || detail.score1 || null,
+        score2: detail.scorecard?.team2?.score || detail.score2 || null,
+        statusText: detail.scorecard?.statusEquation || detail.scorecard?.matchResult || detail.statusText || null,
+        runningBall: detail.scorecard?.runningBall || detail.runningBall || null,
+        odds: detail.odds || null,
+        team1Name: detail.team1Name || null,
+        team2Name: detail.team2Name || null,
+        team1Short: detail.team1Short || null,
+        team2Short: detail.team2Short || null,
+      };
+      _io.emit('crex:live', payload);
+      // Also emit to room subscribers (MatchDetail)
+      const roomName = `match:${mid}`;
+      _io.to(roomName).emit(`match:crex:${mid}`, detail);
+      _io.to(roomName).emit('match:crex', detail);
     }
   } catch (err) {
     console.error('❌ Error broadcasting CREX updates over WebSocket:', err.message);
@@ -278,9 +286,23 @@ function getIo() {
   return _io;
 }
 
+function getActiveSubscribedMatchIds() {
+  const ids = new Set();
+  const rooms = _io?.sockets?.adapter?.rooms;
+  if (rooms) {
+    for (const [roomName, socketSet] of rooms.entries()) {
+      if (roomName.startsWith('match:') && socketSet.size > 0) {
+        ids.add(roomName.replace('match:', ''));
+      }
+    }
+  }
+  return Array.from(ids);
+}
+
 module.exports = {
   init,
   getIo,
+  getActiveSubscribedMatchIds,
   broadcastAllMatches,
   broadcastCrexUpdates,
   notifySessionReplaced,

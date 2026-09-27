@@ -334,7 +334,9 @@ async function getCricketMatchesPayload() {
           inPlay: m.inPlay,
         });
         if (cm) {
-          const sc = m.snapshot?.crex?.scorecard;
+          // Use live crex detail cache (has latest overs/score) over stale snapshot
+          const liveDetail = dataCache.getCrexDetail(cm.crexMatchId || cm.slug || String(m.matchId));
+          const sc = liveDetail?.scorecard || m.snapshot?.crex?.scorecard;
           m.crex = {
             matched: true,
             isReversed: Boolean(cm.isReversed),
@@ -347,13 +349,13 @@ async function getCricketMatchesPayload() {
             team2Name: cm.team2Name,
             team2Short: cm.team2Short,
             team2Flag: cm.team2Flag,
-            score1: sc?.team1?.score || cm.score1,
-            score2: sc?.team2?.score || cm.score2,
-            status: cm.status,
-            statusText: sc?.statusEquation || sc?.matchResult || cm.statusText,
+            score1: sc?.team1?.score || liveDetail?.score1 || cm.score1,
+            score2: sc?.team2?.score || liveDetail?.score2 || cm.score2,
+            status: liveDetail?.status || cm.status,
+            statusText: sc?.statusEquation || sc?.matchResult || liveDetail?.statusText || cm.statusText,
             venue: cm.venue,
-            odds: m.snapshot?.crex?.odds || cm.odds,
-            runningBall: sc?.runningBall || cm.runningBall || null,
+            odds: liveDetail?.odds || m.snapshot?.crex?.odds || cm.odds,
+            runningBall: sc?.runningBall || liveDetail?.runningBall || cm.runningBall || null,
           };
         }
       }
@@ -482,21 +484,24 @@ async function getTennisMatchesPayload() {
 /**
  * Builds the match bundle payload for a specific match (Instant 0ms from cache)
  */
-async function getMatchBundlePayload(matchId, user, sport = 'cricket') {
+async function getMatchBundlePayload(matchId, user, sport = 'cricket', options = {}) {
   if (!matchId) return null;
 
   const mid = String(matchId);
+  const isBroadcaster = Boolean(user?.isBroadcaster || options?.skipAuthCheck);
 
   if (sport === 'tennis') {
     const tennisMatches = dataCache.getTennisMatches();
     const tInfo = findMatchInfo(tennisMatches, mid);
-    if (!guestMayViewMatch(tInfo, user)) {
-      return { error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: mid };
-    }
-    const isEnded = isEndedMatch(tInfo);
-    const isFree = getSiteModeSync() === 'free';
-    if (!isEnded && !isFree && !hasProAccess(user)) {
-      return { error: 'subscription_required', message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED', matchId: mid };
+    if (!isBroadcaster) {
+      if (!guestMayViewMatch(tInfo, user)) {
+        return { error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: mid };
+      }
+      const isEnded = isEndedMatch(tInfo);
+      const isFree = getSiteModeSync() === 'free';
+      if (!isEnded && !isFree && !hasProAccess(user)) {
+        return { error: 'subscription_required', message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED', matchId: mid };
+      }
     }
     const snap = await dataCache.getTennisSnapshot(mid);
     return {
@@ -534,14 +539,16 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket') {
   }
 
   // Access check
-  if (!guestMayViewMatch(matchInfo, user) && !guestMayViewFromInfos(user, [tossInfo, matchInfo])) {
-    return { error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: mid };
-  }
+  if (!isBroadcaster) {
+    if (!guestMayViewMatch(matchInfo, user) && !guestMayViewFromInfos(user, [tossInfo, matchInfo])) {
+      return { error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: mid };
+    }
 
-  const isEnded = isEndedMatch(matchInfo) || isEndedMatch(tossInfo);
-  const isFree = getSiteModeSync() === 'free';
-  if (!isEnded && !isFree && !hasProAccess(user)) {
-    return { error: 'subscription_required', message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED', matchId: mid };
+    const isEnded = isEndedMatch(matchInfo) || isEndedMatch(tossInfo);
+    const isFree = getSiteModeSync() === 'free';
+    if (!isEnded && !isFree && !hasProAccess(user)) {
+      return { error: 'subscription_required', message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED', matchId: mid };
+    }
   }
 
   // Read all snapshots synchronously from memory (0ms)
@@ -585,7 +592,13 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket') {
   }
 
   const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
-  const crex = cachedCrex || null;
+  let crex = cachedCrex || null;
+  if (!crex || !crex.scorecard) {
+    try {
+      const fullCrex = await getCrexForMatch(matchInfo, mid);
+      if (fullCrex) crex = fullCrex;
+    } catch {}
+  }
 
   return {
     matchId: mid,
@@ -597,12 +610,54 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket') {
   };
 }
 
+async function getCrexForMatch(matchInfo, matchId = null) {
+  try {
+    let crexOverview = dataCache.getCrexOverview();
+    if (!Array.isArray(crexOverview) || !crexOverview.length) {
+      crexOverview = await crexService.getCrexOverview();
+    }
+    let matched = null;
+
+    if (matchId && String(matchId).startsWith('crex-')) {
+      const rawId = String(matchId).replace(/^crex-/, '');
+      matched = crexOverview.find(cm => cm.crexMatchId === rawId || cm.slug === rawId);
+    }
+
+    if (!matched && matchInfo?.matchName) {
+      matched = crexService.findCrexMatch(matchInfo.matchName, crexOverview, {
+        startTime: matchInfo.startTime || matchInfo.openDate || matchInfo.marketStartTime,
+        status: matchInfo.status,
+        inPlay: matchInfo.inPlay,
+      });
+    }
+
+    if (!matched) return null;
+    if (matched.slug || matched.url) {
+      const cachedDetail = dataCache.getCrexDetail(matched.crexMatchId || matched.slug || matchId);
+      const detail = cachedDetail || await crexService.getCrexMatchDetail(matched.slug || matched.url);
+      if (!detail) return matched;
+      const scorecard = alignScorecardTeams(detail.scorecard, matchInfo?.matchName);
+      return {
+        ...matched,
+        ...detail,
+        scorecard: scorecard || detail.scorecard,
+        tossText: detail.tossText || detail.scorecard?.tossText || null,
+        isReversed: Boolean(matched.isReversed),
+      };
+    }
+    return matched;
+  } catch (e) {
+    return null;
+  }
+}
+
 module.exports = {
   getCricketMatchesPayload,
   getTossMatchesPayload,
   getTennisMatchesPayload,
   getSessionMatchesPayload,
   getMatchBundlePayload,
+  getCrexForMatch,
   computeMatchLoad,
   computeTossLoad,
   alignScorecardTeams,

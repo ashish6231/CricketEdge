@@ -7,6 +7,7 @@
 
 const { getRedisClient } = require('../../shared/redis');
 const { createNormalizedMatch, createNormalizedOdds, mergeMatches } = require('../../shared/schema');
+const crexService = require('../crexService');
 const prisma = require('../../db/prisma');
 
 // In-memory caches for fast normalization & merging
@@ -21,30 +22,28 @@ const _crexDetails = new Map();
 const _tossSnapshots = new Map();
 const _sessionTrades = new Map();
 
-function cleanTeamName(name) {
-  return String(name || '')
-    .toLowerCase()
-    .replace(/\b(women|men|xi|u19|t20|super kings|riders|titans|warriors|lions|stars)\b/gi, '')
-    .replace(/[^a-z0-9]/g, '')
-    .trim();
-}
-
-function findMatchingCrex(tllMatch, crexList = _crexOverview) {
-  if (!tllMatch || !Array.isArray(crexList)) return null;
-
-  const t1 = cleanTeamName(tllMatch.team1);
-  const t2 = cleanTeamName(tllMatch.team2);
-
-  for (const c of crexList) {
-    const c1 = cleanTeamName(c.team1Name || c.team1Short);
-    const c2 = cleanTeamName(c.team2Name || c.team2Short);
-
-    if (t1 && t2 && c1 && c2) {
-      if ((c1.includes(t1) || t1.includes(c1)) && (c2.includes(t2) || t2.includes(c2))) return c;
-      if ((c1.includes(t2) || t2.includes(c1)) && (c2.includes(t1) || t1.includes(c2))) return c;
-    }
-  }
-  return null;
+function buildCrexField(cm) {
+  if (!cm) return null;
+  return {
+    matched: true,
+    isReversed: Boolean(cm.isReversed),
+    crexMatchId: cm.crexMatchId,
+    slug: cm.slug,
+    url: cm.url,
+    team1Name: cm.team1Name,
+    team1Short: cm.team1Short,
+    team1Flag: cm.team1Flag,
+    team2Name: cm.team2Name,
+    team2Short: cm.team2Short,
+    team2Flag: cm.team2Flag,
+    score1: cm.score1 || null,
+    score2: cm.score2 || null,
+    status: cm.status,
+    statusText: cm.statusText || '',
+    venue: cm.venue,
+    odds: cm.odds || null,
+    runningBall: cm.runningBall || null,
+  };
 }
 
 /**
@@ -58,9 +57,13 @@ async function processIngestJob(job) {
     // 1. Normalize TennisLiveLoad matches and merge with active CREX overview
     const normalized = data.map(m => {
       const norm = createNormalizedMatch({ ...m, source: 'tennisliveload' });
-      const matchedCrex = findMatchingCrex(norm, _crexOverview);
-      if (matchedCrex) {
-        norm.crex = matchedCrex;
+      const cm = crexService.findCrexMatch(norm.matchName, _crexOverview, {
+        startTime: norm.startTime,
+        status: norm.status,
+        inPlay: norm.inPlay,
+      });
+      if (cm) {
+        norm.crex = buildCrexField(cm);
         norm.source = 'merged';
       }
       return norm;
@@ -82,15 +85,23 @@ async function processIngestJob(job) {
 
     // Re-correlate cricket matches with fresh CREX data
     if (_cricketMatches.length > 0) {
+      let updated = false;
       for (const m of _cricketMatches) {
-        const found = findMatchingCrex(m, data);
-        if (found) {
-          m.crex = found;
+        const cm = crexService.findCrexMatch(m.matchName, data, {
+          startTime: m.startTime,
+          status: m.status,
+          inPlay: m.inPlay,
+        });
+        if (cm) {
+          m.crex = buildCrexField(cm);
           m.source = 'merged';
+          updated = true;
         }
       }
-      await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
-      await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
+      if (updated) {
+        await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
+        await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
+      }
     }
   }
 
@@ -117,12 +128,22 @@ async function processIngestJob(job) {
     const mid = String(matchId);
     _tossSnapshots.set(mid, data);
     await redis.set(`match:${mid}:toss`, JSON.stringify(data), 'EX', 120);
+
+    const bundle = getMatchBundle(mid);
+    await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
+    await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+    await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
   }
 
   else if (type === 'session:trades' && matchId && data) {
     const mid = String(matchId);
     _sessionTrades.set(mid, data);
     await redis.set(`match:${mid}:session`, JSON.stringify(data), 'EX', 120);
+
+    const bundle = getMatchBundle(mid);
+    await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
+    await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+    await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
   }
 
   else if (type === 'cricket:snapshot' && matchId && data) {
@@ -151,14 +172,49 @@ async function processIngestJob(job) {
 
     // Publish to specific match channel & bundle channel
     await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
-    await redis.publish('match:bundle', JSON.stringify(bundle));
+    await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
   }
 
-  else if (type === 'crex:detail' && matchId && data) {
-    const mid = String(matchId);
-    _crexDetails.set(mid, data);
-    await redis.set(`match:${mid}:crex`, JSON.stringify(data), 'EX', 60);
-    await redis.publish(`match:crex:${mid}`, JSON.stringify(data));
+  else if (type === 'crex:detail' && data) {
+    const detail = data;
+    const cid = String(job.data?.crexMatchId || detail.crexMatchId || '');
+    const slug = String(job.data?.slug || detail.slug || '');
+
+    if (cid) _crexDetails.set(cid, detail);
+    if (slug) _crexDetails.set(slug, detail);
+
+    // Correlate with any active cricket matches
+    for (const m of _cricketMatches) {
+      const mCid = m.crex?.crexMatchId;
+      const mSlug = m.crex?.slug;
+      if ((cid && mCid === cid) || (slug && mSlug === slug) || (slug && mSlug && mSlug.includes(slug))) {
+        const mid = String(m.id || m.matchId);
+        _crexDetails.set(mid, detail);
+
+        if (detail.scorecard) {
+          if (!m.crex) m.crex = {};
+          m.crex.scorecard = detail.scorecard;
+          m.crex.score1 = detail.scorecard.team1?.score || m.crex.score1;
+          m.crex.score2 = detail.scorecard.team2?.score || m.crex.score2;
+          m.crex.statusText = detail.scorecard.statusEquation || detail.scorecard.matchResult || m.crex.statusText;
+          m.crex.runningBall = detail.scorecard.runningBall || detail.runningBall || m.crex.runningBall;
+        }
+
+        await redis.set(`match:${mid}:crex`, JSON.stringify(detail), 'EX', 60);
+        await redis.publish(`match:crex:${mid}`, JSON.stringify(detail));
+
+        const bundle = getMatchBundle(mid);
+        await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
+        await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+        await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
+      }
+    }
+
+    // Re-broadcast updated cricket matches list so home screen cards get fresh scores
+    if (_cricketMatches.length > 0) {
+      await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
+      await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
+    }
   }
 }
 
@@ -185,12 +241,33 @@ function getCrexOverview() {
 
 function getMatchBundle(matchId) {
   const mid = String(matchId);
+  let crex = _crexDetails.get(mid) || null;
+  if (!crex) {
+    const m = _cricketMatches.find(x => String(x.id || x.matchId) === mid);
+    if (m?.crex) {
+      const detailed = (m.crex.crexMatchId && _crexDetails.get(m.crex.crexMatchId))
+        || (m.crex.slug && _crexDetails.get(m.crex.slug));
+      // Merge detail scorecard into overview crex if detail found
+      if (detailed) {
+        crex = {
+          ...m.crex,
+          ...detailed,
+          score1: detailed.scorecard?.team1?.score || detailed.score1 || m.crex.score1,
+          score2: detailed.scorecard?.team2?.score || detailed.score2 || m.crex.score2,
+          statusText: detailed.scorecard?.statusEquation || detailed.scorecard?.matchResult || detailed.statusText || m.crex.statusText,
+          runningBall: detailed.scorecard?.runningBall || detailed.runningBall || m.crex.runningBall,
+        };
+      } else {
+        crex = m.crex;
+      }
+    }
+  }
   return {
     matchId: mid,
     cricket: _cricketSnapshots.get(mid) || null,
     toss: _tossSnapshots.get(mid) || null,
     session: _sessionTrades.get(mid) || null,
-    crex: _crexDetails.get(mid) || null,
+    crex: crex,
     updatedAt: Date.now(),
   };
 }

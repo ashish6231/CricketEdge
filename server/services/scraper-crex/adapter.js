@@ -14,6 +14,15 @@ class CrexAdapter extends SourceAdapter {
     super('crex');
   }
 
+  async getRawOverview() {
+    try {
+      return await crexService.getCrexOverview();
+    } catch (err) {
+      console.warn('⚠️  [CREX-Adapter] error fetching raw overview:', err.message);
+      return [];
+    }
+  }
+
   async getMatches() {
     try {
       const overview = await crexService.getCrexOverview();

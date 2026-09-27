@@ -47,9 +47,26 @@ async function runPollCycle() {
       await queue.add('ingest', { source: 'tll', type: 'tennis:matches', data: tennis });
     }
 
-    // 2. Fetch snapshots for active live matches
+    // 2. Fetch snapshots for active live matches + any matches currently viewed by users in MatchDetail
+    let subscribedMatchIds = new Set();
+    try {
+      const socketService = require('../socketService');
+      if (typeof socketService.getActiveSubscribedMatchIds === 'function') {
+        subscribedMatchIds = new Set(socketService.getActiveSubscribedMatchIds());
+      }
+    } catch {}
+
     const activeCricket = (Array.isArray(cricket) ? cricket : [])
-      .filter(m => m.inPlay || m.status === 'live');
+      .filter(m => {
+        const mid = String(m.id || m.matchId);
+        return m.inPlay || m.status === 'live' || m.status === 'in-play' || subscribedMatchIds.has(mid);
+      });
+
+    for (const subMid of subscribedMatchIds) {
+      if (!activeCricket.some(m => String(m.id || m.matchId) === String(subMid))) {
+        activeCricket.push({ id: subMid, matchId: subMid });
+      }
+    }
 
     for (const m of activeCricket) {
       const mid = m.id || m.matchId;

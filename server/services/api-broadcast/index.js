@@ -64,7 +64,7 @@ function init() {
           if (!matchId) return;
           _debounced(`bundle:${matchId}`, () => {
             const matchPayloadService = require('../matchPayloadService');
-            matchPayloadService.getMatchBundlePayload(matchId, null, 'cricket')
+            matchPayloadService.getMatchBundlePayload(matchId, { isBroadcaster: true, role: 'admin' }, 'cricket')
               .then(bundle => {
                 if (!bundle || bundle.error) return;
                 const io = socketService.getIo();

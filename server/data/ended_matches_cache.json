@@ -3779,6 +3779,27 @@
     "runners": [],
     "totalMatched": 351276
   },
+  "36119478": {
+    "matchLoad": {
+      "team1": {
+        "name": "Puri Titans",
+        "money": 73188,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Kataka Panthers",
+        "money": 73188,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 146375
+    },
+    "runners": [],
+    "totalMatched": 146375
+  },
   "36119703": {
     "matchLoad": {
       "team1": {
@@ -3799,5 +3820,26 @@
     },
     "runners": [],
     "totalMatched": 67242
+  },
+  "36119718": {
+    "matchLoad": {
+      "team1": {
+        "name": "Usn Indians",
+        "money": 36,
+        "percent": 49,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Haridwar Elmas",
+        "money": 36,
+        "percent": 51,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 73
+    },
+    "runners": [],
+    "totalMatched": 73
   }
 }

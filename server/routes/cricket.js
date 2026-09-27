@@ -79,7 +79,10 @@ function alignScorecardTeams(scorecard, matchName) {
 
 async function getCrexForMatch(matchInfo, matchId = null) {
   try {
-    const crexOverview = dataCache.getCrexOverview();
+    let crexOverview = dataCache.getCrexOverview();
+    if (!Array.isArray(crexOverview) || !crexOverview.length) {
+      crexOverview = await crexService.getCrexOverview();
+    }
     let matched = null;
 
     if (matchId && String(matchId).startsWith('crex-')) {

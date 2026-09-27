@@ -10,7 +10,7 @@ const CrexAdapter = require('./adapter');
 const { getIngestQueue } = require('../normalizer/queue');
 
 const adapter = new CrexAdapter();
-let _pollInterval = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 10000;
+let _pollInterval = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 3000;
 let _timer = null;
 let _isRunning = false;
 
@@ -22,24 +22,27 @@ async function runPollCycle() {
     const queue = getIngestQueue();
 
     // 1. Fetch public overview
-    const matches = await adapter.getMatches();
-    if (Array.isArray(matches) && matches.length) {
+    const rawOverview = await adapter.getRawOverview();
+    if (Array.isArray(rawOverview) && rawOverview.length) {
       await queue.add('ingest', {
         source: 'crex',
         type: 'crex:overview',
-        data: matches,
+        data: rawOverview,
       });
 
       // 2. Fetch details for active live matches
-      const liveMatches = matches.filter(m => m.inPlay || m.status === 'live');
+      const liveMatches = rawOverview.filter(m => m.isLive || m.status === 'live' || m.inPlay);
       for (const m of liveMatches.slice(0, 10)) {
-        adapter.getSnapshot(m.id)
+        const slugOrUrl = m.slug || m.url || m.crexMatchId;
+        if (!slugOrUrl) continue;
+        adapter.getSnapshot(slugOrUrl)
           .then(detail => {
             if (detail) {
               queue.add('ingest', {
                 source: 'crex',
                 type: 'crex:detail',
-                matchId: m.id,
+                crexMatchId: m.crexMatchId,
+                slug: m.slug,
                 data: detail,
               }).catch(() => {});
             }

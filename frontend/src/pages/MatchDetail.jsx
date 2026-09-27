@@ -17,6 +17,7 @@ import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetr
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
+import { getCricketMatchBundle } from '../api'
 
 const fmt = (n) => {
   if (n === null || n === undefined) return '—'
@@ -457,9 +458,8 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
           <div className="font-bold text-white text-sm sm:text-base tracking-tight truncate">{teamData.name}</div>
         </div>
         <div className="flex items-center justify-between sm:justify-end gap-2 flex-wrap">
-          <div className={`text-[11px] flex items-center gap-1 font-bold px-2 py-0.5 rounded-md ${
-            teamData.trend === 'Rising' ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20' : teamData.trend === 'Dropping' ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' : 'text-slate-400 bg-slate-800/40 border border-slate-700/30'
-          }`}>
+          <div className={`text-[11px] flex items-center gap-1 font-bold px-2 py-0.5 rounded-md ${teamData.trend === 'Rising' ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20' : teamData.trend === 'Dropping' ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' : 'text-slate-400 bg-slate-800/40 border border-slate-700/30'
+            }`}>
             {teamData.trend === 'Rising' ? <TrendingUp size={11} /> : teamData.trend === 'Dropping' ? <TrendingUp size={11} className="rotate-180" /> : <span>—</span>}
             <span>Odds {teamData.trend}</span>
           </div>
@@ -832,6 +832,16 @@ export default function MatchDetail({ sport }) {
       socket.once('connect', () => subscribeMatch(matchId, sport))
     }
 
+    // One-time HTTP fetch only if no prefetch cache available
+    if (!prefetched?.cricket) {
+      setLoading(true)
+      getCricketMatchBundle(matchId)
+        .then(data => {
+          if (!cancelled && data && !data.error) handleBundle(data)
+        })
+        .catch(() => { })
+    }
+
     // Safety timeout — agar 10s mein data nahi aaya toh loading hatao
     const loadingTimeout = setTimeout(() => {
       if (!cancelled) setLoading(false)
@@ -1179,11 +1189,10 @@ export default function MatchDetail({ sport }) {
               <button
                 key={key}
                 onClick={() => handleTabChange(key)}
-                className={`px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[10.5px] sm:text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${
-                  isActive
+                className={`px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[10.5px] sm:text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${isActive
                     ? 'text-white shadow-sm'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
+                  }`}
                 style={isActive ? {
                   background: key === 'graph' ? 'linear-gradient(135deg,#1d4ed8,#3b82f6)'
                     : key === 'crex' ? 'linear-gradient(135deg,#059669,#10b981)'
@@ -1354,11 +1363,10 @@ export default function MatchDetail({ sport }) {
                     </span>
                     {/* Percentage Badge */}
                     <span
-                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
-                        tossPct1 >= 50
+                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${tossPct1 >= 50
                           ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
                           : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-                      }`}
+                        }`}
                     >
                       {tossPct1}%
                     </span>
@@ -1379,11 +1387,10 @@ export default function MatchDetail({ sport }) {
                     </span>
                     {/* Percentage Badge */}
                     <span
-                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
-                        tossPct2 >= 50
+                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${tossPct2 >= 50
                           ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
                           : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-                      }`}
+                        }`}
                     >
                       {tossPct2}%
                     </span>
@@ -1600,11 +1607,11 @@ export default function MatchDetail({ sport }) {
                             width: `${pv.meterPct}%`,
                             background: pv.textColor.includes('teal') ? 'linear-gradient(90deg, #14b8a6, #2dd4bf)'
                               : pv.textColor.includes('emerald') ? 'linear-gradient(90deg, #10b981, #34d399)'
-                              : pv.textColor.includes('pink') ? 'linear-gradient(90deg, #ec4899, #f472b6)'
-                              : pv.textColor.includes('purple') ? 'linear-gradient(90deg, #a855f7, #c084fc)'
-                              : pv.textColor.includes('rose') ? 'linear-gradient(90deg, #f43f5e, #fb7185)'
-                              : pv.textColor.includes('amber') ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-                              : 'linear-gradient(90deg, #3b82f6, #60a5fa)',
+                                : pv.textColor.includes('pink') ? 'linear-gradient(90deg, #ec4899, #f472b6)'
+                                  : pv.textColor.includes('purple') ? 'linear-gradient(90deg, #a855f7, #c084fc)'
+                                    : pv.textColor.includes('rose') ? 'linear-gradient(90deg, #f43f5e, #fb7185)'
+                                      : pv.textColor.includes('amber') ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+                                        : 'linear-gradient(90deg, #3b82f6, #60a5fa)',
                             boxShadow: '0 0 8px rgba(255,255,255,0.3)'
                           }}
                         />
@@ -1752,20 +1759,18 @@ export default function MatchDetail({ sport }) {
                         return (
                           <div
                             key={name}
-                            className={`rounded-lg p-2.5 text-center border transition-all ${
-                              isProf
+                            className={`rounded-lg p-2.5 text-center border transition-all ${isProf
                                 ? 'bg-emerald-500/[0.07] border-emerald-500/30 shadow-sm'
                                 : 'bg-rose-500/[0.07] border-rose-500/30 shadow-sm'
-                            }`}
+                              }`}
                           >
                             <div className="text-[11px] font-bold text-slate-300 mb-0.5 truncate">{name}</div>
                             <div className={`text-sm sm:text-base font-black font-mono tracking-tight ${isProf ? 'text-emerald-400' : 'text-rose-400'}`}>
                               {fmtRs(pl)}
                             </div>
                             <div className="mt-1">
-                              <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${
-                                isProf ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                              }`}>
+                              <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${isProf ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                                }`}>
                                 {isProf ? 'BOOKIE PROFIT' : 'BOOKIE LOSS'}
                               </span>
                             </div>
@@ -2022,13 +2027,12 @@ export default function MatchDetail({ sport }) {
           {/* ━━━━━━━━━━ 5. QUICK STATS ━━━━━━━━━━ */}
           <div className="space-y-2.5">
             {[{ title: 'In-Play Live Metrics', pnl: ip, bets: ib, vol: iv, isLive: true },
-              { title: 'Pre-Match Baseline', pnl: pp, bets: pb, vol: pv, isLive: false }].map(({ title, pnl, bets, vol, isLive }) => (
+            { title: 'Pre-Match Baseline', pnl: pp, bets: pb, vol: pv, isLive: false }].map(({ title, pnl, bets, vol, isLive }) => (
               <div key={title} className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">
                 <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center justify-between">
                   <span className="text-[11px] font-black uppercase tracking-wider text-white">{title}</span>
-                  <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border ${
-                    isLive ? 'text-rose-400 bg-rose-500/10 border-rose-500/25' : 'text-sky-400 bg-sky-500/10 border-sky-500/25'
-                  }`}>
+                  <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border ${isLive ? 'text-rose-400 bg-rose-500/10 border-rose-500/25' : 'text-sky-400 bg-sky-500/10 border-sky-500/25'
+                    }`}>
                     {isLive ? 'IN-PLAY' : 'PRE-MATCH'}
                   </span>
                 </div>
