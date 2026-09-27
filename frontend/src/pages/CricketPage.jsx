@@ -279,41 +279,7 @@ export default function CricketPage() {
       return 2
     }
 
-    // Extract crex scores separately — strip crex from match objects to keep them stable
-    const newCrexScores = { ...crexScoresRef.current }
-    let crexChanged = false
-    rawList.forEach((m) => {
-      if (!m.crex) return
-      const mid = String(m.matchId)
-      const prev = crexScoresRef.current[mid]
-      const next = {
-        score1: m.crex.score1 || null,
-        score2: m.crex.score2 || null,
-        statusText: m.crex.statusText || null,
-        runningBall: m.crex.runningBall || null,
-        odds: m.crex.odds || null,
-        team1Name: m.crex.team1Name || null,
-        team2Name: m.crex.team2Name || null,
-        team1Short: m.crex.team1Short || null,
-        team2Short: m.crex.team2Short || null,
-      }
-      if (!prev ||
-        prev.score1 !== next.score1 ||
-        prev.score2 !== next.score2 ||
-        prev.statusText !== next.statusText ||
-        prev.runningBall !== next.runningBall ||
-        prev.odds?.rate !== next.odds?.rate
-      ) {
-        newCrexScores[mid] = next
-        crexChanged = true
-      }
-    })
-    if (crexChanged) {
-      crexScoresRef.current = newCrexScores
-      setCrexScores(newCrexScores)
-    }
-
-    // Strip crex from match objects so allMatches stays structurally stable
+    // Strip crex from match objects — crex scores come exclusively via crex:live
     const stripped = rawList.map(m => {
       if (!m.crex) return m
       const { crex, ...rest } = m
