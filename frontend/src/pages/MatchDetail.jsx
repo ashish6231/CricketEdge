@@ -3,7 +3,7 @@ import TossDetail from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio, Trophy, Sparkles, Shield, Zap, Flame, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio, Trophy, Sparkles, Shield, Zap, Flame, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
@@ -621,12 +621,14 @@ export default function MatchDetail({ sport }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn, isFreeMode } = useOutletContext() || {}
+  const { isLoggedIn, isFreeMode, authReady } = useOutletContext() || {}
 
   // Try to get prefetched bundle from socket cache (server pushes all active bundles on connect)
   const prefetched = getMatchBundle(matchId)
   const seedData = location.state?.matchData || null
-  const seedCrex = prefetched?.crex || seedData?.crex || null
+  const seedCrex = (prefetched?.crex?.scorecard || prefetched?.crex?.ballFeeds) ? prefetched.crex
+    : (seedData?.crex?.scorecard || seedData?.crex?.ballFeeds) ? seedData.crex
+    : null
 
   // Build initial snapshot: prefetch cache first, then navigation state fallback
   const buildInitialSnapshot = () => {
@@ -666,7 +668,7 @@ export default function MatchDetail({ sport }) {
   const [snapshot, setSnapshot] = useState(buildInitialSnapshot)
   const [loading, setLoading] = useState(false)
   const [fetchError, setFetchError] = useState(null)
-  const [requiresLogin, setRequiresLogin] = useState(false)
+  const [requiresLogin, setRequiresLogin] = useState(() => authReady && !isLoggedIn)
   const [requiresPro, setRequiresPro] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
@@ -794,17 +796,24 @@ export default function MatchDetail({ sport }) {
       if (bundle?.session) applySessionData(bundle.session)
 
       if (bundle?.crex) {
-        crexDataRef.current = bundle.crex
-        setCrexData(bundle.crex)
+        handleCrex(bundle.crex)
       } else if (data?.crex) {
-        crexDataRef.current = data.crex
-        setCrexData(data.crex)
+        handleCrex(data.crex)
       }
       setLoading(false)
     }
 
     const handleCrex = (crex) => {
       if (cancelled || !crex) return
+      const prev = crexDataRef.current
+      // Never replace a live full scorecard with a stale/partial one
+      // A full scorecard has team1/team2 objects; a partial one (odds-only) does not
+      const prevIsLive = prev?.scorecard?.status === 'live' || prev?.status === 'live'
+      const newIsLive = crex?.scorecard?.status === 'live' || crex?.status === 'live'
+      const newHasScorecard = Boolean(crex?.scorecard?.team1 || crex?.scorecard?.team2)
+      const prevHasScorecard = Boolean(prev?.scorecard?.team1 || prev?.scorecard?.team2)
+      // Skip update if: prev is live+full and new is completed+partial (transient CREX API gap)
+      if (prevIsLive && prevHasScorecard && !newIsLive && !newHasScorecard) return
       crexDataRef.current = crex
       setCrexData(crex)
     }
@@ -899,16 +908,17 @@ export default function MatchDetail({ sport }) {
   }, [sport, sessionOdds, sessionTrades])
 
   useEffect(() => {
+    if (authReady && !isLoggedIn) setRequiresLogin(true)
+  }, [authReady, isLoggedIn])
+
+  useEffect(() => {
     if (!loading && activeTab === 'toss' && !hasTossData) {
       setActiveTab('simple')
     }
   }, [loading, activeTab, hasTossData])
 
-  if (loading) return (
-    <div className="flex h-[80vh] items-center justify-center">
-      <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
-    </div>
-  )
+  // Wait for auth check before rendering — prevents flash of content with stale token
+  if (!authReady) return null
 
   if (requiresPro && !isFreeMode) {
     return (
@@ -1211,7 +1221,7 @@ export default function MatchDetail({ sport }) {
       </div>
 
       {/* ── Live Scorecard Hero Banner — cricket only ── */}
-      {sport === 'cricket' && activeTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} />}
+      {sport === 'cricket' && activeTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} matchInPlay={snapshot?.inPlay || false} />}
 
       {activeTab === 'graph' ? (
         <div className="w-full bg-[#0a0d16] border border-[#1b2234] min-h-screen p-3.5 sm:p-6 -mx-3 sm:mx-0 rounded-2xl font-sans shadow-2xl">

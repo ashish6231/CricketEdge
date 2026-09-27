@@ -172,8 +172,8 @@ export function formatCrexOutcome(val, isRunning = false) {
   if (/^w$/i.test(str) || /^wicket/i.test(str) || /^out$/i.test(str)) return 'Wicket'
 
   // Boundaries
-  if (/^four$/i.test(str) || str === '4') return 'FOUR'
-  if (/^six$/i.test(str) || str === '6') return 'SIX'
+  if (/^four$/i.test(str) || str === '4') return '4'
+  if (/^six$/i.test(str) || str === '6') return '6'
 
   // Extras
   if (/^wide/i.test(str) || /^wd/i.test(str) || /^\d*wd$/i.test(str)) return 'Wide'
@@ -241,15 +241,22 @@ export function RunningBallBadge({ runningBall, size = 'md', className = '' }) {
 /**
  * Top Scorecard Hero Banner for MatchDetail
  */
-export function CrexScorecardBanner({ crexData, t1, t2 }) {
+export function CrexScorecardBanner({ crexData, t1, t2, matchInPlay = false }) {
   if (!crexData) return null
 
   const sc = crexData.scorecard || {}
   const co = crexData.odds || {}
   const runningBall = crexData.runningBall || sc.runningBall || null
 
-  const isCompleted = sc.status === 'completed' || crexData.status === 'completed' || /won by|won the|match drawn|tied|no result/i.test(sc.statusEquation || sc.matchResult || '')
-  const isLive = !isCompleted && (sc.status === 'live' || crexData.status === 'live')
+  // Only mark completed if we have a full scorecard (has team scores or batters) — prevents
+  // stale lightweight crex from match list triggering false "completed" flash on live matches
+  const hasFullScorecard = Boolean(sc.team1 || sc.team2 || sc.batters?.length > 0 || sc.bowler)
+  // If the match is known to be in-play from Betfair data, never show completed
+  const isCompleted = !matchInPlay && hasFullScorecard && (
+    sc.status === 'completed' || crexData.status === 'completed' ||
+    /won by|won the|match drawn|tied|no result/i.test(sc.statusEquation || sc.matchResult || '')
+  )
+  const isLive = matchInPlay || (!isCompleted && (sc.status === 'live' || crexData.status === 'live'))
   const matchResultText = sc.matchResult || sc.statusEquation || crexData.statusText || 'Match Completed'
 
   const hasOdds = (co?.rate !== null && co?.rate !== undefined && co?.rate !== '') ||

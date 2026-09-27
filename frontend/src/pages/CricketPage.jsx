@@ -4,7 +4,7 @@ import { LoaderCircle, ChevronRight, Trophy, Lock, X, Search } from 'lucide-reac
 import { getCricketMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
-import { CricketBallIcon, formatRateBox, RunningBallBadge } from '../components/CrexLiveSection'
+import { CricketBallIcon, formatRateBox } from '../components/CrexLiveSection'
 import { getSocket } from '../socket'
 
 const STORAGE_KEY = 'cricket_selected_comp'
@@ -165,7 +165,7 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
           ) : (
             <span className="text-[10px] text-slate-500 font-mono truncate">€{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 }) || '0'} matched</span>
           )}
-          {crexScore?.runningBall && <RunningBallBadge runningBall={crexScore.runningBall} size="sm" />}
+
         </div>
         <span className="text-[11px] font-bold text-amber-400 group-hover:text-amber-300 flex items-center gap-0.5 shrink-0">
           <span>Details</span><ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
@@ -181,7 +181,7 @@ export default function CricketPage() {
   const isPro = hasProAccess(user)
   const { matchId } = useParams()
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [allMatches, setAllMatches] = useState([])
   const [competitions, setCompetitions] = useState({})
@@ -350,6 +350,11 @@ export default function CricketPage() {
         setLoading(false)
       })
   }
+
+  // Initial HTTP fetch — don't wait for socket on first load
+  useEffect(() => {
+    fetchMatches()
+  }, [])
 
   useEffect(() => {
     const socket = getSocket()
