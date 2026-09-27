@@ -5,7 +5,7 @@ services:
     runtime: node
     rootDir: server
     buildCommand: rm -rf node_modules && npm install && npx prisma generate
-    startCommand: node index.js
+    startCommand: rm -rf node_modules/agent-base && npm install --prefix . agent-base@7.1.1 && node index.js
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
