@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Activity, Lock, Mail, Eye, EyeOff, User, LoaderCircle, AlertTriangle, X } from 'lucide-react'
 import { login, register, getSignupStatus } from '../api'
@@ -17,11 +17,25 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
   const [error, setError] = useState('')
   const [allowSignups, setAllowSignups] = useState(false)
   const [siteName, setSiteName] = useState(siteNameProp || 'CricEdge')
+  const [serverReady, setServerReady] = useState(false)
+  const serverPingRef = useRef(null)
 
-  // Pre-warm server as soon as login modal mounts — reduces cold start delay on submit
+  // Wake Render from cold start as soon as modal opens
+  // Poll /api/health until it responds, then mark serverReady
   useEffect(() => {
     const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
-    fetch(`${API_BASE}/health`, { method: 'GET', cache: 'no-store' }).catch(() => {})
+    let cancelled = false
+    const ping = async () => {
+      while (!cancelled) {
+        try {
+          const r = await fetch(`${API_BASE}/health`, { cache: 'no-store' })
+          if (r.ok && !cancelled) { setServerReady(true); return }
+        } catch { }
+        if (!cancelled) await new Promise(r => setTimeout(r, 2000))
+      }
+    }
+    serverPingRef.current = ping()
+    return () => { cancelled = true }
   }, [])
 
   const [sessionReplacedMsg, setSessionReplacedMsg] = useState(() => {
@@ -240,10 +254,12 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
               </div>
             </div>
 
-            <button type="submit" disabled={loading}
+            <button type="submit" disabled={loading || !serverReady}
               className="w-full flex items-center justify-center gap-2 py-2 rounded-lg font-bold text-[13px] text-white disabled:opacity-70 mt-4 bg-[#10b981] hover:bg-[#059669] transition-colors">
               {loading
-                ? <><LoaderCircle size={14} className="animate-spin" /> {tab === 'login' ? 'Wait...' : 'Creating...'}</>
+                ? <><LoaderCircle size={14} className="animate-spin" /> {tab === 'login' ? 'Signing in...' : 'Creating...'}</>
+                : !serverReady
+                ? <><LoaderCircle size={14} className="animate-spin" /> Connecting to server...</>
                 : <>{tab === 'login' ? 'Sign In' : 'Sign Up'}</>
               }
             </button>

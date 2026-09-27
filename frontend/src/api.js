@@ -136,10 +136,8 @@ export async function getTossSnapshot(matchId) {
 // ──── Auth ────
 
 export async function login(email, password) {
-  // Fire a health ping first to wake Render from sleep (free tier cold start)
-  // Don't await — just kick the server awake, login request follows immediately
-  fetch(`${API_BASE}/health`, { method: 'GET' }).catch(() => {})
-  // No retries on login — POST is not idempotent
+  // LoginPage already waits for serverReady before enabling submit
+  // so no extra ping needed here
   const res = await fetchAPI('/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
