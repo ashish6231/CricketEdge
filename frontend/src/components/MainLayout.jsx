@@ -51,18 +51,21 @@ export default function MainLayout() {
       }
       getAuthStatus().then(data => {
         if (cancelled) return
-        // softFail = timeout/network — keep current session, don't force logout
         if (data.softFail) {
+          // network/timeout — keep current session, mark ready
           if (localStorage.getItem('auth_token')) setIsLoggedIn(true)
+          setAuthReady(true)
           return
         }
-        setIsLoggedIn(data.isLoggedIn || false)
+        // Set all three atomically so no intermediate render shows login button
         setAuthUser(data.user || null)
+        setIsLoggedIn(data.isLoggedIn || false)
+        setAuthReady(true)
       }).catch(() => {
-        // Never wipe login on transient refresh errors
-        if (!cancelled && localStorage.getItem('auth_token')) setIsLoggedIn(true)
-      }).finally(() => {
-        if (!cancelled) setAuthReady(true)
+        if (!cancelled) {
+          if (localStorage.getItem('auth_token')) setIsLoggedIn(true)
+          setAuthReady(true)
+        }
       })
     }
     const onVisible = () => {
@@ -276,14 +279,17 @@ export default function MainLayout() {
     navigate('/cricket', { replace: true })
   }
 
-  const handleLogout = async () => {
-    await logout()
+  const handleLogout = () => {
+    // Update UI instantly, fire API in background
+    localStorage.removeItem('auth_token')
     updateSocketAuth(null)
     setIsLoggedIn(false)
     setAuthUser(null)
+    setAuthReady(true)
     setDropdown(false)
     setLoginOpen(false)
     navigate(guestPathAfterLogout(location.pathname), { replace: true })
+    logout().catch(() => {})
   }
 
   const isMatchDetail = /\/(cricket|tennis|toss)\/match\//.test(location.pathname)
