@@ -15,7 +15,6 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
   const [showPass, setShowPass] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [allowSignups, setAllowSignups] = useState(false)
   const [siteName, setSiteName] = useState(siteNameProp || 'CricEdge')
 
@@ -30,7 +29,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
   })
   const signupsDisabledRedirect = new URLSearchParams(window.location.search).get('error') === 'signups_disabled'
 
-  const reset = () => { setError(''); setSuccess(''); setName(''); setEmail(''); setPassword('') }
+  const reset = () => { setError(''); setName(''); setEmail(''); setPassword('') }
 
   const switchTab = (t) => {
     setTab(t)
@@ -52,7 +51,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError(''); setSuccess(''); setLoading(true)
+    setError(''); setLoading(true)
     try {
       let res
       if (tab === 'login') {
@@ -66,10 +65,9 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
         if (!name.trim()) { setError('Name required'); setLoading(false); return }
         res = await register(name.trim(), email, password)
       }
-      setSuccess(tab === 'login' ? (res.message ? `✅ ${res.message}` : '✅ Login successful!') : (res.message ? `✅ ${res.message}` : '✅ Account created!'))
       if (onLoginSuccess) onLoginSuccess(res.user?.email, res.user)
       if (shouldNavigateAfterAuth(isModal)) {
-        setTimeout(() => navigate('/cricket', { replace: true }), 800)
+        navigate('/cricket', { replace: true })
       }
     } catch (err) {
       setError(err.detail || (tab === 'login' ? 'Login failed. Check credentials.' : 'Registration failed.'))
@@ -145,11 +143,6 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
           {error && (
             <div className="flex items-center gap-2 rounded-lg px-3 py-2 mb-4 text-[11px] text-red-400 bg-red-500/10 border border-red-500/20">
               <AlertTriangle size={14} className="flex-shrink-0" /> {error}
-            </div>
-          )}
-          {success && (
-            <div className="rounded-lg px-3 py-2 mb-4 text-[11px] text-center text-green-400 bg-green-500/10 border border-green-500/20">
-              {success}
             </div>
           )}
 
