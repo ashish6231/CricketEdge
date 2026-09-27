@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, BarChart3 } from 'lucide-react'
-import { getTossSnapshot } from '../api'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { getBookiePl, getTeamMetrics } from '../utils/bookiePl'
 import { getSpoofingMetrics } from '../utils/spoofingDetector'
-import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
+import { getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
 
 const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}€${fmt(n)}`
@@ -61,20 +60,45 @@ export default function TossDetail({ isEmbedded = false }) {
   const [requiresPro, setRequiresPro] = useState(false)
 
   useEffect(() => {
-    const fetch = (isInitial = false) => {
-      if (isInitial) { setLoading(true); setRequiresLogin(false); setRequiresPro(false); setSnap(null) }
-      getTossSnapshot(matchId).then(res => {
-        if (isLoginRequiredError(res)) setRequiresLogin(true)
-        else if (res && !res.error) setSnap(res)
-        if (isInitial) setLoading(false)
-      }).catch(err => {
-        if (isLoginRequiredError(err)) setRequiresLogin(true)
-        else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)
-        if (isInitial) setLoading(false)
-      })
+    const socket = getSocket()
+    let cancelled = false
+
+    const handleBundle = (bundle) => {
+      if (cancelled || !bundle) return
+      if (isLoginRequiredError(bundle) || bundle?.error === 'login_required') {
+        setRequiresLogin(true)
+        setLoading(false)
+        return
+      }
+      if (bundle?.code === 'SUBSCRIPTION_REQUIRED' || bundle?.status === 403) {
+        setRequiresPro(true)
+        setLoading(false)
+        return
+      }
+      const tossData = bundle?.toss
+      if (tossData && !tossData.error) {
+        setSnap(tossData)
+      }
+      setLoading(false)
     }
-    fetch(true)
-    return startVisibleInterval(() => fetch(false), LIVE_POLL_MS)
+
+    socket.on(`match:bundle:${matchId}`, handleBundle)
+    socket.on('match:bundle', (b) => { if (String(b?.matchId) === String(matchId)) handleBundle(b) })
+
+    if (socket.connected) {
+      subscribeMatch(matchId, 'toss')
+    } else {
+      socket.once('connect', () => subscribeMatch(matchId, 'toss'))
+    }
+
+    const loadingTimeout = setTimeout(() => { if (!cancelled) setLoading(false) }, 10000)
+
+    return () => {
+      cancelled = true
+      clearTimeout(loadingTimeout)
+      unsubscribeMatch(matchId)
+      socket.off(`match:bundle:${matchId}`, handleBundle)
+    }
   }, [matchId, isLoggedIn])
 
   if (loading) return (

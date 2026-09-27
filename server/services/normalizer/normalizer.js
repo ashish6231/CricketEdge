@@ -82,19 +82,15 @@ async function processIngestJob(job) {
 
     // Re-correlate cricket matches with fresh CREX data
     if (_cricketMatches.length > 0) {
-      let updated = false;
       for (const m of _cricketMatches) {
         const found = findMatchingCrex(m, data);
-        if (found && (!m.crex || m.crex.updatedAt !== found.updatedAt)) {
+        if (found) {
           m.crex = found;
           m.source = 'merged';
-          updated = true;
         }
       }
-      if (updated) {
-        await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
-        await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
-      }
+      await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
+      await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
     }
   }
 

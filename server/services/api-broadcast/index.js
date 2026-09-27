@@ -1,182 +1,93 @@
 /**
  * services/api-broadcast/index.js
- * API & Real-Time Broadcast Service (Layer 4)
+ * Layer 4 — Redis Pub/Sub trigger bridge.
  *
- * Stateless and horizontally scalable behind a load balancer to serve 1000+ users.
- * NEVER touches upstream scrapers directly.
- * Only reads from Layer 3 (Redis Live Cache / Postgres).
- * Subscribes to Redis Pub/Sub for O(1) fan-out to all connected WebSocket clients.
+ * Subscribes to Redis Pub/Sub channels published by the Normalizer (Layer 2).
+ * On each message, delegates to socketService which builds the enriched
+ * matchPayloadService payload and fans it out to all connected Socket.IO clients.
+ *
+ * This layer never emits directly — socketService owns all Socket.IO output.
+ * This keeps the broadcast pipeline: Normalizer → Redis → api-broadcast → socketService → clients
  */
 
-const { getRedisClient, getSubClient } = require('../../shared/redis');
-const normalizer = require('../normalizer/normalizer');
+const { getSubClient } = require('../../shared/redis');
 
-let _io = null;
 let _isSubscribed = false;
 
+// Debounce timers to avoid redundant back-to-back broadcasts within the same poll cycle
+const _debounceTimers = {};
+const DEBOUNCE_MS = 300;
+
+function _debounced(key, fn) {
+  if (_debounceTimers[key]) clearTimeout(_debounceTimers[key]);
+  _debounceTimers[key] = setTimeout(() => {
+    delete _debounceTimers[key];
+    fn();
+  }, DEBOUNCE_MS);
+}
+
 /**
- * Initialize broadcast layer with Socket.IO instance
- * @param {import('socket.io').Server} io
+ * Initialize the pub/sub bridge.
+ * Must be called after socketService.init() so broadcastAllMatches is available.
  */
-function init(io) {
-  _io = io;
+function init() {
   if (_isSubscribed) return;
   _isSubscribed = true;
 
-  console.log('📡 [API-Broadcast] initializing Redis Pub/Sub listener for real-time fan-out...');
+  // Lazy-require to avoid circular dependency (socketService → matchPayloadService → dataCache → normalizer)
+  const socketService = require('../socketService');
+
+  console.log('📡 [API-Broadcast] subscribing to Redis Pub/Sub channels...');
   const sub = getSubClient();
 
-  const CHANNELS = [
-    'cricket:matches',
-    'toss:matches',
-    'session:matches',
-    'tennis:matches',
-    'crex:overview',
-    'match:bundle',
-  ];
+  const LIST_CHANNELS = ['cricket:matches', 'toss:matches', 'session:matches', 'tennis:matches'];
+  const CREX_CHANNEL = 'crex:overview';
+  const BUNDLE_CHANNEL = 'match:bundle';
 
-  CHANNELS.forEach(ch => {
-    try {
-      sub.subscribe(ch);
-    } catch {}
-  });
+  const allChannels = [...LIST_CHANNELS, CREX_CHANNEL, BUNDLE_CHANNEL];
+  allChannels.forEach(ch => { try { sub.subscribe(ch); } catch {} });
 
-  // Handle Redis Pub/Sub messages
   const onMessage = (channel, message) => {
-    if (!_io) return;
     try {
-      const data = typeof message === 'string' ? JSON.parse(message) : message;
+      if (LIST_CHANNELS.includes(channel)) {
+        // Any match list update → debounced full broadcast (builds enriched payload)
+        _debounced('lists', () => socketService.broadcastAllMatches().catch(() => {}));
 
-      if (channel === 'cricket:matches') {
-        _io.emit('cricket:matches', data);
-      } else if (channel === 'toss:matches') {
-        _io.emit('toss:matches', data);
-      } else if (channel === 'session:matches') {
-        _io.emit('session:matches', data);
-      } else if (channel === 'tennis:matches') {
-        _io.emit('tennis:matches', data);
-      } else if (channel === 'crex:overview') {
-        _io.emit('crex:overview', data);
-      } else if (channel === 'match:bundle' || channel.startsWith('match:bundle:')) {
-        const matchId = String(data?.matchId || channel.replace('match:bundle:', ''));
-        _io.to(`match:${matchId}`).emit(`match:bundle:${matchId}`, data);
-        _io.to(`match:${matchId}`).emit('match:bundle', data);
-      } else if (channel.startsWith('match:crex:')) {
-        const matchId = channel.replace('match:crex:', '');
-        _io.to(`match:${matchId}`).emit(`match:crex:${matchId}`, data);
+      } else if (channel === CREX_CHANNEL) {
+        _debounced('crex', () => socketService.broadcastCrexUpdates().catch(() => {}));
+
+      } else if (channel === BUNDLE_CHANNEL) {
+        // Individual match bundle update → broadcast only to that match room
+        try {
+          const data = typeof message === 'string' ? JSON.parse(message) : message;
+          const matchId = String(data?.matchId || '');
+          if (!matchId) return;
+          _debounced(`bundle:${matchId}`, () => {
+            const matchPayloadService = require('../matchPayloadService');
+            matchPayloadService.getMatchBundlePayload(matchId, null, 'cricket')
+              .then(bundle => {
+                if (!bundle || bundle.error) return;
+                const io = socketService.getIo();
+                if (!io) return;
+                io.to(`match:${matchId}`).emit(`match:bundle:${matchId}`, bundle);
+                io.to(`match:${matchId}`).emit('match:bundle', bundle);
+              })
+              .catch(() => {});
+          });
+        } catch {}
       }
     } catch (err) {
-      console.warn(`⚠️  [API-Broadcast] error handling pub/sub message on ${channel}:`, err.message);
+      console.warn(`⚠️  [API-Broadcast] pub/sub handler error on ${channel}:`, err.message);
     }
   };
 
   if (sub.isMock) {
-    CHANNELS.forEach(ch => sub.on(ch, (msg) => onMessage(ch, msg)));
+    allChannels.forEach(ch => sub.on(ch, (msg) => onMessage(ch, msg)));
   } else {
     sub.on('message', onMessage);
   }
 
-  // Handle client room subscriptions
-  _io.on('connection', async (socket) => {
-    // On connect, push initial cached data from Redis immediately (0ms wait)
-    try {
-      const cricket = await getCachedCricketMatches();
-      if (cricket?.matches?.length) socket.emit('cricket:matches', cricket);
-
-      const toss = await getCachedTossMatches();
-      if (toss?.length) socket.emit('toss:matches', toss);
-
-      const session = await getCachedSessionMatches();
-      if (session) socket.emit('session:matches', session);
-
-      const tennis = await getCachedTennisMatches();
-      if (tennis?.length) socket.emit('tennis:matches', tennis);
-    } catch (e) {
-      // ignore
-    }
-
-    // Room join for match-specific live updates
-    const handleSubscribe = async (payload) => {
-      const matchId = typeof payload === 'object' ? payload?.matchId : payload;
-      if (!matchId) return;
-      const mid = String(matchId);
-      socket.join(`match:${mid}`);
-
-      // Push cached bundle immediately
-      const bundle = await getCachedMatchBundle(mid);
-      if (bundle) {
-        socket.emit(`match:bundle:${mid}`, bundle);
-        socket.emit('match:bundle', bundle);
-      }
-    };
-
-    const handleUnsubscribe = (payload) => {
-      const matchId = typeof payload === 'object' ? payload?.matchId : payload;
-      if (matchId) socket.leave(`match:${matchId}`);
-    };
-
-    socket.on('subscribe:match', handleSubscribe);
-    socket.on('match:subscribe', handleSubscribe);
-    socket.on('unsubscribe:match', handleUnsubscribe);
-    socket.on('match:unsubscribe', handleUnsubscribe);
-  });
-
-  console.log('✅ [API-Broadcast] service running and attached to Socket.IO.');
+  console.log('✅ [API-Broadcast] Redis Pub/Sub bridge active.');
 }
 
-/**
- * 0ms Cached REST Accessors (Read only from Redis or Normalizer in-memory store)
- */
-async function getCachedCricketMatches() {
-  try {
-    const redis = getRedisClient();
-    const raw = await redis.get('matches:cricket');
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return { matches: normalizer.getCricketMatches() };
-}
-
-async function getCachedTossMatches() {
-  try {
-    const redis = getRedisClient();
-    const raw = await redis.get('matches:toss');
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return normalizer.getTossMatches();
-}
-
-async function getCachedSessionMatches() {
-  try {
-    const redis = getRedisClient();
-    const raw = await redis.get('matches:session');
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return normalizer.getSessionMatches();
-}
-
-async function getCachedTennisMatches() {
-  try {
-    const redis = getRedisClient();
-    const raw = await redis.get('matches:tennis');
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return normalizer.getTennisMatches();
-}
-
-async function getCachedMatchBundle(matchId) {
-  try {
-    const redis = getRedisClient();
-    const raw = await redis.get(`match:${matchId}:bundle`);
-    if (raw) return JSON.parse(raw);
-  } catch {}
-  return normalizer.getMatchBundle(matchId);
-}
-
-module.exports = {
-  init,
-  getCachedCricketMatches,
-  getCachedTossMatches,
-  getCachedSessionMatches,
-  getCachedTennisMatches,
-  getCachedMatchBundle,
-};
+module.exports = { init };

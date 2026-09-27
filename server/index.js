@@ -51,7 +51,7 @@ const normalizer = require('./services/normalizer');
 
 setIo(io);
 socketService.init(io);
-apiBroadcast.init(io);
+apiBroadcast.init(); // Redis pub/sub bridge — no io arg needed, delegates to socketService
 
 // ─── MIDDLEWARE ───
 // Gzip all responses — biggest win for 3G/4G clients

@@ -4,7 +4,6 @@ import TossDetail from './TossDetail'
 import { useEffect, useState, useContext, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio, Trophy, Sparkles, Shield, Zap, Flame, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
-import { getCricketSnapshot, getCricketMatchBundle, getTennisSnapshot, getTossSnapshot, getSessionTrades, getCrexMatchDetail } from '../api'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
@@ -17,16 +16,7 @@ import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
-import { startVisibleInterval, LIVE_POLL_MS, CREX_POLL_MS } from '../lib/visiblePoll'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
-
-// Map sport to the right API function
-const API_MAP = {
-  cricket: getCricketSnapshot,
-  tennis: getTennisSnapshot,
-  toss: getTossSnapshot,
-  session: getSessionTrades,
-}
 
 const fmt = (n) => {
   if (n === null || n === undefined) return '—'
@@ -746,7 +736,6 @@ export default function MatchDetail({ sport }) {
   }, [sessionOrderBook, isSessionMarket])
 
   useEffect(() => {
-    const apiFn = API_MAP[sport] || getCricketSnapshot
     let cancelled = false
 
     let lastSessionFp = ''
@@ -818,67 +807,6 @@ export default function MatchDetail({ sport }) {
       if (cancelled || !crex) return
       crexDataRef.current = crex
       setCrexData(crex)
-    }
-
-    const fetchData = (isInitial = false) => {
-      if (typeof document !== 'undefined' && document.hidden && !isInitial) return
-      if (isInitial) {
-        setLoading(true)
-        setFetchError(null)
-        setRequiresLogin(false)
-        setRequiresPro(false)
-        setSnapshot(null)
-        setTossSnapshot(null)
-      }
-
-      if (sport === 'cricket') {
-        getCricketMatchBundle(matchId)
-          .then(bundle => {
-            if (cancelled) return
-            handleBundle(bundle)
-          })
-          .catch(err => {
-            if (cancelled) return
-            if (isLoginRequiredError(err)) {
-              setRequiresLogin(true)
-            } else if ((err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) && !isFreeMode) {
-              setRequiresPro(true)
-            } else if (isInitial) {
-              setFetchError(err?.detail || 'Network error — dubara try karo')
-            }
-            if (isInitial) setLoading(false)
-          })
-        return
-      }
-
-      // Tennis / other
-      apiFn(matchId)
-        .then(data => {
-          if (cancelled) return
-          if (isLoginRequiredError(data)) {
-            setRequiresLogin(true)
-          } else if (data && !data.error) {
-            setSnapshot(data)
-            setFetchError(null)
-            const now = new Date()
-            setLastUpdated(now)
-            window.dispatchEvent(new CustomEvent('data-refreshed', { detail: { time: now } }))
-          } else if (isInitial) {
-            setFetchError(data?.error || data?.message || 'Match data load nahi ho paya')
-          }
-          if (isInitial) setLoading(false)
-        })
-        .catch(err => {
-          if (cancelled) return
-          if (isLoginRequiredError(err)) {
-            setRequiresLogin(true)
-          } else if ((err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) && !isFreeMode) {
-            setRequiresPro(true)
-          } else if (isInitial) {
-            setFetchError(err?.detail || 'Network error — dubara try karo')
-          }
-          if (isInitial) setLoading(false)
-        })
     }
 
     // WebSocket Room Subscription

@@ -8,12 +8,11 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   CartesianGrid, Cell, ReferenceLine,
 } from 'recharts'
-import { getSessionTrades } from '../api'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { buildAllSessions, fmtRs, formatVolStr, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPickBanner from '../components/SessionPickBanner'
-import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
+import { getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
 
 function RangeBar({ bestYes, bestNo, predicted }) {
   if (bestYes == null || bestNo == null) return null
@@ -306,26 +305,49 @@ export default function SessionDetail() {
   const [lastRefresh, setLastRefresh] = useState(null)
 
   useEffect(() => {
-    const fetch = (isInitial = false) => {
-      if (isInitial) { setLoading(true); setRequiresLogin(false); setRequiresPro(false) }
-      getSessionTrades(matchId).then(res => {
-        if (isLoginRequiredError(res)) setRequiresLogin(true)
-        else if (res) {
-          setData(prev => {
-            if (prev && sessionDataFingerprint(prev) === sessionDataFingerprint(res)) return prev
-            return res
-          })
-          setLastRefresh(new Date())
-        }
-        if (isInitial) setLoading(false)
-      }).catch(err => {
-        if (isLoginRequiredError(err)) setRequiresLogin(true)
-        else if (err?.code === 'SUBSCRIPTION_REQUIRED' || err?.status === 403) setRequiresPro(true)
-        if (isInitial) setLoading(false)
-      })
+    const socket = getSocket()
+    let cancelled = false
+
+    const handleBundle = (bundle) => {
+      if (cancelled || !bundle) return
+      if (isLoginRequiredError(bundle) || bundle?.error === 'login_required') {
+        setRequiresLogin(true)
+        setLoading(false)
+        return
+      }
+      if (bundle?.code === 'SUBSCRIPTION_REQUIRED' || bundle?.status === 403) {
+        setRequiresPro(true)
+        setLoading(false)
+        return
+      }
+      const sessionData = bundle?.session
+      if (sessionData) {
+        setData(prev => {
+          if (prev && sessionDataFingerprint(prev) === sessionDataFingerprint(sessionData)) return prev
+          return sessionData
+        })
+        setLastRefresh(new Date())
+      }
+      setLoading(false)
     }
-    fetch(true)
-    return startVisibleInterval(() => fetch(false), LIVE_POLL_MS)
+
+    socket.on(`match:bundle:${matchId}`, handleBundle)
+    socket.on('match:bundle', (b) => { if (String(b?.matchId) === String(matchId)) handleBundle(b) })
+
+    if (socket.connected) {
+      subscribeMatch(matchId, 'session')
+    } else {
+      socket.once('connect', () => subscribeMatch(matchId, 'session'))
+    }
+
+    const loadingTimeout = setTimeout(() => { if (!cancelled) setLoading(false) }, 10000)
+
+    return () => {
+      cancelled = true
+      clearTimeout(loadingTimeout)
+      unsubscribeMatch(matchId)
+      socket.off(`match:bundle:${matchId}`, handleBundle)
+    }
   }, [matchId, isLoggedIn])
 
   const sessions = useMemo(

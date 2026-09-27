@@ -1,9 +1,8 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Activity, ChevronRight, LoaderCircle, Lock, Radio, Search } from 'lucide-react'
-import { getCricketMatches, getCricketOddsBulk, getTennisMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
-import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
+import { getSocket } from '../socket'
 
 const SPORT_FILTERS = [
   { id: 'all', label: 'All' },
@@ -51,8 +50,8 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
     return true
   })
   const [loadError, setLoadError] = useState('')
-  const [matches, setMatches] = useState([])
-  const [oddsMap, setOddsMap] = useState({})
+  const [cricketMatches, setCricketMatches] = useState([])
+  const [tennisMatches, setTennisMatches] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [sportFilter, setSportFilter] = useState(() => {
     try {
@@ -68,41 +67,35 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
 
   useEffect(() => {
     if (!authReady) return
-    let cancelled = false
-    const returning = (() => {
-      try { return sessionStorage.getItem(SCROLL_Y_KEY) != null || sessionStorage.getItem(FOCUS_KEY) } catch { return false }
-    })()
+    const socket = getSocket()
 
-    const load = (isInitial = false) => {
-      Promise.all([
-        getCricketMatches().catch((err) => ({ __err: err })),
-        getTennisMatches().catch((err) => ({ __err: err })),
-      ]).then(([cricket, tennis]) => {
-        if (cancelled) return
-        const cricketErr = cricket?.__err
-        const tennisErr = tennis?.__err
-        if (cricketErr && tennisErr) {
-          setLoadError(cricketErr?.detail || tennisErr?.detail || 'Live feed load nahi ho paayi.')
-          setLoading(false)
-          return
-        }
-        setLoadError('')
-        const cricketList = Array.isArray(cricket?.matches)
-          ? cricket.matches.map((m) => tagMatch(m, 'cricket'))
-          : []
-        const tennisList = Array.isArray(tennis?.matches)
-          ? tennis.matches.map((m) => tagMatch(m, 'tennis'))
-          : []
-        setMatches([...cricketList, ...tennisList])
-        setLoading(false)
-      })
+    const onCricket = (payload) => {
+      const list = Array.isArray(payload?.matches) ? payload.matches : []
+      setCricketMatches(list.map((m) => tagMatch(m, 'cricket')))
+      setLoadError('')
+      setLoading(false)
     }
 
-    // Back from match: don't blank the page with spinner if we can restore scroll
-    if (!returning) setLoading(true)
-    load(true)
-    return startVisibleInterval(() => load(false), LIVE_POLL_MS * 2)
+    const onTennis = (payload) => {
+      const list = Array.isArray(payload?.matches) ? payload.matches : []
+      setTennisMatches(list.map((m) => tagMatch(m, 'tennis')))
+      setLoadError('')
+      setLoading(false)
+    }
+
+    socket.on('cricket:matches', onCricket)
+    socket.on('tennis:matches', onTennis)
+
+    const loadingTimeout = setTimeout(() => setLoading(false), 10000)
+
+    return () => {
+      clearTimeout(loadingTimeout)
+      socket.off('cricket:matches', onCricket)
+      socket.off('tennis:matches', onTennis)
+    }
   }, [isLoggedIn, authReady])
+
+  const matches = useMemo(() => [...cricketMatches, ...tennisMatches], [cricketMatches, tennisMatches])
 
   const filtered = useMemo(() => {
     let list = sportFilter === 'all' ? matches : matches.filter((m) => m.sport === sportFilter)
@@ -131,28 +124,9 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
     [filtered],
   )
 
-  useEffect(() => {
-    if (!isPro || loading) return
-    const activeIds = filtered
-      .filter((m) => m.sport === 'cricket' && m.status !== 'ended')
-      .map((m) => m.matchId)
-    if (!activeIds.length) return
-
-    const fetchOdds = () => {
-      if (typeof document !== 'undefined' && document.hidden) return
-      getCricketOddsBulk(activeIds)
-        .then((data) => {
-          if (data && !data.error) setOddsMap((prev) => ({ ...prev, ...data }))
-        })
-        .catch(() => {})
-    }
-    fetchOdds()
-    return startVisibleInterval(fetchOdds, LIVE_POLL_MS)
-  }, [filtered, isPro, loading])
-
   // Restore scroll / focus after list is painted (back from match detail)
   useLayoutEffect(() => {
-    if (loading || !matches.length) return
+    if (loading || !(cricketMatches.length + tennisMatches.length)) return
     let focus = null
     let y = null
     try {
@@ -302,7 +276,7 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
                   key={match._key}
                   match={match}
                   live
-                  odds={match.sport === 'cricket' ? oddsMap[match.matchId] : null}
+                  odds={match.sport === 'cricket' ? match.runners : null}
                   isPro={isPro}
                   onOpen={openMatch}
                 />
@@ -330,7 +304,7 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
                   key={match._key}
                   match={match}
                   live={false}
-                  odds={match.sport === 'cricket' ? oddsMap[match.matchId] : null}
+                  odds={match.sport === 'cricket' ? match.runners : null}
                   isPro={isPro}
                   onOpen={openMatch}
                   style={{ animationDelay: `${Math.min(i, 8) * 0.04}s` }}
@@ -380,27 +354,24 @@ function MatchRow({ match, live, odds, isPro, onOpen, style }) {
             {match.matchName}
           </div>
 
-          {odds?.teamNames?.length >= 2 && (
+          {Array.isArray(odds) && odds.length >= 2 && (
             <div className="mt-1.5 flex gap-1.5">
-              {odds.teamNames.map((tn) => {
-                const tod = odds.odds?.[tn]
-                return (
-                  <div
-                    key={tn}
-                    className="min-w-0 flex-1 rounded-lg px-2 py-1 bg-[#060810] border border-[#1b2234]"
-                  >
-                    <div className="truncate text-[10px] font-bold text-slate-300">{tn}</div>
-                    <div className="mt-0.5 flex items-center justify-between gap-1 text-[10px] font-mono">
-                      <span className="font-bold text-sky-400 bg-sky-500/10 px-1 rounded border border-sky-500/20">
-                        B {tod?.back ?? '—'}
-                      </span>
-                      <span className="font-bold text-rose-400 bg-rose-500/10 px-1 rounded border border-rose-500/20">
-                        L {tod?.lay ?? '—'}
-                      </span>
-                    </div>
+              {odds.slice(0, 2).map((runner) => (
+                <div
+                  key={runner.runnerName}
+                  className="min-w-0 flex-1 rounded-lg px-2 py-1 bg-[#060810] border border-[#1b2234]"
+                >
+                  <div className="truncate text-[10px] font-bold text-slate-300">{runner.runnerName}</div>
+                  <div className="mt-0.5 flex items-center justify-between gap-1 text-[10px] font-mono">
+                    <span className="font-bold text-sky-400 bg-sky-500/10 px-1 rounded border border-sky-500/20">
+                      B {runner.back ?? '—'}
+                    </span>
+                    <span className="font-bold text-rose-400 bg-rose-500/10 px-1 rounded border border-rose-500/20">
+                      L {runner.lay ?? '—'}
+                    </span>
                   </div>
-                )
-              })}
+                </div>
+              ))}
             </div>
           )}
 

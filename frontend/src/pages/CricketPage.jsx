@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Info, ChevronRight, Trophy, Radio, Lock, Activity, Menu, X, Search, Zap, Flame, SlidersHorizontal, TrendingUp } from 'lucide-react'
-import { getCricketMatches, getCricketOddsBulk, getTossMatches } from '../api'
+import { getCricketMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import MatchDetail from './MatchDetail'
-import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 import { CricketBallIcon, formatRateBox, MarketRateDisplay, RunningBallBadge } from '../components/CrexLiveSection'
 import { getSocket } from '../socket'
 
@@ -102,7 +101,6 @@ export default function CricketPage() {
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
   const [now, setNow] = useState(() => Date.now())
-  const [oddsMap, setOddsMap] = useState({})
   const [tossMatchIds, setTossMatchIds] = useState(new Set())
   const [searchQuery, setSearchQuery] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -151,20 +149,21 @@ export default function CricketPage() {
     return () => clearInterval(timer)
   }, [])
 
-  // Toss match IDs for indicator in tournament pills
+  // Toss match IDs for indicator in tournament pills — via socket
   useEffect(() => {
-    getTossMatches()
-      .then((data) => {
-        const tossArr = Array.isArray(data?.matches)
-          ? data.matches
-          : Array.isArray(data?.matches?.matches)
-          ? data.matches.matches
-          : []
-        if (tossArr.length) {
-          setTossMatchIds(new Set(tossArr.map((m) => m.matchId)))
-        }
-      })
-      .catch(() => {})
+    const socket = getSocket()
+    const onTossUpdate = (payload) => {
+      const tossArr = Array.isArray(payload?.matches)
+        ? payload.matches
+        : Array.isArray(payload)
+        ? payload
+        : []
+      if (tossArr.length) {
+        setTossMatchIds(new Set(tossArr.map((m) => m.matchId)))
+      }
+    }
+    socket.on('toss:matches', onTossUpdate)
+    return () => socket.off('toss:matches', onTossUpdate)
   }, [])
 
   const processMatches = (data) => {
@@ -246,29 +245,32 @@ export default function CricketPage() {
       processMatches(payload)
     }
 
+    const onCrexOverview = (crexList) => {
+      if (!Array.isArray(crexList) || !crexList.length) return
+      setAllMatches(prev => prev.map(m => {
+        const cm = crexList.find(c => {
+          const t1 = (m.matchName || '').split(' v ')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
+          const t2 = (m.matchName || '').split(' v ')[1]?.toLowerCase().replace(/[^a-z0-9]/g, '') || ''
+          const c1 = (c.team1Name || c.team1Short || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+          const c2 = (c.team2Name || c.team2Short || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+          return (c1 && t1.includes(c1) || c1.includes(t1)) && (c2 && t2.includes(c2) || c2.includes(t2))
+        })
+        if (!cm) return m
+        return { ...m, crex: { ...(m.crex || {}), ...cm, matched: true } }
+      }))
+    }
+
     socket.on('cricket:matches', onMatchesUpdate)
-
-
+    socket.on('crex:overview', onCrexOverview)
 
     return () => {
       socket.off('cricket:matches', onMatchesUpdate)
+      socket.off('crex:overview', onCrexOverview)
     }
   }, [matchId])
 
-  // Bulk odds for cards
-  useEffect(() => {
-    if (matchId || !isPro) return
-
-    const matches = (selectedComp === 'ALL' ? allMatches : competitions[selectedComp]) || []
-    const ids = matches.slice(0, 30).map((m) => m.matchId)
-    if (!ids.length) return
-
-    getCricketOddsBulk(ids)
-      .then((data) => {
-        if (data?.oddsMap) setOddsMap(data.oddsMap)
-      })
-      .catch(() => {})
-  }, [selectedComp, competitions, allMatches, matchId, isPro])
+  // Bulk odds for cards — already embedded in cricket:matches socket payload via runners field
+  // No separate API call needed
 
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)

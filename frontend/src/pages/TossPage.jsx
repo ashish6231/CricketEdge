@@ -1,9 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Info, ChevronRight, Coins, Radio, Activity, X, Trophy, Search, Menu } from 'lucide-react'
-import { getTossMatches } from '../api'
-import TossDetail from './TossDetail'
-import { startVisibleInterval, LIVE_POLL_MS } from '../lib/visiblePoll'
 import { getSocket, requestTossFeed } from '../socket'
 
 const STORAGE_KEY = 'toss_selected_comp'

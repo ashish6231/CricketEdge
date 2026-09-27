@@ -7,7 +7,6 @@
  */
 
 const normalizer = require('./normalizer/normalizer');
-const apiBroadcast = require('./api-broadcast');
 
 let _lastUpdatedAt = Date.now();
 
