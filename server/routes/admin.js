@@ -886,6 +886,8 @@ router.post('/scraper/cookie', requireSuperAdmin, async (req, res) => {
   if (!cookie || typeof cookie !== 'string' || !cookie.trim()) {
     return res.status(400).json({ error: 'Valid cookie string is required' });
   }
+  const tllSession = require('../services/scraper-tennisliveload/session');
+  await tllSession.saveSession(cookie.trim());
   const ok = await tennisLogin.updateCookiesManually(cookie);
   res.json({ success: ok, message: 'Session cookie updated and persisted to DB & disk' });
 });

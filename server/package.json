@@ -17,7 +17,9 @@
     "@prisma/client": "^7.9.0",
     "@react-oauth/google": "^0.13.5",
     "axios": "^1.18.1",
+    "axios-cookiejar-support": "^7.0.0",
     "bcryptjs": "^2.4.3",
+    "bullmq": "^6.3.9",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -26,6 +28,7 @@
     "express-session": "^1.17.3",
     "google-auth-library": "^10.9.0",
     "https-proxy-agent": "^7.0.0",
+    "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
     "nodemailer": "^6.9.7",
     "passport": "^0.6.0",
@@ -34,6 +37,7 @@
     "prisma": "^7.9.0",
     "razorpay": "^2.9.6",
     "socket.io": "^4.7.2",
+    "tough-cookie": "^6.0.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

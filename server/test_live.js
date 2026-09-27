@@ -1,11 +1,12 @@
 require('dotenv').config();
-const scraper = require('./services/scraper.js');
+const TennisLiveLoadAdapter = require('./services/scraper-tennisliveload/adapter.js');
 const { predictMatchWinner } = require('./utils/matchWinnerPredictor.js');
 
-scraper.getAllCricketMatches().then(async res => {
+const adapter = new TennisLiveLoadAdapter();
+adapter.getMatches().then(async res => {
   const mInfo = res.find(x => x.competitionName && x.competitionName.toLowerCase().includes('uttar pradesh'));
   if (mInfo) {
-    const data = await scraper.getCricketSnapshot(mInfo.matchId);
+    const data = await adapter.getSnapshot(mInfo.matchId || mInfo.id);
     console.log("Team 1:", data.teamNames[0]);
     console.log("Team 2:", data.teamNames[1]);
     

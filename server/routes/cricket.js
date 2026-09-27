@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const router = express.Router();
-const scraper = require('../services/scraper');
 const dataCache = require('../services/dataCache');
 const { optionalAuth, requireProSubscription, assertProAccess, assertTelegramMembership } = require('../middleware/auth');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');

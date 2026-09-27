@@ -14,7 +14,6 @@ const subscriptionRoutes = require('./routes/subscription');
 const adminRoutes = require('./routes/admin');
 const cricketRoutes = require('./routes/cricket');
 const { verifyToken } = require('./middleware/auth');
-const scraper = require('./services/scraper');
 const dataCache = require('./services/dataCache');
 const prisma = require('./db/prisma');
 const { setIo } = require('./socketInstance');
@@ -45,8 +44,14 @@ const io = new (require('socket.io').Server)(server, {
   pingInterval: 25000,
 });
 const socketService = require('./services/socketService');
+const apiBroadcast = require('./services/api-broadcast');
+const tllWorker = require('./services/scraper-tennisliveload');
+const crexWorker = require('./services/scraper-crex');
+const normalizer = require('./services/normalizer');
+
 setIo(io);
 socketService.init(io);
+apiBroadcast.init(io);
 
 // ─── MIDDLEWARE ───
 // Gzip all responses — biggest win for 3G/4G clients
@@ -183,9 +188,10 @@ function shutdown(signal) {
   console.log(`\n${signal} received, shutting down...`);
   tossCaptureWorker?.stop();
   matchCaptureWorker?.stop();
-  dataCache.stop();
+  tllWorker?.stop();
+  crexWorker?.stop();
+  normalizer?.stop();
   telegramService.stopBotPoller();
-  scraper.stopSessionKeepAlive();
 
   server.close(async closeError => {
     if (shutdownComplete) return;
@@ -244,8 +250,11 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     } else throw err;
   });
 
-  // Start centralized dataCache poller (every 3s)
-  dataCache.start();
+  // Start Platform Architecture Pipeline (Ingestion -> Normalizer -> Broadcast)
+  normalizer.start();
+  tllWorker.start().catch((err) => console.warn('⚠️  [TLL-Worker] start error:', err.message));
+  crexWorker.start();
+
   // Start Telegram bot updates poller
   telegramService.startBotPoller();
 })();
