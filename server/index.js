@@ -14,7 +14,6 @@ const subscriptionRoutes = require('./routes/subscription');
 const adminRoutes = require('./routes/admin');
 const cricketRoutes = require('./routes/cricket');
 const { verifyToken } = require('./middleware/auth');
-const tennisLogin = require('./services/tennisLogin');
 const scraper = require('./services/scraper');
 const dataCache = require('./services/dataCache');
 const prisma = require('./db/prisma');
@@ -99,17 +98,7 @@ app.use('/api/telegram', telegramRoutes);
 app.use('/api', cricketRoutes);
 
 app.get('/api/health', (req, res) => {
-  const { getCookieExpiryMs } = require('./services/tennisLogin');
-  const msLeft = getCookieExpiryMs();
-  const daysLeft = msLeft > 0 ? (msLeft / (1000 * 60 * 60 * 24)).toFixed(1) : (msLeft === 0 ? 'EXPIRED' : 'unknown');
-  res.json({
-    success: true,
-    status: 'OK',
-    cookie: {
-      status: msLeft === 0 ? 'expired' : (msLeft > 0 && msLeft < 3 * 24 * 60 * 60 * 1000 ? 'expiring_soon' : 'valid'),
-      daysLeft,
-    }
-  });
+  res.json({ success: true, status: 'OK' });
 });
 
 app.get('/api/user/subscription', verifyToken, (req, res) => {
@@ -255,7 +244,6 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     } else throw err;
   });
 
-  tennisLogin.startAutoLogin();
   // Start centralized dataCache poller (every 3s)
   dataCache.start();
   // Start Telegram bot updates poller

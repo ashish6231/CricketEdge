@@ -3086,6 +3086,27 @@
     "runners": [],
     "totalMatched": 38933
   },
+  "36103410": {
+    "matchLoad": {
+      "team1": {
+        "name": "Northern Cape",
+        "money": 312124,
+        "percent": 57,
+        "odds": 1.77,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Eastern Cape Linyathi",
+        "money": 230887,
+        "percent": 43,
+        "odds": 1.73,
+        "trend": "down"
+      },
+      "totalMatched": 543012
+    },
+    "runners": [],
+    "totalMatched": 543012
+  },
   "36103490": {
     "matchLoad": {
       "team1": {

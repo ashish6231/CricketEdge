@@ -220,7 +220,7 @@ async function broadcastAllMatches() {
  * Broadcasts CREX live updates (ball-by-ball, scorecards)
  * Called whenever dataCache completes a crex poll cycle
  */
-function broadcastCrexUpdates() {
+async function broadcastCrexUpdates() {
   if (!_io) return;
 
   try {
@@ -228,6 +228,11 @@ function broadcastCrexUpdates() {
     if (Array.isArray(overview) && overview.length > 0) {
       _io.emit('crex:overview', overview);
     }
+
+    // Re-broadcast cricket matches list with fresh crex scores embedded
+    // This updates score1/score2/statusText on match cards in real-time
+    const cricketPayload = await matchPayloadService.getCricketMatchesPayload().catch(() => null);
+    if (cricketPayload) _io.emit('cricket:matches', cricketPayload);
 
     const rooms = _io.sockets.adapter?.rooms;
     if (rooms) {

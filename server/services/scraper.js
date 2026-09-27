@@ -86,28 +86,42 @@ function _getHeaders() {
   };
 }
 
-async function _callApi(endpoint, params = null, method = 'GET', _isRetry = false) {
+async function _callApi(endpoint, params = null, method = 'GET', isRetry = false) {
   const url = `${BASE_URL}${endpoint}`;
   try {
     const config = { headers: _getHeaders() };
     const resp = method === 'GET'
       ? await axiosInstance.get(url, { ...config, params })
       : await axiosInstance.post(url, params, config);
+
+    // Record success to reset 401 counter
+    tennisLogin.recordSuccessfulCall();
+
+    // Capture rolling refreshed cookie from upstream response headers
+    if (resp.headers && resp.headers['set-cookie']) {
+      tennisLogin.saveRefreshedCookies(resp.headers['set-cookie']);
+    }
+
     return resp.data;
   } catch (err) {
     if (err.response) {
       const status = err.response.status;
       if (status === 401) {
-        if (!_isRetry && tennisLogin.canAutoLogin()) {
-          console.log(`🔑 scraper: 401 on ${endpoint} — using daily automated login try (1/1)...`);
-          const ok = await tennisLogin.autoRelogin();
-          if (ok) {
-            console.log(`🔄 scraper: retrying ${endpoint} with freshly acquired session cookie...`);
+        const count = tennisLogin.record401Failure();
+        console.warn(`⚠️  scraper: 401 on ${endpoint} (consecutive failure #${count})`);
+
+        // If not already a retry, attempt automated re-login and retry this request
+        if (!isRetry) {
+          const relogged = await tennisLogin.autoLogin();
+          if (relogged) {
+            console.log(`🔄 scraper: retrying ${endpoint} after successful auto-login...`);
             return _callApi(endpoint, params, method, true);
           }
         }
-        console.warn(`⚠️  scraper: 401 on ${endpoint} — cookie expired. 2nd login try is reserved for emergency / manual update.`);
-        try { tennisLogin.invalidateCookie(tennisLogin.getCookies()); } catch {}
+
+        if (count >= 5) {
+          try { tennisLogin.invalidateCookie(tennisLogin.getCookies()); } catch {}
+        }
       }
       return { error: _formatUpstreamError({ error: `HTTP ${status}` }), upstreamStatus: status };
     }

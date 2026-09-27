@@ -334,6 +334,7 @@ async function getCricketMatchesPayload() {
           inPlay: m.inPlay,
         });
         if (cm) {
+          const sc = m.snapshot?.crex?.scorecard;
           m.crex = {
             matched: true,
             isReversed: Boolean(cm.isReversed),
@@ -346,13 +347,13 @@ async function getCricketMatchesPayload() {
             team2Name: cm.team2Name,
             team2Short: cm.team2Short,
             team2Flag: cm.team2Flag,
-            score1: cm.score1,
-            score2: cm.score2,
+            score1: sc?.team1?.score || cm.score1,
+            score2: sc?.team2?.score || cm.score2,
             status: cm.status,
-            statusText: cm.statusText,
+            statusText: sc?.statusEquation || sc?.matchResult || cm.statusText,
             venue: cm.venue,
-            odds: cm.odds,
-            runningBall: cm.runningBall || null,
+            odds: m.snapshot?.crex?.odds || cm.odds,
+            runningBall: sc?.runningBall || cm.runningBall || null,
           };
         }
       }

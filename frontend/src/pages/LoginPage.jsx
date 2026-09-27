@@ -101,12 +101,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
           </button>
         )}
         
-        {/* Simple VPN Banner */}
-        <div className="w-full mb-6 bg-yellow-500/10 border border-yellow-500/20 py-2 rounded-lg text-center">
-          <span className="text-[11px] font-bold text-yellow-500 uppercase tracking-widest">
-            Use VPN To Use This Website
-          </span>
-        </div>
+       
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">

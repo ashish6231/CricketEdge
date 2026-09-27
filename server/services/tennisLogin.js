@@ -1,59 +1,23 @@
 /**
  * tennisliveload.com session manager
- * 
- * Rules:
- * 1. STRICT 1-TRY DAILY LIMIT: Only 1 automated login attempt is permitted per day.
- *    The 2nd try is strictly preserved for emergency/manual use by the user.
- * 2. AUTOMATIC PRODUCTION PERSISTENCE: When a new cookie is obtained, it is automatically
- *    persisted to:
- *    - PostgreSQL DB (SiteSettings table via Prisma) -> Survives all cloud redeploys/restarts
- *    - server/tennis_cookies.json
- *    - server/.env (if file is writable)
- *    - Runtime process.env.TENNIS_SESSION_COOKIES & in-memory session
+ * Manual cookie management only — no auto-login.
+ * Cookie is persisted to PostgreSQL, disk, and env.
  */
 
-const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
 const prisma = require('../db/prisma');
 
-const BASE_URL = process.env.TENNIS_BASE_URL || 'https://tennisliveload.com';
-const LOGIN_URL = `${BASE_URL}/api/auth/login`;
 const COOKIES_FILE = path.join(__dirname, '../tennis_cookies.json');
 const ENV_FILE = path.join(__dirname, '../.env');
 
-const FIXED_USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+let _sessionCookies = (process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^\"|\"$/g, '');
 
-function _browserHeaders(extraHeaders = {}) {
-  return {
-    'User-Agent': FIXED_USER_AGENT,
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Language': 'en-US,en;q=0.9',
-    'Referer': BASE_URL + '/',
-    'Origin': BASE_URL,
-    'Connection': 'keep-alive',
-    ...extraHeaders,
-  };
+function getCookies() {
+  return (_sessionCookies || process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^\"|\"$/g, '');
 }
 
-let _sessionCookies = (process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^"|"$/g, '');
-let _reloginInProgress = null;
-
-// Track daily automated login attempts (STRICT MAX: 1 attempt per day)
-// Stored in-memory and synced with DB/file so restarts on cloud don't reset counter
-let _dailyAttemptsState = {
-  date: _getTodayDateStr(),
-  automatedAttempts: 0,
-  emergencyAttempts: 0,
-  lastAttemptAt: null,
-};
-
-function _getTodayDateStr() {
-  // IST Date String for consistent 24h reset in Indian Standard Time (match schedules)
-  return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }); // YYYY-MM-DD
-}
-
-/** Check hapi/iron cookie expiry — returns ms until expiry, or -1 if unknown */
 function getCookieExpiryMs(cookie = _sessionCookies) {
   if (!cookie) return 0;
   const parts = cookie.split('*');
@@ -74,10 +38,6 @@ function getCookieExpiryTimestamp(cookie = _sessionCookies) {
   return null;
 }
 
-function getCookies() {
-  return (_sessionCookies || process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^"|"$/g, '');
-}
-
 function isConnected() {
   const cookie = getCookies();
   if (!cookie) return false;
@@ -85,9 +45,6 @@ function isConnected() {
   return msLeft === -1 || msLeft > 0;
 }
 
-/**
- * Persists cookie across DB, disk, env, and memory
- */
 async function saveSession(newCookie) {
   if (!newCookie || typeof newCookie !== 'string') return;
   const trimmed = newCookie.trim();
@@ -96,44 +53,31 @@ async function saveSession(newCookie) {
 
   const expiryMs = getCookieExpiryTimestamp(trimmed);
 
-  // 1. Save to PostgreSQL Database (SiteSettings) for persistent cloud deployments
   try {
     if (prisma && typeof prisma.siteSettings?.upsert === 'function') {
       await prisma.siteSettings.upsert({
         where: { key: 'TENNIS_SESSION_COOKIES' },
         create: {
           key: 'TENNIS_SESSION_COOKIES',
-          value: {
-            cookie: trimmed,
-            expiry: expiryMs,
-            updatedAt: new Date().toISOString(),
-          },
+          value: { cookie: trimmed, expiry: expiryMs, updatedAt: new Date().toISOString() },
           category: 'scraper',
           description: 'Active tennisliveload.com session cookie',
           isPublic: false,
         },
         update: {
-          value: {
-            cookie: trimmed,
-            expiry: expiryMs,
-            updatedAt: new Date().toISOString(),
-          },
+          value: { cookie: trimmed, expiry: expiryMs, updatedAt: new Date().toISOString() },
         },
       });
-      console.log('💾 tennisliveload: cookie successfully saved to PostgreSQL database (SiteSettings)');
+      console.log('💾 tennisliveload: cookie saved to PostgreSQL');
     }
   } catch (err) {
     console.warn('⚠️  tennisliveload: failed to save cookie to DB:', err.message);
   }
 
-  // 2. Save to server/tennis_cookies.json
   try {
     fs.writeFileSync(COOKIES_FILE, JSON.stringify({ cookies: trimmed, expiry: expiryMs }, null, 2), 'utf8');
-  } catch (err) {
-    console.warn('⚠️  tennisliveload: could not write to tennis_cookies.json:', err.message);
-  }
+  } catch {}
 
-  // 3. Save to server/.env (if file exists)
   try {
     if (fs.existsSync(ENV_FILE)) {
       let content = fs.readFileSync(ENV_FILE, 'utf8');
@@ -144,105 +88,27 @@ async function saveSession(newCookie) {
       }
       fs.writeFileSync(ENV_FILE, content, 'utf8');
     }
-  } catch (err) {
-    console.warn('⚠️  tennisliveload: could not write to .env:', err.message);
-  }
+  } catch {}
 
   const msLeft = getCookieExpiryMs(trimmed);
   const hoursLeft = msLeft > 0 ? (msLeft / (1000 * 60 * 60)).toFixed(1) : 'unknown';
-  console.log(`✅ tennisliveload: fresh session active (valid for ~${hoursLeft}h)`);
+  console.log(`✅ tennisliveload: session updated (valid for ~${hoursLeft}h)`);
 }
 
-/**
- * Load latest session on startup from DB -> env -> disk
- */
-async function loadSavedSession() {
-  const today = _getTodayDateStr();
-  if (_dailyAttemptsState.date !== today) {
-    _dailyAttemptsState = {
-      date: today,
-      automatedAttempts: 0,
-      emergencyAttempts: 0,
-      lastAttemptAt: null,
-    };
-  }
+const ATTEMPTS_FILE = path.join(__dirname, '../tennis_login_attempts.json');
 
-  // Collect candidate cookies from DB, process.env, and local file
-  let dbCookie = null;
-  try {
-    if (prisma && typeof prisma.siteSettings?.findUnique === 'function') {
-      const dbRow = await prisma.siteSettings.findUnique({
-        where: { key: 'TENNIS_SESSION_COOKIES' },
-      });
-      if (dbRow?.value?.cookie) {
-        dbCookie = String(dbRow.value.cookie).trim();
-      }
+let _dailyAttemptsState = {
+  date: _getTodayDateStr(),
+  automatedAttempts: 0,
+  emergencyAttempts: 0,
+  lastAttemptAt: null,
+};
 
-      // Also restore daily attempts state from DB if present
-      const attemptsRow = await prisma.siteSettings.findUnique({
-        where: { key: 'TENNIS_DAILY_ATTEMPTS' },
-      });
-      if (attemptsRow?.value?.date === today) {
-        _dailyAttemptsState = { ..._dailyAttemptsState, ...attemptsRow.value };
-      }
-    }
-  } catch (e) {
-    // ignore DB connection startup errors
-  }
-
-  const envCookie = (process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^"|"$/g, '');
-  let fileCookie = null;
-  try {
-    if (fs.existsSync(COOKIES_FILE)) {
-      const fileData = JSON.parse(fs.readFileSync(COOKIES_FILE, 'utf8'));
-      if (fileData?.cookies) fileCookie = String(fileData.cookies).trim();
-    }
-  } catch {}
-
-  const candidates = [envCookie, dbCookie, fileCookie]
-    .filter(Boolean)
-    .map(c => ({
-      cookie: c,
-      ts: getCookieExpiryTimestamp(c) || 0,
-      msLeft: getCookieExpiryMs(c),
-    }))
-    .filter(c => c.msLeft === -1 || c.msLeft > 0);
-
-  if (candidates.length > 0) {
-    // Pick the freshest cookie (highest expiry timestamp)
-    candidates.sort((a, b) => b.ts - a.ts);
-    const best = candidates[0].cookie;
-    _sessionCookies = best;
-    process.env.TENNIS_SESSION_COOKIES = best;
-
-    // If best differs from DB, sync across DB & disk so everything stays consistent
-    if (best !== dbCookie) {
-      console.log('🔄 tennisliveload: adopting newer cookie from env/file, syncing to DB...');
-      await saveSession(best);
-    } else {
-      console.log(`✅ tennisliveload: loaded valid session (expires in ${(candidates[0].msLeft / 3600000).toFixed(1)}h)`);
-    }
-    return;
-  }
+function _getTodayDateStr() {
+  return new Date().toISOString().slice(0, 10);
 }
 
-async function invalidateCookie(badCookie) {
-  if (!badCookie) return;
-  const current = getCookies();
-  const cleaned = String(badCookie).replace(/^Cookie:\s*/i, '').trim();
-  if (current && (current === cleaned || cleaned.includes(current) || current.includes(cleaned))) {
-    console.warn('⚠️  tennisliveload: active cookie marked expired (received 401 from upstream)');
-    _sessionCookies = '';
-    process.env.TENNIS_SESSION_COOKIES = '';
-    try {
-      if (prisma && typeof prisma.siteSettings?.delete === 'function') {
-        await prisma.siteSettings.delete({ where: { key: 'TENNIS_SESSION_COOKIES' } }).catch(() => {});
-      }
-    } catch {}
-  }
-}
-
-async function _saveDailyAttemptsToDb() {
+async function _saveDailyAttempts() {
   try {
     if (prisma && typeof prisma.siteSettings?.upsert === 'function') {
       await prisma.siteSettings.upsert({
@@ -260,12 +126,35 @@ async function _saveDailyAttemptsToDb() {
       });
     }
   } catch {}
+
+  try {
+    fs.writeFileSync(ATTEMPTS_FILE, JSON.stringify(_dailyAttemptsState, null, 2), 'utf8');
+  } catch {}
 }
 
-/**
- * Check if automated login can be attempted today
- */
-function canAutoLogin() {
+async function _loadDailyAttempts() {
+  const today = _getTodayDateStr();
+  try {
+    if (prisma && typeof prisma.siteSettings?.findUnique === 'function') {
+      const row = await prisma.siteSettings.findUnique({ where: { key: 'TENNIS_DAILY_ATTEMPTS' } });
+      if (row?.value?.date === today) {
+        _dailyAttemptsState = { ..._dailyAttemptsState, ...row.value };
+        return;
+      }
+    }
+  } catch {}
+
+  try {
+    if (fs.existsSync(ATTEMPTS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(ATTEMPTS_FILE, 'utf8'));
+      if (data?.date === today) {
+        _dailyAttemptsState = { ..._dailyAttemptsState, ...data };
+      }
+    }
+  } catch {}
+}
+
+function canAutoLogin(isEmergency = false) {
   const today = _getTodayDateStr();
   if (_dailyAttemptsState.date !== today) {
     _dailyAttemptsState = {
@@ -276,137 +165,238 @@ function canAutoLogin() {
     };
   }
 
-  // STRICT RULE: Max 1 automated attempt per day! 2nd attempt reserved for emergency.
-  return _dailyAttemptsState.automatedAttempts < 1;
+  // STRICT RULE: Max 1 automated login per 24h!
+  // The 2nd login is strictly reserved for manual emergency.
+  if (!isEmergency) {
+    return _dailyAttemptsState.automatedAttempts < 1;
+  }
+  return (_dailyAttemptsState.automatedAttempts + _dailyAttemptsState.emergencyAttempts) < 2;
 }
 
+function getLoginAttemptsStatus() {
+  const today = _getTodayDateStr();
+  if (_dailyAttemptsState.date !== today) {
+    _dailyAttemptsState = {
+      date: today,
+      automatedAttempts: 0,
+      emergencyAttempts: 0,
+      lastAttemptAt: null,
+    };
+  }
+  return {
+    ..._dailyAttemptsState,
+    totalToday: _dailyAttemptsState.automatedAttempts + _dailyAttemptsState.emergencyAttempts,
+    remainingAuto: Math.max(0, 1 - _dailyAttemptsState.automatedAttempts),
+    remainingTotal: Math.max(0, 2 - (_dailyAttemptsState.automatedAttempts + _dailyAttemptsState.emergencyAttempts)),
+  };
+}
+
+async function loadSavedSession() {
+  await _loadDailyAttempts();
+
+  let dbCookie = null;
+  try {
+    if (prisma && typeof prisma.siteSettings?.findUnique === 'function') {
+      const dbRow = await prisma.siteSettings.findUnique({ where: { key: 'TENNIS_SESSION_COOKIES' } });
+      if (dbRow?.value?.cookie) dbCookie = String(dbRow.value.cookie).trim();
+    }
+  } catch {}
+
+  const envCookie = (process.env.TENNIS_SESSION_COOKIES || '').trim().replace(/^\"|\"$/g, '');
+  let fileCookie = null;
+  try {
+    if (fs.existsSync(COOKIES_FILE)) {
+      const fileData = JSON.parse(fs.readFileSync(COOKIES_FILE, 'utf8'));
+      if (fileData?.cookies) fileCookie = String(fileData.cookies).trim();
+    }
+  } catch {}
+
+  const candidates = [envCookie, dbCookie, fileCookie]
+    .filter(Boolean)
+    .map(c => ({ cookie: c, ts: getCookieExpiryTimestamp(c) || 0, msLeft: getCookieExpiryMs(c) }))
+    .filter(c => c.msLeft === -1 || c.msLeft > 0);
+
+  if (candidates.length > 0) {
+    candidates.sort((a, b) => b.ts - a.ts);
+    const best = candidates[0].cookie;
+    _sessionCookies = best;
+    process.env.TENNIS_SESSION_COOKIES = best;
+    if (best !== dbCookie) await saveSession(best);
+    else console.log(`✅ tennisliveload: loaded valid session (${(candidates[0].msLeft / 3600000).toFixed(1)}h left)`);
+  } else {
+    if (canAutoLogin()) {
+      console.warn('⚠️  tennisliveload: no valid session cookie found. Attempting automatic login (max 1/day)...');
+      await autoLogin();
+    } else {
+      console.warn('⚠️  tennisliveload: no valid session cookie found and daily automated login limit reached. Update manually.');
+    }
+  }
+}
+
+let _loginPromise = null;
+let _lastLoginAttempt = 0;
+
 /**
- * Login execution with upstream credentials
+ * Automated login to tennisliveload.com to refresh or restore session.
+ * Features:
+ * - Mutex: only 1 in-flight login at a time across all concurrent requests
+ * - Strict Limit: Max 1 automated login per 24 hours (2nd reserved for emergency)
+ * - Persistent attempt tracking in DB and disk
  */
-async function executeLogin({ isEmergency = false } = {}) {
+async function autoLogin({ isEmergency = false } = {}) {
+  if (_loginPromise) {
+    return _loginPromise;
+  }
+
   const email = process.env.TENNIS_EMAIL;
   const password = process.env.TENNIS_PASSWORD;
 
   if (!email || !password) {
-    throw new Error('TENNIS_EMAIL or TENNIS_PASSWORD missing in env');
+    console.warn('⚠️  tennisliveload: cannot auto-login because TENNIS_EMAIL or TENNIS_PASSWORD is not configured in .env');
+    return false;
   }
 
-  const today = _getTodayDateStr();
-  if (_dailyAttemptsState.date !== today) {
-    _dailyAttemptsState.date = today;
-    _dailyAttemptsState.automatedAttempts = 0;
-    _dailyAttemptsState.emergencyAttempts = 0;
+  if (!canAutoLogin(isEmergency)) {
+    console.warn(`🛑 tennisliveload: Login blocked! Daily limit protected. (Used ${_dailyAttemptsState.automatedAttempts} auto, ${_dailyAttemptsState.emergencyAttempts} emergency). Max 2 allowed per 24h.`);
+    return false;
   }
 
-  if (!isEmergency && _dailyAttemptsState.automatedAttempts >= 1) {
-    throw new Error('Daily automated login limit (1 try) already used. 2nd try is reserved for emergency.');
+  const now = Date.now();
+  if (now - _lastLoginAttempt < 60000) {
+    console.warn('⚠️  tennisliveload: auto-login throttled (recent attempt within 60s)');
+    return false;
   }
 
-  if (isEmergency && (_dailyAttemptsState.automatedAttempts + _dailyAttemptsState.emergencyAttempts) >= 2) {
-    throw new Error('All 2 daily tries have been used today. Upstream will block further logins.');
-  }
-
-  // Record attempt before request to prevent double-spending on timeout/crash
+  _lastLoginAttempt = now;
   if (isEmergency) {
     _dailyAttemptsState.emergencyAttempts++;
   } else {
     _dailyAttemptsState.automatedAttempts++;
   }
   _dailyAttemptsState.lastAttemptAt = new Date().toISOString();
-  await _saveDailyAttemptsToDb();
+  await _saveDailyAttempts();
 
-  console.log(`🔑 tennisliveload: attempting login (${isEmergency ? 'EMERGENCY TRY #2' : 'AUTOMATED TRY #1'})...`);
-
-  try {
-    const res = await axios.post(
-      LOGIN_URL,
-      { email, password },
-      {
-        headers: _browserHeaders({ 'Content-Type': 'application/json' }),
-        timeout: 15000,
-        validateStatus: () => true,
-      }
-    );
-
-    if (res.status === 429) {
-      throw new Error(res.data?.error || res.data?.message || 'Daily login limit exceeded upstream');
-    }
-
-    if (res.status === 401) {
-      throw new Error(res.data?.error || res.data?.message || 'Invalid credentials');
-    }
-
-    if (res.status !== 200) {
-      throw new Error(`Login failed with HTTP ${res.status}: ${JSON.stringify(res.data || {})}`);
-    }
-
-    const setCookie = res.headers['set-cookie'];
-    if (!setCookie || !setCookie.length) {
-      throw new Error('Login succeeded but no set-cookie header received');
-    }
-
-    // Extract cookie
-    let cookieString = setCookie.map(c => c.split(';')[0]).join('; ');
-    if (!cookieString.includes('cricket_live_load_session=')) {
-      const match = cookieString.match(/(cricket_live_load_session=Fe26\.2[^\s;]+)/);
-      if (match) cookieString = match[1];
-    }
-
-    await saveSession(cookieString);
-    return { success: true, cookies: cookieString };
-  } catch (err) {
-    console.error('❌ tennisliveload: login attempt failed:', err.message);
-    throw err;
-  }
-}
-
-/**
- * Called on 401 from scraper: Uses the single daily automated attempt
- */
-async function autoRelogin() {
-  // If relogin is already running, deduplicate callers
-  if (_reloginInProgress) {
-    return _reloginInProgress;
-  }
-
-  if (!canAutoLogin()) {
-    console.warn('⚠️  tennisliveload: 1 automated login already used today. 2nd try is reserved for manual/emergency use.');
-    return false;
-  }
-
-  _reloginInProgress = (async () => {
+  _loginPromise = (async () => {
     try {
-      const res = await executeLogin({ isEmergency: false });
-      return Boolean(res?.success);
+      console.log(`🔑 tennisliveload: attempting ${isEmergency ? 'EMERGENCY' : 'AUTOMATED'} login (try ${_dailyAttemptsState.automatedAttempts + _dailyAttemptsState.emergencyAttempts}/2 today)...`);
+      const baseUrl = (process.env.TENNIS_BASE_URL || 'https://tennisliveload.com').replace(/\/$/, '');
+      const res = await axios.post(
+        `${baseUrl}/api/auth/login`,
+        { email, password },
+        {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Referer': `${baseUrl}/login`,
+            'Origin': baseUrl,
+            'Content-Type': 'application/json',
+          },
+          timeout: 15000,
+          validateStatus: () => true,
+        }
+      );
+
+      if (res.status === 200) {
+        const setCookie = res.headers['set-cookie'];
+        if (setCookie && setCookie.length) {
+          let cookieString = '';
+          for (const raw of (Array.isArray(setCookie) ? setCookie : [setCookie])) {
+            const firstPart = String(raw).split(';')[0].trim();
+            if (/^cricket_live_load_session=/i.test(firstPart)) {
+              cookieString = firstPart;
+              break;
+            }
+          }
+          if (cookieString) {
+            _consecutive401Count = 0;
+            await saveSession(cookieString);
+            console.log('🎉 tennisliveload: auto-login successful! Fresh rolling session captured.');
+            return true;
+          }
+        }
+      }
+      console.warn(`❌ tennisliveload: auto-login failed with HTTP ${res.status}:`, res.data);
+      return false;
     } catch (err) {
+      console.error('❌ tennisliveload: auto-login request error:', err.message);
       return false;
     } finally {
-      _reloginInProgress = null;
+      _loginPromise = null;
     }
   })();
 
-  return _reloginInProgress;
+  return _loginPromise;
+}
+
+let _consecutive401Count = 0;
+
+function recordSuccessfulCall() {
+  _consecutive401Count = 0;
+}
+
+function record401Failure() {
+  _consecutive401Count++;
+  return _consecutive401Count;
 }
 
 /**
- * Explicit trigger for the 2nd emergency try (via admin API)
+ * Automatically capture rolling session cookies from upstream response headers
+ * and persist them to DB and disk so the session never expires.
  */
-async function triggerEmergencyLogin() {
-  return executeLogin({ isEmergency: true });
+function saveRefreshedCookies(setCookieHeader) {
+  if (!setCookieHeader) return;
+  const cookieList = Array.isArray(setCookieHeader) ? setCookieHeader : [setCookieHeader];
+  if (!cookieList.length) return;
+
+  let newSessionCookie = null;
+  for (const raw of cookieList) {
+    const firstPart = String(raw).split(';')[0].trim();
+    if (/^cricket_live_load_session=/i.test(firstPart)) {
+      newSessionCookie = firstPart;
+      break;
+    }
+  }
+
+  if (!newSessionCookie) return;
+
+  const current = getCookies();
+  if (current !== newSessionCookie) {
+    const oldExpiry = getCookieExpiryTimestamp(current) || 0;
+    const newExpiry = getCookieExpiryTimestamp(newSessionCookie) || 0;
+
+    // Only update if new cookie is fresher
+    if (newExpiry >= oldExpiry || !oldExpiry) {
+      console.log('🔄 tennisliveload: capturing refreshed rolling session cookie...');
+      saveSession(newSessionCookie).catch(err => {
+        console.warn('⚠️  tennisliveload: error saving refreshed rolling cookie:', err.message);
+      });
+    }
+  }
 }
 
-/**
- * Manual update: user pastes cookie directly from browser
- */
+async function invalidateCookie(badCookie) {
+  if (!badCookie) return;
+  const current = getCookies();
+  const cleaned = String(badCookie).replace(/^Cookie:\s*/i, '').trim();
+  if (current && (current === cleaned || cleaned.includes(current) || current.includes(cleaned))) {
+    console.warn(`⚠️  tennisliveload: cookie marked expired (${_consecutive401Count} consecutive 401s). Update manually via admin panel.`);
+    _sessionCookies = '';
+    process.env.TENNIS_SESSION_COOKIES = '';
+    try {
+      if (prisma && typeof prisma.siteSettings?.delete === 'function') {
+        await prisma.siteSettings.delete({ where: { key: 'TENNIS_SESSION_COOKIES' } }).catch(() => {});
+      }
+    } catch {}
+  }
+}
+
 async function updateCookiesManually(rawCookie) {
   if (!rawCookie || typeof rawCookie !== 'string') return false;
+  _consecutive401Count = 0;
   await saveSession(rawCookie.trim());
   return true;
 }
 
-/**
- * Status report for Admin UI / logs
- */
 function getStatus() {
   const cookie = getCookies();
   const msLeft = getCookieExpiryMs(cookie);
@@ -427,38 +417,20 @@ function getStatus() {
   };
 }
 
-/**
- * Startup checks
- */
-async function startAutoLogin() {
-  await loadSavedSession();
-  const status = getStatus();
-
-  console.log(`ℹ️  tennisliveload session status: ${status.isConnected ? 'CONNECTED' : 'EXPIRED/DISCONNECTED'} (${status.hoursLeft}h left)`);
-  console.log(`ℹ️  tennisliveload daily attempts: ${status.automatedAttemptsUsed}/1 automated used | Emergency try available: ${status.emergencyTryAvailable}`);
-
-  // If cookie is expired on boot and automated attempt is available, run the 1 try
-  if (!status.isConnected && canAutoLogin() && status.hasCredentials) {
-    console.log('🔄 tennisliveload: cookie is expired on startup — using daily automated try (1/1)...');
-    try {
-      await autoRelogin();
-    } catch {}
-  }
-}
-
 module.exports = {
   getCookies,
   isConnected,
   getCookieExpiryMs,
   getCookieExpiryTimestamp,
   saveSession,
+  saveRefreshedCookies,
+  recordSuccessfulCall,
+  record401Failure,
   loadSavedSession,
+  autoLogin,
   canAutoLogin,
-  autoRelogin,
-  triggerEmergencyLogin,
-  updateCookiesManually,
+  getLoginAttemptsStatus,
   getStatus,
-  startAutoLogin,
   invalidateCookie,
-  _browserHeaders,
+  updateCookiesManually,
 };

@@ -12,7 +12,7 @@ const scraper = require('./scraper');
 const crexService = require('./crexService');
 
 const TENNIS_POLL_INTERVAL_MS = parseInt(process.env.DATA_POLL_INTERVAL_MS, 10) || 5000;
-const CREX_POLL_INTERVAL_MS = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 3000;
+const CREX_POLL_INTERVAL_MS = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 1500;
 
 // ──── In-memory cache ────
 let _cricketMatches = [];
