@@ -8,6 +8,8 @@ import { CricketBallIcon, formatRateBox } from '../components/CrexLiveSection'
 import { getSocket } from '../socket'
 
 const STORAGE_KEY = 'cricket_selected_comp'
+const SCROLL_KEY = 'cricket_matches_scroll_top'
+const LAST_MATCH_KEY = 'cricket_last_clicked_match_id'
 
 const formatVolStr = (val) => {
   if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
@@ -180,6 +182,7 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
 
   return (
     <div
+      id={`match-card-${match.matchId}`}
       onClick={() => onNavigate(match)}
       className="rounded-xl border border-amber-500/30 hover:border-amber-400/80 bg-gradient-to-b from-[#0c0f1d] to-[#070912] hover:to-[#0d1222] p-2.5 sm:p-3 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-lg hover:shadow-amber-500/10 flex flex-col gap-2.5"
     >
@@ -391,6 +394,7 @@ export default function CricketPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const scrollRef = useRef(null)
+  const prevMatchIdRef = useRef(matchId)
   // Stable crex scores map — matchId -> { score1, score2, statusText, runningBall, odds }
   // Updated only when values actually change, avoids full list re-render
   const [crexScores, setCrexScores] = useState({})
@@ -617,13 +621,92 @@ export default function CricketPage() {
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)
     localStorage.setItem(STORAGE_KEY, comp)
+    sessionStorage.removeItem(SCROLL_KEY)
+    sessionStorage.removeItem(LAST_MATCH_KEY)
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
     closeSidebar()
     if (matchId) navigate('/cricket')
   }
 
   const handleNavigate = useCallback((match) => {
+    if (scrollRef.current) {
+      sessionStorage.setItem(SCROLL_KEY, String(scrollRef.current.scrollTop || 0))
+    }
+    if (match?.matchId) {
+      sessionStorage.setItem(LAST_MATCH_KEY, String(match.matchId))
+      if (match.startTime != null) {
+        sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
+      }
+    }
     navigate(`/cricket/match/${match.matchId}`, { state: { startTime: match.startTime ?? null, matchData: match } })
   }, [navigate])
+
+  // Handle scroll reset when entering MatchDetail, and scroll restoration when returning to match list
+  useEffect(() => {
+    const prevId = prevMatchIdRef.current
+    prevMatchIdRef.current = matchId
+
+    // When entering MatchDetail: always reset container scroll to 0 so page starts at the top
+    if (matchId) {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTop = 0
+      }
+      window.scrollTo(0, 0)
+      return
+    }
+
+    // When returning from MatchDetail (prevId was present, matchId is now falsy)
+    // or when mounting without matchId and a saved state exists
+    const savedMatchId = sessionStorage.getItem(LAST_MATCH_KEY)
+    const savedScroll = sessionStorage.getItem(SCROLL_KEY)
+
+    if (!prevId && !savedMatchId && savedScroll === null) return
+
+    let cancelled = false
+    let attempts = 0
+
+    const restoreScroll = () => {
+      if (cancelled) return
+
+      let restored = false
+      const targetId = savedMatchId || prevId
+
+      // 1. Try to locate the exact match card clicked previously
+      if (targetId) {
+        const el = document.getElementById(`match-card-${targetId}`)
+        if (el) {
+          if (savedScroll !== null && scrollRef.current) {
+            scrollRef.current.scrollTop = Number(savedScroll)
+          }
+          el.scrollIntoView({ block: 'nearest', behavior: 'auto' })
+          restored = true
+        }
+      }
+
+      // 2. If card element not yet found, restore the saved scrollTop offset directly
+      if (!restored && savedScroll !== null && scrollRef.current) {
+        scrollRef.current.scrollTop = Number(savedScroll)
+        restored = true
+      }
+
+      // 3. Fallback: if no saved scroll, ensure user is at the top rather than stuck at the bottom
+      if (!restored && scrollRef.current) {
+        scrollRef.current.scrollTop = 0
+      }
+
+      // Retry up to 10 animation frames in case cards are still mounting / rendering
+      if (!restored && attempts < 10) {
+        attempts++
+        requestAnimationFrame(restoreScroll)
+      }
+    }
+
+    const frameId = requestAnimationFrame(restoreScroll)
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(frameId)
+    }
+  }, [matchId])
 
   const isEndedMatch = (m) => {
     const s = (m.status || '').toLowerCase()
