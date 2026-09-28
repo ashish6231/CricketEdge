@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-09-27T15:30:51.158Z",
+  "updatedAt": "2026-09-28T20:20:22.329Z",
   "records": [
     {
       "matchId": "35901908",
@@ -49015,6 +49015,52 @@
       "confirmedAt": null,
       "confirmedByEmail": null,
       "confirmedById": null
+    },
+    {
+      "matchId": "36119806",
+      "marketId": "1.262941441",
+      "matchName": "Pakistan v Hong Kong",
+      "competitionName": "Asian Games T20",
+      "team1": "Pakistan",
+      "team2": "Hong Kong",
+      "startTime": 1790553600000,
+      "endedAt": "2026-09-28T20:20:22.305Z",
+      "capturedAt": "2026-09-28T20:20:22.305Z",
+      "snapshot": null,
+      "predictedWinner": null,
+      "predictionReason": null,
+      "predictionRisk": {},
+      "matchedRules": [],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": "No toss snapshot data",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
+    },
+    {
+      "matchId": "36119804",
+      "marketId": "1.262941286",
+      "matchName": "India v Afghanistan",
+      "competitionName": "Asian Games T20",
+      "team1": "India",
+      "team2": "Afghanistan",
+      "startTime": 1790571600000,
+      "endedAt": "2026-09-28T20:20:22.323Z",
+      "capturedAt": "2026-09-28T20:20:22.323Z",
+      "snapshot": null,
+      "predictedWinner": null,
+      "predictionReason": null,
+      "predictionRisk": {},
+      "matchedRules": [],
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "lastCaptureError": "No toss snapshot data",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null,
+      "status": "pending",
+      "actualWinner": null
     }
   ]
 }

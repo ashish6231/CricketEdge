@@ -313,8 +313,22 @@ export default function TossDetail({ isEmbedded = false }) {
 
         {/* Micro Inflow Bar */}
         <div className="mt-2 h-1.5 w-full bg-[#1b2234] rounded-full overflow-hidden flex">
-          <div style={{ width: `${pct1}%` }} className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-300" />
-          <div style={{ width: `${pct2}%` }} className="bg-gradient-to-r from-sky-500 to-blue-500 h-full transition-all duration-300" />
+          <div
+            style={{ width: `${pct1}%` }}
+            className={`h-full transition-all duration-300 ${
+              pct1 >= pct2
+                ? 'bg-gradient-to-r from-emerald-700 to-green-600'
+                : 'bg-gradient-to-r from-red-600 to-rose-600'
+            }`}
+          />
+          <div
+            style={{ width: `${pct2}%` }}
+            className={`h-full transition-all duration-300 ${
+              pct2 > pct1
+                ? 'bg-gradient-to-r from-emerald-700 to-green-600'
+                : 'bg-gradient-to-r from-red-600 to-rose-600'
+            }`}
+          />
         </div>
       </div>
 

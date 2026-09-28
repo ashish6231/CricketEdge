@@ -87,43 +87,147 @@ function computeMatchLoad(snap, matchInfo) {
   const t1 = snap?.teamNames?.[0] || matchInfo?.team1 || matchInfo?.matchName?.split(' v ')?.[0] || 'Team 1';
   const t2 = snap?.teamNames?.[1] || matchInfo?.team2 || matchInfo?.matchName?.split(' v ')?.[1] || 'Team 2';
 
-  const tr1 = snap?.teams?.[t1]?.trades || [];
-  const tr2 = snap?.teams?.[t2]?.trades || [];
+  const teamsObj = snap?.teams || {};
+  const teamKeys = Object.keys(teamsObj);
+  const teamObj1 = teamsObj[t1] || (teamKeys[0] ? teamsObj[teamKeys[0]] : null);
+  const teamObj2 = teamsObj[t2] || (teamKeys[1] ? teamsObj[teamKeys[1]] : null);
+
+  const tr1 = teamObj1?.trades || [];
+  const tr2 = teamObj2?.trades || [];
 
   const tradeVol1 = tr1.length > 0 ? tr1.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0) : 0;
   const tradeVol2 = tr2.length > 0 ? tr2.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0) : 0;
 
-  const vol1 = tradeVol1 || snap?.teams?.[t1]?.totalBet || snap?.preMatchTotalBets?.team1 || snap?.preMatchVolume?.team1?.total || snap?.advancedMetrics?.team1?.totalVolume || matchInfo?.preMatchVolume?.team1?.total || 0;
-  const vol2 = tradeVol2 || snap?.teams?.[t2]?.totalBet || snap?.preMatchTotalBets?.team2 || snap?.preMatchVolume?.team2?.total || snap?.advancedMetrics?.team2?.totalVolume || matchInfo?.preMatchVolume?.team2?.total || 0;
-  let total = vol1 + vol2;
+  const vol1 = tradeVol1 ||
+    teamObj1?.totalBet ||
+    snap?.preMatchVolume?.team1?.total ||
+    snap?.preMatchVolume?.team1?.back ||
+    snap?.inPlayVolume?.team1?.total ||
+    snap?.threeMinVolume?.team1?.total ||
+    snap?.advancedMetricsV2?.team1?.totalBet ||
+    snap?.advancedMetrics?.team1?.totalVolume ||
+    snap?.trueMarketLoad?.team1?.totalSupport ||
+    snap?.trueMarketLoad?.team1?.matchedVolume ||
+    snap?.supportMetrics?.team1?.supportMoney ||
+    matchInfo?.preMatchVolume?.team1?.total ||
+    0;
 
+  const vol2 = tradeVol2 ||
+    teamObj2?.totalBet ||
+    snap?.preMatchVolume?.team2?.total ||
+    snap?.preMatchVolume?.team2?.back ||
+    snap?.inPlayVolume?.team2?.total ||
+    snap?.threeMinVolume?.team2?.total ||
+    snap?.advancedMetricsV2?.team2?.totalBet ||
+    snap?.advancedMetrics?.team2?.totalVolume ||
+    snap?.trueMarketLoad?.team2?.totalSupport ||
+    snap?.trueMarketLoad?.team2?.matchedVolume ||
+    snap?.supportMetrics?.team2?.supportMoney ||
+    matchInfo?.preMatchVolume?.team2?.total ||
+    0;
+
+  let total = vol1 + vol2;
   let finalVol1 = vol1;
   let finalVol2 = vol2;
+
+  const sortedTrades1 = [...tr1].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  const sortedTrades2 = [...tr2].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+
+  // Extract latest BACK trade specifically (always prefer BACK odds)
+  const backTrade1 = sortedTrades1.find(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+  const backTrade2 = sortedTrades2.find(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+
+  const getRunnerBack = (runnersList, teamName, idx) => {
+    if (!Array.isArray(runnersList) || !runnersList.length) return null;
+    if (teamName) {
+      const tNorm = teamName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const matched = runnersList.find(r => {
+        const rNorm = String(r.runnerName || r.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        return rNorm && (tNorm.includes(rNorm) || rNorm.includes(tNorm));
+      });
+      if (matched) {
+        return matched.back || matched.backPrice || matched.ex?.availableToBack?.[0]?.price || matched.price || null;
+      }
+    }
+    const r = runnersList[idx];
+    return r?.back || r?.backPrice || r?.ex?.availableToBack?.[0]?.price || r?.price || null;
+  };
+
+  const runnerBack1 = getRunnerBack(snap?.runners, t1, 0) || getRunnerBack(matchInfo?.runners, t1, 0);
+  const runnerBack2 = getRunnerBack(snap?.runners, t2, 1) || getRunnerBack(matchInfo?.runners, t2, 1);
+
+  const lastPrice1 = (backTrade1?.price && !isNaN(Number(backTrade1.price))) ? parseFloat(backTrade1.price) :
+    (runnerBack1 && !isNaN(Number(runnerBack1))) ? parseFloat(runnerBack1) :
+    (sortedTrades1[0]?.price && !isNaN(Number(sortedTrades1[0].price))) ? parseFloat(sortedTrades1[0].price) :
+    (tr1[tr1.length - 1]?.price && !isNaN(Number(tr1[tr1.length - 1].price))) ? parseFloat(tr1[tr1.length - 1].price) :
+    snap?.syntheticSupport?.teamA?.averageOdds ||
+    null;
+
+  const lastPrice2 = (backTrade2?.price && !isNaN(Number(backTrade2.price))) ? parseFloat(backTrade2.price) :
+    (runnerBack2 && !isNaN(Number(runnerBack2))) ? parseFloat(runnerBack2) :
+    (sortedTrades2[0]?.price && !isNaN(Number(sortedTrades2[0].price))) ? parseFloat(sortedTrades2[0].price) :
+    (tr2[tr2.length - 1]?.price && !isNaN(Number(tr2[tr2.length - 1].price))) ? parseFloat(tr2[tr2.length - 1].price) :
+    snap?.syntheticSupport?.teamB?.averageOdds ||
+    null;
+
+  // Support percentage from trueMarketLoad, volume ratio, or odds-implied probability
+  let pct1 = null;
+  let pct2 = null;
+  const tml1 = snap?.trueMarketLoad?.team1?.supportPercentage;
+  const tml2 = snap?.trueMarketLoad?.team2?.supportPercentage;
+  if (typeof tml1 === 'number' && typeof tml2 === 'number' && (tml1 > 0 || tml2 > 0)) {
+    pct1 = Math.round(tml1);
+    pct2 = 100 - pct1;
+  } else if (total > 0 && finalVol1 !== finalVol2) {
+    pct1 = Math.round((finalVol1 / total) * 100);
+    pct2 = 100 - pct1;
+  }
+
+  // Fallback to implied probability from odds if percentages are not set or 50/50
+  if ((pct1 === null || (pct1 === 50 && pct2 === 50)) && lastPrice1 && lastPrice2 && lastPrice1 > 1 && lastPrice2 > 1 && lastPrice1 !== lastPrice2) {
+    const inv1 = 1 / lastPrice1;
+    const inv2 = 1 / lastPrice2;
+    pct1 = Math.round((inv1 / (inv1 + inv2)) * 100);
+    pct2 = 100 - pct1;
+  }
+
+  if (pct1 === null) pct1 = 50;
+  if (pct2 === null) pct2 = 100 - pct1;
+
+  // If vol1 & vol2 are 0 but totalMatched > 0, split by pct1/pct2
   if (finalVol1 === 0 && finalVol2 === 0 && (matchInfo?.totalMatched || 0) > 0) {
-    finalVol1 = Math.round(matchInfo.totalMatched * 0.5);
-    finalVol2 = Math.round(matchInfo.totalMatched * 0.5);
+    finalVol1 = Math.round(matchInfo.totalMatched * (pct1 / 100));
+    finalVol2 = matchInfo.totalMatched - finalVol1;
     total = matchInfo.totalMatched;
   }
 
-  const pct1 = total > 0 ? Math.round((finalVol1 / total) * 100) : 50;
-  const pct2 = total > 0 ? (100 - pct1) : 50;
-
-  const sortedTrades1 = [...tr1].sort((a, b) => b.updatedAt - a.updatedAt);
-  const sortedTrades2 = [...tr2].sort((a, b) => b.updatedAt - a.updatedAt);
-
-  const lastPrice1 = parseFloat(sortedTrades1[0]?.price) || tr1[tr1.length - 1]?.price || snap?.runners?.[0]?.price || matchInfo?.runners?.[0]?.price || null;
-  const lastPrice2 = parseFloat(sortedTrades2[0]?.price) || tr2[tr2.length - 1]?.price || snap?.runners?.[1]?.price || matchInfo?.runners?.[1]?.price || null;
-
   let trend1 = 'up';
-  if (sortedTrades1.length >= 2) {
-    const last = parseFloat(sortedTrades1[0].price) || 0;
-    const prev = parseFloat(sortedTrades1.find(t => t.price !== sortedTrades1[0].price)?.price) || last;
+  const backTrades1 = sortedTrades1.filter(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+  const tradesForTrend1 = backTrades1.length >= 2 ? backTrades1 : sortedTrades1;
+  if (tradesForTrend1.length >= 2) {
+    const last = parseFloat(tradesForTrend1[0].price) || 0;
+    const prev = parseFloat(tradesForTrend1.find(t => t.price !== tradesForTrend1[0].price)?.price) || last;
     if (last < prev) trend1 = 'down';
   }
+
   let trend2 = 'up';
-  if (sortedTrades2.length >= 2) {
-    const last = parseFloat(sortedTrades2[0].price) || 0;
-    const prev = parseFloat(sortedTrades2.find(t => t.price !== sortedTrades2[0].price)?.price) || last;
+  const backTrades2 = sortedTrades2.filter(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+  const tradesForTrend2 = backTrades2.length >= 2 ? backTrades2 : sortedTrades2;
+  if (tradesForTrend2.length >= 2) {
+    const last = parseFloat(tradesForTrend2[0].price) || 0;
+    const prev = parseFloat(tradesForTrend2.find(t => t.price !== tradesForTrend2[0].price)?.price) || last;
     if (last < prev) trend2 = 'down';
   }
 
@@ -237,6 +341,23 @@ async function getCricketMatchesPayload() {
         snap = await dataCache.getCricketSnapshot(m.matchId);
         if (snap?.error) snap = null;
       } catch (e) {}
+
+      if (!snap) {
+        try {
+          const md = getCachedMatchDataset();
+          const rec = (md?.records || []).find(x => String(x.matchId) === String(m.matchId));
+          if (rec?.snapshot) snap = rec.snapshot;
+        } catch {}
+      }
+
+      if (!snap) {
+        try {
+          const tllWorker = require('./scraper-tennisliveload');
+          if (typeof tllWorker.triggerImmediateMatchFetch === 'function') {
+            tllWorker.triggerImmediateMatchFetch(m.matchId);
+          }
+        } catch {}
+      }
 
       const load = computeMatchLoad(snap, m);
       matchesMap.set(String(m.matchId), {

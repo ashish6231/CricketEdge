@@ -145,23 +145,71 @@ function computeMatchLoad(snap, matchInfo) {
   const pct1 = total > 0 ? Math.round((finalVol1 / total) * 100) : 50;
   const pct2 = total > 0 ? (100 - pct1) : 50;
 
-  // MatchDetail logic: sortedTrades = [...trades].sort((a, b) => b.updatedAt - a.updatedAt); lastPrice = sortedTrades[0]?.price
-  const sortedTrades1 = [...tr1].sort((a, b) => b.updatedAt - a.updatedAt);
-  const sortedTrades2 = [...tr2].sort((a, b) => b.updatedAt - a.updatedAt);
+  // MatchDetail logic: sortedTrades = [...trades].sort((a, b) => b.updatedAt - a.updatedAt); lastPrice = BACK price
+  const sortedTrades1 = [...tr1].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+  const sortedTrades2 = [...tr2].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
-  const lastPrice1 = parseFloat(sortedTrades1[0]?.price) || tr1[tr1.length - 1]?.price || snap?.runners?.[0]?.price || matchInfo?.runners?.[0]?.price || null;
-  const lastPrice2 = parseFloat(sortedTrades2[0]?.price) || tr2[tr2.length - 1]?.price || snap?.runners?.[1]?.price || matchInfo?.runners?.[1]?.price || null;
+  const backTrade1 = sortedTrades1.find(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+  const backTrade2 = sortedTrades2.find(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+
+  const getRunnerBack = (runnersList, teamName, idx) => {
+    if (!Array.isArray(runnersList) || !runnersList.length) return null;
+    if (teamName) {
+      const tNorm = teamName.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const matched = runnersList.find(r => {
+        const rNorm = String(r.runnerName || r.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+        return rNorm && (tNorm.includes(rNorm) || rNorm.includes(tNorm));
+      });
+      if (matched) {
+        return matched.back || matched.backPrice || matched.ex?.availableToBack?.[0]?.price || matched.price || null;
+      }
+    }
+    const r = runnersList[idx];
+    return r?.back || r?.backPrice || r?.ex?.availableToBack?.[0]?.price || r?.price || null;
+  };
+
+  const runnerBack1 = getRunnerBack(snap?.runners, t1, 0) || getRunnerBack(matchInfo?.runners, t1, 0);
+  const runnerBack2 = getRunnerBack(snap?.runners, t2, 1) || getRunnerBack(matchInfo?.runners, t2, 1);
+
+  const lastPrice1 = (backTrade1?.price && !isNaN(Number(backTrade1.price))) ? parseFloat(backTrade1.price) :
+    (runnerBack1 && !isNaN(Number(runnerBack1))) ? parseFloat(runnerBack1) :
+    (sortedTrades1[0]?.price && !isNaN(Number(sortedTrades1[0].price))) ? parseFloat(sortedTrades1[0].price) :
+    (tr1[tr1.length - 1]?.price && !isNaN(Number(tr1[tr1.length - 1].price))) ? parseFloat(tr1[tr1.length - 1].price) :
+    null;
+
+  const lastPrice2 = (backTrade2?.price && !isNaN(Number(backTrade2.price))) ? parseFloat(backTrade2.price) :
+    (runnerBack2 && !isNaN(Number(runnerBack2))) ? parseFloat(runnerBack2) :
+    (sortedTrades2[0]?.price && !isNaN(Number(sortedTrades2[0].price))) ? parseFloat(sortedTrades2[0].price) :
+    (tr2[tr2.length - 1]?.price && !isNaN(Number(tr2[tr2.length - 1].price))) ? parseFloat(tr2[tr2.length - 1].price) :
+    null;
 
   let trend1 = 'up';
-  if (sortedTrades1.length >= 2) {
-    const last = parseFloat(sortedTrades1[0].price) || 0;
-    const prev = parseFloat(sortedTrades1.find(t => t.price !== sortedTrades1[0].price)?.price) || last;
+  const backTrades1 = sortedTrades1.filter(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+  const tradesForTrend1 = backTrades1.length >= 2 ? backTrades1 : sortedTrades1;
+  if (tradesForTrend1.length >= 2) {
+    const last = parseFloat(tradesForTrend1[0].price) || 0;
+    const prev = parseFloat(tradesForTrend1.find(t => t.price !== tradesForTrend1[0].price)?.price) || last;
     if (last < prev) trend1 = 'down';
   }
+
   let trend2 = 'up';
-  if (sortedTrades2.length >= 2) {
-    const last = parseFloat(sortedTrades2[0].price) || 0;
-    const prev = parseFloat(sortedTrades2.find(t => t.price !== sortedTrades2[0].price)?.price) || last;
+  const backTrades2 = sortedTrades2.filter(t => {
+    const s = String(t.type || t.side || '').toLowerCase();
+    return s === 'back' || s === 'b';
+  });
+  const tradesForTrend2 = backTrades2.length >= 2 ? backTrades2 : sortedTrades2;
+  if (tradesForTrend2.length >= 2) {
+    const last = parseFloat(tradesForTrend2[0].price) || 0;
+    const prev = parseFloat(tradesForTrend2.find(t => t.price !== tradesForTrend2[0].price)?.price) || last;
     if (last < prev) trend2 = 'down';
   }
 

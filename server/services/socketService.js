@@ -25,7 +25,7 @@ const _lastBundleFps = new Map();
 
 function fingerprintMatches(matches) {
   if (!Array.isArray(matches)) return '';
-  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${m.matchLoad?.team1?.money}_${m.matchLoad?.team2?.money}_${m.crex?.score1}_${m.crex?.score2}_${m.crex?.statusText}`).join('|');
+  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${m.matchLoad?.team1?.money}_${m.matchLoad?.team2?.money}_${m.matchLoad?.team1?.percent}_${m.matchLoad?.team2?.percent}_${m.crex?.score1}_${m.crex?.score2}_${m.crex?.statusText}`).join('|');
 }
 
 async function _refreshActiveTokenCache() {

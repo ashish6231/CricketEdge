@@ -173,6 +173,7 @@ async function processIngestJob(job) {
     // Publish to specific match channel & bundle channel
     await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
     await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
+    await redis.publish('cricket:matches', JSON.stringify({ matchId: mid }));
   }
 
   else if (type === 'crex:detail' && data) {

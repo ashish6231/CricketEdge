@@ -27,9 +27,15 @@ const formatOdds = (val) => {
 
 function getTeamCrexScore(crex, teamName, isTeam1) {
   if (!crex) return null
-  const s1 = crex.score1
-  const s2 = crex.score2
+  const s1 = crex.scorecard?.team1?.score || crex.score1
+  const s2 = crex.scorecard?.team2?.score || crex.score2
   if (!s1 && !s2) return null
+  const isDummy = (s) => !s || s === '0-0 0.0' || s === '0/0 (0.0)' || s === '0-0 (0.0)' || s.trim() === '0/0'
+
+  if (crex.isReversed) {
+    const sc = isTeam1 ? s2 : s1
+    return isDummy(sc) ? null : sc
+  }
   if (crex.team1Name && teamName) {
     const tNorm = teamName.toLowerCase().replace(/[^a-z0-9]/g, '')
     const c1Norm = crex.team1Name.toLowerCase().replace(/[^a-z0-9]/g, '')
@@ -38,10 +44,11 @@ function getTeamCrexScore(crex, teamName, isTeam1) {
     const c2Short = (crex.team2Short || '').toLowerCase().replace(/[^a-z0-9]/g, '')
     const m1 = (c1Norm && (tNorm.includes(c1Norm) || c1Norm.includes(tNorm))) || (c1Short.length >= 2 && (tNorm.includes(c1Short) || c1Short.includes(tNorm)))
     const m2 = (c2Norm && (tNorm.includes(c2Norm) || c2Norm.includes(tNorm))) || (c2Short.length >= 2 && (tNorm.includes(c2Short) || c2Short.includes(tNorm)))
-    if (m1 && !m2) return s1
-    if (m2 && !m1) return s2
+    if (m1 && !m2) return isDummy(s1) ? null : s1
+    if (m2 && !m1) return isDummy(s2) ? null : s2
   }
-  return isTeam1 ? s1 : s2
+  const fallback = isTeam1 ? s1 : s2
+  return isDummy(fallback) ? null : fallback
 }
 
 // ── Isolated match card — only re-renders when its own props change ──
@@ -54,24 +61,104 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
   const tr2 = snap?.teams?.[t2Name]?.trades || snap?.teams?.[snap?.teamNames?.[1]]?.trades || []
   const tradeVol1 = tr1.reduce((s, t) => s + (parseFloat(t.size) || 0), 0)
   const tradeVol2 = tr2.reduce((s, t) => s + (parseFloat(t.size) || 0), 0)
-  const vol1 = mLoad?.team1?.money || tradeVol1 || snap?.teams?.[t1Name]?.totalBet || snap?.preMatchTotalBets?.team1 || 0
-  const vol2 = mLoad?.team2?.money || tradeVol2 || snap?.teams?.[t2Name]?.totalBet || snap?.preMatchTotalBets?.team2 || 0
-  let finalVol1 = vol1, finalVol2 = vol2
-  if (!finalVol1 && !finalVol2 && match.totalMatched > 0) {
-    finalVol1 = finalVol2 = Math.round(match.totalMatched * 0.5)
+  const vol1 = mLoad?.team1?.money ?? (tradeVol1 || snap?.teams?.[t1Name]?.totalBet || snap?.preMatchTotalBets?.team1 || 0)
+  const vol2 = mLoad?.team2?.money ?? (tradeVol2 || snap?.teams?.[t2Name]?.totalBet || snap?.preMatchTotalBets?.team2 || 0)
+
+  const sorted1 = [...tr1].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
+  const sorted2 = [...tr2].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
+
+  // Find latest BACK trade specifically (always prefer BACK odds)
+  const backTrade1 = sorted1.find(t => {
+    const s = String(t.type || t.side || '').toLowerCase()
+    return s === 'back' || s === 'b'
+  })
+  const backTrade2 = sorted2.find(t => {
+    const s = String(t.type || t.side || '').toLowerCase()
+    return s === 'back' || s === 'b'
+  })
+
+  const getRunnerBackPrice = (runnersList, teamName, idx) => {
+    if (!Array.isArray(runnersList) || !runnersList.length) return null
+    if (teamName) {
+      const tNorm = teamName.toLowerCase().replace(/[^a-z0-9]/g, '')
+      const matchR = runnersList.find(r => {
+        const rNorm = String(r.runnerName || r.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+        return rNorm && (tNorm.includes(rNorm) || rNorm.includes(tNorm))
+      })
+      if (matchR) {
+        return matchR.back || matchR.backPrice || matchR.ex?.availableToBack?.[0]?.price || matchR.price || null
+      }
+    }
+    const r = runnersList[idx]
+    return r?.back || r?.backPrice || r?.ex?.availableToBack?.[0]?.price || r?.price || null
   }
-  const sorted1 = [...tr1].sort((a, b) => b.updatedAt - a.updatedAt)
-  const sorted2 = [...tr2].sort((a, b) => b.updatedAt - a.updatedAt)
-  const odds1 = mLoad?.team1?.odds || parseFloat(sorted1[0]?.price) || match.runners?.[0]?.price || null
-  const odds2 = mLoad?.team2?.odds || parseFloat(sorted2[0]?.price) || match.runners?.[1]?.price || null
-  const tot = finalVol1 + finalVol2
-  const pct1 = (mLoad?.team1?.percent && mLoad?.team1?.money > 0) ? mLoad.team1.percent : (tot > 0 ? Math.round((finalVol1 / tot) * 100) : 50)
-  const pct2 = tot > 0 ? (100 - pct1) : 50
+
+  const rBack1 = getRunnerBackPrice(snap?.runners, t1Name, 0) || getRunnerBackPrice(match.runners, t1Name, 0)
+  const rBack2 = getRunnerBackPrice(snap?.runners, t2Name, 1) || getRunnerBackPrice(match.runners, t2Name, 1)
+
+  // Always show BACK odds for both teams
+  const odds1 = (backTrade1?.price && !isNaN(Number(backTrade1.price))) ? parseFloat(backTrade1.price) :
+    (rBack1 && !isNaN(Number(rBack1))) ? parseFloat(rBack1) :
+    (mLoad?.team1?.odds && !isNaN(Number(mLoad.team1.odds))) ? parseFloat(mLoad.team1.odds) :
+    (sorted1[0]?.price && !isNaN(Number(sorted1[0].price))) ? parseFloat(sorted1[0].price) :
+    null
+
+  const odds2 = (backTrade2?.price && !isNaN(Number(backTrade2.price))) ? parseFloat(backTrade2.price) :
+    (rBack2 && !isNaN(Number(rBack2))) ? parseFloat(rBack2) :
+    (mLoad?.team2?.odds && !isNaN(Number(mLoad.team2.odds))) ? parseFloat(mLoad.team2.odds) :
+    (sorted2[0]?.price && !isNaN(Number(sorted2[0].price))) ? parseFloat(sorted2[0].price) :
+    null
+
+  // Implied probability from odds if odds exist
+  let impliedP1 = null
+  let impliedP2 = null
+  if (odds1 && odds2 && odds1 > 1 && odds2 > 1 && odds1 !== odds2) {
+    const inv1 = 1 / odds1
+    const inv2 = 1 / odds2
+    impliedP1 = Math.round((inv1 / (inv1 + inv2)) * 100)
+    impliedP2 = 100 - impliedP1
+  }
+
+  // Determine percentages
+  const mP1 = typeof mLoad?.team1?.percent === 'number' ? mLoad.team1.percent : null
+  const mP2 = typeof mLoad?.team2?.percent === 'number' ? mLoad.team2.percent : null
+  let pct1 = mP1
+  let pct2 = mP2
+
+  if (pct1 === null || (pct1 === 50 && pct2 === 50 && impliedP1 !== null)) {
+    if (impliedP1 !== null) {
+      pct1 = impliedP1
+      pct2 = impliedP2
+    } else {
+      const totVol = vol1 + vol2
+      if (totVol > 0 && vol1 !== vol2) {
+        pct1 = Math.round((vol1 / totVol) * 100)
+        pct2 = 100 - pct1
+      } else {
+        pct1 = 50
+        pct2 = 50
+      }
+    }
+  }
+  if (pct2 === null) pct2 = 100 - pct1
+
+  let finalVol1 = vol1
+  let finalVol2 = vol2
+  if (!finalVol1 && !finalVol2 && match.totalMatched > 0) {
+    finalVol1 = Math.round(match.totalMatched * (pct1 / 100))
+    finalVol2 = match.totalMatched - finalVol1
+  }
+
+  const isTie = pct1 === pct2 && (!odds1 || !odds2 || odds1 === odds2)
+  const isTeam1Greater = !isTie && (pct1 > pct2 || (pct1 === pct2 && odds1 < odds2))
+  const isTeam2Greater = !isTie && (pct2 > pct1 || (pct1 === pct2 && odds2 < odds1))
+
   const team1 = { name: mLoad?.team1?.name || t1Name, money: finalVol1, percent: pct1, odds: odds1 }
   const team2 = { name: mLoad?.team2?.name || t2Name, money: finalVol2, percent: pct2, odds: odds2 }
 
-  const score1 = getTeamCrexScore(crexScore, team1.name, true)
-  const score2 = getTeamCrexScore(crexScore, team2.name, false)
+  const crex = crexScore || match.crex || null
+  const score1 = getTeamCrexScore(crex, team1.name, true)
+  const score2 = getTeamCrexScore(crex, team2.name, false)
 
   const s = (match.status || '').toLowerCase()
   const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
@@ -94,8 +181,9 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
   return (
     <div
       onClick={() => onNavigate(match)}
-      className="rounded-xl border border-amber-500/40 hover:border-amber-400 bg-[#090c16] hover:bg-[#0f1320] p-2.5 sm:p-3 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-md hover:shadow-amber-500/10 flex flex-col gap-2"
+      className="rounded-xl border border-amber-500/30 hover:border-amber-400/80 bg-gradient-to-b from-[#0c0f1d] to-[#070912] hover:to-[#0d1222] p-2.5 sm:p-3 transition-all duration-200 cursor-pointer group shadow-sm hover:shadow-lg hover:shadow-amber-500/10 flex flex-col gap-2.5"
     >
+      {/* Top Row: League + Status Badge */}
       <div className="flex items-center justify-between gap-2">
         <span className="text-[10px] font-semibold text-slate-400 truncate uppercase tracking-wider flex-1">
           {match.competitionName || 'Cricket'}
@@ -122,50 +210,142 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
         </div>
       </div>
 
-      <div className="space-y-1.5">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <span className="text-xs sm:text-[13px] font-bold text-white group-hover:text-amber-300 transition-colors truncate">{team1.name}</span>
-            {score1 && <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-1.5 py-0.2 rounded shrink-0">{score1}</span>}
+      {/* ── Teams, Scores, Market Volumes, and Load Bars ── */}
+      <div className="space-y-2.5">
+        {/* Team 1 */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0 flex-1">
+              <span className={`w-2 h-2 rounded-full shrink-0 ${
+                isTie
+                  ? 'bg-slate-400'
+                  : isTeam1Greater
+                    ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]'
+                    : 'bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]'
+              }`} />
+              <span className="text-xs sm:text-[13px] font-bold text-white group-hover:text-amber-300 transition-colors truncate">
+                {team1.name}
+              </span>
+              {score1 && (
+                <span className="text-[10px] font-mono font-bold text-emerald-300 bg-emerald-950/70 border border-emerald-700/50 px-1.5 py-0.5 rounded shrink-0">
+                  {score1}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[11px] font-mono text-slate-400 font-medium">
+                €{formatVolStr(team1.money)}
+              </span>
+              <span className={`text-[10px] font-bold font-mono px-1.5 py-0.5 rounded border ${
+                isTie
+                  ? 'bg-slate-800/60 text-slate-300 border-slate-700/50'
+                  : isTeam1Greater
+                    ? 'bg-emerald-950/70 text-emerald-400 border-emerald-600/50 font-black'
+                    : 'bg-rose-950/70 text-rose-400 border-rose-600/50 font-black'
+              }`}>
+                {team1.percent}%
+              </span>
+              <span className={`text-[11px] font-mono font-bold px-1.5 py-0.5 rounded-md min-w-[40px] text-center ${
+                isTie
+                  ? 'text-slate-300 bg-[#141824] border border-[#21293e]'
+                  : isTeam1Greater
+                    ? 'text-emerald-400 bg-[#0e1f1a] border border-emerald-800/40'
+                    : 'text-rose-300 bg-[#1f0e13] border border-rose-800/40'
+              }`}>
+                {team1.odds ? `▲ ${formatOdds(team1.odds)}` : '—'}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[11px] font-mono text-slate-400">€{formatVolStr(team1.money)}</span>
-            <span className={`text-[10px] font-bold font-mono px-1.5 py-0.2 rounded ${team1.percent >= 50 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800/80 text-slate-400'}`}>{team1.percent}%</span>
-            <span className="text-[11px] font-mono font-bold text-emerald-400 bg-[#0e1f1a] border border-emerald-800/40 px-1.5 py-0.5 rounded-md min-w-[40px] text-center">{team1.odds ? `▲ ${formatOdds(team1.odds)}` : '—'}</span>
+          {/* Team 1 Market Bar */}
+          <div className="h-1.5 w-full bg-[#121624] rounded-full overflow-hidden">
+            <div
+              style={{ width: `${team1.percent}%` }}
+              className={`h-full rounded-full transition-all duration-300 ${
+                isTie
+                  ? 'bg-slate-500'
+                  : isTeam1Greater
+                    ? 'bg-gradient-to-r from-emerald-600 to-green-500'
+                    : 'bg-gradient-to-r from-red-600 to-rose-600'
+              }`}
+            />
           </div>
         </div>
-        <div className="h-1 w-full bg-[#151928] rounded-full overflow-hidden flex">
-          <div style={{ width: `${pct1}%` }} className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-300" />
-          <div style={{ width: `${pct2}%` }} className="bg-gradient-to-r from-sky-500 to-blue-500 h-full transition-all duration-300" />
-        </div>
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <span className="text-xs sm:text-[13px] font-bold text-white group-hover:text-amber-300 transition-colors truncate">{team2.name}</span>
-            {score2 && <span className="text-[10px] font-mono font-bold text-sky-400 bg-sky-950/60 border border-sky-800/40 px-1.5 py-0.2 rounded shrink-0">{score2}</span>}
+
+        {/* Team 2 */}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0 flex-1">
+              <span className={`w-2 h-2 rounded-full shrink-0 ${
+                isTie
+                  ? 'bg-slate-400'
+                  : isTeam2Greater
+                    ? 'bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.7)]'
+                    : 'bg-rose-500 shadow-[0_0_6px_rgba(244,63,94,0.7)]'
+              }`} />
+              <span className="text-xs sm:text-[13px] font-bold text-white group-hover:text-amber-300 transition-colors truncate">
+                {team2.name}
+              </span>
+              {score2 && (
+                <span className="text-[10px] font-mono font-bold text-sky-300 bg-sky-950/70 border border-sky-700/50 px-1.5 py-0.5 rounded shrink-0">
+                  {score2}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="text-[11px] font-mono text-slate-400 font-medium">
+                €{formatVolStr(team2.money)}
+              </span>
+              <span className={`text-[10px] font-bold font-mono px-1.5 py-0.5 rounded border ${
+                isTie
+                  ? 'bg-slate-800/60 text-slate-300 border-slate-700/50'
+                  : isTeam2Greater
+                    ? 'bg-emerald-950/70 text-emerald-400 border-emerald-600/50 font-black'
+                    : 'bg-rose-950/70 text-rose-400 border-rose-600/50 font-black'
+              }`}>
+                {team2.percent}%
+              </span>
+              <span className={`text-[11px] font-mono font-bold px-1.5 py-0.5 rounded-md min-w-[40px] text-center ${
+                isTie
+                  ? 'text-slate-300 bg-[#141824] border border-[#21293e]'
+                  : isTeam2Greater
+                    ? 'text-emerald-400 bg-[#0e1f1a] border border-emerald-800/40'
+                    : 'text-rose-300 bg-[#1f0e13] border border-rose-800/40'
+              }`}>
+                {team2.odds ? `▲ ${formatOdds(team2.odds)}` : '—'}
+              </span>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
-            <span className="text-[11px] font-mono text-slate-400">€{formatVolStr(team2.money)}</span>
-            <span className={`text-[10px] font-bold font-mono px-1.5 py-0.2 rounded ${team2.percent >= 50 ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800/80 text-slate-400'}`}>{team2.percent}%</span>
-            <span className="text-[11px] font-mono font-bold text-emerald-400 bg-[#0e1f1a] border border-emerald-800/40 px-1.5 py-0.5 rounded-md min-w-[40px] text-center">{team2.odds ? `▲ ${formatOdds(team2.odds)}` : '—'}</span>
+          {/* Team 2 Market Bar */}
+          <div className="h-1.5 w-full bg-[#121624] rounded-full overflow-hidden">
+            <div
+              style={{ width: `${team2.percent}%` }}
+              className={`h-full rounded-full transition-all duration-300 ${
+                isTie
+                  ? 'bg-slate-500'
+                  : isTeam2Greater
+                    ? 'bg-gradient-to-r from-emerald-600 to-green-500'
+                    : 'bg-gradient-to-r from-red-600 to-rose-600'
+              }`}
+            />
           </div>
         </div>
       </div>
 
+      {/* ── Footer: Rate Box or Match Status Text + Details Link ── */}
       <div className="flex items-center justify-between pt-1 border-t border-[#1b2234]/70 text-[11px]">
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          {crexScore?.odds?.rate ? (
-            <div className="flex items-center gap-1 bg-[#101422] border border-[#21293e] px-1.5 py-0.5 rounded-md">
-              <span className="text-[9px] font-bold text-slate-400 truncate max-w-[70px]">{crexScore.odds.rateTeam || crexScore.team1Short || 'Rate'}:</span>
+          {crex?.odds?.rate ? (
+            <div className="flex items-center gap-1 bg-[#101422] border border-[#21293e] px-1.5 py-0.5 rounded-md" title="Live Market Rate">
+              <span className="text-[9px] font-bold text-slate-400 truncate max-w-[70px]">{crex.odds.rateTeam || crex.team1Short || 'Rate'}:</span>
               <CricketBallIcon size={11} />
-              <span className="px-1.5 py-0.2 bg-white text-slate-950 font-black text-[9px] rounded font-mono leading-none">{formatRateBox(crexScore.odds.rate)}</span>
-              <span className="px-1.5 py-0.2 bg-white text-slate-950 font-black text-[9px] rounded font-mono leading-none">{formatRateBox(crexScore.odds.rate2 || crexScore.odds.rate)}</span>
+              <span className="px-1.5 py-0.2 bg-white text-slate-950 font-black text-[9px] rounded font-mono leading-none">{formatRateBox(crex.odds.rate)}</span>
+              <span className="px-1.5 py-0.2 bg-white text-slate-950 font-black text-[9px] rounded font-mono leading-none">{formatRateBox(crex.odds.rate2 || crex.odds.rate)}</span>
             </div>
-          ) : crexScore?.statusText ? (
-            <span className="text-[10px] text-amber-300 font-medium truncate">⚡ {crexScore.statusText}</span>
+          ) : crex?.statusText ? (
+            <span className="text-[10px] text-amber-300 font-medium truncate">⚡ {crex.statusText}</span>
           ) : (
             <span className="text-[10px] text-slate-500 font-mono truncate">€{match.totalMatched?.toLocaleString('en-IN', { maximumFractionDigits: 0 }) || '0'} matched</span>
           )}
-
         </div>
         <span className="text-[11px] font-bold text-amber-400 group-hover:text-amber-300 flex items-center gap-0.5 shrink-0">
           <span>Details</span><ChevronRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
@@ -315,7 +495,7 @@ export default function CricketPage() {
     })
 
     setAllMatches(prev => {
-      // Only update if match list structure changed (count, ids, status, inPlay)
+      // Only update if match list structure or match loads changed
       const sameStructure = prev.length === sorted.length &&
         sorted.every((m, i) => {
           const p = prev[i]
@@ -323,7 +503,13 @@ export default function CricketPage() {
             String(p.matchId) === String(m.matchId) &&
             p.status === m.status &&
             p.inPlay === m.inPlay &&
-            p.totalMatched === m.totalMatched
+            p.totalMatched === m.totalMatched &&
+            p.matchLoad?.team1?.money === m.matchLoad?.team1?.money &&
+            p.matchLoad?.team2?.money === m.matchLoad?.team2?.money &&
+            p.matchLoad?.team1?.percent === m.matchLoad?.team1?.percent &&
+            p.matchLoad?.team2?.percent === m.matchLoad?.team2?.percent &&
+            p.matchLoad?.team1?.odds === m.matchLoad?.team1?.odds &&
+            p.matchLoad?.team2?.odds === m.matchLoad?.team2?.odds
         })
       if (!sameStructure) {
         try { sessionStorage.setItem('_cx_matches_list', JSON.stringify(sorted)) } catch { }
@@ -348,11 +534,7 @@ export default function CricketPage() {
       }
     })
 
-    setCompetitions(prev => {
-      const prevKeys = Object.keys(prev).sort().join(',')
-      const nextKeys = Object.keys(grouped).sort().join(',')
-      return prevKeys === nextKeys ? prev : grouped
-    })
+    setCompetitions(grouped)
 
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved && (saved === 'ALL' || grouped[saved])) {
@@ -403,12 +585,29 @@ export default function CricketPage() {
       setCrexScores(next)
     }
 
+    const onCrexOverview = (crexList) => {
+      if (!Array.isArray(crexList) || !crexList.length) return
+      setAllMatches(prev => prev.map(m => {
+        const cm = crexList.find(c => {
+          const t1 = (m.matchName || '').split(' v ')[0].toLowerCase().replace(/[^a-z0-9]/g, '')
+          const t2 = (m.matchName || '').split(' v ')[1]?.toLowerCase().replace(/[^a-z0-9]/g, '') || ''
+          const c1 = (c.team1Name || c.team1Short || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+          const c2 = (c.team2Name || c.team2Short || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+          return (c1 && (t1.includes(c1) || c1.includes(t1))) && (c2 && (t2.includes(c2) || c2.includes(t2)))
+        })
+        if (!cm) return m
+        return { ...m, crex: { ...(m.crex || {}), ...cm, matched: true } }
+      }))
+    }
+
     socket.on('cricket:matches', onMatchesUpdate)
     socket.on('crex:live', onCrexLive)
+    socket.on('crex:overview', onCrexOverview)
 
     return () => {
       socket.off('cricket:matches', onMatchesUpdate)
       socket.off('crex:live', onCrexLive)
+      socket.off('crex:overview', onCrexOverview)
     }
   }, [matchId])
 
@@ -792,7 +991,7 @@ export default function CricketPage() {
                     <MatchCard
                       key={m.matchId}
                       match={m}
-                      crexScore={crexScores[String(m.matchId)] || null}
+                      crexScore={crexScores[String(m.matchId)] || m.crex || null}
                       now={now}
                       isPro={isPro}
                       onNavigate={handleNavigate}

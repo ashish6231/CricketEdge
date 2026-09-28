@@ -47,7 +47,7 @@ async function runPollCycle() {
       await queue.add('ingest', { source: 'tll', type: 'tennis:matches', data: tennis });
     }
 
-    // 2. Fetch snapshots for active live matches + any matches currently viewed by users in MatchDetail
+    // 2. Fetch snapshots for active matches (both live and upcoming) + subscribed matches
     let subscribedMatchIds = new Set();
     try {
       const socketService = require('../socketService');
@@ -56,11 +56,13 @@ async function runPollCycle() {
       }
     } catch {}
 
+    const isMatchEnded = (m) => {
+      const s = (m.status || '').toLowerCase();
+      return s === 'ended' || s === 'completed' || s === 'closed' || s === 'verified';
+    };
+
     const activeCricket = (Array.isArray(cricket) ? cricket : [])
-      .filter(m => {
-        const mid = String(m.id || m.matchId);
-        return m.inPlay || m.status === 'live' || m.status === 'in-play' || subscribedMatchIds.has(mid);
-      });
+      .filter(m => !isMatchEnded(m) || subscribedMatchIds.has(String(m.id || m.matchId)));
 
     for (const subMid of subscribedMatchIds) {
       if (!activeCricket.some(m => String(m.id || m.matchId) === String(subMid))) {
@@ -68,47 +70,54 @@ async function runPollCycle() {
       }
     }
 
-    for (const m of activeCricket) {
-      const mid = m.id || m.matchId;
+    // Process in batches of 5 to avoid upstream rate limits
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < activeCricket.length; i += BATCH_SIZE) {
+      const batch = activeCricket.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(async (m) => {
+        const mid = m.id || m.matchId;
+        const isLiveOrSub = m.inPlay || m.status === 'live' || m.status === 'in-play' || subscribedMatchIds.has(String(mid));
 
-      adapter.getSnapshot(mid)
-        .then(snapshot => {
+        try {
+          const snapshot = await adapter.getSnapshot(mid);
           if (snapshot && !snapshot.error) {
-            queue.add('ingest', {
+            await queue.add('ingest', {
               source: 'tll',
               type: 'cricket:snapshot',
               matchId: mid,
               data: snapshot,
             }).catch(() => {});
           }
-        })
-        .catch(() => {});
+        } catch {}
 
-      adapter.getSessionTrades(mid)
-        .then(trades => {
-          if (trades && !trades.error) {
-            queue.add('ingest', {
-              source: 'tll',
-              type: 'session:trades',
-              matchId: mid,
-              data: trades,
-            }).catch(() => {});
-          }
-        })
-        .catch(() => {});
+        if (isLiveOrSub) {
+          adapter.getSessionTrades(mid)
+            .then(trades => {
+              if (trades && !trades.error) {
+                queue.add('ingest', {
+                  source: 'tll',
+                  type: 'session:trades',
+                  matchId: mid,
+                  data: trades,
+                }).catch(() => {});
+              }
+            })
+            .catch(() => {});
 
-      adapter.getTossSnapshot(mid)
-        .then(tossSnap => {
-          if (tossSnap && !tossSnap.error) {
-            queue.add('ingest', {
-              source: 'tll',
-              type: 'toss:snapshot',
-              matchId: mid,
-              data: tossSnap,
-            }).catch(() => {});
-          }
-        })
-        .catch(() => {});
+          adapter.getTossSnapshot(mid)
+            .then(tossSnap => {
+              if (tossSnap && !tossSnap.error) {
+                queue.add('ingest', {
+                  source: 'tll',
+                  type: 'toss:snapshot',
+                  matchId: mid,
+                  data: tossSnap,
+                }).catch(() => {});
+              }
+            })
+            .catch(() => {});
+        }
+      }));
     }
   } catch (err) {
     console.error('❌ [TLL-Worker] poll cycle error:', err.message);
