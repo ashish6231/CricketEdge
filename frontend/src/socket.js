@@ -111,19 +111,21 @@ export function getSocket() {
       sessionStorage.setItem('_cx_matches_list', JSON.stringify(matches));
     } catch { }
     matches.forEach(m => {
-      if (!m?.matchId || !m?.snapshot) return;
+      if (!m?.matchId) return;
       const existing = matchBundleCache.get(String(m.matchId));
       if (!existing || existing._seeded) {
         const bundle = {
           matchId: String(m.matchId),
           cricket: {
-            ...m.snapshot,
+            ...(m.snapshot || {}),
             teamNames: m.snapshot?.teamNames || m.matchName?.split(' v ').map(s => s.trim()) || [],
             competitionName: m.competitionName || m.snapshot?.competitionName || '',
             startTime: m.startTime || m.snapshot?.startTime || null,
             inPlay: m.inPlay || false,
             status: m.status || '',
             totalMatched: m.totalMatched || 0,
+            runners: m.runners || [],
+            matchLoad: m.matchLoad || null,
           },
           toss: null,
           session: null,

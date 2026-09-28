@@ -560,6 +560,14 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
     : attachMatchMeta(cricketRaw, matchInfo);
 
   if (!cricket) {
+    if (matchInfo && matchInfo.status !== 'ended') {
+      try {
+        const tllWorker = require('./scraper-tennisliveload');
+        if (typeof tllWorker.triggerImmediateMatchFetch === 'function') {
+          tllWorker.triggerImmediateMatchFetch(mid);
+        }
+      } catch {}
+    }
     try {
       const md = getCachedMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === mid);
@@ -590,12 +598,11 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
   }
 
   const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
-  let crex = cachedCrex || null;
-  if (!crex || !crex.scorecard) {
-    try {
-      const fullCrex = await getCrexForMatch(matchInfo, mid);
-      if (fullCrex) crex = fullCrex;
-    } catch {}
+  let crex = cachedCrex || matchInfo?.crex || null;
+
+  // Non-blocking: If detailed Crex scorecard is missing, fetch in background without delaying cricket odds/trades response
+  if ((!crex || !crex.scorecard) && matchInfo) {
+    triggerBackgroundCrexFetch(matchInfo, mid);
   }
 
   return {
@@ -606,6 +613,35 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
     crex,
     updatedAt: new Date().toISOString(),
   };
+}
+
+const _pendingCrexBackgroundFetches = new Set();
+
+function triggerBackgroundCrexFetch(matchInfo, matchId) {
+  const mid = String(matchId);
+  if (_pendingCrexBackgroundFetches.has(mid)) return;
+  _pendingCrexBackgroundFetches.add(mid);
+
+  setImmediate(async () => {
+    try {
+      const fullCrex = await getCrexForMatch(matchInfo, mid);
+      if (fullCrex) {
+        if (typeof dataCache.setCrexDetail === 'function') {
+          dataCache.setCrexDetail(mid, fullCrex);
+        }
+        try {
+          const socketService = require('./socketService');
+          if (typeof socketService.broadcastCrexForMatch === 'function') {
+            socketService.broadcastCrexForMatch(mid, fullCrex);
+          }
+        } catch {}
+      }
+    } catch (e) {
+      // Quiet fail in background
+    } finally {
+      setTimeout(() => _pendingCrexBackgroundFetches.delete(mid), 3000);
+    }
+  });
 }
 
 async function getCrexForMatch(matchInfo, matchId = null) {

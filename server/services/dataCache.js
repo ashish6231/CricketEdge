@@ -68,6 +68,10 @@ function getCrexDetail(matchId) {
   return bundle?.crex || null;
 }
 
+function setCrexDetail(matchId, detail) {
+  normalizer.setCrexDetail(matchId, detail);
+}
+
 function getLastUpdatedAt() {
   return _lastUpdatedAt;
 }
@@ -111,6 +115,7 @@ module.exports = {
   getLiveOdds,
   getCrexOverview,
   getCrexDetail,
+  setCrexDetail,
   getCricketFullData,
   getLastUpdatedAt,
   isWarmedUp,

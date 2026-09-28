@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Info, ChevronRight, Coins, Radio, Activity, X, Trophy, Search, Menu } from 'lucide-react'
 import { getSocket, requestTossFeed } from '../socket'
+import TossDetail from './TossDetail'
 
 const STORAGE_KEY = 'toss_selected_comp'
 

@@ -322,11 +322,22 @@ function getActiveSubscribedMatchIds() {
   return Array.from(ids);
 }
 
+function broadcastCrexForMatch(matchId, detail) {
+  if (!_io || !matchId || !detail) return;
+  const mid = String(matchId);
+  const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
+  if (room && room.size > 0) {
+    _io.to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
+  }
+}
+
 module.exports = {
   init,
   getIo,
   getActiveSubscribedMatchIds,
   broadcastAllMatches,
   broadcastCrexUpdates,
+  broadcastCrexForMatch,
   notifySessionReplaced,
 };
+

@@ -272,6 +272,12 @@ function getMatchBundle(matchId) {
   };
 }
 
+function setCrexDetail(key, detail) {
+  if (key && detail) {
+    _crexDetails.set(String(key), detail);
+  }
+}
+
 module.exports = {
   processIngestJob,
   getCricketMatches,
@@ -280,4 +286,6 @@ module.exports = {
   getTennisMatches,
   getCrexOverview,
   getMatchBundle,
+  setCrexDetail,
 };
+

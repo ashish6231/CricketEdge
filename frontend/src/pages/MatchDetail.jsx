@@ -648,7 +648,20 @@ export default function MatchDetail({ sport }) {
       inPlay: m.inPlay || false,
       status: m.status || '',
       totalMatched: m.totalMatched || 0,
-      teams: m.snapshot?.teams || {},
+      runners: m.runners || [],
+      matchLoad: m.matchLoad || null,
+      teams: m.snapshot?.teams || {
+        [t1]: {
+          totalBet: m.matchLoad?.team1?.money || 0,
+          trades: [],
+          odds: m.matchLoad?.team1?.odds || m.runners?.[0]?.price || null,
+        },
+        [t2]: {
+          totalBet: m.matchLoad?.team2?.money || 0,
+          trades: [],
+          odds: m.matchLoad?.team2?.odds || m.runners?.[1]?.price || null,
+        },
+      },
       deepMetrics: m.snapshot?.deepMetrics || {},
       advancedMetrics: m.snapshot?.advancedMetrics || {},
       preMatchPnl: m.snapshot?.preMatchPnl || {},
@@ -840,14 +853,28 @@ export default function MatchDetail({ sport }) {
       })
     }
 
-    // One-time HTTP fetch only if no prefetch cache available
-    if (!prefetched?.cricket) {
-      setLoading(true)
-      getCricketMatchBundle(matchId)
-        .then(data => {
-          if (!cancelled && data && !data.error) handleBundle(data)
-        })
-        .catch(() => { })
+    // Fast delivery via WebSocket; fallback to HTTP only if socket is not connected or delayed
+    let httpFetchTimeout = null
+    if (!prefetched?.cricket || prefetched?._seeded) {
+      if (!socket.connected) {
+        setLoading(true)
+        getCricketMatchBundle(matchId)
+          .then(data => {
+            if (!cancelled && data && !data.error) handleBundle(data)
+          })
+          .catch(() => { })
+      } else {
+        // Fallback after 1200ms only if socket hasn't delivered full bundle
+        httpFetchTimeout = setTimeout(() => {
+          if (!cancelled) {
+            getCricketMatchBundle(matchId)
+              .then(data => {
+                if (!cancelled && data && !data.error) handleBundle(data)
+              })
+              .catch(() => { })
+          }
+        }, 1200)
+      }
     }
 
     // Safety timeout — agar 8s mein data nahi aaya toh loading hatao
@@ -858,6 +885,7 @@ export default function MatchDetail({ sport }) {
     return () => {
       cancelled = true
       clearTimeout(loadingTimeout)
+      if (httpFetchTimeout) clearTimeout(httpFetchTimeout)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, onSpecificBundle)
       socket.off('match:bundle', onSpecificBundle)
@@ -967,7 +995,7 @@ export default function MatchDetail({ sport }) {
     )
   }
 
-  if (!snapshot || snapshot._seeded) return (
+  if (!snapshot) return (
     <div className="p-3 sm:p-4 space-y-3 animate-pulse">
       {/* Header skeleton */}
       <div className="h-10 rounded-xl bg-[#0f1422] border border-[#1b2234]" />
@@ -1022,6 +1050,18 @@ export default function MatchDetail({ sport }) {
     const sorted = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
     let back = sorted.find(t => t.type === 'back')?.price
     let lay = sorted.find(t => t.type === 'lay')?.price
+
+    // Fallback to runners from seed snapshot / matchLoad
+    if (back == null || lay == null) {
+      const runner = (snapshot?.runners || []).find(r =>
+        (r.runnerName && teamKey && r.runnerName.toLowerCase().includes(teamKey.toLowerCase())) ||
+        (teamKey && r.runnerName && teamKey.toLowerCase().includes(r.runnerName.toLowerCase()))
+      )
+      if (runner) {
+        if (back == null) back = runner.price || runner.back
+        if (lay == null) lay = runner.lay || (runner.price ? (parseFloat(runner.price) + 0.02).toFixed(2) : null)
+      }
+    }
 
     // Fallback to CREX live rates only for cricket
     if (sport === 'cricket' && (back == null || lay == null) && crexData?.odds) {

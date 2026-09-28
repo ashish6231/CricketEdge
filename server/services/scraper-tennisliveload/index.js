@@ -146,9 +146,59 @@ if (require.main === module) {
   start().catch(console.error);
 }
 
+const _pendingDirectFetches = new Set();
+
+function triggerImmediateMatchFetch(matchId) {
+  if (!matchId) return;
+  const mid = String(matchId);
+  if (_pendingDirectFetches.has(mid)) return;
+  _pendingDirectFetches.add(mid);
+
+  const queue = getIngestQueue();
+
+  Promise.all([
+    adapter.getSnapshot(mid).then(snapshot => {
+      if (snapshot && !snapshot.error) {
+        queue.add('ingest', {
+          source: 'tll',
+          type: 'cricket:snapshot',
+          matchId: mid,
+          data: snapshot,
+        }).catch(() => {});
+      }
+    }).catch(() => {}),
+
+    adapter.getSessionTrades(mid).then(trades => {
+      if (trades && !trades.error) {
+        queue.add('ingest', {
+          source: 'tll',
+          type: 'session:trades',
+          matchId: mid,
+          data: trades,
+        }).catch(() => {});
+      }
+    }).catch(() => {}),
+
+    adapter.getTossSnapshot(mid).then(tossSnap => {
+      if (tossSnap && !tossSnap.error) {
+        queue.add('ingest', {
+          source: 'tll',
+          type: 'toss:snapshot',
+          matchId: mid,
+          data: tossSnap,
+        }).catch(() => {});
+      }
+    }).catch(() => {}),
+  ]).finally(() => {
+    setTimeout(() => _pendingDirectFetches.delete(mid), 3000);
+  });
+}
+
 module.exports = {
   adapter,
   session,
   start,
   stop,
+  triggerImmediateMatchFetch,
 };
+
