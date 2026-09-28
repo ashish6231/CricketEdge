@@ -250,7 +250,6 @@ async function getCricketMatchesPayload() {
         totalMatched: load?.totalMatched || m.totalMatched || 0,
         runners: snap?.runners || m.runners || [],
         matchLoad: load,
-        snapshot: snap || null,
       });
     }
 
@@ -418,7 +417,6 @@ async function getTossMatchesPayload() {
         tossLoad: load,
         predictedWinner: dsRec?.predictedWinner,
         actualWinner: dsRec?.actualWinner,
-        snapshot: snap,
       });
     }
   }

@@ -253,10 +253,6 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     console.log('⚠️  DB seed skipped:', e.message);
   }
 
-  // Keep Neon DB connection warm — ping every 4 minutes to prevent cold start
-  setInterval(() => {
-    prisma.$queryRaw`SELECT 1`.catch(() => {})
-  }, 4 * 60 * 1000)
 
   server.listen(PORT, '0.0.0.0', () => {
     const { getApiPublicUrl, getFrontendUrl } = require('./lib/publicUrl');

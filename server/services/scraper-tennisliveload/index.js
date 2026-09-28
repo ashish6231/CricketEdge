@@ -12,7 +12,7 @@ const session = require('./session');
 const { getIngestQueue } = require('../normalizer/queue');
 
 const adapter = new TennisLiveLoadAdapter();
-let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 4000;
+let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 10000;
 let _timer = null;
 let _isRunning = false;
 

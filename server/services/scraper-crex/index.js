@@ -10,7 +10,7 @@ const CrexAdapter = require('./adapter');
 const { getIngestQueue } = require('../normalizer/queue');
 
 const adapter = new CrexAdapter();
-let _pollInterval = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 3000;
+let _pollInterval = parseInt(process.env.CREX_POLL_INTERVAL_MS, 10) || 2000;
 let _timer = null;
 let _isRunning = false;
 

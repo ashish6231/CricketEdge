@@ -11,9 +11,22 @@ const prisma = require('../db/prisma');
 
 let _io = null;
 
-// userId -> activeToken cache, refreshed every broadcast cycle
+// userId -> activeToken cache (updated on login/logout events)
 const _activeTokenCache = new Map();
 let _tokenCacheUpdatedAt = 0;
+
+// Bandwidth optimization: Fingerprint caches to avoid broadcasting identical data
+let _lastCricketFp = null;
+let _lastTossFp = null;
+let _lastTennisFp = null;
+let _lastSessionFp = null;
+const _lastCrexLiveFps = new Map();
+const _lastBundleFps = new Map();
+
+function fingerprintMatches(matches) {
+  if (!Array.isArray(matches)) return '';
+  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${m.matchLoad?.team1?.money}_${m.matchLoad?.team2?.money}_${m.crex?.score1}_${m.crex?.score2}_${m.crex?.statusText}`).join('|');
+}
 
 async function _refreshActiveTokenCache() {
   // Collect all authenticated userIds currently connected
@@ -93,27 +106,6 @@ function init(io) {
       if (tennis) socket.emit('tennis:matches', tennis);
       if (session) socket.emit('session:matches', session);
       if (crexOverview?.length > 0) socket.emit('crex:overview', crexOverview);
-
-      // Prefetch all active match bundles and push to client instantly
-      // So when user opens any match, data is already cached on client
-      const allMatches = [
-        ...(cricket?.matches || []),
-        ...(toss?.matches || []),
-      ];
-      const activeMatchIds = [...new Set(
-        allMatches
-          .filter(m => m.inPlay || (m.status !== 'ended' && m.status !== 'completed' && m.status !== 'closed'))
-          .map(m => m.matchId)
-      )].slice(0, 20); // cap at 20 to avoid overload
-
-      if (activeMatchIds.length > 0) {
-        const bundlePromises = activeMatchIds.map(mid =>
-          matchPayloadService.getMatchBundlePayload(mid, socket.user, 'cricket')
-            .then(bundle => { if (bundle && !bundle.error) socket.emit('match:prefetch', bundle) })
-            .catch(() => {})
-        );
-        Promise.all(bundlePromises).catch(() => {});
-      }
     } catch (e) {}
 
     // Match Room Subscription (When user opens MatchDetail)
@@ -192,14 +184,35 @@ async function broadcastAllMatches() {
       matchPayloadService.getSessionMatchesPayload().catch(() => null),
     ]);
 
-    if (cricketPayload) _io.emit('cricket:matches', cricketPayload);
-    if (tossPayload) _io.emit('toss:matches', tossPayload);
-    if (tennisPayload) _io.emit('tennis:matches', tennisPayload);
-    if (sessionPayload) _io.emit('session:matches', sessionPayload);
-
-    // Check stale sessions every broadcast cycle
-    await _refreshActiveTokenCache();
-    _checkSessionsAndKickStale();
+    // Broadcast list feeds ONLY if data actually changed (avoids 100s of identical emits per minute)
+    if (cricketPayload) {
+      const fp = fingerprintMatches(cricketPayload.matches);
+      if (fp !== _lastCricketFp) {
+        _lastCricketFp = fp;
+        _io.emit('cricket:matches', cricketPayload);
+      }
+    }
+    if (tossPayload) {
+      const fp = fingerprintMatches(tossPayload.matches);
+      if (fp !== _lastTossFp) {
+        _lastTossFp = fp;
+        _io.emit('toss:matches', tossPayload);
+      }
+    }
+    if (tennisPayload) {
+      const fp = JSON.stringify(tennisPayload.matches?.map(m => `${m.matchId}_${m.status}`) || []);
+      if (fp !== _lastTennisFp) {
+        _lastTennisFp = fp;
+        _io.emit('tennis:matches', tennisPayload);
+      }
+    }
+    if (sessionPayload) {
+      const fp = JSON.stringify(sessionPayload.matches?.map(m => `${m.matchId}_${m.status}`) || []);
+      if (fp !== _lastSessionFp) {
+        _lastSessionFp = fp;
+        _io.emit('session:matches', sessionPayload);
+      }
+    }
 
     // Active Match Rooms Broadcast
     // Only compute bundles for rooms that have actual connected subscribers!
@@ -211,8 +224,12 @@ async function broadcastAllMatches() {
           try {
             const bundle = await matchPayloadService.getMatchBundlePayload(matchId, { isBroadcaster: true, role: 'admin' });
             if (bundle && !bundle.error) {
-              _io.to(roomName).emit(`match:bundle:${matchId}`, bundle);
-              _io.to(roomName).emit('match:bundle', bundle);
+              const bundleFp = `${bundle.cricket?.updatedAt || ''}_${bundle.crex?.runningBall || ''}_${bundle.crex?.score1 || ''}_${bundle.crex?.score2 || ''}_${bundle.cricket?.runners?.[0]?.price || ''}_${bundle.cricket?.runners?.[1]?.price || ''}`;
+              if (bundleFp !== _lastBundleFps.get(matchId)) {
+                _lastBundleFps.set(matchId, bundleFp);
+                // Emit single clean event (no duplicate)
+                _io.to(roomName).emit('match:bundle', bundle);
+              }
             }
           } catch (e) {}
         }
@@ -231,12 +248,16 @@ async function broadcastCrexUpdates() {
   if (!_io) return;
 
   try {
-    // Broadcast crex details globally so match cards update without room subscription
     const cricketMatches = dataCache.getCricketMatches();
     for (const m of cricketMatches) {
       const mid = String(m.id || m.matchId);
       const detail = dataCache.getCrexDetail(mid);
       if (!detail) continue;
+
+      const fp = `${detail.scorecard?.team1?.score}_${detail.scorecard?.team2?.score}_${detail.scorecard?.runningBall || detail.runningBall}_${detail.scorecard?.statusEquation || detail.statusText}_${JSON.stringify(detail.odds || '')}`;
+      if (fp === _lastCrexLiveFps.get(mid)) continue;
+      _lastCrexLiveFps.set(mid, fp);
+
       const payload = {
         matchId: mid,
         score1: detail.scorecard?.team1?.score || detail.score1 || null,
@@ -250,10 +271,12 @@ async function broadcastCrexUpdates() {
         team2Short: detail.team2Short || null,
       };
       _io.emit('crex:live', payload);
-      // Also emit to room subscribers (MatchDetail)
-      const roomName = `match:${mid}`;
-      _io.to(roomName).emit(`match:crex:${mid}`, detail);
-      _io.to(roomName).emit('match:crex', detail);
+
+      // Also emit to room subscribers (MatchDetail) ONLY IF room has subscribers
+      const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
+      if (room && room.size > 0) {
+        _io.to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
+      }
     }
   } catch (err) {
     console.error('❌ Error broadcasting CREX updates over WebSocket:', err.message);

@@ -78,6 +78,10 @@ export function getSocket() {
     if (import.meta.env.DEV) {
       console.log('🟢 Socket connected:', socket.id, '| transport:', socket.io.engine.transport.name);
     }
+    // Re-subscribe to any active match rooms (e.g. after tab resume)
+    for (const [mid, sport] of activeSubscriptions.entries()) {
+      socket.emit('match:subscribe', { matchId: mid, sport });
+    }
   });
 
   socket.io.engine.on('upgrade', () => {
@@ -135,6 +139,25 @@ export function getSocket() {
   return socket;
 }
 
+const activeSubscriptions = new Map();
+
+// Automatic bandwidth saver: pause socket when tab is hidden (idle background users consume 0 bandwidth)
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      if (socket?.connected) {
+        if (import.meta.env?.DEV) console.log('⏸️ [Socket] tab hidden -> disconnecting socket to save bandwidth');
+        socket.disconnect();
+      }
+    } else {
+      if (socket && !socket.connected) {
+        if (import.meta.env?.DEV) console.log('▶️ [Socket] tab visible -> reconnecting socket');
+        socket.connect();
+      }
+    }
+  });
+}
+
 export function updateSocketAuth(token) {
   if (!socket) return;
   socket.auth = { token };
@@ -149,23 +172,29 @@ export function updateSocketAuth(token) {
 export function subscribeMatch(matchId, sport = 'cricket') {
   const s = getSocket();
   if (s && matchId) {
-    s.emit('match:subscribe', { matchId: String(matchId), sport });
+    activeSubscriptions.set(String(matchId), sport);
+    if (s.connected) {
+      s.emit('match:subscribe', { matchId: String(matchId), sport });
+    }
   }
 }
 
 export function unsubscribeMatch(matchId) {
   const s = getSocket();
   if (s && matchId) {
-    s.emit('match:unsubscribe', { matchId: String(matchId) });
+    activeSubscriptions.delete(String(matchId));
+    if (s.connected) {
+      s.emit('match:unsubscribe', { matchId: String(matchId) });
+    }
   }
 }
 
 export function requestTossFeed() {
   const s = getSocket();
-  if (s) s.emit('feed:toss');
+  if (s && s.connected) s.emit('feed:toss');
 }
 
 export function requestTennisFeed() {
   const s = getSocket();
-  if (s) s.emit('feed:tennis');
+  if (s && s.connected) s.emit('feed:tennis');
 }
