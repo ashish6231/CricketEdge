@@ -48,7 +48,9 @@ services:
         sync: false
       - key: TENNIS_BASE_URL
         value: https://tennisliveload.com
-      - key: TENNIS_SESSION_COOKIES
+      - key: TENNIS_EMAIL
+        sync: false
+      - key: TENNIS_PASSWORD
         sync: false
       - key: SCRAPER_PROXY
         sync: false

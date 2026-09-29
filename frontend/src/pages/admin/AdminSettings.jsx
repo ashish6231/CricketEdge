@@ -1,20 +1,18 @@
 import { useEffect, useState } from 'react'
 import {
   LoaderCircle,
-  Edit2,
   Check,
-  X,
   Clock,
   Key,
   RefreshCw,
   AlertTriangle,
-  CheckCircle2,
-  ShieldAlert,
-  Sliders,
   UserPlus,
   Gift,
   Server,
-  Globe
+  Globe,
+  Database,
+  ShieldCheck,
+  Zap
 } from 'lucide-react'
 import {
   adminGetSettings,
@@ -25,7 +23,6 @@ import {
 } from '../../api'
 import { useToast } from '../../components/ToastProvider'
 import {
-  filterTrialSettings,
   hydrateTrialForm,
   hydrateSignupMode,
   hydrateSiteMode,
@@ -46,9 +43,6 @@ export default function AdminSettings({ isSuperAdmin }) {
   const toast = useToast()
   const [settings, setSettings] = useState([])
   const [loading, setLoading]   = useState(true)
-  const [editing, setEditing]   = useState(null)
-  const [editVal, setEditVal]   = useState('')
-  const [saving, setSaving]     = useState(false)
   const [trialEnabled, setTrialEnabled] = useState(true)
   const [trialValue, setTrialValue] = useState(30)
   const [trialUnit, setTrialUnit] = useState('minutes')
@@ -65,6 +59,7 @@ export default function AdminSettings({ isSuperAdmin }) {
   const [cookieSaving, setCookieSaving] = useState(false)
   const [showCookieInput, setShowCookieInput] = useState(false)
   const [emergencyLoading, setEmergencyLoading] = useState(false)
+  const [showConfirmLoginModal, setShowConfirmLoginModal] = useState(false)
 
   const applySettings = (rows) => {
     const list = Array.isArray(rows) ? rows : []
@@ -118,204 +113,23 @@ export default function AdminSettings({ isSuperAdmin }) {
     }
   }
 
-  const handleEmergencyLogin = async () => {
-    if (!window.confirm('Are you sure you want to trigger Emergency Login? This will consume your 2nd (final) daily login try on tennisliveload.com.')) {
-      return
-    }
+  const handleEmergencyLogin = () => {
+    setShowConfirmLoginModal(true)
+  }
+
+  const executeAutoLogin = async () => {
     setEmergencyLoading(true)
     try {
       const res = await adminTriggerEmergencyLogin()
-      toast.success('Emergency login succeeded! Fresh session active.')
+      toast.success('Fresh session created and saved to PostgreSQL Database!')
+      setShowConfirmLoginModal(false)
       if (res?.data) setScraperStatus(res.data)
+      load({ quiet: true })
     } catch (e) {
-      toast.error(e.detail || e.message || 'Emergency login failed')
+      toast.error(e.detail || e.message || 'Auto-login failed')
     } finally {
       setEmergencyLoading(false)
     }
-  }
-
-  const handleStartEdit = (s) => {
-    setEditing(s.key)
-    if (typeof s.value === 'object' && s.value !== null) {
-      setEditVal(JSON.stringify(s.value, null, 2))
-    } else {
-      setEditVal(String(s.value ?? ''))
-    }
-  }
-
-  const save = async (key) => {
-    setSaving(true)
-    try {
-      let valToSave = editVal
-      const trimmed = editVal.trim()
-      if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-        try {
-          valToSave = JSON.parse(trimmed)
-        } catch {
-          valToSave = trimmed
-        }
-      } else if (trimmed === 'true') {
-        valToSave = true
-      } else if (trimmed === 'false') {
-        valToSave = false
-      } else if (!isNaN(Number(trimmed)) && trimmed !== '') {
-        valToSave = Number(trimmed)
-      }
-
-      await adminUpdateSetting(key, valToSave)
-      toast.success(`"${key}" updated`)
-      setEditing(null)
-      load({ quiet: true })
-      loadScraper()
-    } catch (e) {
-      toast.error(e.detail || e.message || 'Save failed')
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const renderSettingValue = (s) => {
-    // Custom friendly display for TENNIS_SESSION_COOKIES
-    if (s.key === 'TENNIS_SESSION_COOKIES' && typeof s.value === 'object' && s.value !== null) {
-      const { cookie, expiry, updatedAt } = s.value
-      const msLeft = expiry ? Math.max(0, expiry - Date.now()) : 0
-      const hoursLeft = (msLeft / 3600000).toFixed(1)
-      const isLive = msLeft > 0
-
-      return (
-        <div className="mt-2.5 space-y-2 p-3.5 rounded-xl bg-[#141414] border border-[#222222] text-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <span className="text-[#888] font-medium">Session Status:</span>
-            <span
-              className="px-2 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1.5"
-              style={
-                isLive
-                  ? { background: 'rgba(16,185,129,0.12)', color: '#10b981', border: '1px solid rgba(16,185,129,0.25)' }
-                  : { background: 'rgba(239,68,68,0.12)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.25)' }
-              }
-            >
-              <span className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
-              {isLive ? `Active (${hoursLeft}h left)` : 'Expired'}
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-[#1e1e1e]">
-            <span className="text-[#888] font-medium">Cookie Token:</span>
-            <div className="flex items-center gap-2 max-w-full">
-              <code className="font-mono text-[#10b981] bg-[#1a1a1a] px-2.5 py-1 rounded-lg text-[11px] max-w-[240px] sm:max-w-[360px] truncate border border-[#262626]">
-                {cookie || '—'}
-              </code>
-              {cookie && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(cookie)
-                    toast.success('Cookie copied to clipboard!')
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-[#222] hover:bg-[#333] text-white text-[11px] font-semibold transition-colors border border-[#333]"
-                >
-                  Copy
-                </button>
-              )}
-            </div>
-          </div>
-
-          {expiry && (
-            <div className="flex items-center justify-between text-[11px] text-[#777] pt-1 border-t border-[#1e1e1e]">
-              <span>Exact Expiration:</span>
-              <span className="text-[#aaa] font-mono">
-                {new Date(expiry).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
-              </span>
-            </div>
-          )}
-
-          {updatedAt && (
-            <div className="flex items-center justify-between text-[11px] text-[#777]">
-              <span>Last Saved to DB:</span>
-              <span className="text-[#aaa] font-mono">
-                {new Date(updatedAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
-              </span>
-            </div>
-          )}
-        </div>
-      )
-    }
-
-    // Custom friendly display for TENNIS_DAILY_ATTEMPTS
-    if (s.key === 'TENNIS_DAILY_ATTEMPTS' && typeof s.value === 'object' && s.value !== null) {
-      const { date, automatedAttempts = 0, emergencyAttempts = 0, lastAttemptAt } = s.value
-      const canAuto = automatedAttempts < 1
-      const canEmergency = (automatedAttempts + emergencyAttempts) < 2
-
-      return (
-        <div className="mt-2.5 space-y-2 p-3.5 rounded-xl bg-[#141414] border border-[#222222] text-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-[#888] font-medium">Daily Cycle Date:</span>
-            <span className="font-mono text-white bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#262626]">
-              {date || '—'}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between pt-1 border-t border-[#1e1e1e]">
-            <span className="text-[#888] font-medium">Automated Tries (Max 1/day):</span>
-            <span className={`font-bold ${canAuto ? 'text-[#10b981]' : 'text-amber-400'}`}>
-              {automatedAttempts} / 1 {canAuto ? '(Available)' : '(1 Used Today)'}
-            </span>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <span className="text-[#888] font-medium">Emergency Try (#2):</span>
-            <span
-              className="px-2 py-0.5 rounded text-[11px] font-bold"
-              style={
-                canEmergency
-                  ? { background: 'rgba(59,130,246,0.12)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.25)' }
-                  : { background: '#222', color: '#888' }
-              }
-            >
-              {canEmergency ? 'Available (1 reserved)' : 'Used'}
-            </span>
-          </div>
-
-          {lastAttemptAt && (
-            <div className="flex items-center justify-between text-[11px] text-[#777] pt-1 border-t border-[#1e1e1e]">
-              <span>Last Login Attempt:</span>
-              <span className="text-[#aaa] font-mono">
-                {new Date(lastAttemptAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST
-              </span>
-            </div>
-          )}
-        </div>
-      )
-    }
-
-    // Boolean display
-    if (typeof s.value === 'boolean') {
-      return (
-        <div
-          className="mt-1 text-xs font-mono font-semibold"
-          style={{ color: s.value ? '#10b981' : '#ef4444' }}
-        >
-          {s.value ? '✓ true' : '✗ false'}
-        </div>
-      )
-    }
-
-    // Generic Object / JSON display
-    if (typeof s.value === 'object' && s.value !== null) {
-      return (
-        <pre className="mt-2 p-3 rounded-xl bg-[#141414] border border-[#242424] text-[11px] font-mono text-[#10b981] overflow-x-auto max-h-56 leading-relaxed">
-          {JSON.stringify(s.value, null, 2)}
-        </pre>
-      )
-    }
-
-    // Fallback string/number
-    return (
-      <div className="mt-1 text-xs font-mono text-[#aaa] break-all">
-        {String(s.value ?? '—')}
-      </div>
-    )
   }
 
   const saveTrial = async () => {
@@ -366,14 +180,6 @@ export default function AdminSettings({ isSuperAdmin }) {
       </div>
     )
   }
-
-  const settingsForList = filterTrialSettings(settings)
-  const grouped = settingsForList.reduce((acc, s) => {
-    const cat = s.category || 'general'
-    if (!acc[cat]) acc[cat] = []
-    acc[cat].push(s)
-    return acc
-  }, {})
 
   const isExpiringSoon = scraperStatus && parseFloat(scraperStatus.hoursLeft) < 3
 
@@ -593,61 +399,55 @@ export default function AdminSettings({ isSuperAdmin }) {
               </div>
             </div>
 
-            {/* Metric 2: Daily Auto-Tries */}
+            {/* Metric 2: Storage Source */}
             <div
               className="rounded-xl p-4 flex flex-col justify-between"
               style={{ background: '#161616', border: '1px solid #222222' }}
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#888] flex items-center gap-1.5">
-                  <RefreshCw size={13} className="text-[#666]" /> Daily Auto-Tries
+                  <Database size={13} className="text-[#666]" /> Cookie Storage
                 </span>
-                <span className="text-[10px] font-bold text-[#888] bg-[#222] px-2 py-0.5 rounded-full">
-                  1 Allowed/Day
+                <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+                  PostgreSQL DB
                 </span>
               </div>
               <div className="mt-3">
-                <div className="text-3xl font-black text-white tracking-tight">
-                  {scraperStatus ? `${scraperStatus.automatedAttemptsUsed} / 1` : '—'}
+                <div className="text-2xl font-black text-white tracking-tight">
+                  Single Source
                 </div>
                 <div className="text-[11px] text-[#777] mt-1">
-                  {scraperStatus?.automatedAttemptsUsed >= 1
-                    ? '1 daily automated try used today'
-                    : '1 automated try available'}
+                  Persisted across all deploys & restarts (Zero .env dependency)
                 </div>
               </div>
             </div>
 
-            {/* Metric 3: Emergency Try */}
+            {/* Metric 3: Self-Healing 401 Recovery */}
             <div
               className="rounded-xl p-4 flex flex-col justify-between"
               style={{ background: '#161616', border: '1px solid #222222' }}
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-[#888] flex items-center gap-1.5">
-                  <ShieldAlert size={13} className="text-[#666]" /> Emergency Try (#2)
+                  <ShieldCheck size={13} className="text-[#666]" /> 401 Auto-Recovery
                 </span>
                 <span
                   className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full"
                   style={{
-                    background: scraperStatus?.emergencyTryAvailable
-                      ? 'rgba(59,130,246,0.15)'
-                      : 'rgba(142,142,147,0.15)',
-                    color: scraperStatus?.emergencyTryAvailable ? '#3b82f6' : '#888',
+                    background: 'rgba(16,185,129,0.15)',
+                    color: '#10b981',
+                    border: '1px solid rgba(16,185,129,0.3)',
                   }}
                 >
-                  {scraperStatus?.emergencyTryAvailable ? 'Reserved' : 'Consumed'}
+                  Enabled
                 </span>
               </div>
               <div className="mt-3">
-                <div
-                  className="text-3xl font-black tracking-tight"
-                  style={{ color: scraperStatus?.emergencyTryAvailable ? '#3b82f6' : '#888' }}
-                >
-                  {scraperStatus?.emergencyTryAvailable ? 'Available' : 'Used'}
+                <div className="text-2xl font-black text-emerald-400 tracking-tight">
+                  Instant Healing
                 </div>
                 <div className="text-[11px] text-[#777] mt-1">
-                  Safely reserved for manual recovery
+                  Automatic login & retry when 401 occurs
                 </div>
               </div>
             </div>
@@ -670,7 +470,7 @@ export default function AdminSettings({ isSuperAdmin }) {
                 }}
               >
                 <Key size={13} className="text-primary" />
-                {showCookieInput ? 'Close Input' : 'Paste New Cookie'}
+                {showCookieInput ? 'Close Input Drawer' : 'Paste New Cookie (Manual)'}
               </button>
 
               <button
@@ -684,22 +484,20 @@ export default function AdminSettings({ isSuperAdmin }) {
                 Refresh Status
               </button>
 
-              {scraperStatus?.emergencyTryAvailable && (
-                <button
-                  type="button"
-                  onClick={handleEmergencyLogin}
-                  disabled={emergencyLoading}
-                  className="ml-auto flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
-                  style={{
-                    background: 'rgba(245,158,11,0.12)',
-                    color: '#f59e0b',
-                    border: '1px solid rgba(245,158,11,0.3)',
-                  }}
-                >
-                  {emergencyLoading ? <LoaderCircle size={13} className="animate-spin" /> : <AlertTriangle size={13} />}
-                  Trigger Emergency Try (#2)
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handleEmergencyLogin}
+                disabled={emergencyLoading}
+                className="ml-auto flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                style={{
+                  background: 'rgba(16,185,129,0.12)',
+                  color: '#10b981',
+                  border: '1px solid rgba(16,185,129,0.3)',
+                }}
+              >
+                {emergencyLoading ? <LoaderCircle size={13} className="animate-spin" /> : <Zap size={13} />}
+                Auto-Login & Refresh Session Now
+              </button>
             </div>
           )}
 
@@ -903,92 +701,84 @@ export default function AdminSettings({ isSuperAdmin }) {
         </div>
       </div>
 
+
+
       {/* ──────────────────────────────────────────────────────────── */}
-      {/* 4. GENERAL SYSTEM SETTINGS LIST */}
+      {/* CONFIRMATION MODAL: Auto-Login & Session Refresh */}
       {/* ──────────────────────────────────────────────────────────── */}
-      {Object.entries(grouped).map(([cat, items]) => (
-        <div
-          key={cat}
-          className="rounded-2xl overflow-hidden"
-          style={{ background: '#111111', border: '1px solid #1e1e1e' }}
-        >
+      {showConfirmLoginModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
           <div
-            className="px-5 py-3.5 flex items-center justify-between border-b"
-            style={{ borderColor: '#1e1e1e' }}
+            className="w-full max-w-md rounded-2xl p-6 space-y-5 border border-[#2a2a2a] shadow-2xl relative"
+            style={{ background: '#141414' }}
           >
-            <div className="flex items-center gap-2">
-              <Sliders size={16} className="text-primary" />
-              <h2 className="font-bold text-white text-sm capitalize">{cat} Settings</h2>
+            {/* Modal Header */}
+            <div className="flex items-start gap-4">
+              <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex-shrink-0">
+                <AlertTriangle size={24} />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-base font-bold text-white tracking-tight">
+                  Confirm Auto-Login & Refresh
+                </h3>
+                <p className="text-xs text-[#888] leading-relaxed">
+                  Are you sure you want to trigger a new session login?
+                </p>
+              </div>
+            </div>
+
+            {/* Warning / Context Box */}
+            <div className="p-3.5 rounded-xl bg-[#1c1c1c] border border-[#282828] text-xs space-y-2">
+              <div className="flex items-center justify-between text-[#aaa]">
+                <span>Upstream Account:</span>
+                <span className="font-mono text-white text-[11px]">cricketloaduser56@gmail.com</span>
+              </div>
+              <div className="flex items-center justify-between text-[#aaa]">
+                <span>Target Service:</span>
+                <span className="text-[#10b981] font-semibold">tennisliveload.com</span>
+              </div>
+              <div className="pt-2 border-t border-[#262626] text-[11px] text-amber-400/90 leading-normal flex items-start gap-1.5">
+                <span>⚠️</span>
+                <span>
+                  <strong>Daily Limit Warning:</strong> Upstream allows max 2 logins per 24 hours. A fresh session will revoke the previous cookie.
+                </span>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowConfirmLoginModal(false)}
+                disabled={emergencyLoading}
+                className="px-4 py-2.5 rounded-xl text-xs font-semibold text-[#aaa] hover:text-white bg-[#1e1e1e] hover:bg-[#282828] transition-colors border border-[#2e2e2e]"
+              >
+                Cancel (Keep Current)
+              </button>
+              <button
+                type="button"
+                onClick={executeAutoLogin}
+                disabled={emergencyLoading}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all disabled:opacity-50 shadow-lg shadow-emerald-950/40"
+                style={{
+                  background: 'linear-gradient(135deg, #10b981, #059669)',
+                }}
+              >
+                {emergencyLoading ? (
+                  <>
+                    <LoaderCircle size={14} className="animate-spin" />
+                    Logging in...
+                  </>
+                ) : (
+                  <>
+                    <Zap size={14} />
+                    Yes, Login & Refresh Now
+                  </>
+                )}
+              </button>
             </div>
           </div>
-          <div className="divide-y" style={{ borderColor: '#1a1a1a' }}>
-            {items.map(s => (
-              <div key={s.key} className="px-5 py-3.5 flex items-start justify-between gap-4">
-                <div className="flex-1 min-w-0">
-                  <div className="font-mono text-xs font-semibold text-white">{s.key}</div>
-                  {s.description && <div className="text-xs text-[#777] mt-0.5">{s.description}</div>}
-                  {editing === s.key ? (
-                    <div className="flex flex-col gap-2 mt-2.5">
-                      {typeof s.value === 'object' && s.value !== null ? (
-                        <textarea
-                          rows={4}
-                          value={editVal}
-                          onChange={e => setEditVal(e.target.value)}
-                          className="w-full rounded-xl p-2.5 text-xs font-mono outline-none text-white leading-relaxed"
-                          style={{ background: '#181818', border: '1px solid #dc2626' }}
-                        />
-                      ) : (
-                        <input
-                          value={editVal}
-                          onChange={e => setEditVal(e.target.value)}
-                          className="w-full rounded-xl px-3 py-1.5 text-xs outline-none text-white"
-                          style={{ background: '#181818', border: '1px solid #dc2626' }}
-                        />
-                      )}
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => save(s.key)}
-                          disabled={saving}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-400 disabled:opacity-50"
-                          style={{ background: 'rgba(16,185,129,0.15)' }}
-                        >
-                          {saving ? <LoaderCircle size={13} className="animate-spin" /> : <Check size={13} />}
-                          Save
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setEditing(null)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-[#888] hover:text-white"
-                          style={{ background: '#222' }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    renderSettingValue(s)
-                  )}
-                </div>
-                {isSuperAdmin && editing !== s.key && (
-                  <button
-                    type="button"
-                    onClick={() => handleStartEdit(s)}
-                    className="flex-shrink-0 p-2 rounded-xl text-[#888] hover:text-white transition-colors"
-                    style={{ background: '#181818', border: '1px solid #242424' }}
-                    title={`Edit ${s.key}`}
-                  >
-                    <Edit2 size={12} />
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
-      ))}
-
-      {settings.length === 0 && (
-        <div className="text-center text-[#666] py-12 text-sm">No settings found</div>
       )}
     </div>
   )

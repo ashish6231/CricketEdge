@@ -72,7 +72,10 @@ class TennisLiveLoadAdapter extends SourceAdapter {
     };
   }
 
-  async _request(endpoint, params = null, method = 'GET') {
+  async _request(endpoint, params = null, method = 'GET', _isRetry = false) {
+    if (!this.session.getCookies()) {
+      await this.session.loadSavedSession();
+    }
     const url = `${BASE_URL}${endpoint}`;
     try {
       const config = { headers: this._getHeaders() };
@@ -82,9 +85,9 @@ class TennisLiveLoadAdapter extends SourceAdapter {
 
       this.session.recordSuccessfulCall();
 
-      // LoadxBet rolling cookie renewal on every response
+      // LoadxBet rolling cookie renewal on every response if set-cookie header present
       if (resp.headers && resp.headers['set-cookie']) {
-        this.session.saveRefreshedCookies(resp.headers['set-cookie']);
+        this.session.saveRefreshedCookies?.(resp.headers['set-cookie']);
       }
 
       return resp.data;
@@ -93,8 +96,18 @@ class TennisLiveLoadAdapter extends SourceAdapter {
         const status = err.response.status;
         if (status === 401) {
           const count = this.session.record401Failure();
-          if (count === 1 || count % 50 === 0) {
-            console.warn(`⚠️  [TLL-Adapter] 401 on ${endpoint} (consecutive failure #${count})`);
+          console.warn(`⚠️  [TLL-Adapter] 401 on ${endpoint} (consecutive failure #${count})`);
+
+          // Instant self-healing auto-login on 401 (retry once)
+          if (!_isRetry) {
+            console.log(`🔄 [TLL-Adapter] 401 encountered! Triggering instant auto-login for ${endpoint}...`);
+            const ok = await this.session.autoLogin({ reason: `401 on ${endpoint}` });
+            if (ok) {
+              console.log(`✅ [TLL-Adapter] Auto-login succeeded! Retrying ${endpoint} with fresh cookie...`);
+              return await this._request(endpoint, params, method, true);
+            } else {
+              console.warn(`❌ [TLL-Adapter] Auto-login failed during 401 recovery on ${endpoint}.`);
+            }
           }
         }
         return { error: `HTTP ${status}`, upstreamStatus: status };

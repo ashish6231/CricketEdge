@@ -880,7 +880,33 @@ router.patch('/match-dataset/:matchId/actual-winner', requireSuperAdmin, (req, r
 router.post('/match-dataset/capture', requireSuperAdmin, (req, res) => postMatchDatasetCapture(req, res));
 router.get('/match-dataset/export', requireSuperAdmin, (req, res) => getMatchDatasetExport(req, res));
 
-// ──── Scraper Session Management (manual cookie update only) ────
+// ──── Scraper Session Management (Database SSOT + Auto-Login) ────
+router.get('/scraper/status', requireSuperAdmin, async (req, res) => {
+  try {
+    const tllSession = require('../services/scraper-tennisliveload/session');
+    const status = tllSession.getStatus();
+    res.json({ success: true, data: status });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.post('/scraper/emergency-login', requireSuperAdmin, async (req, res) => {
+  try {
+    const tllSession = require('../services/scraper-tennisliveload/session');
+    console.log('⚡ [Admin] Manual auto-login triggered from admin panel...');
+    const ok = await tllSession.autoLogin({ reason: 'admin_manual_trigger' });
+    if (ok) {
+      const status = tllSession.getStatus();
+      res.json({ success: true, message: 'Fresh session created and saved to PostgreSQL Database!', data: status });
+    } else {
+      res.status(500).json({ success: false, error: 'Auto-login failed. Verify TENNIS_EMAIL and TENNIS_PASSWORD in server environment.' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 router.post('/scraper/cookie', requireSuperAdmin, async (req, res) => {
   const { cookie } = req.body || {};
   if (!cookie || typeof cookie !== 'string' || !cookie.trim()) {
@@ -888,7 +914,8 @@ router.post('/scraper/cookie', requireSuperAdmin, async (req, res) => {
   }
   const tllSession = require('../services/scraper-tennisliveload/session');
   await tllSession.saveSession(cookie.trim());
-  res.json({ success: true, message: 'Session cookie updated and persisted to DB & disk' });
+  const status = tllSession.getStatus();
+  res.json({ success: true, message: 'Session cookie updated and persisted to PostgreSQL Database', data: status });
 });
 
 module.exports = router;
