@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
 
 model User {
@@ -78,7 +78,7 @@ model SubscriptionPlan {
   price        Int
   yearlyPrice  Int
   currency     String   @default("INR")
-  features     String[] // array of strings
+  features     Json     // array of strings in JSON
   // limits
   maxMarketsTracked      Int     @default(5)
   apiCallsPerMin         Int     @default(10)
@@ -173,7 +173,7 @@ model Match {
   betfairEventId String   @default("")
   betfairMarketId String  @default("")
   // runners stored as JSON (dynamic array)
-  runners        Json     @default("[]")
+  runners        Json
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -213,7 +213,7 @@ model PromoCode {
   discountType    String
   discountValue   Float
   maxDiscount     Float    @default(0)
-  applicablePlans String[] @default([])
+  applicablePlans Json     // array of strings in JSON
   usageLimit      Int      @default(0)
   usageCount      Int      @default(0)
   perUserLimit    Int      @default(1)

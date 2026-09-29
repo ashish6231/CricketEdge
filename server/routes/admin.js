@@ -898,7 +898,7 @@ router.post('/scraper/emergency-login', requireSuperAdmin, async (req, res) => {
     const ok = await tllSession.autoLogin({ reason: 'admin_manual_trigger' });
     if (ok) {
       const status = tllSession.getStatus();
-      res.json({ success: true, message: 'Fresh session created and saved to PostgreSQL Database!', data: status });
+      res.json({ success: true, message: 'Fresh session created and saved to MariaDB Database!', data: status });
     } else {
       res.status(500).json({ success: false, error: 'Auto-login failed. Verify TENNIS_EMAIL and TENNIS_PASSWORD in server environment.' });
     }
@@ -915,7 +915,7 @@ router.post('/scraper/cookie', requireSuperAdmin, async (req, res) => {
   const tllSession = require('../services/scraper-tennisliveload/session');
   await tllSession.saveSession(cookie.trim());
   const status = tllSession.getStatus();
-  res.json({ success: true, message: 'Session cookie updated and persisted to PostgreSQL Database', data: status });
+  res.json({ success: true, message: 'Session cookie updated and persisted to MariaDB Database', data: status });
 });
 
 module.exports = router;

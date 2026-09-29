@@ -1,7 +1,7 @@
 /**
  * tennisliveload.com session manager
  * Manual cookie management only — no auto-login.
- * Cookie is persisted to PostgreSQL, disk, and env.
+ * Cookie is persisted to MariaDB, disk, and env.
  */
 
 const fs = require('fs');
@@ -68,7 +68,7 @@ async function saveSession(newCookie) {
           value: { cookie: trimmed, expiry: expiryMs, updatedAt: new Date().toISOString() },
         },
       });
-      console.log('💾 tennisliveload: cookie saved to PostgreSQL');
+      console.log('💾 tennisliveload: cookie saved to MariaDB');
     }
   } catch (err) {
     console.warn('⚠️  tennisliveload: failed to save cookie to DB:', err.message);

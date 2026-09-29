@@ -2,7 +2,7 @@
  * services/normalizer/normalizer.js
  * Ingestion Normalizer
  * Converts raw source streams from TennisLiveLoad and CREX into the unified schema,
- * writes live state to Redis, publishes updates to Redis Pub/Sub, and stores history in Postgres.
+ * writes live state to Redis, publishes updates to Redis Pub/Sub, and stores history in MariaDB.
  */
 
 const { getRedisClient } = require('../../shared/redis');

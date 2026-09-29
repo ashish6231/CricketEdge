@@ -12,9 +12,9 @@ test('scraper-tennisliveload/session getCookieExpiryMs calculates ms left accura
   assert.equal(session.getCookieExpiryMs(expiredCookie), 0, 'Past cookie must return 0 msLeft');
 });
 
-test('scraper-tennisliveload/session getStatus returns PostgreSQL Database as source', () => {
+test('scraper-tennisliveload/session getStatus returns MariaDB Database as source', () => {
   const status = session.getStatus();
-  assert.equal(status.source, 'PostgreSQL Database');
+  assert.equal(status.source, 'MariaDB Database');
   assert.equal(typeof status.isConnected, 'boolean');
   assert.equal(typeof status.hasCredentials, 'boolean');
 });

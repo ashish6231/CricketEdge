@@ -121,7 +121,7 @@ export default function AdminSettings({ isSuperAdmin }) {
     setEmergencyLoading(true)
     try {
       const res = await adminTriggerEmergencyLogin()
-      toast.success('Fresh session created and saved to PostgreSQL Database!')
+      toast.success('Fresh session created and saved to MariaDB Database!')
       setShowConfirmLoginModal(false)
       if (res?.data) setScraperStatus(res.data)
       load({ quiet: true })
@@ -409,7 +409,7 @@ export default function AdminSettings({ isSuperAdmin }) {
                   <Database size={13} className="text-[#666]" /> Cookie Storage
                 </span>
                 <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-                  PostgreSQL DB
+                  MariaDB DB
                 </span>
               </div>
               <div className="mt-3">
@@ -511,7 +511,7 @@ export default function AdminSettings({ isSuperAdmin }) {
                 <label className="text-xs font-semibold text-white">
                   Paste <span className="font-mono text-[#10b981]">cricket_live_load_session</span> Cookie:
                 </label>
-                <span className="text-[11px] text-[#777]">Saves to PostgreSQL DB, disk & memory</span>
+                <span className="text-[11px] text-[#777]">Saves to MariaDB DB, disk & memory</span>
               </div>
               <textarea
                 value={newCookieInput}

@@ -15,7 +15,7 @@
     "revoke:all-trials": "node scripts/revoke_all_trials.js"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/adapter-mariadb": "^7.10.0",
     "@prisma/client": "^7.9.0",
     "@react-oauth/google": "^0.13.5",
     "axios": "^1.18.1",
@@ -32,10 +32,11 @@
     "https-proxy-agent": "^7.0.0",
     "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
+    "mariadb": "^3.5.4",
+    "mysql2": "^3.24.5",
     "nodemailer": "^6.9.7",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
-    "pg": "^8.22.0",
     "prisma": "^7.9.0",
     "razorpay": "^2.9.6",
     "socket.io": "^4.7.2",

@@ -3,7 +3,7 @@
  * TennisLiveLoad Session Manager
  *
  * Implements:
- * 1. Single Source of Truth: PostgreSQL Database (`SiteSettings` table) ONLY.
+ * 1. Single Source of Truth: MariaDB Database (`SiteSettings` table) ONLY.
  *    - Strictly removed all reading and writing from/to .env.
  *    - Redeploys will never overwrite DB with stale env cookies.
  * 2. Instant Auto-Login on 401:
@@ -70,7 +70,7 @@ function isConnected() {
 }
 
 /**
- * Save session ONLY to PostgreSQL Database (and in-memory + optional redis cache).
+ * Save session ONLY to MariaDB Database (and in-memory + optional redis cache).
  * Strictly NEVER writes to .env!
  */
 async function saveSession(newCookie) {
@@ -80,7 +80,7 @@ async function saveSession(newCookie) {
 
   const expiryMs = getCookieExpiryTimestamp(trimmed);
 
-  // 1. Save to PostgreSQL (Single Source of Truth)
+  // 1. Save to MariaDB (Single Source of Truth)
   try {
     if (prisma && typeof prisma.siteSettings?.upsert === 'function') {
       await prisma.siteSettings.upsert({
@@ -96,7 +96,7 @@ async function saveSession(newCookie) {
           value: { cookie: trimmed, expiry: expiryMs, updatedAt: new Date().toISOString() },
         },
       });
-      console.log('💾 [TLL-Session] cookie persisted to PostgreSQL Database');
+      console.log('💾 [TLL-Session] cookie persisted to MariaDB Database');
     }
   } catch (err) {
     console.warn('⚠️  [TLL-Session] failed to save cookie to DB:', err.message);
@@ -119,7 +119,7 @@ async function saveSession(newCookie) {
 }
 
 /**
- * Load session strictly from PostgreSQL Database.
+ * Load session strictly from MariaDB Database.
  * If expired or missing, triggers auto-login.
  */
 async function loadSavedSession() {
@@ -230,7 +230,7 @@ async function autoLogin({ reason = '401' } = {}) {
             _consecutive401Count = 0;
             _lastLoginError = null;
             await saveSession(newCookieStr);
-            console.log('🎉 [TLL-Session] auto-login successful! Fresh 24h session saved to PostgreSQL Database.');
+            console.log('🎉 [TLL-Session] auto-login successful! Fresh 24h session saved to MariaDB Database.');
             return true;
           }
         }
@@ -357,7 +357,7 @@ function getStatus() {
     expiryTimestamp,
     hasCredentials: Boolean(process.env.TENNIS_EMAIL && process.env.TENNIS_PASSWORD),
     consecutive401s: _consecutive401Count,
-    source: 'PostgreSQL Database',
+    source: 'MariaDB Database',
     lastLoginAttemptAt: _lastLoginAttemptAt ? new Date(_lastLoginAttemptAt).toISOString() : null,
     lastLoginError: _lastLoginError,
     // Compat for AdminSettings.jsx UI metrics:

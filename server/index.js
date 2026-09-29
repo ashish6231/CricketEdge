@@ -236,10 +236,10 @@ process.on('SIGINT', () => shutdown('SIGINT'));
 (async () => {
   try {
     await prisma.$connect();
-    // Warm up Neon DB connection pool — prevents first-query cold start delay
+    // Warm up MariaDB connection pool — prevents first-query cold start delay
     await prisma.$queryRaw`SELECT 1`;
     const dbHost = process.env.DATABASE_URL?.split('@')[1]?.split('?')[0];
-    console.log(`✅ PostgreSQL connected: ${dbHost}`);
+    console.log(`✅ MariaDB connected: ${dbHost}`);
 
     const { seedDatabase } = require('./seedAdmin');
     await seedDatabase();
