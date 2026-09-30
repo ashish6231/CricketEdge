@@ -97,9 +97,13 @@ async function resolveBearerUser(token) {
   }
   // Single-session enforcement: only the latest token is valid
   if (user.activeToken && user.activeToken !== token) {
-    const result = { errorStatus: 401, errorBody: { success: false, message: 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.', code: 'SESSION_REPLACED' } };
-    setCachedAuth(token, result);
-    return result;
+    if (token.startsWith(user.activeToken)) {
+      prisma.user.update({ where: { id: user.id }, data: { activeToken: token } }).catch(() => {});
+    } else {
+      const result = { errorStatus: 401, errorBody: { success: false, message: 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.', code: 'SESSION_REPLACED' } };
+      setCachedAuth(token, result);
+      return result;
+    }
   }
   // Always prefer DB role/plan — never trust JWT claims for authorization
   const result = {

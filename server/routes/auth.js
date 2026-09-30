@@ -207,8 +207,16 @@ router.post('/login', async (req, res) => {
     // Generate token immediately from existing user data — don't wait for trial sync
     const token = generateToken(user);
     clearAuthCache();
+    clearMeCache();
 
-    // Respond immediately — background tasks run after response is sent
+    // Await activeToken in DB so client request never races ahead of DB write
+    try {
+      await prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } });
+      socketService.notifySessionReplaced(user.id, token);
+    } catch (updateErr) {
+      console.warn('⚠️ Could not update activeToken on login:', updateErr.message);
+    }
+
     res.json({
       success: true,
       message: 'Login successful',
@@ -217,10 +225,6 @@ router.post('/login', async (req, res) => {
       trialGranted: false,
     });
 
-    // Background: update activeToken + sync trial state (non-blocking)
-    prisma.user.update({ where: { id: user.id }, data: { activeToken: token, lastLoginAt: new Date() } })
-      .then(() => socketService.notifySessionReplaced(user.id, token))
-      .catch(() => {});
     syncUserTrialState(prisma, user.id).catch(() => {});
   } catch (err) {
     console.error(err);
@@ -381,11 +385,15 @@ router.get('/me', async (req, res) => {
 
     // Single-session enforcement
     if (user.activeToken && user.activeToken !== token) {
-      return res.status(401).json({
-        success: false,
-        message: 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.',
-        code: 'SESSION_REPLACED'
-      });
+      if (token.startsWith(user.activeToken)) {
+        prisma.user.update({ where: { id: user.id }, data: { activeToken: token } }).catch(() => {});
+      } else {
+        return res.status(401).json({
+          success: false,
+          message: 'Aapka account kisi doosre device par login ho gaya hai. Please dubara login karein.',
+          code: 'SESSION_REPLACED'
+        });
+      }
     }
 
     const sanitized = sanitizeUser(user);

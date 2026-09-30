@@ -14,9 +14,11 @@ if (connectionUrl.startsWith('mysql://')) {
     user: decodeURIComponent(url.username),
     password: decodeURIComponent(url.password),
     database: url.pathname.replace(/^\//, ''),
-    connectionLimit: 10,
+    connectionLimit: 4,
     connectTimeout: 15000,
     acquireTimeout: 15000,
+    idleTimeout: 300000,
+    minDelayValidation: 10000,
   });
 } else {
   pool = mariadb.createPool({

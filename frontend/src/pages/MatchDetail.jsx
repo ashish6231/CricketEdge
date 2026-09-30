@@ -12,7 +12,6 @@ import { predictMatchWinner, predictSmartMarketWinner } from '../utils/matchWinn
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
 import { getBookiePl, splitMatchOutcomes } from '../utils/bookiePl'
 import { predictGatedFade, teamEq } from '../utils/gatedFadePredictor'
-import { getSpoofingMetrics } from '../utils/spoofingDetector'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
@@ -46,6 +45,17 @@ const fmtVol = (n) => {
 const formatMoney = (val) => {
   if (!val) return '0.00'
   return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+const formatBetfairVol = (val) => {
+  if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
+  const num = Number(val)
+  if (isNaN(num)) return String(val)
+  const abs = Math.abs(num)
+  const sign = num < 0 ? '-' : ''
+  if (abs >= 1000000) return `${sign}${(abs / 1000000).toFixed(2)}M`
+  if (abs >= 1000) return `${sign}${(abs / 1000).toFixed(2)}k`
+  return `${sign}${abs.toFixed(2)}`
 }
 
 const formatVolStr = (val) => {
@@ -450,19 +460,26 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
     return sessionPl
   }
   return (
-    <div className="bg-[#0c101d] rounded-xl border border-[#1e2538] shadow-xl overflow-hidden mb-3.5 backdrop-blur-sm">
+    <div className="bg-[#0c101d] rounded-xl border border-[#1e2538] shadow-xl overflow-hidden mb-3.5 backdrop-blur-sm flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-3.5 sm:px-4 py-2.5 border-b border-[#1b2234] bg-[#0f1422]/60">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between gap-2 px-3.5 sm:px-4 py-2.5 border-b border-[#1b2234] bg-[#0f1422]/60 min-h-[46px]">
+        <div className="flex items-center gap-2 min-w-0">
           <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] shrink-0" />
           <div className="font-bold text-white text-sm sm:text-base tracking-tight truncate">{teamData.name}</div>
-        </div>
-        <div className="flex items-center justify-between sm:justify-end gap-2 flex-wrap">
-          <div className={`text-[11px] flex items-center gap-1 font-bold px-2 py-0.5 rounded-md ${teamData.trend === 'Rising' ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20' : teamData.trend === 'Dropping' ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' : 'text-slate-400 bg-slate-800/40 border border-slate-700/30'
+          {teamData.trend && (
+            <div className={`hidden sm:flex text-[10px] items-center gap-1 font-bold px-1.5 py-0.5 rounded-md shrink-0 ${
+              teamData.trend === 'Rising' 
+                ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20' 
+                : teamData.trend === 'Dropping' 
+                  ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
+                  : 'text-slate-400 bg-slate-800/40 border border-slate-700/30'
             }`}>
-            {teamData.trend === 'Rising' ? <TrendingUp size={11} /> : teamData.trend === 'Dropping' ? <TrendingUp size={11} className="rotate-180" /> : <span>—</span>}
-            <span>Odds {teamData.trend}</span>
-          </div>
+              {teamData.trend === 'Rising' ? <TrendingUp size={10} /> : teamData.trend === 'Dropping' ? <TrendingUp size={10} className="rotate-180" /> : null}
+              <span>{teamData.trend}</span>
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-1.5 shrink-0">
           <div className="flex bg-[#07090e] rounded-lg p-0.5 border border-[#1e273b]">
             <button onClick={() => setActiveTab('volume')} className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all ${activeTab === 'volume' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>Chart</button>
             <button onClick={() => setActiveTab('time')} className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all ${activeTab === 'time' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>History</button>
@@ -471,60 +488,44 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="p-3 sm:p-3.5">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <div className="bg-[#080b14] border border-[#1b2234] rounded-lg p-2 flex justify-between items-center">
-            <span className="text-slate-400 text-[11px] font-medium">Odds Range</span>
-            <div className="text-right">
-              <span className="text-slate-500 text-[11px] mr-1">L:</span>
-              <span className="text-white text-xs font-mono font-bold">{formatOdds(teamData.low)}</span>
-              <span className="text-slate-600 text-xs mx-1">|</span>
-              <span className="text-slate-500 text-[11px] mr-1">H:</span>
-              <span className="text-white text-xs font-mono font-bold">{formatOdds(teamData.high)}</span>
-            </div>
+      {/* Stats Card (Betfair Selection Info) */}
+      <div className="p-3 sm:p-3.5 pb-2.5">
+        <div className="bg-[#121622] border border-[#22293a] rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 space-y-2.5 shadow-inner">
+          <div className="flex justify-between items-center text-xs sm:text-[13px]">
+            <span className="text-[#9ca3af] font-normal">Range:</span>
+            <span className="text-white font-mono font-bold tracking-tight">
+              Low: {formatOdds(teamData.low)} High: {formatOdds(teamData.high)}
+            </span>
           </div>
 
-          <div className="bg-[#080b14] border border-[#1b2234] rounded-lg p-2 flex justify-between items-center">
-            <span className="text-slate-400 text-[11px] font-medium">Last Price Matched</span>
-            <span className="text-emerald-400 text-xs font-mono font-bold bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/20">{formatOdds(teamData.lastPrice)}</span>
+          <div className="flex justify-between items-center text-xs sm:text-[13px]">
+            <span className="text-[#9ca3af] font-normal">On this selection:</span>
+            <span className="text-white font-mono font-bold tracking-tight">
+              €{formatBetfairVol(teamData.totalBet)}
+            </span>
           </div>
 
-          <div className="bg-[#080b14] border border-[#1b2234] rounded-lg p-2 flex justify-between items-center">
-            <span className="text-slate-400 text-[11px] font-medium">Market Vol / Selection</span>
-            <div className="text-right">
-              <span className="text-slate-300 text-xs font-bold font-mono">€{formatVolStr(teamData.totalBet)}</span>
-              <span className="text-slate-500 text-[10px] ml-1 font-mono">/ €{formatVolStr(marketVol)}</span>
-            </div>
+          <div className="flex justify-between items-center text-xs sm:text-[13px]">
+            <span className="text-[#9ca3af] font-normal">Last price matched:</span>
+            <span className="text-white font-mono font-bold tracking-tight">
+              {formatOdds(teamData.lastPrice)}
+            </span>
           </div>
-
-          {!isSession ? (
-            <div className="bg-[#080b14] border border-[#1b2234] rounded-lg p-2 flex justify-between items-center">
-              <span className="text-slate-400 text-[11px] font-medium">Bookie P/L</span>
-              <span className={`text-xs font-mono font-bold px-1.5 py-0.2 rounded ${pl >= 0 ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/25' : 'text-rose-400 bg-rose-500/10 border border-rose-500/25'}`}>
-                {pl >= 0 ? '+' : ''}€{formatVolStr(pl)}
-              </span>
-            </div>
-          ) : (
-            <div className="bg-[#080b14] border border-[#1b2234] rounded-lg p-2 flex justify-between items-center">
-              <span className="text-slate-400 text-[11px] font-medium">Market Type</span>
-              <span className="text-blue-400 text-xs font-bold">Session Market</span>
-            </div>
-          )}
-
-          {isToss && (
-            <>
-              <div className="bg-[#080b14] border border-[#1b2234] rounded-lg p-2 flex justify-between items-center">
-                <span className="text-slate-400 text-[11px] font-medium">Back Stake</span>
-                <span className="text-sky-400 text-xs font-mono font-bold">€{formatVolStr(teamData.totalBack)}</span>
-              </div>
-              <div className="bg-[#080b14] border border-[#1b2234] rounded-lg p-2 flex justify-between items-center">
-                <span className="text-slate-400 text-[11px] font-medium">Lay Stake</span>
-                <span className="text-rose-400 text-xs font-mono font-bold">€{formatVolStr(teamData.totalLay)}</span>
-              </div>
-            </>
-          )}
         </div>
+
+        {/* Toss specific Stakes if present */}
+        {isToss && (teamData.totalBack > 0 || teamData.totalLay > 0) && (
+          <div className="grid grid-cols-2 gap-2 mt-2">
+            <div className="bg-[#121622] border border-[#22293a] rounded-lg px-3 py-1.5 flex justify-between items-center">
+              <span className="text-[#9ca3af] text-[11px]">Back Stake:</span>
+              <span className="text-sky-400 text-xs font-mono font-bold">€{formatBetfairVol(teamData.totalBack)}</span>
+            </div>
+            <div className="bg-[#121622] border border-[#22293a] rounded-lg px-3 py-1.5 flex justify-between items-center">
+              <span className="text-[#9ca3af] text-[11px]">Lay Stake:</span>
+              <span className="text-rose-400 text-xs font-mono font-bold">€{formatBetfairVol(teamData.totalLay)}</span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Tab Content */}
@@ -1083,7 +1084,6 @@ export default function MatchDetail({ sport }) {
   const drawOdds = hasDraw ? getLatestOdds(drawTrades, drawName) : null
   const am1 = snapshot.advancedMetrics?.team1 || {}
   const am2 = snapshot.advancedMetrics?.team2 || {}
-  const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snapshot)
   const sp = dm.simplePL || {}
   const dp = dm.derivedPL || {}
   const teams = snapshot.teams || {}
@@ -1141,6 +1141,38 @@ export default function MatchDetail({ sport }) {
   const pb = snapshot.preMatchTotalBets || {}
   const iv = snapshot.inPlayVolume || {}
   const pv = snapshot.preMatchVolume || {}
+
+  const tmp = snapshot.threeMinPnl || {}
+  const tmb = snapshot.threeMinTotalBets || {}
+  const tmv = snapshot.threeMinVolume || {}
+
+  // Fallback 3-min metrics from raw trades if not pre-aggregated
+  const get3mMetrics = (tName) => {
+    const trades = snapshot?.teams?.[tName]?.trades || []
+    if (!trades.length) return { back: 0, lay: 0, total: 0 }
+    const now = Date.now()
+    const cutoff = now - 3 * 60 * 1000
+    let back = 0, lay = 0
+    for (const tr of trades) {
+      const time = new Date(tr.updatedAt).getTime()
+      if (time >= cutoff) {
+        const size = parseFloat(tr.size) || 0
+        if (tr.side === 'B') back += size
+        else if (tr.side === 'L') lay += size
+      }
+    }
+    return { back, lay, total: back + lay }
+  }
+
+  const finalTmv = {
+    team1: (tmv.team1 && (tmv.team1.total > 0 || tmv.team1.back > 0 || tmv.team1.lay > 0)) ? tmv.team1 : get3mMetrics(t1),
+    team2: (tmv.team2 && (tmv.team2.total > 0 || tmv.team2.back > 0 || tmv.team2.lay > 0)) ? tmv.team2 : get3mMetrics(t2),
+  }
+  const finalTmb = {
+    team1: tmb.team1 ?? (snapshot.teams?.[t1]?.trades?.filter(t => (Date.now() - new Date(t.updatedAt).getTime()) <= 180000).length || 0),
+    team2: tmb.team2 ?? (snapshot.teams?.[t2]?.trades?.filter(t => (Date.now() - new Date(t.updatedAt).getTime()) <= 180000).length || 0),
+  }
+  const finalTmp = tmp
   const exp = snapshot.bookmakerExposure || {}
   const exp1 = exp.team1 || {}
   const exp2 = exp.team2 || {}
@@ -1221,7 +1253,6 @@ export default function MatchDetail({ sport }) {
         <div className="flex items-center rounded-lg p-0.5 gap-0.5 sm:gap-1 overflow-x-auto no-scrollbar max-w-[calc(100vw-75px)] sm:max-w-none bg-[#10131e] border border-[#1f273b]">
           {[
             { key: 'simple', label: 'Simple Book', mobileLabel: 'Simple Book' },
-            { key: 'graph', label: 'Graphs', mobileLabel: 'Graphs', icon: <BarChart3 className="w-2.5 h-2.5 sm:w-[11px] sm:h-[11px]" /> },
             sport === 'cricket' && crexData ? {
               key: 'crex',
               label: 'Live & Commentary',
@@ -1244,11 +1275,10 @@ export default function MatchDetail({ sport }) {
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 style={isActive ? {
-                  background: key === 'graph' ? 'linear-gradient(135deg,#1d4ed8,#3b82f6)'
-                    : key === 'crex' ? 'linear-gradient(135deg,#059669,#10b981)'
-                      : key === 'toss' ? 'linear-gradient(135deg,#7c3aed,#a855f7)'
-                        : key === 'session' ? 'linear-gradient(135deg,#b45309,#f59e0b)'
-                          : 'linear-gradient(135deg,#dc2626,#ea580c)'
+                  background: key === 'crex' ? 'linear-gradient(135deg,#059669,#10b981)'
+                    : key === 'toss' ? 'linear-gradient(135deg,#7c3aed,#a855f7)'
+                      : key === 'session' ? 'linear-gradient(135deg,#b45309,#f59e0b)'
+                        : 'linear-gradient(135deg,#dc2626,#ea580c)'
                 } : {}}
               >
                 {icon}
@@ -1263,84 +1293,7 @@ export default function MatchDetail({ sport }) {
       {/* ── Live Scorecard Hero Banner — cricket only ── */}
       {sport === 'cricket' && activeTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} matchInPlay={snapshot?.inPlay || false} />}
 
-      {activeTab === 'graph' ? (
-        <div className="w-full bg-[#0a0d16] border border-[#1b2234] min-h-screen p-3.5 sm:p-6 -mx-3 sm:mx-0 rounded-2xl font-sans shadow-2xl">
-          {/* Top Header Row */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3.5 mb-6 sm:mb-8">
-            <div>
-              <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-white text-lg sm:text-2xl font-black tracking-tight">{t1} vs {t2}</h1>
-                <span className="px-2.5 py-0.5 bg-rose-500/10 text-rose-400 rounded-full text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 border border-rose-500/30">
-                  <span className="w-1.5 h-1.5 bg-rose-500 rounded-full animate-pulse"></span>
-                  LIVE
-                </span>
-              </div>
-              <div className="text-slate-400 text-xs sm:text-[13px] mt-1 font-medium tracking-wide">
-                {snapshot.competitionName || 'Cricket Match'}
-                {matchSchedule && ` · ${matchSchedule.label}`}
-              </div>
-            </div>
-            <div className="flex items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto">
-              <div className="flex bg-[#07090e] p-0.5 rounded-xl border border-[#1e273b]">
-                <button onClick={() => setTimeFilter('all')} className={`px-2.5 sm:px-3 py-1.5 text-xs rounded-lg font-bold transition-all ${timeFilter === 'all' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>All</button>
-                <button onClick={() => setTimeFilter('3h')} className={`px-2.5 sm:px-3 py-1.5 text-xs rounded-lg font-bold transition-all ${timeFilter === '3h' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>3H</button>
-                <button onClick={() => setTimeFilter('1h')} className={`px-2.5 sm:px-3 py-1.5 text-xs rounded-lg font-bold transition-all ${timeFilter === '1h' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>1H</button>
-              </div>
-              <div className="relative">
-                <div
-                  onClick={() => setShowMarketMenu(!showMarketMenu)}
-                  className="bg-[#0e121e] text-white text-xs sm:text-[13px] px-3.5 py-2 rounded-xl border border-[#1f273b] flex items-center gap-3 cursor-pointer font-semibold shadow-sm hover:bg-[#151b2c] transition-colors"
-                >
-                  <span className="truncate max-w-[120px]">{marketType.startsWith('session_') ? marketType.replace('session_', '') : 'Match Odds'}</span>
-                  <ChevronDown size={14} className="text-slate-400 shrink-0" />
-                </div>
-                {showMarketMenu && (
-                  <div className="absolute top-full right-0 mt-2 w-44 bg-[#0e1320] border border-[#222b40] rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
-                    <div
-                      onClick={() => { setMarketType('match_odds'); setShowMarketMenu(false); }}
-                      className="px-4 py-2.5 text-xs sm:text-[13px] font-bold text-white hover:bg-white/5 cursor-pointer"
-                    >
-                      Match Odds
-                    </div>
-                    {activeSessions.map(session => (
-                      <div key={session} onClick={() => { setMarketType('session_' + session); setShowMarketMenu(false); }} className="px-4 py-2.5 text-xs sm:text-[13px] font-bold text-white hover:bg-white/5 cursor-pointer border-t border-[#1f2638]">
-                        {session}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {isSessionMarket ? (
-            <div className="mt-4 w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-              <div className="flex justify-between items-center mb-4 px-1">
-                <h2 className="text-white font-extrabold text-base tracking-wide">{selectedSessionName}</h2>
-                <div className="text-slate-400 text-xs sm:text-sm font-medium">
-                  On this market: <span className="text-emerald-400 font-mono font-bold ml-1">€{formatVolStr(sessionGraphData?.totalBet || 0)}</span>
-                </div>
-              </div>
-              <TeamCard teamData={sessionGraphData} isToss={false} isSession={true} marketVol={sessionGraphData?.totalBet || 0} />
-            </div>
-          ) : (
-            <>
-              <div className="mb-4 mt-2 flex items-center justify-between">
-                <h2 className="text-white font-extrabold text-sm sm:text-base tracking-wide flex items-center gap-2">
-                  <BarChart3 size={16} className="text-blue-400" />
-                  <span>Market Odds & Depth Analysis</span>
-                </h2>
-                <span className="text-xs text-slate-400">Vol: <b className="text-white font-mono">€{formatVolStr(marketVol)}</b></span>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mt-4">
-                <TeamCard teamData={t1GraphData} isToss={false} marketVol={marketVol} />
-                <TeamCard teamData={t2GraphData} isToss={false} marketVol={marketVol} />
-              </div>
-            </>
-          )}
-        </div>
-      ) : activeTab === 'toss' ? (
+      {activeTab === 'toss' ? (
         <div className="space-y-4">
           {/* Toss Winner / Decision Banner */}
           {(() => {
@@ -1606,15 +1559,7 @@ export default function MatchDetail({ sport }) {
         <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
       ) : (
         <>
-          {isSessionMarket ? (
-            <div className="p-4 text-center text-[#8e8e93] py-10">
-              <BarChart3 className="mx-auto mb-3 opacity-20" size={48} />
-              <p>Session data is only available in Graphs view.</p>
-              <button onClick={() => setShowAdvancedGraph(true)} className="mt-4 px-4 py-2 bg-[#16a34a] text-white rounded-lg text-sm font-bold">Switch to Graphs</button>
-            </div>
-          ) : (
-            <>
-              {/* ━━━━━━━━━━ 🤖 QUANT AI PREDICTION ━━━━━━━━━━ */}
+          {/* ━━━━━━━━━━ 🤖 QUANT AI PREDICTION ━━━━━━━━━━ */}
               {snapshot.aiPrediction && snapshot.aiPrediction.winner && (() => {
                 const pv = getPredictionVisuals(snapshot.aiPrediction)
                 if (!pv) return null
@@ -1922,9 +1867,6 @@ export default function MatchDetail({ sport }) {
                 </div>
               )}
 
-            </>
-          )}
-
           {/* ━━━━━━━━━━ B/L RATIO ━━━━━━━━━━ */}
           <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">
             <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center justify-between">
@@ -2089,89 +2031,103 @@ export default function MatchDetail({ sport }) {
           )}
 
           {/* ━━━━━━━━━━ 5. QUICK STATS ━━━━━━━━━━ */}
-          <div className="space-y-2.5">
-            {[{ title: 'In-Play Live Metrics', pnl: ip, bets: ib, vol: iv, isLive: true },
-            { title: 'Pre-Match Baseline', pnl: pp, bets: pb, vol: pv, isLive: false }].map(({ title, pnl, bets, vol, isLive }) => (
-              <div key={title} className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">
-                <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center justify-between">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-white">{title}</span>
-                  <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border ${isLive ? 'text-rose-400 bg-rose-500/10 border-rose-500/25' : 'text-sky-400 bg-sky-500/10 border-sky-500/25'
-                    }`}>
-                    {isLive ? 'IN-PLAY' : 'PRE-MATCH'}
-                  </span>
-                </div>
-                <div className="p-2.5 sm:p-3">
-                  <div className="grid grid-cols-3 gap-1 mb-1.5 px-1">
-                    <div />
-                    <div className="text-center text-[10px] font-extrabold text-slate-300 truncate px-1">{t1}</div>
-                    <div className="text-center text-[10px] font-extrabold text-slate-300 truncate px-1">{t2}</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+            {[
+              { title: 'In-Play Live Metrics', pnl: ip, bets: ib, vol: iv, badge: 'IN-PLAY', badgeCls: 'text-rose-400 bg-rose-500/10 border-rose-500/25' },
+              { title: '3-Minute Live Metrics', pnl: finalTmp, bets: finalTmb, vol: finalTmv, badge: '3-MIN LIVE', badgeCls: 'text-amber-400 bg-amber-500/10 border-amber-500/25' },
+              { title: 'Pre-Match Baseline', pnl: pp, bets: pb, vol: pv, badge: 'PRE-MATCH', badgeCls: 'text-sky-400 bg-sky-500/10 border-sky-500/25' }
+            ].map(({ title, pnl, bets, vol, badge, badgeCls }) => (
+              <div key={title} className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl flex flex-col justify-between">
+                <div>
+                  <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center justify-between min-h-[38px]">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-white truncate mr-2">{title}</span>
+                    <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border shrink-0 ${badgeCls}`}>
+                      {badge}
+                    </span>
                   </div>
-                  {[
-                    { label: 'Bookie P/L', v1: <span className={`font-bold font-mono text-xs ${pnlCls(pnl.team1)}`}>{fmtRs(pnl.team1)}</span>, v2: <span className={`font-bold font-mono text-xs ${pnlCls(pnl.team2)}`}>{fmtRs(pnl.team2)}</span> },
-                    { label: 'Total Bets', v1: <span className="text-[11px] font-mono text-slate-300">{fmt(bets.team1)}</span>, v2: <span className="text-[11px] font-mono text-slate-300">{fmt(bets.team2)}</span> },
-                    { label: 'Back Vol', v1: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol.team1?.back)}</span>, v2: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol.team2?.back)}</span> },
-                    { label: 'Lay Vol', v1: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol.team1?.lay)}</span>, v2: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol.team2?.lay)}</span> },
-                  ].map(({ label, v1, v2 }, i) => (
-                    <div key={label} className={`grid grid-cols-3 gap-1 py-1 px-1 rounded ${i % 2 === 0 ? 'bg-[#080b14]' : ''}`}>
-                      <div className="text-[10px] text-slate-400 flex items-center font-bold">{label}</div>
-                      <div className="text-center flex items-center justify-center">{v1}</div>
-                      <div className="text-center flex items-center justify-center">{v2}</div>
+                  <div className="p-2.5 sm:p-3">
+                    <div className="grid grid-cols-3 gap-1 mb-1.5 px-1">
+                      <div />
+                      <div className="text-center text-[10px] font-extrabold text-slate-300 truncate px-1">{t1}</div>
+                      <div className="text-center text-[10px] font-extrabold text-slate-300 truncate px-1">{t2}</div>
                     </div>
-                  ))}
+                    {[
+                      { label: 'Bookie P/L', v1: <span className={`font-bold font-mono text-xs ${pnlCls(pnl?.team1)}`}>{fmtRs(pnl?.team1)}</span>, v2: <span className={`font-bold font-mono text-xs ${pnlCls(pnl?.team2)}`}>{fmtRs(pnl?.team2)}</span> },
+                      { label: 'Total Bets', v1: <span className="text-[11px] font-mono text-slate-300">{fmt(bets?.team1)}</span>, v2: <span className="text-[11px] font-mono text-slate-300">{fmt(bets?.team2)}</span> },
+                      { label: 'Back Vol', v1: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol?.team1?.back)}</span>, v2: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol?.team2?.back)}</span> },
+                      { label: 'Lay Vol', v1: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol?.team1?.lay)}</span>, v2: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol?.team2?.lay)}</span> },
+                    ].map(({ label, v1, v2 }, i) => (
+                      <div key={label} className={`grid grid-cols-3 gap-1 py-1 px-1 rounded ${i % 2 === 0 ? 'bg-[#080b14]' : ''}`}>
+                        <div className="text-[10px] text-slate-400 flex items-center font-bold">{label}</div>
+                        <div className="text-center flex items-center justify-center">{v1}</div>
+                        <div className="text-center flex items-center justify-center">{v2}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          {/* ━━━━━━━━━━ 10. SPOOFING DETECTOR ━━━━━━━━━━ */}
-          <div className="rounded-xl p-3 sm:p-3.5 bg-[#0c101d] border border-[#1e2538] shadow-xl">
-            {/* Header */}
-            <div className="flex items-center justify-between gap-2 mb-2">
-              <div className="flex items-center gap-1.5">
-                <Flame size={14} className="text-rose-400 animate-pulse" />
-                <span className="text-xs sm:text-sm font-extrabold text-white">Spoofing & Fake Order Detector</span>
+          {/* ━━━━━━━━━━ 11. MARKET ODDS & DEPTH ANALYSIS (GRAPHS) ━━━━━━━━━━ */}
+          <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl p-3 sm:p-4 space-y-3.5">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 pb-2.5 border-b border-[#1b2234]">
+              <div className="flex items-center gap-2 flex-wrap">
+                <BarChart3 size={15} className="text-blue-400" />
+                <span className="text-xs sm:text-sm font-extrabold text-white">Market Odds & Depth Analysis</span>
+                <span className="text-[11px] font-mono text-slate-400 ml-1">Vol: <b className="text-white font-bold">€{formatVolStr(marketVol)}</b></span>
               </div>
-              <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold border border-rose-500/30 text-rose-400 bg-rose-500/10">LIVE DETECTOR</span>
-            </div>
-
-            {/* Progress bar */}
-            <div className="h-1.5 rounded-full overflow-hidden flex mb-1.5 bg-[#07090e] border border-[#1b2234]">
-              <div className="h-full bg-rose-500 transition-all duration-500" style={{ width: `${t1Pct}%` }} />
-              <div className="h-full bg-emerald-500 transition-all duration-500" style={{ width: `${t2Pct}%` }} />
-            </div>
-            <div className="flex justify-between text-[10px] font-mono font-bold mb-3">
-              <span className="text-rose-400">{t1}: {t1Pct.toFixed(1)}%</span>
-              <span className="text-emerald-400">{t2}: {t2Pct.toFixed(1)}%</span>
-            </div>
-
-            {/* Team cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3">
-              {[{ team: t1, fake: t1Fake, isMain: true }, { team: t2, fake: t2Fake, isMain: false }].map(({ team, fake, isMain }) => (
-                <div key={team} className="rounded-lg p-2.5 border border-[#1b2234] bg-[#080b14]">
-                  <div className={`text-xs font-bold mb-2 truncate ${isMain ? 'text-white' : 'text-slate-300'}`}>{team}</div>
-                  <div className="space-y-1.5 font-mono">
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] text-slate-400">Fake Back</span>
-                      <span className="text-[11px] font-bold text-sky-400">{fmtVol(fake.fakeBack)}</span>
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                <div className="flex bg-[#07090e] p-0.5 rounded-lg border border-[#1e273b]">
+                  <button onClick={() => setTimeFilter('all')} className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${timeFilter === 'all' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>All</button>
+                  <button onClick={() => setTimeFilter('3h')} className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${timeFilter === '3h' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>3H</button>
+                  <button onClick={() => setTimeFilter('1h')} className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${timeFilter === '1h' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>1H</button>
+                </div>
+                {activeSessions && activeSessions.length > 0 && (
+                  <div className="relative">
+                    <div
+                      onClick={() => setShowMarketMenu(!showMarketMenu)}
+                      className="bg-[#0e121e] text-white text-xs px-3 py-1.5 rounded-lg border border-[#1f273b] flex items-center gap-2 cursor-pointer font-semibold hover:bg-[#151b2c] transition-colors"
+                    >
+                      <span className="truncate max-w-[120px]">{marketType.startsWith('session_') ? marketType.replace('session_', '') : 'Match Odds'}</span>
+                      <ChevronDown size={13} className="text-slate-400 shrink-0" />
                     </div>
-                    <div className="flex items-center justify-between gap-1">
-                      <span className="text-[10px] text-slate-400">Fake Lay</span>
-                      <span className="text-[11px] font-bold text-rose-400">{fmtVol(fake.oppFakeLay)}</span>
-                    </div>
+                    {showMarketMenu && (
+                      <div className="absolute bottom-full right-0 mb-1 w-44 bg-[#0e1320] border border-[#222b40] rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
+                        <div
+                          onClick={() => { setMarketType('match_odds'); setShowMarketMenu(false); }}
+                          className="px-4 py-2 text-xs font-bold text-white hover:bg-white/5 cursor-pointer"
+                        >
+                          Match Odds
+                        </div>
+                        {activeSessions.map(session => (
+                          <div key={session} onClick={() => { setMarketType('session_' + session); setShowMarketMenu(false); }} className="px-4 py-2 text-xs font-bold text-white hover:bg-white/5 cursor-pointer border-t border-[#1f2638]">
+                            {session}
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div className="border-t border-[#1b2234] mt-2 pt-1.5 flex justify-between items-center font-mono">
-                    <span className="text-[10px] font-bold text-slate-400">Total Fake</span>
-                    <span className="text-[11px] font-bold text-white">{fmtVol(fake.total)}</span>
+                )}
+              </div>
+            </div>
+
+            {isSessionMarket ? (
+              <div className="w-full">
+                <div className="flex justify-between items-center mb-3 px-1">
+                  <h3 className="text-white font-extrabold text-sm sm:text-base tracking-wide">{selectedSessionName}</h3>
+                  <div className="text-slate-400 text-xs font-medium">
+                    On this market: <span className="text-emerald-400 font-mono font-bold ml-1">€{formatVolStr(sessionGraphData?.totalBet || 0)}</span>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Bottom banner */}
-            <div className="rounded-lg py-2 px-3 text-center border border-[#1b2234] bg-[#080b14]">
-              <div className="text-[9px] font-extrabold tracking-widest text-slate-400 uppercase mb-0.5">Most Fake Orders Detected</div>
-              <div className="text-xs sm:text-sm font-bold text-rose-400">{mostFakeTeam}</div>
-            </div>
+                <TeamCard teamData={sessionGraphData} isToss={false} isSession={true} marketVol={sessionGraphData?.totalBet || 0} />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-stretch">
+                <TeamCard teamData={t1GraphData} isToss={false} marketVol={marketVol} />
+                <TeamCard teamData={t2GraphData} isToss={false} marketVol={marketVol} />
+              </div>
+            )}
           </div>
         </>
       )}

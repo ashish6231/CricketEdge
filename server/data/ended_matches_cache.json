@@ -4388,6 +4388,27 @@
     "runners": [],
     "totalMatched": 15828
   },
+  "36124141": {
+    "matchLoad": {
+      "team1": {
+        "name": "Boland",
+        "money": 15548944,
+        "percent": 99,
+        "odds": 1.03,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Knights",
+        "money": 4381099,
+        "percent": 1,
+        "odds": 100,
+        "trend": "down"
+      },
+      "totalMatched": 19930043
+    },
+    "runners": [],
+    "totalMatched": 19930043
+  },
   "36124158": {
     "matchLoad": {
       "team1": {
@@ -4618,5 +4639,68 @@
     },
     "runners": [],
     "totalMatched": 334478
+  },
+  "36129271": {
+    "matchLoad": {
+      "team1": {
+        "name": "Pithoragarh Hurricanes",
+        "money": 9008,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Dehradun Warriors",
+        "money": 9007,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 18015
+    },
+    "runners": [],
+    "totalMatched": 18015
+  },
+  "36129272": {
+    "matchLoad": {
+      "team1": {
+        "name": "Rishikesh River Kings",
+        "money": 2415,
+        "percent": 24,
+        "odds": 3.25,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Nainital Tigers",
+        "money": 10335,
+        "percent": 76,
+        "odds": 1.02,
+        "trend": "up"
+      },
+      "totalMatched": 12750
+    },
+    "runners": [],
+    "totalMatched": 12750
+  },
+  "36130459": {
+    "matchLoad": {
+      "team1": {
+        "name": "Sambalpur Warriors",
+        "money": 56685,
+        "percent": 80,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Bhubaneswar Tigers",
+        "money": 87130,
+        "percent": 20,
+        "odds": 4,
+        "trend": "up"
+      },
+      "totalMatched": 143816
+    },
+    "runners": [],
+    "totalMatched": 143816
   }
 }

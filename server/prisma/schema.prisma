@@ -18,7 +18,7 @@ model User {
   isVerified    Boolean  @default(false)
   role          String   @default("user")
   status        String   @default("active")
-  activeToken   String?
+  activeToken   String?  @db.Text
   resetToken    String?
   resetTokenExpires DateTime?
   lastLoginAt   DateTime?
@@ -67,7 +67,6 @@ model User {
   @@index([subExpiresAt])
   @@index([status])
   @@index([resetToken])
-  @@index([activeToken])
 }
 
 model SubscriptionPlan {
