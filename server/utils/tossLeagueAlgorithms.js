@@ -22,7 +22,10 @@ export function fmtVol(n) {
  * Robustly infers the competition format from snapshot, compName, or team names.
  */
 export function inferCompetition(snap, compName = '') {
-  let comp = ((compName || snap?.competitionName || snap?.seriesName || '') + '').toLowerCase().trim()
+  const rawComp = typeof compName === 'object' && compName !== null
+    ? (compName.competitionName || compName.seriesName || '')
+    : compName
+  let comp = ((rawComp || snap?.competitionName || snap?.seriesName || '') + '').toLowerCase().trim()
   if (comp) return comp
 
   const t1 = (snap?.teamNames?.[0] || '').toLowerCase()
@@ -144,6 +147,29 @@ export function inferCompetition(snap, compName = '') {
     all.includes('dambulla')
   ) {
     return 'sri lanka major clubs'
+  }
+
+  if (
+    all.includes('leicestershire') ||
+    all.includes('middlesex') ||
+    all.includes('yorkshire') ||
+    all.includes('surrey') ||
+    all.includes('sussex') ||
+    all.includes('glamorgan') ||
+    all.includes('somerset') ||
+    all.includes('nottinghamshire') ||
+    all.includes('warwickshire') ||
+    all.includes('essex') ||
+    all.includes('kent') ||
+    all.includes('hampshire') ||
+    all.includes('lancashire') ||
+    all.includes('durham') ||
+    all.includes('derbyshire') ||
+    all.includes('northamptonshire') ||
+    all.includes('worcestershire') ||
+    all.includes('gloucestershire')
+  ) {
+    return 'metro bank one day cup'
   }
 
   if (
@@ -540,6 +566,12 @@ export function isWomensAsiaCup(compName, team1, team2) {
  * 4. Inflow Leadership
  * 5. Bookmaker Safe PnL Exposure
  */
+const ASIA_ASSOCIATES = ['indonesia', 'hong kong', 'thailand', 'nepal', 'malaysia']
+export function isAsiaAssociate(team) {
+  const t = (team || '').toLowerCase()
+  return ASIA_ASSOCIATES.some((a) => t.includes(a))
+}
+
 export function getWomensAsiaCupTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl2, stronger, supRatio }) {
   const totBack = b1 + b2
 
@@ -566,12 +598,6 @@ export function getWomensAsiaCupTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl
       }
     }
   }
-
-const ASIA_ASSOCIATES = ['indonesia', 'hong kong', 'thailand', 'nepal', 'malaysia']
-function isAsiaAssociate(team) {
-  const t = (team || '').toLowerCase()
-  return ASIA_ASSOCIATES.some((a) => t.includes(a))
-}
 
   // 2. High-Liquidity Bookmaker Deficit Trap Fade (Volume >= 2000 & Deficit < -1000, excluding Associates)
   if (totBack >= 2000) {
@@ -717,16 +743,45 @@ export function getWomensTossPrediction({
     }
   }
 
-  // 2. Strong Synthetic Support Dominance (e.g. India W 14.9x, Sri Lanka W 3.1x, Bangladesh W 2.5x)
+  const bRatio = backRatio ?? (Math.min(b1, b2) > 0 ? Math.max(b1, b2) / Math.min(b1, b2) : 1)
+  const b1Percentage = b1Pct ?? (b1 + b2 > 0 ? b1 / (b1 + b2) : 0.5)
+  const b2Percentage = b2Pct ?? (b1 + b2 > 0 ? b2 / (b1 + b2) : 0.5)
 
-  if (synTarget && synRatio >= 1.25) {
-    const isT1 = synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase())
-    const isT2 = synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase())
+  // 1.8 Women's Extreme Public Overload / Bookmaker Deficit Fade (e.g. Zimbabwe W v West Indies W Match 36103490)
+  // When crowd puts extreme load (>8x or >90% back) on one side with catastrophic bookie loss (< -800 vs > +800)
+  // and the underdog has lay absorption exceeding its back (l >= b), excluding associate minnows
+  if ((b2 >= b1 * 8 || b2Percentage >= 0.90) && prePnl2 < -800 && prePnl1 > 800 && l1 >= b1 && !isAsiaAssociate(t1)) {
+    return {
+      winner: t1,
+      tier: 'WOMENS_TOSS_SPECIAL',
+      algoName: "👩 Women's Toss Algorithm",
+      verdictTag: 'WOMENS TRAP OVERLOAD FADE 🚨',
+      pattern: 'WOMENS_TRAP_FADE',
+      reason: `Women's Public Overload on ${t2} (${bRatio.toFixed(1)}x Lead, PnL: ${prePnl2.toFixed(0)}) Faded to Bookie Safe Underdog ${t1} (+${prePnl1.toFixed(0)})`,
+    }
+  }
+  if ((b1 >= b2 * 8 || b1Percentage >= 0.90) && prePnl1 < -800 && prePnl2 > 800 && l2 >= b2 && !isAsiaAssociate(t2)) {
+    return {
+      winner: t2,
+      tier: 'WOMENS_TOSS_SPECIAL',
+      algoName: "👩 Women's Toss Algorithm",
+      verdictTag: 'WOMENS TRAP OVERLOAD FADE 🚨',
+      pattern: 'WOMENS_TRAP_FADE',
+      reason: `Women's Public Overload on ${t1} (${bRatio.toFixed(1)}x Lead, PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Underdog ${t2} (+${prePnl2.toFixed(0)})`,
+    }
+  }
+
+  // 2. Strong Synthetic Support Dominance (e.g. India W 14.9x, Sri Lanka W 3.1x, Bangladesh W 2.5x)
+  const isT1 = synTarget && (synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase()))
+  const isT2 = synTarget && (synTarget.toLowerCase().includes((t2 || '').toLowerCase()) || (t2 || '').toLowerCase().includes(synTarget.toLowerCase()))
+  const synMatchesBookieSafe = (isT1 && prePnl1 > prePnl2) || (isT2 && prePnl2 > prePnl1)
+
+  if (synTarget && (synRatio >= 1.25 || (synRatio >= 1.01 && synMatchesBookieSafe))) {
     if (isT1) {
       return {
         winner: t1,
         tier: 'WOMENS_TOSS_SPECIAL',
-        algoName: "👩 Women's T20 Toss Algorithm",
+        algoName: "👩 Women's Toss Algorithm",
         verdictTag: 'WOMENS SMART SUPPORT 💎',
         pattern: 'WOMENS_SMART_SUPPORT',
         reason: `Women's Smart Synthetic Support on ${t1} (${Number(synRatio).toFixed(1)}x Lead)`,
@@ -736,7 +791,7 @@ export function getWomensTossPrediction({
       return {
         winner: t2,
         tier: 'WOMENS_TOSS_SPECIAL',
-        algoName: "👩 Women's T20 Toss Algorithm",
+        algoName: "👩 Women's Toss Algorithm",
         verdictTag: 'WOMENS SMART SUPPORT 💎',
         pattern: 'WOMENS_SMART_SUPPORT',
         reason: `Women's Smart Synthetic Support on ${t2} (${Number(synRatio).toFixed(1)}x Lead)`,
@@ -746,14 +801,17 @@ export function getWomensTossPrediction({
 
   // 3. High-Liquidity Smart Inflow / Volume Dominance
   if (b1 !== b2 && (b1 > 0 || b2 > 0)) {
-    const win = b1 > b2 ? t1 : t2
+    let win = b1 > b2 ? t1 : t2
+    if (bRatio < 1.25 && Math.abs(prePnl1 - prePnl2) > 10) {
+      win = prePnl1 > prePnl2 ? t1 : t2
+    }
     return {
       winner: win,
       tier: 'WOMENS_TOSS_SPECIAL',
-      algoName: "👩 Women's T20 Toss Algorithm",
+      algoName: "👩 Women's Toss Algorithm",
       verdictTag: 'WOMENS SMART INFLOW',
       pattern: 'WOMENS_SMART_INFLOW',
-      reason: `Women's Inflow on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${backRatio.toFixed(1)}x)`,
+      reason: `Women's Inflow on ${win} (₹${fmtVol(Math.max(b1, b2))} Back, Lead: ${bRatio.toFixed(1)}x)`,
     }
   }
 
@@ -981,13 +1039,79 @@ export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
   }
 }
 
+/**
+ * 🏆 Metro Bank One Day Cup (English County 50-Over Competition) Toss Algorithm
+ * ────────────────────────────────────────────────────────────────────────────
+ * In English county one-day matches, bookmakers manage exposure tightly.
+ * 1. Bookie Safe Side Dominance: When one side has positive bookie P/L and the other
+ *    carries liability, bookmaker risk management strongly correlates with toss outcome.
+ * 2. Inflow Leader Fallback: When P/L is neutral or aligned, higher back inflow wins.
+ */
+export function getMetroBankTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl2, bookieFav, trap }) {
+  if (prePnl1 > 0 && prePnl2 < 0) {
+    return {
+      winner: t1,
+      tier: 'METRO_BANK_SPECIAL',
+      algoName: '🏆 Metro Bank One Day Cup Algorithm',
+      verdictTag: 'METRO BANK BOOKIE SAFE',
+      pattern: 'METRO_BANK_BOOKIE_SAFE',
+      reason: `Metro Bank Bookie Safe Side on ${t1} (P/L: +${prePnl1.toFixed(0)} vs ${t2}: ${prePnl2.toFixed(0)})`,
+    }
+  }
+  if (prePnl2 > 0 && prePnl1 < 0) {
+    return {
+      winner: t2,
+      tier: 'METRO_BANK_SPECIAL',
+      algoName: '🏆 Metro Bank One Day Cup Algorithm',
+      verdictTag: 'METRO BANK BOOKIE SAFE',
+      pattern: 'METRO_BANK_BOOKIE_SAFE',
+      reason: `Metro Bank Bookie Safe Side on ${t2} (P/L: +${prePnl2.toFixed(0)} vs ${t1}: ${prePnl1.toFixed(0)})`,
+    }
+  }
+  const win = b1 >= b2 ? t1 : t2
+  return {
+    winner: win,
+    tier: 'METRO_BANK_SPECIAL',
+    algoName: '🏆 Metro Bank One Day Cup Algorithm',
+    verdictTag: 'METRO BANK INFLOW LEADER',
+    pattern: 'METRO_BANK_INFLOW',
+    reason: `Metro Bank Inflow Leader on ${win} (₹${Math.round(Math.max(b1, b2))} Back)`,
+  }
+}
 
 /**
  * 🌍 International Matches (T20I, Test Matches, ODIs, ICC Events) Toss Algorithm
  */
-export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct, totBack, trap, bookieFav, supRatio, stronger }) {
+export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, b1Pct, b2Pct, totBack, trap, bookieFav, supRatio, stronger, comp }) {
   const totalBack = totBack ?? (b1 + b2)
   const synRatio = supRatio || 1
+  const isOdi = comp && (comp.includes('one day') || comp.includes('odi'))
+
+  // 6.04 ODI Public Trap Overload Fade (e.g. Zimbabwe v Australia Match 36085898)
+  // In 50-over ODIs, extreme crowd bias (>5x) causing severe bookie deficit (< -600 vs > +600)
+  // where the underdog absorbs lay volume (l >= b)
+  if (isOdi) {
+    if ((b2 >= b1 * 5 || b2Pct >= 0.85) && prePnl2 < -600 && prePnl1 > 600 && l1 >= b1) {
+      return {
+        winner: t1,
+        tier: 'INTL_TOSS_SPECIAL',
+        algoName: '🌍 International Toss Special Algorithm',
+        verdictTag: 'ODI TRAP OVERLOAD FADE 🚨',
+        pattern: 'ODI_TRAP_FADE',
+        reason: `ODI Public Trap Overload on ${t2} (${backRatio.toFixed(1)}x Lead, PnL: ${prePnl2.toFixed(0)}) Faded to Bookie Safe Underdog ${t1} (+${prePnl1.toFixed(0)})`,
+      }
+    }
+    if ((b1 >= b2 * 5 || b1Pct >= 0.85) && prePnl1 < -600 && prePnl2 > 600 && l2 >= b2) {
+      return {
+        winner: t2,
+        tier: 'INTL_TOSS_SPECIAL',
+        algoName: '🌍 International Toss Special Algorithm',
+        verdictTag: 'ODI TRAP OVERLOAD FADE 🚨',
+        pattern: 'ODI_TRAP_FADE',
+        reason: `ODI Public Trap Overload on ${t1} (${backRatio.toFixed(1)}x Lead, PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Underdog ${t2} (+${prePnl2.toFixed(0)})`,
+      }
+    }
+  }
 
   // 6.05 Flat Synthetic Support (< 1.25x) with High Bookie Deficit (e.g. South Africa vs Zimbabwe Match 36032174)
   if (prePnl1 > 500 && prePnl2 < -500 && b2 > b1 && synRatio <= 1.25) {
@@ -1480,6 +1604,12 @@ export function getLeagueTossPrediction(snap, compName = '') {
   // 5. European T20 Premier League / ECS
   if (comp.includes('european') || comp.includes('ecs') || comp.includes('etpl')) {
     const p = getECSTossPrediction(ctx)
+    if (p) return p
+  }
+
+  // 5.7 Metro Bank One Day Cup / English County One-Day Cup
+  if (comp.includes('metro bank') || comp.includes('royal london') || (comp.includes('one day cup') && !comp.includes('international') && !comp.includes('icc'))) {
+    const p = getMetroBankTossPrediction(ctx)
     if (p) return p
   }
 

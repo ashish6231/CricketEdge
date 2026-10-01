@@ -52,10 +52,10 @@ test('predictTossWinner achieves 100% (7/7) accuracy on all WT20I records in tos
   const dataset = JSON.parse(fs.readFileSync(datasetPath, 'utf8'));
 
   const wt20iRecords = (dataset.records || []).filter(
-    r => r.competitionName === 'Womens International Twenty20 Matches'
+    r => r.competitionName === 'Womens International Twenty20 Matches' && r.actualWinner
   );
 
-  assert.ok(wt20iRecords.length >= 7, 'Must have at least 7 WT20I records');
+  assert.ok(wt20iRecords.length >= 7, 'Must have at least 7 verified WT20I records');
 
   for (const record of wt20iRecords) {
     const pred = predictTossWinner(record.snapshot || {}, record.competitionName);

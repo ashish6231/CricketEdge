@@ -3,7 +3,7 @@ import TossDetail from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio, Trophy, Sparkles, Shield, Zap, Flame, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio, Trophy, Sparkles, Shield, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
@@ -11,7 +11,7 @@ import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchWinner, predictSmartMarketWinner } from '../utils/matchWinnerPredictor'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
 import { getBookiePl, splitMatchOutcomes } from '../utils/bookiePl'
-import { predictGatedFade, teamEq } from '../utils/gatedFadePredictor'
+import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
@@ -1091,7 +1091,6 @@ export default function MatchDetail({ sport }) {
   const t2Data = teams[t2] || {}
 
   const { pl1, pl2, plDraw } = getBookiePl(snapshot, t1, t2, drawName)
-  const gatedFade = predictGatedFade(snapshot)
   const matchStartPred = lockedStartPred || liveStartPred
 
   const pickName = matchStartPred?.winnerName
@@ -1790,82 +1789,6 @@ export default function MatchDetail({ sport }) {
                   </div>
                 )}
               </div>
-
-              {/* ━━━━━━━━━━ 1b. GATED FADE PICK ━━━━━━━━━━ */}
-              {gatedFade && (
-                <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">
-                  <div className="px-3 sm:px-3.5 py-2 flex items-center justify-between border-b border-[#1b2234] bg-[#0f1422]/60">
-                    <div className="flex items-center gap-1.5">
-                      <Zap size={13} className="text-amber-400" />
-                      <span className="text-xs sm:text-sm font-extrabold text-white">Gated Fade Pick</span>
-                    </div>
-                    {gatedFade.winnerName && (
-                      <span className="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                        {gatedFade.winnerName}
-                      </span>
-                    )}
-                  </div>
-                  <div className="p-3 sm:p-3.5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-2.5">
-                      {[{
-                        name: gatedFade.t1,
-                        isFade: teamEq(gatedFade.winnerName, gatedFade.t1),
-                        exposure: gatedFade.t1Exposure,
-                      }, {
-                        name: gatedFade.t2,
-                        isFade: teamEq(gatedFade.winnerName, gatedFade.t2),
-                        exposure: gatedFade.t2Exposure,
-                      }].map((side) => {
-                        const hasPick = !!gatedFade.winnerName
-                        const isOther = hasPick && !side.isFade
-                        const role = side.isFade ? 'Fade Selection' : isOther ? 'Public Trap' : 'Neutral'
-                        return (
-                          <div
-                            key={side.name}
-                            className="rounded-lg p-2.5 text-center border transition-all"
-                            style={
-                              side.isFade
-                                ? { background: 'rgba(16,185,129,0.08)', borderColor: 'rgba(16,185,129,0.4)' }
-                                : isOther
-                                  ? { background: 'rgba(239,68,68,0.08)', borderColor: 'rgba(239,68,68,0.4)' }
-                                  : { background: '#080b14', borderColor: '#1b2234' }
-                            }
-                          >
-                            <div className="text-[9px] font-extrabold uppercase tracking-wider mb-0.5" style={{ color: isOther ? '#fb7185' : side.isFade ? '#34d399' : '#94a3b8' }}>
-                              {role}
-                            </div>
-                            <div className="text-xs sm:text-sm font-bold text-white truncate">{side.name}</div>
-                            <div className={`text-[11px] font-mono font-bold mt-0.5 ${typeof side.exposure === 'number' ? pnlCls(side.exposure) : 'text-slate-400'}`}>
-                              {typeof side.exposure === 'number' ? fmtRs(side.exposure) : 'Exp —'}
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                    <div className="flex flex-wrap gap-1 pt-2 border-t border-[#1b2234]">
-                      {[
-                        { ok: gatedFade.confirms.plProfit, label: 'P/L' },
-                        { ok: gatedFade.confirms.moreMoney, label: 'Money' },
-                        { ok: gatedFade.confirms.fewerBets, label: 'Bets' },
-                        { ok: gatedFade.trap === 'none', label: `Trap ${gatedFade.trap || '—'}` },
-                        { ok: gatedFade.fadeExposure != null, label: gatedFade.fadeExposure != null ? `Exp ${fmtRs(gatedFade.fadeExposure)}` : 'Exp' },
-                        { ok: gatedFade.confirms.lowerRatio, label: 'B/L' },
-                        { ok: gatedFade.confirms.totGap, label: gatedFade.totGapPct != null ? `Gap ${(gatedFade.totGapPct * 100).toFixed(0)}%` : 'Gap' },
-                      ].map((chip) => (
-                        <span
-                          key={chip.label}
-                          className="text-[9px] font-bold px-1.5 py-0.5 rounded border transition-all"
-                          style={chip.ok
-                            ? { color: '#34d399', borderColor: 'rgba(16,185,129,0.35)', background: 'rgba(16,185,129,0.1)' }
-                            : { color: '#64748b', borderColor: '#1e2538', background: '#080b14' }}
-                        >
-                          {chip.ok ? '✓' : '·'} {chip.label}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
 
           {/* ━━━━━━━━━━ B/L RATIO ━━━━━━━━━━ */}
           <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">

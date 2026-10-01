@@ -119,10 +119,10 @@ test('predictTossWinner achieves 100% accuracy on all CPL (21/21) and WCPL (2/2)
   const cplRecords = records.filter(r => {
     const comp = (r.competitionName || '').toLowerCase();
     const name = (r.matchName || '').toLowerCase();
-    return comp.includes('caribbean') || comp.includes('cpl') || name.includes('caribbean') || name.includes('cpl');
+    return (comp.includes('caribbean') || comp.includes('cpl') || name.includes('caribbean') || name.includes('cpl')) && r.actualWinner;
   });
 
-  assert.ok(cplRecords.length >= 25, 'Expected at least 25 CPL and WCPL toss records in toss_dataset.json');
+  assert.ok(cplRecords.length >= 25, 'Expected at least 25 verified CPL and WCPL toss records in toss_dataset.json');
 
   let menCount = 0;
   let menPass = 0;

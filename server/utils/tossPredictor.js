@@ -13,6 +13,10 @@ export const PREDICTOR_VERSION = 'toss-v9-league-specific-algorithms'
 export function predictTossWinner(snap, compName = '') {
   if (!snap?.teamNames?.length) return null
 
+  const actualCompName = typeof compName === 'object' && compName !== null
+    ? (compName.competitionName || compName.seriesName || '')
+    : compName
+
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
 
@@ -60,7 +64,7 @@ export function predictTossWinner(snap, compName = '') {
   const stronger = snap.syntheticSupport?.strongerTeam
 
   // 🏆 1. TRY LEAGUE-SPECIFIC ALGORITHM FIRST
-  const leaguePred = getLeagueTossPrediction(snap, compName)
+  const leaguePred = getLeagueTossPrediction(snap, actualCompName)
   if (leaguePred && leaguePred.winner) {
     winner = leaguePred.winner
     reason = leaguePred.reason
