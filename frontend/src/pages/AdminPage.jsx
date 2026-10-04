@@ -12,6 +12,7 @@ import AdminCoupons from './admin/AdminCoupons'
 import AdminSettings from './admin/AdminSettings'
 import AdminAuditLogs from './admin/AdminAuditLogs'
 import AdminTossDataset from './admin/AdminTossDataset'
+import AdminMatchDataset from './admin/AdminMatchDataset'
 
 const ALL_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -24,6 +25,7 @@ const ALL_TABS = [
   { id: 'coupons',   label: 'Coupons',   icon: Tag, superadminOnly: true },
   { id: 'settings',  label: 'Settings',  icon: Settings, superadminOnly: true },
   { id: 'toss_dataset', label: 'Toss Dataset', icon: Database, superadminOnly: true },
+  { id: 'match_dataset', label: 'Match Dataset', icon: Database, superadminOnly: true },
   { id: 'audit',     label: 'Audit Logs',icon: ScrollText },
 ]
 
@@ -41,7 +43,7 @@ export default function AdminPage() {
   }, [isLoggedIn, user, navigate])
 
   useEffect(() => {
-    if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings', 'toss_dataset'].includes(tab)) {
+    if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings', 'toss_dataset', 'match_dataset'].includes(tab)) {
       setTab('dashboard')
     }
   }, [tab, isSuperAdmin])
@@ -99,6 +101,7 @@ export default function AdminPage() {
       {tab === 'coupons'   && <AdminCoupons />}
       {tab === 'settings'  && <AdminSettings isSuperAdmin={isSuperAdmin} />}
       {tab === 'toss_dataset' && isSuperAdmin && <AdminTossDataset />}
+      {tab === 'match_dataset' && isSuperAdmin && <AdminMatchDataset />}
       {tab === 'audit'     && <AdminAuditLogs />}
     </div>
   )

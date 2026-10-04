@@ -1,9 +1,11 @@
+import { predictNormalLeagueMatch, PREDICTOR_VERSION } from '../../../server/utils/normalLeagueMatchPredictor.mjs'
+export { PREDICTOR_VERSION }
+import { predictLeagueMatch } from '../../../server/utils/matchLeagueModel.js'
 import { computeMatchStartRisk } from './predictionRisk.js'
 import { splitMatchOutcomes } from './bookiePl.js'
-import { predictGatedFade } from './gatedFadePredictor.js'
 
 /**
- * Match START Predictor — Raw Volume & Exposure P/L Engine.
+ * Match START Predictor — shared normal league rules.
  *
  * 1. Raw Volume / Matched Money Dominance (Team with more money / Back accumulation)
  * 2. Bookmaker Exposure Safe Side (Negative Net Exposure / P/L Green profit)
@@ -128,143 +130,50 @@ export function fadeMoreBetted(m) {
   return teamEq(publicTeam, m.t1) ? m.t2 : m.t1
 }
 
-const REASON_META = {
-  'Fade Public Money':       { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
-  'Fade Public (MS confirms)': { label: 'Very High 🔥🔥', color: 'text-profit', pct: '88%' },
-  'Smart Money Trap':        { label: 'High Confidence 🔥', color: 'text-profit', pct: '72%' },
-  'Raw Volume Leader':       { label: 'High Confidence 🔥', color: 'text-profit', pct: '88%' },
-  'Bookmaker Exposure Advantage': { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
-  'Bookmaker Safe P/L Advantage': { label: 'High Confidence 🔥', color: 'text-profit', pct: '85%' },
-  'Pre-Match Back Volume':   { label: 'High Confidence 🔥', color: 'text-profit', pct: '86%' },
-  'Pre-Match Odds Favorite': { label: 'Moderate', color: 'text-yellow-500', pct: '58%' },
-  'Smart Money Trap':        { label: 'High Confidence 🔥', color: 'text-profit', pct: '72%' },
-  'Market Signals AI':       { label: 'High Confidence 🔥', color: 'text-profit', pct: '64%' },
-  'Bookie Favourite':        { label: 'Low Confidence', color: 'text-text-muted', pct: '46%' },
-  'Pre-Match Odds':          { label: 'Low Confidence', color: 'text-text-muted', pct: '54%' },
-}
-
 /**
  * Predict winner at match START.
- * Primary: Raw Back Volume & Bookmaker Exposure P/L Model.
+ * Default: the same league registry and rule engine as the server.
  */
-export function predictMatchStart(snap) {
-  if (!snap?.teamNames?.length) return null
-
+export function predictMatchStart(snap, { mode = 'rules' } = {}) {
+  if (mode === 'historical-fit') {
+    const prediction = predictLeagueMatch(snap)
+    if (!prediction) return null
+    return {
+      winnerName: prediction.winner, winnerIdx: prediction.winnerIdx,
+      reason: prediction.reason, predictorVersion: prediction.predictorVersion,
+      confidence: { label: 'Historical fit; unvalidated', color: 'text-text-muted', pct: 'Uncalibrated', calibrated: false },
+      timing: 'historical_fit', validation: 'in-sample',
+      trainingSamples: prediction.trainingSamples, leafSamples: prediction.leafSamples,
+      signals: [], preOdds: { t1: null, t2: null },
+    }
+  }
+  if (mode !== 'rules') throw new Error(`Unknown match prediction mode: ${mode}`)
+  const prediction = predictNormalLeagueMatch(snap)
+  if (!prediction) return null
   const m = extractStartMetrics(snap)
   const { t1, t2 } = m
   const publicTeam = resolvePublicTeam(m)
-  const msDisagreesPublic = m.msPred && m.msPred !== 'No Prediction' && publicTeam && !teamEq(m.msPred, publicTeam)
-
-  const b1 = m.preBack1 || (snap.teams?.[t1]?.trades?.filter(t => t.type === 'back').reduce((s, t) => s + (t.size || 0), 0)) || 0
-  const l1 = m.preLay1 || (snap.teams?.[t1]?.trades?.filter(t => t.type === 'lay').reduce((s, t) => s + (t.size || 0), 0)) || 0
-  const b2 = m.preBack2 || (snap.teams?.[t2]?.trades?.filter(t => t.type === 'back').reduce((s, t) => s + (t.size || 0), 0)) || 0
-  const l2 = m.preLay2 || (snap.teams?.[t2]?.trades?.filter(t => t.type === 'lay').reduce((s, t) => s + (t.size || 0), 0)) || 0
-
-  const exp1 = snap.bookmakerExposure?.team1?.netExposure ?? null
-  const exp2 = snap.bookmakerExposure?.team2?.netExposure ?? null
-
-  let winner = null
-  let reason = 'Insufficient data'
-
-  // 1. Raw Back Volume Dominance (e.g. St. Kitts Back ₹12.45L vs Jamaica ₹7.43L)
-  if (b1 > 0 && b2 > 0) {
-    if (b1 >= b2 * 1.25) {
-      winner = t1
-      reason = 'Raw Volume Leader'
-    } else if (b2 >= b1 * 1.25) {
-      winner = t2
-      reason = 'Raw Volume Leader'
-    }
-  }
-
-  // 2. Bookmaker Net Exposure Safe Side (Negative Net Exposure)
-  if (!winner && typeof exp1 === 'number' && typeof exp2 === 'number') {
-    if (exp1 < 0 && exp2 > 0) {
-      winner = t1
-      reason = 'Bookmaker Exposure Advantage'
-    } else if (exp2 < 0 && exp1 > 0) {
-      winner = t2
-      reason = 'Bookmaker Exposure Advantage'
-    }
-  }
-
-  // 3. Fallback: Pre-match odds gap ≥ 5%
-  if (!winner && m.preOdds1 != null && m.preOdds2 != null) {
-    const gap = Math.abs(m.preOdds1 - m.preOdds2)
-    if (gap >= 0.05) {
-      winner = m.preOdds1 <= m.preOdds2 ? t1 : t2
-      reason = 'Pre-Match Odds Favorite'
-    }
-  }
-
-  // 4. Fallback: Pre-match back volume
-  if (!winner && (b1 > 0 || b2 > 0)) {
-    winner = b1 >= b2 ? t1 : t2
-    reason = 'Pre-Match Back Volume'
-  }
-
-  if (!winner) return null
-
+  const winner = prediction.winner
   const pickOdds = winner === t1 ? m.preOdds1 : m.preOdds2
   const oppOdds = winner === t1 ? m.preOdds2 : m.preOdds1
-  const extremeDogFade = (
-    pickOdds != null
-    && oppOdds != null
-    && oppOdds <= 0.45
-    && pickOdds >= 2.5
-  )
-
-  // Boost confidence when MS also disagrees with public (87.5% on 16 matches)
-  const confidence = msDisagreesPublic && reason === 'Fade Public Money'
-    ? REASON_META['Fade Public (MS confirms)']
-    : (REASON_META[reason] || REASON_META['Pre-Match Odds'])
-  const fmt = (n) => n != null ? n.toFixed(2) : '—'
-
+  const extremeDogFade = pickOdds != null && oppOdds != null && oppOdds <= 0.45 && pickOdds >= 2.5
   const publicOverridden = !!(m.moreBetted && publicTeam && !teamEq(m.moreBetted, publicTeam))
-
+  const msDisagreesPublic = !!(m.msPred && m.msPred !== 'No Prediction' && publicTeam && !teamEq(m.msPred, publicTeam))
   return {
+    ...prediction,
     winnerName: winner,
-    winnerIdx: winner === t1 ? 0 : 1,
-    reason,
-    confidence,
-    risk: computeMatchStartRisk(reason, { publicOverridden, msDisagreesPublic, extremeDogFade }),
-    timing: 'match_start',
-    moreBetted: publicTeam,
-    apiMoreBetted: m.moreBetted,
-    publicOverridden,
-    msDisagreesPublic,
-    extremeDogFade,
-    lockedAt: 'match_open',
-    signals: [
-      {
-        label: 'Public Money (Fade)',
-        sublabel: publicTeam ? `Public on ${publicTeam} → fade underdog` : 'No data',
-        active: reason === 'Fade Public Money',
-        v1: teamEq(publicTeam, t1) ? '🚨 Public' : (reason === 'Fade Public Money' && teamEq(winner, t1) ? '✅ Pick' : '—'),
-        v2: teamEq(publicTeam, t2) ? '🚨 Public' : (reason === 'Fade Public Money' && teamEq(winner, t2) ? '✅ Pick' : '—'),
-      },
-      {
-        label: 'Pre-Match Odds',
-        sublabel: 'First 5 trades (by time) — lower = favorite',
-        active: reason.includes('Pre-Match Odds'),
-        v1: fmt(m.preOdds1),
-        v2: fmt(m.preOdds2),
-      },
-      {
-        label: 'Market Signals',
-        sublabel: m.msPred && m.msPred !== 'No Prediction' ? `AI → ${m.msPred}` : 'No prediction',
-        active: reason === 'Market Signals AI',
-        v1: m.msPred === t1 ? '✅ Pick' : '—',
-        v2: m.msPred === t2 ? '✅ Pick' : '—',
-      },
-      {
-        label: 'Pre-Match Back Vol',
-        sublabel: 'Public back money before start',
-        active: reason === 'Pre-Match Back Volume',
-        v1: m.preBack1 >= 1000 ? `${(m.preBack1 / 1000).toFixed(1)}k` : Math.round(m.preBack1).toString(),
-        v2: m.preBack2 >= 1000 ? `${(m.preBack2 / 1000).toFixed(1)}k` : Math.round(m.preBack2).toString(),
-      },
-    ],
+    confidence: { label: 'League algorithm; uncalibrated', color: 'text-text-muted', pct: 'Uncalibrated', calibrated: false },
+    risk: computeMatchStartRisk(prediction.reason, { publicOverridden, msDisagreesPublic, extremeDogFade }),
+    timing: 'match_start', lockedAt: 'match_open',
+    moreBetted: publicTeam, apiMoreBetted: m.moreBetted,
+    publicOverridden, msDisagreesPublic, extremeDogFade,
+    signals: [{
+      label: 'League algorithm', sublabel: prediction.algorithmLeague || 'Unregistered league fallback', active: true,
+      v1: winner === t1 ? 'Pick' : '—', v2: winner === t2 ? 'Pick' : '—',
+    }, {
+      label: 'Pre-Match Back Vol', sublabel: 'Frozen market inputs', active: true,
+      v1: String(Math.round(m.preBack1)), v2: String(Math.round(m.preBack2)),
+    }],
     preOdds: { t1: m.preOdds1, t2: m.preOdds2 },
   }
 }
@@ -283,6 +192,11 @@ const REASON_PRIORITY = {
 export function lockMatchStartPrediction(current, locked, { inPlay = false } = {}) {
   if (!current?.winnerName) return locked
   if (!locked?.winnerName) return { ...current, lockedAt: current.lockedAt || 'match_open' }
+  // Discard a lock from a previous algorithm, keeping ordinary polling stable.
+  if (current.predictorVersion && (current.predictorVersion !== locked.predictorVersion || current.algorithmId !== locked.algorithmId
+    || current.profileVersion && current.profileVersion !== locked.profileVersion)) {
+    return { ...current, lockedAt: current.lockedAt || 'match_open' }
+  }
 
   // Never flip the picked team after the first lock — polling must not change your entry side.
   if (current.winnerName !== locked.winnerName) return locked

@@ -24,8 +24,8 @@ test('getLeagueTossPrediction correctly routes Womens International Twenty20 mat
   const pred = getLeagueTossPrediction(snap, snap.competitionName);
   assert.ok(pred);
   assert.equal(pred.winner, 'Thailand W');
-  assert.equal(pred.tier, 'WOMENS_ASIA_CUP_SPECIAL');
-  assert.equal(pred.pattern, 'ASIA_CUP_ZERO_BACK_PROFIT');
+  assert.equal(pred.tier, 'WOMENS_TOSS_SPECIAL');
+  assert.equal(pred.pattern, 'WOMENS_ZERO_BACK_PROFIT');
 });
 
 test('getWomensTossPrediction awards toss to smart synthetic support leader', () => {

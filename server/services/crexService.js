@@ -30,6 +30,53 @@ const DETAIL_TTL = 1000; // 1 second — live score needs to be fresh
 
 const _inFlightDetail = new Map();
 const matchTossCache = new Map();
+const seriesMatchesCache = new Map();
+
+function parseCrexSeriesMatches(html, sourceUrl) {
+  const state = parseState(html);
+  const fixtures = state?.['https://stats.crickapi.com/series/getMatchesForSeriesID'];
+  const mapping = state?.['https://oc.crickapi.com/mapping/getHomeMapDataseriesmatches'];
+  if (!Array.isArray(fixtures) || !fixtures.length || !Array.isArray(mapping?.t)) {
+    throw new Error('CREX series fixtures unavailable');
+  }
+  const teams = new Map(mapping.t.map(t => [t.f_key, t]));
+  const series = new Map((mapping.s || []).map(s => [s.f_key, s]));
+  return fixtures.map(f => {
+    const a = teams.get(f.t1f), b = teams.get(f.t2f);
+    const seriesName = series.get(f.sf)?.n;
+    const id = f.mf || f.nf || f.id;
+    const startTime = Number(f.t);
+    if (!a?.n || !b?.n || !id || !seriesName || !Number.isFinite(startTime) || startTime <= 0) {
+      throw new Error('Incomplete CREX series fixture identity');
+    }
+    return {
+      // Numeric fixture ID survives the upcoming nf -> live mf transition.
+      recordId: `crex:${f.sf}:${f.id || id}`, crexMatchId: String(id), seriesId: f.sf,
+      competitionName: seriesName, matchNumber: String(f.mn || ''),
+      matchName: `${a.n} v ${b.n}`, team1: a.n, team2: b.n,
+      team1Short: a.sn || null, team2Short: b.sn || null,
+      startTime, status: f.status === 2 ? 'completed' : f.status === 1 ? 'live' : f.status === 3 ? 'cancelled' : 'upcoming',
+      score1: f.s1 ? `${f.s1} (${f.o1 || ''})` : null,
+      score2: f.s2 ? `${f.s2} (${f.o2 || ''})` : null,
+      resultText: f.result || f.resultExtraComment || null,
+      reportedWinner: f.status === 2 && [f.t1f, f.t2f].includes(f.w) ? teams.get(f.w).n : null,
+      sourceUrl, sourceProvider: 'CREX', sourceFixture: f,
+    };
+  });
+}
+
+async function getCrexSeriesMatches(sourceUrl) {
+  const url = new URL(sourceUrl);
+  if (url.protocol !== 'https:' || url.hostname !== 'crex.com' || !/^\/series\/[a-zA-Z0-9-]+\/matches\/?$/.test(url.pathname)) {
+    throw new Error('Invalid CREX series URL');
+  }
+  const cached = seriesMatchesCache.get(url.href);
+  if (cached && Date.now() - cached.at < 60000) return cached.rows;
+  const html = await fetchHttps(url.href);
+  const rows = parseCrexSeriesMatches(html, url.href);
+  seriesMatchesCache.set(url.href, { at: Date.now(), rows });
+  return rows;
+}
 
 function fetchHttps(url) {
   return new Promise((resolve) => {
@@ -1095,6 +1142,8 @@ async function getCrexMatchDetail(slugOrUrl) {
 }
 
 module.exports = {
+  getCrexSeriesMatches,
+  parseCrexSeriesMatches,
   getCrexOverview,
   findCrexMatch,
   getCrexMatchDetail,

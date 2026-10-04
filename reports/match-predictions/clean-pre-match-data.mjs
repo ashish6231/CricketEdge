@@ -1,0 +1,37 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {fileURLToPath} from 'node:url';
+import {checkPreMatchDataQuality} from '../../server/utils/preMatchDataQuality.mjs';
+const dir=path.dirname(fileURLToPath(import.meta.url)),root=path.resolve(dir,'../..');
+const read=file=>JSON.parse(fs.readFileSync(path.join(root,file)));
+const write=(file,data)=>{const target=path.join(root,file),temp=target+'.quality-cleanup.tmp';fs.writeFileSync(temp,JSON.stringify(data,null,2)+'\n');fs.renameSync(temp,target);};
+const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const files=['server/data/match_dataset.json','server/data/toss_dataset.json','server/data/ended_matches_cache.json','server/data/verified_match_results.json','server/data/verified_toss_results.json','reports/match-predictions/verified-results.json','reports/match-predictions/verified-toss-results.json','reports/match-predictions/results.json','reports/match-predictions/league-wise-results.md','reports/match-predictions/README.md','reports/match-predictions/match-optimization/input-hashes.json','reports/match-predictions/match-optimization/results.json','reports/match-predictions/normal-rule-tuning/results.json','reports/match-predictions/normal-rule-tuning/tuning-results.json','reports/match-predictions/optimization/results.json'];
+const matches=read(files[0]),tosses=read(files[1]),cache=read(files[2]);
+const classify=r=>checkPreMatchDataQuality(r.snapshot);
+const removedMatches=matches.records.filter(r=>!classify(r).valid),removedTosses=tosses.records.filter(r=>!classify(r).valid);
+if(!removedMatches.length&&!removedTosses.length){console.log('No incomplete or both-zero pre-match records found.');process.exit(0);}
+const now=new Date().toISOString(),stamp=now.replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z'),backup=`reports/match-predictions/backups/pre-match-quality-${stamp}`;
+const beforeHashes={};
+for(const file of files){const source=path.join(root,file);if(!fs.existsSync(source))continue;const target=path.join(root,backup,file);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(source,target);beforeHashes[file]=hash(fs.readFileSync(source));}
+const originalMatches=matches.records,originalTosses=tosses.records;
+matches.records=matches.records.filter(r=>classify(r).valid);matches.updatedAt=now;
+tosses.records=tosses.records.filter(r=>classify(r).valid);tosses.updatedAt=now;
+const activeIds=new Set([...matches.records,...tosses.records].map(r=>String(r.matchId)));
+const nextCache=Object.fromEntries(Object.entries(cache).filter(([id])=>activeIds.has(id)));
+const matchLedger=read(files[3]),tossLedger=read(files[4]);
+matchLedger.matches=matchLedger.matches.filter(r=>activeIds.has(String(r.matchId)));matchLedger.scope='Active retained records with complete, nonzero pre-match inputs';
+const tossIds=new Set(tosses.records.map(r=>String(r.matchId)));
+tossLedger.matches=tossLedger.matches.filter(r=>tossIds.has(String(r.matchId)));
+const originalMatchById=new Map(originalMatches.map(r=>[String(r.matchId),r]));
+const originalTossById=new Map(originalTosses.map(r=>[String(r.matchId),r]));
+for(const record of matches.records)if(JSON.stringify(record)!==JSON.stringify(originalMatchById.get(String(record.matchId))))throw new Error('Retained match changed');
+for(const record of tosses.records)if(JSON.stringify(record)!==JSON.stringify(originalTossById.get(String(record.matchId))))throw new Error('Retained toss changed');
+const inventoryBefore=new Set([...originalMatches,...originalTosses].map(r=>String(r.matchId)));
+const describe=record=>({matchId:String(record.matchId),league:record.competitionName,matchName:record.matchName,actualWinner:record.actualWinner,reason:classify(record).reason});
+const manifest={cleanedAt:now,backup,beforeHashes,criteria:'Both teams require finite nonnegative frozen Back/Lay values and finite frozen P/L; optional activity must be finite/nonnegative; names must be valid/distinct; combined Back/Lay must be positive. A single zero-flow team is allowed.',retainedRecordsUnchanged:true,matches:{before:originalMatches.length,kept:matches.records.length,removed:removedMatches.length,winners:matches.records.filter(r=>r.actualWinner!=='No Result').length,noResult:matches.records.filter(r=>r.actualWinner==='No Result').length,removedRecords:removedMatches.map(describe)},tosses:{before:originalTosses.length,kept:tosses.records.length,removed:removedTosses.length,removedRecords:removedTosses.map(describe)},cache:{before:Object.keys(cache).length,kept:Object.keys(nextCache).length,removed:Object.keys(cache).length-Object.keys(nextCache).length},inventory:{before:inventoryBefore.size,kept:activeIds.size,removedIds:[...inventoryBefore].filter(id=>!activeIds.has(id)).sort()}};
+write(files[0],matches);write(files[1],tosses);write(files[2],nextCache);write(files[3],matchLedger);write(files[4],tossLedger);write(files[5],matchLedger);write(files[6],tossLedger);
+manifest.afterHashes=Object.fromEntries(files.slice(0,7).map(file=>[file,hash(fs.readFileSync(path.join(root,file)))]));
+write('reports/match-predictions/pre-match-quality-cleanup.json',manifest);
+console.log(JSON.stringify({backup,matches:manifest.matches,tosses:manifest.tosses,cache:manifest.cache,inventory:manifest.inventory},null,2));

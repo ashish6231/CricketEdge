@@ -265,6 +265,25 @@ export async function adminDashboard() {
   return fetchAPI('/admin/dashboard')
 }
 
+export function adminGetMatchDataset({ league = '', status = 'all', result = 'all', search = '', page = 1, limit = 20, predictionMode = 'active' } = {}) {
+  const query = new URLSearchParams({ league, status, result, search, page: String(page), limit: String(limit), predictionMode })
+  return fetchAPI(`/admin/match-dataset?${query}`)
+}
+
+export async function adminGetMatchDatasetExport() {
+  const res = await fetch(`${API_BASE}/admin/match-dataset/export`, { headers: getAuthHeader() })
+  if (!res.ok) throw await getAPIError(res)
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = 'match_dataset.json'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+}
+
 export function adminGetTossDataset({
   status = 'pending',
   page = 1,
@@ -492,4 +511,3 @@ export async function checkTelegramStatus(token) {
 export async function getTelegramSettings() {
   return fetchAPI('/telegram/settings')
 }
-

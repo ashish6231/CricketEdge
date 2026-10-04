@@ -1,3 +1,5 @@
+const { checkPreMatchDataQuality } = require('../utils/preMatchDataQuality.mjs');
+const { checkMatchRecordQuality } = require('./matchRecordQuality');
 const { getDefaultStore } = require('./matchDatasetStore');
 const dataCache = require('./dataCache');
 const { predictMatchWinner: defaultPredictMatchWinner } = require('../utils/matchWinnerPredictor');
@@ -44,11 +46,15 @@ const IGNORED_MATCH_IDS = new Set(['36038646', '36039151']);
 function shouldSkipExisting(existing, matchId) {
   if (matchId && IGNORED_MATCH_IDS.has(String(matchId))) return true;
   if (!existing) return false;
-  if (existing.status === 'verified') return true;
+  const independentlyResolved = existing.resultVerification?.verification === 'verified'
+    || existing.resultVerification?.status === 'verified'
+    || (existing.confirmedByEmail && existing.confirmedByEmail !== 'crex-auto');
+  if (['verified', 'abandoned'].includes(existing.status) && checkMatchRecordQuality(existing).valid
+    && independentlyResolved) return true;
 
   if (
     existing.status === 'pending'
-    && hasSuccessfulSnapshot(existing.snapshot)
+    && checkMatchRecordQuality(existing).valid
     && !existing.lastCaptureError
   ) {
     return true;
@@ -61,6 +67,9 @@ async function captureEndedMatches({
   store = getDefaultStore(),
   predictMatchWinner = defaultPredictMatchWinner,
   now = () => new Date(),
+  fetchCrexOverview = getCrexOverview,
+  findCrexFixture = findCrexMatch,
+  fetchCrexDetail = getCrexMatchDetail,
 } = {}) {
   const summary = { scanned: 0, captured: 0, skipped: 0, failed: 0 };
 
@@ -76,8 +85,10 @@ async function captureEndedMatches({
     return { scanned: 0, captured: 0, skipped: 0, failed: 1 };
   }
 
+  const completedStatuses = new Set(['ended', 'completed', 'closed', 'verified']);
   const eligible = matches.filter(
-    (match) => match.status === 'ended' && (match.totalMatched || 0) > 0,
+    (match) => completedStatuses.has(String(match.status || '').toLowerCase())
+      && (match.totalMatched || 0) > 0,
   );
   summary.scanned = eligible.length;
 
@@ -87,7 +98,7 @@ async function captureEndedMatches({
   // Fetch CREX overview to try and auto-resolve actual winners
   let crexOverview = [];
   try {
-    crexOverview = await getCrexOverview();
+    crexOverview = await fetchCrexOverview();
   } catch (err) {
     console.error('Failed to fetch CREX overview during match capture:', err.message);
   }
@@ -112,27 +123,6 @@ async function captureEndedMatches({
     const matchName = match.matchName || match.name || null;
 
     if (!hasSuccessfulSnapshot(snapshot)) {
-      const errorMsg = snapshot?.error || 'No cricket snapshot data';
-      const [fallbackTeam1, fallbackTeam2] = parseTeamsFromMatchName(matchName);
-      await store.upsertPendingCapture({
-        matchId,
-        marketId: match.marketId ?? null,
-        matchName,
-        competitionName: match.competitionName ?? null,
-        team1: existing?.team1 ?? fallbackTeam1,
-        team2: existing?.team2 ?? fallbackTeam2,
-        startTime: match.startTime ?? null,
-        endedAt: isoNow,
-        capturedAt: isoNow,
-        snapshot: null,
-        predictedWinner: null,
-        predictionTier: null,
-        predictionConfidence: null,
-        lastCaptureError: sanitizeError(errorMsg),
-        confirmedAt: null,
-        confirmedByEmail: null,
-        confirmedById: null,
-      });
       summary.failed += 1;
       continue;
     }
@@ -140,35 +130,44 @@ async function captureEndedMatches({
     snapshot.matchId = matchId;
     snapshot.competitionName = snapshot.competitionName || match.competitionName;
     const [team1, team2] = extractTeams(snapshot, match);
+    snapshot = { ...snapshot, teamNames: [team1, team2] };
+    if (!checkPreMatchDataQuality(snapshot).valid) {
+      summary.skipped += 1;
+      continue;
+    }
     const prediction = predictMatchWinner(snapshot);
 
     // Auto-resolve actual winner from CREX
     let actualWinner = null;
+    let resultText = null;
+    let resultVerification = null;
     if (crexOverview && Array.isArray(crexOverview) && crexOverview.length > 0) {
-      const crexMatch = findCrexMatch(matchName, crexOverview, {
+      const crexMatch = findCrexFixture(matchName, crexOverview, {
         startTime: match.startTime || match.openDate || match.marketStartTime,
         status: match.status,
         inPlay: match.inPlay,
       });
       if (crexMatch) {
-        let resultText = crexMatch.statusText;
+        resultText = crexMatch.statusText;
         if (!resultText || !resultText.toLowerCase().includes('won by')) {
           try {
-             const detail = await getCrexMatchDetail(crexMatch.slug || crexMatch.url);
+             const detail = await fetchCrexDetail(crexMatch.slug || crexMatch.url);
              resultText = detail?.scorecard?.matchResult || resultText;
           } catch(e) {
              console.error('Failed to fetch crex match detail for actual winner', e.message);
           }
         }
         
-        // Match standard names first
-        actualWinner = extractWinnerFromText(resultText, team1, team2);
+        // Only the team before "won" is a result, not a participant mentioned
+        // elsewhere in a fixture, live-status or abandoned-match description.
+        const winnerText = typeof resultText === 'string' ? resultText.match(/^(.*?)\bwon\b/i)?.[1] : null;
+        actualWinner = extractWinnerFromText(winnerText, team1, team2);
         
         // If not found, try mapping CREX shortnames to our teams
-        if (!actualWinner && resultText) {
+        if (!actualWinner && winnerText) {
            const team1Short = crexMatch.team1Short;
            const team2Short = crexMatch.team2Short;
-           const shortWinner = extractWinnerFromText(resultText, team1Short, team2Short);
+           const shortWinner = extractWinnerFromText(winnerText, team1Short, team2Short);
            
            let crexWinnerName = null;
            if (shortWinner === team1Short) crexWinnerName = crexMatch.team1Name;
@@ -178,10 +177,22 @@ async function captureEndedMatches({
              actualWinner = extractWinnerFromText(crexWinnerName, team1, team2);
            }
         }
+        if (actualWinner) {
+          const sourceUrl = crexMatch.url
+            ? new URL(crexMatch.url, 'https://crex.com').href : null;
+          resultVerification = {
+            verification: 'verified', status: 'verified', outcome: 'winner',
+            publishedWinner: actualWinner, resultText, source: 'CREX', sourceUrl,
+            sourceMatchId: crexMatch.crexMatchId || null,
+            sourceStartTime: match.startTime || crexMatch.startTime || null,
+            checkedAt: isoNow,
+            matchingRule: 'Both participants and kickoff context matched against the public CREX result.',
+          };
+        }
       }
     }
 
-    const result = await store.upsertPendingCapture({
+    const record = {
       matchId,
       marketId: snapshot.marketId ?? match.marketId ?? null,
       matchName,
@@ -195,9 +206,25 @@ async function captureEndedMatches({
       predictedWinner: prediction?.winner ?? null,
       predictionTier: prediction?.tier ?? null,
       predictionConfidence: prediction?.confidence ?? null,
+      predictionReason: prediction?.reason ?? null,
+      predictorVersion: prediction?.predictorVersion ?? null,
+      algorithmId: prediction?.algorithmId ?? null,
+      algorithmLeague: prediction?.algorithmLeague ?? null,
+      profileVersion: prediction?.profileVersion ?? null,
+      algorithmStrategy: prediction?.algorithmStrategy ?? null,
+      ruleFamily: prediction?.ruleFamily ?? null,
+      inputTiming: 'provider-frozen-fields-captured-after-start',
       actualWinner,
+      reportedWinner: actualWinner,
+      resultText,
+      resultVerification,
       lastCaptureError: null,
-    });
+    };
+    if (!checkMatchRecordQuality(record).valid) {
+      summary.skipped += 1;
+      continue;
+    }
+    const result = await store.upsertPendingCapture(record);
 
     if (result.created || result.updated) {
       summary.captured += 1;

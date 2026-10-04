@@ -1,0 +1,1101 @@
+{
+  "generatedAt": "2026-10-04T11:25:26.815Z",
+  "examples": 232,
+  "leagueProfiles": 42,
+  "allowedInputs": [
+    "preMatchVolume.back",
+    "preMatchVolume.lay",
+    "preMatchPnl",
+    "preMatchTotalBets"
+  ],
+  "excludedInputs": [
+    "team identity",
+    "match ID",
+    "date as a feature",
+    "actual winner",
+    "final score",
+    "live fields"
+  ],
+  "factorScores": {
+    "active": {
+      "total": 232,
+      "correct": 204,
+      "wrong": 28,
+      "accuracy": 87.9
+    },
+    "totalFlow": {
+      "total": 232,
+      "correct": 148,
+      "wrong": 84,
+      "accuracy": 63.8
+    },
+    "backFlow": {
+      "total": 232,
+      "correct": 149,
+      "wrong": 83,
+      "accuracy": 64.2
+    },
+    "layFlow": {
+      "total": 232,
+      "correct": 147,
+      "wrong": 85,
+      "accuracy": 63.4
+    },
+    "activity": {
+      "total": 232,
+      "correct": 99,
+      "wrong": 133,
+      "accuracy": 42.7
+    },
+    "higherPnl": {
+      "total": 232,
+      "correct": 109,
+      "wrong": 123,
+      "accuracy": 47
+    },
+    "lowerPnl": {
+      "total": 232,
+      "correct": 123,
+      "wrong": 109,
+      "accuracy": 53
+    }
+  },
+  "chronological": {
+    "trainingExamples": 185,
+    "laterExamples": 47,
+    "cutoff": 1789779600000,
+    "active": {
+      "total": 47,
+      "correct": 36,
+      "wrong": 11,
+      "accuracy": 76.6
+    },
+    "totalFlow": {
+      "total": 47,
+      "correct": 29,
+      "wrong": 18,
+      "accuracy": 61.7
+    },
+    "backFlow": {
+      "total": 47,
+      "correct": 30,
+      "wrong": 17,
+      "accuracy": 63.8
+    },
+    "layFlow": {
+      "total": 47,
+      "correct": 28,
+      "wrong": 19,
+      "accuracy": 59.6
+    }
+  },
+  "quintiles": {
+    "backShare": [
+      {
+        "bucket": 1,
+        "minimum": 0,
+        "maximum": 0.5540872149585196,
+        "examples": 46,
+        "dominantFlowSideWon": 28,
+        "accuracy": 60.9
+      },
+      {
+        "bucket": 2,
+        "minimum": 0.5567248043132289,
+        "maximum": 0.7460244823246768,
+        "examples": 46,
+        "dominantFlowSideWon": 25,
+        "accuracy": 54.3
+      },
+      {
+        "bucket": 3,
+        "minimum": 0.7483873678902409,
+        "maximum": 0.9022404863769422,
+        "examples": 47,
+        "dominantFlowSideWon": 32,
+        "accuracy": 68.1
+      },
+      {
+        "bucket": 4,
+        "minimum": 0.906389823127285,
+        "maximum": 0.9722412910844322,
+        "examples": 46,
+        "dominantFlowSideWon": 32,
+        "accuracy": 69.6
+      },
+      {
+        "bucket": 5,
+        "minimum": 0.9724958617291605,
+        "maximum": 1,
+        "examples": 47,
+        "dominantFlowSideWon": 31,
+        "accuracy": 66
+      }
+    ],
+    "layShare": [
+      {
+        "bucket": 1,
+        "minimum": 0,
+        "maximum": 0.47170904152269877,
+        "examples": 46,
+        "dominantFlowSideWon": 23,
+        "accuracy": 50
+      },
+      {
+        "bucket": 2,
+        "minimum": 0.47234557932983445,
+        "maximum": 0.7671856938872641,
+        "examples": 46,
+        "dominantFlowSideWon": 26,
+        "accuracy": 56.5
+      },
+      {
+        "bucket": 3,
+        "minimum": 0.7709236276273373,
+        "maximum": 0.9212787556981338,
+        "examples": 47,
+        "dominantFlowSideWon": 30,
+        "accuracy": 63.8
+      },
+      {
+        "bucket": 4,
+        "minimum": 0.9213991260803804,
+        "maximum": 0.9811385133014993,
+        "examples": 46,
+        "dominantFlowSideWon": 37,
+        "accuracy": 80.4
+      },
+      {
+        "bucket": 5,
+        "minimum": 0.9821188435031097,
+        "maximum": 1,
+        "examples": 47,
+        "dominantFlowSideWon": 32,
+        "accuracy": 68.1
+      }
+    ],
+    "totalShare": [
+      {
+        "bucket": 1,
+        "minimum": 0.5001223436803438,
+        "maximum": 0.5896043953536138,
+        "examples": 46,
+        "dominantFlowSideWon": 25,
+        "accuracy": 54.3
+      },
+      {
+        "bucket": 2,
+        "minimum": 0.5900039562178558,
+        "maximum": 0.741715701455559,
+        "examples": 46,
+        "dominantFlowSideWon": 23,
+        "accuracy": 50
+      },
+      {
+        "bucket": 3,
+        "minimum": 0.7442724458204334,
+        "maximum": 0.869479560006567,
+        "examples": 47,
+        "dominantFlowSideWon": 33,
+        "accuracy": 70.2
+      },
+      {
+        "bucket": 4,
+        "minimum": 0.8712553773953853,
+        "maximum": 0.9683640127209568,
+        "examples": 46,
+        "dominantFlowSideWon": 34,
+        "accuracy": 73.9
+      },
+      {
+        "bucket": 5,
+        "minimum": 0.9686255009630594,
+        "maximum": 1,
+        "examples": 47,
+        "dominantFlowSideWon": 33,
+        "accuracy": 70.2
+      }
+    ],
+    "pnlGap": [
+      {
+        "bucket": 1,
+        "minimum": -1.9835143173197276,
+        "maximum": -0.9298540145985402,
+        "examples": 46,
+        "dominantFlowSideWon": 26,
+        "accuracy": 56.5
+      },
+      {
+        "bucket": 2,
+        "minimum": -0.9272717139753462,
+        "maximum": -0.3271319949541464,
+        "examples": 46,
+        "dominantFlowSideWon": 27,
+        "accuracy": 58.7
+      },
+      {
+        "bucket": 3,
+        "minimum": -0.3212449292117614,
+        "maximum": -0.004968971257181847,
+        "examples": 47,
+        "dominantFlowSideWon": 35,
+        "accuracy": 74.5
+      },
+      {
+        "bucket": 4,
+        "minimum": -0.0019785022182002856,
+        "maximum": 0.38543147480034196,
+        "examples": 46,
+        "dominantFlowSideWon": 32,
+        "accuracy": 69.6
+      },
+      {
+        "bucket": 5,
+        "minimum": 0.3887339276856171,
+        "maximum": 1.7378377490292043,
+        "examples": 47,
+        "dominantFlowSideWon": 28,
+        "accuracy": 59.6
+      }
+    ],
+    "pnlLeader": [
+      {
+        "bucket": 1,
+        "minimum": -1,
+        "maximum": -0.4341101625585893,
+        "examples": 46,
+        "dominantFlowSideWon": 28,
+        "accuracy": 60.9
+      },
+      {
+        "bucket": 2,
+        "minimum": -0.4156444888244775,
+        "maximum": -0.08743596270534258,
+        "examples": 46,
+        "dominantFlowSideWon": 27,
+        "accuracy": 58.7
+      },
+      {
+        "bucket": 3,
+        "minimum": -0.08346145098931082,
+        "maximum": 0.004934523416638779,
+        "examples": 47,
+        "dominantFlowSideWon": 35,
+        "accuracy": 74.5
+      },
+      {
+        "bucket": 4,
+        "minimum": 0.005064943014866303,
+        "maximum": 0.14384906870215158,
+        "examples": 46,
+        "dominantFlowSideWon": 34,
+        "accuracy": 73.9
+      },
+      {
+        "bucket": 5,
+        "minimum": 0.14394429808054207,
+        "maximum": 1,
+        "examples": 47,
+        "dominantFlowSideWon": 24,
+        "accuracy": 51.1
+      }
+    ],
+    "pnlOther": [
+      {
+        "bucket": 1,
+        "minimum": -1,
+        "maximum": -0.2468290545358293,
+        "examples": 46,
+        "dominantFlowSideWon": 28,
+        "accuracy": 60.9
+      },
+      {
+        "bucket": 2,
+        "minimum": -0.24643575790215436,
+        "maximum": 0.00947644195380195,
+        "examples": 46,
+        "dominantFlowSideWon": 32,
+        "accuracy": 69.6
+      },
+      {
+        "bucket": 3,
+        "minimum": 0.011186865356718962,
+        "maximum": 0.220166554942505,
+        "examples": 47,
+        "dominantFlowSideWon": 33,
+        "accuracy": 70.2
+      },
+      {
+        "bucket": 4,
+        "minimum": 0.22850372429162713,
+        "maximum": 0.5333824672009234,
+        "examples": 46,
+        "dominantFlowSideWon": 30,
+        "accuracy": 65.2
+      },
+      {
+        "bucket": 5,
+        "minimum": 0.535648668684747,
+        "maximum": 1,
+        "examples": 47,
+        "dominantFlowSideWon": 25,
+        "accuracy": 53.2
+      }
+    ],
+    "logVolume": [
+      {
+        "bucket": 1,
+        "minimum": 1.7404661748405044,
+        "maximum": 5.185316627460793,
+        "examples": 46,
+        "dominantFlowSideWon": 29,
+        "accuracy": 63
+      },
+      {
+        "bucket": 2,
+        "minimum": 5.185428584469419,
+        "maximum": 7.47393235167653,
+        "examples": 46,
+        "dominantFlowSideWon": 21,
+        "accuracy": 45.7
+      },
+      {
+        "bucket": 3,
+        "minimum": 7.485491608030754,
+        "maximum": 8.667318637993876,
+        "examples": 47,
+        "dominantFlowSideWon": 29,
+        "accuracy": 61.7
+      },
+      {
+        "bucket": 4,
+        "minimum": 8.701311466478131,
+        "maximum": 10.612863826054648,
+        "examples": 46,
+        "dominantFlowSideWon": 36,
+        "accuracy": 78.3
+      },
+      {
+        "bucket": 5,
+        "minimum": 10.62854562138215,
+        "maximum": 14.892816343281268,
+        "examples": 47,
+        "dominantFlowSideWon": 33,
+        "accuracy": 70.2
+      }
+    ],
+    "betShare": [
+      {
+        "bucket": 1,
+        "minimum": 0,
+        "maximum": 0.18069119559488597,
+        "examples": 46,
+        "dominantFlowSideWon": 37,
+        "accuracy": 80.4
+      },
+      {
+        "bucket": 2,
+        "minimum": 0.18870182078591768,
+        "maximum": 0.37301921464421534,
+        "examples": 46,
+        "dominantFlowSideWon": 31,
+        "accuracy": 67.4
+      },
+      {
+        "bucket": 3,
+        "minimum": 0.38249360451403364,
+        "maximum": 0.5272423537249088,
+        "examples": 47,
+        "dominantFlowSideWon": 28,
+        "accuracy": 59.6
+      },
+      {
+        "bucket": 4,
+        "minimum": 0.5354374577378505,
+        "maximum": 0.7358639537322825,
+        "examples": 46,
+        "dominantFlowSideWon": 27,
+        "accuracy": 58.7
+      },
+      {
+        "bucket": 5,
+        "minimum": 0.7419621047928356,
+        "maximum": 1,
+        "examples": 47,
+        "dominantFlowSideWon": 25,
+        "accuracy": 53.2
+      }
+    ]
+  },
+  "perLeague": [
+    {
+      "league": "ACC Men's Premier Cup",
+      "examples": 20,
+      "active": {
+        "total": 20,
+        "correct": 15,
+        "wrong": 5,
+        "accuracy": 75
+      },
+      "totalFlow": {
+        "total": 20,
+        "correct": 12,
+        "wrong": 8,
+        "accuracy": 60
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Asian Games Men",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Asian Games T20",
+      "examples": 3,
+      "active": {
+        "total": 3,
+        "correct": 1,
+        "wrong": 2,
+        "accuracy": 33.3
+      },
+      "totalFlow": {
+        "total": 3,
+        "correct": 1,
+        "wrong": 2,
+        "accuracy": 33.3
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Asian Games Women",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Australia One Day Cup",
+      "examples": 3,
+      "active": {
+        "total": 3,
+        "correct": 2,
+        "wrong": 1,
+        "accuracy": 66.7
+      },
+      "totalFlow": {
+        "total": 3,
+        "correct": 2,
+        "wrong": 1,
+        "accuracy": 66.7
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "CSA One-Day Challenge Div 2",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "accuracy": 50
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "accuracy": 50
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Canada Super 60",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 0,
+        "wrong": 2,
+        "accuracy": 0
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 0,
+        "wrong": 2,
+        "accuracy": 0
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Caribbean Premier League",
+      "examples": 24,
+      "active": {
+        "total": 24,
+        "correct": 23,
+        "wrong": 1,
+        "accuracy": 95.8
+      },
+      "totalFlow": {
+        "total": 24,
+        "correct": 14,
+        "wrong": 10,
+        "accuracy": 58.3
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Delhi Premier League",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 0,
+        "wrong": 1,
+        "accuracy": 0
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Emirates D10 League",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "European T20 Premier League",
+      "examples": 21,
+      "active": {
+        "total": 21,
+        "correct": 20,
+        "wrong": 1,
+        "accuracy": 95.2
+      },
+      "totalFlow": {
+        "total": 21,
+        "correct": 16,
+        "wrong": 5,
+        "accuracy": 76.2
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "First Class Matches",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "ILT20 Development Tournament",
+      "examples": 5,
+      "active": {
+        "total": 5,
+        "correct": 3,
+        "wrong": 2,
+        "accuracy": 60
+      },
+      "totalFlow": {
+        "total": 5,
+        "correct": 3,
+        "wrong": 2,
+        "accuracy": 60
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "International Twenty20 Matches",
+      "examples": 19,
+      "active": {
+        "total": 19,
+        "correct": 19,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 19,
+        "correct": 18,
+        "wrong": 1,
+        "accuracy": 94.7
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Kerala Cricket League",
+      "examples": 15,
+      "active": {
+        "total": 15,
+        "correct": 14,
+        "wrong": 1,
+        "accuracy": 93.3
+      },
+      "totalFlow": {
+        "total": 15,
+        "correct": 6,
+        "wrong": 9,
+        "accuracy": 40
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Metro Bank One Day Cup",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 0,
+        "wrong": 1,
+        "accuracy": 0
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Metro Bank Womens One Day Cup",
+      "examples": 15,
+      "active": {
+        "total": 15,
+        "correct": 13,
+        "wrong": 2,
+        "accuracy": 86.7
+      },
+      "totalFlow": {
+        "total": 15,
+        "correct": 10,
+        "wrong": 5,
+        "accuracy": 66.7
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Netherlands Topklasse T20",
+      "examples": 7,
+      "active": {
+        "total": 7,
+        "correct": 6,
+        "wrong": 1,
+        "accuracy": 85.7
+      },
+      "totalFlow": {
+        "total": 7,
+        "correct": 2,
+        "wrong": 5,
+        "accuracy": 28.6
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "One Day Internationals",
+      "examples": 5,
+      "active": {
+        "total": 5,
+        "correct": 5,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 5,
+        "correct": 2,
+        "wrong": 3,
+        "accuracy": 40
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "One Day Matches",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 0,
+        "wrong": 1,
+        "accuracy": 0
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 0,
+        "wrong": 1,
+        "accuracy": 0
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Sher E Punjab T20 League",
+      "examples": 17,
+      "active": {
+        "total": 17,
+        "correct": 17,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 17,
+        "correct": 9,
+        "wrong": 8,
+        "accuracy": 52.9
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "South Africa T20 Challenge",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "accuracy": 50
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "accuracy": 50
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "T20 African Continental Cup",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "T20 Matches",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Tamil Nadu Premier League",
+      "examples": 8,
+      "active": {
+        "total": 8,
+        "correct": 8,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 8,
+        "correct": 4,
+        "wrong": 4,
+        "accuracy": 50
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Test Matches",
+      "examples": 5,
+      "active": {
+        "total": 5,
+        "correct": 5,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 5,
+        "correct": 5,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "The Hundred",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "The Hundred - Womens",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "accuracy": 50
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "accuracy": 50
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Unofficial International Matches",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Uttar Pradesh Premier League",
+      "examples": 10,
+      "active": {
+        "total": 10,
+        "correct": 10,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 10,
+        "correct": 6,
+        "wrong": 4,
+        "accuracy": 60
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Uttarakhand Premier League",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Women's Asia Cup T20",
+      "examples": 7,
+      "active": {
+        "total": 7,
+        "correct": 7,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 7,
+        "correct": 7,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Women's Caribbean Premier League",
+      "examples": 5,
+      "active": {
+        "total": 5,
+        "correct": 3,
+        "wrong": 2,
+        "accuracy": 60
+      },
+      "totalFlow": {
+        "total": 5,
+        "correct": 2,
+        "wrong": 3,
+        "accuracy": 40
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Women's One Day Matches",
+      "examples": 2,
+      "active": {
+        "total": 2,
+        "correct": 0,
+        "wrong": 2,
+        "accuracy": 0
+      },
+      "totalFlow": {
+        "total": 2,
+        "correct": 0,
+        "wrong": 2,
+        "accuracy": 0
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Women's T20 County Cup",
+      "examples": 1,
+      "active": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "validationStatus": "insufficient-history"
+    },
+    {
+      "league": "Womens International Twenty20 Matches",
+      "examples": 11,
+      "active": {
+        "total": 11,
+        "correct": 11,
+        "wrong": 0,
+        "accuracy": 100
+      },
+      "totalFlow": {
+        "total": 11,
+        "correct": 9,
+        "wrong": 2,
+        "accuracy": 81.8
+      },
+      "validationStatus": "retrospective-development-checks"
+    },
+    {
+      "league": "Womens One Day Internationals",
+      "examples": 6,
+      "active": {
+        "total": 6,
+        "correct": 4,
+        "wrong": 2,
+        "accuracy": 66.7
+      },
+      "totalFlow": {
+        "total": 6,
+        "correct": 4,
+        "wrong": 2,
+        "accuracy": 66.7
+      },
+      "validationStatus": "retrospective-development-checks"
+    }
+  ],
+  "updatedLeagues": [
+    {
+      "league": "European T20 Premier League",
+      "rules": 1
+    },
+    {
+      "league": "Metro Bank Womens One Day Cup",
+      "rules": 1
+    },
+    {
+      "league": "Netherlands Topklasse T20",
+      "rules": 1
+    },
+    {
+      "league": "One Day Internationals",
+      "rules": 1
+    },
+    {
+      "league": "Sher E Punjab T20 League",
+      "rules": 2
+    },
+    {
+      "league": "Tamil Nadu Premier League",
+      "rules": 1
+    },
+    {
+      "league": "Uttar Pradesh Premier League",
+      "rules": 1
+    },
+    {
+      "league": "Womens International Twenty20 Matches",
+      "rules": 1
+    }
+  ],
+  "finding": {
+    "commonFactor": "Relative market-flow dominance, expressed by total/back/lay share with P/L context.",
+    "evidence": "The dominant total-flow side won 148/232 (63.8%) overall.",
+    "constraint": "On the latest chronological block it was 29/47 (61.7%), so it is not safe as a universal override.",
+    "deploymentDecision": "Keep independent league rules; activate only league adjustments that do not regress on both internal chronological development splits."
+  }
+}

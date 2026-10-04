@@ -46,7 +46,7 @@ test('getLeagueAlgorithmPrediction routes Women CPL to WCPL_SPECIAL and Men CPL 
   assert.equal(cplResult.tier, 'CPL_SPECIAL');
 });
 
-test('getCPLPrediction correctly predicts Guyana Amazon Warriors with Lay Shield & Volume Dominance (Match 36029412)', () => {
+test('legacy CPL shield can use derived P/L while normal mode excludes that later signal', () => {
   const cplSnap = {
     matchId: '36029412',
     competitionName: 'Caribbean Premier League',
@@ -65,7 +65,10 @@ test('getCPLPrediction correctly predicts Guyana Amazon Warriors with Lay Shield
     }
   };
 
-  const result = predictMatchWinner(cplSnap);
+  const result = getCPLPrediction(cplSnap, 10012.13, 2904.30, 24685.94, 3051.09, 9150.19, -14321.15, ...cplSnap.teamNames);
+  const normal = predictMatchWinner(cplSnap);
+  assert.equal(normal.winner, 'St Kitts & Nevis Pats');
+  assert.equal(normal.inputTiming, 'frozen-pre-match-fields');
   assert.equal(result.winner, 'Guyana Amazon Warriors');
   assert.equal(result.tier, 'CPL_SPECIAL');
   assert.match(result.confidence, /CPL Lay Shield & Volume Dominance/);

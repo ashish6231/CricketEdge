@@ -20,6 +20,7 @@ const { getDefaultStore } = require('../services/tossDatasetStore');
 const { runTossCaptureNow } = require('../services/tossCaptureWorker');
 const { getDefaultStore: getDefaultMatchStore } = require('../services/matchDatasetStore');
 const { runMatchCaptureNow } = require('../services/matchCaptureWorker');
+const { listMatchDataset, loadMatchDataset } = require('../services/adminMatchDataset');
 
 
 function parseUserId(raw) {
@@ -807,16 +808,9 @@ async function getTossDatasetExport(req, res, deps = {}) {
 }
 
 async function getMatchDataset(req, res, deps = {}) {
-  const store = deps.store || getDefaultMatchStore();
   try {
-    const { status = 'all', page = '1', limit = '20', search = '' } = req.query || {};
-    const result = await store.listRecords({
-      status: status || 'all',
-      search: search || undefined,
-      page: Number(page) || 1,
-      limit: Number(limit) || 20,
-    });
-    res.json({ success: true, records: result.records, pagination: result.pagination });
+    const result = await listMatchDataset(req.query || {}, deps);
+    res.json({ success: true, ...result });
   } catch (err) {
     sendStoreError(res, err);
   }
@@ -860,9 +854,8 @@ async function postMatchDatasetCapture(req, res, deps = {}) {
 }
 
 async function getMatchDatasetExport(req, res, deps = {}) {
-  const store = deps.store || getDefaultMatchStore();
   try {
-    const payload = await store.buildExport();
+    const payload = await loadMatchDataset(deps);
     res.set('Content-Disposition', 'attachment; filename="match_dataset.json"');
     res.json(payload);
   } catch (err) {
@@ -927,4 +920,3 @@ module.exports.getMatchDataset = getMatchDataset;
 module.exports.patchMatchActualWinner = patchMatchActualWinner;
 module.exports.postMatchDatasetCapture = postMatchDatasetCapture;
 module.exports.getMatchDatasetExport = getMatchDatasetExport;
-

@@ -1,0 +1,852 @@
+{
+  "generatedAt": "2026-10-04T11:26:23.353Z",
+  "baselineGeneratedAt": "2026-10-04T11:24:10.324Z",
+  "examples": 232,
+  "previous": {
+    "correct": 201,
+    "wrong": 31
+  },
+  "current": {
+    "correct": 204,
+    "wrong": 28
+  },
+  "corrections": 3,
+  "regressions": 0,
+  "regressionGatePassed": true,
+  "leagues": [
+    {
+      "league": "ACC Men's Premier Cup",
+      "total": 20,
+      "previousMisses": 5,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 5
+    },
+    {
+      "league": "Tamil Nadu Premier League",
+      "total": 8,
+      "previousMisses": 3,
+      "corrected": 3,
+      "regressions": 0,
+      "remainingMisses": 0
+    },
+    {
+      "league": "Asian Games T20",
+      "total": 3,
+      "previousMisses": 2,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 2
+    },
+    {
+      "league": "Canada Super 60",
+      "total": 2,
+      "previousMisses": 2,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 2
+    },
+    {
+      "league": "ILT20 Development Tournament",
+      "total": 5,
+      "previousMisses": 2,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 2
+    },
+    {
+      "league": "Metro Bank Womens One Day Cup",
+      "total": 15,
+      "previousMisses": 2,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 2
+    },
+    {
+      "league": "Women's Caribbean Premier League",
+      "total": 5,
+      "previousMisses": 2,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 2
+    },
+    {
+      "league": "Women's One Day Matches",
+      "total": 2,
+      "previousMisses": 2,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 2
+    },
+    {
+      "league": "Womens One Day Internationals",
+      "total": 6,
+      "previousMisses": 2,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 2
+    },
+    {
+      "league": "Australia One Day Cup",
+      "total": 3,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "Caribbean Premier League",
+      "total": 24,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "CSA One-Day Challenge Div 2",
+      "total": 2,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "European T20 Premier League",
+      "total": 21,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "Kerala Cricket League",
+      "total": 15,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "Netherlands Topklasse T20",
+      "total": 7,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "One Day Matches",
+      "total": 1,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "South Africa T20 Challenge",
+      "total": 2,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    },
+    {
+      "league": "The Hundred - Womens",
+      "total": 2,
+      "previousMisses": 1,
+      "corrected": 0,
+      "regressions": 0,
+      "remainingMisses": 1
+    }
+  ],
+  "auditedFailures": [
+    {
+      "matchId": "35929461",
+      "league": "The Hundred - Womens",
+      "matchName": "Sunrisers Leeds W v Southern Brave W",
+      "actualWinner": "Sunrisers Leeds W",
+      "previousPrediction": "Southern Brave W",
+      "currentPrediction": "Southern Brave W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Womens Dual Flow Advantage",
+      "featureVector": [
+        0.6003427235310133,
+        0.5641337975788805,
+        0.5883501731586276,
+        -0.17491342068620785,
+        -0.07571487736084824,
+        0.09919854332535961,
+        7.938053037466373,
+        0.5390096608111562
+      ]
+    },
+    {
+      "matchId": "35948552",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Dindigul Dragons v Ruby Trichy Warriors",
+      "actualWinner": "Ruby Trichy Warriors",
+      "previousPrediction": "Dindigul Dragons",
+      "currentPrediction": "Ruby Trichy Warriors",
+      "previousCorrect": false,
+      "currentCorrect": true,
+      "status": "corrected",
+      "currentReason": "Pre-match league rule: lay share >= 0.1 and log10 total flow <= 3 → back leader",
+      "featureVector": [
+        0.9378852536747273,
+        0.31604965396023293,
+        0.8521787844835418,
+        -1.5856180540835179,
+        -0.7761151318777822,
+        0.8095029222057354,
+        6.494449513094811,
+        0.9014102426041154
+      ]
+    },
+    {
+      "matchId": "35955958",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Madurai Panthers v Tiruppur Tamizhans",
+      "actualWinner": "Tiruppur Tamizhans",
+      "previousPrediction": "Madurai Panthers",
+      "currentPrediction": "Tiruppur Tamizhans",
+      "previousCorrect": false,
+      "currentCorrect": true,
+      "status": "corrected",
+      "currentReason": "Pre-match league rule: lay share >= 0.1 and log10 total flow <= 3 → back leader",
+      "featureVector": [
+        0.7404281955279416,
+        1,
+        0.7413725399611938,
+        -0.9298540145985402,
+        -0.44662628199205395,
+        0.4832277326064862,
+        6.76485441534413,
+        0.7358639537322825
+      ]
+    },
+    {
+      "matchId": "35989920",
+      "league": "Womens One Day Internationals",
+      "matchName": "Scotland W v Netherlands W",
+      "actualWinner": "Netherlands W",
+      "previousPrediction": "Scotland W",
+      "currentPrediction": "Scotland W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Womens Dual Flow Advantage",
+      "featureVector": [
+        0.5442306511909321,
+        0.694714732263453,
+        0.5963710894372305,
+        0.34011117096260307,
+        0.13553073628795959,
+        -0.2045804346746435,
+        8.56334750382622,
+        0.29077893807121236
+      ]
+    },
+    {
+      "matchId": "35988179",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Madurai Panthers v Lyca Kovai Kings",
+      "actualWinner": "Lyca Kovai Kings",
+      "previousPrediction": "Madurai Panthers",
+      "currentPrediction": "Lyca Kovai Kings",
+      "previousCorrect": false,
+      "currentCorrect": true,
+      "status": "corrected",
+      "currentReason": "Pre-match league rule: lay share >= 0.1 and log10 total flow <= 3 → back leader",
+      "featureVector": [
+        0.7635343234549311,
+        0.31523819115721624,
+        0.5821515892420538,
+        -0.8890399348003257,
+        -0.37072575387123047,
+        0.5183141809290952,
+        5.506956231659365,
+        0.7208631630328669
+      ]
+    },
+    {
+      "matchId": "35993903",
+      "league": "Kerala Cricket League",
+      "matchName": "Aries Kollam Sailors v Alleppey Ripples",
+      "actualWinner": "Alleppey Ripples",
+      "previousPrediction": "Aries Kollam Sailors",
+      "currentPrediction": "Aries Kollam Sailors",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Kerala Lay Resistance Dump",
+      "featureVector": [
+        0.7085200358468826,
+        0.8897871675190387,
+        0.8152878809802555,
+        0.49917628023835514,
+        0.16704963102300674,
+        -0.3321266492153484,
+        6.634909272487568,
+        0.287874926247757
+      ]
+    },
+    {
+      "matchId": "35997496",
+      "league": "ACC Men's Premier Cup",
+      "matchName": "Bahrain v Nepal",
+      "actualWinner": "Nepal",
+      "previousPrediction": "Bahrain",
+      "currentPrediction": "Bahrain",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "ACC Bookie Safe PnL",
+      "featureVector": [
+        0.8078172871599666,
+        0.47234557932983445,
+        0.7450935990338163,
+        -0.637895531400966,
+        -0.06361262077294683,
+        0.5742829106280192,
+        4.893951653883174,
+        0.2243000425366753
+      ]
+    },
+    {
+      "matchId": "35994097",
+      "league": "Womens One Day Internationals",
+      "matchName": "Scotland W v Netherlands W",
+      "actualWinner": "Scotland W",
+      "previousPrediction": "Netherlands W",
+      "currentPrediction": "Netherlands W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Womens Dual Flow Advantage",
+      "featureVector": [
+        0.9151126180673286,
+        0.8076057042782087,
+        0.8622323406349989,
+        -0.18334881860694047,
+        -0.0675024612355401,
+        0.11584635737140037,
+        5.787020073226256,
+        0.5758160666462528
+      ]
+    },
+    {
+      "matchId": "36015221",
+      "league": "ACC Men's Premier Cup",
+      "matchName": "Qatar v Oman",
+      "actualWinner": "Oman",
+      "previousPrediction": "Qatar",
+      "currentPrediction": "Qatar",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "ACC Bookie Safe PnL",
+      "featureVector": [
+        0.9439196199421176,
+        0.9189012426422498,
+        0.941991734704163,
+        -0.7494808991029129,
+        -0.1517084971273057,
+        0.5977724019756072,
+        5.295413153400647,
+        0.4209516208718124
+      ]
+    },
+    {
+      "matchId": "36019572",
+      "league": "ACC Men's Premier Cup",
+      "matchName": "Malaysia v Nepal",
+      "actualWinner": "Nepal",
+      "previousPrediction": "Malaysia",
+      "currentPrediction": "Malaysia",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "ACC Bookie Safe PnL",
+      "featureVector": [
+        0.955981952121392,
+        0.9725683851284967,
+        0.963041624253762,
+        -0.04695210322154672,
+        0.008290131778040605,
+        0.05524223499958733,
+        7.505739768860702,
+        0.10923895897400104
+      ]
+    },
+    {
+      "matchId": "36019728",
+      "league": "Metro Bank Womens One Day Cup",
+      "matchName": "Durham W v Hampshire W",
+      "actualWinner": "Hampshire W",
+      "previousPrediction": "Durham W",
+      "currentPrediction": "Durham W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Womens Smart Inflow Margin",
+      "featureVector": [
+        0.2210436713545523,
+        0.8467292922596341,
+        0.6745975181132121,
+        1.1573899869267203,
+        0.44342906829464973,
+        -0.7139609186320707,
+        8.499391680550339,
+        0.13766579279888055
+      ]
+    },
+    {
+      "matchId": "36023515",
+      "league": "European T20 Premier League",
+      "matchName": "Rotterdam Dockers v Edinburgh Castle Rockers",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "previousPrediction": "Rotterdam Dockers",
+      "currentPrediction": "Rotterdam Dockers",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "European T20 Back Volume Leader",
+      "featureVector": [
+        0.7312857072411292,
+        0.9055971342429041,
+        0.80543031119524,
+        0.17747037787588618,
+        0.08772836461586166,
+        -0.08974201326002454,
+        9.421606464718863,
+        0.424974263146477
+      ]
+    },
+    {
+      "matchId": "36023082",
+      "league": "Metro Bank Womens One Day Cup",
+      "matchName": "Middlesex W v Glamorgan W",
+      "actualWinner": "Middlesex W",
+      "previousPrediction": "Glamorgan W",
+      "currentPrediction": "Glamorgan W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Womens Smart Inflow Margin",
+      "featureVector": [
+        0.6127279782693054,
+        0.20901639344262296,
+        0.5018294399099353,
+        -0.7661244019138755,
+        -0.40546017450042215,
+        0.36066422741345333,
+        3.5981338408071912,
+        0.6310514775792149
+      ]
+    },
+    {
+      "matchId": "36035088",
+      "league": "Netherlands Topklasse T20",
+      "matchName": "Rotterdam Cricket Club v HCC",
+      "actualWinner": "Rotterdam Cricket Club",
+      "previousPrediction": "HCC",
+      "currentPrediction": "HCC",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "(Good Buy)",
+      "featureVector": [
+        0.6228630263830729,
+        0.030474184695896352,
+        0.5174153091132165,
+        -0.6774067321018792,
+        -0.09032956172040088,
+        0.5870771703814783,
+        7.47393235167653,
+        0.8053503811988402
+      ]
+    },
+    {
+      "matchId": "36029412",
+      "league": "Caribbean Premier League",
+      "matchName": "Guyana Amazon Warriors v St Kitts & Nevis Pats",
+      "actualWinner": "Guyana Amazon Warriors",
+      "previousPrediction": "St Kitts & Nevis Pats",
+      "currentPrediction": "St Kitts & Nevis Pats",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "CPL Favorite Short Resistance Fade",
+      "featureVector": [
+        0.7751468478519219,
+        0.8899993979167921,
+        0.8535084098622848,
+        0.5773515931977251,
+        0.22507775967900379,
+        -0.3522738335187213,
+        10.612863826054648,
+        0.24101986059773134
+      ]
+    },
+    {
+      "matchId": "36034235",
+      "league": "ACC Men's Premier Cup",
+      "matchName": "Malaysia v Bahrain",
+      "actualWinner": "Malaysia",
+      "previousPrediction": "Bahrain",
+      "currentPrediction": "Bahrain",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "ACC Bookie Safe PnL",
+      "featureVector": [
+        1,
+        0,
+        0.8210043196544277,
+        -1.6943102414646063,
+        -0.6943102414646063,
+        1,
+        3.6386382376771897,
+        1
+      ]
+    },
+    {
+      "matchId": "36040305",
+      "league": "Women's Caribbean Premier League",
+      "matchName": "Jamaica Empress W v Trinbago Knight Riders W",
+      "actualWinner": "Trinbago Knight Riders W",
+      "previousPrediction": "Jamaica Empress W",
+      "currentPrediction": "Jamaica Empress W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "WCPL Lay Resistance Dump (Fade Short Team)",
+      "featureVector": [
+        0.9673768856019253,
+        0.8636493909720563,
+        0.91595678555572,
+        -0.23413230723693945,
+        -0.08743596270534258,
+        0.14669634453159686,
+        7.432631725970787,
+        0.46173324348351824
+      ]
+    },
+    {
+      "matchId": "36054944",
+      "league": "ACC Men's Premier Cup",
+      "matchName": "Nepal v United Arab Emirates",
+      "actualWinner": "Nepal",
+      "previousPrediction": "United Arab Emirates",
+      "currentPrediction": "United Arab Emirates",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "ACC Bookie Profit Side (Deficit Fade)",
+      "featureVector": [
+        0.41139362869367313,
+        0.7709236276273373,
+        0.5001223436803438,
+        0.5362366934953754,
+        0.2686903006600598,
+        -0.26754639283531556,
+        10.198080316060796,
+        0.36742835658917666
+      ]
+    },
+    {
+      "matchId": "36059692",
+      "league": "One Day Matches",
+      "matchName": "England U19 v Pakistan U19",
+      "actualWinner": "Pakistan U19",
+      "previousPrediction": "England U19",
+      "currentPrediction": "England U19",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "(Good Buy)",
+      "featureVector": [
+        0.9552719617178568,
+        0.12407344894005107,
+        0.5263374395233599,
+        -1.6624104140591265,
+        -0.8357008117227701,
+        0.8267096023363565,
+        8.8293946907309,
+        0.9120645139419374
+      ]
+    },
+    {
+      "matchId": "36055328",
+      "league": "Women's Caribbean Premier League",
+      "matchName": "Barbados Tridents W v Jamaica Empress W",
+      "actualWinner": "Barbados Tridents W",
+      "previousPrediction": "Jamaica Empress W",
+      "currentPrediction": "Jamaica Empress W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "WCPL Lay Resistance Dump (Fade Short Team)",
+      "featureVector": [
+        0.912125575066606,
+        0.9074315552773722,
+        0.9105495683679317,
+        -0.430946642629273,
+        -0.17048604699355835,
+        0.2604605956357147,
+        9.237900090001071,
+        0.5247433115208183
+      ]
+    },
+    {
+      "matchId": "36070909",
+      "league": "Australia One Day Cup",
+      "matchName": "Queensland Bulls v Victoria",
+      "actualWinner": "Victoria",
+      "previousPrediction": "Queensland Bulls",
+      "currentPrediction": "Queensland Bulls",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Money Leader (50% Share)",
+      "featureVector": [
+        0.4573480510575549,
+        0.9353946054509652,
+        0.501908731309618,
+        0.3174656553261161,
+        0.1590170956239545,
+        -0.15844855970216162,
+        11.644787677788916,
+        0.41966861399146455
+      ]
+    },
+    {
+      "matchId": "36082473",
+      "league": "ILT20 Development Tournament",
+      "matchName": "Sharjah Warriorz Dev v Gulf Giants Dev",
+      "actualWinner": "Gulf Giants Dev",
+      "previousPrediction": "Sharjah Warriorz Dev",
+      "currentPrediction": "Sharjah Warriorz Dev",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "ILT20 Smart Inflow",
+      "featureVector": [
+        0.5023168972962972,
+        0.2942000209008205,
+        0.5008808776009901,
+        -0.013552423033536112,
+        -0.005976415612704587,
+        0.007576007420831523,
+        11.146790775535937,
+        0.5031116712323149
+      ]
+    },
+    {
+      "matchId": "36075053",
+      "league": "CSA One-Day Challenge Div 2",
+      "matchName": "Eastern Storm v Eastern Cape Linyathi",
+      "actualWinner": "Eastern Storm",
+      "previousPrediction": "Eastern Cape Linyathi",
+      "currentPrediction": "Eastern Cape Linyathi",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "(Good Buy)",
+      "featureVector": [
+        0.5968379446640316,
+        0.3615715162676489,
+        0.5709164693946567,
+        -0.3925532634426782,
+        -0.017756509976327262,
+        0.37479675346635094,
+        5.002939087461786,
+        0.6870440489583697
+      ]
+    },
+    {
+      "matchId": "36091321",
+      "league": "Women's One Day Matches",
+      "matchName": "India A W v Australia A W",
+      "actualWinner": "India A W",
+      "previousPrediction": "Australia A W",
+      "currentPrediction": "Australia A W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Womens Smart Inflow Margin",
+      "featureVector": [
+        0.6719054805108764,
+        0.32470254957507083,
+        0.5351748142528838,
+        -0.39931591512528164,
+        -0.15281532385818514,
+        0.24650059126709653,
+        6.107445960817737,
+        0.4445174313918955
+      ]
+    },
+    {
+      "matchId": "36110045",
+      "league": "ILT20 Development Tournament",
+      "matchName": "Gulf Giants Development v Desert Vipers Developme",
+      "actualWinner": "Gulf Giants Development",
+      "previousPrediction": "Desert Vipers Developme",
+      "currentPrediction": "Desert Vipers Developme",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "ILT20 Smart Inflow",
+      "featureVector": [
+        0.975051975051975,
+        1,
+        0.9759519038076152,
+        -1.4428957915831666,
+        -0.5751603206412826,
+        0.8677354709418839,
+        2.3960754360813845,
+        0.8962192080949017
+      ]
+    },
+    {
+      "matchId": "36108897",
+      "league": "Asian Games T20",
+      "matchName": "Afghanistan v Nepal",
+      "actualWinner": "Nepal",
+      "previousPrediction": "Afghanistan",
+      "currentPrediction": "Afghanistan",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Maximum Money Lead (91% Share)",
+      "featureVector": [
+        0.9127512894800801,
+        0.9162887399795464,
+        0.9147700370440837,
+        0.17315690828789151,
+        0.05906631021423371,
+        -0.1140905980736578,
+        10.785247086273005,
+        0.305376896321922
+      ]
+    },
+    {
+      "matchId": "36107251",
+      "league": "Women's One Day Matches",
+      "matchName": "India A W v Australia A W",
+      "actualWinner": "India A W",
+      "previousPrediction": "Australia A W",
+      "currentPrediction": "Australia A W",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Womens Dual Flow Advantage",
+      "featureVector": [
+        0.7657692909688527,
+        0.6976398651351506,
+        0.7459298745818934,
+        -0.28939476472317593,
+        -0.08346145098931082,
+        0.20593331373386511,
+        7.497634198037697,
+        0.4199587441094706
+      ]
+    },
+    {
+      "matchId": "36099057",
+      "league": "South Africa T20 Challenge",
+      "matchName": "Warriors v North West Dragons",
+      "actualWinner": "North West Dragons",
+      "previousPrediction": "Warriors",
+      "currentPrediction": "Warriors",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "(Maximum Money + Back + Lay Alignment)",
+      "featureVector": [
+        1,
+        1,
+        1,
+        -1.0527332580155053,
+        -0.49616697183372943,
+        0.5565662861817757,
+        6.935136955723355,
+        0.7590267836463815
+      ]
+    },
+    {
+      "matchId": "36142171",
+      "league": "Canada Super 60",
+      "matchName": "Vancouver Anchors v Toronto Sixers",
+      "actualWinner": "Vancouver Anchors",
+      "previousPrediction": "Toronto Sixers",
+      "currentPrediction": "Toronto Sixers",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "(Maximum Money + Back + Lay Alignment)",
+      "featureVector": [
+        0.9927088286574733,
+        1,
+        0.9938017920905476,
+        -1.1186891367744292,
+        -0.4341101625585893,
+        0.6845789742158399,
+        6.946985607473806,
+        0.7718306617072906
+      ]
+    },
+    {
+      "matchId": "36139329",
+      "league": "Asian Games T20",
+      "matchName": "Bangladesh v Sri Lanka",
+      "actualWinner": "Sri Lanka",
+      "previousPrediction": "Bangladesh",
+      "currentPrediction": "Bangladesh",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Maximum Money Lead (91% Share)",
+      "featureVector": [
+        0.8288101715838859,
+        0.9499210406181818,
+        0.9127900849932559,
+        0.6526114121501837,
+        0.21478857676347463,
+        -0.43782283538670913,
+        10.804680687080722,
+        0.17742290619809797
+      ]
+    },
+    {
+      "matchId": "36142189",
+      "league": "Canada Super 60",
+      "matchName": "Brampton Blitz v Mississauga Masters",
+      "actualWinner": "Mississauga Masters",
+      "previousPrediction": "Brampton Blitz",
+      "currentPrediction": "Brampton Blitz",
+      "previousCorrect": false,
+      "currentCorrect": false,
+      "status": "still-failed",
+      "currentReason": "Maximum Money Lead (64% Share)",
+      "featureVector": [
+        0.9175100829465033,
+        0.13753039718994864,
+        0.636469843742394,
+        -1.704789952781969,
+        -0.9842525434454557,
+        0.7205374093365136,
+        5.329961371882498,
+        0.9270837327268263
+      ]
+    }
+  ],
+  "methods": [
+    "Only independently verified winner records with usable frozen pre-match inputs are scored.",
+    "The immutable v7 prediction baseline is compared match-by-match with the current algorithm.",
+    "A release fails this audit if any previously correct v7 match becomes wrong.",
+    "Corrections are retrospective development evidence, not a future accuracy guarantee."
+  ]
+}

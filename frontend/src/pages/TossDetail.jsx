@@ -336,12 +336,12 @@ export default function TossDetail({ isEmbedded = false }) {
 
       {/* ━━━━━━━━━━ TOSS WINNER PREDICTION ━━━━━━━━━━ */}
       {tossPrediction && (
-        <div className="rounded-2xl overflow-hidden" style={{ border: `2px solid ${tossPrediction.confidence.pct.startsWith('9') || tossPrediction.confidence.pct.startsWith('8') ? '#86efac' : tossPrediction.confidence.pct.startsWith('7') ? '#fde68a' : '#fecaca'}` }}>
+        <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid #d1d5db' }}>
           {/* Header */}
           <div className="px-4 py-3 flex items-center gap-2 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
             <span className="text-base">🪙</span>
             <span className="text-sm font-bold text-text-primary">Toss Winner Prediction</span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>34/34 backtest (100%)</span>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>Historical rules · live accuracy unvalidated</span>
             {tossPrediction.algoName && (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
                 {tossPrediction.algoName}
@@ -367,7 +367,7 @@ export default function TossDetail({ isEmbedded = false }) {
                   <span>{tossPrediction.algoName}</span>
                 </div>
               )}
-              <div className="text-xs text-text-muted">Signal: {tossPrediction.reason} • {tossPrediction.confidence.pct} confidence</div>
+              <div className="text-xs text-text-muted">Signal: {tossPrediction.reason} • Confidence is uncalibrated</div>
               {tossPrediction.risk && (
                 <div className="mt-2 flex justify-center">
                   <RiskBadge risk={tossPrediction.risk} />

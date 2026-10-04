@@ -25,10 +25,10 @@ test('getLeagueTossPrediction correctly routes European T20 / ETPL matches', () 
   assert.ok(pred);
   assert.equal(pred.winner, 'Edinburgh Castle Rockers');
   assert.equal(pred.tier, 'EUROPEAN_TOSS_SPECIAL');
-  assert.equal(pred.pattern, 'ECS_TOSS_FORTRESS');
+  assert.equal(pred.pattern, 'ECS_BACK_FLOW');
 });
 
-test('getECSTossPrediction enforces Edinburgh Castle Rockers 100% Toss Fortress', () => {
+test('getECSTossPrediction preserves corroborated back flow regardless of the Edinburgh team name', () => {
   const pred = getECSTossPrediction({
     t1: 'Belfast Wolves',
     t2: 'Edinburgh Castle Rockers',
@@ -37,14 +37,16 @@ test('getECSTossPrediction enforces Edinburgh Castle Rockers 100% Toss Fortress'
     l1: 6.74,
     l2: 72.3,
     prePnl1: -1387.4,
-    prePnl2: 1490.5
+    prePnl2: 1490.5,
+    supRatio: 16.24,
+    stronger: 'Belfast Wolves',
   });
 
-  assert.equal(pred.winner, 'Edinburgh Castle Rockers');
-  assert.equal(pred.pattern, 'ECS_TOSS_FORTRESS');
+  assert.equal(pred.winner, 'Belfast Wolves');
+  assert.equal(pred.pattern, 'ECS_BACK_FLOW');
 });
 
-test('getECSTossPrediction fades Dublin Guardians chronic coin resistance', () => {
+test('getECSTossPrediction follows lay resistance rather than a Dublin winner bias', () => {
   const pred = getECSTossPrediction({
     t1: 'Belfast Wolves',
     t2: 'Dublin Guardians',
@@ -56,11 +58,11 @@ test('getECSTossPrediction fades Dublin Guardians chronic coin resistance', () =
     prePnl2: 516.1
   });
 
-  assert.equal(pred.winner, 'Belfast Wolves');
-  assert.equal(pred.pattern, 'ECS_DUBLIN_TRAP_FADE');
+  assert.equal(pred.winner, 'Dublin Guardians');
+  assert.equal(pred.pattern, 'ECS_LAY_DUMP_FADE');
 });
 
-test('getECSTossPrediction identifies Glasgow Cosmic toss choke vs upper tier', () => {
+test('getECSTossPrediction does not fade a back leader solely because it is Glasgow', () => {
   const pred = getECSTossPrediction({
     t1: 'Glasgow Cosmic',
     t2: 'Belfast Wolves',
@@ -72,8 +74,8 @@ test('getECSTossPrediction identifies Glasgow Cosmic toss choke vs upper tier', 
     prePnl2: 807.7
   });
 
-  assert.equal(pred.winner, 'Belfast Wolves');
-  assert.equal(pred.pattern, 'ECS_GLASGOW_CHOKE_FADE');
+  assert.equal(pred.winner, 'Glasgow Cosmic');
+  assert.equal(pred.pattern, 'ECS_BACK_FLOW');
 });
 
 test('predictTossWinner achieves 100% accuracy on all completed ETPL toss dataset records', () => {

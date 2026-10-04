@@ -1,5 +1,6 @@
 const fsp = require('fs/promises');
 const path = require('path');
+const { checkMatchRecordQuality } = require('./matchRecordQuality');
 
 const DEFAULT_DATASET_PATH = path.join(__dirname, '../data/match_dataset.json');
 
@@ -13,10 +14,6 @@ function emptyDataset() {
 
 function httpError(status, message) {
   return Object.assign(new Error(message), { status });
-}
-
-function hasUsableSnapshot(snapshot) {
-  return snapshot !== null && typeof snapshot === 'object' && !Array.isArray(snapshot);
 }
 
 function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
@@ -37,9 +34,7 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
       }
       return parsed;
     } catch (err) {
-      if (err.code !== 'ENOENT') {
-        // corrupt or invalid JSON — reinitialize
-      }
+      if (err.code !== 'ENOENT') throw err;
       const fresh = emptyDataset();
       await writeDatasetToDisk(fresh);
       return fresh;
@@ -95,13 +90,18 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
   }
 
   async function upsertPendingCapture(record) {
+    const quality = checkMatchRecordQuality(record);
+    if (!quality.valid) throw httpError(400, `Invalid match data: ${quality.reason}`);
+    if (record.actualWinner && ![record.team1, record.team2, 'No Result'].includes(record.actualWinner)) {
+      throw httpError(400, 'actualWinner must be team1, team2 or No Result');
+    }
     return enqueue(async () => {
       const data = await readDatasetFromDisk();
       const matchId = String(record.matchId);
       const existing = data.records.find((r) => String(r.matchId) === matchId);
 
       const isVerified = !!record.actualWinner;
-      const status = isVerified ? 'verified' : 'pending';
+      const status = record.actualWinner === 'No Result' ? 'abandoned' : isVerified ? 'verified' : 'pending';
       const actualWinner = record.actualWinner || null;
       const confirmedAt = isVerified ? (record.capturedAt || new Date().toISOString()) : null;
       const confirmedByEmail = isVerified ? 'crex-auto' : null;
@@ -122,20 +122,30 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
         return { record: newRecord, created: true, updated: false };
       }
 
-      if (existing.status === 'verified') {
+      const existingIsUsable = checkMatchRecordQuality(existing).valid;
+      const existingResolved = existing.resultVerification?.verification === 'verified'
+        || existing.resultVerification?.status === 'verified'
+        || (existing.confirmedByEmail && existing.confirmedByEmail !== 'crex-auto');
+      if (existingIsUsable && ['verified', 'abandoned'].includes(existing.status) && existingResolved) {
         return { record: existing, created: false, updated: false };
       }
 
-      if (hasUsableSnapshot(existing.snapshot) && !existing.lastCaptureError && !isVerified) {
+      if (existingIsUsable && !isVerified) {
         return { record: existing, created: false, updated: false };
       }
 
-      Object.assign(existing, { ...record, matchId }, {
+      // Resolving a result must retain the saved input and original prediction.
+      Object.assign(existing, existingIsUsable ? {} : { ...record, matchId }, {
         status,
         actualWinner,
         confirmedAt,
         confirmedByEmail,
         confirmedById,
+        ...(isVerified ? {
+          reportedWinner: record.reportedWinner || actualWinner,
+          resultText: record.resultText || null,
+          resultVerification: record.resultVerification || null,
+        } : {}),
       });
       await writeDatasetToDisk(data);
       return { record: existing, created: false, updated: true };
@@ -152,6 +162,10 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
         throw httpError(404, 'Match not found in match dataset');
       }
 
+      if (!checkMatchRecordQuality(existing).valid) {
+        throw httpError(400, 'Cannot confirm a match without proper saved data');
+      }
+
       if (actualWinner !== existing.team1 && actualWinner !== existing.team2) {
         throw httpError(400, 'actualWinner must be team1 or team2');
       }
@@ -166,6 +180,8 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
       existing.confirmedAt = new Date().toISOString();
       existing.confirmedByEmail = admin.email;
       existing.confirmedById = admin.userId;
+      existing.predictionCorrect = existing.predictedWinner ? existing.predictedWinner === actualWinner : null;
+      delete existing.resultVerification;
 
       await writeDatasetToDisk(data);
       return { record: existing, changed: true, edited: wasVerified };

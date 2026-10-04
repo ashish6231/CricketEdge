@@ -21,6 +21,8 @@ const { setIo } = require('./socketInstance');
 const { getAllowedOrigins } = require('./lib/publicUrl');
 const { startTossCaptureWorker } = require('./services/tossCaptureWorker');
 const { startMatchCaptureWorker } = require('./services/matchCaptureWorker');
+const { startEmiratesD10Worker } = require('./services/emiratesD10Worker');
+const { startWNCLWorker } = require('./services/wnclWorker');
 const { expireAllTrials } = require('./lib/subscriptionAccess');
 const telegramRoutes = require('./routes/telegram');
 const telegramService = require('./services/telegramService');
@@ -201,6 +203,8 @@ let shuttingDown = false;
 let shutdownComplete = false;
 let tossCaptureWorker = null;
 let matchCaptureWorker = null;
+let emiratesD10Worker = null;
+let wnclWorker = null;
 
 function shutdown(signal) {
   if (shuttingDown) return;
@@ -208,6 +212,8 @@ function shutdown(signal) {
   console.log(`\n${signal} received, shutting down...`);
   tossCaptureWorker?.stop();
   matchCaptureWorker?.stop();
+  emiratesD10Worker?.stop();
+  wnclWorker?.stop();
   tllWorker?.stop();
   crexWorker?.stop();
   normalizer?.stop();
@@ -264,6 +270,8 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     console.log(`   CORS: ${allowedOrigins.join(', ')}`);
     tossCaptureWorker = startTossCaptureWorker({});
     matchCaptureWorker = startMatchCaptureWorker({});
+    emiratesD10Worker = startEmiratesD10Worker({});
+    wnclWorker = startWNCLWorker({});
   });
 
   server.on('error', (err) => {
@@ -281,4 +289,3 @@ process.on('SIGINT', () => shutdown('SIGINT'));
   // Start Telegram bot updates poller
   telegramService.startBotPoller();
 })();
-

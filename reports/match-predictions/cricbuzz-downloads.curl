@@ -1,0 +1,351 @@
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12184/australia-a-tour-of-india-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12184.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12191/australia-u19-tour-of-india-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12191.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12723/australia-domestic-one-day-cup-2026-27/matches"
+output = "/private/tmp/cricbuzz-verification/12723.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13160/csa-provincial-one-day-challenge-division-two-2026-27/matches"
+output = "/private/tmp/cricbuzz-verification/13160.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13137/england-lions-v-sri-lanka-t20-series-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13137.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12993/acc-men-s-premier-cup-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12993.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13033/bangladesh-a-tour-of-south-africa-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13033.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11418/england-domestic-one-day-cup-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11418.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11902/west-indies-tour-of-india-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11902.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12563/asian-games-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12563.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11595/australia-tour-of-south-africa-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11595.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13110/india-tour-of-japan-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13110.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13240/quadrangular-t20i-series-in-nigeria-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13240.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13053/north-american-cup-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13053.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13080/hong-kong-china-tour-of-japan-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13080.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/10576/sri-lanka-tour-of-england-2026/matches"
+output = "/private/tmp/cricbuzz-verification/10576.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11997/australia-tour-of-zimbabwe-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11997.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13131/united-arab-emirates-tour-of-malaysia-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13131.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12973/afghanistan-vs-india-in-india-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12973.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12943/south-africa-tour-of-namibia-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12943.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13121/africa-continental-cup-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13121.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12933/namibia-t20i-tri-series-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12933.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/10565/pakistan-tour-of-england-2026/matches"
+output = "/private/tmp/cricbuzz-verification/10565.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12687/india-tour-of-sri-lanka-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12687.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11630/bangladesh-tour-of-australia-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11630.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11825/afghanistan-tour-of-ireland-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11825.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13180/csa-t20-challenge-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13180.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13073/sher-e-punjab-t20-league-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13073.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12870/european-t20-premier-league-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12870.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12123/caribbean-premier-league-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12123.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12620/tamil-nadu-premier-league-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12620.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12851/delhi-premier-league-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12851.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11493/the-hundred-men-s-competition-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11493.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13217/west-indies-women-tour-of-zimbabwe-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13217.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12602/women-s-asian-games-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12602.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12210/australia-a-women-tour-of-india-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12210.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12475/south-africa-women-tour-of-zimbabwe-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12475.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/13081/malaysia-women-tour-of-japan-2026/matches"
+output = "/private/tmp/cricbuzz-verification/13081.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12595/womens-caribbean-premier-league-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12595.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/10548/ireland-women-tour-of-england-2026/matches"
+output = "/private/tmp/cricbuzz-verification/10548.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12983/netherlands-women-tour-of-scotland-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12983.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12927/women-s-asia-cup-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12927.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/12901/women-s-continental-cup-2026/matches"
+output = "/private/tmp/cricbuzz-verification/12901.html"
+next
+silent
+show-error
+location
+fail
+max-time = 30
+url = "https://m.cricbuzz.com/cricket-series/11504/the-hundred-women-s-competition-2026/matches"
+output = "/private/tmp/cricbuzz-verification/11504.html"

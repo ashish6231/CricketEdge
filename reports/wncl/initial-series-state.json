@@ -1,0 +1,3001 @@
+{
+  "sourceUrl": "https://crex.com/series/womens-national-cricket-league-2026-27-2NG/matches",
+  "archivedAt": "2026-10-03T16:15:27.603Z",
+  "state": {
+    "language": "en",
+    "ssr-bootstrap-v1": {
+      "theme": "light",
+      "isMobile": false,
+      "baseHref": "/",
+      "platform": "web",
+      "userAgent": "curl/8.7.1",
+      "cookies": "content-lang=en",
+      "embedId": "",
+      "appReferrer": "",
+      "mute": ""
+    },
+    "https://stats.crickapi.com/series/getMatchesForSeriesID": [
+      {
+        "t1f": "O2",
+        "t2f": "3N",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 99550,
+        "fid": 4249528,
+        "ifs": "C",
+        "fi": "https://cricketvectors.akamaized.net/cFancode/4249528.png",
+        "fsr": "P",
+        "fta": "300",
+        "nt": 0,
+        "is_promo_fan": 1,
+        "is_promo_yt": 0,
+        "g": 0,
+        "hide": 1,
+        "global_num": {
+          "b": 0,
+          "fr": "New South Wales Breakers W",
+          "fri": "New South Wales Breakers W",
+          "l": 1.01,
+          "s": 1,
+          "v": 1
+        },
+        "date": "9/29/2026",
+        "t": 1790638200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "1",
+        "mt": 5,
+        "mf": "14HU",
+        "id": 52482,
+        "cc": 0,
+        "bf": "3N",
+        "s2": "167/10",
+        "o2": "38.0",
+        "s1": "168/4",
+        "o1": "25.0",
+        "w": "O2",
+        "ft": 1,
+        "vf": "GV",
+        "fo": "One Day",
+        "st": 27,
+        "a": "",
+        "status": 2,
+        "result": "NSW-W Won by 6 wickets",
+        "resultExtraComment": "NSW-W Won by 6 wickets"
+      },
+      {
+        "t1f": "NX",
+        "t2f": "NW",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "global_num": {
+          "b": 0,
+          "fr": "Victoria Women",
+          "fri": "^NX",
+          "l": 1.01,
+          "s": 1,
+          "v": 1
+        },
+        "date": "9/29/2026",
+        "t": 1790654400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "2",
+        "mt": 5,
+        "mf": "14HV",
+        "id": 52483,
+        "cc": 0,
+        "bf": "NW",
+        "s2": "290/7",
+        "o2": "50.0",
+        "s1": "293/8",
+        "o1": "49.3",
+        "w": "NX",
+        "ft": 1,
+        "vf": "2G",
+        "fo": "One Day",
+        "st": 27,
+        "a": "",
+        "status": 2,
+        "result": "VIC-W Won by 2 wickets",
+        "resultExtraComment": "VIC-W Won by 2 wickets"
+      },
+      {
+        "t1f": "NV",
+        "t2f": "NY",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 99704,
+        "fid": 4249530,
+        "ifs": "C",
+        "fi": "https://cricketvectors.akamaized.net/cFancode/4249530.png",
+        "fsr": "P",
+        "fta": "300",
+        "nt": 0,
+        "is_promo_fan": 1,
+        "is_promo_yt": 0,
+        "g": 0,
+        "hide": 1,
+        "global_num": {
+          "b": 0,
+          "fr": "Western Australia Women",
+          "fri": "^NV",
+          "l": 1.01,
+          "s": 1,
+          "v": 1
+        },
+        "date": "9/29/2026",
+        "t": 1790661600000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "3",
+        "mt": 5,
+        "mf": "14HW",
+        "id": 52484,
+        "cc": 0,
+        "bf": "NY",
+        "s2": "232/10",
+        "o2": "45.0",
+        "s1": "236/6",
+        "o1": "35.2",
+        "w": "NV",
+        "ft": 1,
+        "vf": "6Q",
+        "fo": "One Day",
+        "st": 27,
+        "a": "",
+        "status": 2,
+        "result": "WA-W Won by 4 wickets",
+        "resultExtraComment": "WA-W Won by 4 wickets"
+      },
+      {
+        "t1f": "O2",
+        "t2f": "3N",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 99552,
+        "fid": 4249531,
+        "ifs": "C",
+        "fi": "https://cricketvectors.akamaized.net/cFancode/4249531.png",
+        "fsr": "P",
+        "fta": "300",
+        "nt": 0,
+        "is_promo_fan": 1,
+        "is_promo_yt": 0,
+        "g": 0,
+        "hide": 1,
+        "global_num": {
+          "b": 0,
+          "fr": "Queensland Fire Women",
+          "fri": "^3N",
+          "l": 1.01,
+          "s": 1,
+          "v": 1
+        },
+        "date": "10/1/2026",
+        "t": 1790811000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "4",
+        "mt": 5,
+        "mf": "14HX",
+        "id": 52485,
+        "cc": 0,
+        "bf": "3N",
+        "s2": "285/4",
+        "o2": "50.0",
+        "s1": "174/10",
+        "o1": "38.5",
+        "w": "3N",
+        "ft": 1,
+        "vf": "GV",
+        "fo": "One Day",
+        "st": 27,
+        "a": "",
+        "status": 2,
+        "result": "QF-W Won by 111 runs",
+        "resultExtraComment": "QF-W Won by 111 runs"
+      },
+      {
+        "t1f": "NX",
+        "t2f": "NW",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "global_num": {
+          "b": 1.7,
+          "fr": "Victoria Women",
+          "fri": "^NX",
+          "l": 2.18,
+          "s": 1,
+          "v": 1
+        },
+        "date": "10/1/2026",
+        "t": 1790827200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "5",
+        "mt": 5,
+        "mf": "14HY",
+        "id": 52486,
+        "cc": 0,
+        "w": 2,
+        "ft": 1,
+        "vf": "2G",
+        "fo": "One Day",
+        "st": 27,
+        "a": "$q",
+        "status": 2,
+        "result": "Match Abandoned",
+        "resultExtraComment": "Match Abandoned",
+        "comment": "Due to Rain"
+      },
+      {
+        "t1f": "NV",
+        "t2f": "NY",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 99554,
+        "fid": 4249533,
+        "ifs": "C",
+        "fi": "https://cricketvectors.akamaized.net/cFancode/4249533.png",
+        "fsr": "P",
+        "fta": "300",
+        "nt": 0,
+        "is_promo_fan": 1,
+        "is_promo_yt": 0,
+        "g": 0,
+        "hide": 1,
+        "global_num": {
+          "b": 0,
+          "fr": "Tasmanian Tigers Women",
+          "fri": "^NY",
+          "l": 1.01,
+          "s": 1,
+          "v": 1
+        },
+        "date": "10/1/2026",
+        "t": 1790834400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "6",
+        "mt": 5,
+        "mf": "14HZ",
+        "id": 52487,
+        "cc": 0,
+        "bf": "NY",
+        "s2": "299/7",
+        "o2": "50.0",
+        "s1": "273/7",
+        "o1": "50.0",
+        "w": "NY",
+        "ft": 1,
+        "vf": "6Q",
+        "fo": "One Day",
+        "st": 27,
+        "a": "",
+        "status": 2,
+        "result": "TAS-W Won by 26 runs",
+        "resultExtraComment": "TAS-W Won by 26 runs"
+      },
+      {
+        "t1f": "NW",
+        "t2f": "NV",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "12/14/2026",
+        "t": 1797206400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "7",
+        "mt": 5,
+        "nf": "14I0",
+        "id": 52488,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O0",
+        "t2f": "O2",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "12/15/2026",
+        "t": 1797289200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "8",
+        "mt": 5,
+        "nf": "14I1",
+        "id": 52489,
+        "cc": 0,
+        "ft": 1,
+        "vf": "FR",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NW",
+        "t2f": "NV",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "12/16/2026",
+        "t": 1797379200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "9",
+        "mt": 5,
+        "nf": "14I2",
+        "id": 52490,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O0",
+        "t2f": "O2",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "12/17/2026",
+        "t": 1797462000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "10",
+        "mt": 5,
+        "nf": "14I3",
+        "id": 52491,
+        "cc": 0,
+        "ft": 1,
+        "vf": "FR",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NY",
+        "t2f": "NX",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "12/19/2026",
+        "t": 1797636600000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "11",
+        "mt": 5,
+        "nf": "14I4",
+        "id": 52492,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6D",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NY",
+        "t2f": "NX",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "12/21/2026",
+        "t": 1797809400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "12",
+        "mt": 5,
+        "nf": "14I5",
+        "id": 52493,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6D",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "3N",
+        "t2f": "O0",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/4/2027",
+        "t": 1799019000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "13",
+        "mt": 5,
+        "nf": "14I6",
+        "id": 52494,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8E",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "3N",
+        "t2f": "O0",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/6/2027",
+        "t": 1799191800000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "14",
+        "mt": 5,
+        "nf": "14I7",
+        "id": 52495,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8E",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NV",
+        "t2f": "NX",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/8/2027",
+        "t": 1799388000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "15",
+        "mt": 5,
+        "nf": "14I8",
+        "id": 52496,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NY",
+        "t2f": "O2",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/9/2027",
+        "t": 1799451000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "16",
+        "mt": 5,
+        "nf": "14I9",
+        "id": 52497,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6D",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NV",
+        "t2f": "NX",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/10/2027",
+        "t": 1799560800000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "17",
+        "mt": 5,
+        "nf": "14IA",
+        "id": 52498,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NY",
+        "t2f": "O2",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/11/2027",
+        "t": 1799623800000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "18",
+        "mt": 5,
+        "nf": "14IB",
+        "id": 52499,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6D",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NW",
+        "t2f": "O0",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/19/2027",
+        "t": 1800329400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "19",
+        "mt": 5,
+        "nf": "14IC",
+        "id": 52500,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NX",
+        "t2f": "3N",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/20/2027",
+        "t": 1800414000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "20",
+        "mt": 5,
+        "nf": "14ID",
+        "id": 52501,
+        "cc": 0,
+        "ft": 1,
+        "vf": "2G",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NW",
+        "t2f": "O0",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/21/2027",
+        "t": 1800502200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "21",
+        "mt": 5,
+        "nf": "14IE",
+        "id": 52502,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NX",
+        "t2f": "3N",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/22/2027",
+        "t": 1800586800000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "22",
+        "mt": 5,
+        "nf": "14IF",
+        "id": 52503,
+        "cc": 0,
+        "ft": 1,
+        "vf": "2G",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "3N",
+        "t2f": "NY",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "1/31/2027",
+        "t": 1801351800000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "23",
+        "mt": 5,
+        "nf": "14IG",
+        "id": 52504,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8E",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "3N",
+        "t2f": "NY",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/2/2027",
+        "t": 1801524600000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "24",
+        "mt": 5,
+        "nf": "14IH",
+        "id": 52505,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8E",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O0",
+        "t2f": "NV",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/3/2027",
+        "t": 1801609200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "25",
+        "mt": 5,
+        "nf": "14II",
+        "id": 52506,
+        "cc": 0,
+        "ft": 1,
+        "vf": "FR",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O2",
+        "t2f": "NX",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/4/2027",
+        "t": 1801695600000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "26",
+        "mt": 5,
+        "nf": "14IJ",
+        "id": 52507,
+        "cc": 0,
+        "ft": 1,
+        "vf": "GV",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O0",
+        "t2f": "NV",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/5/2027",
+        "t": 1801782000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "27",
+        "mt": 5,
+        "nf": "14JT",
+        "id": 52553,
+        "cc": 0,
+        "ft": 1,
+        "vf": "FR",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O2",
+        "t2f": "NX",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/6/2027",
+        "t": 1801868400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "28",
+        "mt": 5,
+        "nf": "14JU",
+        "id": 52554,
+        "cc": 0,
+        "ft": 1,
+        "vf": "GV",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NY",
+        "t2f": "NW",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/8/2027",
+        "t": 1802043000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "29",
+        "mt": 5,
+        "nf": "14JV",
+        "id": 52555,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6D",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NY",
+        "t2f": "NW",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/10/2027",
+        "t": 1802215800000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "30",
+        "mt": 5,
+        "nf": "14JW",
+        "id": 52556,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6D",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O2",
+        "t2f": "NW",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/21/2027",
+        "t": 1803164400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "31",
+        "mt": 5,
+        "nf": "14JX",
+        "id": 52557,
+        "cc": 0,
+        "ft": 1,
+        "vf": "GV",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "3N",
+        "t2f": "NV",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/21/2027",
+        "t": 1803166200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "32",
+        "mt": 5,
+        "nf": "14JY",
+        "id": 52558,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8E",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O2",
+        "t2f": "NW",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/23/2027",
+        "t": 1803337200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "33",
+        "mt": 5,
+        "nf": "14JZ",
+        "id": 52559,
+        "cc": 0,
+        "ft": 1,
+        "vf": "GV",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "3N",
+        "t2f": "NV",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/23/2027",
+        "t": 1803339000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "34",
+        "mt": 5,
+        "nf": "14K0",
+        "id": 52560,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8E",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NX",
+        "t2f": "O0",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/23/2027",
+        "t": 1803351600000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "35",
+        "mt": 5,
+        "nf": "14K1",
+        "id": 52561,
+        "cc": 0,
+        "ft": 1,
+        "vf": "2G",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NX",
+        "t2f": "O0",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "2/25/2027",
+        "t": 1803524400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "36",
+        "mt": 5,
+        "nf": "14K2",
+        "id": 52562,
+        "cc": 0,
+        "ft": 1,
+        "vf": "2G",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O0",
+        "t2f": "NY",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "3/10/2027",
+        "t": 1804633200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "37",
+        "mt": 5,
+        "nf": "14K3",
+        "id": 52563,
+        "cc": 0,
+        "ft": 1,
+        "vf": "FR",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NW",
+        "t2f": "3N",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "3/10/2027",
+        "t": 1804649400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "38",
+        "mt": 5,
+        "nf": "14K4",
+        "id": 52564,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NV",
+        "t2f": "O2",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "3/10/2027",
+        "t": 1804658400000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "39",
+        "mt": 5,
+        "nf": "14K5",
+        "id": 52565,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "O0",
+        "t2f": "NY",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "3/12/2027",
+        "t": 1804806000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "40",
+        "mt": 5,
+        "nf": "14K6",
+        "id": 52566,
+        "cc": 0,
+        "ft": 1,
+        "vf": "FR",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NW",
+        "t2f": "3N",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "3/12/2027",
+        "t": 1804822200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "41",
+        "mt": 5,
+        "nf": "14K7",
+        "id": 52567,
+        "cc": 0,
+        "ft": 1,
+        "vf": "8Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "NV",
+        "t2f": "O2",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "3/12/2027",
+        "t": 1804831200000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "42",
+        "mt": 5,
+        "nf": "14K8",
+        "id": 52568,
+        "cc": 0,
+        "ft": 1,
+        "vf": "6Q",
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      },
+      {
+        "t1f": "N",
+        "t2f": "CA",
+        "sf": "2NG",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 0,
+        "fid": -1,
+        "ifs": "NS",
+        "fi": "",
+        "fsr": "P",
+        "fta": "0",
+        "nt": 0,
+        "is_promo_yt": 0,
+        "is_promo_fan": 0,
+        "g": 0,
+        "hide": 1,
+        "date": "3/20/2027",
+        "t": 1805499000000,
+        "ssd": 1790620200000,
+        "sed": 1805481000000,
+        "mn": "Final",
+        "mt": 4,
+        "nf": "14K9",
+        "id": 52569,
+        "cc": 0,
+        "ft": 1,
+        "vf": null,
+        "fo": "One Day",
+        "st": 27,
+        "status": 0
+      }
+    ],
+    "https://oc.crickapi.com/mapping/getHomeMapDataseriesmatches": {
+      "p": [],
+      "t": [
+        {
+          "f_key": "O2",
+          "n": "NSW Women",
+          "sn": "NSW-W",
+          "cc": "0-#3B678B",
+          "uc": "#5C9AC6",
+          "dc": "#0E223A"
+        },
+        {
+          "f_key": "3N",
+          "n": "Queensland Fire Women",
+          "sn": "QF-W",
+          "cc": "0-#AF7C49",
+          "uc": "#ECC550",
+          "dc": "#642241"
+        },
+        {
+          "f_key": "NX",
+          "n": "Victoria Women",
+          "sn": "VIC-W",
+          "cc": "0-#273D6D",
+          "uc": "#2B4980",
+          "dc": "#1D2643"
+        },
+        {
+          "f_key": "NW",
+          "n": "SA Scorpions Women",
+          "sn": "SAS-W",
+          "cc": "0-#78283C",
+          "uc": "#37325E",
+          "dc": "#C91C10"
+        },
+        {
+          "f_key": "NV",
+          "n": "Western Australia Women",
+          "sn": "WA-W",
+          "cc": "0-#928501",
+          "uc": "#F9E501",
+          "dc": "#110B03"
+        },
+        {
+          "f_key": "NY",
+          "n": "Tasmanian Tigers Women",
+          "sn": "TAS-W",
+          "cc": "0-#6E3022",
+          "uc": "#1A3E36",
+          "dc": "#CC200C"
+        },
+        {
+          "f_key": "O0",
+          "n": "ACT Meteors Women",
+          "sn": "ACT-W",
+          "cc": "0-#82A5ED",
+          "uc": "#FBEF22",
+          "dc": "#1846A5"
+        },
+        {
+          "f_key": "N",
+          "n": "Team 1 (TBC)",
+          "sn": "TBC",
+          "cc": "0-#ff0000",
+          "uc": "#B3B3B3",
+          "dc": "#5E5E5E"
+        },
+        {
+          "f_key": "CA",
+          "n": "Team 2 (TBC)",
+          "sn": "TBC",
+          "cc": "0-0",
+          "uc": "#B3B3B3",
+          "dc": "#5E5E5E"
+        }
+      ],
+      "v": [],
+      "s": [
+        {
+          "f_key": "2NG",
+          "n": "Women's National Cricket League 2026-27",
+          "sn": "WNCL 2026-27",
+          "tour": 0
+        }
+      ],
+      "u": []
+    },
+    "https://stats.crickapi.com/series/getSeriesOverview": {
+      "i1": {
+        "i": {
+          "d": "1790640000000-1805500800000",
+          "f": "43-1/2",
+          "odi_fo": "One Days",
+          "t20_fo": null,
+          "test_fo": null,
+          "odi_subformat": "One Day",
+          "t20_subformat": null,
+          "test_subformat": null,
+          "host": "Q",
+          "r": null,
+          "istt": 0,
+          "s": "27",
+          "t": 0,
+          "sh": 0,
+          "sn": "Others",
+          "brt": 0,
+          "it": 0,
+          "tr": 0
+        },
+        "s": [
+          {
+            "gi": 26989,
+            "tf": "O2",
+            "ft": 1,
+            "st": 3,
+            "pf": [
+              "4WP/1/0/1",
+              "386/1/0/1",
+              "3MC/1/1/1",
+              "786/1/0/1",
+              "B8B/1/0/1",
+              "3EH/1/0/1",
+              "FGF/1/1/1",
+              "3EQ/1/1/2",
+              "FGE/3/1/3",
+              "144/3/1/3",
+              "QH/3/1/3",
+              "9LP/3/0/3",
+              "P6/3/1/3",
+              "FGG/3/0/3",
+              "M1P/3/1/3",
+              "36L/2/1/4",
+              "36H/2/1/4",
+              "EYN/2/0/4",
+              "37T/2/0/5",
+              "Y4/2/1/5",
+              "36N/2/0/5"
+            ],
+            "c": [],
+            "vc": [],
+            "f": [
+              "9LP/3"
+            ],
+            "iw": [
+              "3MC/1",
+              "3EH/1"
+            ],
+            "ij": [],
+            "ro": [],
+            "ss": []
+          },
+          {
+            "gi": 26990,
+            "tf": "3N",
+            "ft": 1,
+            "st": 3,
+            "pf": [
+              "4WO/1/1/1",
+              "QG/1/1/1",
+              "EYM/1/0/1",
+              "K1C/1/1/1",
+              "FG9/1/1/2",
+              "37X/1/1/2",
+              "FE3/3/1/3",
+              "B3U/3/0/3",
+              "38E/3/1/3",
+              "37F/3/1/3",
+              "QP/3/1/3",
+              "37H/3/0/3",
+              "375/3/1/3",
+              "9Q6/2/0/4",
+              "EYL/2/0/5",
+              "MKS/2/0/5",
+              "FGB/2/0/5",
+              "9Q4/2/0/5",
+              "QCP/2/1/5"
+            ],
+            "c": [],
+            "vc": [],
+            "f": [
+              "QG/1"
+            ],
+            "iw": [],
+            "ij": [],
+            "ro": [],
+            "ss": []
+          },
+          {
+            "gi": 26991,
+            "tf": "NV",
+            "ft": 1,
+            "st": 3,
+            "pf": [
+              "367/1/0/1",
+              "3ER/1/0/1",
+              "36C/1/1/1",
+              "BM1/1/1/1",
+              "32O/1/1/1",
+              "G8U/1/0/1",
+              "PV/1/1/2",
+              "B1Z/3/1/3",
+              "77V/3/1/3",
+              "364/3/1/3",
+              "38G/3/1/3",
+              "FEP/3/0/3",
+              "35X/3/0/3",
+              "FGA/3/1/3",
+              "3C7/3/1/3",
+              "CLM/2/0/4",
+              "3EX/2/0/4",
+              "9QH/2/0/5",
+              "9T3/2/1/5",
+              "H0F/2/0/5"
+            ],
+            "c": [],
+            "vc": [],
+            "f": [
+              "BM1/1"
+            ],
+            "iw": [
+              "3ER/1",
+              "BM1/1",
+              "PV/1"
+            ],
+            "ij": [],
+            "ro": [],
+            "ss": [
+              {
+                "title": "Head Coach",
+                "pfkey": "38X"
+              }
+            ]
+          },
+          {
+            "gi": 26992,
+            "tf": "NX",
+            "ft": 1,
+            "st": 3,
+            "pf": [
+              "FGC/1/1/1",
+              "389/1/0/1",
+              "A25/1/0/1",
+              "4WL/3/1/3",
+              "R2/3/1/3",
+              "A26/3/1/3",
+              "B3S/3/0/3",
+              "77Z/3/1/3",
+              "T8/3/0/3",
+              "FHF/3/0/3",
+              "FHE/3/1/3",
+              "145/3/1/3",
+              "T7/2/1/4",
+              "M25/2/0/5",
+              "3EV/2/0/5",
+              "37D/2/1/5",
+              "FHD/2/1/5",
+              "1MC/2/1/5",
+              "TN/2/0/5"
+            ],
+            "c": [],
+            "vc": [],
+            "f": [
+              "4WL/3"
+            ],
+            "iw": [
+              "389/1"
+            ],
+            "ij": [],
+            "ro": [],
+            "ss": []
+          },
+          {
+            "gi": 26993,
+            "tf": "NW",
+            "ft": 1,
+            "st": 3,
+            "pf": [
+              "9Q7/1/1/1",
+              "32L/1/1/1",
+              "37Q/1/0/1",
+              "M1M/1/0/1",
+              "3MB/3/1/3",
+              "374/3/1/3",
+              "FCQ/3/0/3",
+              "789/3/1/3",
+              "B3T/3/1/3",
+              "36M/3/1/3",
+              "788/3/0/3",
+              "BEB/2/1/4",
+              "3F1/2/0/4",
+              "3LB/2/1/4",
+              "SM/2/1/4",
+              "66F/2/0/5",
+              "4WR/2/0/5",
+              "RT/2/1/5"
+            ],
+            "c": [
+              "374/3"
+            ],
+            "vc": [],
+            "f": [
+              "3MB/3"
+            ],
+            "iw": [],
+            "ij": [],
+            "ro": [],
+            "ss": []
+          },
+          {
+            "gi": 26994,
+            "tf": "NY",
+            "ft": 1,
+            "st": 3,
+            "pf": [
+              "PB/1/1/1",
+              "9Q2/1/0/1",
+              "B7Q/1/1/1",
+              "36Y/1/1/1",
+              "TS/1/0/1",
+              "TQ/3/0/3",
+              "4WK/3/1/3",
+              "77Q/3/1/3",
+              "3C8/3/0/3",
+              "36D/3/1/3",
+              "36G/3/0/3",
+              "36P/2/1/4",
+              "CTU/2/1/4",
+              "3EY/2/1/4",
+              "38N/2/1/4",
+              "SB/2/1/5",
+              "FCK/2/0/5"
+            ],
+            "c": [],
+            "vc": [],
+            "f": [
+              "PB/1",
+              "TQ/3"
+            ],
+            "iw": [
+              "9Q2/1",
+              "B7Q/1"
+            ],
+            "ij": [],
+            "ro": [],
+            "ss": []
+          },
+          {
+            "gi": 26995,
+            "tf": "O0",
+            "ft": 1,
+            "st": 3,
+            "pf": [
+              "CQ6/1/0/1",
+              "AF5/1/0/1",
+              "B8A/1/0/1",
+              "GK7/3/0/3",
+              "9QM/3/0/3",
+              "384/3/0/3",
+              "RN/3/0/3",
+              "DBU/3/0/3",
+              "4WS/3/0/3",
+              "GEI/3/0/3",
+              "W8/2/0/4",
+              "77P/2/0/5",
+              "4Y0/2/0/5",
+              "376/2/0/5",
+              "B89/2/0/5"
+            ],
+            "c": [],
+            "vc": [],
+            "f": [
+              "RN/3",
+              "W8/2"
+            ],
+            "iw": [
+              "CQ6/1",
+              "AF5/1"
+            ],
+            "ij": [],
+            "ro": [],
+            "ss": [
+              {
+                "title": "Head Coach",
+                "pfkey": "1XN"
+              }
+            ]
+          }
+        ],
+        "w": [],
+        "ms": [],
+        "af": 1
+      },
+      "i2": [
+        {
+          "t1f": "NW",
+          "t2f": "NV",
+          "sf": "2NG",
+          "tt": 0,
+          "dt_id": "0",
+          "es_id": 0,
+          "fid": -1,
+          "ifs": "NS",
+          "fi": "",
+          "fsr": "P",
+          "fta": "0",
+          "nt": 0,
+          "is_promo_yt": 0,
+          "is_promo_fan": 0,
+          "g": 0,
+          "date": "12/14/2026",
+          "t": 1797206400000,
+          "ssd": 1790620200000,
+          "sed": 1805481000000,
+          "mn": "7",
+          "mt": 5,
+          "nf": "14I0",
+          "id": 52488,
+          "cc": 0,
+          "ft": 1,
+          "fo": "One Day",
+          "st": 27,
+          "status": 0
+        },
+        {
+          "t1f": "O0",
+          "t2f": "O2",
+          "sf": "2NG",
+          "tt": 0,
+          "dt_id": "0",
+          "es_id": 0,
+          "fid": -1,
+          "ifs": "NS",
+          "fi": "",
+          "fsr": "P",
+          "fta": "0",
+          "nt": 0,
+          "is_promo_yt": 0,
+          "is_promo_fan": 0,
+          "g": 0,
+          "date": "12/15/2026",
+          "t": 1797289200000,
+          "ssd": 1790620200000,
+          "sed": 1805481000000,
+          "mn": "8",
+          "mt": 5,
+          "nf": "14I1",
+          "id": 52489,
+          "cc": 0,
+          "ft": 1,
+          "fo": "One Day",
+          "st": 27,
+          "status": 0
+        },
+        {
+          "t1f": "NV",
+          "t2f": "NY",
+          "sf": "2NG",
+          "tt": 0,
+          "dt_id": "0",
+          "es_id": 99554,
+          "fid": 4249533,
+          "ifs": "C",
+          "fi": "https://cricketvectors.akamaized.net/cFancode/4249533.png",
+          "fsr": "P",
+          "fta": "300",
+          "nt": 0,
+          "is_promo_fan": 1,
+          "is_promo_yt": 0,
+          "g": 0,
+          "global_num": {
+            "b": 0,
+            "fr": "Tasmanian Tigers Women",
+            "fri": "^NY",
+            "l": 1.01,
+            "s": 1,
+            "v": 1
+          },
+          "date": "10/1/2026",
+          "t": 1790834400000,
+          "ssd": 1790620200000,
+          "sed": 1805481000000,
+          "mn": "6",
+          "mt": 5,
+          "mf": "14HZ",
+          "id": 52487,
+          "cc": 0,
+          "bf": "",
+          "s2": "299/7",
+          "o2": "50.0",
+          "s1": "273/7",
+          "o1": "50.0",
+          "w": "NY",
+          "ft": 1,
+          "fo": "One Day",
+          "st": 27,
+          "a": "",
+          "status": 2,
+          "result": "TAS-W Won by 26 runs",
+          "resultExtraComment": "TAS-W Won by 26 runs"
+        }
+      ],
+      "i3": [
+        {
+          "g": 1,
+          "d": [
+            {
+              "g_name": "Women's National Cricket League 2026-27",
+              "group_id": 5420,
+              "pt_info": [
+                {
+                  "series_fkey": "2NG",
+                  "team_id": 922,
+                  "team_fkey": "NX",
+                  "team_name": "Victoria Women",
+                  "P": "2",
+                  "W": "1",
+                  "L": "0",
+                  "NR": "1",
+                  "Pts": "6",
+                  "NRR": "+0.119",
+                  "cuprate2": "0",
+                  "qualified": 0,
+                  "eliminated": 0,
+                  "rank": 1,
+                  "is_winner": 0,
+                  "men": 0,
+                  "women": 1,
+                  "ft": 1,
+                  "total": 43,
+                  "rf": [
+                    "W"
+                  ]
+                },
+                {
+                  "series_fkey": "2NG",
+                  "team_id": 920,
+                  "team_fkey": "NV",
+                  "team_name": "Western Australia Women",
+                  "P": "2",
+                  "W": "1",
+                  "L": "1",
+                  "NR": "0",
+                  "Pts": "5",
+                  "NRR": "+0.655",
+                  "cuprate2": "0",
+                  "qualified": 0,
+                  "eliminated": 0,
+                  "rank": 2,
+                  "is_winner": 0,
+                  "men": 0,
+                  "women": 1,
+                  "ft": 1,
+                  "total": 43,
+                  "rf": [
+                    "W",
+                    "L"
+                  ]
+                },
+                {
+                  "series_fkey": "2NG",
+                  "team_id": 927,
+                  "team_fkey": "O2",
+                  "team_name": "NSW Women",
+                  "P": "2",
+                  "W": "1",
+                  "L": "1",
+                  "NR": "0",
+                  "Pts": "5",
+                  "NRR": "+0.040",
+                  "cuprate2": "0",
+                  "qualified": 0,
+                  "eliminated": 0,
+                  "rank": 4,
+                  "is_winner": 0,
+                  "men": 0,
+                  "women": 1,
+                  "ft": 1,
+                  "total": 43,
+                  "rf": [
+                    "W",
+                    "L"
+                  ]
+                },
+                {
+                  "series_fkey": "2NG",
+                  "team_id": 131,
+                  "team_fkey": "3N",
+                  "team_name": "Queensland Fire Women",
+                  "P": "2",
+                  "W": "1",
+                  "L": "1",
+                  "NR": "0",
+                  "Pts": "5",
+                  "NRR": "-0.040",
+                  "cuprate2": "0",
+                  "qualified": 0,
+                  "eliminated": 0,
+                  "rank": 3,
+                  "is_winner": 0,
+                  "men": 0,
+                  "women": 1,
+                  "ft": 1,
+                  "total": 43,
+                  "rf": [
+                    "L",
+                    "W"
+                  ]
+                },
+                {
+                  "series_fkey": "2NG",
+                  "team_id": 923,
+                  "team_fkey": "NY",
+                  "team_name": "Tasmanian Tigers Women",
+                  "P": "2",
+                  "W": "1",
+                  "L": "1",
+                  "NR": "0",
+                  "Pts": "4",
+                  "NRR": "-0.655",
+                  "cuprate2": "0",
+                  "qualified": 0,
+                  "eliminated": 0,
+                  "rank": 5,
+                  "is_winner": 0,
+                  "men": 0,
+                  "women": 1,
+                  "ft": 1,
+                  "total": 43,
+                  "rf": [
+                    "L",
+                    "W"
+                  ]
+                },
+                {
+                  "series_fkey": "2NG",
+                  "team_id": 921,
+                  "team_fkey": "NW",
+                  "team_name": "SA Scorpions Women",
+                  "P": "2",
+                  "W": "0",
+                  "L": "1",
+                  "NR": "1",
+                  "Pts": "2",
+                  "NRR": "-0.119",
+                  "cuprate2": "0",
+                  "qualified": 0,
+                  "eliminated": 0,
+                  "rank": 6,
+                  "is_winner": 0,
+                  "men": 0,
+                  "women": 1,
+                  "ft": 1,
+                  "total": 43,
+                  "rf": [
+                    "L"
+                  ]
+                },
+                {
+                  "series_fkey": "2NG",
+                  "team_id": 925,
+                  "team_fkey": "O0",
+                  "team_name": "ACT Meteors Women",
+                  "P": "0",
+                  "W": "0",
+                  "L": "0",
+                  "NR": "0",
+                  "Pts": "0",
+                  "NRR": "0",
+                  "cuprate2": "0",
+                  "qualified": 0,
+                  "eliminated": 0,
+                  "rank": 7,
+                  "is_winner": 0,
+                  "men": 0,
+                  "women": 1,
+                  "ft": 1,
+                  "total": 43,
+                  "rf": []
+                }
+              ]
+            }
+          ],
+          "af": 1
+        }
+      ],
+      "i4": {
+        "af": 1,
+        "i": {
+          "1": {
+            "mw": [
+              {
+                "name": "mw",
+                "tf": "NV",
+                "v": "8",
+                "pf": "FGA",
+                "bi": "2",
+                "econ": 6.5294
+              }
+            ],
+            "mr": [
+              {
+                "name": "mr",
+                "tf": "NW",
+                "v": "154",
+                "pf": "36M",
+                "bi": "1",
+                "sr": 112.4088
+              }
+            ],
+            "ms": [
+              {
+                "name": "ms",
+                "tf": "NW",
+                "v": "3",
+                "pf": "36M",
+                "bi": "1",
+                "sr": 112.4088
+              }
+            ],
+            "mf": [
+              {
+                "name": "mf",
+                "tf": "NV",
+                "v": "17",
+                "pf": "PV"
+              }
+            ],
+            "md": [
+              {
+                "name": "md",
+                "tf": "NV",
+                "v": "76",
+                "pf": "77V"
+              }
+            ],
+            "totals": {
+              "t4": "280",
+              "t6": "8"
+            },
+            "hs": [
+              {
+                "name": "hs",
+                "tf": "NW",
+                "v": "154",
+                "pf": "36M",
+                "pid": 4145,
+                "bi": "1",
+                "sr": 112.4088
+              }
+            ],
+            "bf": [
+              {
+                "name": "bf",
+                "tf": "O2",
+                "v": "40/5",
+                "pf": "36L",
+                "pid": 4144,
+                "bi": "2"
+              }
+            ],
+            "bsr": [
+              {
+                "name": "bsr",
+                "tf": "O2",
+                "r": "68",
+                "pf": "3EQ",
+                "bi": "2",
+                "v": 119.2982
+              }
+            ],
+            "bec": [
+              {
+                "name": "bec",
+                "tf": "NV",
+                "w": "8",
+                "pf": "FGA",
+                "bi": "2",
+                "v": 6.5294
+              }
+            ],
+            "mfp": [
+              {
+                "name": "mfp",
+                "tf": "NW",
+                "v": 362,
+                "pf": "36M"
+              }
+            ]
+          }
+        }
+      },
+      "i5": [
+        {
+          "t1f": "N",
+          "t2f": "CA",
+          "mf": "",
+          "ft": 1,
+          "dt": 1805499000000,
+          "s": 0,
+          "mt": 4,
+          "dt_id": "0",
+          "es_id": 0
+        }
+      ],
+      "i6": [
+        {
+          "matches": 6,
+          "f_key": "GV",
+          "city": "Sydney",
+          "country": "Australia",
+          "known_name": "Cricket Central, Sydney Olympic Park"
+        },
+        {
+          "matches": 6,
+          "f_key": "2G",
+          "city": "Melbourne",
+          "country": "Australia",
+          "known_name": "CitiPower Centre, Melbourne"
+        },
+        {
+          "matches": 6,
+          "f_key": "6Q",
+          "city": "East Perth",
+          "country": "Australia",
+          "known_name": "W.A.C.A. Ground Perth"
+        },
+        {
+          "matches": 6,
+          "f_key": "8Q",
+          "city": "Adelaide",
+          "country": "Australia",
+          "known_name": "Karen Rolton Oval, Adelaide, South Australia"
+        },
+        {
+          "matches": 6,
+          "f_key": "FR",
+          "city": "Canberra",
+          "country": "Australia",
+          "known_name": "Phillip Oval, Canberra, Australia"
+        },
+        {
+          "matches": 6,
+          "f_key": "6D",
+          "city": "Bellerive",
+          "country": "Australia",
+          "known_name": "Ninja Stadium Hobart"
+        },
+        {
+          "matches": 6,
+          "f_key": "8E",
+          "city": "Albion, Brisbane",
+          "country": "Australia",
+          "known_name": "Allan Border Field, Brisbane"
+        }
+      ],
+      "i8": {
+        "ott": [
+          {
+            "name": "CREX & FANCODE",
+            "country": "IN"
+          }
+        ],
+        "tv": []
+      },
+      "i9": {
+        "title": "Watch SAS-W vs WA-W on CREX",
+        "fancode_promo_preview": null,
+        "match_obj": {
+          "t1f": "NW",
+          "t2f": "NV",
+          "sf": "2NG",
+          "tt": 0,
+          "dt_id": "0",
+          "es_id": 0,
+          "fid": -1,
+          "ifs": "NS",
+          "fi": "",
+          "fsr": "P",
+          "fta": "0",
+          "nt": 0,
+          "g": 0,
+          "date": "12/14/2026",
+          "t": 1797206400000,
+          "mn": "7",
+          "mt": 5,
+          "nf": "14I0",
+          "id": 52488,
+          "cc": 0,
+          "ft": 1,
+          "fo": "One Day",
+          "st": 27,
+          "status": 0
+        }
+      },
+      "i7": {
+        "t20_fo": null,
+        "odi_fo": "One Day",
+        "test_fo": null
+      }
+    },
+    "https://oc.crickapi.com/mapping/getHomeMapDataseriesmain": {
+      "p": [
+        {
+          "f_key": "FGA",
+          "n": "Ruby Strange"
+        },
+        {
+          "f_key": "36M",
+          "n": "Tahlia McGrath"
+        },
+        {
+          "f_key": "PV",
+          "n": "Beth Mooney"
+        },
+        {
+          "f_key": "77V",
+          "n": "Amy Louise Edgar"
+        },
+        {
+          "f_key": "36L",
+          "n": "Samantha Bates"
+        },
+        {
+          "f_key": "3EQ",
+          "n": "Phoebe Litchfield"
+        },
+        {
+          "f_key": "4WP",
+          "n": "Anika Learoyd"
+        },
+        {
+          "f_key": "386",
+          "n": "Katie Mack"
+        },
+        {
+          "f_key": "3MC",
+          "n": "Emma Manix-Geeves"
+        },
+        {
+          "f_key": "786",
+          "n": "Claire Moore"
+        },
+        {
+          "f_key": "B8B",
+          "n": "Frankie Nicklin"
+        },
+        {
+          "f_key": "3EH",
+          "n": "Tahlia Wilson"
+        },
+        {
+          "f_key": "FGF",
+          "n": "Eva Ragg"
+        },
+        {
+          "f_key": "FGE",
+          "n": "Caoimhe Bray"
+        },
+        {
+          "f_key": "144",
+          "n": "Erin Burns"
+        },
+        {
+          "f_key": "QH",
+          "n": "Ashleigh Gardner"
+        },
+        {
+          "f_key": "9LP",
+          "n": "Elsa Hunter"
+        },
+        {
+          "f_key": "P6",
+          "n": "Ellyse Perry"
+        },
+        {
+          "f_key": "FGG",
+          "n": "Lucy Finn"
+        },
+        {
+          "f_key": "M1P",
+          "n": "Tara French"
+        },
+        {
+          "f_key": "36H",
+          "n": "Sarah Coyte"
+        },
+        {
+          "f_key": "EYN",
+          "n": "Sienna Eve"
+        },
+        {
+          "f_key": "37T",
+          "n": "Maitlan Brown"
+        },
+        {
+          "f_key": "Y4",
+          "n": "Lauren Cheatle"
+        },
+        {
+          "f_key": "36N",
+          "n": "Hannah Darlington"
+        },
+        {
+          "f_key": "4WO",
+          "n": "Georgia Voll"
+        },
+        {
+          "f_key": "QG",
+          "n": "Lauren Winfield-Hill"
+        },
+        {
+          "f_key": "EYM",
+          "n": "Mikayla Wrigley"
+        },
+        {
+          "f_key": "K1C",
+          "n": "Ayaka Stafford"
+        },
+        {
+          "f_key": "FG9",
+          "n": "Lucinda Bourke"
+        },
+        {
+          "f_key": "37X",
+          "n": "Georgia Redmayne"
+        },
+        {
+          "f_key": "FE3",
+          "n": "Lily Bassingthwaighte"
+        },
+        {
+          "f_key": "B3U",
+          "n": "Sianna Ginger"
+        },
+        {
+          "f_key": "38E",
+          "n": "Nicola Hancock"
+        },
+        {
+          "f_key": "37F",
+          "n": "Grace Harris"
+        },
+        {
+          "f_key": "QP",
+          "n": "Jess Jonassen"
+        },
+        {
+          "f_key": "37H",
+          "n": "Charli Knott"
+        },
+        {
+          "f_key": "375",
+          "n": "Annie O'Neil"
+        },
+        {
+          "f_key": "9Q6",
+          "n": "Grace Parsons"
+        },
+        {
+          "f_key": "EYL",
+          "n": "Bonnie Berry"
+        },
+        {
+          "f_key": "MKS",
+          "n": "Grace Collins"
+        },
+        {
+          "f_key": "FGB",
+          "n": "Lilli Hamilton"
+        },
+        {
+          "f_key": "9Q4",
+          "n": "Lucy Hamilton"
+        },
+        {
+          "f_key": "QCP",
+          "n": "Catherine White"
+        },
+        {
+          "f_key": "367",
+          "n": "Mathilda Carmichael"
+        },
+        {
+          "f_key": "3ER",
+          "n": "Maddy Darke"
+        },
+        {
+          "f_key": "36C",
+          "n": "Mikayla Hinkley"
+        },
+        {
+          "f_key": "BM1",
+          "n": "Ines Mckeon"
+        },
+        {
+          "f_key": "32O",
+          "n": "Chloe Piparo"
+        },
+        {
+          "f_key": "G8U",
+          "n": "Tegan Williamson"
+        },
+        {
+          "f_key": "B1Z",
+          "n": "Chloe Ainsworth"
+        },
+        {
+          "f_key": "364",
+          "n": "Heather Graham"
+        },
+        {
+          "f_key": "38G",
+          "n": "Alana King"
+        },
+        {
+          "f_key": "FEP",
+          "n": "Rebecca McGrath"
+        },
+        {
+          "f_key": "35X",
+          "n": "Taneale Peschel"
+        },
+        {
+          "f_key": "3C7",
+          "n": "Bhavi Devchand"
+        },
+        {
+          "f_key": "CLM",
+          "n": "Shay Manolini"
+        },
+        {
+          "f_key": "3EX",
+          "n": "Lilly Mills"
+        },
+        {
+          "f_key": "9QH",
+          "n": "Zoe Britcliffe"
+        },
+        {
+          "f_key": "9T3",
+          "n": "Ebony Hoskin"
+        },
+        {
+          "f_key": "H0F",
+          "n": "Maddie White"
+        },
+        {
+          "f_key": "FGC",
+          "n": "Samara Dulvin"
+        },
+        {
+          "f_key": "389",
+          "n": "Nicole Faltum"
+        },
+        {
+          "f_key": "A25",
+          "n": "Olivia Henry"
+        },
+        {
+          "f_key": "4WL",
+          "n": "Sophie Day"
+        },
+        {
+          "f_key": "R2",
+          "n": "Kim Garth"
+        },
+        {
+          "f_key": "A26",
+          "n": "Hasrat Gill"
+        },
+        {
+          "f_key": "B3S",
+          "n": "Milly Illingworth"
+        },
+        {
+          "f_key": "77Z",
+          "n": "Rhys McKenna"
+        },
+        {
+          "f_key": "T8",
+          "n": "Sophie Molineux"
+        },
+        {
+          "f_key": "FHF",
+          "n": "Indigo Noble"
+        },
+        {
+          "f_key": "FHE",
+          "n": "Mia Perrin"
+        },
+        {
+          "f_key": "145",
+          "n": "Annabel Sutherland"
+        },
+        {
+          "f_key": "T7",
+          "n": "Georgia Wareham"
+        },
+        {
+          "f_key": "M25",
+          "n": "Ira Aery"
+        },
+        {
+          "f_key": "3EV",
+          "n": "Tess Flintoff"
+        },
+        {
+          "f_key": "37D",
+          "n": "Georgia Prestwidge"
+        },
+        {
+          "f_key": "FHD",
+          "n": "Zoe Samuel"
+        },
+        {
+          "f_key": "1MC",
+          "n": "Molly Strano"
+        },
+        {
+          "f_key": "TN",
+          "n": "Tayla Vlaeminck"
+        },
+        {
+          "f_key": "9Q7",
+          "n": "Emma de Broughe"
+        },
+        {
+          "f_key": "32L",
+          "n": "Bridget Patterson"
+        },
+        {
+          "f_key": "37Q",
+          "n": "Courtney Webb"
+        },
+        {
+          "f_key": "M1M",
+          "n": "Elizabeth Worthley"
+        },
+        {
+          "f_key": "3MB",
+          "n": "Hollie Armitage"
+        },
+        {
+          "f_key": "374",
+          "n": "Jemma Barsby"
+        },
+        {
+          "f_key": "FCQ",
+          "n": "Emmerson Filsell"
+        },
+        {
+          "f_key": "789",
+          "n": "Ellie Johnston"
+        },
+        {
+          "f_key": "B3T",
+          "n": "Eleanor Larosa"
+        },
+        {
+          "f_key": "788",
+          "n": "Ella Wilson"
+        },
+        {
+          "f_key": "BEB",
+          "n": "Isabella Malgioglio"
+        },
+        {
+          "f_key": "3F1",
+          "n": "Courtney Neale"
+        },
+        {
+          "f_key": "3LB",
+          "n": "Madeline Penna"
+        },
+        {
+          "f_key": "SM",
+          "n": "Amanda-Jade Wellington"
+        },
+        {
+          "f_key": "66F",
+          "n": "Darcie Brown"
+        },
+        {
+          "f_key": "4WR",
+          "n": "Kate Peterson"
+        },
+        {
+          "f_key": "RT",
+          "n": "Megan Schutt"
+        },
+        {
+          "f_key": "PB",
+          "n": "Lizelle Lee"
+        },
+        {
+          "f_key": "9Q2",
+          "n": "Caitlin Mair"
+        },
+        {
+          "f_key": "B7Q",
+          "n": "Kate Maree Pelle"
+        },
+        {
+          "f_key": "36Y",
+          "n": "Tabatha Saville"
+        },
+        {
+          "f_key": "TS",
+          "n": "Elyse Villani"
+        },
+        {
+          "f_key": "TQ",
+          "n": "Alice Davidson-Richards"
+        },
+        {
+          "f_key": "4WK",
+          "n": "Ella Hayward"
+        },
+        {
+          "f_key": "77Q",
+          "n": "Ruth Johnston"
+        },
+        {
+          "f_key": "3C8",
+          "n": "Hayley Silver-Holmes"
+        },
+        {
+          "f_key": "36D",
+          "n": "Naomi Stalenberg"
+        },
+        {
+          "f_key": "36G",
+          "n": "Rachel Trenaman"
+        },
+        {
+          "f_key": "36P",
+          "n": "Maisy Gibson"
+        },
+        {
+          "f_key": "CTU",
+          "n": "Sara Kennedy"
+        },
+        {
+          "f_key": "3EY",
+          "n": "Courtney Grace Sippel"
+        },
+        {
+          "f_key": "38N",
+          "n": "Lauren Smith"
+        },
+        {
+          "f_key": "SB",
+          "n": "Nicola Carey"
+        },
+        {
+          "f_key": "FCK",
+          "n": "Callie Wilson"
+        },
+        {
+          "f_key": "CQ6",
+          "n": "Grace Lyons"
+        },
+        {
+          "f_key": "AF5",
+          "n": "Paris Bowdler"
+        },
+        {
+          "f_key": "B8A",
+          "n": "Shivani Mehta"
+        },
+        {
+          "f_key": "GK7",
+          "n": "Amy Hunter"
+        },
+        {
+          "f_key": "9QM",
+          "n": "Annie Wikman"
+        },
+        {
+          "f_key": "384",
+          "n": "Carly Leeson"
+        },
+        {
+          "f_key": "RN",
+          "n": "Georgia Elwiss"
+        },
+        {
+          "f_key": "DBU",
+          "n": "Grace Dignam"
+        },
+        {
+          "f_key": "4WS",
+          "n": "Olivia Porter"
+        },
+        {
+          "f_key": "GEI",
+          "n": "Rachel Carroll"
+        },
+        {
+          "f_key": "W8",
+          "n": "Anesu Mushangwe"
+        },
+        {
+          "f_key": "77P",
+          "n": "Angelina Genford"
+        },
+        {
+          "f_key": "4Y0",
+          "n": "Gabrielle Sutcliffe"
+        },
+        {
+          "f_key": "376",
+          "n": "Holly Ferling"
+        },
+        {
+          "f_key": "B89",
+          "n": "Zoe Cooke"
+        }
+      ],
+      "t": [
+        {
+          "f_key": "O2",
+          "n": "NSW Women",
+          "sn": "NSW-W",
+          "cc": "0-#3B678B",
+          "uc": "#5C9AC6",
+          "dc": "#0E223A"
+        },
+        {
+          "f_key": "3N",
+          "n": "Queensland Fire Women",
+          "sn": "QF-W",
+          "cc": "0-#AF7C49",
+          "uc": "#ECC550",
+          "dc": "#642241"
+        },
+        {
+          "f_key": "NV",
+          "n": "Western Australia Women",
+          "sn": "WA-W",
+          "cc": "0-#928501",
+          "uc": "#F9E501",
+          "dc": "#110B03"
+        },
+        {
+          "f_key": "NX",
+          "n": "Victoria Women",
+          "sn": "VIC-W",
+          "cc": "0-#273D6D",
+          "uc": "#2B4980",
+          "dc": "#1D2643"
+        },
+        {
+          "f_key": "NW",
+          "n": "SA Scorpions Women",
+          "sn": "SAS-W",
+          "cc": "0-#78283C",
+          "uc": "#37325E",
+          "dc": "#C91C10"
+        },
+        {
+          "f_key": "NY",
+          "n": "Tasmanian Tigers Women",
+          "sn": "TAS-W",
+          "cc": "0-#6E3022",
+          "uc": "#1A3E36",
+          "dc": "#CC200C"
+        },
+        {
+          "f_key": "O0",
+          "n": "ACT Meteors Women",
+          "sn": "ACT-W",
+          "cc": "0-#82A5ED",
+          "uc": "#FBEF22",
+          "dc": "#1846A5"
+        }
+      ],
+      "v": [],
+      "s": [
+        {
+          "f_key": "2NG",
+          "n": "Women's National Cricket League 2026-27",
+          "sn": "WNCL 2026-27",
+          "tour": 0
+        }
+      ],
+      "u": []
+    },
+    "https://crexweb.crickapi.com/api/articles/filter/s_2NG?page=1&limit=10&content_lang=en": {
+      "prev": false,
+      "next": false,
+      "articles": []
+    },
+    "https://oc.crickapi.com/mapping/getHomeMapDataseriesseo": {
+      "p": [],
+      "t": [],
+      "v": [],
+      "s": [
+        {
+          "f_key": "2NG",
+          "n": "Women's National Cricket League 2026-27",
+          "sn": "WNCL 2026-27",
+          "tour": 0
+        }
+      ],
+      "u": []
+    }
+  }
+}

@@ -1,0 +1,417 @@
+{
+  "generatedAt": "2026-10-04T11:01:43.723Z",
+  "datasetSha256": "1afe32a13af9e580157a6d095f717b65b84ce50bebd1604a72ad1ff34b436573",
+  "eligible": 232,
+  "usable": 232,
+  "unscored": 0,
+  "noResult": 37,
+  "leagueCount": 37,
+  "training": {
+    "total": 232,
+    "correct": 232,
+    "wrong": 0,
+    "accuracy": 100
+  },
+  "holdout": {
+    "trainingCount": 185,
+    "testCount": 47,
+    "startTime": 1789779600000,
+    "tree": {
+      "total": 47,
+      "correct": 29,
+      "wrong": 18,
+      "accuracy": 61.7
+    },
+    "baseline": {
+      "correct": 26,
+      "wrong": 21,
+      "accuracy": 55.3
+    },
+    "forecasts": [
+      {
+        "id": "36067248",
+        "league": "International Twenty20 Matches",
+        "actual": "Hong Kong",
+        "predicted": "Hong Kong",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36070909",
+        "league": "Australia One Day Cup",
+        "actual": "Victoria",
+        "predicted": "Victoria",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36082549",
+        "league": "Metro Bank Womens One Day Cup",
+        "actual": "The Blaze W",
+        "predicted": "The Blaze W",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36082765",
+        "league": "Womens International Twenty20 Matches",
+        "actual": "South Africa W",
+        "predicted": "South Africa W",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36087032",
+        "league": "International Twenty20 Matches",
+        "actual": "Kenya",
+        "predicted": "Kenya",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36082473",
+        "league": "ILT20 Development Tournament",
+        "actual": "Gulf Giants Dev",
+        "predicted": "Sharjah Warriorz Dev",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36084485",
+        "league": "European T20 Premier League",
+        "actual": "Belfast Wolves",
+        "predicted": "Amsterdam Flames",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36082542",
+        "league": "International Twenty20 Matches",
+        "actual": "England",
+        "predicted": "England",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36082580",
+        "league": "ILT20 Development Tournament",
+        "actual": "Dubai Capitals Dev",
+        "predicted": "Abu Dhabi Knight Riders",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36086084",
+        "league": "Asian Games Women",
+        "actual": "Sri Lanka W",
+        "predicted": "Pakistan W",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36086124",
+        "league": "Asian Games Women",
+        "actual": "India W",
+        "predicted": "India W",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36085924",
+        "league": "Australia One Day Cup",
+        "actual": "Tasmania Tigers",
+        "predicted": "Western Australia",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36074960",
+        "league": "CSA One-Day Challenge Div 2",
+        "actual": "Garden Route Badgers",
+        "predicted": "Garden Route Badgers",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36085898",
+        "league": "One Day Internationals",
+        "actual": "Australia",
+        "predicted": "Australia",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36075053",
+        "league": "CSA One-Day Challenge Div 2",
+        "actual": "Eastern Storm",
+        "predicted": "Eastern Cape Linyathi",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36091321",
+        "league": "Women's One Day Matches",
+        "actual": "India A W",
+        "predicted": "India A W",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36082557",
+        "league": "Metro Bank Womens One Day Cup",
+        "actual": "Middlesex W",
+        "predicted": "Glamorgan W",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36075087",
+        "league": "Metro Bank One Day Cup",
+        "actual": "Middlesex",
+        "predicted": "Middlesex",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36090798",
+        "league": "ILT20 Development Tournament",
+        "actual": "Abu Dhabi Knight Riders",
+        "predicted": "Abu Dhabi Knight Riders",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36092701",
+        "league": "European T20 Premier League",
+        "actual": "Edinburgh Castle Rockers",
+        "predicted": "Belfast Wolves",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36090931",
+        "league": "ILT20 Development Tournament",
+        "actual": "Mi Emirates Dev",
+        "predicted": "Mi Emirates Dev",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36090636",
+        "league": "Caribbean Premier League",
+        "actual": "Antigua & Barbuda Falcs",
+        "predicted": "Jamaica Kingsmen",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36086137",
+        "league": "Unofficial International Matches",
+        "actual": "India U19",
+        "predicted": "India U19",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36101712",
+        "league": "First Class Matches",
+        "actual": "India A",
+        "predicted": "Australia A",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36103490",
+        "league": "Womens One Day Internationals",
+        "actual": "West Indies W",
+        "predicted": "West Indies W",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36083840",
+        "league": "One Day Internationals",
+        "actual": "South Africa",
+        "predicted": "Australia",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36107189",
+        "league": "Uttarakhand Premier League",
+        "actual": "Haridwar Elmas",
+        "predicted": "Rishikesh River Kings",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36103843",
+        "league": "One Day Internationals",
+        "actual": "Sri Lanka",
+        "predicted": "England",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36110045",
+        "league": "ILT20 Development Tournament",
+        "actual": "Gulf Giants Development",
+        "predicted": "Gulf Giants Development",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36098847",
+        "league": "Asian Games Men",
+        "actual": "Hong Kong",
+        "predicted": "Hong Kong",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36098736",
+        "league": "Australia One Day Cup",
+        "actual": "New South Wales Blues",
+        "predicted": "New South Wales Blues",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36108897",
+        "league": "Asian Games T20",
+        "actual": "Nepal",
+        "predicted": "Afghanistan",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36107251",
+        "league": "Women's One Day Matches",
+        "actual": "India A W",
+        "predicted": "India A W",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36115215",
+        "league": "International Twenty20 Matches",
+        "actual": "Sierra Leone",
+        "predicted": "Ghana",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36099057",
+        "league": "South Africa T20 Challenge",
+        "actual": "North West Dragons",
+        "predicted": "North West Dragons",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36115223",
+        "league": "International Twenty20 Matches",
+        "actual": "Nigeria",
+        "predicted": "Nigeria",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36099060",
+        "league": "South Africa T20 Challenge",
+        "actual": "Titans",
+        "predicted": "Titans",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36116022",
+        "league": "International Twenty20 Matches",
+        "actual": "Nigeria A",
+        "predicted": "Nigeria A",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36116026",
+        "league": "International Twenty20 Matches",
+        "actual": "Nigeria",
+        "predicted": "Nigeria",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36119703",
+        "league": "International Twenty20 Matches",
+        "actual": "Bermuda",
+        "predicted": "Bermuda",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36142171",
+        "league": "Canada Super 60",
+        "actual": "Vancouver Anchors",
+        "predicted": "Toronto Sixers",
+        "correct": false,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36139329",
+        "league": "Asian Games T20",
+        "actual": "Sri Lanka",
+        "predicted": "Sri Lanka",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36139325",
+        "league": "Asian Games T20",
+        "actual": "India",
+        "predicted": "India",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36142189",
+        "league": "Canada Super 60",
+        "actual": "Mississauga Masters",
+        "predicted": "Mississauga Masters",
+        "correct": true,
+        "modelScope": "global-fallback"
+      },
+      {
+        "id": "36137653",
+        "league": "One Day Internationals",
+        "actual": "West Indies",
+        "predicted": "India",
+        "correct": false,
+        "modelScope": "league"
+      },
+      {
+        "id": "36135356",
+        "league": "Womens International Twenty20 Matches",
+        "actual": "West Indies W",
+        "predicted": "West Indies W",
+        "correct": true,
+        "modelScope": "league"
+      },
+      {
+        "id": "36141679",
+        "league": "Emirates D10",
+        "actual": "Emirates Blues",
+        "predicted": "Emirates Red",
+        "correct": false,
+        "modelScope": "global-fallback"
+      }
+    ]
+  },
+  "methods": [
+    "Only preMatchVolume, preMatchPnl and preMatchTotalBets numeric fields are used. Live fields, IDs, dates and team identities are excluded from model features.",
+    "Training labels are independently verified actual winners; they are never read by runtime inference.",
+    "The separate fixed 80/20 chronological split trains on the first 185 usable records and evaluates the last 47. No holdout labels participate in that model fit or a parameter search.",
+    "The final historical-fit model trains on all usable records, including the holdout. Its replay accuracy is therefore explicitly in-sample and does not replace the holdout result.",
+    "Leaves may contain a single training record; full-fit trees have substantial overfitting risk, particularly in leagues with little data.",
+    "A zero-flow snapshot or perfectly symmetric market inputs produce no forecast; No Result records are excluded from winner scoring."
+  ]
+}

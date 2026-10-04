@@ -1,5 +1,5 @@
 /**
- * Toss Winner Predictor v9 — League-Specific Algorithms & Smart Flow Waterfall
+ * Toss Winner Predictor v10 — League-Specific Algorithms & Smart Flow Waterfall
  *
  * Checks specialized league algorithms first (CPL, TNPL, The Hundred, ECS, T20I, Test, ODI, Kerala, DPL, UP T20, Sri Lanka),
  * then falls back to default waterfall for maximum precision.
@@ -8,7 +8,7 @@
 import { computeTossRisk } from './predictionRisk.js'
 import { getLeagueTossPrediction, inferCompetition, teamEq, fmtVol } from './tossLeagueAlgorithms.js'
 
-export const PREDICTOR_VERSION = 'toss-v9-league-specific-algorithms'
+export const PREDICTOR_VERSION = 'toss-v10-league-rules-retrospective'
 
 export function predictTossWinner(snap, compName = '') {
   if (!snap?.teamNames?.length) return null
@@ -193,8 +193,8 @@ export function predictTossWinner(snap, compName = '') {
     verdictTag.includes('SMART')
 
   const confidence = isHighConf
-    ? { label: 'High Confidence 🔥', color: 'text-profit', pct: '92%' }
-    : { label: 'Moderate', color: 'text-yellow-500', pct: '78%' }
+    ? { label: 'Stronger rule support', color: 'text-profit', pct: 'Uncalibrated', calibrated: false }
+    : { label: 'Mixed rule support', color: 'text-yellow-500', pct: 'Uncalibrated', calibrated: false }
 
   const signals = [
     {

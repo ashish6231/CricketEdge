@@ -1,3 +1,4 @@
+const { checkPreMatchDataQuality } = require('../utils/preMatchDataQuality.mjs');
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
@@ -5,7 +6,7 @@ const { getDefaultStore } = require('./tossDatasetStore');
 const dataCache = require('./dataCache');
 const { getCrexOverview, findCrexMatch, getCrexMatchDetail } = require('./crexService');
 
-let cachedPredictorVersion = 'toss-v8-layvol-ratio-gate';
+let cachedPredictorVersion = 'toss-v10-league-rules-retrospective';
 let cachedPredictorModule = null;
 
 function sanitizeError(message) {
@@ -89,9 +90,9 @@ async function loadPredictorModule() {
   throw new Error(`tossPredictor not found (${errors.join('; ')})`);
 }
 
-async function defaultPredictTossWinner(snapshot) {
+async function defaultPredictTossWinner(snapshot, competitionName) {
   const mod = await loadPredictorModule();
-  return mod.predictTossWinner(snapshot);
+  return mod.predictTossWinner(snapshot, competitionName);
 }
 
 function shouldSkipExisting(existing) {
@@ -99,7 +100,7 @@ function shouldSkipExisting(existing) {
   if (existing.status === 'verified') return true;
   if (
     existing.status === 'pending'
-    && hasSuccessfulSnapshot(existing.snapshot)
+    && checkPreMatchDataQuality(existing.snapshot).valid
     && !existing.lastCaptureError
   ) {
     return true;
@@ -161,35 +162,17 @@ async function captureEndedTosses({
     const matchName = match.matchName ?? null;
 
     if (!hasSuccessfulSnapshot(snapshot)) {
-      const errorMsg = snapshot?.error || 'No toss snapshot data';
-      const [fallbackTeam1, fallbackTeam2] = parseTeamsFromMatchName(matchName);
-      await store.upsertPendingCapture({
-        matchId: String(match.matchId),
-        marketId: match.marketId ?? null,
-        matchName,
-        competitionName: match.competitionName ?? null,
-        team1: existing?.team1 ?? fallbackTeam1,
-        team2: existing?.team2 ?? fallbackTeam2,
-        startTime: match.startTime ?? null,
-        endedAt: isoNow,
-        capturedAt: isoNow,
-        snapshot: null,
-        predictedWinner: null,
-        predictionReason: null,
-        predictionRisk: {},
-        matchedRules: [],
-        predictorVersion: cachedPredictorVersion,
-        lastCaptureError: sanitizeError(errorMsg),
-        confirmedAt: null,
-        confirmedByEmail: null,
-        confirmedById: null,
-      });
       summary.failed += 1;
       continue;
     }
 
     const [team1, team2] = extractTeams(snapshot, match);
-    const prediction = await predict(snapshot);
+    snapshot = { ...snapshot, teamNames: [team1, team2] };
+    if (!checkPreMatchDataQuality(snapshot).valid) {
+      summary.skipped += 1;
+      continue;
+    }
+    const prediction = await predict(snapshot, match.competitionName);
 
     let actualWinner = null;
     if (crexOverview && Array.isArray(crexOverview) && crexOverview.length > 0) {

@@ -1,0 +1,1008 @@
+/**
+ * League-Specific Algorithms for Match Winner Prediction
+ * Legacy specialist rules. Normal mode supplies an allowlisted frozen snapshot;
+ * direct legacy callers may still supply derived/live fields.
+ */
+
+function isInternationalT20(compName) {
+  const comp = (compName || '').toLowerCase();
+  return (
+    comp.includes('international twenty20') ||
+    comp.includes('international t20') ||
+    comp.includes('twenty20 international') ||
+    comp.includes('t20 international') ||
+    comp.includes('twenty20 matches') ||
+    comp.includes('t20i') ||
+    comp.includes('icc men') ||
+    comp.includes('icc t20')
+  );
+}
+
+function getInternationalT20Prediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, team2) {
+  // Pre-match metrics directly from snapshot
+  const prePnl = snap?.preMatchPnl || {};
+  const preBets = snap?.preMatchTotalBets || {};
+  const preVol1 = snap?.preMatchVolume?.team1 || {};
+  const preVol2 = snap?.preMatchVolume?.team2 || {};
+
+  const prePnl1 = prePnl.team1 != null ? prePnl.team1 : pnl1;
+  const prePnl2 = prePnl.team2 != null ? prePnl.team2 : pnl2;
+  const preBetCount1 = preBets.team1 != null ? preBets.team1 : 0;
+  const preBetCount2 = preBets.team2 != null ? preBets.team2 : 0;
+
+  const preBack1 = preVol1.back ?? b1 ?? 0;
+  const preLay1 = preVol1.lay ?? l1 ?? 0;
+  const preBack2 = preVol2.back ?? b2 ?? 0;
+  const preLay2 = preVol2.lay ?? l2 ?? 0;
+
+  const totBack = preBack1 + preBack2;
+  const maxBack = Math.max(preBack1, preBack2);
+  const minBack = Math.min(preBack1, preBack2);
+  const backRatio = minBack > 0 ? maxBack / minBack : (maxBack > 0 ? 99 : 1);
+
+  // An extreme public back share alone is not evidence that the favourite loses.
+  // Require the remaining flow/activity evidence instead of an unconditional fade.
+
+  // 2. Dual Flow Inflow Dominance (Higher Back & Higher Lay)
+  if (preBack1 > preBack2 && preLay1 > preLay2 && (preBack1 >= preBack2 * 1.25 || preLay1 >= preLay2 * 1.25)) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Dual Flow Inflow Dominance' };
+  }
+  if (preBack2 > preBack1 && preLay2 > preLay1 && (preBack2 >= preBack1 * 1.25 || preLay2 >= preLay1 * 1.25)) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Dual Flow Inflow Dominance' };
+  }
+
+  // 3. Dominant Smart Money Back Inflow Margin (1.25x+)
+  if (preBack1 >= (preBack2 || 1) * 1.25 && preBack1 > preBack2) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Smart Money Inflow Margin' };
+  }
+  if (preBack2 >= (preBack1 || 1) * 1.25 && preBack2 > preBack1) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Smart Money Inflow Margin' };
+  }
+
+  // 4. Pre-Match Total Bets / Activity Engagement
+  if (preBetCount1 != null && preBetCount2 != null && (preBetCount1 > 0 || preBetCount2 > 0) && preBetCount1 !== preBetCount2) {
+    if (preBetCount1 >= preBetCount2 * 1.5) {
+      return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Activity Lead' };
+    }
+    if (preBetCount2 >= preBetCount1 * 1.5) {
+      return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Pre-Match Activity Lead' };
+    }
+  }
+
+  // 5. Volume Leader
+  if (preBack1 > preBack2) {
+    return { winner: team1, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Leader' };
+  }
+  if (preBack2 > preBack1) {
+    return { winner: team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Volume Leader' };
+  }
+
+  return { winner: prePnl1 > prePnl2 ? team1 : team2, tier: 'INTERNATIONAL_T20_SPECIAL', confidence: 'T20I Bookmaker Safe Edge' };
+}
+
+// 👩 Women's Caribbean Premier League (WCPL) Algorithm
+function getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  // 1. Extreme Lay Resistance Dump (Fade heavily laid team, e.g. Barbados W lay=2371 vs Trinbago W lay=84 -> Trinbago W wins)
+  if (l1 >= 200 && (l1 >= b1 * 1.5 || l1 >= l2 * 2.5)) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Lay Resistance Dump (Fade Short Team)' };
+  }
+  if (l2 >= 200 && (l2 >= b2 * 1.5 || l2 >= l1 * 2.5)) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Lay Resistance Dump (Fade Short Team)' };
+  }
+
+  // 2. 🚨 Bookmaker Deficit Trap (Fade Public Favorite when bookmaker is in deficit on that team)
+  // e.g. Match 36023506 (Guyana W vs Jamaica Empress W): Public backed Guyana W (b1: 324 vs b2: 140),
+  // but Bookmaker had deficit on Guyana W (epnl1: -166 vs epnl2: +186) -> Jamaica Empress W wins!
+  if (b1 > b2 && epnl1 < 0 && epnl2 > 0) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Trap (Fade Public Favorite)' };
+  }
+  if (b2 > b1 && epnl2 < 0 && epnl1 > 0) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Trap (Fade Public Favorite)' };
+  }
+
+  // 3. Dual Flow Dominance (Higher Back and Higher Lay with clean inflow)
+  if (b1 > b2 && l1 > l2 && (b1 >= b2 * 1.25 || l1 >= l2 * 1.25)) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Dual Flow Advantage' };
+  }
+  if (b2 > b1 && l2 > l1 && (b2 >= b1 * 1.25 || l2 >= l1 * 1.25)) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Dual Flow Advantage' };
+  }
+
+  // 4. Clear Back Inflow Margin (1.25x+)
+  if (b1 >= (b2 || 1) * 1.25 && b1 > b2) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Smart Inflow Margin' };
+  }
+  if (b2 >= (b1 || 1) * 1.25 && b2 > b1) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Smart Inflow Margin' };
+  }
+
+  // 5. Pre-Match Volume Leader
+  if (b1 > b2) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Volume Leader' };
+  }
+  if (b2 > b1) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Volume Leader' };
+  }
+
+  // 6. Bookmaker Safe
+  if (epnl1 > epnl2) {
+    return { winner: team1, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Safe' };
+  }
+  if (epnl2 > epnl1) {
+    return { winner: team2, tier: 'WCPL_SPECIAL', confidence: 'WCPL Bookmaker Safe' };
+  }
+
+  return null;
+}
+
+function getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 0 — ⚡ Zero-Volume / Missing Scraper Data Fallback (Bookmaker Edge)
+  //   When preMatchVolume is null or zero on both teams (e.g. Match 23),
+  //   use platform bookmaker favorable outcome or SimplePL.
+  // ─────────────────────────────────────────────────────────────────────────
+  if (b1 === 0 && b2 === 0) {
+    const bookieFav = snap?.marketSignals?.bookieFavouriteOutcome;
+    if (bookieFav) {
+      const p = bookieFav.toLowerCase().replace(/[^a-z0-9]/g, '');
+      const t1 = (team1 || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const t2 = (team2 || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (p.includes(t1) || t1.includes(p) || (p.length >= 5 && t1.length >= 5 && p.slice(0, 5) === t1.slice(0, 5))) {
+        return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Zero-Volume Bookie Edge' };
+      }
+      if (p.includes(t2) || t2.includes(p) || (p.length >= 5 && t2.length >= 5 && p.slice(0, 5) === t2.slice(0, 5))) {
+        return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Zero-Volume Bookie Edge' };
+      }
+    }
+    const spl = snap?.deepMetrics?.simplePL || {};
+    if (spl.team1_win != null && spl.team2_win != null && spl.team1_win !== spl.team2_win) {
+      return { winner: spl.team1_win > spl.team2_win ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Zero-Volume SimplePL' };
+    }
+  }
+
+  const tot1 = b1 + l1;
+  const tot2 = b2 + l2;
+  const maxBack = Math.max(b1, b2);
+  const minBack = Math.min(b1, b2);
+  const backRatio = minBack > 0 ? maxBack / minBack : (maxBack > 0 ? 99 : 1);
+  const pnlDiff = Math.abs(epnl1 - epnl2);
+
+  const pb1 = snap?.preMatchTotalBets?.team1 ?? 0;
+  const pb2 = snap?.preMatchTotalBets?.team2 ?? 0;
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 1 — 🚨 Massive Lay Dump on Favorite Fade
+  //   Favorite is shorted heavily in the lay market:
+  //   (a) Classic short ratio: Lay >= 15k & Lay >= 1.7x Back & Lay >= opponent Lay * 2.0
+  //   (b) Extreme Lay Short Resistance: Lay >= 30k & Lay > Back & (derivedPL favors opponent || pb2 >= pb1 * 1.5)
+  //   EXCEPTION: If smart money derived PL heavily favors a team (dpl >= 5M) with strong bookmaker profit (>5k)
+  //   and 3x total volume dominance, the high lay volume is Bookmaker Lay Absorption Shield (Rule 2), NOT a short fade!
+  // ─────────────────────────────────────────────────────────────────────────
+  const dpl1 = snap?.deepMetrics?.derivedPL?.team1_win ?? (snap?.smartMoney?.derivedPL ? snap.smartMoney.derivedPL[team1] : null);
+  const dpl2 = snap?.deepMetrics?.derivedPL?.team2_win ?? (snap?.smartMoney?.derivedPL ? snap.smartMoney.derivedPL[team2] : null);
+
+  const t1Absorption = (dpl1 != null && dpl1 >= 5000000 && epnl1 > 5000 && tot1 >= tot2 * 3.0);
+  const t2Absorption = (dpl2 != null && dpl2 >= 5000000 && epnl2 > 5000 && tot2 >= tot1 * 3.0);
+
+  const l1Short = !t1Absorption && (l1 >= 15000 && l1 >= l2 * 2.0) && (
+    (l1 >= b1 * 1.7) ||
+    (l1 >= 30000 && l1 > b1 && (dpl1 != null ? (dpl1 < 0 && dpl2 > 0) : (pb2 >= pb1 * 1.5 && pb2 >= 5000 && epnl1 < 10000)))
+  );
+  const l2Short = !t2Absorption && (l2 >= 15000 && l2 >= l1 * 2.0) && (
+    (l2 >= b2 * 1.7) ||
+    (l2 >= 30000 && l2 > b2 && (dpl2 != null ? (dpl2 < 0 && dpl1 > 0) : (pb1 >= pb2 * 1.5 && pb1 >= 5000 && epnl2 < 10000)))
+  );
+
+  if (l1Short) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
+  }
+  if (l2Short) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Favorite Short Resistance Fade' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 2 — 🛡️ Massive Lay Absorption Shield & Volume Dominance
+  //   Bookmaker scooped heavy lay on team (l >= 2000 & 3x+ opponent lay) with
+  //   total volume dominance (2.0x+) and positive bookmaker PnL (>1000).
+  // ─────────────────────────────────────────────────────────────────────────
+  if (l1 >= 2000 && l1 >= l2 * 3.0 && tot1 >= tot2 * 2.0 && epnl1 > 1000 && pb1 >= 500) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Shield & Volume Dominance' };
+  }
+  if (l2 >= 2000 && l2 >= l1 * 3.0 && tot2 >= tot1 * 2.0 && epnl2 > 1000 && pb2 >= 500) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Shield & Volume Dominance' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 3 — 📉 Heavy Lay Resistance Short Dump on Underdog
+  //   Underdog has severe Lay dump (Lay >= 3x Back & Lay >= 500), while the
+  //   favorite has strong Back volume (>= 2x underdog back).
+  // ─────────────────────────────────────────────────────────────────────────
+  if (l1 >= b1 * 3.0 && l1 >= 500 && b2 >= b1 * 2.0) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Resistance Dump Short' };
+  }
+  if (l2 >= b2 * 3.0 && l2 >= 500 && b1 >= b2 * 2.0) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Lay Resistance Dump Short' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 4 — 🌊 Dual Flow Blowout Inflow (Smart Money Accumulation)
+  //   One team dominates both Back (>= 2.5x) and Lay (>= 1.5x) with massive
+  //   overall liquidity (>= 20k volume).
+  // ─────────────────────────────────────────────────────────────────────────
+  if (b1 >= b2 * 2.5 && l1 >= l2 * 1.5 && tot1 >= 20000) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Blowout Inflow' };
+  }
+  if (b2 >= b1 * 2.5 && l2 >= l1 * 1.5 && tot2 >= 20000) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Dual Flow Blowout Inflow' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 5 — 🚨 Severe Public Overload Shielded Trap Fade
+  //   Heavy retail favorite (Back >= 3x), but underdog has Lay Shield
+  //   (Lay >= 1.5x Back) and Bookie PnL >= 2000 with favorite in deficit.
+  // ─────────────────────────────────────────────────────────────────────────
+  if (b2 >= b1 * 3.0 && l1 >= b1 * 1.5 && epnl1 >= 2000 && epnl2 < 0) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Shielded Public Overload Trap Fade' };
+  }
+  if (b1 >= b2 * 3.0 && l2 >= b2 * 1.5 && epnl2 >= 2000 && epnl1 < 0) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Shielded Public Overload Trap Fade' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 6 — 💰 Public Overload & Bookmaker Deficit Trap Fade
+  //   (a) Moderate retail favorite (1.5x - 2.5x back) where bookmaker is in deficit
+  //       and profits significantly (gap >= 1000) from underdog.
+  //   (b) Tight back market (backRatio <= 1.35) where public slightly backs one team,
+  //       but bookmaker is in net deficit on that team (epnl < 0), while the other team
+  //       has positive bookmaker profit (epnl > 0), higher total volume (tot > otherTot),
+  //       higher lay absorption (l > otherL), and profit gap (pnlDiff >= 500).
+  //       e.g. Barbados Tridents vs St. Lucia Kings (07 Sept): St. Lucia had slight back lead (2312 vs 2149),
+  //       but bookmaker had deficit on St. Lucia (epnl2: -404) vs profit on Barbados (epnl1: +752)
+  //       with Barbados dominating total volume (3776 vs 3475) and lay volume (1627 vs 1162).
+  // ─────────────────────────────────────────────────────────────────────────
+  const isTightAbsorptionTrap1 = (backRatio <= 1.35 && b2 > b1 && epnl2 < 0 && epnl1 > 0 && tot1 > tot2 && l1 > l2 && pnlDiff >= 500);
+  const isTightAbsorptionTrap2 = (backRatio <= 1.35 && b1 > b2 && epnl1 < 0 && epnl2 > 0 && tot2 > tot1 && l2 > l1 && pnlDiff >= 500);
+
+  if (isTightAbsorptionTrap1 || (backRatio >= 1.5 && backRatio <= 2.5 && pnlDiff >= 1000 && b2 > b1 && epnl2 < 0 && epnl1 > 0)) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
+  }
+  if (isTightAbsorptionTrap2 || (backRatio >= 1.5 && backRatio <= 2.5 && pnlDiff >= 1000 && b1 > b2 && epnl1 < 0 && epnl2 > 0)) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Bookmaker Trap (Fade Public Favorite)' };
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // RULE 7 — 📊 Back Volume Leader (Default Core Signal)
+  // ─────────────────────────────────────────────────────────────────────────
+  if (b1 > b2) {
+    return { winner: team1, tier: 'CPL_SPECIAL', confidence: 'CPL Back Volume Leader' };
+  }
+  if (b2 > b1) {
+    return { winner: team2, tier: 'CPL_SPECIAL', confidence: 'CPL Back Volume Leader' };
+  }
+
+  // Fallback
+  return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'CPL_SPECIAL', confidence: 'CPL Safe PnL Fallback' };
+}
+
+// 🇮🇳 Uttar Pradesh Premier League (UP T20) Algorithm
+function getUPT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const preBets = snap?.preMatchTotalBets || {};
+  const preBetCount1 = preBets.team1 != null ? preBets.team1 : 0;
+  const preBetCount2 = preBets.team2 != null ? preBets.team2 : 0;
+
+  const preVol = snap?.preMatchVolume || {};
+  const preBack1 = preVol.team1?.back ?? b1 ?? 0;
+  const preLay1 = preVol.team1?.lay ?? l1 ?? 0;
+  const preBack2 = preVol.team2?.back ?? b2 ?? 0;
+  const preLay2 = preVol.team2?.lay ?? l2 ?? 0;
+
+  const prePnl = snap?.preMatchPnl || {};
+  const pnl1 = prePnl.team1 != null ? prePnl.team1 : epnl1;
+  const pnl2 = prePnl.team2 != null ? prePnl.team2 : epnl2;
+  const pnlDiff = Math.abs(pnl1 - pnl2);
+
+  // 1. Extreme Lay Shield / Resistance Dump & Bookmaker Deficit Fortress
+  if (preLay1 >= 50 && (preLay1 >= preLay2 * 2.0 || preLay1 >= preBack1 * 1.5) && (pnl1 > pnl2 || pnl2 < -50)) {
+    return { winner: team1, tier: 'UP_SPECIAL', confidence: 'UP Bookmaker Lay Shield' };
+  }
+  if (preLay2 >= 50 && (preLay2 >= preLay1 * 2.0 || preLay2 >= preBack2 * 1.5) && (pnl2 > pnl1 || pnl1 < -50)) {
+    return { winner: team2, tier: 'UP_SPECIAL', confidence: 'UP Bookmaker Lay Shield' };
+  }
+  if (pnlDiff >= 150 && (pnl1 < -50 || pnl2 < -50)) {
+    return { winner: pnl1 > pnl2 ? team1 : team2, tier: 'UP_SPECIAL', confidence: 'UP Bookie Trap Fortress' };
+  }
+
+  // 2. Pre-Match Total Bets / Activity Engagement Lead (>= 1.3x Bet Count Lead)
+  if (preBetCount1 != null && preBetCount2 != null && (preBetCount1 > 0 || preBetCount2 > 0) && preBetCount1 !== preBetCount2) {
+    if (preBetCount1 >= preBetCount2 * 1.3 && preBetCount1 >= 10) {
+      return { winner: team1, tier: 'UP_SPECIAL', confidence: 'UP Pre-Match Activity Lead' };
+    }
+    if (preBetCount2 >= preBetCount1 * 1.3 && preBetCount2 >= 10) {
+      return { winner: team2, tier: 'UP_SPECIAL', confidence: 'UP Pre-Match Activity Lead' };
+    }
+  }
+
+  // 3. Pre-Match Clean Back Inflow Margin (>= 1.2x)
+  if (preBack1 >= (preBack2 || 1) * 1.2 && preBack1 > preBack2) {
+    return { winner: team1, tier: 'UP_SPECIAL', confidence: 'UP Smart Volume Margin' };
+  }
+  if (preBack2 >= (preBack1 || 1) * 1.2 && preBack2 > preBack1) {
+    return { winner: team2, tier: 'UP_SPECIAL', confidence: 'UP Smart Volume Margin' };
+  }
+
+  // 4. Pre-Match Back Volume Leader
+  if (preBack1 > preBack2) {
+    return { winner: team1, tier: 'UP_SPECIAL', confidence: 'UP Volume Leader' };
+  }
+  if (preBack2 > preBack1) {
+    return { winner: team2, tier: 'UP_SPECIAL', confidence: 'UP Volume Leader' };
+  }
+
+  // 5. Significant Bookie Profit Side (Deficit fade)
+  if (pnlDiff >= 50 && (pnl1 < 0 || pnl2 < 0)) {
+    return { winner: pnl1 > pnl2 ? team1 : team2, tier: 'UP_SPECIAL', confidence: 'UP Bookie Trap (Fade Public)' };
+  }
+
+  // 6. Fallback Safe PnL Edge
+  return { winner: pnl1 > pnl2 ? team1 : team2, tier: 'UP_SPECIAL', confidence: 'UP Bookie Safe Edge' };
+}
+
+// 🌴 Kerala Cricket League Algorithm
+function getKeralaPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const preBets = snap?.preMatchTotalBets || {};
+  const preBetCount1 = preBets.team1 != null ? preBets.team1 : 0;
+  const preBetCount2 = preBets.team2 != null ? preBets.team2 : 0;
+
+  const sup1 = 0; const sup2 = 0; const totSup = 0;
+  const sup1Pct = 50; const sup2Pct = 50;
+
+  // 1. Extreme Pre-Match Lay Dump / Short Resistance
+  const l1Dump = l1 >= 50 && (l1 >= l2 * 2.5 || l1 >= b1 * 1.5) && (epnl1 < epnl2 || epnl1 < 0 || (l1 > l2 * 3.0 && l1 >= b1 * 1.2));
+  const l2Dump = l2 >= 50 && (l2 >= l1 * 2.5 || l2 >= b2 * 1.5) && (epnl2 < epnl1 || epnl2 < 0 || (l2 > l1 * 3.0 && l2 >= b2 * 1.2));
+  if (l1Dump) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
+  if (l2Dump) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Lay Resistance Dump' };
+
+  // 2. Pre-Match Market Activity / Trade Count Engagement (>= 1.4x Bet Count Lead)
+  if (preBetCount1 != null && preBetCount2 != null && (preBetCount1 > 0 || preBetCount2 > 0) && preBetCount1 !== preBetCount2) {
+    if (preBetCount1 >= preBetCount2 * 1.4 && preBetCount1 >= 25) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
+    if (preBetCount2 >= preBetCount1 * 1.4 && preBetCount2 >= 25) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Pre-Match Activity Lead' };
+  }
+
+  // 3. Pre-Match Clean Back Inflow Margin (1.25x+ without high lay resistance)
+  // Added min volume requirement (b >= 25)
+  if (b1 >= 25 && b1 >= (b2 || 1) * 1.25 && b1 > b2 && l1 < b1 * 1.5) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
+  if (b2 >= 25 && b2 >= (b1 || 1) * 1.25 && b2 > b1 && l2 < b2 * 1.5) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Margin Inflow' };
+
+  // 4. Pre-Match Back Volume Leader (without high lay resistance)
+  if (b1 >= 25 && b1 > b2 && l1 < b1 * 1.5) return { winner: team1, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
+  if (b2 >= 25 && b2 > b1 && l2 < b2 * 1.5) return { winner: team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Volume Leader' };
+
+  // 5. Bookie Safe Stance (when deficit exists on one team)
+  if (epnl1 !== epnl2 && (epnl1 < 0 || epnl2 < 0)) {
+    return { winner: epnl1 > epnl2 ? team1 : team2, tier: 'KERALA_SPECIAL', confidence: 'Kerala Bookie Trap (Fade Public)' };
+  }
+
+  return null;
+}
+
+// 🇪🇺 European Cricket Series (ECS / European T20) Algorithm
+function getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const tmv1 = snap?.threeMinVolume?.team1;
+  const tmv2 = snap?.threeMinVolume?.team2;
+
+  const tb1 = tmv1?.back || b1;
+  const tl1 = tmv1?.lay  || l1;
+  const tb2 = tmv2?.back || b2;
+  const tl2 = tmv2?.lay  || l2;
+
+  // 1. Extreme Pre-Match Lay Resistance Dump (e.g. Belfast lay=1954 vs back=699 -> 2.8x lay!)
+  // Requires significant lay volume (>= 1000)
+  if (l1 >= 1000 && l1 >= b1 * 2.0) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Lay Dump Resistance' };
+  }
+  if (l2 >= 1000 && l2 >= b2 * 2.0) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Lay Dump Resistance' };
+  }
+
+  // 2. High-Volume ThreeMin Net Short Fade (>100k volume where market turned decisively net short)
+  const tnet1 = tb1 - tl1;
+  const tnet2 = tb2 - tl2;
+  if (tb1 + tl1 > 100000 && tnet1 < -10000 && b1 < b2 * 4.0) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 ThreeMin Net Short Fade' };
+  }
+  if (tb2 + tl2 > 100000 && tnet2 < -10000 && b2 < b1 * 4.0) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 ThreeMin Net Short Fade' };
+  }
+
+  // 2b. Three-minute volume surge dominance when pre-match volumes are small (< 500)
+  // or late 3min surge dominance (> 50k with strong bookie safe advantage)
+  if ((b1 < 500 && b2 < 500) || (tb2 > 50000 && tb2 > tb1 * 5.0 && epnl2 >= epnl1 + 500) || (tb1 > 50000 && tb1 > tb2 * 5.0 && epnl1 >= epnl2 + 500)) {
+    if (tb1 > tb2 * 1.5 && epnl1 >= epnl2) {
+      return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 3Min Inflow & Bookie Safe' };
+    }
+    if (tb2 > tb1 * 1.5 && epnl2 >= epnl1) {
+      return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 3Min Inflow & Bookie Safe' };
+    }
+  }
+
+  // 3. Pre-Match Back Inflow / Volume Dominance
+  // In ETPL, clean back volume wins!
+  if (b1 > b2) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Back Volume Leader' };
+  }
+  if (b2 > b1) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Back Volume Leader' };
+  }
+
+  // 4. Fallback: Bookie Safe
+  if (epnl1 > epnl2) {
+    return { winner: team1, tier: 'ECS_SPECIAL', confidence: 'European T20 Bookie Safe' };
+  }
+  if (epnl2 > epnl1) {
+    return { winner: team2, tier: 'ECS_SPECIAL', confidence: 'European T20 Bookie Safe' };
+  }
+
+  return null;
+}
+
+// 🦁 Sher E Punjab T20 League Algorithm (Bookie Trap & Inflow Dynamic)
+function getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const t1Pnl = epnl1;
+  const t2Pnl = epnl2;
+
+  // 0. 💥 Heavy Lay Liability Dump & Net Support Dominance (Fade Lay-Dumped Team)
+  // e.g. Match 36019307 (Fazilka ₹6097 Lay vs Amritsar ₹960 Lay, 100% Amritsar Net Support -> Amritsar wins)
+  // e.g. Match 36026793 (Ludhiana ₹3156 Lay vs Jalandhar ₹650 Lay, 85.8% Jalandhar Net Support -> Jalandhar wins)
+  const adv1 = snap?.advancedMetricsV2?.team1 || {};
+  const adv2 = snap?.advancedMetricsV2?.team2 || {};
+  const net = snap?.netSupport || {};
+
+  if (adv1.lay >= (adv1.back || 1) * 1.5 && adv1.lay >= 2500 && (adv2.lay || 0) < 1500 && net.strongerTeam === team2) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Dump & Net Support Dominance' };
+  }
+  if (adv2.lay >= (adv2.back || 1) * 1.5 && adv2.lay >= 2500 && (adv1.lay || 0) < 1500 && net.strongerTeam === team1) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Dump & Net Support Dominance' };
+  }
+
+  // 0.05 📉 Extreme 3-Minute / In-Play Bookmaker Deficit Fade
+  // e.g. Match 36052400: Jalandhar Warriors 3m P/L -73.8k vs Amritsar +105.7k (Trap detected -> Underdog wins)
+  const p3Pnl1 = snap?.threeMinPnl?.team1 ?? t1Pnl;
+  const p3Pnl2 = snap?.threeMinPnl?.team2 ?? t2Pnl;
+  if (p3Pnl1 <= -10000 && p3Pnl2 >= 10000) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
+  }
+  if (p3Pnl2 <= -10000 && p3Pnl1 >= 10000) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
+  }
+
+  // 0.1 📊 Total Market Volume Dominance & Net Support Alignment
+  // e.g. Match 36043141: Amritsar has ₹1.24L total bet vs Mohali ₹49k (2.5x) & Amritsar holds Net Support Lead
+  const tot1 = adv1.totalBet || 0;
+  const tot2 = adv2.totalBet || 0;
+  if (tot1 >= 40000 && tot1 >= tot2 * 2.0 && net.strongerTeam === team1 && t1Pnl >= -50 && p3Pnl1 >= -500) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Market Volume Dominance' };
+  }
+  if (tot2 >= 40000 && tot2 >= tot1 * 2.0 && net.strongerTeam === team2 && t2Pnl >= -50 && p3Pnl2 >= -500) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Market Volume Dominance' };
+  }
+
+  // 1. 📉 Lay Resistance Dump / Short Fade (One team has heavy lay dump >= 50 & >= 1.5x its back, other team has clean back)
+  // e.g. Bathinda vs Ludhiana: Bathinda has ₹74 Lay vs ₹0 on Ludhiana -> Faded to Ludhiana Lion
+  if (l1 >= 50 && l1 >= b1 * 1.5 && b2 > b1 && l2 <= 20) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Resistance Dump (Fade to Clean Inflow)' };
+  }
+  if (l2 >= 50 && l2 >= b2 * 1.5 && b1 > b2 && l1 <= 20) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Resistance Dump (Fade to Clean Inflow)' };
+  }
+
+  // 2. 🛡️ Lay Absorption Shield (Underdog has lay absorption >= 25 & >= 3x its back, retail naked overload on favorite >= 5x)
+  // e.g. Mohali (₹106 Back, ₹0 Lay) vs Bathinda (₹7 Back, ₹36 Lay, +156 PnL) -> Bathinda wins!
+  if (l1 >= 25 && l1 >= b1 * 3.0 && t1Pnl > 0 && t2Pnl < 0 && b2 >= b1 * 5.0) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield (Lay Absorbed)' };
+  }
+  if (l2 >= 25 && l2 >= b2 * 3.0 && t2Pnl > 0 && t1Pnl < 0 && b1 >= b2 * 5.0) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield (Lay Absorbed)' };
+  }
+
+  // 3. 🛡️ Heavy Lay Absorption Shield & Total Bet Activity Lead
+  // e.g. Match 36015901: Jalandhar has Lay ₹2160 (3x lay absorption) & 3455 Total Bet vs Amritsar ₹701 Lay & 2422 Total Bet
+  const totBet1 = snap?.preMatchTotalBets?.team1 ?? (b1 + l1);
+  const totBet2 = snap?.preMatchTotalBets?.team2 ?? (b2 + l2);
+  const snapL1 = l1;
+  const snapL2 = l2;
+
+  if (snapL1 >= 500 && snapL1 >= snapL2 * 1.5 && totBet1 > totBet2 && t1Pnl >= 0) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield & Activity Lead' };
+  }
+  if (snapL2 >= 500 && snapL2 >= snapL1 * 1.5 && totBet2 > totBet1 && t2Pnl >= 0) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Lay Shield & Activity Lead' };
+  }
+
+  // 4. Primary Rule: Strict Bookie Profit Side (Fade Public Overload)
+  // We need MINIMUM liability to avoid noise in small leagues
+  const isTrap1 = t1Pnl <= -100 || (t1Pnl <= -150 && b1 >= 150 && b1 >= (b2 || 1) * 5);
+  const isTrap2 = t2Pnl <= -100 || (t2Pnl <= -150 && b2 >= 150 && b2 >= (b1 || 1) * 5);
+
+  if (t1Pnl !== t2Pnl && (isTrap1 || isTrap2)) {
+    if (t1Pnl > t2Pnl) {
+      return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
+    }
+    if (t2Pnl > t1Pnl) {
+      return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Bookie Trap (Fade Public)' };
+    }
+  }
+
+  // 5. Underdog Trap Fade (Requires substantial volume difference)
+  if (b1 >= 50 && b2 >= b1 * 1.5) {
+    return { winner: team1, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Underdog Trap Fade' };
+  }
+  if (b2 >= 50 && b1 >= b2 * 1.5) {
+    return { winner: team2, tier: 'PUNJAB_SPECIAL', confidence: 'Sher-e-Punjab Underdog Trap Fade' };
+  }
+
+  // Fallback to default algorithm if no strong Sher-e-Punjab pattern found
+  return null;
+}
+
+function isWomensAsiaCup(compName, team1, team2) {
+  const comp = (compName || '').toLowerCase();
+  const t1 = (team1 || '').toLowerCase();
+  const t2 = (team2 || '').toLowerCase();
+  if (comp.includes('asia cup') && (t1.includes(' w') || t2.includes(' w') || comp.includes('women'))) return true;
+
+  const asianTeams = [
+    'india w', 'pakistan w', 'sri lanka w', 'thailand w',
+    'bangladesh w', 'indonesia w', 'hong kong w', 'united arab emirates w', 'uae w', 'nepal w', 'malaysia w'
+  ];
+  const isT1Asian = asianTeams.some(t => t1.includes(t));
+  const isT2Asian = asianTeams.some(t => t2.includes(t));
+  if (isT1Asian && isT2Asian && (comp.includes('twenty20') || comp.includes('international') || comp.includes('asia'))) {
+    return true;
+  }
+  return false;
+}
+
+function getWomensAsiaCupPrediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, team2) {
+  const tot1 = b1 + l1;
+  const tot2 = b2 + l2;
+
+  // Rule 1: High volume dominance (> 3x)
+  if (tot1 >= 1000 || tot2 >= 1000) {
+    if (tot1 >= tot2 * 3) {
+      return {
+        winner: team1,
+        tier: 'WOMENS_ASIA_CUP_DOMINANCE',
+        ruleName: 'Asia Cup Volume Dominance',
+        confidence: 'High',
+        reason: `${team1} holds massive matched volume dominance (₹${Math.round(tot1)} vs ₹${Math.round(tot2)})`
+      };
+    }
+    if (tot2 >= tot1 * 3) {
+      return {
+        winner: team2,
+        tier: 'WOMENS_ASIA_CUP_DOMINANCE',
+        ruleName: 'Asia Cup Volume Dominance',
+        confidence: 'High',
+        reason: `${team2} holds massive matched volume dominance (₹${Math.round(tot2)} vs ₹${Math.round(tot1)})`
+      };
+    }
+  }
+
+  // Rule 2: Positive Bookie PnL / Trap fade for low volume matches
+  if (pnl1 > pnl2 && pnl1 > 0) {
+    return {
+      winner: team1,
+      tier: 'WOMENS_ASIA_CUP_PNL',
+      ruleName: 'Asia Cup Bookie Positive Yield',
+      confidence: 'High',
+      reason: `Bookmaker profit positive on ${team1} (+₹${Math.round(pnl1)}) vs ${team2}`
+    };
+  }
+  if (pnl2 > pnl1 && pnl2 > 0) {
+    return {
+      winner: team2,
+      tier: 'WOMENS_ASIA_CUP_PNL',
+      ruleName: 'Asia Cup Bookie Positive Yield',
+      confidence: 'High',
+      reason: `Bookmaker profit positive on ${team2} (+₹${Math.round(pnl2)}) vs ${team1}`
+    };
+  }
+
+  // Fallback to highest volume
+  return {
+    winner: tot1 >= tot2 ? team1 : team2,
+    tier: 'WOMENS_ASIA_CUP_FALLBACK',
+    ruleName: 'Asia Cup Inflow Leader',
+    confidence: 'Medium',
+    reason: `${tot1 >= tot2 ? team1 : team2} leads in total pre-match inflow`
+  };
+}
+
+function isACCPremierCup(compName, team1, team2) {
+  const comp = (compName || '').toLowerCase();
+  if (comp.includes('acc')) return true;
+  if (comp.includes('premier cup')) return true;
+  if (comp.includes('premier') && comp.includes('cup')) return true;
+  return false;
+}
+
+function getACCPremierCupPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const spl = snap?.deepMetrics?.simplePL || {};
+  const p1 = spl.team1_win ?? epnl1 ?? 0;
+  const p2 = spl.team2_win ?? epnl2 ?? 0;
+  const net = snap?.netSupport || {};
+  const t1Pnl = epnl1 ?? 0;
+  const t2Pnl = epnl2 ?? 0;
+  const snapL1 = l1 ?? snap?.preMatchVolume?.team1?.lay ?? 0;
+  const snapL2 = l2 ?? snap?.preMatchVolume?.team2?.lay ?? 0;
+
+  // 1. Lay Absorption Shield & Naked Public Trap (e.g. Qatar l2=65 vs b2=13, Kuwait b1=137 & l1=0, PnL: +265 vs -110)
+  if (snapL2 >= 50 && snapL2 >= (b2 || 1) * 3.0 && t2Pnl > 0 && t1Pnl < 0) {
+    return {
+      winner: team2,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Lay Shield & Deficit Fade'
+    };
+  }
+  if (snapL1 >= 50 && snapL1 >= (b1 || 1) * 3.0 && t1Pnl > 0 && t2Pnl < 0) {
+    return {
+      winner: team1,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Lay Shield & Deficit Fade'
+    };
+  }
+
+  // 2. High SimplePL Dominance (Math.abs(p1 - p2) >= 5000)
+  if (Math.abs(p1 - p2) >= 5000) {
+    return {
+      winner: p1 > p2 ? team1 : team2,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Bookie Profit Side (Deficit Fade)'
+    };
+  }
+
+  // 3. Net Support Dominance (for close simplePL diff < 5000: Matches 9, 12, 16)
+  if (net?.strongerTeam) {
+    return {
+      winner: net.strongerTeam,
+      tier: 'ACC_SPECIAL',
+      confidence: 'ACC Net Support Leader'
+    };
+  }
+
+  // 4. PnL Fallback
+  return {
+    winner: p1 >= p2 ? team1 : team2,
+    tier: 'ACC_SPECIAL',
+    confidence: 'ACC Bookie Safe PnL'
+  };
+}
+
+function isILT20(compName) {
+  const comp = (compName || '').toLowerCase();
+  return (
+    comp.includes('ilt20') ||
+    comp.includes('international league t20') ||
+    comp.includes('dp world ilt20')
+  );
+}
+
+function getILT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2) {
+  const bookieFav = snap?.marketSignals?.bookieFavouriteOutcome;
+  const riskTeam = snap?.marketSignals?.riskTeam;
+
+  // Tier 1: Bookmaker Favorite Outcome Alignment (Matches 1, 2, 3, 4 - 100% historical accuracy)
+  if (bookieFav && (bookieFav === team1 || bookieFav === team2)) {
+    return {
+      winner: bookieFav,
+      tier: 'ILT20_SPECIAL',
+      confidence: '95% ILT20 Bookie Edge'
+    };
+  }
+
+  // Tier 2: Fade Public Risk Team (100% historical accuracy)
+  if (riskTeam && (riskTeam === team1 || riskTeam === team2)) {
+    const safeWinner = riskTeam === team1 ? team2 : team1;
+    return {
+      winner: safeWinner,
+      tier: 'ILT20_SPECIAL',
+      confidence: '90% ILT20 Public Trap Fade'
+    };
+  }
+
+  // Tier 3: Smart Liquidity Inflow Surplus (tb - totVol)
+  const tot1 = snap?.preMatchVolume?.team1?.total ?? (b1 + l1);
+  const tot2 = snap?.preMatchVolume?.team2?.total ?? (b2 + l2);
+  const tb1 = snap?.preMatchTotalBets?.team1 ?? 0;
+  const tb2 = snap?.preMatchTotalBets?.team2 ?? 0;
+  const inflow1 = tb1 - tot1;
+  const inflow2 = tb2 - tot2;
+
+  if (inflow1 !== inflow2) {
+    return {
+      winner: inflow1 > inflow2 ? team1 : team2,
+      tier: 'ILT20_SPECIAL',
+      confidence: '85% ILT20 Smart Inflow'
+    };
+  }
+
+  // Tier 4: Bookmaker P/L Safe Side Fallback
+  if (epnl1 > epnl2) {
+    return {
+      winner: team1,
+      tier: 'ILT20_SPECIAL',
+      confidence: '80% ILT20 Bookie Safe PnL'
+    };
+  }
+  if (epnl2 > epnl1) {
+    return {
+      winner: team2,
+      tier: 'ILT20_SPECIAL',
+      confidence: '80% ILT20 Bookie Safe PnL'
+    };
+  }
+
+  return null;
+}
+
+function isWomenMatch(compName, team1, team2) {
+  const comp = (compName || '').toLowerCase();
+  if (comp.includes('women') || comp.includes("women's") || comp.includes('womens') || comp.includes('wcpl')) {
+    return true;
+  }
+  const t1 = (team1 || '').trim();
+  const t2 = (team2 || '').trim();
+  // Teams where W is written at last are women's matches
+  if (/\bW$/i.test(t1) || /\bW$/i.test(t2)) {
+    return true;
+  }
+  if (/(\bwomen\b|\bwomen\'s\b|\bwomens\b)/i.test(t1) || /(\bwomen\b|\bwomen\'s\b|\bwomens\b)/i.test(t2)) {
+    return true;
+  }
+  return false;
+}
+
+function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team1, team2, snap = null, rules = {}) {
+  const comp = (compName || '').toLowerCase();
+
+  // 🔒 STRICT PRE-MATCH P/L TO PREVENT IN-PLAY FLIPPING
+  const epnl1 = snap?.preMatchPnl?.team1 != null ? snap.preMatchPnl.team1 : pnl1;
+  const epnl2 = snap?.preMatchPnl?.team2 != null ? snap.preMatchPnl.team2 : pnl2;
+
+  const isWomen = isWomenMatch(compName, team1, team2);
+
+  // 🏆 LEAGUE SPECIFIC RULE: Women's Asia Cup
+  if (rules.explicitLeagueOnly ? /women.*asia.*cup/i.test(compName) : isWomensAsiaCup(compName, team1, team2)) {
+    const asiaPred = getWomensAsiaCupPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (asiaPred) return asiaPred;
+  }
+
+  // 🏆 LEAGUE SPECIFIC RULE: ACC Men's Premier Cup
+  if (isACCPremierCup(compName, team1, team2)) {
+    const accPred = getACCPremierCupPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (accPred) return accPred;
+  }
+
+  // 🌍 LEAGUE SPECIFIC RULE: International Twenty20 Matches (T20I)
+  if (isInternationalT20(compName) && !isWomen) {
+    const intlPred = getInternationalT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (intlPred) return intlPred;
+  }
+
+  // 🇦🇪 LEAGUE SPECIFIC RULE: ILT20 (International League T20 / ILT20 Development Tournament)
+  if (isILT20(compName)) {
+    const iltPred = getILT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (iltPred) return iltPred;
+  }
+
+  // 👩 LEAGUE SPECIFIC RULE: Women's Caribbean Premier League (WCPL)
+  if (isWomen && (comp.includes('caribbean') || comp.match(/\bcpl\b/) || comp.includes('wcpl'))) {
+    const wcplPred = getWCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (wcplPred) return wcplPred;
+  }
+
+  // 🏆 LEAGUE SPECIFIC RULE: Men's Caribbean Premier League (CPL)
+  if (!isWomen && (comp.includes('caribbean') || comp.match(/\bcpl\b/))) {
+    const cplPred = getCPLPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (cplPred) return cplPred;
+  }
+
+  // 🇮🇳 LEAGUE SPECIFIC RULE: Tamil Nadu Premier League (TNPL)
+  if (comp.includes('tamil nadu') || comp.match(/\btnpl\b/)) {
+    // TNPL matches strictly act as Bookie Traps (Fade the Public Money)
+    if (epnl1 > epnl2) {
+      return { winner: team1, tier: 'TNPL_SPECIAL', confidence: 'TNPL Bookie Trap (Fade Public)' };
+    }
+    if (epnl2 > epnl1) {
+      return { winner: team2, tier: 'TNPL_SPECIAL', confidence: 'TNPL Bookie Trap (Fade Public)' };
+    }
+    if (b1 > b2) {
+      return { winner: team1, tier: 'TNPL_SPECIAL', confidence: 'TNPL Volume Leader' };
+    }
+    if (b2 > b1) {
+      return { winner: team2, tier: 'TNPL_SPECIAL', confidence: 'TNPL Volume Leader' };
+    }
+  }
+
+  // 🏴󠁧󠁢󠁥󠁮󠁧󠁿 LEAGUE SPECIFIC RULE: The Hundred
+  if (comp.includes('hundred') && !comp.includes('womens') && !comp.includes("women's") && !comp.includes('women')) {
+    if (b1 > b2 && l1 > l2 && epnl1 < epnl2) {
+      return { winner: team1, tier: 'HUNDRED_SPECIAL', confidence: 'The Hundred Dual Advantage (Strong Buy)' };
+    }
+    if (b2 > b1 && l2 > l1 && epnl2 < epnl1) {
+      return { winner: team2, tier: 'HUNDRED_SPECIAL', confidence: 'The Hundred Dual Advantage (Strong Buy)' };
+    }
+    if (b1 > b2 && b1 >= b2 * 1.4) {
+      return { winner: team1, tier: 'HUNDRED_SPECIAL', confidence: 'The Hundred Volume Margin' };
+    }
+    if (b2 > b1 && b2 >= b1 * 1.4) {
+      return { winner: team2, tier: 'HUNDRED_SPECIAL', confidence: 'The Hundred Volume Margin' };
+    }
+    if (b1 > b2) {
+      return { winner: team1, tier: 'HUNDRED_SPECIAL', confidence: 'The Hundred Volume Leader' };
+    }
+    if (b2 > b1) {
+      return { winner: team2, tier: 'HUNDRED_SPECIAL', confidence: 'The Hundred Volume Leader' };
+    }
+  }
+
+  // 🌴 LEAGUE SPECIFIC RULE: Kerala Cricket League
+  if (comp.includes('kerala')) {
+    return getKeralaPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+  }
+
+  // 🇮🇳 LEAGUE SPECIFIC RULE: Delhi Premier League (DPL)
+  if (comp.includes('delhi') || comp.match(/\bdpl\b/)) {
+    if (epnl1 > epnl2) {
+      return { winner: team1, tier: 'DELHI_SPECIAL', confidence: 'Delhi Bookie Trap (Fade Public)' };
+    }
+    if (epnl2 > epnl1) {
+      return { winner: team2, tier: 'DELHI_SPECIAL', confidence: 'Delhi Bookie Trap (Fade Public)' };
+    }
+  }
+
+  // 🇮🇳 LEAGUE SPECIFIC RULE: Uttar Pradesh Premier League (UP T20)
+  if (comp.includes('uttar pradesh') || comp.match(/\bup t20\b/)) {
+    const upPred = getUPT20Prediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (upPred) return upPred;
+  }
+
+  // 🦁 LEAGUE SPECIFIC RULE: Sher E Punjab T20 League
+  if (comp.includes('punjab') || comp.includes('sher e punjab') || comp.includes('sher-e-punjab')) {
+    const punjabPred = getSherEPunjabPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (punjabPred) return punjabPred;
+  }
+
+  // 🇱🇰 LEAGUE SPECIFIC RULE: Sri Lanka Major Clubs T20
+  if (comp.includes('sri lanka major clubs') || comp.includes('slc major clubs') || comp.includes('major clubs') || comp.includes('srilanka major')) {
+    if (epnl1 > epnl2) {
+      return { winner: team1, tier: 'SRILANKA_SPECIAL', confidence: 'Sri Lanka Bookie Trap (Fade Public)' };
+    }
+    if (epnl2 > epnl1) {
+      return { winner: team2, tier: 'SRILANKA_SPECIAL', confidence: 'Sri Lanka Bookie Trap (Fade Public)' };
+    }
+  }
+
+  // 🇪🇺 LEAGUE SPECIFIC RULE: European Cricket Series (ECS / European T20)
+  if (comp.includes('european') || comp.match(/\becs\b/)) {
+    const ecsPred = getECSPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
+    if (ecsPred) return ecsPred;
+  }
+
+  // 👩 LEAGUE SPECIFIC RULE: Women's International Twenty20 Matches / Women's matches
+  const womenFlowRatio = rules.womenFlowRatio ?? 1.25;
+  if (comp.includes('womens') || comp.includes('women\'s') || comp.includes('women')) {
+    // 1. Dual Flow Dominance (Higher Back and Higher Lay)
+    if (b1 > b2 && l1 > l2 && (b1 >= b2 * womenFlowRatio || l1 >= l2 * womenFlowRatio)) {
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Dual Flow Advantage' };
+    }
+    if (b2 > b1 && l2 > l1 && (b2 >= b1 * womenFlowRatio || l2 >= l1 * womenFlowRatio)) {
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Dual Flow Advantage' };
+    }
+
+    // 2. Clear Back Inflow Margin (1.25x+)
+    if (b1 >= (b2 || 1) * womenFlowRatio && b1 > b2) {
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Smart Inflow Margin' };
+    }
+    if (b2 >= (b1 || 1) * womenFlowRatio && b2 > b1) {
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Smart Inflow Margin' };
+    }
+
+    // 3. Dominant Volume Leader
+    if (b1 > b2) {
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Volume Leader' };
+    }
+    if (b2 > b1) {
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Volume Leader' };
+    }
+
+    // 4. Bookmaker Safe P/L (fallback)
+    if (epnl1 > epnl2) {
+      return { winner: team1, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookmaker Safe Edge' };
+    }
+    if (epnl2 > epnl1) {
+      return { winner: team2, tier: 'WOMENS_T20_SPECIAL', confidence: 'Womens Bookmaker Safe Edge' };
+    }
+  }
+
+  return null; // No league specific algorithm matched
+}
+
+function getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2, rules = {}) {
+  const totalRatio = rules.totalRatio ?? 1.5;
+  const backRatio = rules.backRatio ?? 1.4;
+  const m1 = b1 + l1;
+  const m2 = b2 + l2;
+  const totMoney = m1 + m2;
+  const m1Pct = totMoney > 0 ? (m1 / totMoney) * 100 : 50;
+  const m2Pct = totMoney > 0 ? (m2 / totMoney) * 100 : 50;
+
+  // Tier 1: Highest Confidence (BackVol > AND LayVol > AND Total Money > AND PNL <)
+  if (b1 > b2 && l1 > l2 && m1 > m2 && pnl1 < pnl2) {
+    return { winner: team1, tier: 1, confidence: '99% Sure (Maximum Money + Back + Lay Alignment)' };
+  }
+  if (b2 > b1 && l2 > l1 && m2 > m1 && pnl2 < pnl1) {
+    return { winner: team2, tier: 1, confidence: '99% Sure (Maximum Money + Back + Lay Alignment)' };
+  }
+
+  // Tier 1b: Dual Advantage (BackVol > AND LayVol > AND PNL <)
+  if (b1 > b2 && l1 > l2 && pnl1 < pnl2) {
+    return { winner: team1, tier: 1, confidence: '99% Sure (Strong Buy)' };
+  }
+  if (b2 > b1 && l2 > l1 && pnl2 < pnl1) {
+    return { winner: team2, tier: 1, confidence: '99% Sure (Strong Buy)' };
+  }
+
+  // Tier 2a: Maximum Total Money Dominance Lead (Total Money >= 1.5x / 60%+ share)
+  if (m1 >= (m2 || 1) * totalRatio && m1 > m2) {
+    return { winner: team1, tier: 2, confidence: `82% Maximum Money Lead (${m1Pct.toFixed(0)}% Share)` };
+  }
+  if (m2 >= (m1 || 1) * totalRatio && m2 > m1) {
+    return { winner: team2, tier: 2, confidence: `82% Maximum Money Lead (${m2Pct.toFixed(0)}% Share)` };
+  }
+
+  // Tier 2b: Volume Margin (BackVol > 1.4x)
+  if (b1 > b2 && b1 >= b2 * backRatio) {
+    return { winner: team1, tier: 2, confidence: '75% Sure (Good Buy)' };
+  }
+  if (b2 > b1 && b2 >= b1 * backRatio) {
+    return { winner: team2, tier: 2, confidence: '75% Sure (Good Buy)' };
+  }
+
+  // Tier 3: Maximum Total Money Leader
+  if (m1 > m2) {
+    return { winner: team1, tier: 3, confidence: `68% Money Leader (${m1Pct.toFixed(0)}% Share)` };
+  }
+  if (m2 > m1) {
+    return { winner: team2, tier: 3, confidence: `68% Money Leader (${m2Pct.toFixed(0)}% Share)` };
+  }
+
+  // Tier 4: Dominant Back Volume leader fallback
+  if (b1 > b2) {
+    return { winner: team1, tier: 3, confidence: '65% Volume Lead' };
+  }
+  if (b2 > b1) {
+    return { winner: team2, tier: 3, confidence: '65% Volume Lead' };
+  }
+
+  return null; // Tie / Unpredictable
+}
+
+export {
+  isWomenMatch,
+  isWomensAsiaCup,
+  getWomensAsiaCupPrediction,
+  isInternationalT20,
+  getInternationalT20Prediction,
+  getCPLPrediction,
+  getWCPLPrediction,
+  getUPT20Prediction,
+  getKeralaPrediction,
+  getSherEPunjabPrediction,
+  isACCPremierCup,
+  getACCPremierCupPrediction,
+  isILT20,
+  getILT20Prediction,
+  getLeagueAlgorithmPrediction,
+  getDefaultAlgorithmPrediction
+};

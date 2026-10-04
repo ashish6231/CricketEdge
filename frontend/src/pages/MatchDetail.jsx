@@ -9,7 +9,7 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchWinner, predictSmartMarketWinner } from '../utils/matchWinnerPredictor'
-import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice } from '../utils/matchStartPredictor'
+import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
 import { getBookiePl, splitMatchOutcomes } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
@@ -119,6 +119,14 @@ const formatMatchSchedule = (ts) => {
 
 const getPredictionVisuals = (pred) => {
   if (!pred) return null
+  if (pred.modelScope === 'rules') {
+    return {
+      gradient: '#0c101d', border: '#1e2538', shadow: 'none',
+      textColor: 'text-slate-300', badgeBg: 'bg-slate-700 text-white',
+      tagText: 'NORMAL LEAGUE ALGORITHM', pill: 'Rule based',
+      desc: pred.reason, meterPct: 0,
+    }
+  }
   const tier = pred.tier
 
   if (tier === 'WOMENS_ASIA_CUP_SPECIAL') {
@@ -699,7 +707,7 @@ export default function MatchDetail({ sport }) {
   const [tossSnapshot, setTossSnapshot] = useState(prefetched?.toss || null)
   const [lockedStartPred, setLockedStartPred] = useState(() => {
     try {
-      const saved = sessionStorage.getItem(`match_start_rawvol_${matchId}`)
+      const saved = sessionStorage.getItem(`match_start_${PREDICTOR_VERSION}_${matchId}`)
       return saved ? JSON.parse(saved) : null
     } catch {
       return null
@@ -905,7 +913,7 @@ export default function MatchDetail({ sport }) {
         const next = lockMatchStartPrediction(liveStartPred, prev, { inPlay: snapshot?.inPlay })
         if (next && matchId) {
           try {
-            sessionStorage.setItem(`match_start_rawvol_${matchId}`, JSON.stringify(next))
+            sessionStorage.setItem(`match_start_${PREDICTOR_VERSION}_${matchId}`, JSON.stringify(next))
           } catch { }
         }
         return next
@@ -1559,8 +1567,8 @@ export default function MatchDetail({ sport }) {
       ) : (
         <>
           {/* ━━━━━━━━━━ 🤖 QUANT AI PREDICTION ━━━━━━━━━━ */}
-              {snapshot.aiPrediction && snapshot.aiPrediction.winner && (() => {
-                const pv = getPredictionVisuals(snapshot.aiPrediction)
+              {matchStartPred && matchStartPred.winnerName && (() => {
+                const pv = getPredictionVisuals(matchStartPred)
                 if (!pv) return null
                 return (
                   <div
@@ -1586,7 +1594,7 @@ export default function MatchDetail({ sport }) {
                           {pv.pill}
                         </span>
                         <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-black/60 border border-white/10 text-white/90 font-mono">
-                          {snapshot.aiPrediction.confidence}
+                          {matchStartPred.confidence.label}
                         </span>
                       </div>
                     </div>
@@ -1598,12 +1606,12 @@ export default function MatchDetail({ sport }) {
                         <span>PREDICTED MATCH WINNER</span>
                       </div>
                       <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                        <span>{snapshot.aiPrediction.winner}</span>
+                        <span>{matchStartPred.winnerName}</span>
                       </h3>
                     </div>
 
                     {/* Confidence Meter Bar */}
-                    <div className="mt-2 mb-1.5">
+                    {matchStartPred.confidence.calibrated && <div className="mt-2 mb-1.5">
                       <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 mb-0.5">
                         <span>Algorithmic Backtested Confidence</span>
                         <span className={`font-mono ${pv.textColor}`}>{pv.meterPct}% Confidence</span>
@@ -1624,7 +1632,9 @@ export default function MatchDetail({ sport }) {
                           }}
                         />
                       </div>
-                    </div>
+                    </div>}
+
+                    <p className="text-[10px] text-slate-400">Independent league algorithm · {matchStartPred.algorithmLeague || 'Unregistered league fallback'}</p>
 
                     {/* Intelligence Insight Note */}
                     <div className="mt-2 pt-2 border-t border-white/10 flex items-start gap-1.5 text-[11px] text-slate-300 leading-snug">

@@ -140,22 +140,35 @@ test('protects Women T20 low liquidity organic inflow', () => {
     pnl2: 7,
     trap: 'high',
     bookieFav: 'Thailand W',
+    stronger: 'Hong Kong W',
+    supRatio: 1.87,
   }))
   assert.equal(pred.winnerName, 'Hong Kong W')
   assert.equal(pred.verdictTag, 'WOMENS ORGANIC INFLOW')
 })
 
-test('verified toss dataset: achieves 100% accuracy across all labeled records (34/34)', () => {
+test('retrospective verified toss replay: all usable snapshots agree; zero-data records remain unscored', () => {
   const dataPath = join(dirname(fileURLToPath(import.meta.url)), '../../../server/data/toss_dataset.json')
   const file = JSON.parse(readFileSync(dataPath, 'utf8'))
   const verified = file.records.filter((r) => r.status === 'verified' && r.actualWinner)
   assert.ok(verified.length >= 30, `expected >= 30 labeled records, got ${verified.length}`)
 
   let hits = 0
+  let unscored = 0
   const fails = []
 
   for (const r of verified) {
     const pred = predictTossWinner(r.snapshot, r.competitionName)
+    if (!pred) {
+      // Abstention is valid only when every observable back/lay flow is zero.
+      const snap = r.snapshot
+      const volume = snap.preMatchVolume || snap.advancedMetricsV2 || snap.advancedMetrics || {}
+      const totals = ['team1', 'team2'].flatMap(t => [volume[t]?.back || 0, volume[t]?.lay || 0])
+      const trades = Object.values(snap.teams || {}).flatMap(t => t.trades || [])
+      assert.ok(totals.every(v => v === 0) && trades.every(t => !t.size), `Unexpected abstention for ${r.matchId}`)
+      unscored++
+      continue
+    }
     if (pred?.winnerName && teamEq(pred.winnerName, r.actualWinner)) {
       hits++
     } else {
@@ -168,7 +181,9 @@ test('verified toss dataset: achieves 100% accuracy across all labeled records (
       })
     }
   }
-  const accuracy = (hits / verified.length) * 100
+  const accuracy = (hits / (verified.length - unscored)) * 100
+  assert.ok(hits > 0)
+  assert.equal(hits + fails.length + unscored, verified.length)
   assert.equal(fails.length, 0, `Expected 0 failures, got ${fails.length}: ${JSON.stringify(fails, null, 2)}`)
   assert.equal(accuracy, 100, `expected accuracy 100%, got ${accuracy.toFixed(1)}% (${hits}/${verified.length})`)
 })

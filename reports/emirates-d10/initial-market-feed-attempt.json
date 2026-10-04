@@ -1,0 +1,30 @@
+{
+  "total": 45,
+  "completed": 18,
+  "live": 1,
+  "upcoming": 26,
+  "cancelled": 0,
+  "verifiedResults": 0,
+  "preMatchPredictions": 0,
+  "correct": 0,
+  "wrong": 0,
+  "noResult": 0,
+  "unscored": 18,
+  "accuracy": null,
+  "sync": {
+    "checkedAt": "2026-10-02T15:59:06.631Z",
+    "seriesUrls": [
+      "https://crex.com/series/emirates-d10-league-2026-2NK/matches"
+    ],
+    "fixturesSeen": 45,
+    "feedMatchesSeen": 0,
+    "captures": 0,
+    "invalidInputs": 0,
+    "errors": [
+      {
+        "source": "market-feed",
+        "message": "HTTP 401"
+      }
+    ]
+  }
+}

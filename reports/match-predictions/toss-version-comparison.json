@@ -1,0 +1,5532 @@
+{
+  "generatedAt": "2026-10-01T19:38:14.572Z",
+  "total": 114,
+  "commonScored": 113,
+  "versions": [
+    {
+      "id": "v7",
+      "label": "v7 original — LayVol / StrongerTeam",
+      "source": {
+        "name": "v7-original",
+        "commit": "bac446cf91de2c1255b9e6f6cb2db340379c4bb3",
+        "sources": [
+          {
+            "file": "reports/match-predictions/historical-predictors/v7-original/tossPredictor.js",
+            "originalPath": "frontend/src/utils/tossPredictor.js",
+            "sha256": "ba7cef3c0afaca47914ef81e07d6e08d97ce9fd25bd6baf41849870c7990d9e2"
+          },
+          {
+            "file": "reports/match-predictions/historical-predictors/v7-original/predictionRisk.js",
+            "originalPath": "frontend/src/utils/predictionRisk.js",
+            "sha256": "28e6b3b3aac25bb8056eb0b9500a8e7804daac1de9f6776cf7719739bfffbbdc"
+          }
+        ]
+      },
+      "score": {
+        "total": 114,
+        "correct": 59,
+        "wrong": 54,
+        "scored": 113,
+        "unscored": 1,
+        "accuracy": 52.2
+      },
+      "commonScore": {
+        "total": 113,
+        "correct": 59,
+        "wrong": 54,
+        "scored": 113,
+        "unscored": 0,
+        "accuracy": 52.2
+      },
+      "storedLabelSubset": {
+        "total": 12,
+        "mismatchedPredictions": 1
+      }
+    },
+    {
+      "id": "v8",
+      "label": "v8 original — Ratio-gated LayVol",
+      "source": {
+        "name": "v8-original",
+        "commit": "25de33dab33b3ccfbde9bb89db4e903893e0201c",
+        "sources": [
+          {
+            "file": "reports/match-predictions/historical-predictors/v8-original/tossPredictor.js",
+            "originalPath": "frontend/src/utils/tossPredictor.js",
+            "sha256": "0ba848b8fb6ceae7dea193c2527e2897c22011bb9cd593fb3f46a516bb583b9b"
+          },
+          {
+            "file": "reports/match-predictions/historical-predictors/v8-original/predictionRisk.js",
+            "originalPath": "frontend/src/utils/predictionRisk.js",
+            "sha256": "28e6b3b3aac25bb8056eb0b9500a8e7804daac1de9f6776cf7719739bfffbbdc"
+          }
+        ]
+      },
+      "score": {
+        "total": 114,
+        "correct": 60,
+        "wrong": 53,
+        "scored": 113,
+        "unscored": 1,
+        "accuracy": 53.1
+      },
+      "commonScore": {
+        "total": 113,
+        "correct": 60,
+        "wrong": 53,
+        "scored": 113,
+        "unscored": 0,
+        "accuracy": 53.1
+      },
+      "storedLabelSubset": {
+        "total": 22,
+        "mismatchedPredictions": 11
+      }
+    },
+    {
+      "id": "v8Latest",
+      "label": "v8 latest — Smart Flow Waterfall",
+      "source": {
+        "name": "v8-latest",
+        "commit": "dd329304fd369181176d1a8f26a6ab77eaa2d2fb",
+        "sources": [
+          {
+            "file": "reports/match-predictions/historical-predictors/v8-latest/tossPredictor.js",
+            "originalPath": "server/utils/tossPredictor.js",
+            "sha256": "d4e798f01590f12a691882b54cda12afca3c4e9ab223bc926cfad3aa08de7597"
+          },
+          {
+            "file": "reports/match-predictions/historical-predictors/v8-latest/predictionRisk.js",
+            "originalPath": "server/utils/predictionRisk.js",
+            "sha256": "28e6b3b3aac25bb8056eb0b9500a8e7804daac1de9f6776cf7719739bfffbbdc"
+          }
+        ]
+      },
+      "score": {
+        "total": 114,
+        "correct": 73,
+        "wrong": 40,
+        "scored": 113,
+        "unscored": 1,
+        "accuracy": 64.6
+      },
+      "commonScore": {
+        "total": 113,
+        "correct": 73,
+        "wrong": 40,
+        "scored": 113,
+        "unscored": 0,
+        "accuracy": 64.6
+      },
+      "storedLabelSubset": {
+        "total": 22,
+        "mismatchedPredictions": 2
+      }
+    },
+    {
+      "id": "v9",
+      "label": "v9 baseline — League-specific",
+      "source": {
+        "file": "reports/match-predictions/optimization/baseline-v9/tossPredictor.js",
+        "sha256": "3e39c310a8403663def133e5a7e5373462db327c7f0ead8c59edb81e11efecf8"
+      },
+      "score": {
+        "total": 114,
+        "correct": 91,
+        "wrong": 22,
+        "scored": 113,
+        "unscored": 1,
+        "accuracy": 80.5
+      },
+      "commonScore": {
+        "total": 113,
+        "correct": 91,
+        "wrong": 22,
+        "scored": 113,
+        "unscored": 0,
+        "accuracy": 80.5
+      },
+      "storedLabelSubset": {
+        "total": 80,
+        "mismatchedPredictions": 7
+      }
+    }
+  ],
+  "leagues": [
+    {
+      "league": "Asian Games T20",
+      "total": 3,
+      "scores": {
+        "v7": {
+          "total": 3,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 1,
+          "accuracy": 100
+        },
+        "v8": {
+          "total": 3,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 1,
+          "accuracy": 100
+        },
+        "v8Latest": {
+          "total": 3,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 1,
+          "accuracy": 100
+        },
+        "v9": {
+          "total": 3,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 1,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "Caribbean Premier League",
+      "total": 25,
+      "scores": {
+        "v7": {
+          "total": 25,
+          "correct": 17,
+          "wrong": 8,
+          "scored": 25,
+          "unscored": 0,
+          "accuracy": 68
+        },
+        "v8": {
+          "total": 25,
+          "correct": 17,
+          "wrong": 8,
+          "scored": 25,
+          "unscored": 0,
+          "accuracy": 68
+        },
+        "v8Latest": {
+          "total": 25,
+          "correct": 19,
+          "wrong": 6,
+          "scored": 25,
+          "unscored": 0,
+          "accuracy": 76
+        },
+        "v9": {
+          "total": 25,
+          "correct": 24,
+          "wrong": 1,
+          "scored": 25,
+          "unscored": 0,
+          "accuracy": 96
+        }
+      }
+    },
+    {
+      "league": "European T20 Premier League",
+      "total": 23,
+      "scores": {
+        "v7": {
+          "total": 23,
+          "correct": 6,
+          "wrong": 17,
+          "scored": 23,
+          "unscored": 0,
+          "accuracy": 26.1
+        },
+        "v8": {
+          "total": 23,
+          "correct": 6,
+          "wrong": 17,
+          "scored": 23,
+          "unscored": 0,
+          "accuracy": 26.1
+        },
+        "v8Latest": {
+          "total": 23,
+          "correct": 11,
+          "wrong": 12,
+          "scored": 23,
+          "unscored": 0,
+          "accuracy": 47.8
+        },
+        "v9": {
+          "total": 23,
+          "correct": 14,
+          "wrong": 9,
+          "scored": 23,
+          "unscored": 0,
+          "accuracy": 60.9
+        }
+      }
+    },
+    {
+      "league": "International Twenty20 Matches",
+      "total": 8,
+      "scores": {
+        "v7": {
+          "total": 8,
+          "correct": 3,
+          "wrong": 5,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 37.5
+        },
+        "v8": {
+          "total": 8,
+          "correct": 3,
+          "wrong": 5,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 37.5
+        },
+        "v8Latest": {
+          "total": 8,
+          "correct": 4,
+          "wrong": 4,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 50
+        },
+        "v9": {
+          "total": 8,
+          "correct": 8,
+          "wrong": 0,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "Metro Bank One Day Cup",
+      "total": 1,
+      "scores": {
+        "v7": {
+          "total": 1,
+          "correct": 0,
+          "wrong": 1,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 0
+        },
+        "v8": {
+          "total": 1,
+          "correct": 0,
+          "wrong": 1,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 0
+        },
+        "v8Latest": {
+          "total": 1,
+          "correct": 0,
+          "wrong": 1,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 0
+        },
+        "v9": {
+          "total": 1,
+          "correct": 1,
+          "wrong": 0,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "One Day Internationals",
+      "total": 10,
+      "scores": {
+        "v7": {
+          "total": 10,
+          "correct": 5,
+          "wrong": 5,
+          "scored": 10,
+          "unscored": 0,
+          "accuracy": 50
+        },
+        "v8": {
+          "total": 10,
+          "correct": 5,
+          "wrong": 5,
+          "scored": 10,
+          "unscored": 0,
+          "accuracy": 50
+        },
+        "v8Latest": {
+          "total": 10,
+          "correct": 4,
+          "wrong": 6,
+          "scored": 10,
+          "unscored": 0,
+          "accuracy": 40
+        },
+        "v9": {
+          "total": 10,
+          "correct": 7,
+          "wrong": 3,
+          "scored": 10,
+          "unscored": 0,
+          "accuracy": 70
+        }
+      }
+    },
+    {
+      "league": "South Africa T20 Challenge",
+      "total": 1,
+      "scores": {
+        "v7": {
+          "total": 1,
+          "correct": 0,
+          "wrong": 1,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 0
+        },
+        "v8": {
+          "total": 1,
+          "correct": 0,
+          "wrong": 1,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 0
+        },
+        "v8Latest": {
+          "total": 1,
+          "correct": 1,
+          "wrong": 0,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v9": {
+          "total": 1,
+          "correct": 1,
+          "wrong": 0,
+          "scored": 1,
+          "unscored": 0,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "Tamil Nadu Premier League",
+      "total": 8,
+      "scores": {
+        "v7": {
+          "total": 8,
+          "correct": 5,
+          "wrong": 3,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 62.5
+        },
+        "v8": {
+          "total": 8,
+          "correct": 5,
+          "wrong": 3,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 62.5
+        },
+        "v8Latest": {
+          "total": 8,
+          "correct": 8,
+          "wrong": 0,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v9": {
+          "total": 8,
+          "correct": 8,
+          "wrong": 0,
+          "scored": 8,
+          "unscored": 0,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "Test Matches",
+      "total": 4,
+      "scores": {
+        "v7": {
+          "total": 4,
+          "correct": 2,
+          "wrong": 2,
+          "scored": 4,
+          "unscored": 0,
+          "accuracy": 50
+        },
+        "v8": {
+          "total": 4,
+          "correct": 3,
+          "wrong": 1,
+          "scored": 4,
+          "unscored": 0,
+          "accuracy": 75
+        },
+        "v8Latest": {
+          "total": 4,
+          "correct": 4,
+          "wrong": 0,
+          "scored": 4,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v9": {
+          "total": 4,
+          "correct": 4,
+          "wrong": 0,
+          "scored": 4,
+          "unscored": 0,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "The Hundred",
+      "total": 2,
+      "scores": {
+        "v7": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v8": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v8Latest": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v9": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "The Hundred - Womens",
+      "total": 2,
+      "scores": {
+        "v7": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v8": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v8Latest": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        },
+        "v9": {
+          "total": 2,
+          "correct": 2,
+          "wrong": 0,
+          "scored": 2,
+          "unscored": 0,
+          "accuracy": 100
+        }
+      }
+    },
+    {
+      "league": "Women's Asia Cup T20",
+      "total": 7,
+      "scores": {
+        "v7": {
+          "total": 7,
+          "correct": 3,
+          "wrong": 4,
+          "scored": 7,
+          "unscored": 0,
+          "accuracy": 42.9
+        },
+        "v8": {
+          "total": 7,
+          "correct": 3,
+          "wrong": 4,
+          "scored": 7,
+          "unscored": 0,
+          "accuracy": 42.9
+        },
+        "v8Latest": {
+          "total": 7,
+          "correct": 4,
+          "wrong": 3,
+          "scored": 7,
+          "unscored": 0,
+          "accuracy": 57.1
+        },
+        "v9": {
+          "total": 7,
+          "correct": 6,
+          "wrong": 1,
+          "scored": 7,
+          "unscored": 0,
+          "accuracy": 85.7
+        }
+      }
+    },
+    {
+      "league": "Women's Caribbean Premier League",
+      "total": 5,
+      "scores": {
+        "v7": {
+          "total": 5,
+          "correct": 4,
+          "wrong": 1,
+          "scored": 5,
+          "unscored": 0,
+          "accuracy": 80
+        },
+        "v8": {
+          "total": 5,
+          "correct": 4,
+          "wrong": 1,
+          "scored": 5,
+          "unscored": 0,
+          "accuracy": 80
+        },
+        "v8Latest": {
+          "total": 5,
+          "correct": 2,
+          "wrong": 3,
+          "scored": 5,
+          "unscored": 0,
+          "accuracy": 40
+        },
+        "v9": {
+          "total": 5,
+          "correct": 4,
+          "wrong": 1,
+          "scored": 5,
+          "unscored": 0,
+          "accuracy": 80
+        }
+      }
+    },
+    {
+      "league": "Womens International Twenty20 Matches",
+      "total": 9,
+      "scores": {
+        "v7": {
+          "total": 9,
+          "correct": 6,
+          "wrong": 3,
+          "scored": 9,
+          "unscored": 0,
+          "accuracy": 66.7
+        },
+        "v8": {
+          "total": 9,
+          "correct": 6,
+          "wrong": 3,
+          "scored": 9,
+          "unscored": 0,
+          "accuracy": 66.7
+        },
+        "v8Latest": {
+          "total": 9,
+          "correct": 5,
+          "wrong": 4,
+          "scored": 9,
+          "unscored": 0,
+          "accuracy": 55.6
+        },
+        "v9": {
+          "total": 9,
+          "correct": 3,
+          "wrong": 6,
+          "scored": 9,
+          "unscored": 0,
+          "accuracy": 33.3
+        }
+      }
+    },
+    {
+      "league": "Womens One Day Internationals",
+      "total": 6,
+      "scores": {
+        "v7": {
+          "total": 6,
+          "correct": 2,
+          "wrong": 4,
+          "scored": 6,
+          "unscored": 0,
+          "accuracy": 33.3
+        },
+        "v8": {
+          "total": 6,
+          "correct": 2,
+          "wrong": 4,
+          "scored": 6,
+          "unscored": 0,
+          "accuracy": 33.3
+        },
+        "v8Latest": {
+          "total": 6,
+          "correct": 5,
+          "wrong": 1,
+          "scored": 6,
+          "unscored": 0,
+          "accuracy": 83.3
+        },
+        "v9": {
+          "total": 6,
+          "correct": 5,
+          "wrong": 1,
+          "scored": 6,
+          "unscored": 0,
+          "accuracy": 83.3
+        }
+      }
+    }
+  ],
+  "patterns": {
+    "v7": [
+      {
+        "pattern": "CLEAR_LAY_VOL",
+        "total": 75,
+        "correct": 31,
+        "wrong": 44,
+        "scored": 75,
+        "unscored": 0,
+        "accuracy": 41.3
+      },
+      {
+        "pattern": "LAY_TRADES",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "No prediction",
+        "total": 1,
+        "correct": 0,
+        "wrong": 0,
+        "scored": 0,
+        "unscored": 1,
+        "accuracy": null
+      },
+      {
+        "pattern": "STRONGER_SUPPORT",
+        "total": 37,
+        "correct": 27,
+        "wrong": 10,
+        "scored": 37,
+        "unscored": 0,
+        "accuracy": 73
+      }
+    ],
+    "v8": [
+      {
+        "pattern": "CLEAR_LAY_VOL",
+        "total": 74,
+        "correct": 31,
+        "wrong": 43,
+        "scored": 74,
+        "unscored": 0,
+        "accuracy": 41.9
+      },
+      {
+        "pattern": "LAY_TRADES",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "No prediction",
+        "total": 1,
+        "correct": 0,
+        "wrong": 0,
+        "scored": 0,
+        "unscored": 1,
+        "accuracy": null
+      },
+      {
+        "pattern": "STRONGER_SUPPORT",
+        "total": 38,
+        "correct": 28,
+        "wrong": 10,
+        "scored": 38,
+        "unscored": 0,
+        "accuracy": 73.7
+      }
+    ],
+    "v8Latest": [
+      {
+        "pattern": "BACK_MOMENTUM",
+        "total": 7,
+        "correct": 4,
+        "wrong": 3,
+        "scored": 7,
+        "unscored": 0,
+        "accuracy": 57.1
+      },
+      {
+        "pattern": "BOOKIE_LAY_ABSORPTION",
+        "total": 4,
+        "correct": 4,
+        "wrong": 0,
+        "scored": 4,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "BOOKIE_MICRO_SAFE",
+        "total": 5,
+        "correct": 2,
+        "wrong": 3,
+        "scored": 5,
+        "unscored": 0,
+        "accuracy": 40
+      },
+      {
+        "pattern": "BOOKIE_SAFE_STRONGER_SUPPORT",
+        "total": 3,
+        "correct": 2,
+        "wrong": 1,
+        "scored": 3,
+        "unscored": 0,
+        "accuracy": 66.7
+      },
+      {
+        "pattern": "BOOKIE_SAFE_ZERO_BACK",
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "DUAL_INFLOW_PNL_ALIGN",
+        "total": 7,
+        "correct": 4,
+        "wrong": 3,
+        "scored": 7,
+        "unscored": 0,
+        "accuracy": 57.1
+      },
+      {
+        "pattern": "No prediction",
+        "total": 1,
+        "correct": 0,
+        "wrong": 0,
+        "scored": 0,
+        "unscored": 1,
+        "accuracy": null
+      },
+      {
+        "pattern": "OVERLOAD_TRAP_FADE",
+        "total": 13,
+        "correct": 8,
+        "wrong": 5,
+        "scored": 13,
+        "unscored": 0,
+        "accuracy": 61.5
+      },
+      {
+        "pattern": "SMART_MONEY_FLOW",
+        "total": 71,
+        "correct": 46,
+        "wrong": 25,
+        "scored": 71,
+        "unscored": 0,
+        "accuracy": 64.8
+      },
+      {
+        "pattern": "TRAP_COUNTER_SAFE_BOOKIE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      }
+    ],
+    "v9": [
+      {
+        "pattern": "ASIA_CUP_SMART_SUPPORT",
+        "total": 11,
+        "correct": 7,
+        "wrong": 4,
+        "scored": 11,
+        "unscored": 0,
+        "accuracy": 63.6
+      },
+      {
+        "pattern": "ASIA_CUP_TRAP_FADE",
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 50
+      },
+      {
+        "pattern": "ASIA_CUP_ZERO_BACK_PROFIT",
+        "total": 1,
+        "correct": 0,
+        "wrong": 1,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 0
+      },
+      {
+        "pattern": "BACK_MOMENTUM",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "BOOKIE_MICRO_SAFE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "CPL_BOOKIE_FAV_SAFE",
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "CPL_BOOKIE_SHIELD",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "CPL_LAY_DUMP_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "CPL_OVERLOAD_TRAP_FADE",
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "CPL_SMART_INFLOW",
+        "total": 4,
+        "correct": 4,
+        "wrong": 0,
+        "scored": 4,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "CPL_SMART_SUPPORT",
+        "total": 16,
+        "correct": 14,
+        "wrong": 2,
+        "scored": 16,
+        "unscored": 0,
+        "accuracy": 87.5
+      },
+      {
+        "pattern": "CPL_TRAP_DEFICIT_FADE",
+        "total": 3,
+        "correct": 3,
+        "wrong": 0,
+        "scored": 3,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "CPL_TRAP_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "ECS_DUBLIN_TRAP_FADE",
+        "total": 4,
+        "correct": 1,
+        "wrong": 3,
+        "scored": 4,
+        "unscored": 0,
+        "accuracy": 25
+      },
+      {
+        "pattern": "ECS_FORTRESS_BREACH",
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 50
+      },
+      {
+        "pattern": "ECS_GLASGOW_CHOKE_FADE",
+        "total": 2,
+        "correct": 1,
+        "wrong": 1,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 50
+      },
+      {
+        "pattern": "ECS_LAY_DUMP_FADE",
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "ECS_MICRO_TRAP_SAFE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "ECS_ROTTERDAM_DEFICIT_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "ECS_SYNTHETIC_DOMINANCE",
+        "total": 5,
+        "correct": 4,
+        "wrong": 1,
+        "scored": 5,
+        "unscored": 0,
+        "accuracy": 80
+      },
+      {
+        "pattern": "ECS_TOSS_FORTRESS",
+        "total": 6,
+        "correct": 3,
+        "wrong": 3,
+        "scored": 6,
+        "unscored": 0,
+        "accuracy": 50
+      },
+      {
+        "pattern": "HUNDRED_BOOKIE_SHIELD",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "HUNDRED_SMART_INFLOW",
+        "total": 2,
+        "correct": 2,
+        "wrong": 0,
+        "scored": 2,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "HUNDRED_STRONGER_SAFE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "INTL_BOOKIE_SHIELD",
+        "total": 3,
+        "correct": 2,
+        "wrong": 1,
+        "scored": 3,
+        "unscored": 0,
+        "accuracy": 66.7
+      },
+      {
+        "pattern": "INTL_OVERLOAD_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "INTL_SMART_INFLOW",
+        "total": 9,
+        "correct": 7,
+        "wrong": 2,
+        "scored": 9,
+        "unscored": 0,
+        "accuracy": 77.8
+      },
+      {
+        "pattern": "INTL_SMART_SUPPORT",
+        "total": 3,
+        "correct": 3,
+        "wrong": 0,
+        "scored": 3,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "INTL_TRAP_COUNTER",
+        "total": 4,
+        "correct": 4,
+        "wrong": 0,
+        "scored": 4,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "INTL_TRAP_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "METRO_BANK_BOOKIE_SAFE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "No prediction",
+        "total": 1,
+        "correct": 0,
+        "wrong": 0,
+        "scored": 0,
+        "unscored": 1,
+        "accuracy": null
+      },
+      {
+        "pattern": "ODI_TRAP_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "OVERLOAD_TRAP_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "TNPL_BOOKIE_SHIELD",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "TNPL_MICRO_SAFE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "TNPL_OVERLOAD_FADE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "TNPL_SMART_INFLOW",
+        "total": 4,
+        "correct": 4,
+        "wrong": 0,
+        "scored": 4,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "TNPL_ZERO_BACK_SAFE",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "WOMENS_BOOKIE_SHIELD",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      },
+      {
+        "pattern": "WOMENS_SMART_SUPPORT",
+        "total": 5,
+        "correct": 4,
+        "wrong": 1,
+        "scored": 5,
+        "unscored": 0,
+        "accuracy": 80
+      },
+      {
+        "pattern": "WOMENS_TRAP_FADE",
+        "total": 1,
+        "correct": 0,
+        "wrong": 1,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 0
+      },
+      {
+        "pattern": "WOMENS_ZERO_BACK_PROFIT",
+        "total": 1,
+        "correct": 1,
+        "wrong": 0,
+        "scored": 1,
+        "unscored": 0,
+        "accuracy": 100
+      }
+    ]
+  },
+  "changes": {
+    "v7": {
+      "betterThanV9": 8,
+      "worseThanV9": 40,
+      "differentWinner": 48
+    },
+    "v8": {
+      "betterThanV9": 8,
+      "worseThanV9": 39,
+      "differentWinner": 47
+    },
+    "v8Latest": {
+      "betterThanV9": 10,
+      "worseThanV9": 28,
+      "differentWinner": 38
+    }
+  },
+  "rows": [
+    {
+      "matchId": "36108897",
+      "league": "Asian Games T20",
+      "matchName": "Afghanistan v Nepal",
+      "startTime": 1790312400000,
+      "date": "25 Sept 2026, 10:30",
+      "actualWinner": "Afghanistan",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/170993",
+      "savedPrediction": "Afghanistan",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Afghanistan: ₹546 Back, Lead: 1.3x)",
+          "pattern": "BACK_MOMENTUM"
+        },
+        "v9": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Afghanistan: ₹546 Back, Lead: 1.3x)",
+          "pattern": "BACK_MOMENTUM"
+        }
+      }
+    },
+    {
+      "matchId": "36131166",
+      "league": "Asian Games T20",
+      "matchName": "Bangladesh v Pakistan",
+      "startTime": 1790812800000,
+      "date": "01 Oct 2026, 05:30",
+      "actualWinner": "Pakistan",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/171051",
+      "savedPrediction": "Bangladesh",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Pakistan",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Pakistan",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Pakistan",
+          "verdict": "Correct",
+          "reason": "Micro Liquidity Bookie Safe on Pakistan (P/L: +185.3 vs Bangladesh: -149.9)",
+          "pattern": "BOOKIE_MICRO_SAFE"
+        },
+        "v9": {
+          "winner": "Pakistan",
+          "verdict": "Correct",
+          "reason": "Micro Liquidity Bookie Safe on Pakistan (P/L: +185.3 vs Bangladesh: -149.9)",
+          "pattern": "BOOKIE_MICRO_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "36131489",
+      "league": "Asian Games T20",
+      "matchName": "India v Sri Lanka",
+      "startTime": 1790829000000,
+      "date": "01 Oct 2026, 10:00",
+      "actualWinner": "Sri Lanka",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/171060",
+      "savedPrediction": null,
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": null,
+          "verdict": "Unscored",
+          "reason": null,
+          "pattern": null
+        },
+        "v8": {
+          "winner": null,
+          "verdict": "Unscored",
+          "reason": null,
+          "pattern": null
+        },
+        "v8Latest": {
+          "winner": null,
+          "verdict": "Unscored",
+          "reason": null,
+          "pattern": null
+        },
+        "v9": {
+          "winner": null,
+          "verdict": "Unscored",
+          "reason": null,
+          "pattern": null
+        }
+      }
+    },
+    {
+      "matchId": "35901908",
+      "league": "Caribbean Premier League",
+      "matchName": "Jamaica Kingsmen v Guyana Amazon Warriors",
+      "startTime": 1786665600000,
+      "date": "14 Aug 2026, 05:30",
+      "actualWinner": "Guyana Amazon Warriors",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154370",
+      "savedPrediction": "Guyana Amazon Warriors",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Guyana Amazon Warriors: ₹2.1k Back, Lead: 7.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (4.7x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35931569",
+      "league": "Caribbean Premier League",
+      "matchName": "St. Lucia Kings v Antigua & Barbuda Falcons",
+      "startTime": 1786748400000,
+      "date": "15 Aug 2026, 04:30",
+      "actualWinner": "St. Lucia Kings",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154381",
+      "savedPrediction": "St. Lucia Kings",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Higher Lay Trades",
+          "pattern": "LAY_TRADES"
+        },
+        "v8": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Higher Lay Trades",
+          "pattern": "LAY_TRADES"
+        },
+        "v8Latest": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (St. Lucia Kings: ₹1.1k Back, Lead: 1.1x)",
+          "pattern": "BACK_MOMENTUM"
+        },
+        "v9": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "CPL Flat Market Inflow Leader St. Lucia Kings (₹1.1k Back)",
+          "pattern": "CPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35933934",
+      "league": "Caribbean Premier League",
+      "matchName": "Jamaica Kingsmen v Trinbago Knight Riders",
+      "startTime": 1786838400000,
+      "date": "16 Aug 2026, 05:30",
+      "actualWinner": "Jamaica Kingsmen",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154392",
+      "savedPrediction": "Jamaica Kingsmen",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Jamaica Kingsmen: ₹1.3k Back, Lead: 11.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Jamaica Kingsmen (3.2x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35938017",
+      "league": "Caribbean Premier League",
+      "matchName": "St. Lucia Kings v Barbados Tridents",
+      "startTime": 1786921200000,
+      "date": "17 Aug 2026, 04:30",
+      "actualWinner": "St. Lucia Kings",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154399",
+      "savedPrediction": "St. Lucia Kings",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Bookie Lay Shield on St. Lucia Kings (Lay: ₹1.3k vs Back: ₹367, P/L: +1689.7)",
+          "pattern": "BOOKIE_LAY_ABSORPTION"
+        },
+        "v9": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "CPL Bookie Lay Shield on St. Lucia Kings (Lay: ₹1.3k, PnL: +1690)",
+          "pattern": "CPL_BOOKIE_SHIELD"
+        }
+      }
+    },
+    {
+      "matchId": "35946930",
+      "league": "Caribbean Premier League",
+      "matchName": "Jamaica Kingsmen v St. Kitts and Nevis Patriots",
+      "startTime": 1787097600000,
+      "date": "19 Aug 2026, 05:30",
+      "actualWinner": "St. Kitts and Nevis Patriots",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154410",
+      "savedPrediction": "St. Kitts and Nevis Patriots",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "St. Kitts and Nevis Patriots",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "St. Kitts and Nevis Patriots",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "St. Kitts and Nevis Patriots",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹4.9k Back, Lead: 9.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "St. Kitts and Nevis Patriots",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (3.0x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35946931",
+      "league": "Caribbean Premier League",
+      "matchName": "St. Lucia Kings v Guyana Amazon Warriors",
+      "startTime": 1787180400000,
+      "date": "20 Aug 2026, 04:30",
+      "actualWinner": "Guyana Amazon Warriors",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154421",
+      "savedPrediction": "Guyana Amazon Warriors",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Guyana Amazon Warriors: ₹1.6k Back, Lead: 1.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (1.8x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35954424",
+      "league": "Caribbean Premier League",
+      "matchName": "Antigua & Barbuda Falco v St. Kitts and Nevis Pat",
+      "startTime": 1787266800000,
+      "date": "21 Aug 2026, 04:30",
+      "actualWinner": "Antigua & Barbuda Falco",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154432",
+      "savedPrediction": "Antigua & Barbuda Falco",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Antigua & Barbuda Falco",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Antigua & Barbuda Falco",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Antigua & Barbuda Falco",
+          "verdict": "Correct",
+          "reason": "Dual Advantage: Higher Back Inflow (₹2.3k) & Positive Bookie P/L (+5290.6)",
+          "pattern": "DUAL_INFLOW_PNL_ALIGN"
+        },
+        "v9": {
+          "winner": "Antigua & Barbuda Falco",
+          "verdict": "Correct",
+          "reason": "CPL High Trap Deficit on St. Kitts and Nevis Pat (PnL: -5283) -> Faded to Safe Side Antigua & Barbuda Falco (₹8.4k Lay)",
+          "pattern": "CPL_TRAP_DEFICIT_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "35962894",
+      "league": "Caribbean Premier League",
+      "matchName": "St. Lucia Kings v Jamaica Kingsmen",
+      "startTime": 1787353200000,
+      "date": "22 Aug 2026, 04:30",
+      "actualWinner": "St. Lucia Kings",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154441",
+      "savedPrediction": "St. Lucia Kings",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (St. Lucia Kings: ₹2.0k Back, Lead: 5.3x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on St. Lucia Kings (4.8x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35972909",
+      "league": "Caribbean Premier League",
+      "matchName": "Antigua & Barbuda Falc v Barbados Tridents",
+      "startTime": 1787698800000,
+      "date": "26 Aug 2026, 04:30",
+      "actualWinner": "Barbados Tridents",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154474",
+      "savedPrediction": "Barbados Tridents",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Barbados Tridents: ₹3.5k Back, Lead: 2.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "CPL Smart Money Inflow on Barbados Tridents (₹3.5k Back, Lead: 2.1x)",
+          "pattern": "CPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35972917",
+      "league": "Caribbean Premier League",
+      "matchName": "Trinbago Knight Riders v St. Lucia Kings",
+      "startTime": 1787785200000,
+      "date": "27 Aug 2026, 04:30",
+      "actualWinner": "Trinbago Knight Riders",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154485",
+      "savedPrediction": "Trinbago Knight Riders",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Trinbago Knight Riders: ₹1.7k Back, Lead: 2.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Trinbago Knight Riders (1.7x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35970079",
+      "league": "Caribbean Premier League",
+      "matchName": "St. Kitts and Nevis Patriots v Jamaica Kingsmen",
+      "startTime": 1787871600000,
+      "date": "28 Aug 2026, 04:30",
+      "actualWinner": "St. Kitts and Nevis Patriots",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154491",
+      "savedPrediction": "St. Kitts and Nevis Patriots",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "St. Kitts and Nevis Patriots",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (St. Kitts and Nevis Patriots: ₹12.5L Back, Lead: 1.7x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "St. Kitts and Nevis Patriots",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on St. Kitts and Nevis Patriots (2.2x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35986052",
+      "league": "Caribbean Premier League",
+      "matchName": "Trinbago Knight Riders v Barbados Tridents",
+      "startTime": 1787961600000,
+      "date": "29 Aug 2026, 05:30",
+      "actualWinner": "Trinbago Knight Riders",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154502",
+      "savedPrediction": "Trinbago Knight Riders",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Barbados Tridents",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Barbados Tridents",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Barbados Tridents",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Barbados Tridents: ₹2.0k Back, Lead: 1.6x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "CPL Trap Bookie Safe on Trinbago Knight Riders",
+          "pattern": "CPL_BOOKIE_FAV_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "35989000",
+      "league": "Caribbean Premier League",
+      "matchName": "St Kitts & Nevis Pats v Antigua & Barbuda Falcs",
+      "startTime": 1788130800000,
+      "date": "31 Aug 2026, 04:30",
+      "actualWinner": "Antigua & Barbuda Falcs",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154524",
+      "savedPrediction": "Antigua & Barbuda Falcs",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Antigua & Barbuda Falcs",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Antigua & Barbuda Falcs",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "St Kitts & Nevis Pats",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (St Kitts & Nevis Pats: ₹3.0k Back, Lead: 6.6x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Antigua & Barbuda Falcs",
+          "verdict": "Correct",
+          "reason": "CPL Naked Public Overload on St Kitts & Nevis Pats (₹3.0k Back, ₹15 Lay) Faded to Antigua & Barbuda Falcs (₹431 Lay, PnL: +2924)",
+          "pattern": "CPL_OVERLOAD_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36004104",
+      "league": "Caribbean Premier League",
+      "matchName": "Trinbago Knight Riders v Guyana Amazon Warriors",
+      "startTime": 1788210000000,
+      "date": "01 Sept 2026, 02:30",
+      "actualWinner": "Trinbago Knight Riders",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154535",
+      "savedPrediction": "Trinbago Knight Riders",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Wrong",
+          "reason": "Dual Advantage: Higher Back Inflow (₹1.2k) & Positive Bookie P/L (+253.8)",
+          "pattern": "DUAL_INFLOW_PNL_ALIGN"
+        },
+        "v9": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "CPL Lay Resistance Dump on Guyana Amazon Warriors (₹312 Lay vs ₹31) -> Faded to Trinbago Knight Riders",
+          "pattern": "CPL_LAY_DUMP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36004314",
+      "league": "Caribbean Premier League",
+      "matchName": "St Kitts & Nevis Pats v Barbados Tridents",
+      "startTime": 1788303600000,
+      "date": "02 Sept 2026, 04:30",
+      "actualWinner": "St Kitts & Nevis Pats",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154540",
+      "savedPrediction": "St Kitts & Nevis Pats",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Barbados Tridents",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Barbados Tridents",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "St Kitts & Nevis Pats",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (St Kitts & Nevis Pats: ₹1.6k Back, Lead: 5.0x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "St Kitts & Nevis Pats",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on St Kitts & Nevis Pats (4.1x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36018454",
+      "league": "Caribbean Premier League",
+      "matchName": "Trinbago Knight Riders v Antigua & Barbuda Falcs",
+      "startTime": 1788390000000,
+      "date": "03 Sept 2026, 04:30",
+      "actualWinner": "Trinbago Knight Riders",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154551",
+      "savedPrediction": "Trinbago Knight Riders",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "Bookie Lay Shield on Trinbago Knight Riders (Lay: ₹3.9k vs Back: ₹513, P/L: +4190.9)",
+          "pattern": "BOOKIE_LAY_ABSORPTION"
+        },
+        "v9": {
+          "winner": "Trinbago Knight Riders",
+          "verdict": "Correct",
+          "reason": "CPL High Trap Deficit on Antigua & Barbuda Falcs (PnL: -5279) -> Faded to Safe Side Trinbago Knight Riders (₹3.9k Lay)",
+          "pattern": "CPL_TRAP_DEFICIT_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36019390",
+      "league": "Caribbean Premier League",
+      "matchName": "St Kitts & Nevis Pats v St. Lucia Kings",
+      "startTime": 1788476400000,
+      "date": "04 Sept 2026, 04:30",
+      "actualWinner": "St. Lucia Kings",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154562",
+      "savedPrediction": "St. Lucia Kings",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "St Kitts & Nevis Pats",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (St Kitts & Nevis Pats: ₹1.5k Back, Lead: 1.2x)",
+          "pattern": "BACK_MOMENTUM"
+        },
+        "v9": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "CPL Trap Bookie Safe on St. Lucia Kings",
+          "pattern": "CPL_BOOKIE_FAV_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "36019388",
+      "league": "Caribbean Premier League",
+      "matchName": "Guyana Amazon Warriors v Jamaica Kingsmen",
+      "startTime": 1788562800000,
+      "date": "05 Sept 2026, 04:30",
+      "actualWinner": "Guyana Amazon Warriors",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154573",
+      "savedPrediction": "Guyana Amazon Warriors",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Guyana Amazon Warriors: ₹2.5k Back, Lead: 4.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (3.0x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36023549",
+      "league": "Caribbean Premier League",
+      "matchName": "Barbados Tridents v Trinbago Knight Riders",
+      "startTime": 1788652800000,
+      "date": "06 Sept 2026, 05:30",
+      "actualWinner": "Barbados Tridents",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154584",
+      "savedPrediction": "Barbados Tridents",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Barbados Tridents: ₹7.3k Back, Lead: 56.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Barbados Tridents (1.9x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36029412",
+      "league": "Caribbean Premier League",
+      "matchName": "Guyana Amazon Warriors v St Kitts & Nevis Pats",
+      "startTime": 1788721200000,
+      "date": "07 Sept 2026, 00:30",
+      "actualWinner": "St Kitts & Nevis Pats",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154595",
+      "savedPrediction": "St Kitts & Nevis Pats",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "St Kitts & Nevis Pats",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "St Kitts & Nevis Pats",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Guyana Amazon Warriors: ₹2.2k Back, Lead: 7.6x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "St Kitts & Nevis Pats",
+          "verdict": "Correct",
+          "reason": "CPL Naked Public Overload on Guyana Amazon Warriors (₹2.2k Back, ₹26 Lay) Faded to St Kitts & Nevis Pats (₹89 Lay, PnL: +1939)",
+          "pattern": "CPL_OVERLOAD_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36034130",
+      "league": "Caribbean Premier League",
+      "matchName": "Barbados Tridents v St. Lucia Kings",
+      "startTime": 1788735600000,
+      "date": "07 Sept 2026, 04:30",
+      "actualWinner": "Barbados Tridents",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154605",
+      "savedPrediction": "Barbados Tridents",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (St. Lucia Kings: ₹1.6k Back, Lead: 2.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Barbados Tridents",
+          "verdict": "Correct",
+          "reason": "CPL Flat Synth Trap Fade -> Bookie Safe Side Barbados Tridents",
+          "pattern": "CPL_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36045828",
+      "league": "Caribbean Premier League",
+      "matchName": "Guyana Amazon Warriors v St. Lucia Kings",
+      "startTime": 1788994800000,
+      "date": "10 Sept 2026, 04:30",
+      "actualWinner": "St. Lucia Kings",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154627",
+      "savedPrediction": "St. Lucia Kings",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (St. Lucia Kings: ₹1.2k Back, Lead: 10.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "St. Lucia Kings",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on St. Lucia Kings (3.9x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36054787",
+      "league": "Caribbean Premier League",
+      "matchName": "Guyana Amazon Warriors v Trinbago Knight Riders",
+      "startTime": 1789167600000,
+      "date": "12 Sept 2026, 04:30",
+      "actualWinner": "Guyana Amazon Warriors",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154649",
+      "savedPrediction": "Guyana Amazon Warriors",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Guyana Amazon Warriors: ₹2.0k Back, Lead: 10.3x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Correct",
+          "reason": "CPL Smart Money Inflow on Guyana Amazon Warriors (₹2.0k Back, Lead: 10.3x)",
+          "pattern": "CPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36085029",
+      "league": "Caribbean Premier League",
+      "matchName": "Guyana Amazon Warriors v Jamaica Kingsmen",
+      "startTime": 1789772400000,
+      "date": "19 Sept 2026, 04:30",
+      "actualWinner": "Jamaica Kingsmen",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154700",
+      "savedPrediction": "Guyana Amazon Warriors",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Jamaica Kingsmen",
+          "verdict": "Correct",
+          "reason": "Dual Advantage: Higher Back Inflow (₹2.4k) & Positive Bookie P/L (+-926.8)",
+          "pattern": "DUAL_INFLOW_PNL_ALIGN"
+        },
+        "v9": {
+          "winner": "Guyana Amazon Warriors",
+          "verdict": "Wrong",
+          "reason": "CPL Strong Synthetic Support on Guyana Amazon Warriors (2.1x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36090636",
+      "league": "Caribbean Premier League",
+      "matchName": "Antigua & Barbuda Falcs v Jamaica Kingsmen",
+      "startTime": 1789945200000,
+      "date": "21 Sept 2026, 04:30",
+      "actualWinner": "Antigua & Barbuda Falcs",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/154711",
+      "savedPrediction": "Antigua & Barbuda Falcs",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Antigua & Barbuda Falcs",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Antigua & Barbuda Falcs",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Antigua & Barbuda Falcs",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Antigua & Barbuda Falcs: ₹1.6k Back, Lead: 1.6x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Antigua & Barbuda Falcs",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Antigua & Barbuda Falcs (2.8x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35977014",
+      "league": "European T20 Premier League",
+      "matchName": "Belfast Wolves v Dublin Guardians",
+      "startTime": 1787823000000,
+      "date": "27 Aug 2026, 15:00",
+      "actualWinner": "Dublin Guardians",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169253",
+      "savedPrediction": "Belfast Wolves",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Dublin Guardians",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on Belfast Wolves (92% Load, 11.0x Lead) -> Faded to Dublin Guardians",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Belfast Wolves",
+          "pattern": "ECS_DUBLIN_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "35979895",
+      "league": "European T20 Premier League",
+      "matchName": "Edinburgh Castle Rockers v Glasgow Cosmic",
+      "startTime": 1787836500000,
+      "date": "27 Aug 2026, 18:45",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169257",
+      "savedPrediction": "Edinburgh Castle Rockers",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.7k Back, Lead: 1.2x)",
+          "pattern": "BACK_MOMENTUM"
+        },
+        "v9": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)",
+          "pattern": "ECS_TOSS_FORTRESS"
+        }
+      }
+    },
+    {
+      "matchId": "35988957",
+      "league": "European T20 Premier League",
+      "matchName": "Amsterdam Flames v Edinburgh Castle Rockers",
+      "startTime": 1787922900000,
+      "date": "28 Aug 2026, 18:45",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169267",
+      "savedPrediction": "Edinburgh Castle Rockers",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.5k Back, Lead: 1.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Amsterdam Flames)",
+          "pattern": "ECS_TOSS_FORTRESS"
+        }
+      }
+    },
+    {
+      "matchId": "35989974",
+      "league": "European T20 Premier League",
+      "matchName": "Glasgow Cosmic v Dublin Guardians",
+      "startTime": 1787995800000,
+      "date": "29 Aug 2026, 15:00",
+      "actualWinner": "Dublin Guardians",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169270",
+      "savedPrediction": "Glasgow Cosmic",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Dublin Guardians",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Dublin Guardians: ₹1.3k Back, Lead: 1.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Glasgow Cosmic",
+          "pattern": "ECS_DUBLIN_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "35989760",
+      "league": "European T20 Premier League",
+      "matchName": "Rotterdam Dockers v Belfast Wolves",
+      "startTime": 1788009300000,
+      "date": "29 Aug 2026, 18:45",
+      "actualWinner": "Belfast Wolves",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169273",
+      "savedPrediction": "Belfast Wolves",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Rotterdam Dockers: ₹605 Back, Lead: 2.7x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹159 Lay, 2.8x) -> Faded to Belfast Wolves",
+          "pattern": "ECS_LAY_DUMP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "35998885",
+      "league": "European T20 Premier League",
+      "matchName": "Amsterdam Flames v Belfast Wolves",
+      "startTime": 1788082200000,
+      "date": "30 Aug 2026, 15:00",
+      "actualWinner": "Belfast Wolves",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169283",
+      "savedPrediction": "Belfast Wolves",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Micro Liquidity Bookie Safe on Amsterdam Flames (P/L: +331.0 vs Belfast Wolves: -294.8)",
+          "pattern": "BOOKIE_MICRO_SAFE"
+        },
+        "v9": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 1.5x)",
+          "pattern": "ECS_SYNTHETIC_DOMINANCE"
+        }
+      }
+    },
+    {
+      "matchId": "35997455",
+      "league": "European T20 Premier League",
+      "matchName": "Edinburgh Castle Rockers v Dublin Guardians",
+      "startTime": 1788095700000,
+      "date": "30 Aug 2026, 18:45",
+      "actualWinner": "Dublin Guardians",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169293",
+      "savedPrediction": "Edinburgh Castle Rockers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Weak Inflow Lead Faded -> Stronger Bookie Safe Side on Edinburgh Castle Rockers (P/L: +96.2)",
+          "pattern": "BOOKIE_SAFE_STRONGER_SUPPORT"
+        },
+        "v9": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Dublin Guardians)",
+          "pattern": "ECS_TOSS_FORTRESS"
+        }
+      }
+    },
+    {
+      "matchId": "35998693",
+      "league": "European T20 Premier League",
+      "matchName": "Glasgow Cosmic v Rotterdam Dockers",
+      "startTime": 1788268500000,
+      "date": "01 Sept 2026, 18:45",
+      "actualWinner": "Rotterdam Dockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169300",
+      "savedPrediction": "Rotterdam Dockers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Micro Liquidity Bookie Safe on Glasgow Cosmic (P/L: +386.5 vs Rotterdam Dockers: -363.4)",
+          "pattern": "BOOKIE_MICRO_SAFE"
+        },
+        "v9": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "ECS Synthetic Smart Support Dominance on Rotterdam Dockers (Ratio: 8.0x)",
+          "pattern": "ECS_SYNTHETIC_DOMINANCE"
+        }
+      }
+    },
+    {
+      "matchId": "36020340",
+      "league": "European T20 Premier League",
+      "matchName": "Dublin Guardians v Rotterdam Dockers",
+      "startTime": 1788341400000,
+      "date": "02 Sept 2026, 15:00",
+      "actualWinner": "Rotterdam Dockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169310",
+      "savedPrediction": "Rotterdam Dockers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Dublin Guardians",
+          "verdict": "Wrong",
+          "reason": "Critical Public Overload on Rotterdam Dockers (100% Load, 228.7x Lead) -> Faded to Dublin Guardians",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Rotterdam Dockers",
+          "pattern": "ECS_DUBLIN_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36016128",
+      "league": "European T20 Premier League",
+      "matchName": "Belfast Wolves v Edinburgh Castle Rockers",
+      "startTime": 1788354900000,
+      "date": "02 Sept 2026, 18:45",
+      "actualWinner": "Belfast Wolves",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169313",
+      "savedPrediction": "Edinburgh Castle Rockers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Critical Public Overload on Belfast Wolves (93% Load, 13.6x Lead) -> Faded to Edinburgh Castle Rockers",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Belfast Wolves)",
+          "pattern": "ECS_TOSS_FORTRESS"
+        }
+      }
+    },
+    {
+      "matchId": "36020432",
+      "league": "European T20 Premier League",
+      "matchName": "Amsterdam Flames v Glasgow Cosmic",
+      "startTime": 1788441300000,
+      "date": "03 Sept 2026, 18:45",
+      "actualWinner": "Glasgow Cosmic",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169320",
+      "savedPrediction": "Amsterdam Flames",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Amsterdam Flames: ₹1.7k Back, Lead: 3.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "ECS Synthetic Smart Support Dominance on Amsterdam Flames (Ratio: 3.1x)",
+          "pattern": "ECS_SYNTHETIC_DOMINANCE"
+        }
+      }
+    },
+    {
+      "matchId": "36027092",
+      "league": "European T20 Premier League",
+      "matchName": "Glasgow Cosmic v Belfast Wolves",
+      "startTime": 1788527700000,
+      "date": "04 Sept 2026, 18:45",
+      "actualWinner": "Glasgow Cosmic",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169330",
+      "savedPrediction": "Belfast Wolves",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Glasgow Cosmic: ₹1.2k Back, Lead: 2.3x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Glasgow Cosmic toss liability choke (PnL: -709 vs +808) -> Bookie Safe to Belfast Wolves",
+          "pattern": "ECS_GLASGOW_CHOKE_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36023515",
+      "league": "European T20 Premier League",
+      "matchName": "Rotterdam Dockers v Edinburgh Castle Rockers",
+      "startTime": 1788600600000,
+      "date": "05 Sept 2026, 15:00",
+      "actualWinner": "Rotterdam Dockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169337",
+      "savedPrediction": "Edinburgh Castle Rockers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Rotterdam Dockers: ₹809 Back, Lead: 1.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Rotterdam Dockers)",
+          "pattern": "ECS_TOSS_FORTRESS"
+        }
+      }
+    },
+    {
+      "matchId": "36027440",
+      "league": "European T20 Premier League",
+      "matchName": "Dublin Guardians v Amsterdam Flames",
+      "startTime": 1788614100000,
+      "date": "05 Sept 2026, 18:45",
+      "actualWinner": "Dublin Guardians",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169340",
+      "savedPrediction": "Amsterdam Flames",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Dublin Guardians",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Dublin Guardians: ₹706 Back, Lead: 2.0x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Wrong",
+          "reason": "Dublin Guardians 0% coin toss resistance fade -> Advantage to Amsterdam Flames",
+          "pattern": "ECS_DUBLIN_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36034286",
+      "league": "European T20 Premier League",
+      "matchName": "Glasgow Cosmic v Edinburgh Castle Rockers",
+      "startTime": 1788687000000,
+      "date": "06 Sept 2026, 15:00",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169343",
+      "savedPrediction": "Edinburgh Castle Rockers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.2k Back, Lead: 7.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Correct",
+          "reason": "Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (Edinburgh Castle Rockers vs Glasgow Cosmic)",
+          "pattern": "ECS_TOSS_FORTRESS"
+        }
+      }
+    },
+    {
+      "matchId": "36034385",
+      "league": "European T20 Premier League",
+      "matchName": "Amsterdam Flames v Rotterdam Dockers",
+      "startTime": 1788700500000,
+      "date": "06 Sept 2026, 18:45",
+      "actualWinner": "Amsterdam Flames",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169347",
+      "savedPrediction": "Amsterdam Flames",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on Rotterdam Dockers (100% Load, 99.0x Lead) -> Faded to Amsterdam Flames",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Amsterdam Flames",
+          "verdict": "Correct",
+          "reason": "ECS Heavy Lay Short Dump on Rotterdam Dockers (₹132 Lay, 131.5x) -> Faded to Amsterdam Flames",
+          "pattern": "ECS_LAY_DUMP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36040032",
+      "league": "European T20 Premier League",
+      "matchName": "Rotterdam Dockers v Glasgow Cosmic",
+      "startTime": 1789032600000,
+      "date": "10 Sept 2026, 15:00",
+      "actualWinner": "Glasgow Cosmic",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169353",
+      "savedPrediction": "Glasgow Cosmic",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Rotterdam Dockers: ₹891 Back, Lead: 1.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Correct",
+          "reason": "Rotterdam Dockers bookmaker deficit choke (PnL: -392 vs +444) -> Bookie Safe to Glasgow Cosmic",
+          "pattern": "ECS_ROTTERDAM_DEFICIT_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36045869",
+      "league": "European T20 Premier League",
+      "matchName": "Belfast Wolves v Amsterdam Flames",
+      "startTime": 1789046100000,
+      "date": "10 Sept 2026, 18:45",
+      "actualWinner": "Belfast Wolves",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169360",
+      "savedPrediction": "Belfast Wolves",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Belfast Wolves: ₹953 Back, Lead: 2.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 1.7x)",
+          "pattern": "ECS_SYNTHETIC_DOMINANCE"
+        }
+      }
+    },
+    {
+      "matchId": "36045879",
+      "league": "European T20 Premier League",
+      "matchName": "Dublin Guardians v Edinburgh Castle Rockers",
+      "startTime": 1789132500000,
+      "date": "11 Sept 2026, 18:45",
+      "actualWinner": "Dublin Guardians",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169363",
+      "savedPrediction": "Dublin Guardians",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Edinburgh Castle Rockers",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Edinburgh Castle Rockers: ₹1.3k Back, Lead: 5.2x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Dublin Guardians",
+          "verdict": "Correct",
+          "reason": "Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: -917 vs +1043) -> Faded to Dublin Guardians",
+          "pattern": "ECS_FORTRESS_BREACH"
+        }
+      }
+    },
+    {
+      "matchId": "36055698",
+      "league": "European T20 Premier League",
+      "matchName": "Belfast Wolves v Rotterdam Dockers",
+      "startTime": 1789205400000,
+      "date": "12 Sept 2026, 15:00",
+      "actualWinner": "Rotterdam Dockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169370",
+      "savedPrediction": "Rotterdam Dockers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Belfast Wolves: ₹195 Back, Lead: 2.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Rotterdam Dockers",
+          "verdict": "Correct",
+          "reason": "ECS Micro-volume trap safe to Rotterdam Dockers (PnL: +123)",
+          "pattern": "ECS_MICRO_TRAP_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "36057946",
+      "league": "European T20 Premier League",
+      "matchName": "Dublin Guardians v Glasgow Cosmic",
+      "startTime": 1789218900000,
+      "date": "12 Sept 2026, 18:45",
+      "actualWinner": "Dublin Guardians",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169380",
+      "savedPrediction": "Glasgow Cosmic",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Glasgow Cosmic",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Glasgow Cosmic: ₹1.2k Back, Lead: 1.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Dublin Guardians",
+          "verdict": "Correct",
+          "reason": "Glasgow Cosmic toss liability choke against Dublin (PnL: -339 vs +455) -> Bookie Safe to Dublin Guardians",
+          "pattern": "ECS_GLASGOW_CHOKE_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36084485",
+      "league": "European T20 Premier League",
+      "matchName": "Amsterdam Flames v Belfast Wolves",
+      "startTime": 1789823700000,
+      "date": "19 Sept 2026, 18:45",
+      "actualWinner": "Belfast Wolves",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169433",
+      "savedPrediction": "Belfast Wolves",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Belfast Wolves: ₹705 Back, Lead: 1.1x)",
+          "pattern": "BACK_MOMENTUM"
+        },
+        "v9": {
+          "winner": "Belfast Wolves",
+          "verdict": "Correct",
+          "reason": "ECS Synthetic Smart Support Dominance on Belfast Wolves (Ratio: 1.4x)",
+          "pattern": "ECS_SYNTHETIC_DOMINANCE"
+        }
+      }
+    },
+    {
+      "matchId": "36092701",
+      "league": "European T20 Premier League",
+      "matchName": "Edinburgh Castle Rockers v Belfast Wolves",
+      "startTime": 1789910100000,
+      "date": "20 Sept 2026, 18:45",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169440",
+      "savedPrediction": "Belfast Wolves",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Critical Public Overload on Edinburgh Castle Rockers (98% Load, 40.3x Lead) -> Faded to Belfast Wolves",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Belfast Wolves",
+          "verdict": "Wrong",
+          "reason": "Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: -1449 vs +1530) -> Faded to Belfast Wolves",
+          "pattern": "ECS_FORTRESS_BREACH"
+        }
+      }
+    },
+    {
+      "matchId": "35977921",
+      "league": "International Twenty20 Matches",
+      "matchName": "Namibia v South Africa",
+      "startTime": 1787918400000,
+      "date": "28 Aug 2026, 17:30",
+      "actualWinner": "South Africa",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169901",
+      "savedPrediction": "South Africa",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Namibia",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Namibia",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "South Africa",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on Namibia (100% Load, 99.0x Lead) -> Faded to South Africa",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "South Africa",
+          "verdict": "Correct",
+          "reason": "Intl High Trap Counter on Namibia (PnL: -591) -> Bookie Safe Side South Africa (+635)",
+          "pattern": "INTL_TRAP_COUNTER"
+        }
+      }
+    },
+    {
+      "matchId": "35993805",
+      "league": "International Twenty20 Matches",
+      "matchName": "South Africa v Zimbabwe",
+      "startTime": 1788004800000,
+      "date": "29 Aug 2026, 17:30",
+      "actualWinner": "Zimbabwe",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169913",
+      "savedPrediction": "Zimbabwe",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Micro Liquidity Bookie Safe on South Africa (P/L: +274.3 vs Zimbabwe: -258.4)",
+          "pattern": "BOOKIE_MICRO_SAFE"
+        },
+        "v9": {
+          "winner": "Zimbabwe",
+          "verdict": "Correct",
+          "reason": "Intl Inflow on Zimbabwe (₹326 Back, Lead: 1.9x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35998050",
+      "league": "International Twenty20 Matches",
+      "matchName": "Namibia v Zimbabwe",
+      "startTime": 1788177600000,
+      "date": "31 Aug 2026, 17:30",
+      "actualWinner": "Namibia",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169991",
+      "savedPrediction": "Namibia",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Zimbabwe",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Zimbabwe: ₹1.3k Back, Lead: 1.1x)",
+          "pattern": "BACK_MOMENTUM"
+        },
+        "v9": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Intl Heavy Lay Absorption Lead on Namibia (₹254 Lay) -> Safe Winner",
+          "pattern": "INTL_BOOKIE_SHIELD"
+        }
+      }
+    },
+    {
+      "matchId": "36013997",
+      "league": "International Twenty20 Matches",
+      "matchName": "Zimbabwe v South Africa",
+      "startTime": 1788264000000,
+      "date": "01 Sept 2026, 17:30",
+      "actualWinner": "South Africa",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/170000",
+      "savedPrediction": "South Africa",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Zimbabwe",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Zimbabwe",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Zimbabwe",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Zimbabwe: ₹1.2k Back, Lead: 4.7x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "South Africa",
+          "verdict": "Correct",
+          "reason": "Intl High Trap Counter on Zimbabwe (PnL: -598) -> Bookie Safe Side South Africa (+648)",
+          "pattern": "INTL_TRAP_COUNTER"
+        }
+      }
+    },
+    {
+      "matchId": "36020245",
+      "league": "International Twenty20 Matches",
+      "matchName": "Namibia v Zimbabwe",
+      "startTime": 1788436800000,
+      "date": "03 Sept 2026, 17:30",
+      "actualWinner": "Zimbabwe",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/170010",
+      "savedPrediction": "Zimbabwe",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Namibia",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Namibia",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Zimbabwe",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Zimbabwe: ₹1.1k Back, Lead: 9.2x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Zimbabwe",
+          "verdict": "Correct",
+          "reason": "Intl Strong Synthetic Support on Zimbabwe (5.8x Lead, ₹1.1k Back)",
+          "pattern": "INTL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36026448",
+      "league": "International Twenty20 Matches",
+      "matchName": "Namibia v South Africa",
+      "startTime": 1788523200000,
+      "date": "04 Sept 2026, 17:30",
+      "actualWinner": "Namibia",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/170011",
+      "savedPrediction": "Namibia",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Namibia: ₹1.1k Back, Lead: 2.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Intl Inflow on Namibia (₹1.1k Back, Lead: 2.4x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36032174",
+      "league": "International Twenty20 Matches",
+      "matchName": "South Africa v Zimbabwe",
+      "startTime": 1788696000000,
+      "date": "06 Sept 2026, 17:30",
+      "actualWinner": "South Africa",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/170017",
+      "savedPrediction": "South Africa",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Zimbabwe",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Zimbabwe",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Zimbabwe",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Zimbabwe: ₹2.4k Back, Lead: 2.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "South Africa",
+          "verdict": "Correct",
+          "reason": "Intl Retail Loading Deficit on Zimbabwe (PnL: -906) Faded to Bookie Safe Side South Africa (+1159)",
+          "pattern": "INTL_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36082542",
+      "league": "International Twenty20 Matches",
+      "matchName": "England v Sri Lanka",
+      "startTime": 1789824600000,
+      "date": "19 Sept 2026, 19:00",
+      "actualWinner": "England",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129623",
+      "savedPrediction": "England",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (England: ₹1.2k Back, Lead: 6.3x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Intl Inflow on England (₹1.2k Back, Lead: 6.3x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36075087",
+      "league": "Metro Bank One Day Cup",
+      "matchName": "Leicestershire v Middlesex",
+      "startTime": 1789898400000,
+      "date": "20 Sept 2026, 15:30",
+      "actualWinner": "Leicestershire",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/144090",
+      "savedPrediction": "Middlesex",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Middlesex",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Middlesex",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Middlesex",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Middlesex: ₹144 Back, Lead: 1.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Leicestershire",
+          "verdict": "Correct",
+          "reason": "Metro Bank Bookie Safe Side on Leicestershire (P/L: +64 vs Middlesex: -53)",
+          "pattern": "METRO_BANK_BOOKIE_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "35931559",
+      "league": "One Day Internationals",
+      "matchName": "Ireland v Afghanistan",
+      "startTime": 1786787100000,
+      "date": "15 Aug 2026, 15:15",
+      "actualWinner": "Afghanistan",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/151031",
+      "savedPrediction": "Afghanistan",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Afghanistan: ₹1.2k Back, Lead: 1.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Afghanistan",
+          "verdict": "Correct",
+          "reason": "Intl Inflow on Afghanistan (₹1.2k Back, Lead: 1.9x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36051688",
+      "league": "One Day Internationals",
+      "matchName": "Namibia v South Africa",
+      "startTime": 1789111800000,
+      "date": "11 Sept 2026, 13:00",
+      "actualWinner": "Namibia",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169981",
+      "savedPrediction": "Namibia",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on South Africa (100% Load, 99.0x Lead) -> Faded to Namibia",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Namibia",
+          "verdict": "Correct",
+          "reason": "Intl Public Overload Fade on South Africa -> Faded to Namibia",
+          "pattern": "INTL_OVERLOAD_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36085898",
+      "league": "One Day Internationals",
+      "matchName": "Zimbabwe v Australia",
+      "startTime": 1789889400000,
+      "date": "20 Sept 2026, 13:00",
+      "actualWinner": "Zimbabwe",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/152753",
+      "savedPrediction": "Australia",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Zimbabwe",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Zimbabwe",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Australia",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Australia: ₹1.0k Back, Lead: 9.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Zimbabwe",
+          "verdict": "Correct",
+          "reason": "ODI Public Trap Overload on Australia (9.8x Lead, PnL: -945) Faded to Bookie Safe Underdog Zimbabwe (+977)",
+          "pattern": "ODI_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36083840",
+      "league": "One Day Internationals",
+      "matchName": "South Africa v Australia",
+      "startTime": 1790236800000,
+      "date": "24 Sept 2026, 13:30",
+      "actualWinner": "Australia",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/147895",
+      "savedPrediction": "South Africa",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Dual Advantage: Higher Back Inflow (₹1.2k) & Positive Bookie P/L (+69.2)",
+          "pattern": "DUAL_INFLOW_PNL_ALIGN"
+        },
+        "v9": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Intl Inflow on South Africa (₹1.2k Back, Lead: 1.1x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36103843",
+      "league": "One Day Internationals",
+      "matchName": "England v Sri Lanka",
+      "startTime": 1790249400000,
+      "date": "24 Sept 2026, 17:00",
+      "actualWinner": "Sri Lanka",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129640",
+      "savedPrediction": "Sri Lanka",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "England",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "England",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "England",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (England: ₹1.2k Back, Lead: 3.6x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Sri Lanka",
+          "verdict": "Correct",
+          "reason": "Intl High Trap Counter on England (PnL: -794) -> Bookie Safe Side Sri Lanka (+855)",
+          "pattern": "INTL_TRAP_COUNTER"
+        }
+      }
+    },
+    {
+      "matchId": "36111199",
+      "league": "One Day Internationals",
+      "matchName": "South Africa v Australia",
+      "startTime": 1790496000000,
+      "date": "27 Sept 2026, 13:30",
+      "actualWinner": "Australia",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/147898",
+      "savedPrediction": "South Africa",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Dual Advantage: Higher Back Inflow (₹762) & Positive Bookie P/L (+453.0)",
+          "pattern": "DUAL_INFLOW_PNL_ALIGN"
+        },
+        "v9": {
+          "winner": "South Africa",
+          "verdict": "Wrong",
+          "reason": "Intl Heavy Lay Absorption Lead on South Africa (₹694 Lay) -> Safe Winner",
+          "pattern": "INTL_BOOKIE_SHIELD"
+        }
+      }
+    },
+    {
+      "matchId": "36100425",
+      "league": "One Day Internationals",
+      "matchName": "India v West Indies",
+      "startTime": 1790497800000,
+      "date": "27 Sept 2026, 14:00",
+      "actualWinner": "India",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/151532",
+      "savedPrediction": "West Indies",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "West Indies",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (West Indies: ₹975 Back, Lead: 1.7x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "West Indies",
+          "verdict": "Wrong",
+          "reason": "Intl Inflow on West Indies (₹975 Back, Lead: 1.7x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36111684",
+      "league": "One Day Internationals",
+      "matchName": "England v Sri Lanka",
+      "startTime": 1790501400000,
+      "date": "27 Sept 2026, 15:00",
+      "actualWinner": "England",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129651",
+      "savedPrediction": "England",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Dual Advantage: Higher Back Inflow (₹1.6k) & Positive Bookie P/L (+90.5)",
+          "pattern": "DUAL_INFLOW_PNL_ALIGN"
+        },
+        "v9": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Intl Inflow on England (₹1.6k Back, Lead: 1.4x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36125669",
+      "league": "One Day Internationals",
+      "matchName": "India v West Indies",
+      "startTime": 1790757000000,
+      "date": "30 Sept 2026, 14:00",
+      "actualWinner": "India",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/151543",
+      "savedPrediction": "West Indies",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "West Indies",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (West Indies: ₹546 Back, Lead: 1.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Intl Heavy Lay Absorption Lead on India (₹149 Lay) -> Safe Winner",
+          "pattern": "INTL_BOOKIE_SHIELD"
+        }
+      }
+    },
+    {
+      "matchId": "36124730",
+      "league": "One Day Internationals",
+      "matchName": "South Africa v Australia",
+      "startTime": 1790767800000,
+      "date": "30 Sept 2026, 17:00",
+      "actualWinner": "South Africa",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/147909",
+      "savedPrediction": "South Africa",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Australia",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Australia",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "South Africa",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (South Africa: ₹1.8k Back, Lead: 3.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "South Africa",
+          "verdict": "Correct",
+          "reason": "Intl Strong Synthetic Support on South Africa (3.2x Lead, ₹1.8k Back)",
+          "pattern": "INTL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36127430",
+      "league": "South Africa T20 Challenge",
+      "matchName": "Garden Route Badgers v Eastern Cape Linyathi",
+      "startTime": 1790852400000,
+      "date": "01 Oct 2026, 16:30",
+      "actualWinner": "Garden Route Badgers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/173170",
+      "savedPrediction": "Garden Route Badgers",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Eastern Cape Linyathi",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Eastern Cape Linyathi",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Garden Route Badgers",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on Eastern Cape Linyathi (100% Load, 99.0x Lead) -> Faded to Garden Route Badgers",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Garden Route Badgers",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on Eastern Cape Linyathi (100% Load, 99.0x Lead) -> Faded to Garden Route Badgers",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "35948552",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Dindigul Dragons v Ruby Trichy Warriors",
+      "startTime": 1787148000000,
+      "date": "19 Aug 2026, 19:30",
+      "actualWinner": "Dindigul Dragons",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/166980",
+      "savedPrediction": "Dindigul Dragons",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Dindigul Dragons",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Dindigul Dragons",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Dindigul Dragons",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on Ruby Trichy Warriors (94% Load, 15.1x Lead) -> Faded to Dindigul Dragons",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Dindigul Dragons",
+          "verdict": "Correct",
+          "reason": "TNPL Critical Public Overload on Ruby Trichy Warriors (94% Load) -> Faded to Dindigul Dragons",
+          "pattern": "TNPL_OVERLOAD_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "35955958",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Madurai Panthers v Tiruppur Tamizhans",
+      "startTime": 1787220000000,
+      "date": "20 Aug 2026, 15:30",
+      "actualWinner": "Tiruppur Tamizhans",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/166983",
+      "savedPrediction": "Tiruppur Tamizhans",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Tiruppur Tamizhans",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Tiruppur Tamizhans",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Tiruppur Tamizhans",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Tiruppur Tamizhans: ₹639 Back, Lead: 2.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Tiruppur Tamizhans",
+          "verdict": "Correct",
+          "reason": "TNPL Smart Money Inflow on Tiruppur Tamizhans (₹639 Back, Lead: 2.9x)",
+          "pattern": "TNPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35950773",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Nellai Royal Kings v Salem Spartans",
+      "startTime": 1787234400000,
+      "date": "20 Aug 2026, 19:30",
+      "actualWinner": "Salem Spartans",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/166993",
+      "savedPrediction": "Salem Spartans",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Nellai Royal Kings",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Nellai Royal Kings",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Salem Spartans",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Salem Spartans: ₹1.7k Back, Lead: 1.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Salem Spartans",
+          "verdict": "Correct",
+          "reason": "TNPL Smart Money Inflow on Salem Spartans (₹1.7k Back, Lead: 1.5x)",
+          "pattern": "TNPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35958414",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Lyca Kovai Kings v Dindigul Dragons",
+      "startTime": 1787306400000,
+      "date": "21 Aug 2026, 15:30",
+      "actualWinner": "Dindigul Dragons",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/167000",
+      "savedPrediction": "Dindigul Dragons",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Lyca Kovai Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Lyca Kovai Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Dindigul Dragons",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Dindigul Dragons: ₹915 Back, Lead: 4.0x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Dindigul Dragons",
+          "verdict": "Correct",
+          "reason": "TNPL Smart Money Inflow on Dindigul Dragons (₹915 Back, Lead: 4.0x)",
+          "pattern": "TNPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35958346",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Ruby Trichy Warriors v Chepauk Super Gillies",
+      "startTime": 1787320800000,
+      "date": "21 Aug 2026, 19:30",
+      "actualWinner": "Ruby Trichy Warriors",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/167003",
+      "savedPrediction": "Ruby Trichy Warriors",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Ruby Trichy Warriors",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Ruby Trichy Warriors",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Ruby Trichy Warriors",
+          "verdict": "Correct",
+          "reason": "Bookie Lay Shield on Ruby Trichy Warriors (Lay: ₹589 vs Back: ₹9, P/L: +2071.5)",
+          "pattern": "BOOKIE_LAY_ABSORPTION"
+        },
+        "v9": {
+          "winner": "Ruby Trichy Warriors",
+          "verdict": "Correct",
+          "reason": "TNPL Bookie Lay Shield on Ruby Trichy Warriors (Lay: ₹589, PnL: +2072)",
+          "pattern": "TNPL_BOOKIE_SHIELD"
+        }
+      }
+    },
+    {
+      "matchId": "35962365",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Tiruppur Tamizhans v Salem Spartans",
+      "startTime": 1787392800000,
+      "date": "22 Aug 2026, 15:30",
+      "actualWinner": "Salem Spartans",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/167013",
+      "savedPrediction": "Salem Spartans",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Salem Spartans",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Salem Spartans",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Salem Spartans",
+          "verdict": "Correct",
+          "reason": "Micro Liquidity Bookie Safe on Salem Spartans (P/L: +240.3 vs Tiruppur Tamizhans: -234.1)",
+          "pattern": "BOOKIE_MICRO_SAFE"
+        },
+        "v9": {
+          "winner": "Salem Spartans",
+          "verdict": "Correct",
+          "reason": "TNPL Micro Liquidity Bookie Safe on Salem Spartans (PnL: +240 vs -234)",
+          "pattern": "TNPL_MICRO_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "35962407",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Nellai Royal Kings v Madurai Panthers",
+      "startTime": 1787407200000,
+      "date": "22 Aug 2026, 19:30",
+      "actualWinner": "Madurai Panthers",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/167017",
+      "savedPrediction": "Madurai Panthers",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Nellai Royal Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Nellai Royal Kings",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Madurai Panthers",
+          "verdict": "Correct",
+          "reason": "Bookmaker Pure Profit on Madurai Panthers (Zero Back Exposure, P/L: +580.9)",
+          "pattern": "BOOKIE_SAFE_ZERO_BACK"
+        },
+        "v9": {
+          "winner": "Madurai Panthers",
+          "verdict": "Correct",
+          "reason": "TNPL Pure Profit on Madurai Panthers (Zero Back Exposure, PnL: +581)",
+          "pattern": "TNPL_ZERO_BACK_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "35973277",
+      "league": "Tamil Nadu Premier League",
+      "matchName": "Lyca Kovai Kings v Tiruppur Tamizhans",
+      "startTime": 1787580000000,
+      "date": "24 Aug 2026, 19:30",
+      "actualWinner": "Lyca Kovai Kings",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/167027",
+      "savedPrediction": "Lyca Kovai Kings",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Lyca Kovai Kings",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Lyca Kovai Kings",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Lyca Kovai Kings",
+          "verdict": "Correct",
+          "reason": "Dual Advantage: Higher Back Inflow (₹1.5k) & Positive Bookie P/L (+88.1)",
+          "pattern": "DUAL_INFLOW_PNL_ALIGN"
+        },
+        "v9": {
+          "winner": "Lyca Kovai Kings",
+          "verdict": "Correct",
+          "reason": "TNPL Smart Money Inflow on Lyca Kovai Kings (₹1.5k Back, Lead: 1.1x)",
+          "pattern": "TNPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35913614",
+      "league": "Test Matches",
+      "matchName": "Sri Lanka v India",
+      "startTime": 1786768200000,
+      "date": "15 Aug 2026, 10:00",
+      "actualWinner": "India",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/163013",
+      "savedPrediction": "India",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (India: ₹1.3k Back, Lead: 1.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "India",
+          "verdict": "Correct",
+          "reason": "Intl Inflow on India (₹1.3k Back, Lead: 1.8x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35913612",
+      "league": "Test Matches",
+      "matchName": "England v Pakistan",
+      "startTime": 1787133600000,
+      "date": "19 Aug 2026, 15:30",
+      "actualWinner": "England",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129579",
+      "savedPrediction": "England",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Pakistan",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (England: ₹3.1k Back, Lead: 1.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "England",
+          "verdict": "Correct",
+          "reason": "Intl Inflow on England (₹3.1k Back, Lead: 1.9x)",
+          "pattern": "INTL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35947011",
+      "league": "Test Matches",
+      "matchName": "Australia v Bangladesh",
+      "startTime": 1787356800000,
+      "date": "22 Aug 2026, 05:30",
+      "actualWinner": "Australia",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/148327",
+      "savedPrediction": "Australia",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Australia",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Australia",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Australia",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Australia: ₹4.2k Back, Lead: 4.7x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Australia",
+          "verdict": "Correct",
+          "reason": "Intl Strong Synthetic Support on Australia (5.3x Lead, ₹4.2k Back)",
+          "pattern": "INTL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35966902",
+      "league": "Test Matches",
+      "matchName": "England v Pakistan",
+      "startTime": 1787824800000,
+      "date": "27 Aug 2026, 15:30",
+      "actualWinner": "Pakistan",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129585",
+      "savedPrediction": "Pakistan",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "England",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "England",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Pakistan",
+          "verdict": "Correct",
+          "reason": "High Trap Overload on England (P/L: -956.7) -> Bookmaker Safe Side on Pakistan (+1043.2)",
+          "pattern": "TRAP_COUNTER_SAFE_BOOKIE"
+        },
+        "v9": {
+          "winner": "Pakistan",
+          "verdict": "Correct",
+          "reason": "Intl High Trap Counter on England (PnL: -957) -> Bookie Safe Side Pakistan (+1043)",
+          "pattern": "INTL_TRAP_COUNTER"
+        }
+      }
+    },
+    {
+      "matchId": "35933619",
+      "league": "The Hundred",
+      "matchName": "Manchester Super Giants v Sunrisers Leeds",
+      "startTime": 1786726800000,
+      "date": "14 Aug 2026, 22:30",
+      "actualWinner": "Sunrisers Leeds",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/144994",
+      "savedPrediction": "Sunrisers Leeds",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Sunrisers Leeds",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Sunrisers Leeds",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Sunrisers Leeds",
+          "verdict": "Correct",
+          "reason": "Bookie Lay Shield on Sunrisers Leeds (Lay: ₹381 vs Back: ₹181, P/L: +2176.4)",
+          "pattern": "BOOKIE_LAY_ABSORPTION"
+        },
+        "v9": {
+          "winner": "Sunrisers Leeds",
+          "verdict": "Correct",
+          "reason": "The Hundred Lay Shield on Sunrisers Leeds (Lay: ₹381, PnL: +2176)",
+          "pattern": "HUNDRED_BOOKIE_SHIELD"
+        }
+      }
+    },
+    {
+      "matchId": "35941131",
+      "league": "The Hundred",
+      "matchName": "Trent Rockets v Manchester Super Giants",
+      "startTime": 1786899600000,
+      "date": "16 Aug 2026, 22:30",
+      "actualWinner": "Manchester Super Giants",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/145005",
+      "savedPrediction": "Manchester Super Giants",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Manchester Super Giants",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Manchester Super Giants",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Manchester Super Giants",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Manchester Super Giants: ₹2.6k Back, Lead: 2.3x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Manchester Super Giants",
+          "verdict": "Correct",
+          "reason": "The Hundred Smart Inflow on Manchester Super Giants (₹2.6k Back, Lead: 2.3x)",
+          "pattern": "HUNDRED_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "35929461",
+      "league": "The Hundred - Womens",
+      "matchName": "Sunrisers Leeds W v Southern Brave W",
+      "startTime": 1786713300000,
+      "date": "14 Aug 2026, 18:45",
+      "actualWinner": "Sunrisers Leeds W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/145357",
+      "savedPrediction": "Sunrisers Leeds W",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Sunrisers Leeds W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Sunrisers Leeds W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Sunrisers Leeds W",
+          "verdict": "Correct",
+          "reason": "Weak Inflow Lead Faded -> Stronger Bookie Safe Side on Sunrisers Leeds W (P/L: +277.8)",
+          "pattern": "BOOKIE_SAFE_STRONGER_SUPPORT"
+        },
+        "v9": {
+          "winner": "Sunrisers Leeds W",
+          "verdict": "Correct",
+          "reason": "The Hundred Stronger Safe on Sunrisers Leeds W (PnL: +278)",
+          "pattern": "HUNDRED_STRONGER_SAFE"
+        }
+      }
+    },
+    {
+      "matchId": "35940115",
+      "league": "The Hundred - Womens",
+      "matchName": "Trent Rockets W v Sunrisers Leeds W",
+      "startTime": 1786886100000,
+      "date": "16 Aug 2026, 18:45",
+      "actualWinner": "Trent Rockets W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/145368",
+      "savedPrediction": "Trent Rockets W",
+      "savedVersion": "toss-v7-layvol-stronger",
+      "predictions": {
+        "v7": {
+          "winner": "Trent Rockets W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Trent Rockets W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Trent Rockets W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Trent Rockets W: ₹2.0k Back, Lead: 2.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Trent Rockets W",
+          "verdict": "Correct",
+          "reason": "The Hundred Smart Inflow on Trent Rockets W (₹2.0k Back, Lead: 2.1x)",
+          "pattern": "HUNDRED_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36023009",
+      "league": "Women's Asia Cup T20",
+      "matchName": "United Arab Emirates W v Indonesia W",
+      "startTime": 1788532200000,
+      "date": "04 Sept 2026, 20:00",
+      "actualWinner": "United Arab Emirates W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169847",
+      "savedPrediction": "United Arab Emirates W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Indonesia W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Indonesia W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "United Arab Emirates W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (United Arab Emirates W: ₹841 Back, Lead: 5.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "United Arab Emirates W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Smart Synthetic Support on United Arab Emirates W (1.9x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36027587",
+      "league": "Women's Asia Cup T20",
+      "matchName": "India W v Pakistan W",
+      "startTime": 1788618600000,
+      "date": "05 Sept 2026, 20:00",
+      "actualWinner": "Pakistan W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169850",
+      "savedPrediction": "India W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Pakistan W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Pakistan W: ₹3.2k Back, Lead: 2.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Asia Cup Bookmaker Deficit on Pakistan W (PnL: -1813) -> Faded to Safe Side India W (+2202)",
+          "pattern": "ASIA_CUP_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36023089",
+      "league": "Women's Asia Cup T20",
+      "matchName": "Bangladesh W v Sri Lanka W",
+      "startTime": 1788705000000,
+      "date": "06 Sept 2026, 20:00",
+      "actualWinner": "Sri Lanka W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169857",
+      "savedPrediction": "Sri Lanka W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Bangladesh W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Bangladesh W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Sri Lanka W: ₹595 Back, Lead: 2.6x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.8x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36034463",
+      "league": "Women's Asia Cup T20",
+      "matchName": "Hong Kong W v Pakistan W",
+      "startTime": 1788791400000,
+      "date": "07 Sept 2026, 20:00",
+      "actualWinner": "Pakistan W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169867",
+      "savedPrediction": "Pakistan W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Pakistan W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Pakistan W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Pakistan W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Pakistan W: ₹1.3k Back, Lead: 2.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Pakistan W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Smart Synthetic Support on Pakistan W (2.9x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36039351",
+      "league": "Women's Asia Cup T20",
+      "matchName": "United Arab Emirates W v Bangladesh W",
+      "startTime": 1788877800000,
+      "date": "08 Sept 2026, 20:00",
+      "actualWinner": "United Arab Emirates W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169871",
+      "savedPrediction": "United Arab Emirates W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Bangladesh W",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Bangladesh W",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Bangladesh W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Bangladesh W: ₹1.8k Back, Lead: 3.5x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "United Arab Emirates W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Bookmaker Deficit on Bangladesh W (PnL: -1186) -> Faded to Safe Side United Arab Emirates W (+1447)",
+          "pattern": "ASIA_CUP_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36049475",
+      "league": "Women's Asia Cup T20",
+      "matchName": "India W v Bangladesh W",
+      "startTime": 1789050600000,
+      "date": "10 Sept 2026, 20:00",
+      "actualWinner": "Bangladesh W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169887",
+      "savedPrediction": "Bangladesh W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Bangladesh W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Bangladesh W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (India W: ₹1.1k Back, Lead: 1.2x)",
+          "pattern": "BACK_MOMENTUM"
+        },
+        "v9": {
+          "winner": "Bangladesh W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Smart Synthetic Support on Bangladesh W (1.1x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36049024",
+      "league": "Women's Asia Cup T20",
+      "matchName": "Sri Lanka W v Pakistan W",
+      "startTime": 1789137000000,
+      "date": "11 Sept 2026, 20:00",
+      "actualWinner": "Sri Lanka W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169890",
+      "savedPrediction": "Sri Lanka W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Pakistan W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Pakistan W: ₹2.3k Back, Lead: 1.8x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (1.2x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36023098",
+      "league": "Women's Caribbean Premier League",
+      "matchName": "Barbados Tridents W v Trinbago Knight Riders W",
+      "startTime": 1788634800000,
+      "date": "06 Sept 2026, 00:30",
+      "actualWinner": "Barbados Tridents W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/161747",
+      "savedPrediction": "Trinbago Knight Riders W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Trinbago Knight Riders W: ₹1.2k Back, Lead: 2.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Wrong",
+          "reason": "CPL Strong Synthetic Support on Trinbago Knight Riders W (2.1x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36023506",
+      "league": "Women's Caribbean Premier League",
+      "matchName": "Guyana Amazon Warriors W v Jamaica Empress W",
+      "startTime": 1788703200000,
+      "date": "06 Sept 2026, 19:30",
+      "actualWinner": "Jamaica Empress W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/161822",
+      "savedPrediction": "Jamaica Empress W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Jamaica Empress W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Jamaica Empress W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Jamaica Empress W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Jamaica Empress W: ₹885 Back, Lead: 1.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Jamaica Empress W",
+          "verdict": "Correct",
+          "reason": "CPL Smart Money Inflow on Jamaica Empress W (₹885 Back, Lead: 1.9x)",
+          "pattern": "CPL_SMART_INFLOW"
+        }
+      }
+    },
+    {
+      "matchId": "36040305",
+      "league": "Women's Caribbean Premier League",
+      "matchName": "Jamaica Empress W v Trinbago Knight Riders W",
+      "startTime": 1789048800000,
+      "date": "10 Sept 2026, 19:30",
+      "actualWinner": "Trinbago Knight Riders W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/161766",
+      "savedPrediction": "Trinbago Knight Riders W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Jamaica Empress W",
+          "verdict": "Wrong",
+          "reason": "Critical Public Overload on Trinbago Knight Riders W (97% Load, 36.1x Lead) -> Faded to Jamaica Empress W",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Trinbago Knight Riders W (10.4x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36054985",
+      "league": "Women's Caribbean Premier League",
+      "matchName": "Guyana Amazon War W v Trinbago Knight Rid W",
+      "startTime": 1789221600000,
+      "date": "12 Sept 2026, 19:30",
+      "actualWinner": "Trinbago Knight Riders W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/161777",
+      "savedPrediction": "Guyana Amazon Warriors W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Guyana Amazon Warriors W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Guyana Amazon Warriors W: ₹2.0k Back, Lead: 2.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Trinbago Knight Riders W",
+          "verdict": "Correct",
+          "reason": "CPL High Trap Deficit on Guyana Amazon Warriors W (PnL: -1713) -> Faded to Safe Side Trinbago Knight Riders W (₹711 Lay)",
+          "pattern": "CPL_TRAP_DEFICIT_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36055328",
+      "league": "Women's Caribbean Premier League",
+      "matchName": "Barbados Tridents W v Jamaica Empress W",
+      "startTime": 1789239600000,
+      "date": "13 Sept 2026, 00:30",
+      "actualWinner": "Barbados Tridents W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/161780",
+      "savedPrediction": "Barbados Tridents W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Barbados Tridents W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Barbados Tridents W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Barbados Tridents W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Barbados Tridents W: ₹2.1k Back, Lead: 5.3x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Barbados Tridents W",
+          "verdict": "Correct",
+          "reason": "CPL Strong Synthetic Support on Barbados Tridents W (3.7x Ratio)",
+          "pattern": "CPL_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35982250",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "Hong Kong W v Thailand W",
+      "startTime": 1787927400000,
+      "date": "28 Aug 2026, 20:00",
+      "actualWinner": "Hong Kong W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169797",
+      "savedPrediction": "Thailand W",
+      "savedVersion": "toss-v8-layvol-ratio-gate",
+      "predictions": {
+        "v7": {
+          "winner": "Hong Kong W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Hong Kong W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Thailand W",
+          "verdict": "Wrong",
+          "reason": "Critical Public Overload on Hong Kong W (100% Load, 99.0x Lead) -> Faded to Thailand W",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Thailand W",
+          "verdict": "Wrong",
+          "reason": "Asia Cup Zero-Back Pure Profit on Thailand W (PnL: +7)",
+          "pattern": "ASIA_CUP_ZERO_BACK_PROFIT"
+        }
+      }
+    },
+    {
+      "matchId": "35982257",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "United Arab Emirates W v Sri Lanka W",
+      "startTime": 1788013800000,
+      "date": "29 Aug 2026, 20:00",
+      "actualWinner": "Sri Lanka W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169807",
+      "savedPrediction": "Sri Lanka W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Sri Lanka W: ₹852 Back, Lead: 3.4x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Sri Lanka W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (1.3x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35982267",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "India W v Thailand W",
+      "startTime": 1788100200000,
+      "date": "30 Aug 2026, 20:00",
+      "actualWinner": "Thailand W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169811",
+      "savedPrediction": "India W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Thailand W",
+          "verdict": "Correct",
+          "reason": "Bookmaker Pure Profit on Thailand W (Zero Back Exposure, P/L: +1564.5)",
+          "pattern": "BOOKIE_SAFE_ZERO_BACK"
+        },
+        "v9": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Asia Cup Smart Synthetic Support on India W (1.6x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35982279",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "Bangladesh W v Indonesia W",
+      "startTime": 1788186600000,
+      "date": "31 Aug 2026, 20:00",
+      "actualWinner": "Indonesia W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169813",
+      "savedPrediction": "Bangladesh W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Indonesia W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Indonesia W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Bangladesh W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Bangladesh W: ₹1.4k Back, Lead: 3.0x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Bangladesh W",
+          "verdict": "Wrong",
+          "reason": "Asia Cup Smart Synthetic Support on Bangladesh W (2.5x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36007810",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "Pakistan W v Thailand W",
+      "startTime": 1788273000000,
+      "date": "01 Sept 2026, 20:00",
+      "actualWinner": "Pakistan W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169821",
+      "savedPrediction": "Pakistan W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Thailand W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Thailand W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Pakistan W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (Pakistan W: ₹589 Back, Lead: 2.0x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Pakistan W",
+          "verdict": "Correct",
+          "reason": "Asia Cup Smart Synthetic Support on Pakistan W (1.4x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36018220",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "Indonesia W v Sri Lanka W",
+      "startTime": 1788359400000,
+      "date": "02 Sept 2026, 20:00",
+      "actualWinner": "Indonesia W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169830",
+      "savedPrediction": "Sri Lanka W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Indonesia W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Indonesia W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Sri Lanka W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Sri Lanka W: ₹2.0k Back, Lead: 4.2x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Sri Lanka W",
+          "verdict": "Wrong",
+          "reason": "Asia Cup Smart Synthetic Support on Sri Lanka W (3.1x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36021032",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "Hong Kong W v India W",
+      "startTime": 1788445800000,
+      "date": "03 Sept 2026, 20:00",
+      "actualWinner": "Hong Kong W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/169841",
+      "savedPrediction": "India W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Hong Kong W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Hong Kong W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Hong Kong W",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on India W (100% Load, 403.2x Lead) -> Faded to Hong Kong W",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "India W",
+          "verdict": "Wrong",
+          "reason": "Asia Cup Smart Synthetic Support on India W (14.9x Lead)",
+          "pattern": "ASIA_CUP_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36050870",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "Zimbabwe W v South Africa W",
+      "startTime": 1789126200000,
+      "date": "11 Sept 2026, 17:00",
+      "actualWinner": "Zimbabwe W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/159974",
+      "savedPrediction": "Zimbabwe W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "South Africa W",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "South Africa W",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Zimbabwe W",
+          "verdict": "Correct",
+          "reason": "Critical Public Overload on South Africa W (100% Load, 99.0x Lead) -> Faded to Zimbabwe W",
+          "pattern": "OVERLOAD_TRAP_FADE"
+        },
+        "v9": {
+          "winner": "Zimbabwe W",
+          "verdict": "Correct",
+          "reason": "Women's Zero-Back Pure Profit on Zimbabwe W (PnL: +6)",
+          "pattern": "WOMENS_ZERO_BACK_PROFIT"
+        }
+      }
+    },
+    {
+      "matchId": "36082765",
+      "league": "Womens International Twenty20 Matches",
+      "matchName": "Zimbabwe W v South Africa W",
+      "startTime": 1789817400000,
+      "date": "19 Sept 2026, 17:00",
+      "actualWinner": "South Africa W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/160018",
+      "savedPrediction": "Zimbabwe W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "South Africa W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "South Africa W",
+          "verdict": "Correct",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "Zimbabwe W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (Zimbabwe W: ₹1.2k Back, Lead: 6.3x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Zimbabwe W",
+          "verdict": "Wrong",
+          "reason": "Women's Smart Synthetic Support on Zimbabwe W (7.1x Lead)",
+          "pattern": "WOMENS_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "35994441",
+      "league": "Womens One Day Internationals",
+      "matchName": "England W v Ireland W",
+      "startTime": 1788264000000,
+      "date": "01 Sept 2026, 17:30",
+      "actualWinner": "England W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129530",
+      "savedPrediction": "England W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Ireland W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Ireland W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "England W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (England W: ₹982 Back, Lead: 1.6x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "England W",
+          "verdict": "Correct",
+          "reason": "Women's Smart Synthetic Support on England W (1.3x Lead)",
+          "pattern": "WOMENS_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36021300",
+      "league": "Womens One Day Internationals",
+      "matchName": "England W v Ireland W",
+      "startTime": 1788436800000,
+      "date": "03 Sept 2026, 17:30",
+      "actualWinner": "England W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129535",
+      "savedPrediction": "England W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Ireland W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Ireland W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "England W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (England W: ₹1.1k Back, Lead: 5.1x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "England W",
+          "verdict": "Correct",
+          "reason": "Women's Smart Synthetic Support on England W (3.0x Lead)",
+          "pattern": "WOMENS_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36027911",
+      "league": "Womens One Day Internationals",
+      "matchName": "England W v Ireland W",
+      "startTime": 1788687000000,
+      "date": "06 Sept 2026, 15:00",
+      "actualWinner": "Ireland W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/129546",
+      "savedPrediction": "Ireland W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "England W",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "England W",
+          "verdict": "Wrong",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "England W",
+          "verdict": "Wrong",
+          "reason": "Smart Money Inflow (England W: ₹1.3k Back, Lead: 1.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Ireland W",
+          "verdict": "Correct",
+          "reason": "Women's Lay Resistance on England W (₹248 Lay, PnL: -465) Faded to Bookie Safe Side Ireland W (+586)",
+          "pattern": "WOMENS_BOOKIE_SHIELD"
+        }
+      }
+    },
+    {
+      "matchId": "36103490",
+      "league": "Womens One Day Internationals",
+      "matchName": "Zimbabwe W v West Indies W",
+      "startTime": 1790235000000,
+      "date": "24 Sept 2026, 13:00",
+      "actualWinner": "West Indies W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/173083",
+      "savedPrediction": "West Indies W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Zimbabwe W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8": {
+          "winner": "Zimbabwe W",
+          "verdict": "Wrong",
+          "reason": "Clear Lay Vol Edge",
+          "pattern": "CLEAR_LAY_VOL"
+        },
+        "v8Latest": {
+          "winner": "West Indies W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (West Indies W: ₹1.0k Back, Lead: 19.9x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "Zimbabwe W",
+          "verdict": "Wrong",
+          "reason": "Women's Public Overload on West Indies W (19.9x Lead, PnL: -1065) Faded to Bookie Safe Underdog Zimbabwe W (+1087)",
+          "pattern": "WOMENS_TRAP_FADE"
+        }
+      }
+    },
+    {
+      "matchId": "36110371",
+      "league": "Womens One Day Internationals",
+      "matchName": "Zimbabwe W v West Indies W",
+      "startTime": 1790494200000,
+      "date": "27 Sept 2026, 13:00",
+      "actualWinner": "West Indies W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/173090",
+      "savedPrediction": "West Indies W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "West Indies W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "West Indies W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "West Indies W",
+          "verdict": "Correct",
+          "reason": "Smart Money Inflow (West Indies W: ₹724 Back, Lead: 5.0x)",
+          "pattern": "SMART_MONEY_FLOW"
+        },
+        "v9": {
+          "winner": "West Indies W",
+          "verdict": "Correct",
+          "reason": "Women's Smart Synthetic Support on West Indies W (3.5x Lead)",
+          "pattern": "WOMENS_SMART_SUPPORT"
+        }
+      }
+    },
+    {
+      "matchId": "36123677",
+      "league": "Womens One Day Internationals",
+      "matchName": "Zimbabwe W v West Indies W",
+      "startTime": 1790753400000,
+      "date": "30 Sept 2026, 13:00",
+      "actualWinner": "Zimbabwe W",
+      "sourceUrl": "https://www.cricbuzz.com/live-cricket-scores/173100",
+      "savedPrediction": "Zimbabwe W",
+      "savedVersion": "toss-v9-league-specific-algorithms",
+      "predictions": {
+        "v7": {
+          "winner": "Zimbabwe W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8": {
+          "winner": "Zimbabwe W",
+          "verdict": "Correct",
+          "reason": "Stronger Support Team",
+          "pattern": "STRONGER_SUPPORT"
+        },
+        "v8Latest": {
+          "winner": "Zimbabwe W",
+          "verdict": "Correct",
+          "reason": "Weak Inflow Lead Faded -> Stronger Bookie Safe Side on Zimbabwe W (P/L: +54.0)",
+          "pattern": "BOOKIE_SAFE_STRONGER_SUPPORT"
+        },
+        "v9": {
+          "winner": "Zimbabwe W",
+          "verdict": "Correct",
+          "reason": "Women's Smart Synthetic Support on Zimbabwe W (1.0x Lead)",
+          "pattern": "WOMENS_SMART_SUPPORT"
+        }
+      }
+    }
+  ],
+  "methods": [
+    "All 114 retained verified toss records are attempted by every version; each sees the same stored snapshot and competition name.",
+    "v7 and original v8 use the exact historical Git source, including the matching historical risk dependency. No prediction rules were reconstructed or tuned.",
+    "The v8 version label was reused for different implementations. Original ratio-gated v8 and the latest pre-v9 Smart Flow v8 are therefore reported separately.",
+    "Actual toss winners come from corrected independently verified Cricbuzz toss metadata and are used only after predicting.",
+    "Saved version labels are historical metadata. Stored predictions do not consistently reproduce from code bearing that label; the earlier saved-label percentages were not all-match replays of the original code.",
+    "Version accuracy excludes records where that version produces no prediction. Common-set accuracy compares only fixtures predicted by every engine.",
+    "No app algorithm, saved forecast, snapshot or actual result was changed. This is a historical comparison on captured snapshots, not a prospective pre-toss test."
+  ]
+}

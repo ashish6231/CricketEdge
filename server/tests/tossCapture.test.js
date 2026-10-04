@@ -28,6 +28,8 @@ test('captures only ended matches with volume', async () => {
       return {
         teamNames: ['Team A', 'Team B'],
         marketId: 'mk1',
+        preMatchVolume: {team1: {back:100,lay:20},team2:{back:20,lay:10}},
+        preMatchPnl: {team1:-90,team2:90},
       };
     },
   };
@@ -63,7 +65,7 @@ test('skips already captured matchIds', async () => {
     startTime: null,
     endedAt: null,
     capturedAt: new Date().toISOString(),
-    snapshot: { teamNames: ['Team A', 'Team B'] },
+    snapshot: { teamNames: ['Team A', 'Team B'], preMatchVolume: {team1:{back:100,lay:20},team2:{back:20,lay:10}}, preMatchPnl:{team1:-90,team2:90} },
     predictedWinner: 'Team A',
     predictionReason: 'x',
     predictionRisk: {},
@@ -131,6 +133,8 @@ test('default capture uses bundled predictor when no inject', async () => {
         return {
           teamNames: ['Alpha', 'Beta'],
           marketId: 'm1',
+          preMatchVolume: {team1:{back:100,lay:400},team2:{back:100,lay:100}},
+          preMatchPnl: {team1:300,team2:0},
           advancedMetricsV2: {
             team1: { back: 100, lay: 400, totalBet: 500 },
             team2: { back: 100, lay: 100, totalBet: 200 },

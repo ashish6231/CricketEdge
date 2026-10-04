@@ -272,6 +272,8 @@ function attachMatchMeta(data, matchInfo, isToss = false) {
     const prediction = predictMatchWinner(data);
     if (prediction) {
       data.aiPrediction = prediction;
+    } else {
+      delete data.aiPrediction;
     }
   }
 

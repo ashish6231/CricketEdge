@@ -199,9 +199,24 @@ export function inferCompetition(snap, compName = '') {
 /**
  * 🌴 Caribbean Premier League (CPL) Toss Algorithm
  */
-export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, trap, bookieFav, stronger, supRatio, totBack }) {
+export function getCPLTossPrediction({ comp = '', t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, trap, bookieFav, stronger, supRatio, totBack }) {
   const totalBack = totBack ?? (b1 + b2)
   const normBackRatio = backRatio >= 1 ? backRatio : (1 / Math.max(backRatio, 0.01))
+
+  // Both sides can have negative P/L. Heavy lay absorption then corroborates
+  // the less negative exposure; a synthetic label alone should not override it.
+  if (prePnl1 < 0 && prePnl2 < 0) {
+    const safe1 = prePnl1 > prePnl2 && l1 >= 200 && l1 >= b1 * 1.8
+    const safe2 = prePnl2 > prePnl1 && l2 >= 200 && l2 >= b2 * 1.8
+    if (safe1 || safe2) {
+      const winner = safe1 ? t1 : t2
+      return {
+        winner, tier: 'CPL_TOSS_SPECIAL', algoName: 'CPL Toss Algorithm',
+        verdictTag: 'CPL DUAL-DEFICIT ABSORPTION', pattern: 'CPL_DUAL_DEFICIT_ABSORPTION',
+        reason: `Both outcomes have negative P/L; lay absorption corroborates the smaller deficit on ${winner}.`,
+      }
+    }
+  }
 
   // 1.0 Naked Public Overload Trap Fade
   if (totalBack >= 2000 && b1 >= b2 * 4.0 && l1 <= 50 && l2 >= 50 && prePnl1 < -1500 && prePnl2 > 1500) {
@@ -245,6 +260,12 @@ export function getCPLTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2,
       pattern: 'CPL_TRAP_DEFICIT_FADE',
       reason: `CPL High Trap Deficit on ${t2} (PnL: ${prePnl2.toFixed(0)}) -> Faded to Safe Side ${t1} (₹${fmtVol(l1)} Lay)`,
     }
+  }
+
+  // Women's CPL uses the women's flow/exposure rules, after shared CPL overload/deficit guards.
+  if (comp.includes('women')) {
+    const prediction = getWomensTossPrediction({ comp, t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, backRatio, stronger, supRatio })
+    if (prediction) return { ...prediction, algoName: "Women's CPL Toss Algorithm", tier: 'WOMENS_CPL_TOSS_SPECIAL' }
   }
 
   // 1.05 Lay Resistance Dump Fade (near-flat back < 1.35x, heavy lay dump 2.5x)
@@ -539,21 +560,11 @@ export function getTheHundredTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, p
 }
 
 export function isWomensAsiaCup(compName, team1, team2) {
-  const comp = (compName || '').toLowerCase()
-  const t1 = (team1 || '').toLowerCase()
-  const t2 = (team2 || '').toLowerCase()
-  if (comp.includes('asia cup') && (t1.includes(' w') || t2.includes(' w') || comp.includes('women'))) return true
-
-  const asianTeams = [
-    'india w', 'pakistan w', 'sri lanka w', 'thailand w',
-    'bangladesh w', 'indonesia w', 'hong kong w', 'united arab emirates w', 'uae w', 'nepal w', 'malaysia w'
-  ]
-  const isT1Asian = asianTeams.some((t) => t1.includes(t))
-  const isT2Asian = asianTeams.some((t) => t2.includes(t))
-  if (isT1Asian && isT2Asian && (comp.includes('twenty20') || comp.includes('international') || comp.includes('asia') || comp.includes('wt20') || comp.includes('t20i'))) {
-    return true
-  }
-  return false
+  const comp = String(compName || '').toLowerCase()
+  // Explicit competition metadata wins over the nationality of the two teams.
+  return comp.includes('asia cup') && (
+    comp.includes('women') || /(?:\bw\b|women)/i.test(`${team1 || ''} ${team2 || ''}`)
+  )
 }
 
 /**
@@ -599,8 +610,8 @@ export function getWomensAsiaCupTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl
     }
   }
 
-  // 2. High-Liquidity Bookmaker Deficit Trap Fade (Volume >= 2000 & Deficit < -1000, excluding Associates)
-  if (totBack >= 2000) {
+  // 2. Deficit fade also needs a 3x public-load imbalance; volume alone is insufficient.
+  if (totBack >= 2000 && Math.max(b1, b2) >= 3 * Math.min(b1, b2)) {
     if (prePnl1 > 1000 && prePnl2 < -1000 && !isAsiaAssociate(t1)) {
       return {
         winner: t1,
@@ -678,6 +689,7 @@ export function getWomensAsiaCupTossPrediction({ t1, t2, b1, b2, prePnl1, prePnl
  * 4. Bookmaker Safe Exposure Fallback: Safe side with higher positive PnL.
  */
 export function getWomensTossPrediction({
+  comp = '',
   t1,
   t2,
   b1,
@@ -687,13 +699,40 @@ export function getWomensTossPrediction({
   prePnl1,
   prePnl2,
   backRatio,
-  b1Pct,
-  b2Pct,
   stronger,
   supRatio,
   syntheticSupport,
   snap,
 }) {
+  // A tiny positive back flow is actionable only with corroborating synthetic support.
+  const organicTarget = stronger || snap?.syntheticSupport?.strongerTeam
+  const organicRatio = supRatio ?? snap?.syntheticSupport?.supportRatio ?? 1
+  if (Math.max(b1, b2) < 50 && organicRatio >= 1.25 && (
+    (b1 > b2 && teamEq(organicTarget, t1)) ||
+    (b2 > b1 && teamEq(organicTarget, t2))
+  )) {
+    const winner = b1 > b2 ? t1 : t2
+    return {
+      winner, tier: 'WOMENS_TOSS_SPECIAL', algoName: "Women's Toss Algorithm",
+      verdictTag: 'WOMENS ORGANIC INFLOW', pattern: 'WOMENS_ORGANIC_INFLOW',
+      reason: `Low-volume back flow and synthetic support agree on ${winner}; zero opposing back is not positive evidence.`,
+    }
+  }
+
+  // T20 exposure conflicts take precedence over synthetic support alone.
+  // Keep this separate from ODI, where the existing corroborated flow rules apply.
+  if (comp && /twenty20|t20/.test(comp) && (
+    (prePnl1 > 1000 && prePnl2 < -1000) ||
+    (prePnl2 > 1000 && prePnl1 < -1000)
+  )) {
+    const winner = prePnl1 > prePnl2 ? t1 : t2
+    return {
+      winner, tier: 'WOMENS_TOSS_SPECIAL', algoName: "Women's T20 Toss Algorithm",
+      verdictTag: 'WOMENS EXPOSURE CONFLICT', pattern: 'WOMENS_EXPOSURE_CONFLICT',
+      reason: `Women's T20 large opposing P/L exposures override synthetic support: ${winner} has the higher P/L.`,
+    }
+  }
+
   // 1. Low Volume Zero-Back Pure Profit (e.g. Hong Kong v Thailand, total back < 50)
   if (Math.max(b1, b2) < 50) {
     if (b1 === 0 && prePnl1 > 0) {
@@ -721,8 +760,10 @@ export function getWomensTossPrediction({
   const synTarget = stronger || snap?.syntheticSupport?.strongerTeam || syntheticSupport?.strongerTeam
   const synRatio = supRatio || snap?.syntheticSupport?.supportRatio || syntheticSupport?.supportRatio || 1
 
+  const resistanceSupportLimit = comp.includes('caribbean') ? 2.5 : 2.0
+
   // 1.5 Women's Lay Resistance & Bookmaker Protection (e.g. Match 36027911: England W ₹248 Lay, Bookie Deficit -₹465 vs Ireland W +₹586)
-  if (l1 >= 200 && prePnl1 < -400 && prePnl2 > 400 && b2 >= 500 && (synRatio < 2.0 || !synTarget || !teamEq(synTarget, t1))) {
+  if (l1 >= 200 && prePnl1 < -400 && prePnl2 > 400 && b2 >= 500 && (synRatio < resistanceSupportLimit || !synTarget || !teamEq(synTarget, t1))) {
     return {
       winner: t2,
       tier: 'WOMENS_TOSS_SPECIAL',
@@ -732,7 +773,7 @@ export function getWomensTossPrediction({
       reason: `Women's Lay Resistance on ${t1} (₹${fmtVol(l1)} Lay, PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Side ${t2} (+${prePnl2.toFixed(0)})`,
     }
   }
-  if (l2 >= 200 && prePnl2 < -400 && prePnl1 > 400 && b1 >= 500 && (synRatio < 2.0 || !synTarget || !teamEq(synTarget, t2))) {
+  if (l2 >= 200 && prePnl2 < -400 && prePnl1 > 400 && b1 >= 500 && (synRatio < resistanceSupportLimit || !synTarget || !teamEq(synTarget, t2))) {
     return {
       winner: t1,
       tier: 'WOMENS_TOSS_SPECIAL',
@@ -744,32 +785,9 @@ export function getWomensTossPrediction({
   }
 
   const bRatio = backRatio ?? (Math.min(b1, b2) > 0 ? Math.max(b1, b2) / Math.min(b1, b2) : 1)
-  const b1Percentage = b1Pct ?? (b1 + b2 > 0 ? b1 / (b1 + b2) : 0.5)
-  const b2Percentage = b2Pct ?? (b1 + b2 > 0 ? b2 / (b1 + b2) : 0.5)
 
-  // 1.8 Women's Extreme Public Overload / Bookmaker Deficit Fade (e.g. Zimbabwe W v West Indies W Match 36103490)
-  // When crowd puts extreme load (>8x or >90% back) on one side with catastrophic bookie loss (< -800 vs > +800)
-  // and the underdog has lay absorption exceeding its back (l >= b), excluding associate minnows
-  if ((b2 >= b1 * 8 || b2Percentage >= 0.90) && prePnl2 < -800 && prePnl1 > 800 && l1 >= b1 && !isAsiaAssociate(t1)) {
-    return {
-      winner: t1,
-      tier: 'WOMENS_TOSS_SPECIAL',
-      algoName: "👩 Women's Toss Algorithm",
-      verdictTag: 'WOMENS TRAP OVERLOAD FADE 🚨',
-      pattern: 'WOMENS_TRAP_FADE',
-      reason: `Women's Public Overload on ${t2} (${bRatio.toFixed(1)}x Lead, PnL: ${prePnl2.toFixed(0)}) Faded to Bookie Safe Underdog ${t1} (+${prePnl1.toFixed(0)})`,
-    }
-  }
-  if ((b1 >= b2 * 8 || b1Percentage >= 0.90) && prePnl1 < -800 && prePnl2 > 800 && l2 >= b2 && !isAsiaAssociate(t2)) {
-    return {
-      winner: t2,
-      tier: 'WOMENS_TOSS_SPECIAL',
-      algoName: "👩 Women's Toss Algorithm",
-      verdictTag: 'WOMENS TRAP OVERLOAD FADE 🚨',
-      pattern: 'WOMENS_TRAP_FADE',
-      reason: `Women's Public Overload on ${t1} (${bRatio.toFixed(1)}x Lead, PnL: ${prePnl1.toFixed(0)}) Faded to Bookie Safe Underdog ${t2} (+${prePnl2.toFixed(0)})`,
-    }
-  }
+  // Do not automatically fade an ODI flow merely because its back share is large.
+  // The lay-resistance rule above requires additional exposure evidence.
 
   // 2. Strong Synthetic Support Dominance (e.g. India W 14.9x, Sri Lanka W 3.1x, Bangladesh W 2.5x)
   const isT1 = synTarget && (synTarget.toLowerCase().includes((t1 || '').toLowerCase()) || (t1 || '').toLowerCase().includes(synTarget.toLowerCase()))
@@ -832,211 +850,44 @@ export function getWomensTossPrediction({
 }
 
 /**
- * 🇪🇺 European T20 Premier League / ECS Toss Algorithm
- *
- * Revision log:
- *  v2 – Tightened Overload Fade to 90%/9x + PnL gate + totBack > 800 to reduce false fades.
- *       Raised Lay Dump Fade minimum to 100 & 2.5x ratio.
- *       Added Bookie Safe PnL fallback before raw inflow.
- *  v3 – Fixed ECS_BOOKIE_SAFE false fires: added back-volume alignment gate.
-/**
- * 🇪🇺 European Cricket Series (ECS / ETPL / European T20) Toss Algorithm (v3)
- * ────────────────────────────────────────────────────────────────────────
- * Backtested & validated against all ETPL matches:
- * 1. Edinburgh Castle Rockers Fortress: 100% undefeated coin toss record (5-0).
- * 2. Dublin Guardians Coin Trap Fade: 0% coin toss record (0-5) due to chronic
- *    public fade and high market coin resistance.
- * 3. Glasgow Cosmic Coin Choke vs Upper Tier: 1-5 record (16.7%), suffering
- *    liability choking against positive Bookie PnL opponents.
- * 4. Synthetic Support Dominance: Smart money supportProduct and trade metrics.
- * 5. Asymmetric Lay Dump Resistance Fade.
- * 6. Clean Back Volume Dominance.
- * 7. Bookmaker Safe Exposure Fallback.
+ * European toss rules based on exposure and flow, without team-name winner biases.
+ * These are retrospective heuristics; none imply a guaranteed coin-toss outcome.
  */
-export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, stronger, supRatio, totBack, trap, bookieFav }) {
-  const name1 = (t1 || '').toLowerCase()
-  const name2 = (t2 || '').toLowerCase()
+export function getECSTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2, supRatio = 1, totBack = b1 + b2, trap }) {
+  const result = (winner, pattern, reason) => ({
+    winner, pattern, reason, tier: 'EUROPEAN_TOSS_SPECIAL',
+    algoName: 'European T20 Toss Algorithm', verdictTag: pattern.replaceAll('_', ' '),
+  })
 
-  // 5.0 Extreme Bookie Deficit Breaches Edinburgh Fortress (excluding Glasgow who chokes)
-  if (name1.includes('edinburgh') && !name2.includes('glasgow') && prePnl1 < -800 && prePnl2 > 900) {
-    return {
-      winner: t2,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS FORTRESS BREACH 🚨',
-      pattern: 'ECS_FORTRESS_BREACH',
-      reason: `Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: ${prePnl1.toFixed(0)} vs +${prePnl2.toFixed(0)}) -> Faded to ${t2}`,
-    }
+  // One-sided lay resistance with negative exposure contradicts the back leader.
+  if (l1 >= 100 && l1 >= 2.5 * l2 && prePnl1 < 0) {
+    return result(t2, 'ECS_LAY_DUMP_FADE', `One-sided lay resistance and negative P/L on ${t1}; prefer ${t2}.`)
   }
-  if (name2.includes('edinburgh') && !name1.includes('glasgow') && prePnl2 < -800 && prePnl1 > 900) {
-    return {
-      winner: t1,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS FORTRESS BREACH 🚨',
-      pattern: 'ECS_FORTRESS_BREACH',
-      reason: `Edinburgh Castle Rockers Fortress breached by extreme bookie deficit (PnL: ${prePnl2.toFixed(0)} vs +${prePnl1.toFixed(0)}) -> Faded to ${t1}`,
-    }
+  if (l2 >= 100 && l2 >= 2.5 * l1 && prePnl2 < 0) {
+    return result(t1, 'ECS_LAY_DUMP_FADE', `One-sided lay resistance and negative P/L on ${t2}; prefer ${t1}.`)
   }
 
-  // 5.1 Edinburgh Castle Rockers Undefeated Toss Fortress
-  if (name1.includes('edinburgh')) {
-    return {
-      winner: t1,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS TOSS FORTRESS 🏰',
-      pattern: 'ECS_TOSS_FORTRESS',
-      reason: `Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (${t1} vs ${t2})`,
-    }
-  }
-  if (name2.includes('edinburgh')) {
-    return {
-      winner: t2,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS TOSS FORTRESS 🏰',
-      pattern: 'ECS_TOSS_FORTRESS',
-      reason: `Edinburgh Castle Rockers undefeated 100% Toss Fortress conversion dominance (${t2} vs ${t1})`,
-    }
+  // Back or lay evidence is sparse; avoid treating raw volume as strong support.
+  if (trap === 'high' && (totBack < 350 || l1 + l2 < 50) && prePnl1 !== prePnl2) {
+    const winner = prePnl1 > prePnl2 ? t1 : t2
+    return result(winner, 'ECS_LOW_LIQUIDITY_EXPOSURE', `Sparse European market flow under a high trap flag; use exposure balance on ${winner}.`)
   }
 
-  // 5.15 Dublin vs Glasgow Clash: Glasgow Liability Choke (Glasgow negative PnL vs Dublin positive PnL)
-  if (name1.includes('dublin') && name2.includes('glasgow') && prePnl1 > 0 && prePnl2 < 0) {
-    return {
-      winner: t1,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS BOOKIE SAFE 🛡️',
-      pattern: 'ECS_GLASGOW_CHOKE_FADE',
-      reason: `Glasgow Cosmic toss liability choke against Dublin (PnL: ${prePnl2.toFixed(0)} vs +${prePnl1.toFixed(0)}) -> Bookie Safe to ${t1}`,
-    }
-  }
-  if (name2.includes('dublin') && name1.includes('glasgow') && prePnl2 > 0 && prePnl1 < 0) {
-    return {
-      winner: t2,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS BOOKIE SAFE 🛡️',
-      pattern: 'ECS_GLASGOW_CHOKE_FADE',
-      reason: `Glasgow Cosmic toss liability choke against Dublin (PnL: ${prePnl1.toFixed(0)} vs +${prePnl2.toFixed(0)}) -> Bookie Safe to ${t2}`,
-    }
+  // A large exposure conflict overrides moderate synthetic support, not a blowout.
+  if (supRatio < 4 && ((prePnl1 > 800 && prePnl2 < -800) || (prePnl2 > 800 && prePnl1 < -800))) {
+    const winner = prePnl1 > prePnl2 ? t1 : t2
+    return result(winner, 'ECS_EXPOSURE_CONFLICT', `Large opposing P/L exposures with moderate synthetic support; prefer ${winner}.`)
   }
 
-  // 5.2 Dublin Guardians 0% Trap Fade
-  if (name1.includes('dublin')) {
-    return {
-      winner: t2,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS PUBLIC TRAP FADE 🚨',
-      pattern: 'ECS_DUBLIN_TRAP_FADE',
-      reason: `Dublin Guardians 0% coin toss resistance fade -> Advantage to ${t2}`,
-    }
+  if (b1 !== b2) {
+    const winner = b1 > b2 ? t1 : t2
+    return result(winner, 'ECS_BACK_FLOW', `European back-flow leader ${winner}; no team-name winner assumption.`)
   }
-  if (name2.includes('dublin')) {
-    return {
-      winner: t1,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS PUBLIC TRAP FADE 🚨',
-      pattern: 'ECS_DUBLIN_TRAP_FADE',
-      reason: `Dublin Guardians 0% coin toss resistance fade -> Advantage to ${t1}`,
-    }
+  if (prePnl1 !== prePnl2) {
+    const winner = prePnl1 > prePnl2 ? t1 : t2
+    return result(winner, 'ECS_EXPOSURE_FALLBACK', `Equal back flows; exposure balance favours ${winner}.`)
   }
-
-  // 5.3 Glasgow Cosmic Choke (Negative PnL vs Bookie Safe Opponent)
-  if (name1.includes('glasgow') && prePnl2 > prePnl1) {
-    return {
-      winner: t2,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS BOOKIE SAFE 🛡️',
-      pattern: 'ECS_GLASGOW_CHOKE_FADE',
-      reason: `Glasgow Cosmic toss liability choke (PnL: ${prePnl1.toFixed(0)} vs +${prePnl2.toFixed(0)}) -> Bookie Safe to ${t2}`,
-    }
-  }
-  if (name2.includes('glasgow') && prePnl1 > prePnl2) {
-    return {
-      winner: t1,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS BOOKIE SAFE 🛡️',
-      pattern: 'ECS_GLASGOW_CHOKE_FADE',
-      reason: `Glasgow Cosmic toss liability choke (PnL: ${prePnl2.toFixed(0)} vs +${prePnl1.toFixed(0)}) -> Bookie Safe to ${t1}`,
-    }
-  }
-
-  // 5.3.1 Rotterdam Deficit Choke vs Glasgow
-  if (name1.includes('rotterdam') && name2.includes('glasgow') && prePnl1 < -300 && prePnl2 > 300) {
-    return {
-      winner: t2,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS BOOKIE SAFE 🛡️',
-      pattern: 'ECS_ROTTERDAM_DEFICIT_FADE',
-      reason: `Rotterdam Dockers bookmaker deficit choke (PnL: ${prePnl1.toFixed(0)} vs +${prePnl2.toFixed(0)}) -> Bookie Safe to ${t2}`,
-    }
-  }
-
-  // 5.4 Lay Dump Resistance Fade (₹100+ Lay dump, 2.5x dominance, negative PnL)
-  if (l1 >= 100 && l1 >= l2 * 2.5 && prePnl1 < 0) {
-    return {
-      winner: t2,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS LAY DUMP FADE 🚨',
-      pattern: 'ECS_LAY_DUMP_FADE',
-      reason: `ECS Heavy Lay Short Dump on ${t1} (₹${l1.toFixed(0)} Lay, ${(l1 / Math.max(l2, 1)).toFixed(1)}x) -> Faded to ${t2}`,
-    }
-  }
-  if (l2 >= 100 && l2 >= l1 * 2.5 && prePnl2 < 0) {
-    return {
-      winner: t1,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS LAY DUMP FADE 🚨',
-      pattern: 'ECS_LAY_DUMP_FADE',
-      reason: `ECS Heavy Lay Short Dump on ${t2} (₹${l2.toFixed(0)} Lay, ${(l2 / Math.max(l1, 1)).toFixed(1)}x) -> Faded to ${t1}`,
-    }
-  }
-
-  // 5.45 Micro-Volume High Trap Safe (totBack < 350 && trap === 'high')
-  if (totBack < 350 && trap === 'high') {
-    const win = prePnl1 > prePnl2 ? t1 : t2
-    return {
-      winner: win,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS BOOKIE SAFE 🛡️',
-      pattern: 'ECS_MICRO_TRAP_SAFE',
-      reason: `ECS Micro-volume trap safe to ${win} (PnL: +${Math.max(prePnl1, prePnl2).toFixed(0)})`,
-    }
-  }
-
-  // 5.5 Synthetic Dominance (Neutral matches)
-  if (supRatio >= 1.3 && stronger) {
-    const win = stronger.toLowerCase().includes(name1) || name1.includes(stronger.toLowerCase()) ? t1 : t2
-    return {
-      winner: win,
-      tier: 'EUROPEAN_TOSS_SPECIAL',
-      algoName: '🇪🇺 European T20 Toss Algorithm',
-      verdictTag: 'ECS SYNTHETIC SUPPORT 💎',
-      pattern: 'ECS_SYNTHETIC_DOMINANCE',
-      reason: `ECS Synthetic Smart Support Dominance on ${win} (Ratio: ${Number(supRatio).toFixed(1)}x)`,
-    }
-  }
-
-  // 5.6 Micro-Volume Trap Safe Fallback
-  const win = prePnl1 > prePnl2 ? t1 : t2
-  return {
-    winner: win,
-    tier: 'EUROPEAN_TOSS_SPECIAL',
-    algoName: '🇪🇺 European T20 Toss Algorithm',
-    verdictTag: 'ECS BOOKIE SAFE',
-    pattern: 'ECS_MICRO_TRAP_SAFE',
-    reason: `ECS Bookie Exposure Safe Side on ${win}`,
-  }
+  return null
 }
 
 /**
@@ -1086,6 +937,21 @@ export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2
   const totalBack = totBack ?? (b1 + b2)
   const synRatio = supRatio || 1
   const isOdi = comp && (comp.includes('one day') || comp.includes('odi'))
+
+  // In a near-balanced ODI back market, one-sided lay flow is resistance,
+  // not support. Apply it before the general bookmaker-shield fallback.
+  if (isOdi && backRatio < 1.25 && Math.min(b1, b2) >= 500) {
+    if (l1 >= 100 && l1 >= 2.5 * l2) {
+      return { winner: t2, tier: 'INTL_TOSS_SPECIAL', algoName: 'ODI Toss Algorithm',
+        verdictTag: 'ODI BALANCED-BACK LAY RESISTANCE', pattern: 'ODI_BALANCED_LAY_RESISTANCE',
+        reason: `Near-balanced ODI back flows; one-sided lay resistance on ${t1} favours ${t2}.` }
+    }
+    if (l2 >= 100 && l2 >= 2.5 * l1) {
+      return { winner: t1, tier: 'INTL_TOSS_SPECIAL', algoName: 'ODI Toss Algorithm',
+        verdictTag: 'ODI BALANCED-BACK LAY RESISTANCE', pattern: 'ODI_BALANCED_LAY_RESISTANCE',
+        reason: `Near-balanced ODI back flows; one-sided lay resistance on ${t2} favours ${t1}.` }
+    }
+  }
 
   // 6.04 ODI Public Trap Overload Fade (e.g. Zimbabwe v Australia Match 36085898)
   // In 50-over ODIs, extreme crowd bias (>5x) causing severe bookie deficit (< -600 vs > +600)
@@ -1185,7 +1051,8 @@ export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2
 
   // 6.2 Heavy Lay Lead / Bookie Fav Shield
   // e.g. Match 43: Namibia vs Zimbabwe -> Namibia has PnL +404, Lay ₹254 (4x lay lead), bookieFav: Namibia
-  if (bookieFav && teamEq(bookieFav, t1) && prePnl1 > 300 && l1 > l2 * 2.5 && b1 >= b2 * 0.3) {
+  const shieldLayRatio = isOdi ? 1.8 : 2.5
+  if (bookieFav && teamEq(bookieFav, t1) && prePnl1 > 300 && l1 > l2 * shieldLayRatio && b1 >= b2 * 0.3) {
     return {
       winner: t1,
       tier: 'INTL_TOSS_SPECIAL',
@@ -1195,7 +1062,7 @@ export function getIntlTossPrediction({ t1, t2, b1, b2, l1, l2, prePnl1, prePnl2
       reason: `Intl Heavy Lay Absorption Lead on ${t1} (₹${l1.toFixed(0)} Lay) -> Safe Winner`,
     }
   }
-  if (bookieFav && teamEq(bookieFav, t2) && prePnl2 > 300 && l2 > l1 * 2.5 && b2 >= b1 * 0.3) {
+  if (bookieFav && teamEq(bookieFav, t2) && prePnl2 > 300 && l2 > l1 * shieldLayRatio && b2 >= b1 * 0.3) {
     return {
       winner: t2,
       tier: 'INTL_TOSS_SPECIAL',

@@ -1,0 +1,340 @@
+[
+  {
+    "id": 12184,
+    "name": "Australia A tour of India 2026",
+    "startDt": "1790035200000",
+    "endDt": "1791676800000",
+    "thumborImageId": 1080312
+  },
+  {
+    "id": 12191,
+    "name": "Australia U19 tour of India 2026",
+    "startDt": "1789689600000",
+    "endDt": "1791417600000",
+    "thumborImageId": 1082433
+  },
+  {
+    "id": 12723,
+    "name": "Australia Domestic One-Day Cup 2026-27",
+    "startDt": "1789689600000",
+    "endDt": "1802563200000",
+    "thumborImageId": 1076746
+  },
+  {
+    "id": 13160,
+    "name": "CSA Provincial One-Day Challenge Division Two 2026-27",
+    "startDt": "1789257600000",
+    "endDt": "1806192000000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 13137,
+    "name": "England Lions v Sri Lanka T20 Series, 2026",
+    "startDt": "1789084800000",
+    "endDt": "1789257600000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 12993,
+    "name": "ACC Men's Premier Cup, 2026",
+    "startDt": "1788048000000",
+    "endDt": "1789171200000",
+    "thumborImageId": 1071127
+  },
+  {
+    "id": 13033,
+    "name": "Bangladesh A tour of South Africa, 2026",
+    "startDt": "1787443200000",
+    "endDt": "1789171200000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 11418,
+    "name": "England Domestic One-Day Cup 2026",
+    "startDt": "1784592000000",
+    "endDt": "1789862400000",
+    "thumborImageId": 1054982
+  },
+  {
+    "id": 11902,
+    "name": "West Indies tour of India, 2026",
+    "startDt": "1790467200000",
+    "endDt": "1792195200000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1082423
+  },
+  {
+    "id": 12563,
+    "name": "Asian Games 2026",
+    "startDt": "1790208000000",
+    "endDt": "1790985600000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1087540
+  },
+  {
+    "id": 11595,
+    "name": "Australia tour of South Africa, 2026",
+    "startDt": "1790208000000",
+    "endDt": "1793404800000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1081156
+  },
+  {
+    "id": 13110,
+    "name": "India tour of Japan, 2026",
+    "startDt": "1790035200000",
+    "endDt": "1790035200000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 13240,
+    "name": "Quadrangular T20I Series in Nigeria, 2026",
+    "startDt": "1789948800000",
+    "endDt": "1790467200000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 13053,
+    "name": "North American Cup, 2026",
+    "startDt": "1789862400000",
+    "endDt": "1790553600000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 13080,
+    "name": "Hong Kong, China tour of Japan 2026",
+    "startDt": "1789776000000",
+    "endDt": "1789862400000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 10576,
+    "name": "Sri Lanka tour of England, 2026",
+    "startDt": "1789430400000",
+    "endDt": "1790467200000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1080314
+  },
+  {
+    "id": 11997,
+    "name": "Australia tour of Zimbabwe 2026",
+    "startDt": "1789430400000",
+    "endDt": "1789862400000",
+    "thumborImageId": 1074699
+  },
+  {
+    "id": 13131,
+    "name": "United Arab Emirates tour of Malaysia, 2026",
+    "startDt": "1789344000000",
+    "endDt": "1789603200000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 12973,
+    "name": "Afghanistan vs India in India 2026",
+    "startDt": "1789257600000",
+    "endDt": "1789603200000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1072582
+  },
+  {
+    "id": 12943,
+    "name": "South Africa tour of Namibia, 2026",
+    "startDt": "1788912000000",
+    "endDt": "1789257600000",
+    "thumborImageId": 1069484
+  },
+  {
+    "id": 13121,
+    "name": "Africa Continental Cup 2026",
+    "startDt": "1788825600000",
+    "endDt": "1789776000000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 12933,
+    "name": "Namibia T20I Tri-Series 2026",
+    "startDt": "1787875200000",
+    "endDt": "1788652800000",
+    "thumborImageId": 1067714
+  },
+  {
+    "id": 10565,
+    "name": "Pakistan tour of England 2026",
+    "startDt": "1786579200000",
+    "endDt": "1789257600000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1055363
+  },
+  {
+    "id": 12687,
+    "name": "India tour of Sri Lanka 2026",
+    "startDt": "1786060800000",
+    "endDt": "1787788800000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1047525
+  },
+  {
+    "id": 11630,
+    "name": "Bangladesh tour of Australia, 2026",
+    "startDt": "1785974400000",
+    "endDt": "1787702400000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1050736
+  },
+  {
+    "id": 11825,
+    "name": "Afghanistan tour of Ireland, 2026",
+    "startDt": "1785888000000",
+    "endDt": "1786752000000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1052110
+  },
+  {
+    "id": 13180,
+    "name": "CSA T20 Challenge 2026",
+    "startDt": "1790294400000",
+    "endDt": "1794614400000",
+    "thumborImageId": 1082316
+  },
+  {
+    "id": 13073,
+    "name": "Sher-E-Punjab T20 League, 2026",
+    "startDt": "1788048000000",
+    "endDt": "1789257600000",
+    "thumborImageId": 1072592
+  },
+  {
+    "id": 12870,
+    "name": "European T20 Premier League 2026",
+    "startDt": "1787702400000",
+    "endDt": "1789862400000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1078191
+  },
+  {
+    "id": 12123,
+    "name": "Caribbean Premier League 2026",
+    "startDt": "1786060800000",
+    "endDt": "1789862400000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1078995
+  },
+  {
+    "id": 12620,
+    "name": "Tamil Nadu Premier League 2026",
+    "startDt": "1785801600000",
+    "endDt": "1787875200000",
+    "thumborImageId": 1061680
+  },
+  {
+    "id": 12851,
+    "name": "Delhi Premier League 2026",
+    "startDt": "1785456000000",
+    "endDt": "1788048000000",
+    "thumborImageId": 1063351
+  },
+  {
+    "id": 11493,
+    "name": "The Hundred Men's Competition 2026",
+    "startDt": "1784592000000",
+    "endDt": "1786838400000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1053231
+  },
+  {
+    "id": 13217,
+    "name": "West Indies Women tour of Zimbabwe, 2026",
+    "startDt": "1790208000000",
+    "endDt": "1791331200000",
+    "thumborImageId": 1081168
+  },
+  {
+    "id": 12602,
+    "name": "Women's Asian Games 2026",
+    "startDt": "1789603200000",
+    "endDt": "1790035200000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1078758
+  },
+  {
+    "id": 12210,
+    "name": "Australia A Women tour of India 2026",
+    "startDt": "1789171200000",
+    "endDt": "1790899200000",
+    "thumborImageId": 1084859
+  },
+  {
+    "id": 12475,
+    "name": "South Africa Women tour of Zimbabwe, 2026",
+    "startDt": "1789084800000",
+    "endDt": "1789776000000",
+    "thumborImageId": 1070468
+  },
+  {
+    "id": 13081,
+    "name": "Malaysia Women tour of Japan 2026",
+    "startDt": "1789084800000",
+    "endDt": "1789257600000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 12595,
+    "name": "Womens Caribbean Premier League 2026",
+    "startDt": "1788566400000",
+    "endDt": "1789603200000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1076299
+  },
+  {
+    "id": 10548,
+    "name": "Ireland Women tour of England 2026",
+    "startDt": "1788220800000",
+    "endDt": "1788652800000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1065340
+  },
+  {
+    "id": 12983,
+    "name": "Netherlands Women tour of Scotland 2026",
+    "startDt": "1787875200000",
+    "endDt": "1788220800000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 12927,
+    "name": "Women's Asia Cup 2026",
+    "startDt": "1787875200000",
+    "endDt": "1789257600000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1072179
+  },
+  {
+    "id": 12901,
+    "name": "Women's Continental Cup 2026",
+    "startDt": "1787702400000",
+    "endDt": "1788048000000",
+    "thumborImageId": 876143,
+    "isDefaultImage": true
+  },
+  {
+    "id": 11504,
+    "name": "The Hundred Women's Competition 2026",
+    "startDt": "1784592000000",
+    "endDt": "1786838400000",
+    "isLiveStreamEnabled": true,
+    "thumborImageId": 1052235
+  }
+]

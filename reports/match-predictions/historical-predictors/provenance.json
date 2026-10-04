@@ -1,0 +1,50 @@
+[
+  {
+    "name": "v7-original",
+    "commit": "bac446cf91de2c1255b9e6f6cb2db340379c4bb3",
+    "sources": [
+      {
+        "file": "reports/match-predictions/historical-predictors/v7-original/tossPredictor.js",
+        "originalPath": "frontend/src/utils/tossPredictor.js",
+        "sha256": "ba7cef3c0afaca47914ef81e07d6e08d97ce9fd25bd6baf41849870c7990d9e2"
+      },
+      {
+        "file": "reports/match-predictions/historical-predictors/v7-original/predictionRisk.js",
+        "originalPath": "frontend/src/utils/predictionRisk.js",
+        "sha256": "28e6b3b3aac25bb8056eb0b9500a8e7804daac1de9f6776cf7719739bfffbbdc"
+      }
+    ]
+  },
+  {
+    "name": "v8-original",
+    "commit": "25de33dab33b3ccfbde9bb89db4e903893e0201c",
+    "sources": [
+      {
+        "file": "reports/match-predictions/historical-predictors/v8-original/tossPredictor.js",
+        "originalPath": "frontend/src/utils/tossPredictor.js",
+        "sha256": "0ba848b8fb6ceae7dea193c2527e2897c22011bb9cd593fb3f46a516bb583b9b"
+      },
+      {
+        "file": "reports/match-predictions/historical-predictors/v8-original/predictionRisk.js",
+        "originalPath": "frontend/src/utils/predictionRisk.js",
+        "sha256": "28e6b3b3aac25bb8056eb0b9500a8e7804daac1de9f6776cf7719739bfffbbdc"
+      }
+    ]
+  },
+  {
+    "name": "v8-latest",
+    "commit": "dd329304fd369181176d1a8f26a6ab77eaa2d2fb",
+    "sources": [
+      {
+        "file": "reports/match-predictions/historical-predictors/v8-latest/tossPredictor.js",
+        "originalPath": "server/utils/tossPredictor.js",
+        "sha256": "d4e798f01590f12a691882b54cda12afca3c4e9ab223bc926cfad3aa08de7597"
+      },
+      {
+        "file": "reports/match-predictions/historical-predictors/v8-latest/predictionRisk.js",
+        "originalPath": "server/utils/predictionRisk.js",
+        "sha256": "28e6b3b3aac25bb8056eb0b9500a8e7804daac1de9f6776cf7719739bfffbbdc"
+      }
+    ]
+  }
+]

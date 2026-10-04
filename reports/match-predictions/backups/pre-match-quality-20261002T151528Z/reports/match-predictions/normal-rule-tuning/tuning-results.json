@@ -1,0 +1,6054 @@
+{
+  "generatedAt": "2026-10-02T15:02:47.170Z",
+  "datasetSha256": "30686eb4c9d90bb728c5ce3d02e687fe48fb94d9a14e4875248b8d81e035bf0d",
+  "searchLimits": {
+    "minimumLeagueSamples": 6,
+    "minimumRuleSupport": 4,
+    "minimumCorrections": 2,
+    "maximumRegressions": 0,
+    "maximumRules": 2,
+    "maximumConditions": 2,
+    "temporalSelectionFractions": [
+      0.67,
+      0.8
+    ]
+  },
+  "candidateCount": 54080,
+  "total": 275,
+  "verifiedWinners": 250,
+  "usable": 225,
+  "noResult": 25,
+  "zeroInput": 25,
+  "updatedLeagues": [
+    "European T20 Premier League",
+    "Metro Bank Womens One Day Cup",
+    "Netherlands Topklasse T20",
+    "Sher E Punjab T20 League",
+    "Uttar Pradesh Premier League",
+    "Womens International Twenty20 Matches"
+  ],
+  "replay": {
+    "before": {
+      "scored": 225,
+      "correct": 184,
+      "wrong": 41,
+      "accuracy": 81.8
+    },
+    "frozenBase": {
+      "scored": 225,
+      "correct": 171,
+      "wrong": 54,
+      "accuracy": 76
+    },
+    "after": {
+      "scored": 225,
+      "correct": 193,
+      "wrong": 32,
+      "accuracy": 85.8
+    },
+    "rows": [
+      {
+        "matchId": "35901908",
+        "league": "Caribbean Premier League",
+        "date": 1786665600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35929461",
+        "league": "The Hundred - Womens",
+        "date": 1786713300000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "35933619",
+        "league": "The Hundred",
+        "date": 1786726800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35931569",
+        "league": "Caribbean Premier League",
+        "date": 1786748400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35913614",
+        "league": "Test Matches",
+        "date": 1786768200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35931559",
+        "league": "One Day Internationals",
+        "date": 1786787100000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35933934",
+        "league": "Caribbean Premier League",
+        "date": 1786838400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35940115",
+        "league": "The Hundred - Womens",
+        "date": 1786886100000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35941131",
+        "league": "The Hundred",
+        "date": 1786899600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35938017",
+        "league": "Caribbean Premier League",
+        "date": 1786921200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35946930",
+        "league": "Caribbean Premier League",
+        "date": 1787097600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35913612",
+        "league": "Test Matches",
+        "date": 1787133600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35948552",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787148000000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35946931",
+        "league": "Caribbean Premier League",
+        "date": 1787180400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35955958",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787220000000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35950773",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787234400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35954424",
+        "league": "Caribbean Premier League",
+        "date": 1787266800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35958414",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787306400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35958346",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787320800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35962894",
+        "league": "Caribbean Premier League",
+        "date": 1787353200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35947011",
+        "league": "Test Matches",
+        "date": 1787356800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35962365",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787392800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35962407",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787407200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35972909",
+        "league": "Caribbean Premier League",
+        "date": 1787698800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35972917",
+        "league": "Caribbean Premier League",
+        "date": 1787785200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35977014",
+        "league": "European T20 Premier League",
+        "date": 1787823000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35966902",
+        "league": "Test Matches",
+        "date": 1787824800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35979895",
+        "league": "European T20 Premier League",
+        "date": 1787836500000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35970079",
+        "league": "Caribbean Premier League",
+        "date": 1787871600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35988970",
+        "league": "Kerala Cricket League",
+        "date": 1787907600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35989920",
+        "league": "Womens One Day Internationals",
+        "date": 1787911200000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35977921",
+        "league": "International Twenty20 Matches",
+        "date": 1787918400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35989822",
+        "league": "Kerala Cricket League",
+        "date": 1787922900000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35988292",
+        "league": "Delhi Premier League",
+        "date": 1787923800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35987416",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1787924580000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35988179",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787925600000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35982250",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1787927400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35986052",
+        "league": "Caribbean Premier League",
+        "date": 1787961600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35987242",
+        "league": "Netherlands Topklasse T20",
+        "date": 1787994000000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35989974",
+        "league": "European T20 Premier League",
+        "date": 1787995800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35982142",
+        "league": "Women's T20 County Cup",
+        "date": 1787997600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35987261",
+        "league": "Netherlands Topklasse T20",
+        "date": 1787997600000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35993805",
+        "league": "International Twenty20 Matches",
+        "date": 1788004800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35993903",
+        "league": "Kerala Cricket League",
+        "date": 1788009300000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35982257",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788013800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35994069",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788020520000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35997363",
+        "league": "Caribbean Premier League",
+        "date": 1788044400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997338",
+        "league": "Kerala Cricket League",
+        "date": 1788078600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997459",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788080580000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35998885",
+        "league": "European T20 Premier League",
+        "date": 1788082200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997404",
+        "league": "Kerala Cricket League",
+        "date": 1788093000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35997455",
+        "league": "European T20 Premier League",
+        "date": 1788095700000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35982267",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788100200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35997903",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788106800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35994846",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788139800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997496",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788139800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36004150",
+        "league": "Kerala Cricket League",
+        "date": 1788166800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35994097",
+        "league": "Womens One Day Internationals",
+        "date": 1788170400000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "35998050",
+        "league": "International Twenty20 Matches",
+        "date": 1788177600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36004153",
+        "league": "Kerala Cricket League",
+        "date": 1788182100000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36004132",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788183000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36005017",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788184200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35982279",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788186600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36004104",
+        "league": "Caribbean Premier League",
+        "date": 1788210000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36004170",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788226200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36004378",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788226200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36015981",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788247800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36015975",
+        "league": "Kerala Cricket League",
+        "date": 1788253200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36013979",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788256920000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35994441",
+        "league": "Womens One Day Internationals",
+        "date": 1788264000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36013997",
+        "league": "International Twenty20 Matches",
+        "date": 1788264000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35998693",
+        "league": "European T20 Premier League",
+        "date": 1788268500000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36016326",
+        "league": "Kerala Cricket League",
+        "date": 1788268500000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36007810",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788273000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36004314",
+        "league": "Caribbean Premier League",
+        "date": 1788303600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36015021",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788312600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36015221",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788312600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36018467",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788334200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36018427",
+        "league": "Kerala Cricket League",
+        "date": 1788339600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36020340",
+        "league": "European T20 Premier League",
+        "date": 1788341400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36016128",
+        "league": "European T20 Premier League",
+        "date": 1788354900000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019525",
+        "league": "Kerala Cricket League",
+        "date": 1788354900000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019307",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788355800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36018220",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788359400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36018454",
+        "league": "Caribbean Premier League",
+        "date": 1788390000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019441",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788399000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019572",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788399000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36020656",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788420600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36022021",
+        "league": "Kerala Cricket League",
+        "date": 1788426000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019728",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36020183",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36020284",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36020883",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36020698",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788428880000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36020245",
+        "league": "International Twenty20 Matches",
+        "date": 1788436800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36021300",
+        "league": "Womens One Day Internationals",
+        "date": 1788436800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36020432",
+        "league": "European T20 Premier League",
+        "date": 1788441300000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36021391",
+        "league": "Kerala Cricket League",
+        "date": 1788441300000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36022046",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788442200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36021032",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788445800000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36020715",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788446040000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019390",
+        "league": "Caribbean Premier League",
+        "date": 1788476400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36022061",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788485400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36022080",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788485400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36026448",
+        "league": "International Twenty20 Matches",
+        "date": 1788523200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36028568",
+        "league": "Kerala Cricket League",
+        "date": 1788526800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36027092",
+        "league": "European T20 Premier League",
+        "date": 1788527700000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36026793",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788528600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36029181",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788528660000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023009",
+        "league": "Women's Asia Cup T20",
+        "date": 1788532200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36019388",
+        "league": "Caribbean Premier League",
+        "date": 1788562800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36027100",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788571800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36027510",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788571800000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36029487",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788593400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023515",
+        "league": "European T20 Premier League",
+        "date": 1788600600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36023020",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788613200000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36030087",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788613200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36027440",
+        "league": "European T20 Premier League",
+        "date": 1788614100000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36030307",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788615000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36032393",
+        "league": "Kerala Cricket League",
+        "date": 1788615000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023022",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788616800000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36027587",
+        "league": "Women's Asia Cup T20",
+        "date": 1788618600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023098",
+        "league": "Women's Caribbean Premier League",
+        "date": 1788634800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36023549",
+        "league": "Caribbean Premier League",
+        "date": 1788652800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36029386",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788658200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36029407",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788658200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034145",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788679800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36022934",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36023006",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023082",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36023505",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36027698",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36027752",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36027911",
+        "league": "Womens One Day Internationals",
+        "date": 1788687000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034286",
+        "league": "European T20 Premier League",
+        "date": 1788687000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36034430",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788688800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36032174",
+        "league": "International Twenty20 Matches",
+        "date": 1788696000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034385",
+        "league": "European T20 Premier League",
+        "date": 1788700500000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034192",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788701400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36032328",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788702120000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36023506",
+        "league": "Women's Caribbean Premier League",
+        "date": 1788703200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36035088",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788703200000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36023089",
+        "league": "Women's Asia Cup T20",
+        "date": 1788705000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36029412",
+        "league": "Caribbean Premier League",
+        "date": 1788721200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36034130",
+        "league": "Caribbean Premier League",
+        "date": 1788735600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034235",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788744600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36034274",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788744600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36034463",
+        "league": "Women's Asia Cup T20",
+        "date": 1788791400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36038691",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788831000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36038694",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788831000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36039224",
+        "league": "T20 African Continental Cup",
+        "date": 1788852600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36043141",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788852600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36039256",
+        "league": "T20 African Continental Cup",
+        "date": 1788868800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36044252",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788874200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36039351",
+        "league": "Women's Asia Cup T20",
+        "date": 1788877800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36022943",
+        "league": "Test Matches",
+        "date": 1788948000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36051784",
+        "league": "International Twenty20 Matches",
+        "date": 1789025400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36052400",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789025400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36040032",
+        "league": "European T20 Premier League",
+        "date": 1789032600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36051787",
+        "league": "International Twenty20 Matches",
+        "date": 1789041600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36045869",
+        "league": "European T20 Premier League",
+        "date": 1789046100000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36052409",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789047000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36040305",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789048800000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36049475",
+        "league": "Women's Asia Cup T20",
+        "date": 1789050600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36050870",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1789126200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36054876",
+        "league": "International Twenty20 Matches",
+        "date": 1789126200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36045879",
+        "league": "European T20 Premier League",
+        "date": 1789132500000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36054928",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789133400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36049024",
+        "league": "Women's Asia Cup T20",
+        "date": 1789137000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36050868",
+        "league": "T20 Matches",
+        "date": 1789147800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36054787",
+        "league": "Caribbean Premier League",
+        "date": 1789167600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36054944",
+        "league": "ACC Men's Premier Cup",
+        "date": 1789176600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36054945",
+        "league": "ACC Men's Premier Cup",
+        "date": 1789176600000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36051729",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789205400000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36051845",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789205400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36052441",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789205400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36055698",
+        "league": "European T20 Premier League",
+        "date": 1789205400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36059692",
+        "league": "One Day Matches",
+        "date": 1789205400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36058639",
+        "league": "International Twenty20 Matches",
+        "date": 1789214400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36062380",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1789216200000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36057946",
+        "league": "European T20 Premier League",
+        "date": 1789218900000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36060868",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789219800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36054985",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789221600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36055328",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789239600000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36085029",
+        "league": "Caribbean Premier League",
+        "date": 1789772400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36067248",
+        "league": "International Twenty20 Matches",
+        "date": 1789779600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36070909",
+        "league": "Australia One Day Cup",
+        "date": 1789790400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36082549",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789810200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36082765",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1789817400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36087032",
+        "league": "International Twenty20 Matches",
+        "date": 1789819200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36082473",
+        "league": "ILT20 Development Tournament",
+        "date": 1789822800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36084485",
+        "league": "European T20 Premier League",
+        "date": 1789823700000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36082542",
+        "league": "International Twenty20 Matches",
+        "date": 1789824600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36082580",
+        "league": "ILT20 Development Tournament",
+        "date": 1789837200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36086084",
+        "league": "Asian Games Women",
+        "date": 1789862400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36086124",
+        "league": "Asian Games Women",
+        "date": 1789880400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36085924",
+        "league": "Australia One Day Cup",
+        "date": 1789884000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36074960",
+        "league": "CSA One-Day Challenge Div 2",
+        "date": 1789887600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36085898",
+        "league": "One Day Internationals",
+        "date": 1789889400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36075053",
+        "league": "CSA One-Day Challenge Div 2",
+        "date": 1789891200000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36091321",
+        "league": "Women's One Day Matches",
+        "date": 1789893000000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36082557",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789896600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36075087",
+        "league": "Metro Bank One Day Cup",
+        "date": 1789898400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36090798",
+        "league": "ILT20 Development Tournament",
+        "date": 1789909200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36092701",
+        "league": "European T20 Premier League",
+        "date": 1789910100000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36090931",
+        "league": "ILT20 Development Tournament",
+        "date": 1789923600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36090636",
+        "league": "Caribbean Premier League",
+        "date": 1789945200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36086137",
+        "league": "Unofficial International Matches",
+        "date": 1789961400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36101712",
+        "league": "First Class Matches",
+        "date": 1790049600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36103490",
+        "league": "Womens One Day Internationals",
+        "date": 1790235000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36083840",
+        "league": "One Day Internationals",
+        "date": 1790236800000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36107189",
+        "league": "Uttarakhand Premier League",
+        "date": 1790242200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36103843",
+        "league": "One Day Internationals",
+        "date": 1790249400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36110045",
+        "league": "ILT20 Development Tournament",
+        "date": 1790262000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36098847",
+        "league": "Asian Games Men",
+        "date": 1790294400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36098736",
+        "league": "Australia One Day Cup",
+        "date": 1790308800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36108897",
+        "league": "Asian Games T20",
+        "date": 1790312400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36107251",
+        "league": "Women's One Day Matches",
+        "date": 1790325000000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36115215",
+        "league": "International Twenty20 Matches",
+        "date": 1790326800000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36099057",
+        "league": "South Africa T20 Challenge",
+        "date": 1790337600000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36115223",
+        "league": "International Twenty20 Matches",
+        "date": 1790341200000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36099060",
+        "league": "South Africa T20 Challenge",
+        "date": 1790352000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36116022",
+        "league": "International Twenty20 Matches",
+        "date": 1790413200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36116026",
+        "league": "International Twenty20 Matches",
+        "date": 1790427600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36119703",
+        "league": "International Twenty20 Matches",
+        "date": 1790447400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      }
+    ]
+  },
+  "chronological": {
+    "trainingCount": 180,
+    "testCount": 45,
+    "cutoff": 1789218900000,
+    "before": {
+      "scored": 45,
+      "correct": 32,
+      "wrong": 13,
+      "accuracy": 71.1
+    },
+    "frozenBase": {
+      "scored": 45,
+      "correct": 31,
+      "wrong": 14,
+      "accuracy": 68.9
+    },
+    "after": {
+      "scored": 45,
+      "correct": 32,
+      "wrong": 13,
+      "accuracy": 71.1
+    },
+    "rows": [
+      {
+        "matchId": "36057946",
+        "league": "European T20 Premier League",
+        "date": 1789218900000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36060868",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789219800000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36054985",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789221600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36055328",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789239600000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36085029",
+        "league": "Caribbean Premier League",
+        "date": 1789772400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36067248",
+        "league": "International Twenty20 Matches",
+        "date": 1789779600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36070909",
+        "league": "Australia One Day Cup",
+        "date": 1789790400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36082549",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789810200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36082765",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1789817400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36087032",
+        "league": "International Twenty20 Matches",
+        "date": 1789819200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36082473",
+        "league": "ILT20 Development Tournament",
+        "date": 1789822800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36084485",
+        "league": "European T20 Premier League",
+        "date": 1789823700000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36082542",
+        "league": "International Twenty20 Matches",
+        "date": 1789824600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36082580",
+        "league": "ILT20 Development Tournament",
+        "date": 1789837200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36086084",
+        "league": "Asian Games Women",
+        "date": 1789862400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36086124",
+        "league": "Asian Games Women",
+        "date": 1789880400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36085924",
+        "league": "Australia One Day Cup",
+        "date": 1789884000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36074960",
+        "league": "CSA One-Day Challenge Div 2",
+        "date": 1789887600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36085898",
+        "league": "One Day Internationals",
+        "date": 1789889400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36075053",
+        "league": "CSA One-Day Challenge Div 2",
+        "date": 1789891200000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36091321",
+        "league": "Women's One Day Matches",
+        "date": 1789893000000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36082557",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789896600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36075087",
+        "league": "Metro Bank One Day Cup",
+        "date": 1789898400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36090798",
+        "league": "ILT20 Development Tournament",
+        "date": 1789909200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36092701",
+        "league": "European T20 Premier League",
+        "date": 1789910100000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36090931",
+        "league": "ILT20 Development Tournament",
+        "date": 1789923600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36090636",
+        "league": "Caribbean Premier League",
+        "date": 1789945200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36086137",
+        "league": "Unofficial International Matches",
+        "date": 1789961400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36101712",
+        "league": "First Class Matches",
+        "date": 1790049600000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36103490",
+        "league": "Womens One Day Internationals",
+        "date": 1790235000000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36083840",
+        "league": "One Day Internationals",
+        "date": 1790236800000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36107189",
+        "league": "Uttarakhand Premier League",
+        "date": 1790242200000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36103843",
+        "league": "One Day Internationals",
+        "date": 1790249400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36110045",
+        "league": "ILT20 Development Tournament",
+        "date": 1790262000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36098847",
+        "league": "Asian Games Men",
+        "date": 1790294400000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36098736",
+        "league": "Australia One Day Cup",
+        "date": 1790308800000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36108897",
+        "league": "Asian Games T20",
+        "date": 1790312400000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36107251",
+        "league": "Women's One Day Matches",
+        "date": 1790325000000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36115215",
+        "league": "International Twenty20 Matches",
+        "date": 1790326800000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36099057",
+        "league": "South Africa T20 Challenge",
+        "date": 1790337600000,
+        "actualIndex": 1,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36115223",
+        "league": "International Twenty20 Matches",
+        "date": 1790341200000,
+        "actualIndex": 0,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36099060",
+        "league": "South Africa T20 Challenge",
+        "date": 1790352000000,
+        "actualIndex": 0,
+        "beforeIndex": 0,
+        "baseIndex": 0,
+        "predictedIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36116022",
+        "league": "International Twenty20 Matches",
+        "date": 1790413200000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36116026",
+        "league": "International Twenty20 Matches",
+        "date": 1790427600000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36119703",
+        "league": "International Twenty20 Matches",
+        "date": 1790447400000,
+        "actualIndex": 1,
+        "beforeIndex": 1,
+        "baseIndex": 1,
+        "predictedIndex": 1,
+        "correct": true
+      }
+    ]
+  },
+  "walkForward": {
+    "before": {
+      "scored": 225,
+      "correct": 184,
+      "wrong": 41,
+      "accuracy": 81.8
+    },
+    "frozenBase": {
+      "scored": 225,
+      "correct": 171,
+      "wrong": 54,
+      "accuracy": 76
+    },
+    "after": {
+      "scored": 225,
+      "correct": 173,
+      "wrong": 52,
+      "accuracy": 76.9
+    },
+    "eligibleOnly": {
+      "frozenBase": {
+        "scored": 97,
+        "correct": 75,
+        "wrong": 22,
+        "accuracy": 77.3
+      },
+      "after": {
+        "scored": 97,
+        "correct": 77,
+        "wrong": 20,
+        "accuracy": 79.4
+      }
+    },
+    "rows": [
+      {
+        "matchId": "35901908",
+        "league": "Caribbean Premier League",
+        "date": 1786665600000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35929461",
+        "league": "The Hundred - Womens",
+        "date": 1786713300000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "35933619",
+        "league": "The Hundred",
+        "date": 1786726800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35931569",
+        "league": "Caribbean Premier League",
+        "date": 1786748400000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35913614",
+        "league": "Test Matches",
+        "date": 1786768200000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35931559",
+        "league": "One Day Internationals",
+        "date": 1786787100000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35933934",
+        "league": "Caribbean Premier League",
+        "date": 1786838400000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35940115",
+        "league": "The Hundred - Womens",
+        "date": 1786886100000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35941131",
+        "league": "The Hundred",
+        "date": 1786899600000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35938017",
+        "league": "Caribbean Premier League",
+        "date": 1786921200000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35946930",
+        "league": "Caribbean Premier League",
+        "date": 1787097600000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35913612",
+        "league": "Test Matches",
+        "date": 1787133600000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35948552",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787148000000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35946931",
+        "league": "Caribbean Premier League",
+        "date": 1787180400000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35955958",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787220000000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35950773",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787234400000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35954424",
+        "league": "Caribbean Premier League",
+        "date": 1787266800000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35958414",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787306400000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35958346",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787320800000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35962894",
+        "league": "Caribbean Premier League",
+        "date": 1787353200000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35947011",
+        "league": "Test Matches",
+        "date": 1787356800000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35962365",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787392800000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35962407",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787407200000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35972909",
+        "league": "Caribbean Premier League",
+        "date": 1787698800000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35972917",
+        "league": "Caribbean Premier League",
+        "date": 1787785200000,
+        "trainingSamples": 9,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35977014",
+        "league": "European T20 Premier League",
+        "date": 1787823000000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35966902",
+        "league": "Test Matches",
+        "date": 1787824800000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35979895",
+        "league": "European T20 Premier League",
+        "date": 1787836500000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35970079",
+        "league": "Caribbean Premier League",
+        "date": 1787871600000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35988970",
+        "league": "Kerala Cricket League",
+        "date": 1787907600000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35989920",
+        "league": "Womens One Day Internationals",
+        "date": 1787911200000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35977921",
+        "league": "International Twenty20 Matches",
+        "date": 1787918400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35989822",
+        "league": "Kerala Cricket League",
+        "date": 1787922900000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35988292",
+        "league": "Delhi Premier League",
+        "date": 1787923800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35987416",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1787924580000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35988179",
+        "league": "Tamil Nadu Premier League",
+        "date": 1787925600000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35982250",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1787927400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35986052",
+        "league": "Caribbean Premier League",
+        "date": 1787961600000,
+        "trainingSamples": 11,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35987242",
+        "league": "Netherlands Topklasse T20",
+        "date": 1787994000000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35989974",
+        "league": "European T20 Premier League",
+        "date": 1787995800000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35982142",
+        "league": "Women's T20 County Cup",
+        "date": 1787997600000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35987261",
+        "league": "Netherlands Topklasse T20",
+        "date": 1787997600000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "35993805",
+        "league": "International Twenty20 Matches",
+        "date": 1788004800000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35993903",
+        "league": "Kerala Cricket League",
+        "date": 1788009300000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35982257",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788013800000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35994069",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788020520000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35997363",
+        "league": "Caribbean Premier League",
+        "date": 1788044400000,
+        "trainingSamples": 12,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997338",
+        "league": "Kerala Cricket League",
+        "date": 1788078600000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997459",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788080580000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35998885",
+        "league": "European T20 Premier League",
+        "date": 1788082200000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997404",
+        "league": "Kerala Cricket League",
+        "date": 1788093000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35997455",
+        "league": "European T20 Premier League",
+        "date": 1788095700000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35982267",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788100200000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35997903",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788106800000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "35994846",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788139800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35997496",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788139800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36004150",
+        "league": "Kerala Cricket League",
+        "date": 1788166800000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35994097",
+        "league": "Womens One Day Internationals",
+        "date": 1788170400000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "35998050",
+        "league": "International Twenty20 Matches",
+        "date": 1788177600000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36004153",
+        "league": "Kerala Cricket League",
+        "date": 1788182100000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36004132",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788183000000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36005017",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788184200000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35982279",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788186600000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36004104",
+        "league": "Caribbean Premier League",
+        "date": 1788210000000,
+        "trainingSamples": 13,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36004170",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788226200000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36004378",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788226200000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36015981",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788247800000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36015975",
+        "league": "Kerala Cricket League",
+        "date": 1788253200000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36013979",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788256920000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "35994441",
+        "league": "Womens One Day Internationals",
+        "date": 1788264000000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36013997",
+        "league": "International Twenty20 Matches",
+        "date": 1788264000000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "35998693",
+        "league": "European T20 Premier League",
+        "date": 1788268500000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36016326",
+        "league": "Kerala Cricket League",
+        "date": 1788268500000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36007810",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788273000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36004314",
+        "league": "Caribbean Premier League",
+        "date": 1788303600000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36015021",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788312600000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36015221",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788312600000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36018467",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788334200000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36018427",
+        "league": "Kerala Cricket League",
+        "date": 1788339600000,
+        "trainingSamples": 9,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36020340",
+        "league": "European T20 Premier League",
+        "date": 1788341400000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36016128",
+        "league": "European T20 Premier League",
+        "date": 1788354900000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019525",
+        "league": "Kerala Cricket League",
+        "date": 1788354900000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019307",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788355800000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36018220",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788359400000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36018454",
+        "league": "Caribbean Premier League",
+        "date": 1788390000000,
+        "trainingSamples": 15,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019441",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788399000000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019572",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788399000000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36020656",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788420600000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36022021",
+        "league": "Kerala Cricket League",
+        "date": 1788426000000,
+        "trainingSamples": 11,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019728",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36020183",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36020284",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36020883",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788427800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36020698",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788428880000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36020245",
+        "league": "International Twenty20 Matches",
+        "date": 1788436800000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36021300",
+        "league": "Womens One Day Internationals",
+        "date": 1788436800000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36020432",
+        "league": "European T20 Premier League",
+        "date": 1788441300000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36021391",
+        "league": "Kerala Cricket League",
+        "date": 1788441300000,
+        "trainingSamples": 12,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36022046",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788442200000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36021032",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1788445800000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36020715",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788446040000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36019390",
+        "league": "Caribbean Premier League",
+        "date": 1788476400000,
+        "trainingSamples": 16,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36022061",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788485400000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36022080",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788485400000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36026448",
+        "league": "International Twenty20 Matches",
+        "date": 1788523200000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36028568",
+        "league": "Kerala Cricket League",
+        "date": 1788526800000,
+        "trainingSamples": 13,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36027092",
+        "league": "European T20 Premier League",
+        "date": 1788527700000,
+        "trainingSamples": 9,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36026793",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788528600000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36029181",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788528660000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36023009",
+        "league": "Women's Asia Cup T20",
+        "date": 1788532200000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36019388",
+        "league": "Caribbean Premier League",
+        "date": 1788562800000,
+        "trainingSamples": 17,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36027100",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788571800000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36027510",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788571800000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36029487",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788593400000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023515",
+        "league": "European T20 Premier League",
+        "date": 1788600600000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36023020",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788613200000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36030087",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788613200000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36027440",
+        "league": "European T20 Premier League",
+        "date": 1788614100000,
+        "trainingSamples": 11,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36030307",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788615000000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36032393",
+        "league": "Kerala Cricket League",
+        "date": 1788615000000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023022",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788616800000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36027587",
+        "league": "Women's Asia Cup T20",
+        "date": 1788618600000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023098",
+        "league": "Women's Caribbean Premier League",
+        "date": 1788634800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36023549",
+        "league": "Caribbean Premier League",
+        "date": 1788652800000,
+        "trainingSamples": 18,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36029386",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788658200000,
+        "trainingSamples": 12,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36029407",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788658200000,
+        "trainingSamples": 12,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034145",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788679800000,
+        "trainingSamples": 9,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36022934",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36023006",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023082",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36023505",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36027698",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36027752",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1788687000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36027911",
+        "league": "Womens One Day Internationals",
+        "date": 1788687000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034286",
+        "league": "European T20 Premier League",
+        "date": 1788687000000,
+        "trainingSamples": 12,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36034430",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788688800000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36032174",
+        "league": "International Twenty20 Matches",
+        "date": 1788696000000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034385",
+        "league": "European T20 Premier League",
+        "date": 1788700500000,
+        "trainingSamples": 13,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034192",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788701400000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36032328",
+        "league": "Uttar Pradesh Premier League",
+        "date": 1788702120000,
+        "trainingSamples": 9,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36023506",
+        "league": "Women's Caribbean Premier League",
+        "date": 1788703200000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36035088",
+        "league": "Netherlands Topklasse T20",
+        "date": 1788703200000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36023089",
+        "league": "Women's Asia Cup T20",
+        "date": 1788705000000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36029412",
+        "league": "Caribbean Premier League",
+        "date": 1788721200000,
+        "trainingSamples": 19,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36034130",
+        "league": "Caribbean Premier League",
+        "date": 1788735600000,
+        "trainingSamples": 20,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36034235",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788744600000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36034274",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788744600000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36034463",
+        "league": "Women's Asia Cup T20",
+        "date": 1788791400000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36038691",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788831000000,
+        "trainingSamples": 16,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36038694",
+        "league": "ACC Men's Premier Cup",
+        "date": 1788831000000,
+        "trainingSamples": 16,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36039224",
+        "league": "T20 African Continental Cup",
+        "date": 1788852600000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36043141",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788852600000,
+        "trainingSamples": 11,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36039256",
+        "league": "T20 African Continental Cup",
+        "date": 1788868800000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36044252",
+        "league": "Sher E Punjab T20 League",
+        "date": 1788874200000,
+        "trainingSamples": 12,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36039351",
+        "league": "Women's Asia Cup T20",
+        "date": 1788877800000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36022943",
+        "league": "Test Matches",
+        "date": 1788948000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36051784",
+        "league": "International Twenty20 Matches",
+        "date": 1789025400000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36052400",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789025400000,
+        "trainingSamples": 13,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36040032",
+        "league": "European T20 Premier League",
+        "date": 1789032600000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36051787",
+        "league": "International Twenty20 Matches",
+        "date": 1789041600000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36045869",
+        "league": "European T20 Premier League",
+        "date": 1789046100000,
+        "trainingSamples": 15,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36052409",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789047000000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36040305",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789048800000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36049475",
+        "league": "Women's Asia Cup T20",
+        "date": 1789050600000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36050870",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1789126200000,
+        "trainingSamples": 7,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36054876",
+        "league": "International Twenty20 Matches",
+        "date": 1789126200000,
+        "trainingSamples": 9,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36045879",
+        "league": "European T20 Premier League",
+        "date": 1789132500000,
+        "trainingSamples": 16,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36054928",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789133400000,
+        "trainingSamples": 15,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36049024",
+        "league": "Women's Asia Cup T20",
+        "date": 1789137000000,
+        "trainingSamples": 6,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36050868",
+        "league": "T20 Matches",
+        "date": 1789147800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36054787",
+        "league": "Caribbean Premier League",
+        "date": 1789167600000,
+        "trainingSamples": 21,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36054944",
+        "league": "ACC Men's Premier Cup",
+        "date": 1789176600000,
+        "trainingSamples": 18,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36054945",
+        "league": "ACC Men's Premier Cup",
+        "date": 1789176600000,
+        "trainingSamples": 18,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36051729",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789205400000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36051845",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789205400000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36052441",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789205400000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36055698",
+        "league": "European T20 Premier League",
+        "date": 1789205400000,
+        "trainingSamples": 17,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36059692",
+        "league": "One Day Matches",
+        "date": 1789205400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36058639",
+        "league": "International Twenty20 Matches",
+        "date": 1789214400000,
+        "trainingSamples": 10,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36062380",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1789216200000,
+        "trainingSamples": 8,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36057946",
+        "league": "European T20 Premier League",
+        "date": 1789218900000,
+        "trainingSamples": 18,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36060868",
+        "league": "Sher E Punjab T20 League",
+        "date": 1789219800000,
+        "trainingSamples": 16,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36054985",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789221600000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36055328",
+        "league": "Women's Caribbean Premier League",
+        "date": 1789239600000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36085029",
+        "league": "Caribbean Premier League",
+        "date": 1789772400000,
+        "trainingSamples": 22,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36067248",
+        "league": "International Twenty20 Matches",
+        "date": 1789779600000,
+        "trainingSamples": 11,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36070909",
+        "league": "Australia One Day Cup",
+        "date": 1789790400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36082549",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789810200000,
+        "trainingSamples": 13,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36082765",
+        "league": "Womens International Twenty20 Matches",
+        "date": 1789817400000,
+        "trainingSamples": 9,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36087032",
+        "league": "International Twenty20 Matches",
+        "date": 1789819200000,
+        "trainingSamples": 12,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36082473",
+        "league": "ILT20 Development Tournament",
+        "date": 1789822800000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36084485",
+        "league": "European T20 Premier League",
+        "date": 1789823700000,
+        "trainingSamples": 19,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36082542",
+        "league": "International Twenty20 Matches",
+        "date": 1789824600000,
+        "trainingSamples": 13,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36082580",
+        "league": "ILT20 Development Tournament",
+        "date": 1789837200000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36086084",
+        "league": "Asian Games Women",
+        "date": 1789862400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36086124",
+        "league": "Asian Games Women",
+        "date": 1789880400000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36085924",
+        "league": "Australia One Day Cup",
+        "date": 1789884000000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36074960",
+        "league": "CSA One-Day Challenge Div 2",
+        "date": 1789887600000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36085898",
+        "league": "One Day Internationals",
+        "date": 1789889400000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36075053",
+        "league": "CSA One-Day Challenge Div 2",
+        "date": 1789891200000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36091321",
+        "league": "Women's One Day Matches",
+        "date": 1789893000000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36082557",
+        "league": "Metro Bank Womens One Day Cup",
+        "date": 1789896600000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36075087",
+        "league": "Metro Bank One Day Cup",
+        "date": 1789898400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36090798",
+        "league": "ILT20 Development Tournament",
+        "date": 1789909200000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36092701",
+        "league": "European T20 Premier League",
+        "date": 1789910100000,
+        "trainingSamples": 20,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36090931",
+        "league": "ILT20 Development Tournament",
+        "date": 1789923600000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36090636",
+        "league": "Caribbean Premier League",
+        "date": 1789945200000,
+        "trainingSamples": 23,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36086137",
+        "league": "Unofficial International Matches",
+        "date": 1789961400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36101712",
+        "league": "First Class Matches",
+        "date": 1790049600000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36103490",
+        "league": "Womens One Day Internationals",
+        "date": 1790235000000,
+        "trainingSamples": 5,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36083840",
+        "league": "One Day Internationals",
+        "date": 1790236800000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36107189",
+        "league": "Uttarakhand Premier League",
+        "date": 1790242200000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36103843",
+        "league": "One Day Internationals",
+        "date": 1790249400000,
+        "trainingSamples": 3,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36110045",
+        "league": "ILT20 Development Tournament",
+        "date": 1790262000000,
+        "trainingSamples": 4,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36098847",
+        "league": "Asian Games Men",
+        "date": 1790294400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36098736",
+        "league": "Australia One Day Cup",
+        "date": 1790308800000,
+        "trainingSamples": 2,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36108897",
+        "league": "Asian Games T20",
+        "date": 1790312400000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36107251",
+        "league": "Women's One Day Matches",
+        "date": 1790325000000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36115215",
+        "league": "International Twenty20 Matches",
+        "date": 1790326800000,
+        "trainingSamples": 14,
+        "eligible": true,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36099057",
+        "league": "South Africa T20 Challenge",
+        "date": 1790337600000,
+        "trainingSamples": 0,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 1,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": false
+      },
+      {
+        "matchId": "36115223",
+        "league": "International Twenty20 Matches",
+        "date": 1790341200000,
+        "trainingSamples": 15,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 0,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": false
+      },
+      {
+        "matchId": "36099060",
+        "league": "South Africa T20 Challenge",
+        "date": 1790352000000,
+        "trainingSamples": 1,
+        "eligible": false,
+        "predictedIndex": 0,
+        "actualIndex": 0,
+        "baseIndex": 0,
+        "beforeIndex": 0,
+        "correct": true
+      },
+      {
+        "matchId": "36116022",
+        "league": "International Twenty20 Matches",
+        "date": 1790413200000,
+        "trainingSamples": 16,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36116026",
+        "league": "International Twenty20 Matches",
+        "date": 1790427600000,
+        "trainingSamples": 17,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      },
+      {
+        "matchId": "36119703",
+        "league": "International Twenty20 Matches",
+        "date": 1790447400000,
+        "trainingSamples": 18,
+        "eligible": true,
+        "predictedIndex": 1,
+        "actualIndex": 1,
+        "baseIndex": 1,
+        "beforeIndex": 1,
+        "correct": true
+      }
+    ]
+  },
+  "settings": {
+    "ACC Men's Premier Cup": {
+      "samples": 20,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "candidate-temporal-regression"
+    },
+    "Asian Games Men": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Asian Games T20": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Asian Games Women": {
+      "samples": 2,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Australia One Day Cup": {
+      "samples": 3,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "CSA One-Day Challenge Div 2": {
+      "samples": 2,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Caribbean Premier League": {
+      "samples": 24,
+      "rules": [],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 16,
+          "testSamples": 8,
+          "baseCorrect": 7,
+          "correct": 7,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 19,
+          "testSamples": 5,
+          "baseCorrect": 4,
+          "correct": 4,
+          "delta": 0
+        }
+      ]
+    },
+    "Delhi Premier League": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "European T20 Premier League": {
+      "samples": 21,
+      "rules": [
+        {
+          "conditions": [
+            {
+              "feature": "back",
+              "threshold": 0.55,
+              "op": ">="
+            },
+            {
+              "feature": "oppLay",
+              "threshold": 0.5,
+              "op": ">="
+            }
+          ],
+          "action": "lay",
+          "corrected": 4,
+          "support": 8
+        }
+      ],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 14,
+          "testSamples": 7,
+          "baseCorrect": 3,
+          "correct": 3,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 16,
+          "testSamples": 5,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        }
+      ]
+    },
+    "First Class Matches": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "ILT20 Development Tournament": {
+      "samples": 5,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "International Twenty20 Matches": {
+      "samples": 19,
+      "rules": [],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 12,
+          "testSamples": 7,
+          "baseCorrect": 5,
+          "correct": 5,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 15,
+          "testSamples": 4,
+          "baseCorrect": 3,
+          "correct": 3,
+          "delta": 0
+        }
+      ]
+    },
+    "Kerala Cricket League": {
+      "samples": 15,
+      "rules": [],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 10,
+          "testSamples": 5,
+          "baseCorrect": 5,
+          "correct": 5,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 12,
+          "testSamples": 3,
+          "baseCorrect": 3,
+          "correct": 3,
+          "delta": 0
+        }
+      ]
+    },
+    "Metro Bank One Day Cup": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Metro Bank Womens One Day Cup": {
+      "samples": 15,
+      "rules": [
+        {
+          "conditions": [
+            {
+              "feature": "lay",
+              "threshold": 0.1,
+              "op": ">="
+            }
+          ],
+          "action": "pnlFade",
+          "corrected": 3,
+          "support": 14
+        }
+      ],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 10,
+          "testSamples": 5,
+          "baseCorrect": 4,
+          "correct": 5,
+          "delta": 1
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 10,
+          "testSamples": 5,
+          "baseCorrect": 4,
+          "correct": 5,
+          "delta": 1
+        }
+      ]
+    },
+    "Netherlands Topklasse T20": {
+      "samples": 7,
+      "rules": [
+        {
+          "conditions": [
+            {
+              "feature": "activity",
+              "threshold": 0.75,
+              "op": "<="
+            }
+          ],
+          "action": "backFade",
+          "corrected": 4,
+          "support": 4
+        }
+      ],
+      "family": "flow-pressure",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 4,
+          "testSamples": 3,
+          "baseCorrect": 1,
+          "correct": 1,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 5,
+          "testSamples": 2,
+          "baseCorrect": 1,
+          "correct": 1,
+          "delta": 0
+        }
+      ]
+    },
+    "One Day Internationals": {
+      "samples": 4,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "One Day Matches": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Sher E Punjab T20 League": {
+      "samples": 17,
+      "rules": [
+        {
+          "conditions": [
+            {
+              "feature": "lay",
+              "threshold": 0.1,
+              "op": ">="
+            },
+            {
+              "feature": "activitySurplus",
+              "threshold": -0.25,
+              "op": ">="
+            }
+          ],
+          "action": "activity",
+          "corrected": 3,
+          "support": 7
+        },
+        {
+          "conditions": [
+            {
+              "feature": "lay",
+              "threshold": 0.9,
+              "op": "<="
+            },
+            {
+              "feature": "total",
+              "threshold": 0.5,
+              "op": ">="
+            }
+          ],
+          "action": "backFade",
+          "corrected": 2,
+          "support": 4
+        }
+      ],
+      "family": "flow-pressure",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 11,
+          "testSamples": 6,
+          "baseCorrect": 3,
+          "correct": 3,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 13,
+          "testSamples": 4,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        }
+      ]
+    },
+    "South Africa T20 Challenge": {
+      "samples": 2,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "T20 African Continental Cup": {
+      "samples": 2,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "T20 Matches": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Tamil Nadu Premier League": {
+      "samples": 8,
+      "rules": [],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 5,
+          "testSamples": 3,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 6,
+          "testSamples": 2,
+          "baseCorrect": 1,
+          "correct": 1,
+          "delta": 0
+        }
+      ]
+    },
+    "Test Matches": {
+      "samples": 5,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "The Hundred": {
+      "samples": 2,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "The Hundred - Womens": {
+      "samples": 2,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Unofficial International Matches": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Uttar Pradesh Premier League": {
+      "samples": 10,
+      "rules": [
+        {
+          "conditions": [
+            {
+              "feature": "activitySurplus",
+              "threshold": 0,
+              "op": "<="
+            }
+          ],
+          "action": "pnl",
+          "corrected": 3,
+          "support": 5
+        }
+      ],
+      "family": "flow-pressure",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 6,
+          "testSamples": 4,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 8,
+          "testSamples": 2,
+          "baseCorrect": 0,
+          "correct": 0,
+          "delta": 0
+        }
+      ]
+    },
+    "Uttarakhand Premier League": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Women's Asia Cup T20": {
+      "samples": 7,
+      "rules": [],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 4,
+          "testSamples": 3,
+          "baseCorrect": 3,
+          "correct": 3,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 5,
+          "testSamples": 2,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        }
+      ]
+    },
+    "Women's Caribbean Premier League": {
+      "samples": 5,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Women's One Day Matches": {
+      "samples": 2,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Women's T20 County Cup": {
+      "samples": 1,
+      "rules": [],
+      "family": "frozen-base",
+      "selection": "insufficient-data"
+    },
+    "Womens International Twenty20 Matches": {
+      "samples": 10,
+      "rules": [
+        {
+          "conditions": [
+            {
+              "feature": "back",
+              "threshold": 0.55,
+              "op": ">="
+            }
+          ],
+          "action": "activityFade",
+          "corrected": 3,
+          "support": 10
+        }
+      ],
+      "family": "flow-pressure",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 6,
+          "testSamples": 4,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 8,
+          "testSamples": 2,
+          "baseCorrect": 1,
+          "correct": 2,
+          "delta": 1
+        }
+      ]
+    },
+    "Womens One Day Internationals": {
+      "samples": 6,
+      "rules": [],
+      "family": "base-flow",
+      "selection": "two-temporal-development-splits",
+      "validation": [
+        {
+          "fraction": 0.67,
+          "trainingSamples": 4,
+          "testSamples": 2,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        },
+        {
+          "fraction": 0.8,
+          "trainingSamples": 4,
+          "testSamples": 2,
+          "baseCorrect": 2,
+          "correct": 2,
+          "delta": 0
+        }
+      ]
+    }
+  },
+  "methods": [
+    "Normal rules use frozen preMatchVolume, preMatchPnl and preMatchTotalBets only. Derived live fields are removed before legacy specialist rules are called.",
+    "Each league has independent settings. At most two extra rules, each with at most two fixed-grid conditions, are selected. A rule needs at least four historical cases and two corrections without a training regression. Leagues with fewer than six usable cases retain the frozen base. Two libraries (basic flow and expanded pressure/activity) are selected using 67% and 80% internal time splits; the selected library may not underperform the frozen base on either development split. Some small-league folds have too little earlier training data for fitted rules; their equality with baseline is not validation evidence.",
+    "The chronological and expanding-time replays fit only strictly earlier labels. Equal timestamps are kept out of each others training sets. No ID, date, result, or team identity is used as a prediction feature.",
+    "The fixed-grid expanded library contains 54,080 candidate condition/action combinations; this broad search can overfit despite support limits. Internal split scores select the library and are development scores, not untouched tests. The final settings are subsequently fitted to all usable records. Their replay is an in-sample development score, not an independent accuracy estimate.",
+    "All records have already been examined during development and the rule search is broad. These temporal replays are retrospective diagnostics, not pristine unseen tests or proof of future improvement.",
+    "Saved snapshots were collected after match end; frozen field names do not independently prove when forecasts were issued. New prospective predictions are required to validate real live accuracy."
+  ]
+}

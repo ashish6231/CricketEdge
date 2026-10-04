@@ -1,0 +1,337 @@
+{
+  "cleanedAt": "2026-10-02T15:15:28.973Z",
+  "backup": "reports/match-predictions/backups/pre-match-quality-20261002T151528Z",
+  "beforeHashes": {
+    "server/data/match_dataset.json": "30686eb4c9d90bb728c5ce3d02e687fe48fb94d9a14e4875248b8d81e035bf0d",
+    "server/data/toss_dataset.json": "7310f6cfdc7d43116c7179c0a87001258784a5c4596652829611d60d38cf46f2",
+    "server/data/ended_matches_cache.json": "f3a579a7b555c0c6990d1b22047325c2a2995c9942b758030c4de824ff886e28",
+    "server/data/verified_match_results.json": "4508701585759181fbe337b8a770c36cd85e9f119c18236b5ef9b30fb070fdff",
+    "server/data/verified_toss_results.json": "f5d0b30d8a5498a38b1b0624e8ad734590e4a93461e0eba92bc6de509e56b12d",
+    "reports/match-predictions/verified-results.json": "4508701585759181fbe337b8a770c36cd85e9f119c18236b5ef9b30fb070fdff",
+    "reports/match-predictions/verified-toss-results.json": "f5d0b30d8a5498a38b1b0624e8ad734590e4a93461e0eba92bc6de509e56b12d",
+    "reports/match-predictions/results.json": "02c3569895271ad213d4a5f4c7a12b7ed1ac7622e9c8b07e1236bd7903e36535",
+    "reports/match-predictions/league-wise-results.md": "fb0b9efe4eb9126a85213b4830b0a89638caa1aca6a2af7b500442c6658cae46",
+    "reports/match-predictions/README.md": "c068cc7e6d696d96051567c87443b38b7aeaa0b44207535c2c38512c570abf92",
+    "reports/match-predictions/match-optimization/input-hashes.json": "748909d30b60b1e88f510c916a2e8898a7fbe2b2bf5cc2402b1b7bdbae04009b",
+    "reports/match-predictions/match-optimization/results.json": "14dc36622c67ca54408d36fa3e1b5b4d3ec6d2fe52d0fda288c3a22672d7a4c4",
+    "reports/match-predictions/normal-rule-tuning/results.json": "d585200ac36375805f1515a71411a999e522e9c2ceebf807612d863912b3f113",
+    "reports/match-predictions/normal-rule-tuning/tuning-results.json": "ea2bcc8b6f81617a344503d03d883277040d3ee5d6fe8a6384dc4935ba0acf60",
+    "reports/match-predictions/optimization/results.json": "edc07dbee0bf18c8c31c77693da190c4e2deec4740c0572cba8a78fad6275568"
+  },
+  "criteria": "Both teams require finite nonnegative frozen Back/Lay values and finite frozen P/L; optional activity must be finite/nonnegative; names must be valid/distinct; combined Back/Lay must be positive. A single zero-flow team is allowed.",
+  "retainedRecordsUnchanged": true,
+  "matches": {
+    "before": 275,
+    "kept": 243,
+    "removed": 32,
+    "winners": 225,
+    "noResult": 18,
+    "removedRecords": [
+      {
+        "matchId": "35987270",
+        "league": "Netherlands Topklasse T20",
+        "matchName": "Sparta v HCC",
+        "actualWinner": "No Result",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "35982192",
+        "league": "Women's T20 County Cup",
+        "matchName": "Somerset W v Surrey W",
+        "actualWinner": "Surrey W",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "35987286",
+        "league": "Netherlands Topklasse T20",
+        "matchName": "Rotterdam Cricket Club v Vra",
+        "actualWinner": "No Result",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36001044",
+        "league": "Women's T20 County Cup",
+        "matchName": "The Blaze W v Surrey W",
+        "actualWinner": "The Blaze W",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "35997475",
+        "league": "Netherlands Topklasse T20",
+        "matchName": "SV Kampong Cricket v Vcc",
+        "actualWinner": "No Result",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "35997508",
+        "league": "Netherlands Topklasse T20",
+        "matchName": "Vra v Hermes-Dvs",
+        "actualWinner": "No Result",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "35995780",
+        "league": "Delhi Premier League",
+        "matchName": "South Delhi Superstarz v Central Delhi Kings",
+        "actualWinner": "South Delhi Superstarz",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36014652",
+        "league": "Sher E Punjab T20 League",
+        "matchName": "Jalandhar Warriors v Fazilka Falcons",
+        "actualWinner": "Fazilka Falcons",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36015901",
+        "league": "Sher E Punjab T20 League",
+        "matchName": "Jalandhar Warriors v Amritsar Soormas",
+        "actualWinner": "Jalandhar Warriors",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36027073",
+        "league": "Sher E Punjab T20 League",
+        "matchName": "Bathinda Royals v Amritsar Soormas",
+        "actualWinner": "Bathinda Royals",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36028567",
+        "league": "Kerala Cricket League",
+        "matchName": "Trivandrum Royals v Thrissur Titans",
+        "actualWinner": "Thrissur Titans",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36023016",
+        "league": "Netherlands Topklasse T20",
+        "matchName": "Vra v Sparta",
+        "actualWinner": "Vra",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36031389",
+        "league": "One Day Matches",
+        "matchName": "South Africa A v Bangladesh A",
+        "actualWinner": "No Result",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36027509",
+        "league": "Metro Bank Womens One Day Cup",
+        "matchName": "Essex W v Surrey W",
+        "actualWinner": "Surrey W",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36027620",
+        "league": "Metro Bank Womens One Day Cup",
+        "matchName": "Lancashire Thunder W v Durham W",
+        "actualWinner": "Lancashire Thunder W",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36034512",
+        "league": "Netherlands Topklasse T20",
+        "matchName": "Excelsior 20 v Sparta",
+        "actualWinner": "Excelsior 20",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36038498",
+        "league": "Sher E Punjab T20 League",
+        "matchName": "Mohali Kings v Ludhiana Lion",
+        "actualWinner": "Mohali Kings",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36043600",
+        "league": "Sher E Punjab T20 League",
+        "matchName": "Amritsar Soormas v Fazilka Falcons",
+        "actualWinner": "Amritsar Soormas",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36045828",
+        "league": "Caribbean Premier League",
+        "matchName": "Guyana Amazon Warriors v St. Lucia Kings",
+        "actualWinner": "Guyana Amazon Warriors",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36046905",
+        "league": "ACC Men's Premier Cup",
+        "matchName": "Nepal v Oman",
+        "actualWinner": "Nepal",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36046908",
+        "league": "ACC Mens Premier Cup",
+        "matchName": "United Arab Emirates v Hong Kong",
+        "actualWinner": "United Arab Emirates",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36051688",
+        "league": "One Day Internationals",
+        "matchName": "Namibia v South Africa",
+        "actualWinner": "South Africa",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36054814",
+        "league": "International Twenty20 Matches",
+        "matchName": "Rwanda v Uganda",
+        "actualWinner": "Uganda",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36052861",
+        "league": "Metro Bank Womens One Day Cup",
+        "matchName": "The Blaze W v Essex W",
+        "actualWinner": "The Blaze W",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36061266",
+        "league": "Womens International Twenty20 Matches",
+        "matchName": "Japan W v Malaysia W",
+        "actualWinner": "No Result",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36058629",
+        "league": "International Twenty20 Matches",
+        "matchName": "Kenya v Uganda",
+        "actualWinner": "Kenya",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36060837",
+        "league": "Sher E Punjab T20 League",
+        "matchName": "Mohali Kings v Amritsar Soormas",
+        "actualWinner": "Amritsar Soormas",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36051616",
+        "league": "One Day Matches",
+        "matchName": "South Africa A v Bangladesh A",
+        "actualWinner": "Bangladesh A",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36094846",
+        "league": "International Twenty20 Matches",
+        "matchName": "Cayman v Bahamas (Game 1)",
+        "actualWinner": "Cayman",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36108578",
+        "league": "Uttarakhand Premier League",
+        "matchName": "Pithoragarh Hurricanes v Usn Indians",
+        "actualWinner": "Pithoragarh Hurricanes",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36111459",
+        "league": "Uttarakhand Premier League",
+        "matchName": "Rishikesh River Kings v Dehradun Warriors",
+        "actualWinner": "Rishikesh River Kings",
+        "reason": "both-teams-zero-pre-match-flow"
+      },
+      {
+        "matchId": "36115533",
+        "league": "Uttarakhand Premier League",
+        "matchName": "Rishikesh River Kings v Pithoragarh Hurricanes",
+        "actualWinner": "No Result",
+        "reason": "both-teams-zero-pre-match-flow"
+      }
+    ]
+  },
+  "tosses": {
+    "before": 114,
+    "kept": 111,
+    "removed": 3,
+    "removedRecords": [
+      {
+        "matchId": "36045828",
+        "league": "Caribbean Premier League",
+        "matchName": "Guyana Amazon Warriors v St. Lucia Kings",
+        "actualWinner": "St. Lucia Kings",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36051688",
+        "league": "One Day Internationals",
+        "matchName": "Namibia v South Africa",
+        "actualWinner": "Namibia",
+        "reason": "missing-or-invalid-pre-match-volume"
+      },
+      {
+        "matchId": "36131489",
+        "league": "Asian Games T20",
+        "matchName": "India v Sri Lanka",
+        "actualWinner": "Sri Lanka",
+        "reason": "missing-or-invalid-pre-match-volume"
+      }
+    ]
+  },
+  "cache": {
+    "before": 142,
+    "kept": 121,
+    "removed": 21
+  },
+  "inventory": {
+    "before": 285,
+    "kept": 252,
+    "removedIds": [
+      "35982192",
+      "35987270",
+      "35987286",
+      "35995780",
+      "35997475",
+      "35997508",
+      "36001044",
+      "36014652",
+      "36015901",
+      "36023016",
+      "36027073",
+      "36027509",
+      "36027620",
+      "36028567",
+      "36031389",
+      "36034512",
+      "36038498",
+      "36043600",
+      "36045828",
+      "36046905",
+      "36046908",
+      "36051616",
+      "36051688",
+      "36052861",
+      "36054814",
+      "36058629",
+      "36060837",
+      "36061266",
+      "36094846",
+      "36108578",
+      "36111459",
+      "36115533",
+      "36131489"
+    ]
+  },
+  "afterHashes": {
+    "server/data/match_dataset.json": "9dc6de6ce48034923215dbdf325f99a36de4e95332307e0b25d28289b087c3e8",
+    "server/data/toss_dataset.json": "a838296ec1a1cc92b06b741dc876c6f53c7fb6d668f58c7f3536203134be9596",
+    "server/data/ended_matches_cache.json": "97b2d77aa60064f5a593b6c87825fc5e99cc5988238ca14454215b646a781771",
+    "server/data/verified_match_results.json": "54de2ce0399393bd607b815a1901c44c2608461e7a04c1de855fa2378b932dbe",
+    "server/data/verified_toss_results.json": "33a949224318de813cc5c9b8c5e11cb92d584aa9945db2affc9a6fa851c454ea",
+    "reports/match-predictions/verified-results.json": "54de2ce0399393bd607b815a1901c44c2608461e7a04c1de855fa2378b932dbe",
+    "reports/match-predictions/verified-toss-results.json": "33a949224318de813cc5c9b8c5e11cb92d584aa9945db2affc9a6fa851c454ea"
+  }
+}

@@ -291,6 +291,7 @@ function attachMatchMeta(snapshot, matchInfo, isToss = false) {
     try {
       const prediction = predictMatchWinner(result);
       if (prediction) result.aiPrediction = prediction;
+      else delete result.aiPrediction;
     } catch {}
   }
   return result;

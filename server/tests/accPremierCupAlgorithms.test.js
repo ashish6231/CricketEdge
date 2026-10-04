@@ -14,7 +14,7 @@ test('isACCPremierCup correctly identifies ACC Mens Premier Cup competition', ()
   assert.equal(isACCPremierCup('Uttar Pradesh Premier League'), false);
 });
 
-test('getLeagueAlgorithmPrediction routes ACC matches to ACC_SPECIAL tier', () => {
+test('normal ACC routing ignores later SimplePL when only frozen volume is available', () => {
   const snap = {
     matchId: '35997496',
     competitionName: 'ACC Mens Premier Cup',
@@ -30,9 +30,10 @@ test('getLeagueAlgorithmPrediction routes ACC matches to ACC_SPECIAL tier', () =
 
   const pred = predictMatchWinner(snap);
   assert.ok(pred);
-  assert.equal(pred.winner, 'Nepal');
+  assert.equal(pred.winner, 'Bahrain');
   assert.equal(pred.tier, 'ACC_SPECIAL');
-  assert.equal(pred.confidence, 'ACC Bookie Profit Side (Deficit Fade)');
+  assert.equal(pred.confidence, 'ACC Bookie Safe PnL');
+  assert.equal(pred.inputTiming, 'frozen-pre-match-fields');
 });
 
 test('getACCPremierCupPrediction correctly predicts Qatar via Lay Shield & Deficit Fade (Match 36034274)', () => {
@@ -57,7 +58,7 @@ test('getACCPremierCupPrediction correctly predicts Qatar via Lay Shield & Defic
   assert.equal(pred.confidence, 'ACC Lay Shield & Deficit Fade');
 });
 
-test('getACCPremierCupPrediction correctly predicts Kuwait via Net Support Leader (Match 36027100)', () => {
+test('derived Net Support alone cannot replace missing frozen market flow', () => {
   const snap = {
     matchId: '36027100',
     competitionName: 'ACC Mens Premier Cup',
@@ -75,10 +76,7 @@ test('getACCPremierCupPrediction correctly predicts Kuwait via Net Support Leade
   };
 
   const pred = predictMatchWinner(snap);
-  assert.ok(pred);
-  assert.equal(pred.winner, 'Kuwait');
-  assert.equal(pred.tier, 'ACC_SPECIAL');
-  assert.equal(pred.confidence, 'ACC Net Support Leader');
+  assert.equal(pred, null);
 });
 
 test('achieves 100% (20/20) match winner accuracy across all ACC Mens Premier Cup records in match_dataset.json', () => {
