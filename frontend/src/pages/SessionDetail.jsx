@@ -331,8 +331,11 @@ export default function SessionDetail() {
       setLoading(false)
     }
 
+    const onGenericBundle = (bundle) => {
+      if (String(bundle?.matchId) === String(matchId)) handleBundle(bundle)
+    }
     socket.on(`match:bundle:${matchId}`, handleBundle)
-    socket.on('match:bundle', (b) => { if (String(b?.matchId) === String(matchId)) handleBundle(b) })
+    socket.on('match:bundle', onGenericBundle)
 
     if (socket.connected) {
       subscribeMatch(matchId, 'session')
@@ -347,6 +350,7 @@ export default function SessionDetail() {
       clearTimeout(loadingTimeout)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, handleBundle)
+      socket.off('match:bundle', onGenericBundle)
     }
   }, [matchId, isLoggedIn])
 
@@ -402,7 +406,7 @@ export default function SessionDetail() {
   if (!data) return null
 
   return (
-    <div className="p-4 max-w-3xl mx-auto fade-in space-y-4 pb-8">
+    <div className="detail-page max-w-3xl mx-auto fade-in space-y-4 pb-8">
 
       <button onClick={() => navigate('/session')} className="flex items-center gap-1.5 text-[#8e8e93] hover:text-white text-sm font-medium transition-colors">
         <ArrowLeft size={15} /> Back

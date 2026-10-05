@@ -1,8 +1,12 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
+import { lazy, useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
-import { LoaderCircle, Info, ChevronRight, Coins, Radio, Activity, X, Trophy, Search, Menu } from 'lucide-react'
-import { getSocket, requestTossFeed } from '../socket'
-import TossDetail from './TossDetail'
+import { LoaderCircle, Info, Coins, X, Trophy } from 'lucide-react'
+import { getSocket, releaseFeed, requestTossFeed } from '../socket'
+import { getTossMatches } from '../api'
+import SportHubHeader from '../components/SportHubHeader'
+import LeagueSearch from '../components/LeagueSearch'
+
+const TossDetail = lazy(() => import('./TossDetail'))
 
 const STORAGE_KEY = 'toss_selected_comp'
 
@@ -37,7 +41,8 @@ function formatCountdown(startTimeMs, now) {
 }
 
 const formatVolStr = (val) => {
-  if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
+  if (val === null || val === undefined) return '—'
+  if (val === 0 || val === '0') return '0.00'
   const num = Number(val)
   if (isNaN(num)) return val.toString()
   const abs = Math.abs(num)
@@ -96,8 +101,10 @@ export default function TossPage() {
   const { mobileMenu, setMobileMenu } = useOutletContext() || {}
   const { matchId } = useParams()
 
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
+  const [matchStatus, setMatchStatus] = useState('all')
+  const [leagueQuery, setLeagueQuery] = useState('')
   const [allMatches, setAllMatches] = useState([])
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
@@ -170,8 +177,12 @@ export default function TossPage() {
 
   useEffect(() => {
     const socket = getSocket()
+    let cancelled = false
+    let receivedFeed = false
+    getTossMatches().then(data => { if (!cancelled && !receivedFeed) processMatches(data) }).catch(error => { if (!cancelled && !receivedFeed) { setLoadError(error?.detail || 'Toss data is temporarily unavailable. Please try again.'); setLoading(false) } })
 
     const onTossUpdate = (payload) => {
+      receivedFeed = true
       processMatches(payload)
     }
 
@@ -180,11 +191,14 @@ export default function TossPage() {
     if (socket.connected) {
       requestTossFeed()
     } else {
-      socket.once('connect', () => requestTossFeed())
+      socket.once('connect', requestTossFeed)
     }
 
     return () => {
+      cancelled = true
       socket.off('toss:matches', onTossUpdate)
+      socket.off('connect', requestTossFeed)
+      releaseFeed('toss')
     }
   }, [matchId])
 
@@ -200,7 +214,7 @@ export default function TossPage() {
 
   // Filter matches based on selected competition and search query
   const displayedMatches = useMemo(() => {
-    let list = selectedComp === 'ALL' ? allMatches : (competitions[selectedComp] || [])
+    let list = selectedComp === 'ALL' || searchQuery.trim() ? allMatches : (competitions[selectedComp] || [])
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase().trim()
       list = list.filter((m) => {
@@ -228,7 +242,7 @@ export default function TossPage() {
     }
 
     return (
-      <div className="flex-1 overflow-y-auto no-scrollbar py-0.5">
+      <div className="league-list flex-1 overflow-y-auto py-0.5">
         {/* All Matches Option */}
         <button
           type="button"
@@ -263,7 +277,7 @@ export default function TossPage() {
         </button>
 
         {/* Categorized League List */}
-        {Object.entries(competitions).map(([comp, compMatches]) => {
+        {Object.entries(competitions).filter(([comp]) => comp.toLowerCase().includes(leagueQuery.toLowerCase())).map(([comp, compMatches]) => {
           const compLiveCount = compMatches.filter(isLiveMatch).length
           const isSelected = selectedComp === comp && !hasSearch
 
@@ -307,14 +321,13 @@ export default function TossPage() {
 
   // Helper to render a single toss match row in the Smart Money table
   const renderMatchRow = (match) => {
-    const tLoad = match.tossLoad
+    const tLoad = match.tossLoad || match.matchLoad
     const t1Name = match.matchName?.split(' v ')?.[0] || 'Team 1'
     const t2Name = match.matchName?.split(' v ')?.[1] || 'Team 2'
 
     const snap = match.snapshot
     const tr1 = snap?.teams?.[t1Name]?.trades || snap?.teams?.[snap?.teamNames?.[0]]?.trades || []
     const tr2 = snap?.teams?.[t2Name]?.trades || snap?.teams?.[snap?.teamNames?.[1]]?.trades || []
-
     const tradeVol1 = tr1.length > 0 ? tr1.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
     const tradeVol2 = tr2.length > 0 ? tr2.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
 
@@ -324,8 +337,10 @@ export default function TossPage() {
     const tossOdds1 = extractTossOdds(tr1) || (snap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(snap.syntheticSupport.teamA.averageOdds.toFixed(2)) : null)
     const tossOdds2 = extractTossOdds(tr2) || (snap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(snap.syntheticSupport.teamB.averageOdds.toFixed(2)) : null)
 
-    const odds1 = (tLoad?.team1?.odds && tLoad.team1.odds >= 1.60 && tLoad.team1.odds <= 2.40 ? tLoad.team1.odds : null) || tossOdds1 || (match.runners?.[0]?.price && match.runners[0].price >= 1.60 && match.runners[0].price <= 2.40 ? match.runners[0].price : null) || null
-    const odds2 = (tLoad?.team2?.odds && tLoad.team2.odds >= 1.60 && tLoad.team2.odds <= 2.40 ? tLoad.team2.odds : null) || tossOdds2 || (match.runners?.[1]?.price && match.runners[1].price >= 1.60 && match.runners[1].price <= 2.40 ? match.runners[1].price : null) || null
+    const runnerOdds1 = match.runners?.[0]?.price ?? match.runners?.[0]?.back ?? match.runners?.[0]?.backPrice ?? match.runners?.[0]?.ex?.availableToBack?.[0]?.price
+    const runnerOdds2 = match.runners?.[1]?.price ?? match.runners?.[1]?.back ?? match.runners?.[1]?.backPrice ?? match.runners?.[1]?.ex?.availableToBack?.[0]?.price
+    const odds1 = (tLoad?.team1?.odds && tLoad.team1.odds >= 1.60 && tLoad.team1.odds <= 2.40 ? tLoad.team1.odds : null) || tossOdds1 || (runnerOdds1 >= 1.60 && runnerOdds1 <= 2.40 ? runnerOdds1 : null) || null
+    const odds2 = (tLoad?.team2?.odds && tLoad.team2.odds >= 1.60 && tLoad.team2.odds <= 2.40 ? tLoad.team2.odds : null) || tossOdds2 || (runnerOdds2 >= 1.60 && runnerOdds2 <= 2.40 ? runnerOdds2 : null) || null
 
     const tot = vol1 + vol2
     const pct1 = (tLoad?.team1?.percent && tLoad?.team1?.money > 0) ? tLoad.team1.percent : (tot > 0 ? Math.round((vol1 / tot) * 100) : 50)
@@ -352,7 +367,9 @@ export default function TossPage() {
     return (
       <div
         key={match.matchId}
-        className="px-3 py-2 md:px-4 md:py-2.5 hover:bg-[#121824]/80 transition-colors flex items-center justify-between gap-2 md:gap-4 cursor-pointer group"
+        role="link" tabIndex={0} aria-label={`Open ${t1Name} versus ${t2Name} toss market`}
+        onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } }) } }}
+        className="toss-market-row flex items-center justify-between cursor-pointer group"
         onClick={() => navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } })}
       >
         {/* Left: Info icon */}
@@ -408,50 +425,42 @@ export default function TossPage() {
         {/* Right: Team 1 & Team 2 Columns */}
         <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-shrink-0">
           {/* Team 1 Column */}
-          <div className="flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
-            <span className="text-[10px] md:text-[11px] font-semibold text-slate-300 truncate max-w-full leading-tight">
+          <div className="market-team-column market-team-green flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
+            <span className="market-team-name text-[10px] md:text-[11px] font-semibold truncate max-w-full leading-tight">
               {team1.name}
             </span>
-            <span className="text-xs md:text-sm font-black text-white tracking-tight leading-none my-0.5" title="On this selection">
+            <span className="market-team-value text-xs md:text-sm font-black tracking-tight leading-none my-0.5" title="On this selection">
               {formatVolStr(team1.money)}
             </span>
             {/* Percentage Badge */}
             <span
-              className={`text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105 ${
-                team1.percent >= 50
-                  ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                  : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-              }`}
+              className="market-team-percent text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105"
             >
               {team1.percent}%
             </span>
             {/* Odds */}
-            <div className="flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+            <div className="market-team-odds flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold leading-tight mt-0.5" title="Last price matched">
               <span className="text-[9px]">▲</span>
               <span>{formatOdds(team1.odds)}</span>
             </div>
           </div>
 
           {/* Team 2 Column */}
-          <div className="flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
-            <span className="text-[10px] md:text-[11px] font-semibold text-slate-300 truncate max-w-full leading-tight">
+          <div className="market-team-column market-team-red flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
+            <span className="market-team-name text-[10px] md:text-[11px] font-semibold truncate max-w-full leading-tight">
               {team2.name}
             </span>
-            <span className="text-xs md:text-sm font-black text-white tracking-tight leading-none my-0.5" title="On this selection">
+            <span className="market-team-value text-xs md:text-sm font-black tracking-tight leading-none my-0.5" title="On this selection">
               {formatVolStr(team2.money)}
             </span>
             {/* Percentage Badge */}
             <span
-              className={`text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105 ${
-                team2.percent >= 50
-                  ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                  : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-              }`}
+              className="market-team-percent text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105"
             >
               {team2.percent}%
             </span>
             {/* Odds */}
-            <div className="flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
+            <div className="market-team-odds flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold leading-tight mt-0.5" title="Last price matched">
               <span className="text-[9px]">▲</span>
               <span>{formatOdds(team2.odds)}</span>
             </div>
@@ -488,18 +497,19 @@ export default function TossPage() {
     )
   }
 
-  const liveMatches = displayedMatches.filter(isLiveMatch)
-  const upcomingMatches = displayedMatches.filter((m) => !isLiveMatch(m) && !isEndedMatch(m))
-  const endedMatches = displayedMatches.filter(isEndedMatch)
+  const visibleMatches = displayedMatches.filter(m => matchStatus === 'all' || (matchStatus === 'live' && isLiveMatch(m)) || (matchStatus === 'upcoming' && !isLiveMatch(m) && !isEndedMatch(m)) || (matchStatus === 'completed' && isEndedMatch(m)))
+  const liveMatches = visibleMatches.filter(isLiveMatch)
+  const upcomingMatches = visibleMatches.filter((m) => !isLiveMatch(m) && !isEndedMatch(m))
+  const endedMatches = visibleMatches.filter(isEndedMatch)
 
   return (
-    <div className="flex h-[calc(100vh-57px)] overflow-hidden bg-[#07090e]">
+    <div className="sports-workspace flex overflow-hidden">
       {/* ── Desktop Permanent Sidebar: Toss Leagues ── */}
-      <aside className="hidden md:flex w-52 lg:w-56 border-r border-[#1b2234] flex-col bg-[#080b14] shrink-0 select-none">
+      <aside className="league-sidebar hidden md:flex flex-col shrink-0">
         {/* Header */}
         <div className="px-3 py-2.5 border-b border-[#1b2234] flex items-center justify-between bg-[#0a0d18] shrink-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-sm">🪙</span>
+            <Coins size={19} className="text-primary" />
             <div>
               <div className="text-[11px] font-black uppercase tracking-wider text-white">Toss Leagues</div>
               <div className="text-[9px] text-slate-400 font-mono">
@@ -509,11 +519,12 @@ export default function TossPage() {
           </div>
         </div>
 
+        <LeagueSearch value={leagueQuery} onChange={setLeagueQuery} />
         {renderLeaguesList()}
       </aside>
 
       {/* ── Mobile League Drawer ── */}
-      <div className="md:hidden fixed inset-0 z-50 flex pointer-events-none">
+      <div className="md:hidden fixed inset-0 z-50 flex pointer-events-none" inert={!mobileMenu} aria-hidden={!mobileMenu}>
         <div
           className="absolute inset-0 bg-black/70 transition-opacity duration-300"
           style={{ opacity: mobileMenu ? 1 : 0, pointerEvents: mobileMenu ? 'auto' : 'none' }}
@@ -521,6 +532,7 @@ export default function TossPage() {
         />
         <div
           className="relative w-64 max-w-[80vw] h-full flex flex-col pointer-events-auto bg-[#080b14] border-r border-[#1b2234]"
+          data-league-drawer role="dialog" aria-modal={mobileMenu || undefined} aria-label="Toss leagues"
           style={{
             transform: mobileMenu ? 'translateX(0)' : 'translateX(-100%)',
             transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1)',
@@ -528,57 +540,30 @@ export default function TossPage() {
         >
           <div className="px-3 py-2.5 border-b border-[#1b2234] flex items-center justify-between bg-[#0a0d18] shrink-0">
             <div className="flex items-center gap-1.5">
-              <span className="text-sm">🪙</span>
+              <Coins size={19} className="text-primary" />
               <span className="text-[11px] font-black uppercase tracking-widest text-white">Toss Leagues</span>
             </div>
-            <button onClick={() => setMobileMenu && setMobileMenu(false)} className="text-slate-400 hover:text-white p-1">
+            <button aria-label="Close leagues" onClick={() => setMobileMenu && setMobileMenu(false)} className="text-slate-400 hover:text-white p-1">
               <X size={15} />
             </button>
           </div>
 
-          {renderLeaguesList()}
+          <LeagueSearch value={leagueQuery} onChange={setLeagueQuery} />
+        {renderLeaguesList()}
         </div>
       </div>
 
       {/* ── Main Content Area: Toss Smart Money Table ── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto bg-[#07090e]">
+      <div ref={scrollRef} className="sports-content flex-1 overflow-y-auto">
         {matchId ? (
           <TossDetail />
         ) : (
           <>
-            {/* Sticky Control Bar */}
-            <div className="sticky top-0 z-20 backdrop-blur-xl bg-[#07090e]/95 border-b border-[#1b2030] px-3 sm:px-4 py-2">
-              <div className="flex items-center justify-between gap-2.5 flex-wrap">
-                {/* Desktop Active League Indicator */}
-                <div className="hidden md:flex items-center gap-2 shrink-0">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">League:</span>
-                  <span className="text-xs font-extrabold text-amber-400 bg-amber-500/10 border border-amber-500/25 px-2.5 py-1 rounded-lg">
-                    {selectedComp === 'ALL' ? 'All Tournaments' : selectedComp}
-                  </span>
-                </div>
-
-                {/* Search Input */}
-                <div className="relative w-full md:flex-1">
-                  <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search toss markets by team or league..."
-                    className="w-full bg-[#101420] border border-[#1f273b] focus:border-amber-500/60 rounded-lg pl-8 pr-7 py-1.5 text-xs text-white placeholder-slate-500 outline-none transition-all shadow-inner"
-                  />
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white p-0.5"
-                    >
-                      <X size={12} />
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+            <SportHubHeader title="Toss markets" description="Explore toss activity and pre-match signals by league."
+              league={selectedComp} total={displayedMatches.length} live={displayedMatches.filter(isLiveMatch).length}
+              upcoming={displayedMatches.filter(m => !isLiveMatch(m) && !isEndedMatch(m)).length} completed={displayedMatches.filter(isEndedMatch).length}
+              search={searchQuery} onSearch={setSearchQuery} status={matchStatus} onStatus={setMatchStatus}
+              onOpenLeagues={() => { if (window.innerWidth < 768) setMobileMenu?.(true); else document.querySelector('.league-sidebar input')?.focus() }} />
 
             {/* Search status banner */}
             {hasSearch && (
@@ -595,56 +580,9 @@ export default function TossPage() {
               </div>
             )}
 
-            <div className="p-2.5 sm:p-3 md:p-3.5 w-full space-y-3.5 md:space-y-4 fade-in">
-              {/* Horizontal Scrollable Competition Pills Filter */}
-              <div className="overflow-x-auto no-scrollbar py-1">
-                <div className="flex items-center gap-1.5 whitespace-nowrap min-w-max">
-                  {/* All Matches Pill */}
-                  <button
-                    type="button"
-                    onClick={() => handleCompSelect('ALL')}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
-                      selectedComp === 'ALL' && !hasSearch
-                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
-                        : 'bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 border border-white/10'
-                    }`}
-                  >
-                    <span>All Matches</span>
-                    <span
-                      className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
-                        selectedComp === 'ALL' && !hasSearch ? 'bg-slate-950/25 text-slate-950 font-black' : 'bg-white/10 text-slate-400'
-                      }`}
-                    >
-                      {allMatches.length}
-                    </span>
-                  </button>
-
-                  {Object.entries(competitions).map(([comp, compMatches]) => (
-                    <button
-                      key={comp}
-                      type="button"
-                      onClick={() => handleCompSelect(comp)}
-                      className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
-                        selectedComp === comp && !hasSearch
-                          ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/20 font-black'
-                          : 'bg-white/5 text-text-secondary hover:text-white hover:bg-white/10 border border-white/10'
-                      }`}
-                    >
-                      <span>{comp}</span>
-                      <span
-                        className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
-                          selectedComp === comp && !hasSearch ? 'bg-slate-950/25 text-slate-950 font-black' : 'bg-white/10 text-slate-400'
-                        }`}
-                      >
-                        {compMatches.length}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
+            <div className="hub-results w-full space-y-6 fade-in">
               {/* Match Sections: Live first, Upcoming second, Completed at bottom */}
-              {displayedMatches.length > 0 ? (
+              {visibleMatches.length > 0 ? (
                 <div className="space-y-4">
                   {/* 1. Live In-Play Toss Markets */}
                   {liveMatches.length > 0 && (
@@ -700,7 +638,7 @@ export default function TossPage() {
                     <Coins size={24} />
                   </div>
                   <h3 className="text-base font-bold text-white mb-1">
-                    {hasSearch ? 'No toss markets matching your search' : 'No Toss Markets in Selected League'}
+                    {hasSearch ? 'No toss markets matching your search' : `No ${matchStatus === 'all' ? '' : matchStatus + ' '}toss markets in this league`}
                   </h3>
                   <p className="text-xs text-text-muted mb-4">
                     {hasSearch ? 'Try a different search keyword or clear filters.' : 'Select another league or view all matches.'}
@@ -708,6 +646,7 @@ export default function TossPage() {
                   <button
                     onClick={() => {
                       setSearchQuery('')
+                      setMatchStatus('all')
                       handleCompSelect('ALL')
                     }}
                     className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors border border-amber-500/30"

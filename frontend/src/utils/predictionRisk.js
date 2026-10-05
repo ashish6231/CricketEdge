@@ -73,20 +73,44 @@ export function computeTossRisk(reason, matchedRules = []) {
 
 export function computeMatchStartRisk(
   reason,
-  { publicOverridden = false, msDisagreesPublic = false, extremeDogFade = false } = {},
+  {
+    publicOverridden = false,
+    msDisagreesPublic = false,
+    extremeDogFade = false,
+    leagueRegistered = true,
+    validation = null,
+    trainingSamples = 0,
+  } = {},
 ) {
   if (extremeDogFade) {
     return {
       ...RISK_TIERS.high,
       reason,
-      note: 'Heavy underdog fade — favorite 30–45p par stuck ho sakta hai',
+      note: 'Heavy underdog fade — favourite decimal odds 1.30–1.45 ke paas hai',
       avoidEntry: true,
     }
   }
-  if (publicOverridden) return { ...RISK_TIERS.high, reason, note: 'API public override' }
+  if (!leagueRegistered) {
+    return { ...RISK_TIERS.high, reason, note: 'Is league ke liye dedicated algorithm available nahi hai', avoidEntry: true }
+  }
+  // `marketSignals` is refreshed during play, while this badge describes the
+  // locked pre-match pick. A later disagreement must be shown as a live
+  // reversal, not used to rewrite every start pick as high risk.
+  if (publicOverridden) return { ...RISK_TIERS.medium, reason, note: 'Public-team feed ko frozen pre-match flow ne override kiya' }
   if (reason === 'Fade Public Money' && msDisagreesPublic) {
     return { ...RISK_TIERS.low, reason }
   }
-  const tier = MATCH_START_REASON_TIER[reason] || 'high'
+  const weakMoneyShare = reason?.match(/Money Leader \((\d+)% Share\)/i)
+  if (weakMoneyShare && Number(weakMoneyShare[1]) < 55) {
+    return { ...RISK_TIERS.high, reason, note: 'Pre-match money split almost even hai', avoidEntry: true }
+  }
+  if (validation === 'retrospective-development-checks' && trainingSamples >= 10) {
+    return {
+      ...RISK_TIERS.low,
+      reason,
+      note: `${trainingSamples} verified league matches par historical checks available hain`,
+    }
+  }
+  const tier = MATCH_START_REASON_TIER[reason] || 'medium'
   return { ...RISK_TIERS[tier], reason }
 }

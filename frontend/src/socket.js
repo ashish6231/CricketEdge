@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client';
+import { isCompleteMatchBundle } from './utils/matchBundle.js';
 
 let socket = null;
 
@@ -92,12 +93,12 @@ export function getSocket() {
 
   // Cache all prefetched match bundles pushed by server on connect
   socket.on('match:prefetch', (bundle) => {
-    if (bundle?.matchId) setMatchBundle(bundle.matchId, bundle);
+    if (bundle?.matchId && isCompleteMatchBundle(bundle)) setMatchBundle(bundle.matchId, bundle);
   });
 
   // Also cache bundles received via normal subscribe flow
   socket.on('match:bundle', (bundle) => {
-    if (bundle?.matchId) setMatchBundle(bundle.matchId, bundle);
+    if (bundle?.matchId && isCompleteMatchBundle(bundle)) setMatchBundle(bundle.matchId, bundle);
   });
 
   // When cricket list arrives, seed bundle cache from each match's embedded snapshot
@@ -199,4 +200,14 @@ export function requestTossFeed() {
 export function requestTennisFeed() {
   const s = getSocket();
   if (s && s.connected) s.emit('feed:tennis');
+}
+
+export function requestSessionFeed() {
+  const s = getSocket();
+  if (s && s.connected) s.emit('feed:session');
+}
+
+export function releaseFeed(feed) {
+  if (!['toss', 'tennis', 'session'].includes(feed)) return;
+  if (socket?.connected) socket.emit('feed:unsubscribe', feed);
 }

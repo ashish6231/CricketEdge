@@ -50,6 +50,25 @@ test('allows reason upgrade only when the locked winner stays the same', () => {
   assert.equal(updated.reason, 'Fade Public (MS confirms)')
 })
 
+test('refreshes high-risk no-bet metadata on an older same-team session lock', () => {
+  const locked = {
+    winnerName: teamA,
+    winnerIdx: 0,
+    reason: 'Pre-Match Back Volume',
+    lockedAt: 'match_open',
+  }
+  const current = {
+    ...locked,
+    risk: { tier: 'high', avoidEntry: true },
+    preOdds: { t1: 1.75, t2: 2.48 },
+    confidence: { calibrated: false, label: 'Uncalibrated' },
+  }
+  const updated = lockMatchStartPrediction(current, locked, { inPlay: true })
+  assert.equal(updated.winnerName, teamA)
+  assert.equal(updated.risk.avoidEntry, true)
+  assert.deepEqual(updated.preOdds, { t1: 1.75, t2: 2.48 })
+})
+
 test('flags heavy underdog fade before entry', () => {
   const snap = {
     teamNames: [teamA, teamB],
@@ -63,23 +82,77 @@ test('flags heavy underdog fade before entry', () => {
   }
 
   snap.teams[teamA].trades = [{ type: 'back', price: 4.5, updatedAt: 1 }]
-  snap.teams[teamB].trades = [{ type: 'back', price: 0.32, updatedAt: 2 }]
+  snap.teams[teamB].trades = [{ type: 'back', price: 1.32, updatedAt: 2 }]
 
   const prediction = predictMatchStart(snap)
   assert.equal(prediction.winnerName, teamA)
   assert.equal(prediction.extremeDogFade, true)
 })
 
-test('shows live exit advice when favorite is stuck near 30p', () => {
+test('shows live exit advice when opponent becomes a heavy decimal-odds favourite', () => {
   const advice = getMatchStartExitAdvice({
-    lockedPick: { winnerName: teamA },
+    lockedPick: { winnerName: teamA, winnerIdx: 0, preOdds: { t1: 2.8, t2: 1.45 } },
     inPlay: true,
     pickBackOdds: 3.2,
-    opponentBackOdds: 0.3,
+    opponentBackOdds: 1.3,
   })
 
   assert.ok(advice)
-  assert.match(advice.message, /30p/i)
+  assert.equal(advice.level, 'danger')
+  assert.match(advice.message, /3\.20.*1\.30/i)
+})
+
+test('shows reversal as soon as the pre-match favourite flips sides', () => {
+  const advice = getMatchStartExitAdvice({
+    lockedPick: { winnerName: 'India Legends', winnerIdx: 0, preOdds: { t1: 1.75, t2: 2.48 } },
+    inPlay: true,
+    pickBackOdds: 2.1,
+    opponentBackOdds: 1.9,
+  })
+
+  assert.ok(advice)
+  assert.equal(advice.favouriteFlipped, true)
+  assert.equal(advice.sharpMoveAgainst, true)
+})
+
+test('does not warn for ordinary live movement that stays with the locked pick', () => {
+  const advice = getMatchStartExitAdvice({
+    lockedPick: { winnerName: teamA, winnerIdx: 0, preOdds: { t1: 1.8, t2: 2.2 } },
+    inPlay: true,
+    pickBackOdds: 1.72,
+    opponentBackOdds: 2.3,
+  })
+  assert.equal(advice, null)
+})
+
+test('India vs England audit attributes India lay money to England support', async () => {
+  const { readFileSync } = await import('node:fs')
+  const records = JSON.parse(readFileSync(new URL('../../../server/data/match_dataset.json', import.meta.url))).records
+  const record = records.find(row => String(row.matchId) === '36147996')
+  assert.ok(record, 'retained India Legends vs England Legends record is missing')
+  const prediction = predictMatchStart({ ...record.snapshot, startTime: record.startTime })
+  assert.equal(prediction.winnerName, 'England Legends')
+  assert.equal(record.snapshot.marketSignals.prediction.prediction, 'England Legends')
+  assert.equal(prediction.algorithmDisagreesMarket, false)
+  assert.equal(prediction.marketEvidence.method, 'back-plus-opponent-lay')
+  assert.equal(Math.round(prediction.marketEvidence.support.pct2), 63)
+  assert.equal(Math.round(prediction.marketEvidence.activity.pct2), 75)
+  assert.equal(prediction.marketEvidence.agreeingSignals, 3)
+  assert.equal(prediction.risk.tier, 'medium')
+  assert.equal(prediction.risk.avoidEntry, undefined)
+  assert.equal(prediction.preOdds.t1, null, 'in-play India trades must not be used as pre-match odds')
+})
+
+test('a registered league rule is medium risk unless a concrete danger condition exists', () => {
+  const prediction = predictMatchStart({
+    competitionName: 'World Championship of Legends T20',
+    teamNames: [teamA, teamB],
+    preMatchVolume: { team1: { back: 100, lay: 10 }, team2: { back: 40, lay: 80 } },
+    preMatchTotalBets: { team1: 80, team2: 160 },
+    preMatchPnl: { team1: 25, team2: -40 },
+  })
+  assert.equal(prediction.winnerName, teamB)
+  assert.equal(prediction.risk.tier, 'medium')
 })
 
 

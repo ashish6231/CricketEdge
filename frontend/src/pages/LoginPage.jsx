@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Activity, Lock, Mail, Eye, EyeOff, User, LoaderCircle, AlertTriangle, X } from 'lucide-react'
+import { Lock, Mail, Eye, EyeOff, User, LoaderCircle, AlertTriangle, X } from 'lucide-react'
 import { login, register, getSignupStatus } from '../api'
 import { resolveAllowSignups, shouldNavigateAfterAuth, resolveSiteName, splitSiteName } from '../utils/publicAuth'
 
@@ -38,7 +38,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
     return () => { cancelled = true }
   }, [])
 
-  const [sessionReplacedMsg, setSessionReplacedMsg] = useState(() => {
+  const [sessionReplacedMsg] = useState(() => {
     const urlReason = new URLSearchParams(window.location.search).get('reason') === 'session_replaced'
     const saved = sessionStorage.getItem('session_replaced_msg')
     if (saved) {
@@ -111,7 +111,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
     : 'min-h-screen flex flex-col items-center justify-center px-4'
 
   return (
-    <div className={shellClass} style={{ background: '#0a0a0a', ...(isModal ? { border: '1px solid #2c2c2e' } : {}) }}>
+    <div className={`auth-page ${shellClass}`}>
       
       {!isModal && (
         <div className="fixed top-0 left-0 right-0 h-[2px]" style={{ background: '#10b981' }} />
@@ -140,6 +140,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
               return suffix ? <>{prefix}<span className="text-[#10b981]">{suffix}</span></> : prefix
             })()}
           </h1>
+          <p className="auth-description">{tab === 'login' ? 'Welcome back. Sign in to your match workspace.' : 'Create an account to follow your favourite matches.'}</p>
         </div>
 
         {/* Card */}
@@ -148,7 +149,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
           {/* Tabs */}
           <div className="flex gap-1 p-1 rounded-lg mb-4 bg-[#0a0a0a] border border-[#2c2c2e]">
             {['login', 'signup'].map(t => (
-              <button key={t} onClick={() => switchTab(t)}
+              <button key={t} type="button" aria-pressed={tab === t} onClick={() => switchTab(t)}
                 className="flex-1 py-1.5 rounded-md text-[13px] font-semibold transition-colors capitalize"
                 style={tab === t
                   ? { background: '#1c1c1e', color: '#fff', border: '1px solid #2c2c2e' }
@@ -197,7 +198,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full py-2 rounded-lg text-[13px] font-semibold text-white"
-                style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
+                style={{ background: '#167d73' }}
               >
                 New Account
               </a>
@@ -214,10 +215,10 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
             {/* Name — signup only */}
             {tab === 'signup' && (
               <div>
-                <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Full Name</label>
+                <label htmlFor="auth-name" className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Full Name</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#636366]" />
-                  <input type="text" value={name} onChange={e => setName(e.target.value)}
+                  <input id="auth-name" name="name" autoComplete="name" type="text" value={name} onChange={e => setName(e.target.value)}
                     placeholder="Rahul Sharma" required disabled={loading}
                     className="w-full rounded-lg pl-9 pr-3 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
                     style={{ border: '1px solid #2c2c2e' }} />
@@ -227,10 +228,10 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
 
             {/* Email */}
             <div>
-              <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Email Address</label>
+              <label htmlFor="auth-email" className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#636366]" />
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                <input id="auth-email" name="email" autoComplete="email" type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="your@email.com" required disabled={loading}
                   className="w-full rounded-lg pl-9 pr-3 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
                   style={{ border: '1px solid #2c2c2e' }} />
@@ -239,10 +240,10 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
 
             {/* Password */}
             <div>
-              <label className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Password</label>
+              <label htmlFor="auth-password" className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#636366]" />
-                <input type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
+                <input id="auth-password" name="password" autoComplete={tab === 'signup' ? 'new-password' : 'current-password'} type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••" required disabled={loading} minLength={6}
                   className="w-full rounded-lg pl-9 pr-9 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
                   style={{ border: '1px solid #2c2c2e' }} />

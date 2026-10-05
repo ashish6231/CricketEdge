@@ -1,16 +1,18 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { Activity, Menu, X, Shield, LogOut, User, ChevronDown } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+import { Activity, Menu, X, Shield, LogOut, User, ChevronDown, CircleDot, Coins, Crown } from 'lucide-react'
+import { Suspense, useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout, getSignupStatus, getTelegramSettings, checkTelegramStatus } from '../api'
 import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 import { guestPathAfterLogout, resolveSiteName, splitSiteName, resolveSiteMode, isFreeMode } from '../utils/publicAuth'
 import LoginPage from '../pages/LoginPage'
 import TelegramGateModal from './TelegramGateModal'
+import PageLoading from './PageLoading'
 import { getSocket, updateSocketAuth } from '../socket'
 
 const NAV_ITEMS = [
-  { path: '/cricket', label: 'Cricket', icon: '🏏' },
-  { path: '/toss',    label: 'Toss',    icon: '🪙' },
+  { path: '/cricket', label: 'Cricket', icon: Activity },
+  { path: '/toss', label: 'Toss', icon: Coins },
+  { path: '/tennis', label: 'Tennis', icon: CircleDot },
 ]
 
 export default function MainLayout() {
@@ -23,12 +25,14 @@ export default function MainLayout() {
   const [loginOpen, setLoginOpen]   = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [dropdown, setDropdown]     = useState(false)
+  const [trialBannerHeight, setTrialBannerHeight] = useState(44)
   const [siteName, setSiteName]     = useState('CricEdge')
   const [siteMode, setSiteMode]     = useState('paid')
   const [telegramGateRequired, setTelegramGateRequired] = useState(false)
   const [telegramLockReason, setTelegramLockReason]     = useState(null)
   const [telegramGateEnabled, setTelegramGateEnabled]   = useState(true)
   const dropRef = useRef(null)
+  const trialBannerRef = useRef(null)
 
   useEffect(() => {
     try { localStorage.removeItem('live_desk_mode') } catch { /* ignore */ }
@@ -156,7 +160,7 @@ export default function MainLayout() {
       socket.off('session:replaced', onSessionReplaced)
       window.removeEventListener('session-replaced', onCustomSessionReplaced)
     }
-  }, [])
+  }, [navigate])
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -164,6 +168,51 @@ export default function MainLayout() {
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
+
+  useEffect(() => { setMobileMenu(false); setDropdown(false) }, [location.pathname])
+
+  useEffect(() => {
+    if (!loginOpen) return
+    const previousFocus = document.activeElement
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const dialog = document.getElementById('site-login-dialog')
+    dialog?.querySelector('button, input')?.focus()
+    const onKey = event => {
+      if (event.key === 'Escape') setLoginOpen(false)
+      if (event.key !== 'Tab') return
+      const controls = [...(dialog?.querySelectorAll('button, input, a[href]') || [])].filter(element => !element.disabled && element.getClientRects().length)
+      const first = controls[0], last = controls.at(-1)
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => { document.body.style.overflow = originalOverflow; document.removeEventListener('keydown', onKey); previousFocus?.focus() }
+  }, [loginOpen])
+
+  useEffect(() => {
+    const onKey = event => { if (event.key === 'Escape') { setDropdown(false); setMobileMenu(false) } }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [])
+
+  useEffect(() => {
+    if (!mobileMenu || window.innerWidth >= 768) return
+    const previousFocus = document.activeElement
+    const drawer = document.querySelector('[data-league-drawer]')
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const timer = window.setTimeout(() => drawer?.querySelector('button, input')?.focus(), 100)
+    const onKey = event => {
+      if (event.key !== 'Tab') return
+      const controls = [...(drawer?.querySelectorAll('button, input') || [])].filter(element => !element.disabled && element.getClientRects().length)
+      const first = controls[0], last = controls.at(-1)
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => { clearTimeout(timer); document.removeEventListener('keydown', onKey); document.body.style.overflow = originalOverflow; previousFocus?.focus() }
+  }, [mobileMenu])
 
   useEffect(() => {
     const handler = (e) => setLastUpdated(e.detail?.time || new Date())
@@ -271,7 +320,7 @@ export default function MainLayout() {
     return () => clearInterval(interval)
   }, [telegramGateEnabled, isLoggedIn, authUser, isAdmin])
 
-  const handleTelegramVerified = (statusRes) => {
+  const handleTelegramVerified = () => {
     setTelegramGateRequired(false)
     setTelegramLockReason(null)
     // Refresh user state so telegramId is stored in authUser
@@ -311,34 +360,34 @@ export default function MainLayout() {
     logout().catch(() => {})
   }
 
-  const isMatchDetail = /\/(cricket|tennis|toss)\/match\//.test(location.pathname)
-  const isShellBypass =
-    location.pathname.startsWith('/admin') ||
-    location.pathname.startsWith('/profile') ||
-    location.pathname.startsWith('/subscription')
   const isSportsPage =
     location.pathname.startsWith('/cricket') ||
     location.pathname.startsWith('/tennis') ||
     location.pathname.startsWith('/toss')
-  const hideSportNav = false
+
+  useEffect(() => {
+    if (!onTrial || isFree || !trialBannerRef.current) return
+    const observer = new ResizeObserver(([entry]) => setTrialBannerHeight(entry.target.offsetHeight))
+    observer.observe(trialBannerRef.current)
+    return () => observer.disconnect()
+  }, [onTrial, isFree])
 
   return (
-    <div className="flex min-h-screen bg-[#000000]">
+    <div className={`app-shell flex min-h-screen ${onTrial && !isFree ? 'has-trial-banner' : ''}`} style={{ '--trial-banner-height': `${trialBannerHeight}px` }}>
+      <a href="#main-content" className="skip-link">Skip to content</a>
       {/* Top accent */}
-      <div className="fixed top-0 left-0 right-0 h-1 z-50"
-        style={{ background: 'linear-gradient(90deg,#dc2626,#10b981,#dc2626)' }} />
 
       {/* Header */}
-      <header className="fixed top-1 left-0 right-0 z-40 border-b border-[#2c2c2e]"
-        style={{ background: 'rgba(10,10,10,0.85)', backdropFilter: 'blur(20px)', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-        <div className="flex items-center h-12 sm:h-13 px-3 sm:px-4 gap-2 sm:gap-3">
+      <header className="site-header">
+        <div className="site-header-inner">
           {/* Leagues drawer toggle — mobile only */}
-          {!hideSportNav && (
+          {isSportsPage && (
             <button
               type="button"
               className="md:hidden text-text-muted hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors shrink-0"
               onClick={() => setMobileMenu((m) => !m)}
               aria-label="Toggle leagues drawer"
+              aria-expanded={mobileMenu}
               title="Toggle leagues"
             >
               {mobileMenu ? <X size={18} /> : <Menu size={18} />}
@@ -346,9 +395,9 @@ export default function MainLayout() {
           )}
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <Link to="/" className="site-brand">
             <img src="/favicon-48x48.png" alt="CricEdge" className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-contain border border-white/10 shadow-sm" />
-            <span className="font-black text-sm sm:text-lg tracking-tight text-text-primary">
+            <span className="site-brand-name">
               {(() => {
                 const { prefix, suffix } = splitSiteName(siteName)
                 return suffix ? <>{prefix}<span className="text-primary">{suffix}</span></> : prefix
@@ -357,26 +406,21 @@ export default function MainLayout() {
           </Link>
 
           {/* Nav */}
-          {!hideSportNav && (
-            <nav className="flex items-center gap-1.5 sm:gap-2 ml-1 sm:ml-2">
-              {NAV_ITEMS.map(item => (
+          {(
+            <nav className="site-nav" aria-label="Main navigation">
+              {NAV_ITEMS.map(item => { const Icon = item.icon; return (
                 <Link key={item.path} to={item.path}
                   onClick={() => {
                     if (item.path === '/toss') {
-                      try { localStorage.setItem('toss_selected_comp', 'ALL') } catch (_) {}
+                      try { localStorage.setItem('toss_selected_comp', 'ALL') } catch {}
                     }
                   }}
-                  className={`flex-shrink-0 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full text-xs sm:text-[13px] font-semibold tracking-normal sm:tracking-wide transition-all flex items-center gap-1.5 ${
-                    location.pathname.startsWith(item.path) ? 'text-white shadow-sm' : 'text-text-secondary hover:text-primary'
-                  }`}
-                  style={location.pathname.startsWith(item.path)
-                    ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' }
-                    : { background: 'rgba(255,255,255,0.05)' }
-                  }>
-                  <span className="text-xs sm:text-sm">{item.icon}</span>
+                  className={location.pathname.startsWith(item.path) ? 'is-active' : ''}
+                  aria-current={location.pathname.startsWith(item.path) ? 'page' : undefined}>
+                  <Icon size={17} />
                   <span>{item.label}</span>
                 </Link>
-              ))}
+              )})}
             </nav>
           )}
 
@@ -386,16 +430,15 @@ export default function MainLayout() {
             {/* Admin button — navbar me */}
             {isAdmin && (
               <Link to="/admin"
-                className="hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-full text-xs font-semibold text-white flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg,#7c3aed,#a855f7)' }}>
+                className="site-admin-link hidden sm:flex">
                 <Shield size={12} /> Admin
               </Link>
             )}
             {/* Live clock */}
             {lastUpdated && (
-              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
-                style={{ background: 'rgba(22,163,74,0.08)', color: '#16a34a' }}>
-                <span className="pulse-dot h-1.5 w-1.5 rounded-full" style={{ background: '#16a34a' }} />
+              <div className="hidden xl:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                style={{ background: 'rgba(37,99,235,0.12)', color: '#93c5fd' }}>
+                <span className="pulse-dot h-1.5 w-1.5 rounded-full" style={{ background: '#60a5fa' }} />
                 {lastUpdated.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </div>
             )}
@@ -404,12 +447,11 @@ export default function MainLayout() {
             {isLoggedIn && authUser ? (
               /* ── Profile dropdown ── */
               <div className="relative" ref={dropRef}>
-                <button onClick={() => setDropdown(d => !d)}
-                  className="flex items-center gap-1 sm:gap-1.5 p-1 sm:px-2 sm:py-1 rounded-full transition-all"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #2c2c2e' }}>
+                <button onClick={() => setDropdown(d => !d)} aria-expanded={dropdown} aria-controls="site-account-menu" aria-label="Account menu"
+                  className="site-account-trigger">
                   {/* Avatar circle */}
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-black"
-                    style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
+                    style={{ background: '#2563eb' }}>
                     {initials}
                   </div>
                   <span className="hidden sm:block text-xs font-semibold text-text-primary max-w-24 truncate">
@@ -419,8 +461,7 @@ export default function MainLayout() {
                 </button>
 
                 {dropdown && (
-                  <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl shadow-xl z-50 overflow-hidden"
-                    style={{ background: '#111111', border: '1px solid #2c2c2e', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
+                  <div id="site-account-menu" className="site-account-menu">
                     {/* User info */}
                     <div className="px-4 py-3 border-b border-border/60">
                       <div className="font-bold text-sm text-text-primary truncate">{authUser.name}</div>
@@ -433,9 +474,9 @@ export default function MainLayout() {
                         )}
                         <span className={`text-xs font-bold px-1.5 py-0.5 rounded-full ${
                           isFree
-                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-400/30'
                             : onTrial
-                              ? 'bg-emerald-100 text-emerald-700'
+                              ? 'bg-violet-100 text-violet-700'
                               : paidPro
                                 ? 'bg-yellow-100 text-yellow-700'
                                 : 'bg-gray-100 text-gray-500'
@@ -454,9 +495,11 @@ export default function MainLayout() {
                     {/* Subscription */}
                     <Link to="/subscription" onClick={() => setDropdown(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-[#1a1a1a] transition-colors">
-                      <span className="text-yellow-500 text-sm">⭐</span>
+                      <Crown size={14} className="text-primary" />
                       {isFree ? 'Free Access Active' : paidPro ? 'Manage Subscription' : onTrial ? 'Upgrade Before Trial Ends' : 'Upgrade to Pro'}
                     </Link>
+
+                    {isAdmin && <Link to="/admin" onClick={() => setDropdown(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary"><Shield size={14} /> Admin workspace</Link>}
 
                     {/* Logout */}
                     <button onClick={handleLogout}
@@ -472,9 +515,8 @@ export default function MainLayout() {
             ) : (
               /* ── Not logged in — show login button immediately ── */
               <button type="button" onClick={() => setLoginOpen(true)}
-                className="flex items-center gap-1 px-2.5 h-7 sm:px-3 sm:h-8 rounded-full text-[11px] sm:text-xs font-semibold text-white"
-                style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
-                Login
+                className="ui-button ui-button-primary site-login-button">
+                <User size={15} /><span>Sign in</span>
               </button>
             )}
           </div>
@@ -483,16 +525,17 @@ export default function MainLayout() {
 
       {/* Trial banner */}
       {onTrial && !isFree && (
-        <div className="fixed top-[49px] sm:top-[53px] left-0 right-0 z-30 px-4 py-1.5 sm:py-2 text-center text-[11px] sm:text-xs font-semibold"
-          style={{ background: 'linear-gradient(90deg,rgba(16,185,129,0.15),rgba(220,38,38,0.1))', borderBottom: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
+        <div ref={trialBannerRef} className="site-trial-banner">
           🎁 Free trial active — {formatTrialTimeLeft(getTrialMinutesLeft(authUser))} left with full live match access.
           {' '}<Link to="/subscription" className="underline text-white">Upgrade to Pro</Link> before trial ends.
         </div>
       )}
 
       {/* Content */}
-      <main className={`flex-1 w-full ${(onTrial && !isFree) ? 'pt-[80px] sm:pt-[88px]' : 'pt-12 sm:pt-14'}`}>
-        <Outlet context={{ isLoggedIn, user: authUser, authReady, siteMode, isFreeMode: isFree, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
+      <main id="main-content" tabIndex={-1} className="site-main flex-1 w-full">
+        <Suspense fallback={<PageLoading />}>
+          <Outlet context={{ isLoggedIn, user: authUser, authReady, siteMode, isFreeMode: isFree, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
+        </Suspense>
       </main>
 
       {/* Compulsory Telegram Gate Modal: ONLY for logged-in non-admin users */}
@@ -509,14 +552,15 @@ export default function MainLayout() {
 
       {loginOpen && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center p-4"
+          id="site-login-dialog"
+          className="site-dialog-backdrop fixed inset-0 z-[60] flex items-center justify-center p-4"
           style={{ background: 'rgba(0,0,0,0.72)' }}
           onClick={() => setLoginOpen(false)}
           role="dialog"
           aria-modal="true"
           aria-label="Login"
         >
-          <div className="relative w-full max-w-[360px] max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="relative w-full max-w-[440px] max-h-[90dvh] overflow-y-auto" onClick={e => e.stopPropagation()}>
             <LoginPage
               isModal
               siteName={siteName}

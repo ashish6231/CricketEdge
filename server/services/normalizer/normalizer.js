@@ -9,6 +9,7 @@ const { getRedisClient } = require('../../shared/redis');
 const { createNormalizedMatch, createNormalizedOdds, mergeMatches } = require('../../shared/schema');
 const crexService = require('../crexService');
 const prisma = require('../../db/prisma');
+const crypto = require('crypto');
 
 // In-memory caches for fast normalization & merging
 let _cricketMatches = [];
@@ -21,6 +22,11 @@ const _cricketSnapshots = new Map();
 const _crexDetails = new Map();
 const _tossSnapshots = new Map();
 const _sessionTrades = new Map();
+let _crexOverviewFingerprint = '';
+
+function fingerprint(value) {
+  return crypto.createHash('sha1').update(JSON.stringify(value)).digest('base64');
+}
 
 function buildCrexField(cm) {
   if (!cm) return null;
@@ -79,7 +85,12 @@ async function processIngestJob(job) {
   }
 
   else if (type === 'crex:overview' && Array.isArray(data)) {
+    const nextOverviewFingerprint = fingerprint(data);
+    const overviewChanged = nextOverviewFingerprint !== _crexOverviewFingerprint;
     _crexOverview = data;
+    if (!overviewChanged) return;
+    _crexOverviewFingerprint = nextOverviewFingerprint;
+
     await redis.set('crex:overview', JSON.stringify(data), 'EX', 30);
     await redis.publish('crex:overview', JSON.stringify(data));
 
@@ -93,7 +104,9 @@ async function processIngestJob(job) {
           inPlay: m.inPlay,
         });
         if (cm) {
-          m.crex = buildCrexField(cm);
+          const nextCrex = buildCrexField(cm);
+          if (fingerprint(m.crex) === fingerprint(nextCrex)) continue;
+          m.crex = nextCrex;
           m.source = 'merged';
           updated = true;
         }
@@ -180,16 +193,29 @@ async function processIngestJob(job) {
     const detail = data;
     const cid = String(job.data?.crexMatchId || detail.crexMatchId || '');
     const slug = String(job.data?.slug || detail.slug || '');
+    const directMatchId = String(matchId || '');
+    const detailFingerprint = fingerprint(detail);
+    const previousCidDetail = cid ? _crexDetails.get(cid) : null;
+    const previousSlugDetail = slug ? _crexDetails.get(slug) : null;
 
     if (cid) _crexDetails.set(cid, detail);
     if (slug) _crexDetails.set(slug, detail);
 
     // Correlate with any active cricket matches
+    let matchedDetailChanged = false;
     for (const m of _cricketMatches) {
-      const mCid = m.crex?.crexMatchId;
-      const mSlug = m.crex?.slug;
-      if ((cid && mCid === cid) || (slug && mSlug === slug) || (slug && mSlug && mSlug.includes(slug))) {
+      const mCid = String(m.crex?.crexMatchId || '');
+      const mSlug = String(m.crex?.slug || '');
+      const currentMatchId = String(m.id || m.matchId || '');
+      if ((directMatchId && currentMatchId === directMatchId) ||
+          (cid && mCid === cid) ||
+          (slug && mSlug === slug) ||
+          (slug && mSlug && (mSlug.includes(slug) || slug.includes(mSlug)))) {
         const mid = String(m.id || m.matchId);
+        const previousDetail = mid === cid
+          ? previousCidDetail
+          : (mid === slug ? previousSlugDetail : _crexDetails.get(mid));
+        const detailChanged = !previousDetail || fingerprint(previousDetail) !== detailFingerprint;
         _crexDetails.set(mid, detail);
 
         if (detail.scorecard) {
@@ -201,8 +227,12 @@ async function processIngestJob(job) {
           m.crex.runningBall = detail.scorecard.runningBall || detail.runningBall || m.crex.runningBall;
         }
 
-        await redis.set(`match:${mid}:crex`, JSON.stringify(detail), 'EX', 60);
-        await redis.publish(`match:crex:${mid}`, JSON.stringify(detail));
+        if (!detailChanged) continue;
+        matchedDetailChanged = true;
+
+        const serializedDetail = JSON.stringify(detail);
+        await redis.set(`match:${mid}:crex`, serializedDetail, 'EX', 60);
+        await redis.publish(`match:crex:${mid}`, serializedDetail);
 
         const bundle = getMatchBundle(mid);
         await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
@@ -212,7 +242,7 @@ async function processIngestJob(job) {
     }
 
     // Re-broadcast updated cricket matches list so home screen cards get fresh scores
-    if (_cricketMatches.length > 0) {
+    if (matchedDetailChanged && _cricketMatches.length > 0) {
       await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
       await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
     }
@@ -289,4 +319,3 @@ module.exports = {
   getMatchBundle,
   setCrexDetail,
 };
-

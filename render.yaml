@@ -63,7 +63,7 @@ services:
       - key: TELEGRAM_GATE_ENABLED
         value: false
       - key: CREX_POLL_INTERVAL_MS
-        value: 2000
+        value: 5000
       - key: TLL_POLL_INTERVAL_MS
         value: 10000
 

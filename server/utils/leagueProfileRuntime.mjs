@@ -71,7 +71,7 @@ export function defineLeagueProfile(config) {
       winner: snapshot.teamNames[winnerIdx], winnerIdx,
       algorithmId: `${profile.algorithmId}-training-fit`, algorithmLeague: profile.league,
       profileVersion: profile.profileVersion,
-      predictorVersion: 'match-v8-zero-regression-guards',
+      predictorVersion: 'match-v9-cross-market-support',
       trainingSamples: profile.trainingSamples,
       leafSamples: branch.samples,
       reason: `${profile.league} training-fit tree: ${branch.path.join('; ') || 'Single observed market-flow class'}`,

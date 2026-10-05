@@ -2,7 +2,7 @@ import { predictNormalLeagueMatch, PREDICTOR_VERSION } from '../../../server/uti
 export { PREDICTOR_VERSION }
 import { predictLeagueMatch } from '../../../server/utils/matchLeagueModel.js'
 import { computeMatchStartRisk } from './predictionRisk.js'
-import { splitMatchOutcomes } from './bookiePl.js'
+import { splitMatchOutcomes, timestamp, tradeTimestamp } from './bookiePl.js'
 
 /**
  * Match START Predictor — shared normal league rules.
@@ -15,19 +15,22 @@ import { splitMatchOutcomes } from './bookiePl.js'
 
 function medianPrices(trades) {
   if (!trades.length) return null
-  const sorted = trades.map(t => t.price).filter(p => p > 0).sort((a, b) => a - b)
+  const sorted = trades.map(t => Number(t.price)).filter(p => Number.isFinite(p) && p > 1).sort((a, b) => a - b)
+  if (!sorted.length) return null
   return sorted[Math.floor(sorted.length / 2)]
 }
 
-export function getFirstTrades(trades, n = 5) {
+export function getFirstTrades(trades, n = 5, startTime = null) {
   if (!trades?.length) return []
+  const start = timestamp(startTime)
   return [...trades]
+    .filter(trade => start == null || (tradeTimestamp(trade) != null && tradeTimestamp(trade) < start))
     .sort((a, b) => (a.updatedAt || 0) - (b.updatedAt || 0))
     .slice(0, n)
 }
 
-export function getPreMatchOdds(trades, n = 5) {
-  return medianPrices(getFirstTrades(trades, n))
+export function getPreMatchOdds(trades, n = 5, startTime = null) {
+  return medianPrices(getFirstTrades(trades, n, startTime))
 }
 
 export function extractStartMetrics(snap) {
@@ -38,8 +41,8 @@ export function extractStartMetrics(snap) {
   const preVol1 = snap.preMatchVolume?.team1 || {}
   const preVol2 = snap.preMatchVolume?.team2 || {}
 
-  const preOdds1 = getPreMatchOdds(t1Trades)
-  const preOdds2 = getPreMatchOdds(t2Trades)
+  const preOdds1 = getPreMatchOdds(t1Trades, 5, snap.startTime)
+  const preOdds2 = getPreMatchOdds(t2Trades, 5, snap.startTime)
 
   const preBack1 = preVol1.back ?? 0
   const preLay1 = preVol1.lay ?? 0
@@ -156,18 +159,34 @@ export function predictMatchStart(snap, { mode = 'rules' } = {}) {
   const winner = prediction.winner
   const pickOdds = winner === t1 ? m.preOdds1 : m.preOdds2
   const oppOdds = winner === t1 ? m.preOdds2 : m.preOdds1
-  const extremeDogFade = pickOdds != null && oppOdds != null && oppOdds <= 0.45 && pickOdds >= 2.5
+  const extremeDogFade = pickOdds != null && oppOdds != null && oppOdds <= 1.45 && pickOdds >= 2.5
   const publicOverridden = !!(m.moreBetted && publicTeam && !teamEq(m.moreBetted, publicTeam))
   const msDisagreesPublic = !!(m.msPred && m.msPred !== 'No Prediction' && publicTeam && !teamEq(m.msPred, publicTeam))
+  const algorithmDisagreesMarket = !!(m.msPred && m.msPred !== 'No Prediction' && !teamEq(m.msPred, winner))
+  const evidence = prediction.marketEvidence
+  const evidenceSignals = evidence ? [{
+    label: 'Corrected support', sublabel: 'Own Back + opponent Lay', active: true,
+    v1: `${evidence.support.pct1.toFixed(0)}%`, v2: `${evidence.support.pct2.toFixed(0)}%`,
+  }, {
+    label: 'Pre-match activity', sublabel: `${evidence.agreeingSignals}/${evidence.signalCount} signals aligned`, active: true,
+    v1: `${evidence.activity.pct1.toFixed(0)}%`, v2: `${evidence.activity.pct2.toFixed(0)}%`,
+  }] : []
   return {
     ...prediction,
     winnerName: winner,
-    confidence: { label: 'League algorithm; uncalibrated', color: 'text-text-muted', pct: 'Uncalibrated', calibrated: false },
-    risk: computeMatchStartRisk(prediction.reason, { publicOverridden, msDisagreesPublic, extremeDogFade }),
+    confidence: { label: prediction.confidence || 'League algorithm; uncalibrated', color: 'text-text-muted', pct: 'Uncalibrated', calibrated: false },
+    risk: computeMatchStartRisk(prediction.reason, {
+      publicOverridden,
+      msDisagreesPublic,
+      extremeDogFade,
+      leagueRegistered: prediction.leagueRegistered,
+      validation: prediction.validation,
+      trainingSamples: prediction.trainingSamples,
+    }),
     timing: 'match_start', lockedAt: 'match_open',
     moreBetted: publicTeam, apiMoreBetted: m.moreBetted,
-    publicOverridden, msDisagreesPublic, extremeDogFade,
-    signals: [{
+    publicOverridden, msDisagreesPublic, extremeDogFade, algorithmDisagreesMarket,
+    signals: [...evidenceSignals, {
       label: 'League algorithm', sublabel: prediction.algorithmLeague || 'Unregistered league fallback', active: true,
       v1: winner === t1 ? 'Pick' : '—', v2: winner === t2 ? 'Pick' : '—',
     }, {
@@ -198,9 +217,23 @@ export function lockMatchStartPrediction(current, locked, { inPlay = false } = {
     return { ...current, lockedAt: current.lockedAt || 'match_open' }
   }
 
-  // Never flip the picked team after the first lock — polling must not change your entry side.
-  if (current.winnerName !== locked.winnerName) return locked
-  if (inPlay) return locked
+  // Keep the picked team stable, while refreshing safety metadata added by the
+  // current predictor. Older session locks may not contain risk/no-bet fields.
+  const withFreshSafety = {
+    ...locked,
+    risk: current.risk ?? locked.risk,
+    confidence: current.confidence ?? locked.confidence,
+    preOdds: locked.preOdds ?? current.preOdds,
+    signals: current.signals ?? locked.signals,
+    marketEvidence: current.marketEvidence ?? locked.marketEvidence,
+    algorithmLeague: current.algorithmLeague ?? locked.algorithmLeague,
+    lockedAt: locked.lockedAt || 'match_open',
+  }
+
+  // Never flip the picked team after the first lock — polling must not rewrite
+  // the original entry signal. Live reversal guidance is calculated separately.
+  if (current.winnerName !== locked.winnerName) return withFreshSafety
+  if (inPlay) return withFreshSafety
 
   const curP = REASON_PRIORITY[current.reason] ?? 0
   const lockP = REASON_PRIORITY[locked.reason] ?? 0
@@ -212,10 +245,10 @@ export function lockMatchStartPrediction(current, locked, { inPlay = false } = {
       lockedAt: locked.lockedAt || 'match_open',
     }
   }
-  return locked
+  return withFreshSafety
 }
 
-/** Live guidance when fade underdog is stuck vs a heavy favorite (~30p). */
+/** Live guidance when the market moves materially against the locked start pick. */
 export function getMatchStartExitAdvice({
   lockedPick,
   inPlay = false,
@@ -223,13 +256,26 @@ export function getMatchStartExitAdvice({
   opponentBackOdds,
 }) {
   if (!lockedPick?.winnerName || !inPlay) return null
-  if (pickBackOdds == null || opponentBackOdds == null) return null
-  if (opponentBackOdds > 0.35 || pickBackOdds < 2) return null
+  if (!Number.isFinite(pickBackOdds) || !Number.isFinite(opponentBackOdds) || pickBackOdds <= 1 || opponentBackOdds <= 1) return null
+
+  const pickedTeamIndex = lockedPick.winnerIdx === 1 ? 1 : 0
+  const entryPickOdds = pickedTeamIndex === 0 ? lockedPick.preOdds?.t1 : lockedPick.preOdds?.t2
+  const entryOpponentOdds = pickedTeamIndex === 0 ? lockedPick.preOdds?.t2 : lockedPick.preOdds?.t1
+  const hasEntryOdds = Number.isFinite(entryPickOdds) && entryPickOdds > 1 && Number.isFinite(entryOpponentOdds) && entryOpponentOdds > 1
+  const favouriteFlipped = hasEntryOdds && entryPickOdds < entryOpponentOdds && pickBackOdds > opponentBackOdds
+  const pickDrift = hasEntryOdds ? pickBackOdds / entryPickOdds : null
+  const opponentShorten = hasEntryOdds ? opponentBackOdds / entryOpponentOdds : null
+  const sharpMoveAgainst = pickDrift != null && opponentShorten != null && pickDrift >= 1.15 && opponentShorten <= 0.88
+  const opponentNowHeavyFavourite = opponentBackOdds <= 1.35 && pickBackOdds >= 2
+
+  if (!favouriteFlipped && !sharpMoveAgainst && !opponentNowHeavyFavourite) return null
 
   return {
-    level: 'warning',
-    title: 'Exit / hedge consider karo',
-    message: `Favorite ab ~${Math.round(opponentBackOdds * 100)}p par hai. Fade pick ki price move nahi ho rahi — loss cut ya hedge socho. Match-start pick change nahi hogi.`,
+    level: opponentNowHeavyFavourite || sharpMoveAgainst ? 'danger' : 'warning',
+    title: 'Strong live reversal — new entry avoid karo',
+    message: `Locked pick ${lockedPick.winnerName} ke against market flip hua: pick ${pickBackOdds.toFixed(2)}, opponent ${opponentBackOdds.toFixed(2)}. Open position ka risk review karo; match-start pick ko live certainty mat samjho.`,
+    favouriteFlipped,
+    sharpMoveAgainst,
   }
 }
 

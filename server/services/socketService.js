@@ -8,6 +8,7 @@ const { JWT_SECRET } = require('../middleware/auth');
 const dataCache = require('./dataCache');
 const matchPayloadService = require('./matchPayloadService');
 const prisma = require('../db/prisma');
+const { fingerprintMatchBundle } = require('../utils/matchBundleFingerprint');
 
 let _io = null;
 
@@ -91,21 +92,12 @@ function init(io) {
   io.on('connection', async (socket) => {
     // console.log(`🔌 Client connected [${socket.id}], guest: ${Boolean(socket.isGuest)}`);
 
-    // Immediately push ALL cached data to the newly connected client (0ms)
+    // Cricket is the default feed. Other feeds are opt-in so a user on one page
+    // does not pay bandwidth for every sport and market in the application.
+    socket.join('feed:cricket');
     try {
-      const [cricket, toss, tennis, session, crexOverview] = await Promise.all([
-        matchPayloadService.getCricketMatchesPayload().catch(() => null),
-        matchPayloadService.getTossMatchesPayload().catch(() => null),
-        matchPayloadService.getTennisMatchesPayload().catch(() => null),
-        matchPayloadService.getSessionMatchesPayload().catch(() => null),
-        Promise.resolve(dataCache.getCrexOverview()),
-      ]);
-
+      const cricket = await matchPayloadService.getCricketMatchesPayload().catch(() => null);
       if (cricket) socket.emit('cricket:matches', cricket);
-      if (toss) socket.emit('toss:matches', toss);
-      if (tennis) socket.emit('tennis:matches', tennis);
-      if (session) socket.emit('session:matches', session);
-      if (crexOverview?.length > 0) socket.emit('crex:overview', crexOverview);
     } catch (e) {}
 
     // Match Room Subscription (When user opens MatchDetail)
@@ -119,7 +111,6 @@ function init(io) {
         const bundle = await matchPayloadService.getMatchBundlePayload(matchId, socket.user, sport);
         if (bundle?.error) {
           // If login or subscription is required, emit error directly and do not join room
-          socket.emit(`match:bundle:${matchId}`, bundle);
           socket.emit('match:bundle', bundle);
           return;
         }
@@ -128,8 +119,7 @@ function init(io) {
         socket.join(room);
 
         if (bundle) {
-          socket.emit(`match:bundle:${matchId}`, bundle);
-          socket.emit('match:bundle', bundle); // Generic listener support
+          socket.emit('match:bundle', bundle);
         }
       } catch (err) {
         socket.emit(`match:error:${matchId}`, { error: err.message });
@@ -146,6 +136,7 @@ function init(io) {
     // Request specific list on tab switch
     socket.on('feed:toss', async () => {
       try {
+        socket.join('feed:toss');
         const toss = await matchPayloadService.getTossMatchesPayload();
         socket.emit('toss:matches', toss);
       } catch {}
@@ -153,6 +144,7 @@ function init(io) {
 
     socket.on('feed:tennis', async () => {
       try {
+        socket.join('feed:tennis');
         const tennis = await matchPayloadService.getTennisMatchesPayload();
         socket.emit('tennis:matches', tennis);
       } catch {}
@@ -160,13 +152,48 @@ function init(io) {
 
     socket.on('feed:session', async () => {
       try {
+        socket.join('feed:session');
         const session = await matchPayloadService.getSessionMatchesPayload();
         socket.emit('session:matches', session);
       } catch {}
     });
+
+    socket.on('feed:unsubscribe', (feed) => {
+      if (feed === 'toss' || feed === 'tennis' || feed === 'session') {
+        socket.leave(`feed:${feed}`);
+      }
+    });
   });
 
   console.log('⚡ SocketService initialized with real-time broadcasting channels');
+}
+
+/**
+ * Sends a match room bundle only when user-visible data changed.
+ * All ingestion paths use this function so overlapping Redis events cannot
+ * broadcast the same large payload more than once.
+ */
+async function broadcastMatchBundle(matchId) {
+  if (!_io || !matchId) return false;
+
+  const mid = String(matchId);
+  const roomName = `match:${mid}`;
+  const room = _io.sockets.adapter?.rooms?.get(roomName);
+  if (!room || room.size === 0) return false;
+
+  const bundle = await matchPayloadService.getMatchBundlePayload(
+    mid,
+    { isBroadcaster: true, role: 'admin' },
+    'cricket',
+  );
+  if (!bundle || bundle.error) return false;
+
+  const fingerprint = fingerprintMatchBundle(bundle);
+  if (fingerprint === _lastBundleFps.get(mid)) return false;
+
+  _lastBundleFps.set(mid, fingerprint);
+  _io.to(roomName).emit('match:bundle', bundle);
+  return true;
 }
 
 /**
@@ -189,28 +216,28 @@ async function broadcastAllMatches() {
       const fp = fingerprintMatches(cricketPayload.matches);
       if (fp !== _lastCricketFp) {
         _lastCricketFp = fp;
-        _io.emit('cricket:matches', cricketPayload);
+        _io.to('feed:cricket').emit('cricket:matches', cricketPayload);
       }
     }
     if (tossPayload) {
       const fp = fingerprintMatches(tossPayload.matches);
       if (fp !== _lastTossFp) {
         _lastTossFp = fp;
-        _io.emit('toss:matches', tossPayload);
+        _io.to('feed:toss').emit('toss:matches', tossPayload);
       }
     }
     if (tennisPayload) {
       const fp = JSON.stringify(tennisPayload.matches?.map(m => `${m.matchId}_${m.status}`) || []);
       if (fp !== _lastTennisFp) {
         _lastTennisFp = fp;
-        _io.emit('tennis:matches', tennisPayload);
+        _io.to('feed:tennis').emit('tennis:matches', tennisPayload);
       }
     }
     if (sessionPayload) {
       const fp = JSON.stringify(sessionPayload.matches?.map(m => `${m.matchId}_${m.status}`) || []);
       if (fp !== _lastSessionFp) {
         _lastSessionFp = fp;
-        _io.emit('session:matches', sessionPayload);
+        _io.to('feed:session').emit('session:matches', sessionPayload);
       }
     }
 
@@ -222,15 +249,7 @@ async function broadcastAllMatches() {
         if (roomName.startsWith('match:') && socketSet.size > 0) {
           const matchId = roomName.replace('match:', '');
           try {
-            const bundle = await matchPayloadService.getMatchBundlePayload(matchId, { isBroadcaster: true, role: 'admin' });
-            if (bundle && !bundle.error) {
-              const bundleFp = `${bundle.cricket?.updatedAt || ''}_${bundle.crex?.runningBall || ''}_${bundle.crex?.score1 || ''}_${bundle.crex?.score2 || ''}_${bundle.cricket?.runners?.[0]?.price || ''}_${bundle.cricket?.runners?.[1]?.price || ''}`;
-              if (bundleFp !== _lastBundleFps.get(matchId)) {
-                _lastBundleFps.set(matchId, bundleFp);
-                // Emit single clean event (no duplicate)
-                _io.to(roomName).emit('match:bundle', bundle);
-              }
-            }
+            await broadcastMatchBundle(matchId);
           } catch (e) {}
         }
       }
@@ -254,29 +273,28 @@ async function broadcastCrexUpdates() {
       const detail = dataCache.getCrexDetail(mid);
       if (!detail) continue;
 
-      const fp = `${detail.scorecard?.team1?.score}_${detail.scorecard?.team2?.score}_${detail.scorecard?.runningBall || detail.runningBall}_${detail.scorecard?.statusEquation || detail.statusText}_${JSON.stringify(detail.odds || '')}`;
+      const scorecard = matchPayloadService.alignScorecardTeams(detail.scorecard, m.matchName) || detail.scorecard;
+
+      const fp = `${scorecard?.team1?.score}_${scorecard?.team2?.score}_${scorecard?.runningBall || detail.runningBall}_${scorecard?.statusEquation || detail.statusText}_${JSON.stringify(detail.odds || '')}`;
       if (fp === _lastCrexLiveFps.get(mid)) continue;
       _lastCrexLiveFps.set(mid, fp);
 
       const payload = {
         matchId: mid,
-        score1: detail.scorecard?.team1?.score || detail.score1 || null,
-        score2: detail.scorecard?.team2?.score || detail.score2 || null,
-        statusText: detail.scorecard?.statusEquation || detail.scorecard?.matchResult || detail.statusText || null,
-        runningBall: detail.scorecard?.runningBall || detail.runningBall || null,
+        score1: scorecard?.team1?.score || detail.score1 || null,
+        score2: scorecard?.team2?.score || detail.score2 || null,
+        statusText: scorecard?.statusEquation || scorecard?.matchResult || detail.statusText || null,
+        runningBall: scorecard?.runningBall || detail.runningBall || null,
         odds: detail.odds || null,
-        team1Name: detail.team1Name || null,
-        team2Name: detail.team2Name || null,
-        team1Short: detail.team1Short || null,
-        team2Short: detail.team2Short || null,
+        team1Name: scorecard?.team1?.name || detail.team1Name || null,
+        team2Name: scorecard?.team2?.name || detail.team2Name || null,
+        team1Short: scorecard?.team1?.shortName || detail.team1Short || null,
+        team2Short: scorecard?.team2?.shortName || detail.team2Short || null,
       };
-      _io.emit('crex:live', payload);
+      _io.to('feed:cricket').emit('crex:live', payload);
 
-      // Also emit to room subscribers (MatchDetail) ONLY IF room has subscribers
-      const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
-      if (room && room.size > 0) {
-        _io.to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
-      }
+      // The room receives one deduplicated bundle containing this CREX update.
+      await broadcastMatchBundle(mid).catch(() => {});
     }
   } catch (err) {
     console.error('❌ Error broadcasting CREX updates over WebSocket:', err.message);
@@ -325,19 +343,16 @@ function getActiveSubscribedMatchIds() {
 function broadcastCrexForMatch(matchId, detail) {
   if (!_io || !matchId || !detail) return;
   const mid = String(matchId);
-  const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
-  if (room && room.size > 0) {
-    _io.to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
-  }
+  broadcastMatchBundle(mid).catch(() => {});
 }
 
 module.exports = {
   init,
   getIo,
   getActiveSubscribedMatchIds,
+  broadcastMatchBundle,
   broadcastAllMatches,
   broadcastCrexUpdates,
   broadcastCrexForMatch,
   notifySessionReplaced,
 };
-

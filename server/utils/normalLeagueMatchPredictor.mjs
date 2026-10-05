@@ -6,7 +6,7 @@ import { checkPreMatchDataQuality } from './preMatchDataQuality.mjs';
 import { WNCL_ALGORITHM, isWNCLLeague, predictWNCLMatch } from './wnclMatchPredictor.mjs';
 import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
 
-export const PREDICTOR_VERSION = 'match-v8-zero-regression-guards';
+export const PREDICTOR_VERSION = 'match-v9-cross-market-support';
 export const DEFAULT_MATCH_MODE = 'rules';
 const normalize = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league), profile]));

@@ -1,0 +1,250 @@
+/* Shared site design. Semantic market colours remain blue (back), red (lay),
+   green (profit) and red (loss); teal is reserved for navigation and actions. */
+:root {
+  color-scheme: light;
+  --ui-bg: #f5f7fb;
+  --ui-surface: #ffffff;
+  --ui-raised: #edf2f7;
+  --ui-border: #dce4ee;
+  --ui-muted: #62748b;
+  --ui-accent: #0f766e;
+  --site-header-height: 72px;
+  --site-content-offset: var(--site-header-height);
+}
+body { margin: 0; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+button:not(:disabled), select, summary { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+button:active { transform: none; }
+:focus-visible { outline: 2px solid var(--ui-accent); outline-offset: 3px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline-offset: 2px; }
+input::placeholder, textarea::placeholder { color: #5b6d84; }
+input[type="checkbox"] { accent-color: var(--ui-accent); }
+input[type="search"]::-webkit-search-cancel-button { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.skip-link { position: fixed; top: -80px; left: 16px; z-index: 200; padding: 12px 20px; border-radius: 8px; background: var(--ui-accent); color: #072c29; font-weight: 600; }
+.skip-link:focus { top: 12px; }
+.app-shell { background: var(--ui-bg); min-width: 0; }
+.has-trial-banner { --site-content-offset: calc(var(--site-header-height) + var(--trial-banner-height, 44px)); }
+.site-header { position: fixed; inset: 0 0 auto; z-index: 40; height: var(--site-header-height); border-bottom: 1px solid var(--ui-border); background: #ffffff; }
+.site-header-inner { display: flex; height: 100%; align-items: center; gap: 28px; padding: 0 28px; margin: auto; max-width: 1920px; }
+.site-brand { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
+.site-brand img { width: 35px; height: 35px; border: 0; }
+.site-brand-name { font-size: 21px; font-weight: 750; letter-spacing: -.6px; }
+.site-nav { display: flex; align-items: center; gap: 6px; }
+.site-nav a { display: flex; gap: 8px; align-items: center; padding: 10px 16px; color: #5b6d84; font-size: 13px; font-weight: 600; border-radius: 8px; white-space: nowrap; }
+.site-nav a:hover { background: #ffffff; color: #315272; }
+.site-nav a.is-active { background: #ffffff; color: #13907d; }
+.site-admin-link { align-items: center; gap: 7px; color: #344e6f; font-size: 12px; padding: 9px 12px; border: 1px solid #dce4ee; border-radius: 8px; }
+.site-account-trigger { display: flex; align-items: center; gap: 8px; padding: 7px 10px 7px 7px; border: 1px solid var(--ui-border); border-radius: 9px; background: var(--ui-surface); }
+.site-account-menu { position: absolute; right: 0; top: 100%; margin-top: 14px; width: 248px; border: 1px solid #dce4ee; border-radius: 12px; background: #ffffff; box-shadow: 0 18px 50px #0005; overflow: hidden; z-index: 50; }
+.site-account-menu a:hover, .site-account-menu button:hover { background: #ffffff; }
+.site-main { padding-top: var(--site-content-offset); min-width: 0; outline: none; }
+.site-trial-banner { position: fixed; top: var(--site-header-height); left: 0; right: 0; z-index: 30; background: #ffffff; border-bottom: 1px solid #dce4ee; color: #1c8759; text-align: center; padding: 12px 16px; font-size: 12px; min-height: 44px; }
+.ui-button { display: inline-flex; justify-content: center; align-items: center; gap: 8px; min-height: 40px; padding: 9px 16px; border: 1px solid transparent; border-radius: 8px; font-size: 13px; font-weight: 600; }
+.ui-button-primary { background: #0f766e; color: #092e2a; }
+.ui-button-primary:hover { background: #5eead4; }
+.ui-button-secondary { background: #ffffff; border-color: #dce4ee; color: #2c4d77; }
+.ui-button-secondary:hover { background: #ffffff; }
+.ui-eyebrow { color: var(--ui-muted); font-size: 10px; font-weight: 650; letter-spacing: 1.5px; margin: 0 0 8px; }
+.ui-page-loading { display: flex; flex-direction: column; gap: 14px; align-items: center; justify-content: center; min-height: 55vh; color: var(--ui-muted); font-size: 13px; }
+.ui-page-loading svg { color: var(--ui-accent); }
+.sports-workspace { height: calc(100dvh - var(--site-content-offset)); background: var(--ui-bg); }
+.league-sidebar { width: 250px; border-right: 1px solid var(--ui-border); background: #ffffff; }
+.league-sidebar > div:first-child { background: transparent; padding: 24px 20px 16px; border-bottom: 0; gap: 10px; }
+.league-sidebar > div:first-child [class*="text-[11px]"] { font-size: 12px; letter-spacing: .7px; font-weight: 600; }
+.league-sidebar > div:first-child [class*="text-[9px]"] { font-size: 11px; margin-top: 4px; font-family: inherit; }
+.league-search { display: flex; align-items: center; gap: 8px; padding: 10px; margin: 0 14px 15px; background: #ffffff; border: 1px solid #dce4ee; border-radius: 8px; color: #5b6d84; flex-shrink: 0; }
+.league-search input { width: 100%; min-width: 0; background: transparent; border: 0; font-size: 12px; color: #284f7c; outline: none; }
+.league-search:focus-within, .hub-search:focus-within { border-color: var(--ui-accent); outline: 2px solid #dce4ee; }
+.league-list { padding: 0 10px 15px; }
+.league-list > button { padding: 12px; margin-bottom: 3px; border: 0; border-radius: 8px; min-height: 52px; }
+.league-list > button[class*="border-emerald"], .league-list > button[class*="border-amber-500"], .league-list > button[class*="border-[#10b981]"] { background: #ffffff; }
+.league-list [class*="text-[11px]"] { font-size: 12px; line-height: 1.5; font-weight: 550; }
+.league-list [class*="text-[9px]"] { font-size: 10px; line-height: 1.5; color: #5b6d84; font-family: inherit; }
+.league-list .truncate { white-space: normal; overflow: visible; }
+.sports-content { min-width: 0; background: var(--ui-bg); }
+.hub-header { padding: 28px 30px 22px; border-bottom: 1px solid var(--ui-border); background: #ffffff; }
+.hub-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+.hub-heading h1 { font-size: clamp(24px, 2.2vw, 30px); letter-spacing: -.8px; font-weight: 650; line-height: 1.2; margin: 0 0 9px; }
+.hub-description { color: #5b6d84; font-size: 13px; margin: 0; line-height: 1.7; }
+.hub-live-status { display: flex; align-items: center; gap: 8px; color: #5b6d84; font-size: 12px; white-space: nowrap; }
+.hub-live-status > span { height: 6px; width: 6px; border-radius: 50%; background: #0f766e; }
+.hub-controls { display: flex; align-items: stretch; gap: 12px; margin-bottom: 19px; }
+.hub-search { display: flex; flex: 1; align-items: center; gap: 11px; min-width: 0; background: #ffffff; border: 1px solid #dce4ee; border-radius: 9px; padding: 11px 14px; color: #5b6d84; }
+.hub-search input { flex: 1; width: 100%; min-width: 0; color: #254f7e; background: transparent; outline: none; border: 0; font-size: 13px; }
+.hub-search button { display: grid; place-items: center; padding: 4px; border-radius: 4px; }
+.hub-league-trigger { display: flex; align-items: center; gap: 9px; max-width: 280px; padding: 0 14px; background: #ffffff; border: 1px solid #dce4ee; border-radius: 9px; font-size: 12px; color: #374f6c; }
+.hub-league-trigger span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hub-league-trigger:hover { border-color: #dce4ee; }
+.hub-filter-row { display: flex; gap: 8px; overflow-x: auto; }
+.hub-filter-row button { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 9px 12px; color: #5b6d84; font-size: 12px; border: 1px solid transparent; border-radius: 8px; white-space: nowrap; }
+.hub-filter-row button:hover { background: #ffffff; }
+.hub-filter-row button.is-active { color: #158e7a; background: #ffffff; border-color: #dce4ee; }
+.hub-filter-row small { padding: 1px 5px; border-radius: 4px; font-size: 10px; background: #ffffff0c; font-variant-numeric: tabular-nums; }
+.hub-results { padding: 26px 30px 40px; }
+.match-grid { gap: 18px; }
+.match-card { display: flex; flex-direction: column; gap: 0; text-align: left; min-width: 0; padding: 18px; border: 1px solid #dce4ee; border-radius: 12px; background: #ffffff; color: #1e4a86; transition: background .2s, border-color .2s; width: 100%; }
+.match-card:hover { border-color: #dce4ee; background: #ffffff; }
+.match-card-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.match-league { color: #5b6d84; font-size: 10px; font-weight: 600; letter-spacing: .3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.match-status { display: flex; align-items: center; gap: 5px; padding: 3px 7px; border-radius: 5px; font-size: 10px; font-weight: 600; white-space: nowrap; }
+.is-live { color: #931010; background: #ffffff; }
+.is-completed { color: #5b6d84; background: #ffffff; }
+.is-upcoming { color: #105293; background: #ffffff; }
+.status-dot { width: 5px; height: 5px; background: #ff8b9a; border-radius: 50%; }
+.match-schedule { color: #5b6d84; font-size: 10px; margin-top: 10px; font-variant-numeric: tabular-nums; }
+.match-teams { display: flex; flex-direction: column; gap: 16px; margin: 18px 0 20px; }
+.match-team { display: flex; align-items: center; gap: 11px; }
+.team-monogram { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 9px; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+.team-monogram-0 { background: #ffffff; color: #248072; }
+.team-monogram-1 { background: #ffffff; color: #124f91; }
+.match-team-name { flex: 1; min-width: 0; }
+.match-team-name strong { display: block; font-size: 13px; font-weight: 600; line-height: 1.5; overflow-wrap: anywhere; }
+.match-team-name > span { display: block; font-size: 11px; color: #2e5275; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.match-odds { text-align: right; flex-shrink: 0; }
+.match-odds small { display: block; font-size: 9px; color: #5b6d84; margin-bottom: 4px; }
+.match-odds strong { display: block; text-align: center; min-width: 49px; padding: 3px 8px; border-radius: 5px; font-size: 14px; font-weight: 650; background: #ffffff; color: #105193; font-variant-numeric: tabular-nums; }
+.match-flow-label { display: flex; justify-content: space-between; font-size: 10px; color: #5b6d84; margin-bottom: 7px; font-variant-numeric: tabular-nums; }
+.match-flow { background: #567399; height: 4px; border-radius: 4px; overflow: hidden; }
+.match-flow span { display: block; height: 100%; background: #36b9a8; }
+.match-card-bottom { display: flex; align-items: center; gap: 9px; margin-top: 17px; padding-top: 12px; border-top: 1px solid #dce4ee; color: #5b6d84; font-size: 10px; }
+.match-card-bottom > span:first-child { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.match-access { display: flex; align-items: center; gap: 4px; white-space: nowrap; color: #354e6e; }
+.match-card-bottom > svg { color: #13907d; flex-shrink: 0; }
+.toss-market-row { padding: 20px; gap: 14px; min-height: 106px; background: #ffffff; }
+.toss-market-row:hover { background: #ffffff; }
+.ui-empty-state { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; text-align: center; min-height: 260px; padding: 32px; border: 1px dashed #dce4ee; border-radius: 12px; color: #5b6d84; }
+.ui-empty-state h2 { color: #1d4d86; font-size: 18px; font-weight: 600; }
+.ui-empty-state p { font-size: 13px; }
+.ui-all-leagues { text-align: left; padding: 12px 20px; color: #22816f; font-size: 13px; }
+[data-league-drawer] { background: #ffffff !important; border-color: var(--ui-border) !important; }
+[data-league-drawer] > div:first-child { padding: 20px 16px; background: transparent; border-color: var(--ui-border); }
+[data-league-drawer] .league-search { margin-top: 14px; }
+[data-league-drawer] button[aria-label="Close leagues"] { min-width: 36px; min-height: 36px; display: grid; place-items: center; }
+.admin-workspace { max-width: 1600px; margin: auto; padding: 32px; }
+.admin-workspace-heading { display: flex; gap: 15px; align-items: center; margin-bottom: 28px; }
+.admin-heading-icon { display: grid; place-items: center; width: 48px; height: 48px; background: #ffffff; color: #1c8774; border: 1px solid #dce4ee; border-radius: 12px; }
+.admin-workspace-heading h1 { font-size: 27px; font-weight: 650; letter-spacing: -.6px; margin-bottom: 6px; }
+.admin-workspace-heading .ui-eyebrow { margin-bottom: 3px; }
+.admin-workspace-body { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 28px; align-items: start; }
+.admin-mobile-navigation { display: none; }
+.admin-navigation { position: sticky; top: calc(var(--site-content-offset) + 20px); border: 1px solid #dce4ee; border-radius: 12px; padding: 16px 10px; background: #ffffff; }
+.admin-nav-group + .admin-nav-group { margin-top: 20px; }
+.admin-nav-group > p { font-size: 10px; letter-spacing: .5px; color: #5b6d84; padding: 0 10px; margin-bottom: 8px; }
+.admin-navigation button { display: flex; align-items: center; gap: 9px; width: 100%; padding: 10px; border-radius: 7px; text-align: left; font-size: 12px; font-weight: 500; color: #5b6d84; }
+.admin-navigation button:hover { background: #ffffff; color: #204983; }
+.admin-navigation button.is-active { background: #ffffff; color: #158e75; }
+.admin-content { min-width: 0; }
+.admin-section-heading { display: flex; align-items: center; gap: 9px; margin-bottom: 22px; padding-bottom: 18px; border-bottom: 1px solid #dce4ee; font-size: 12px; color: #5b6d84; }
+.admin-section-heading strong { font-weight: 500; color: #2f4e75; }
+/* Bring legacy admin panels into the same surface and type system. */
+.admin-content [style*="background: rgb(17, 17, 17)"], .admin-content [style*="background: rgb(10, 10, 10)"] { background: var(--ui-surface) !important; border-color: var(--ui-border) !important; }
+.admin-content [class*="text-[#555]"], .admin-content [class*="text-[#444]"], .admin-content [class*="text-[#666]"] { color: #5b6d84; }
+.admin-content table { width: 100%; border-collapse: collapse; }
+.admin-content th { text-align: left; color: #384e6b; font-size: 11px; font-weight: 550; padding-top: 15px; padding-bottom: 15px; }
+.admin-content td { padding-top: 15px; padding-bottom: 15px; font-size: 12px; }
+.admin-content input:not([type="checkbox"]), .admin-content select, .admin-content textarea { min-height: 40px; font-size: 13px; }
+.admin-content input[type="checkbox"] { min-height: 0; }
+.admin-content button:not(.md-icon-button):not(.md-pagination button) { min-height: 36px; }
+.admin-content .md-panel { border-radius: 12px; }
+.admin-content .md-workbench { --md-accent: #5eead4; }
+.admin-content .md-button-primary { background: #0f766e; border-color: #dce4ee; color: #092e2a; }
+.admin-content :is(.md-view-tabs, .md-mode-tabs) button.is-active { color: #188c78; background: #ffffff; }
+.ui-page { padding: 40px 24px 60px; max-width: 760px; }
+.account-page { max-width: 660px; }
+.ui-page-heading { margin-bottom: 28px; }
+.ui-page-heading h1 { font-size: 30px; font-weight: 650; letter-spacing: -.7px; margin-bottom: 10px; }
+.ui-page-heading > p:last-child { color: #5b6d84; font-size: 13px; }
+.ui-page > .glass-card { padding: 26px; }
+.ui-page button, .ui-page a.glass-card { min-height: 46px; }
+.ui-page [class*="bg-purple-100"], .ui-page [class*="bg-blue-100"], .ui-page [class*="bg-yellow-100"], .ui-page [class*="bg-emerald-100"], .site-account-menu [class*="bg-purple-100"], .site-account-menu [class*="bg-yellow-100"], .site-account-menu [class*="bg-emerald-100"] { background: #ffffff; color: #224f81; }
+.site-dialog-backdrop { backdrop-filter: blur(5px); }
+.auth-page { background: #ffffff !important; border: 1px solid #dce4ee !important; padding: 32px !important; border-radius: 16px; }
+.auth-page > div { max-width: none; }
+.auth-page > div > div[style] { background: transparent !important; border: 0 !important; padding: 0; }
+.auth-page h1 { font-size: 24px; }
+.auth-page input { min-height: 46px; font-size: 14px; background: #ffffff !important; border-color: #dce4ee !important; }
+.auth-page form > button { min-height: 46px; font-size: 14px; background: #0f766e; color: #062f2a; }
+.auth-page label { font-size: 12px; color: #354f6e; }
+.auth-page [class*="text-[#8e8e93]"] { color: #394f6a; }
+.auth-page [class*="text-[#636366]"] { color: #5b6d84; }
+.auth-page [class*="bg-[#0a0a0a]"] { background: #ffffff; border-color: #dce4ee; }
+.auth-page .auth-description { font-size: 12px; text-align: center; color: #384e6c; margin-top: 7px; }
+.toast-viewport { top: calc(var(--site-content-offset) + 14px); }
+.toast-item { border-radius: 10px; }
+.detail-page { max-width: 1500px; margin: auto; padding: 24px !important; }
+.detail-page > .sticky { padding: 10px 24px; margin-left: -24px; margin-right: -24px; border-color: #dce4ee; background: #ffffff; box-shadow: none; }
+.detail-page > .sticky button { min-height: 36px; }
+.detail-page .glass-card { padding: 20px; }
+/* Existing analysis modules share readable surfaces while retaining data colours. */
+.detail-page :is(.bg-\[\#080b14\], .bg-\[\#0c1018\], .bg-\[\#0e1322\], .bg-\[\#101422\], .bg-\[\#10131e\], .bg-\[\#0a0d14\]) { background-color: #ffffff; }
+.detail-page :is(.text-\[9px\], .text-\[10px\]) { font-size: 11px; }
+.detail-page .font-black { font-weight: 650; }
+.detail-page .shadow-md, .detail-page .shadow-lg, .detail-page .shadow-2xl { box-shadow: none; }
+.detail-page table, .detail-page [class*="font-mono"], .admin-content table { font-variant-numeric: tabular-nums; }
+
+@media (min-width: 1600px) { .league-sidebar { width: 270px; } .hub-header { padding-left: 40px; padding-right: 40px; } .hub-results { padding-left: 40px; padding-right: 40px; } }
+@media (max-width: 1100px) { .site-header-inner { gap: 18px; } .hub-live-status { display: none; } .admin-workspace { padding: 24px; } .admin-workspace-body { grid-template-columns: 180px minmax(0, 1fr); gap: 18px; } }
+@media (max-width: 767px) {
+  :root { --site-header-height: 104px; }
+  .site-header-inner { padding: 0 16px 44px; gap: 10px; height: 104px; }
+  .site-brand-name { font-size: 19px; }
+  .site-brand img { width: 29px; height: 29px; }
+  .site-nav { position: absolute; bottom: 0; left: 0; right: 0; justify-content: center; gap: 0; height: 44px; border-top: 1px solid #dce4ee; background: #ffffff; }
+  .site-nav a { flex: 1; justify-content: center; height: 44px; border-radius: 0; font-size: 12px; padding: 8px; max-width: 180px; }
+  .site-nav a.is-active { background: #ffffff; box-shadow: inset 0 -2px #2dd4bf; }
+  .site-login-button { min-height: 40px; padding: 7px 10px; font-size: 12px; }
+  .site-header-inner > button { min-width: 40px; min-height: 40px; }
+  .site-account-trigger { min-height: 40px; }
+  .site-trial-banner { font-size: 10px; line-height: 16px; padding: 6px 12px; }
+  .hub-header { padding: 22px 18px 16px; }
+  .hub-heading { margin-bottom: 20px; }
+  .hub-heading h1 { font-size: 25px; }
+  .hub-description { font-size: 12px; }
+  .hub-controls { gap: 8px; }
+  .hub-search { padding: 11px 10px; gap: 7px; }
+  .hub-search input { font-size: 16px; }
+  .hub-league-trigger { width: 42px; justify-content: center; padding: 0; flex-shrink: 0; }
+  .hub-league-trigger span { display: none; }
+  .hub-filter-row { gap: 4px; }
+  .hub-filter-row button { padding: 9px 8px; font-size: 11px; gap: 5px; }
+  .hub-filter-row svg { display: none; }
+  .hub-results { padding: 20px 16px 32px; }
+  .match-grid { gap: 14px; }
+  .match-card { padding: 17px; }
+  .match-team-name strong { font-size: 14px; }
+  .toss-market-row { flex-wrap: wrap; padding: 16px 12px; gap: 12px; }
+  .toss-market-row > div:last-child { width: 100%; flex: 1 0 100%; }
+  .toss-market-row > div:last-child > div { align-items: center; }
+  .admin-workspace { padding: 22px 14px; }
+  .admin-workspace-heading { margin-bottom: 20px; }
+  .admin-workspace-heading h1 { font-size: 23px; }
+  .admin-workspace-body { display: block; }
+  .admin-navigation { display: none; }
+  .admin-mobile-navigation { display: block; margin-bottom: 24px; color: #384e6c; font-size: 12px; }
+  .admin-mobile-navigation span { display: block; margin-bottom: 9px; }
+  .admin-mobile-navigation select { width: 100%; padding: 12px; min-height: 46px; font-size: 16px; color: #144d8f; background: #ffffff; border: 1px solid #dce4ee; border-radius: 9px; }
+  .admin-section-heading { margin-bottom: 16px; }
+  .ui-page { padding: 26px 16px 40px; }
+  .ui-page > .glass-card { padding: 20px; }
+  .ui-page-heading h1 { font-size: 26px; }
+  .auth-page { padding: 28px 22px !important; }
+  .auth-page input { font-size: 16px; }
+  .detail-page { padding: 16px !important; }
+  .detail-page > .sticky { margin-left: -16px; margin-right: -16px; padding: 10px 16px; }
+  .detail-page .glass-card { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+.ui-button-primary { color: #ffffff; background: #0f766e; }
+.ui-button-primary:hover { color: #ffffff; background: #115e59; }
+.auth-page form > button { color: #ffffff; background: #0f766e; }
+.hub-heading h1, .admin-workspace-heading h1, .ui-page-heading h1 { color: #172b43; }
+.site-main, .sports-content, .hub-results { background: #f5f7fb; }
+.match-card { box-shadow: 0 3px 12px #23344b06; }
+.match-card:hover { box-shadow: 0 6px 20px #23344b0c; }

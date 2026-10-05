@@ -3,7 +3,7 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock, BarChart3 } from 'lucide-react'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import SessionDetail from './SessionDetail'
-import { getSocket } from '../socket'
+import { getSocket, releaseFeed, requestSessionFeed } from '../socket'
 
 const STORAGE_KEY = 'session_selected_comp'
 const SCROLL_KEY = 'session_scroll_pos'
@@ -56,13 +56,15 @@ export default function SessionPage() {
     socket.on('session:matches', onSessionUpdate)
 
     if (socket.connected) {
-      socket.emit('feed:session')
+      requestSessionFeed()
     } else {
-      socket.once('connect', () => socket.emit('feed:session'))
+      socket.once('connect', requestSessionFeed)
     }
 
     return () => {
       socket.off('session:matches', onSessionUpdate)
+      socket.off('connect', requestSessionFeed)
+      releaseFeed('session')
     }
   }, [])
 

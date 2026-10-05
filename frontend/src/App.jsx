@@ -1,13 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate, useOutletContext, useLocation } from 'react-router-dom'
-import { useEffect } from 'react'
+import { lazy, useEffect } from 'react'
 import MainLayout from './components/MainLayout'
 import { ToastProvider } from './components/ToastProvider'
-import CricketPage from './pages/CricketPage'
-import TennisPage from './pages/TennisPage'
-import TossPage from './pages/TossPage'
-import AdminPage from './pages/AdminPage'
-import ProfilePage from './pages/ProfilePage'
-import SubscriptionPage from './pages/SubscriptionPage'
+import PageLoading from './components/PageLoading'
+
+const CricketPage = lazy(() => import('./pages/CricketPage'))
+const TennisPage = lazy(() => import('./pages/TennisPage'))
+const TossPage = lazy(() => import('./pages/TossPage'))
+const AdminPage = lazy(() => import('./pages/AdminPage'))
+const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'))
 
 function AppShell() {
   return <MainLayout />
@@ -34,14 +36,14 @@ function RequireAuth({ children }) {
       window.dispatchEvent(new CustomEvent('open-login-modal'))
     }
   }, [authReady, isLoggedIn])
-  if (!authReady) return null
+  if (!authReady) return <PageLoading label="Loading your account" />
   if (!isLoggedIn) return <Navigate to="/cricket" replace />
   return children
 }
 
 function AdminRoute({ children }) {
   const { user, isLoggedIn } = useOutletContext()
-  if (!isLoggedIn || !user) return null
+  if (!isLoggedIn || !user) return <PageLoading label="Loading your workspace" />
   if (!['admin', 'superadmin'].includes(user.role)) return <Navigate to="/cricket" replace />
   return children
 }

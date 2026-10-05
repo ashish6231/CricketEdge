@@ -16,7 +16,7 @@ export function RiskBadge({ risk, compact = false }) {
           • Avoid entry
         </span>
       )}
-      {!compact && (
+      {!compact && risk.calibrated === true && risk.wrongPct && (
         <span className="text-[#8e8e93] font-normal">• wrong {risk.wrongPct}</span>
       )}
     </span>

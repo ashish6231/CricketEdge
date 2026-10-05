@@ -1,0 +1,245 @@
+{
+  "generatedAt": "2026-10-05T13:04:43.149Z",
+  "league": "One Day Internationals",
+  "predictorVersion": "match-v9-cross-market-support",
+  "scope": "All independently verified ODI match records; frozen pre-match fields only",
+  "summary": {
+    "verifiedMatches": 5,
+    "currentRuleCorrect": 5,
+    "currentRuleWrong": 0,
+    "currentRuleAccuracyPct": 100,
+    "crossMarketOnlyCorrect": 4,
+    "crossMarketOnlyWrong": 1,
+    "crossMarketOnlyAccuracyPct": 80,
+    "verdict": "PASS"
+  },
+  "indiaWestIndiesAudit": {
+    "matchId": "36137653",
+    "startTime": 1791016200000,
+    "matchName": "India v West Indies",
+    "savedPrediction": "India",
+    "currentPrediction": "West Indies",
+    "actualWinner": "West Indies",
+    "verdict": "Correct",
+    "reason": "Pre-match league rule: total-flow share >= 0.9 and total-flow share <= 0.975 → opposite back leader",
+    "ruleFamily": "league-prematch-adjustment",
+    "inputTiming": "frozen-pre-match-fields",
+    "evidence": {
+      "prediction": "West Indies",
+      "correctedSupportPct": [
+        47.5,
+        52.5
+      ],
+      "preMatchActivityPct": [
+        13.3,
+        86.7
+      ],
+      "bookmakerPressureTeam": "West Indies",
+      "leaders": [
+        "West Indies",
+        "West Indies",
+        "West Indies"
+      ],
+      "agreeingSignals": "3/3",
+      "signalsSupportingCurrentPick": "3/3",
+      "currentWinnerIdx": 1
+    },
+    "source": {
+      "name": "CREX",
+      "url": "https://crex.com/cricket-live-score/ind-vs-wi-3rd-odi-west-indies-tour-of-india-2026-match-updates-11AK",
+      "resultText": "WI won by 5 wickets"
+    }
+  },
+  "conclusion": "Keep the ODI-specific extreme-flow guard. A blanket World Legends consensus would regress England v Sri Lanka.",
+  "limitations": [
+    "Five verified matches are a small retrospective sample and do not guarantee the next ODI result.",
+    "No in-play trades, final odds, match result, or post-match field is passed into the predictor."
+  ],
+  "rows": [
+    {
+      "matchId": "35931559",
+      "startTime": 1786787100000,
+      "matchName": "Ireland v Afghanistan",
+      "savedPrediction": "Afghanistan",
+      "currentPrediction": "Afghanistan",
+      "actualWinner": "Afghanistan",
+      "verdict": "Correct",
+      "reason": "Maximum Money Lead (61% Share)",
+      "ruleFamily": "market-flow",
+      "inputTiming": "frozen-pre-match-fields",
+      "evidence": {
+        "prediction": "Afghanistan",
+        "correctedSupportPct": [
+          39.1,
+          60.9
+        ],
+        "preMatchActivityPct": [
+          39.9,
+          60.1
+        ],
+        "bookmakerPressureTeam": "Afghanistan",
+        "leaders": [
+          "Afghanistan",
+          "Afghanistan",
+          "Afghanistan"
+        ],
+        "agreeingSignals": "3/3",
+        "signalsSupportingCurrentPick": "3/3",
+        "currentWinnerIdx": 1
+      },
+      "source": {
+        "name": "Cricbuzz",
+        "url": "https://www.cricbuzz.com/live-cricket-scores/151031",
+        "resultText": "Afghanistan won by 6 wkts"
+      }
+    },
+    {
+      "matchId": "36085898",
+      "startTime": 1789889400000,
+      "matchName": "Zimbabwe v Australia",
+      "savedPrediction": "Australia",
+      "currentPrediction": "Australia",
+      "actualWinner": "Australia",
+      "verdict": "Correct",
+      "reason": "(Maximum Money + Back + Lay Alignment)",
+      "ruleFamily": "market-flow",
+      "inputTiming": "frozen-pre-match-fields",
+      "evidence": {
+        "prediction": "Australia",
+        "correctedSupportPct": [
+          39.5,
+          60.5
+        ],
+        "preMatchActivityPct": [
+          84.2,
+          15.8
+        ],
+        "bookmakerPressureTeam": "Australia",
+        "leaders": [
+          "Australia",
+          "Zimbabwe",
+          "Australia"
+        ],
+        "agreeingSignals": "2/3",
+        "signalsSupportingCurrentPick": "2/3",
+        "currentWinnerIdx": 1
+      },
+      "source": {
+        "name": "Cricbuzz",
+        "url": "https://www.cricbuzz.com/live-cricket-scores/152753",
+        "resultText": "Australia won by 1 wkt"
+      }
+    },
+    {
+      "matchId": "36083840",
+      "startTime": 1790236800000,
+      "matchName": "South Africa v Australia",
+      "savedPrediction": "Australia",
+      "currentPrediction": "South Africa",
+      "actualWinner": "South Africa",
+      "verdict": "Correct",
+      "reason": "Pre-match league rule: total-flow share >= 0.9 and total-flow share <= 0.975 → opposite back leader",
+      "ruleFamily": "league-prematch-adjustment",
+      "inputTiming": "frozen-pre-match-fields",
+      "evidence": {
+        "prediction": "South Africa",
+        "correctedSupportPct": [
+          55.9,
+          44.1
+        ],
+        "preMatchActivityPct": [
+          63.4,
+          36.6
+        ],
+        "bookmakerPressureTeam": "South Africa",
+        "leaders": [
+          "South Africa",
+          "South Africa",
+          "South Africa"
+        ],
+        "agreeingSignals": "3/3",
+        "signalsSupportingCurrentPick": "3/3",
+        "currentWinnerIdx": 0
+      },
+      "source": {
+        "name": "Cricbuzz",
+        "url": "https://www.cricbuzz.com/live-cricket-scores/147895",
+        "resultText": "South Africa won by 67 runs"
+      }
+    },
+    {
+      "matchId": "36103843",
+      "startTime": 1790249400000,
+      "matchName": "England v Sri Lanka",
+      "savedPrediction": "England",
+      "currentPrediction": "Sri Lanka",
+      "actualWinner": "Sri Lanka",
+      "verdict": "Correct",
+      "reason": "Pre-match league rule: total-flow share >= 0.9 and total-flow share <= 0.975 → opposite back leader",
+      "ruleFamily": "league-prematch-adjustment",
+      "inputTiming": "frozen-pre-match-fields",
+      "evidence": {
+        "prediction": "England",
+        "correctedSupportPct": [
+          61.7,
+          38.3
+        ],
+        "preMatchActivityPct": [
+          17.1,
+          82.9
+        ],
+        "bookmakerPressureTeam": "England",
+        "leaders": [
+          "England",
+          "Sri Lanka",
+          "England"
+        ],
+        "agreeingSignals": "2/3",
+        "signalsSupportingCurrentPick": "1/3",
+        "currentWinnerIdx": 1
+      },
+      "source": {
+        "name": "Cricbuzz",
+        "url": "https://www.cricbuzz.com/live-cricket-scores/129640",
+        "resultText": "Sri Lanka won by 16 runs"
+      }
+    },
+    {
+      "matchId": "36137653",
+      "startTime": 1791016200000,
+      "matchName": "India v West Indies",
+      "savedPrediction": "India",
+      "currentPrediction": "West Indies",
+      "actualWinner": "West Indies",
+      "verdict": "Correct",
+      "reason": "Pre-match league rule: total-flow share >= 0.9 and total-flow share <= 0.975 → opposite back leader",
+      "ruleFamily": "league-prematch-adjustment",
+      "inputTiming": "frozen-pre-match-fields",
+      "evidence": {
+        "prediction": "West Indies",
+        "correctedSupportPct": [
+          47.5,
+          52.5
+        ],
+        "preMatchActivityPct": [
+          13.3,
+          86.7
+        ],
+        "bookmakerPressureTeam": "West Indies",
+        "leaders": [
+          "West Indies",
+          "West Indies",
+          "West Indies"
+        ],
+        "agreeingSignals": "3/3",
+        "signalsSupportingCurrentPick": "3/3",
+        "currentWinnerIdx": 1
+      },
+      "source": {
+        "name": "CREX",
+        "url": "https://crex.com/cricket-live-score/ind-vs-wi-3rd-odi-west-indies-tour-of-india-2026-match-updates-11AK",
+        "resultText": "WI won by 5 wickets"
+      }
+    }
+  ]
+}

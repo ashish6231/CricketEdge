@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate, useOutletContext } from 'react-router-dom'
+import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
 import { ArrowLeft, LoaderCircle, BarChart3 } from 'lucide-react'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
-import { getBookiePl, getTeamMetrics } from '../utils/bookiePl'
-import { getSpoofingMetrics } from '../utils/spoofingDetector'
-import { getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
+import { getBookiePl, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
+import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../socket'
+import { getCricketMatchBundle, getTossSnapshot } from '../api'
+import { hasTossSnapshot, isCompleteMatchBundle } from '../utils/matchBundle'
 
 const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
-const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : ''}€${fmt(n)}`
-const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
+const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : '−'}€${fmt(Math.abs(n))}`
+const pnlCls = (n) => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
 
 const formatVolStr = (val) => {
-  if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
+  if (val === null || val === undefined) return '—'
+  if (val === 0 || val === '0') return '0.00'
   const num = Number(val)
   if (isNaN(num)) return val.toString()
   const abs = Math.abs(num)
@@ -29,75 +31,128 @@ const formatOdds = (val) => {
   return Number(val).toFixed(2)
 }
 
-function extractTossOdds(trades, fallback = null) {
-  if (!Array.isArray(trades) || trades.length === 0) return fallback
-  const tossTrades = trades.filter((t) => {
-    const p = parseFloat(t.price)
-    return !isNaN(p) && p >= 1.70 && p <= 2.30
-  })
-  if (tossTrades.length > 0) {
-    const sorted = [...tossTrades].sort((a, b) => b.updatedAt - a.updatedAt)
-    return parseFloat(sorted[0].price)
-  }
-  const broader = trades.filter((t) => {
-    const p = parseFloat(t.price)
-    return !isNaN(p) && p >= 1.60 && p <= 2.40
-  })
-  if (broader.length > 0) {
-    const sorted = [...broader].sort((a, b) => b.updatedAt - a.updatedAt)
-    return parseFloat(sorted[0].price)
-  }
-  return fallback
-}
-
 export default function TossDetail({ isEmbedded = false }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const { isLoggedIn } = useOutletContext()
   const [snap, setSnap] = useState(null)
   const [loading, setLoading] = useState(true)
   const [requiresLogin, setRequiresLogin] = useState(false)
   const [requiresPro, setRequiresPro] = useState(false)
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
     const socket = getSocket()
     let cancelled = false
+    let resolved = false
+
+    setLoading(true)
+    setSnap(null)
+    setLoadError('')
+    setRequiresLogin(false)
+    setRequiresPro(false)
 
     const handleBundle = (bundle) => {
-      if (cancelled || !bundle) return
+      if (cancelled || !bundle) return false
       if (isLoginRequiredError(bundle) || bundle?.error === 'login_required') {
         setRequiresLogin(true)
         setLoading(false)
-        return
+        resolved = true
+        return true
       }
       if (bundle?.code === 'SUBSCRIPTION_REQUIRED' || bundle?.status === 403) {
         setRequiresPro(true)
         setLoading(false)
-        return
+        resolved = true
+        return true
       }
       const tossData = bundle?.toss
       if (tossData && !tossData.error) {
         setSnap(tossData)
+        setLoadError('')
+        setLoading(false)
+        resolved = true
+        return true
       }
-      setLoading(false)
+      return false
     }
 
-    socket.on(`match:bundle:${matchId}`, handleBundle)
-    socket.on('match:bundle', (b) => { if (String(b?.matchId) === String(matchId)) handleBundle(b) })
+    const handleSnapshot = snapshot => {
+      if (cancelled || !snapshot || snapshot.error) return false
+      setSnap(snapshot)
+      setLoadError('')
+      setLoading(false)
+      resolved = true
+      return true
+    }
+    const handleRequestError = error => {
+      if (cancelled) return true
+      if (isLoginRequiredError(error)) {
+        setRequiresLogin(true)
+        setLoading(false)
+        resolved = true
+        return true
+      }
+      if (error?.status === 403 || error?.code === 'SUBSCRIPTION_REQUIRED') {
+        setRequiresPro(true)
+        setLoading(false)
+        resolved = true
+        return true
+      }
+      return false
+    }
+
+    const onBundle = bundle => {
+      if (isCompleteMatchBundle(bundle)) handleBundle(bundle)
+    }
+    const onGenericBundle = bundle => {
+      if (String(bundle?.matchId) === String(matchId) && isCompleteMatchBundle(bundle)) onBundle(bundle)
+    }
+    const onConnect = () => subscribeMatch(matchId, 'toss')
+    const cached = getMatchBundle(matchId)
+    if (hasTossSnapshot(cached)) handleBundle(cached)
+
+    const loadFromHttp = async () => {
+      try {
+        const bundle = await getCricketMatchBundle(matchId)
+        if (handleBundle(bundle)) return
+      } catch (error) {
+        if (handleRequestError(error)) return
+      }
+      try {
+        const snapshot = await getTossSnapshot(matchId)
+        if (handleSnapshot(snapshot)) return
+      } catch (error) {
+        if (handleRequestError(error)) return
+        if (!cancelled) setLoadError(error?.detail || 'Toss data is not available for this match yet.')
+      }
+      if (!cancelled) setLoading(false)
+    }
+    loadFromHttp()
+    socket.on(`match:bundle:${matchId}`, onBundle)
+    socket.on('match:bundle', onGenericBundle)
 
     if (socket.connected) {
       subscribeMatch(matchId, 'toss')
     } else {
-      socket.once('connect', () => subscribeMatch(matchId, 'toss'))
+      socket.once('connect', onConnect)
     }
 
-    const loadingTimeout = setTimeout(() => { if (!cancelled) setLoading(false) }, 10000)
+    const loadingTimeout = setTimeout(() => {
+      if (!cancelled && !resolved) {
+        setLoading(false)
+        setLoadError(current => current || 'Toss data is taking longer than expected. Please retry.')
+      }
+    }, 12000)
 
     return () => {
       cancelled = true
       clearTimeout(loadingTimeout)
       unsubscribeMatch(matchId)
-      socket.off(`match:bundle:${matchId}`, handleBundle)
+      socket.off(`match:bundle:${matchId}`, onBundle)
+      socket.off('match:bundle', onGenericBundle)
+      socket.off('connect', onConnect)
     }
   }, [matchId, isLoggedIn])
 
@@ -133,16 +188,26 @@ export default function TossDetail({ isEmbedded = false }) {
     )
   }
 
-  if (!snap) return null
+  if (!snap) return (
+    <div className="detail-page flex min-h-[65vh] items-center justify-center p-4">
+      <div className="glass-card max-w-md w-full rounded-2xl p-6 text-center">
+        <h2 className="text-lg font-bold text-text-primary">Toss data unavailable</h2>
+        <p className="mt-2 text-sm text-text-muted">{loadError || 'The market opened, but its detailed snapshot has not arrived yet.'}</p>
+        {location.state?.matchData?.matchName && <p className="mt-3 text-sm font-semibold text-text-secondary">{location.state.matchData.matchName}</p>}
+        <div className="mt-5 flex justify-center gap-2">
+          <button type="button" onClick={() => window.location.reload()} className="ui-button-primary rounded-lg px-4 py-2 text-sm font-semibold">Retry</button>
+          <button type="button" onClick={() => navigate('/toss')} className="ui-button-secondary rounded-lg border px-4 py-2 text-sm font-semibold">Back to matches</button>
+        </div>
+      </div>
+    </div>
+  )
 
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
   const raw = snap.deepMetrics?.raw || {}
   const tot = snap.deepMetrics?.totals || {}
-  const sp = snap.deepMetrics?.simplePL || {}
-  const sup = snap.supportMetrics || {}
-  const am1 = getTeamMetrics(snap, 0)
-  const am2 = getTeamMetrics(snap, 1)
+  const am1 = getSelectionStakes(snap, t1)
+  const am2 = getSelectionStakes(snap, t2)
   const exp = snap.bookmakerExposure || {}
   const exp1 = exp.team1 || {}
   const exp2 = exp.team2 || {}
@@ -150,36 +215,26 @@ export default function TossDetail({ isEmbedded = false }) {
   const sent = snap.sentimentScore || {}
 
   // Back/Lay ratio prediction
-  const aBack = am1.back || 0
-  const aLay = am1.lay || 0
-  const bBack = am2.back || 0
-  const bLay = am2.lay || 0
   const t1Trades = (snap.teams?.[t1] || {}).trades || []
   const t2Trades = (snap.teams?.[t2] || {}).trades || []
-  const t1Bets = tot.totalBetTeam1 || tot.team1 || 0
-  const t2Bets = tot.totalBetTeam2 || tot.team2 || 0
 
   const { pl1: t1BookiePL, pl2: t2BookiePL, source: plSource } = getBookiePl(snap, t1, t2)
 
-  const tradeVol1 = t1Trades.length > 0 ? t1Trades.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
-  const tradeVol2 = t2Trades.length > 0 ? t2Trades.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
 
-  const vol1 = tradeVol1 || am1?.totalBet || t1Bets || snap?.preMatchTotalBets?.team1 || 0
-  const vol2 = tradeVol2 || am2?.totalBet || t2Bets || snap?.preMatchTotalBets?.team2 || 0
+  const vol1 = am1.totalBet
+  const vol2 = am2.totalBet
 
-  const tossOdds1 = extractTossOdds(t1Trades) || (snap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(snap.syntheticSupport.teamA.averageOdds.toFixed(2)) : null) || (snap?.runners?.[0]?.price && snap.runners[0].price >= 1.60 && snap.runners[0].price <= 2.40 ? snap.runners[0].price : null) || null
-  const tossOdds2 = extractTossOdds(t2Trades) || (snap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(snap.syntheticSupport.teamB.averageOdds.toFixed(2)) : null) || (snap?.runners?.[1]?.price && snap.runners[1].price >= 1.60 && snap.runners[1].price <= 2.40 ? snap.runners[1].price : null) || null
+  const tossOdds1 = latestMatchedPrice(t1Trades)
+  const tossOdds2 = latestMatchedPrice(t2Trades)
 
-  const totVol = vol1 + vol2
-  const pct1 = totVol > 0 ? Math.round((vol1 / totVol) * 100) : 50
-  const pct2 = totVol > 0 ? (100 - pct1) : 50
+  const totVol = vol1 != null && vol2 != null ? vol1 + vol2 : null
+  const pct1 = totVol > 0 ? Math.round((vol1 / totVol) * 100) : null
+  const pct2 = pct1 == null ? null : 100 - pct1
 
   const tossPrediction = predictTossWinner(snap, snap?.competitionName || snap?.seriesName || '')
-  const fmtVol = (n) => !n ? '0' : Math.round(n).toLocaleString('en-IN')
-  const { t1Fake, t2Fake, t1Pct, t2Pct, mostFakeTeam } = getSpoofingMetrics(snap)
 
   return (
-    <div className={`w-full fade-in space-y-4 ${isEmbedded ? '' : 'p-3'}`}>
+    <div className={`w-full fade-in space-y-4 ${isEmbedded ? '' : 'detail-page'}`}>
 
       {!isEmbedded && (
         <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-text-muted hover:text-primary text-sm font-medium transition-colors">
@@ -190,7 +245,7 @@ export default function TossDetail({ isEmbedded = false }) {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-text-primary">{t1} vs {t2}</h1>
-            <div className="text-xs text-text-muted mt-1">🪙 Toss Market • {snap.serverTime?.split('T')[0]}</div>
+            <div className="text-xs text-text-muted mt-1">🪙 Toss Market • {timestamp(snap.serverTime) == null ? 'Capture time unavailable' : new Date(timestamp(snap.serverTime)).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}</div>
           </div>
           {snap.inPlay && (
             <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full" style={{ background: '#fee2e2', color: '#dc2626' }}>
@@ -199,63 +254,6 @@ export default function TossDetail({ isEmbedded = false }) {
           )}
         </div>
       </div>
-
-      {/* Toss Result Banner */}
-      {(() => {
-        const rawToss =
-          snap?.tossText ||
-          snap?.crex?.scorecard?.tossText ||
-          snap?.crex?.toss?.text ||
-          snap?.crex?.tossText ||
-          (snap?.crex?.scorecard?.statusEquation && /opt|chose|elected|toss/i.test(snap.crex.scorecard.statusEquation) ? snap.crex.scorecard.statusEquation : null) ||
-          (snap?.actualWinner ? `Toss Winner: ${snap.actualWinner}` : null) ||
-          (snap?.tossWinner ? `Toss Winner: ${snap.tossWinner}` : null) ||
-          null;
-        if (!rawToss) return null;
-
-        let cleaned = String(rawToss)
-          .replace(/<[^>]*>?/gm, ' ')
-          .replace(/Player\s+of\s+the\s+Match.*$/i, '')
-          .replace(/\b\d+\/\d+\s*\(.*$/i, '')
-          .replace(/Com$/i, '')
-          .replace(/[\u2026\.\s]+$/, '')
-          .trim();
-
-        if (!cleaned) return null;
-
-        let tossBannerText = cleaned;
-        const decMatch = cleaned.match(/(?:opt(?:ed)?|chose|elected|decided)\s+to\s+(bat|bowl|field)/i);
-        const decision = decMatch ? ((decMatch[1].toLowerCase() === 'field' || decMatch[1].toLowerCase() === 'bowl') ? 'opt to Bowl' : 'opt to Bat') : null;
-
-        const team1 = t1 || '';
-        const team2 = t2 || '';
-        let winner = null;
-
-        const preMatch = cleaned.match(/^\s*([a-zA-Z0-9\s\-]+?)\s+(?:have\s+)?(?:opt(?:ed)?|chose|elected|decided|won\s+(?:the\s+)?toss)/i);
-        if (preMatch) {
-          const cand = preMatch[1].trim();
-          if (team1 && (cand.toLowerCase() === team1.toLowerCase() || team1.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(team1.toLowerCase()))) winner = team1;
-          else if (team2 && (cand.toLowerCase() === team2.toLowerCase() || team2.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(team2.toLowerCase()))) winner = team2;
-          else winner = cand;
-        } else if (/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i.test(cleaned)) {
-          winner = cleaned.match(/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i)[1].trim();
-        } else if (team1 && cleaned.toLowerCase().includes(team1.toLowerCase())) {
-          winner = team1;
-        } else if (team2 && cleaned.toLowerCase().includes(team2.toLowerCase())) {
-          winner = team2;
-        }
-
-        if (winner) {
-          tossBannerText = decision ? `Toss Winner: ${winner} (${decision})` : `Toss Winner: ${winner}`;
-        }
-
-        return (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400 mb-3">
-            <span>🪙</span>
-            <span>{tossBannerText}</span>
-          </div>
-        );
-      })()}
 
       {/* Toss Team Comparison Card (100% Width) */}
       <div className="w-full rounded-xl border border-[#1e2536] bg-[#0c1018] py-2.5 px-4 sm:px-6 shadow-md mb-3">
@@ -276,7 +274,7 @@ export default function TossDetail({ isEmbedded = false }) {
                   : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
               }`}
             >
-              {pct1}%
+              {pct1 == null ? '—' : `${pct1}%`}
             </span>
             {/* Odds */}
             <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
@@ -301,7 +299,7 @@ export default function TossDetail({ isEmbedded = false }) {
                   : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
               }`}
             >
-              {pct2}%
+              {pct2 == null ? '—' : `${pct2}%`}
             </span>
             {/* Odds */}
             <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
@@ -314,7 +312,7 @@ export default function TossDetail({ isEmbedded = false }) {
         {/* Micro Inflow Bar */}
         <div className="mt-2 h-1.5 w-full bg-[#1b2234] rounded-full overflow-hidden flex">
           <div
-            style={{ width: `${pct1}%` }}
+            style={{ width: `${pct1 ?? 0}%` }}
             className={`h-full transition-all duration-300 ${
               pct1 >= pct2
                 ? 'bg-gradient-to-r from-emerald-700 to-green-600'
@@ -322,7 +320,7 @@ export default function TossDetail({ isEmbedded = false }) {
             }`}
           />
           <div
-            style={{ width: `${pct2}%` }}
+            style={{ width: `${pct2 ?? 0}%` }}
             className={`h-full transition-all duration-300 ${
               pct2 > pct1
                 ? 'bg-gradient-to-r from-emerald-700 to-green-600'
@@ -331,16 +329,13 @@ export default function TossDetail({ isEmbedded = false }) {
           />
         </div>
       </div>
-
-
-
       {/* ━━━━━━━━━━ TOSS WINNER PREDICTION ━━━━━━━━━━ */}
       {tossPrediction && (
-        <div className="rounded-2xl overflow-hidden" style={{ border: '2px solid #d1d5db' }}>
+        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #d1d5db' }}>
           {/* Header */}
-          <div className="px-4 py-3 flex items-center gap-2 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
-            <span className="text-base">🪙</span>
-            <span className="text-sm font-bold text-text-primary">Toss Winner Prediction</span>
+          <div className="px-3 py-2 flex items-center gap-1.5 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
+            <span className="text-sm">🪙</span>
+            <span className="text-xs font-bold text-text-primary">Toss Winner Prediction</span>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>Historical rules · live accuracy unvalidated</span>
             {tossPrediction.algoName && (
               <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
@@ -351,14 +346,14 @@ export default function TossDetail({ isEmbedded = false }) {
             <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
           </div>
 
-          <div className="p-4">
+          <div className="p-3">
             {/* Winner Banner */}
-            <div className="rounded-xl p-4 text-center mb-4" style={{
+            <div className="rounded-lg px-3 py-2.5 text-center mb-3" style={{
               background: 'rgba(22,163,74,0.08)',
               border: '1px solid rgba(22,163,74,0.3)'
             }}>
-              <div className="text-xs text-text-muted uppercase tracking-widest mb-1">Predicted Toss Winner</div>
-              <div className="text-2xl font-black mb-1 text-profit">
+              <div className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">Predicted Toss Winner</div>
+              <div className="text-lg font-black leading-tight text-profit">
                 {tossPrediction.winnerName}
               </div>
               {tossPrediction.algoName && (
@@ -367,7 +362,7 @@ export default function TossDetail({ isEmbedded = false }) {
                   <span>{tossPrediction.algoName}</span>
                 </div>
               )}
-              <div className="text-xs text-text-muted">Signal: {tossPrediction.reason} • Confidence is uncalibrated</div>
+              <div className="text-[10px] text-text-muted mt-1">Signal: {tossPrediction.reason} • Confidence is uncalibrated</div>
               {tossPrediction.risk && (
                 <div className="mt-2 flex justify-center">
                   <RiskBadge risk={tossPrediction.risk} />
@@ -381,7 +376,7 @@ export default function TossDetail({ isEmbedded = false }) {
 
             {/* Signals breakdown */}
             <div className="space-y-2 mb-3">
-              {tossPrediction.signals.map(r => (
+              {tossPrediction.signals.filter(r => r.label !== 'Bookie Pre-P/L').map(r => (
                 <div key={r.label} className="rounded-xl px-3 py-2.5" style={{
                   background: r.active ? 'rgba(22,163,74,0.06)' : 'rgba(100,100,100,0.04)',
                   border: `1px solid ${r.active ? 'rgba(22,163,74,0.2)' : 'rgba(100,100,100,0.15)'}`
@@ -394,7 +389,7 @@ export default function TossDetail({ isEmbedded = false }) {
                       {r.active && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fef3c7', color: '#92400e' }}>ACTIVE</span>}
                     </div>
                   </div>
-                  <div className="text-[10px] text-text-muted mb-1">{r.sublabel}</div>
+                  <div className="text-[10px] text-text-muted mb-1">{r.label === 'Pre-Match Lay' ? 'Matched lay stakes' : r.sublabel}</div>
                   {r.v2 && (
                     <div className="flex justify-between items-center">
                       <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{t1}: {r.v1}</span>
@@ -442,7 +437,7 @@ export default function TossDetail({ isEmbedded = false }) {
             )}
             {Object.keys(tot).length > 0 && (
               <div>
-                <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Total Bets</div>
+                <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Provider reported total</div>
                 <div className="space-y-1.5">
                   {Object.entries(tot).map(([key, val]) => {
                     const name = key === 'team1' ? t1 : key === 'team2' ? t2 : key === 'totalBetTeam1' ? t1 : key === 'totalBetTeam2' ? t2 : key
@@ -481,7 +476,7 @@ export default function TossDetail({ isEmbedded = false }) {
         </div>
       )}
 
-      {/* Bookie P/L from Trades (Exact Betfair Formula) */}
+      {/* Original provider Bookie P/L, with trades fallback */}
       {(t1BookiePL != null || t2BookiePL != null || t1Trades.length > 0 || t2Trades.length > 0) && (
         <div className="glass-card rounded-2xl p-4">
           <div className="text-xs font-bold text-text-muted uppercase mb-3">
@@ -492,7 +487,7 @@ export default function TossDetail({ isEmbedded = false }) {
               <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
                 <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
                 <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-                <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
+                <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl == null ? 'Unavailable' : pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
               </div>
             ))}
           </div>
@@ -527,55 +522,10 @@ export default function TossDetail({ isEmbedded = false }) {
         </div>
       )}
 
-      {/* Spoofing Detector */}
-      <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg, #fde8e8 0%, #fdf0e8 100%)' }}>
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-2xl">🚨</span>
-          <span className="text-xl font-bold text-text-primary">Spoofing Detector</span>
-          <span className="ml-auto px-2.5 py-0.5 rounded-full text-xs font-semibold" style={{ background: '#fee2e2', color: '#dc2626' }}>LIVE</span>
-        </div>
-        <p className="text-xs text-text-muted mb-4">Cumulative fake orders — canceled volume not matched as trades</p>
-        <div className="h-3 rounded-full overflow-hidden flex mb-2" style={{ background: '#fecaca' }}>
-          <div className="h-full" style={{ width: `${t1Pct}%`, background: 'linear-gradient(90deg,#dc2626,#f87171)' }} />
-          <div className="h-full" style={{ width: `${t2Pct}%`, background: 'linear-gradient(90deg,#10b981,#fbbf24)' }} />
-        </div>
-        <div className="flex justify-between text-xs font-semibold mb-4">
-          <span className="text-primary">{t1}: {t1Pct.toFixed(1)}%</span>
-          <span className="text-text-muted">{t2}: {t2Pct.toFixed(1)}%</span>
-        </div>
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          {[{ team: t1, fake: t1Fake, isMain: true }, { team: t2, fake: t2Fake, isMain: false }].map(({ team, fake, isMain }) => (
-            <div key={team} className="bg-white rounded-xl p-3" style={{ border: '1px solid #fecaca' }}>
-              <div className={`text-xs font-bold mb-3 truncate ${isMain ? 'text-primary' : 'text-text-secondary'}`}>{team}</div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between gap-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#3b82f6' }} />
-                    <span className="text-xs text-text-muted">Fake Back</span>
-                  </div>
-                  <span className="text-xs font-bold text-text-primary">{fmtVol(fake.fakeBack)}</span>
-                </div>
-                <div className="flex items-center justify-between gap-1">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-sm" style={{ background: '#f87171' }} />
-                    <span className="text-xs text-text-muted">Fake Lay</span>
-                  </div>
-                  <span className="text-xs font-bold text-text-primary">{fmtVol(fake.oppFakeLay)}</span>
-                </div>
-              </div>
-              <div className="border-t border-border mt-2.5 pt-2 flex justify-between items-center">
-                <span className="text-xs font-bold text-text-secondary">Total</span>
-                <span className={`text-sm font-black ${isMain ? 'text-primary' : 'text-text-muted'}`}>{fmtVol(fake.total)}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="rounded-xl py-4 px-5 text-center" style={{ background: 'linear-gradient(135deg,#fca5a5,#fcd9b0)' }}>
-          <div className="text-xs font-bold tracking-widest text-primary/60 uppercase mb-1">Most Fake Orders On</div>
-          <div className="text-2xl font-bold text-primary">{mostFakeTeam}</div>
-        </div>
+      <div className="glass-card rounded-2xl p-5">
+        <h3 className="text-sm font-bold text-text-primary">Order cancellation data</h3>
+        <p className="text-xs text-text-muted mt-2">Unavailable. The feed does not include verified order cancellations. Back/lay imbalance alone cannot establish fake orders or spoofing.</p>
       </div>
-
 
 
     </div>

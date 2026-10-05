@@ -11,13 +11,13 @@ const ROLE_CFG = {
   superadmin: { color: '#a855f7', bg: 'rgba(168,85,247,0.12)'  },
 }
 const STATUS_CFG = {
-  active:    { color: '#10b981', bg: 'rgba(16,185,129,0.12)'  },
+  active:    { color: '#2563eb', bg: 'rgba(37,99,235,0.12)'  },
   banned:    { color: '#ef4444', bg: 'rgba(239,68,68,0.12)'   },
   suspended: { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)'  },
 }
 const PLAN_CFG = {
   pro:   { color: '#f59e0b', bg: 'rgba(245,158,11,0.12)', label: '⭐ Pro'  },
-  trial: { color: '#10b981', bg: 'rgba(16,185,129,0.12)', label: 'Trial' },
+  trial: { color: '#7c3aed', bg: 'rgba(124,58,237,0.12)', label: 'Trial' },
   free:  { color: '#8e8e93', bg: 'rgba(142,142,147,0.1)',  label: 'Free' },
 }
 
@@ -94,10 +94,10 @@ export default function AdminDashboard({ isSuperAdmin }) {
           icon={Clock}
           label="Cookie Expiry"
           value={scraperStatus ? `${scraperStatus.hoursLeft}h` : '—'}
-          color={scraperStatus?.isConnected ? '#10b981' : '#ef4444'}
-          sub={scraperStatus?.isConnected ? '🟢 Live' : '🔴 Expired'}
+          color={scraperStatus?.isConnected ? '#2563eb' : '#ef4444'}
+          sub={scraperStatus?.isConnected ? '● Live' : '● Expired'}
         />
-        <StatCard icon={Gift}       label="Trial Users"     value={stats.trialUsers}    color="#10b981" />
+        <StatCard icon={Gift}       label="Trial Users"     value={stats.trialUsers}    color="#7c3aed" />
         <StatCard icon={UserMinus}  label="Former Pro"      value={stats.lapsedProUsers} color="#a855f7" />
         <StatCard icon={UserCheck}  label="Free Users"      value={stats.freeUsers}     color="#8e8e93" />
         <StatCard icon={TrendingUp} label="Active"          value={stats.activeUsers}   color="#0ea5e9" />

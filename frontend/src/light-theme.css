@@ -1,0 +1,893 @@
+/* Compatibility palette for older analysis cards and inline surfaces. */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="light"] .site-nav a.is-active, :root[data-theme="light"] .hub-filter-row button.is-active { background: #eef0ff; color: #4338ca; border-color: #c7cdf8; }
+:root[data-theme="light"] .admin-navigation button.is-active { background: #eef0ff; }
+:root[data-theme="light"] .skip-link { color: #ffffff; }
+:root[data-theme="light"] [inert] [data-league-drawer] { box-shadow: none; }
+:root[data-theme="light"] .md-workbench { color: #172b43; }
+:root[data-theme="light"] :is(.md-title h2,.md-match-identity h4,.md-section-title h3) { color: #172b43; }
+:root[data-theme="light"] :is(.text-purple-300,.text-purple-400,.text-fuchsia-300,.text-fuchsia-400) { color: #7e22ce; }
+:root[data-theme="light"] :is(.text-teal-300,.text-teal-400,.text-cyan-300,.text-cyan-400) { color: #0f766e; }
+:root[data-theme="light"] :is(.text-orange-300,.text-orange-400) { color: #9a3412; }
+:root[data-theme="light"] :is(.text-pink-300,.text-pink-400) { color: #be185d; }
+:root[data-theme="light"] [class~="bg-[#0284c7]/10"] { background-color: #f1f6f9; }
+:root[data-theme="light"] [class~="bg-[#0284c7]/20"] { background-color: #f1f6f9; }
+:root[data-theme="light"] [class~="bg-[#059669]"] { background-color: #f1f9f6; }
+:root[data-theme="light"] [class~="bg-[#060810]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#07090e]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#080a12]/50"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#080a12]/90"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#080b14]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#080b14]/50"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0a0a0a]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0a0d14]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0a0d18]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0b1424]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0c0e17]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0c1018]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0c101d]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0e121e]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0e1220]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0e1320]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0e1322]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0f1322]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0f1422]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0f1422]/60"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#0f1a36]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#10131e]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#10b981]"] { background-color: #f1f9f6; }
+:root[data-theme="light"] [class~="bg-[#10b981]/10"] { background-color: #f1f9f6; }
+:root[data-theme="light"] [class~="bg-[#10b981]/15"] { background-color: #f1f9f6; }
+:root[data-theme="light"] [class~="bg-[#10b981]/8"] { background-color: #f1f9f6; }
+:root[data-theme="light"] [class~="bg-[#121622]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#121626]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#121727]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#141414]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#141824]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#14234b]"] { background-color: #f1f3f9; }
+:root[data-theme="light"] [class~="bg-[#151b2c]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#161a28]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1a1a1a]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1a1a1a]/60"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1a2030]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1b2234]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1c1c1c]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1c1c1e]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1e1e1e]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1e2436]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1e2538]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#1e273d]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#282828]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#28314a]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#2c2c2e]"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="bg-[#2c2c2e]/60"] { background-color: #ffffff; }
+:root[data-theme="light"] [class~="border-[#0284c7]/30"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#10b981]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#181f30]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1b2234]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1b2234]/25"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1b2234]/30"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1b2234]/60"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e2334]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e2536]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e2536]/60"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e2538]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e2638]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e263d]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e273b]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1e293b]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1f2638]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#1f273b]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#22293a]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#222a3e]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#222b40]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#23354d]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#262626]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#282828]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#2a2a2a]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#2c2c2e]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#2c2c2e]/30"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#2c2c2e]/40"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#2c2c2e]/60"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#2e2e2e]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#333]"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="border-[#f59e0b]/30"] { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="text-[#3b82f6]"] { color: #104293; }
+:root[data-theme="light"] [class~="text-[#60a5fa]"] { color: #104b93; }
+:root[data-theme="light"] [class~="text-[#888]"] { color: #5b6d84; }
+:root[data-theme="light"] [class~="text-[#8b5cf6]"] { color: #381093; }
+:root[data-theme="light"] [class~="text-[#8e8e93]"] { color: #5b6d84; }
+:root[data-theme="light"] [class~="text-[#94a3b8]"] { color: #5b6d84; }
+:root[data-theme="light"] [class~="text-[#9ca3af]"] { color: #5b6d84; }
+:root[data-theme="light"] [class~="text-[#a855f7]"] { color: #531093; }
+:root[data-theme="light"] [class~="text-[#aaa]"] { color: #5b6d84; }
+:root[data-theme="light"] [class~="text-[#e5e5ea]"] { color: #172b43; }
+:root[data-theme="light"] [class~="text-[#ebebf5]"] { color: #36366d; }
+:root[data-theme="light"] [class~="text-[#ef4444]"] { color: #931010; }
+:root[data-theme="light"] [class~="text-[#f59e0b]"] { color: #936210; }
+:root[data-theme="light"] [class~="text-[#fae48b]"] { color: #937910; }
+:root[data-theme="light"] [class~="divide-[#1b2234]"] > :not(:last-child) { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="divide-[#1b2234]/50"] > :not(:last-child) { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="divide-[#1e2536]/60"] > :not(:last-child) { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="divide-[#1e2536]/80"] > :not(:last-child) { border-color: #dce4ee; }
+:root[data-theme="light"] [class~="divide-[#2c2c2e]"] > :not(:last-child) { border-color: #dce4ee; }
+:root[data-theme="light"] [style*="background: rgb(4, 7, 17)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(4, 7, 17)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(6, 8, 16)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(6, 8, 16)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(7, 9, 14)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(7, 9, 14)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(8, 10, 18)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(8, 10, 18)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(8, 11, 20)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(8, 11, 20)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(9, 13, 26)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(9, 13, 26)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(10, 10, 10)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(10, 10, 10)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(10, 13, 20)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(10, 13, 20)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(10, 13, 24)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(10, 13, 24)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(11, 19, 41)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(11, 19, 41)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(11, 20, 36)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(11, 20, 36)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(12, 14, 23)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(12, 14, 23)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(12, 16, 24)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(12, 16, 24)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(12, 16, 29)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(12, 16, 29)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(14, 18, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(14, 18, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(14, 18, 32)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(14, 18, 32)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(14, 19, 32)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(14, 19, 32)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(14, 19, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(14, 19, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(15, 19, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(15, 19, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(15, 20, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(15, 20, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(15, 23, 42)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(15, 23, 42)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(15, 26, 54)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(15, 26, 54)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(16, 19, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(16, 19, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(17, 17, 17)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(17, 17, 17)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(17, 17, 17)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(17, 17, 17)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(18, 18, 18)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(18, 18, 18)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(18, 22, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(18, 22, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(18, 22, 38)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(18, 22, 38)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(18, 23, 39)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(18, 23, 39)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(19, 43, 44)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(19, 43, 44)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(20, 20, 20)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(20, 20, 20)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(20, 24, 36)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(20, 24, 36)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(21, 27, 44)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(21, 27, 44)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(22, 22, 22)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(22, 22, 22)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(22, 26, 40)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(22, 26, 40)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(23, 34, 48)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(23, 34, 48)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(24, 24, 24)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(24, 24, 24)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(24, 31, 48)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(24, 31, 48)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(26, 26, 26)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(26, 26, 26)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(26, 32, 48)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(26, 32, 48)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(27, 34, 52)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(27, 34, 52)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(28, 22, 22)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(28, 22, 22)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(28, 28, 28)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(28, 28, 28)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(28, 28, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(28, 28, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(28, 73, 65)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(28, 73, 65)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 27, 75)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 27, 75)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 30, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 30, 30)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 35, 52)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 35, 52)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 36, 54)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 36, 54)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 37, 54)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 37, 54)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 37, 56)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 37, 56)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 38, 56)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 38, 56)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 38, 61)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 38, 61)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 39, 59)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 39, 59)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 39, 61)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 39, 61)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(30, 41, 59)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(30, 41, 59)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(31, 38, 56)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(31, 38, 56)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(31, 39, 59)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(31, 39, 59)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(34, 34, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(34, 34, 34)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(34, 41, 58)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(34, 41, 58)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(34, 42, 62)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(34, 42, 62)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(34, 43, 64)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(34, 43, 64)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(35, 53, 77)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(35, 53, 77)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(38, 38, 38)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(38, 38, 38)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(40, 40, 40)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(40, 40, 40)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(40, 49, 74)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(40, 49, 74)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(41, 100, 94)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(41, 100, 94)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(42, 42, 42)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(42, 42, 42)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(44, 44, 46)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(44, 44, 46)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="color: rgb(45, 212, 191)"] { color: #1c877a !important; }
+:root[data-theme="light"] [style*="background: rgb(46, 46, 46)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(46, 46, 46)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(51, 51, 51)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(51, 51, 51)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(51, 65, 85)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(51, 65, 85)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(51, 70, 90)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(51, 70, 90)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="color: rgb(52, 211, 153)"] { color: #1d8660 !important; }
+:root[data-theme="light"] [style*="color: rgb(56, 189, 248)"] { color: #106b93 !important; }
+:root[data-theme="light"] [style*="background: rgb(58, 58, 60)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(58, 58, 60)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="color: rgb(59, 130, 246)"] { color: #104293 !important; }
+:root[data-theme="light"] [style*="background: rgb(68, 68, 68)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(68, 68, 68)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background: rgb(85, 85, 85)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="background-color: rgb(85, 85, 85)"] { background: #ffffff !important; border-color: #dce4ee !important; }
+:root[data-theme="light"] [style*="color: rgb(96, 165, 250)"] { color: #104b93 !important; }
+:root[data-theme="light"] [style*="color: rgb(99, 102, 241)"] { color: #101393 !important; }
+:root[data-theme="light"] [style*="color: rgb(136, 136, 136)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(139, 92, 246)"] { color: #381093 !important; }
+:root[data-theme="light"] [style*="color: rgb(139, 237, 218)"] { color: #168d76 !important; }
+:root[data-theme="light"] [style*="color: rgb(142, 142, 147)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(148, 163, 184)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(154, 138, 136)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(156, 163, 175)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(161, 161, 166)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(168, 85, 247)"] { color: #531093 !important; }
+:root[data-theme="light"] [style*="color: rgb(170, 170, 170)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(192, 132, 252)"] { color: #521093 !important; }
+:root[data-theme="light"] [style*="color: rgb(209, 213, 219)"] { color: #5b6d84 !important; }
+:root[data-theme="light"] [style*="color: rgb(220, 38, 38)"] { color: #8d1717 !important; }
+:root[data-theme="light"] [style*="color: rgb(229, 62, 62)"] { color: #901313 !important; }
+:root[data-theme="light"] [style*="color: rgb(229, 229, 234)"] { color: #172b43 !important; }
+:root[data-theme="light"] [style*="color: rgb(235, 235, 245)"] { color: #36366d !important; }
+:root[data-theme="light"] [style*="color: rgb(236, 72, 153)"] { color: #931051 !important; }
+:root[data-theme="light"] [style*="color: rgb(236, 217, 128)"] { color: #8e7915 !important; }
+:root[data-theme="light"] [style*="color: rgb(238, 238, 238)"] { color: #172b43 !important; }
+:root[data-theme="light"] [style*="color: rgb(239, 68, 68)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(240, 253, 244)"] { color: #13903a !important; }
+:root[data-theme="light"] [style*="color: rgb(244, 63, 94)"] { color: #931027 !important; }
+:root[data-theme="light"] [style*="color: rgb(244, 114, 182)"] { color: #931055 !important; }
+:root[data-theme="light"] [style*="color: rgb(245, 158, 11)"] { color: #936210 !important; }
+:root[data-theme="light"] [style*="color: rgb(248, 113, 113)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(250, 228, 139)"] { color: #937910 !important; }
+:root[data-theme="light"] [style*="color: rgb(251, 113, 133)"] { color: #931023 !important; }
+:root[data-theme="light"] [style*="color: rgb(251, 191, 36)"] { color: #936e10 !important; }
+:root[data-theme="light"] [style*="color: rgb(252, 129, 129)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(252, 165, 165)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(252, 213, 204)"] { color: #932910 !important; }
+:root[data-theme="light"] [style*="color: rgb(252, 217, 176)"] { color: #935710 !important; }
+:root[data-theme="light"] [style*="color: rgb(253, 230, 138)"] { color: #937910 !important; }
+:root[data-theme="light"] [style*="color: rgb(253, 232, 232)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(253, 240, 232)"] { color: #934210 !important; }
+:root[data-theme="light"] [style*="color: rgb(254, 202, 202)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(254, 226, 226)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(254, 243, 199)"] { color: #937910 !important; }
+:root[data-theme="light"] [style*="color: rgb(254, 252, 232)"] { color: #938710 !important; }
+:root[data-theme="light"] [style*="color: rgb(255, 255, 255)"] { color: #172b43 !important; }
+:root[data-theme="light"] [style*="color: rgb(255, 245, 245)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(255, 248, 240)"] { color: #935610 !important; }
+:root[data-theme="light"] [style*="color: rgb(255, 248, 248)"] { color: #931010 !important; }
+:root[data-theme="light"] [style*="color: rgb(255, 255, 255)"] { color: #172b43 !important; }
+
+:root[data-theme="light"] :is(.text-white, .text-slate-100, .text-slate-200) { color: #172b43; }
+:root[data-theme="light"] :is(.text-slate-300, .text-gray-300) { color: #40566f; }
+:root[data-theme="light"] :is(.text-slate-400, .text-slate-500, .text-gray-400) { color: #62748b; }
+:root[data-theme="light"] :is(.text-emerald-300,.text-emerald-400,.text-green-400) { color: #15803d; }
+:root[data-theme="light"] :is(.text-rose-300,.text-rose-400,.text-red-400,.text-red-300) { color: #be123c; }
+:root[data-theme="light"] :is(.text-sky-300,.text-sky-400,.text-blue-300,.text-blue-400) { color: #0369a1; }
+:root[data-theme="light"] :is(.text-amber-300,.text-amber-400,.text-yellow-400) { color: #92400e; }
+:root[data-theme="light"] :is(.bg-slate-800,.bg-slate-800\/80,.bg-slate-900,.bg-black) { background-color: #eef2f7; }
+:root[data-theme="light"] :is(.ui-button-primary,.site-login-button,.auth-page form > button,.bg-red-600,.bg-loss,.bg-primary) { color: #ffffff; }
+:root[data-theme="light"] :is(.ui-button-primary,.bg-red-600,.bg-loss,.bg-primary) .text-white { color: #ffffff; }
+:root[data-theme="light"] [style*="background: rgb(22, 125, 115)"] { color: #ffffff; }
+:root[data-theme="light"] [style*="rgba(13, 17, 23"], :root[data-theme="light"] [style*="rgba(0, 0, 0, 0.5)"]:not([role="dialog"]) { background: #edf6f5 !important; }
+:root[data-theme="light"] .md-drawer-backdrop, :root[data-theme="light"] .site-dialog-backdrop { background: #172b4370 !important; }
+:root[data-theme="light"] .md-button-primary { color: #ffffff; background: #0f766e; border-color: #0f766e; }
+:root[data-theme="light"] .admin-content .md-button-primary { color: #ffffff; }
+:root[data-theme="light"] .md-drawer { background: #ffffff; color: #172b43; }
+:root[data-theme="light"] .site-account-trigger { background: #ffffff; color: #172b43; }
+:root[data-theme="light"] :is(.recharts-cartesian-axis-tick-value,.recharts-text) { fill: #62748b; }
+:root[data-theme="light"] .recharts-cartesian-grid line { stroke: #dce4ee; }
+.bookie-period-section { color: #172b43; margin: 18px 0; }
+.bookie-period-heading { margin-bottom: 14px; }
+.bookie-period-heading h3 { font-size: 16px; font-weight: 650; }
+.bookie-period-heading p { color: #62748b; font-size: 12px; margin-top: 5px; }
+.bookie-period-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.bookie-period-card { min-width: 0; background: #ffffff; border: 1px solid #dce4ee; border-radius: 12px; overflow: hidden; }
+.bookie-period-card header { padding: 13px; background: #f0f5f8; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; font-size: 12px; }
+.bookie-period-card h4 { font-weight: 650; }
+.bookie-period-card header span { color: #62748b; font-size: 10px; }
+.bookie-period-scroll { overflow-x: auto; }
+.bookie-period-card table { width: 100%; border-collapse: collapse; font-size: 11px; font-variant-numeric: tabular-nums; }
+.bookie-period-card :is(th,td) { padding: 10px 9px; text-align: right; border-bottom: 1px solid #edf2f7; }
+.bookie-period-card th:first-child { text-align: left; white-space: nowrap; color: #62748b; font-weight: 500; }
+.bookie-period-card th { font-weight: 600; }
+.bookie-period-note { padding: 11px 13px; font-size: 11px; color: #62748b; line-height: 1.6; }
+.bookie-formula { margin-top: 12px; padding: 13px 16px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 9px; font-size: 12px; }
+.bookie-formula summary { cursor: pointer; color: #1d4ed8; font-weight: 600; }
+.bookie-formula p { margin-top: 10px; line-height: 1.8; color: #40566f; }
+@media(max-width: 1100px) { .bookie-period-grid { grid-template-columns: 1fr; } }
+
+/* Compact navy + indigo system used across every workspace. */
+:root[data-theme="light"] {
+  --ui-bg: #eef1f8;
+  --ui-surface: #ffffff;
+  --ui-raised: #e7eaf6;
+  --ui-border: #ccd3e5;
+  --ui-muted: #68738c;
+  --ui-accent: #2563eb;
+  --color-bg-dark: #eef1f8;
+  --color-bg-card: #ffffff;
+  --color-bg-card-hover: #f4f5ff;
+  --color-border: #ccd3e5;
+  --color-border-light: #9da8c7;
+  --color-text-primary: #172033;
+  --color-text-secondary: #46516a;
+  --color-text-muted: #68738c;
+  --site-header-height: 60px;
+}
+:root[data-theme="light"] body,
+:root[data-theme="light"] .app-shell,
+:root[data-theme="light"] .site-main,
+:root[data-theme="light"] .sports-content,
+:root[data-theme="light"] .hub-results { background: #eef1f8; color: #172033; }
+
+:root[data-theme="light"] .site-header { height: 60px; background: linear-gradient(108deg, #0f172a, #1e3a8a); border-color: #1e40af; box-shadow: 0 3px 16px #17203324; }
+:root[data-theme="light"] .site-header-inner { padding: 0 20px; gap: 18px; }
+:root[data-theme="light"] .site-brand { gap: 8px; }
+:root[data-theme="light"] .site-brand img { width: 31px; height: 31px; }
+:root[data-theme="light"] .site-header .site-brand-name { color: #ffffff; font-size: 19px; }
+:root[data-theme="light"] .site-header .site-brand-name .text-primary { color: #93c5fd; }
+:root[data-theme="light"] .site-header .site-nav { gap: 3px; }
+:root[data-theme="light"] .site-header .site-nav a { color: #dfe3ff; padding: 8px 12px; border-radius: 7px; }
+:root[data-theme="light"] .site-header .site-nav a:hover { color: #ffffff; background: #ffffff12; }
+:root[data-theme="light"] .site-header .site-nav a.is-active { color: #ffffff; background: #2563eb; border-color: #60a5fa; box-shadow: inset 0 0 0 1px #ffffff20; }
+:root[data-theme="light"] .site-header .site-admin-link { color: #e4e7ff; border-color: #ffffff2e; }
+:root[data-theme="light"] .site-header .site-account-trigger { background: #ffffff10; color: #ffffff; border-color: #ffffff2e; padding-block: 5px; }
+:root[data-theme="light"] .site-header .site-login-button { min-height: 34px; padding: 7px 13px; background: #eff6ff; color: #1d4ed8; }
+
+:root[data-theme="light"] .sports-workspace { background: #eef1f8; }
+:root[data-theme="light"] .league-sidebar { width: 210px; background: #f7f8fc; border-color: #ccd3e5; }
+:root[data-theme="light"] .league-sidebar > div:first-child { min-height: 48px; padding: 8px 11px; background: linear-gradient(110deg, #e7e9f8, #f3f4ff); border-bottom: 1px solid #ccd3e5; }
+:root[data-theme="light"] .league-sidebar > div:first-child .text-white { color: #172033; }
+:root[data-theme="light"] .league-sidebar > div:first-child [class*="text-[11px]"] { font-size: 10px; color: #172033; }
+:root[data-theme="light"] .league-sidebar > div:first-child [class*="text-[9px]"] { font-size: 9px; margin-top: 1px; color: #68738c; }
+:root[data-theme="light"] .league-search { margin: 7px 7px 6px; padding: 6px 8px; border-color: #ccd3e5; background: #ffffff; border-radius: 7px; }
+:root[data-theme="light"] .league-search input { font-size: 11px; }
+:root[data-theme="light"] .league-list { padding: 0 7px 8px; }
+:root[data-theme="light"] .league-list > button { min-height: 36px; padding: 5px 7px; margin-bottom: 2px; border-radius: 6px; }
+:root[data-theme="light"] .league-list > button:hover { background: #eceeff; }
+:root[data-theme="light"] .league-list > button[class*="border-emerald"],
+:root[data-theme="light"] .league-list > button[class*="border-amber-500"],
+:root[data-theme="light"] .league-list > button[class*="border-[#10b981]"] { background: #eaf2ff; border-left-color: #2563eb; }
+:root[data-theme="light"] .league-list [class*="text-[11px]"] { font-size: 10px; line-height: 1.2; color: #303b55; }
+:root[data-theme="light"] .league-list [class*="text-[9px]"] { font-size: 8px; line-height: 1.2; color: #68738c; }
+:root[data-theme="light"] .league-sidebar > div:last-child { padding: 6px; background: #e7eaf6; border-color: #ccd3e5; color: #68738c; }
+
+:root[data-theme="light"] .hub-header { display: flex; align-items: center; gap: 8px; padding: 8px 14px; background: #ffffff; border-color: #ccd3e5; }
+:root[data-theme="light"] .hub-controls { display: flex; flex: 1; min-width: 260px; gap: 7px; margin: 0; }
+:root[data-theme="light"] .hub-search { min-height: 34px; padding: 6px 9px; border-radius: 7px; border-color: #ccd3e5; background: #f8f9fc; }
+:root[data-theme="light"] .hub-search input { font-size: 11px; color: #172033; }
+:root[data-theme="light"] .hub-league-trigger { min-height: 34px; padding: 0 10px; border-radius: 7px; border-color: #b9c7df; background: #eff6ff; color: #1d4ed8; font-weight: 650; }
+:root[data-theme="light"] .hub-filter-row { flex-shrink: 0; gap: 4px; }
+:root[data-theme="light"] .hub-filter-row button { min-height: 34px; padding: 5px 9px; border: 1px solid #d8ddec; border-radius: 6px; background: #f4f6fa; color: #4b5872; font-size: 10px; }
+:root[data-theme="light"] .hub-filter-row button:hover { background: #e9ecf6; border-color: #b8c1d8; }
+:root[data-theme="light"] .hub-filter-row button.is-active { color: #ffffff; background: #2563eb; border-color: #2563eb; }
+:root[data-theme="light"] .hub-filter-row button:nth-child(2).is-active { background: #e5485d; border-color: #e5485d; }
+:root[data-theme="light"] .hub-filter-row button:nth-child(3).is-active { background: #2563eb; border-color: #2563eb; }
+:root[data-theme="light"] .hub-filter-row button:nth-child(4).is-active { background: #475569; border-color: #475569; }
+:root[data-theme="light"] .hub-filter-row button.is-active small { color: #ffffff; background: #ffffff20; }
+:root[data-theme="light"] .hub-results { padding: 11px 14px 18px; }
+:root[data-theme="light"] .hub-results > .space-y-6,
+:root[data-theme="light"] .hub-results.space-y-6 { gap: 15px; }
+:root[data-theme="light"] .match-grid { grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)) !important; gap: 8px; }
+
+:root[data-theme="light"] .match-card { padding: 9px 10px; border-color: #ccd3e5; border-left: 3px solid #3b82f6; border-radius: 8px; background: #ffffff; box-shadow: 0 2px 8px #1720330a; color: #172033; }
+:root[data-theme="light"] .match-card:hover { border-color: #9da8c7; background: #f7f8ff; box-shadow: 0 4px 12px #17203312; }
+:root[data-theme="light"] .match-league { color: #68738c; font-size: 8px; }
+:root[data-theme="light"] .match-status { padding: 2px 6px; font-size: 9px; }
+:root[data-theme="light"] .match-status.is-live { color: #a4142a; background: #ffe8eb; }
+:root[data-theme="light"] .match-status.is-completed { color: #475569; background: #e8ebf1; }
+:root[data-theme="light"] .match-status.is-upcoming { color: #1d4ed8; background: #e4edff; }
+:root[data-theme="light"] .match-schedule { margin-top: 4px; font-size: 9px; }
+:root[data-theme="light"] .match-teams { gap: 5px; margin: 6px 0 7px; }
+:root[data-theme="light"] .match-team { gap: 7px; min-height: 27px; }
+:root[data-theme="light"] .team-monogram { width: 26px; height: 26px; border-radius: 6px; font-size: 8px; }
+:root[data-theme="light"] .team-monogram-0 { color: #1d4ed8; background: #e5efff; }
+:root[data-theme="light"] .team-monogram-1 { color: #1d4ed8; background: #e1edff; }
+:root[data-theme="light"] .match-team-name strong { color: #202a40; font-size: 11px; line-height: 1.2; }
+:root[data-theme="light"] .match-team-name > span { display: inline-block; margin-top: 1px; padding: 1px 4px; border-radius: 4px; background: #eaf2ff; color: #1d4ed8; font-size: 9px; font-weight: 650; }
+:root[data-theme="light"] .match-odds small { margin-bottom: 1px; font-size: 8px; }
+:root[data-theme="light"] .match-odds strong { min-width: 44px; padding: 2px 6px; background: #e7eaf6; color: #27324a; font-size: 11px; }
+:root[data-theme="light"] .match-flow-label { margin-bottom: 4px; font-size: 9px; }
+:root[data-theme="light"] .match-flow { height: 3px; background: #c8cfe2; }
+:root[data-theme="light"] .match-flow span { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+:root[data-theme="light"] .match-card-bottom { gap: 5px; margin-top: 7px; padding-top: 6px; border-color: #e0e4ef; font-size: 8px; }
+:root[data-theme="light"] .match-access { color: #1d4ed8; }
+
+:root[data-theme="light"] .toss-market-row { min-height: 64px; padding: 8px 11px; gap: 7px; background: #ffffff; }
+:root[data-theme="light"] .toss-market-row:hover { background: #f5f6ff; }
+:root[data-theme="light"] .glass-card { border-color: #ccd3e5; border-radius: 9px; background: #ffffff; box-shadow: 0 2px 9px #1720330b; }
+:root[data-theme="light"] .detail-page { max-width: 1380px; padding: 14px !important; }
+:root[data-theme="light"] .detail-page > .sticky { margin-left: -14px; margin-right: -14px; padding: 7px 14px; background: #f3f4ff; border-color: #ccd3e5; }
+:root[data-theme="light"] .detail-page .glass-card { padding: 13px; }
+:root[data-theme="light"] .detail-page.space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 10px; }
+:root[data-theme="light"] .detail-page :is(.rounded-xl,.rounded-2xl) { border-radius: 9px; }
+:root[data-theme="light"] .bookie-period-section { margin: 11px 0; }
+:root[data-theme="light"] .bookie-period-heading { margin-bottom: 8px; }
+:root[data-theme="light"] .bookie-period-grid { gap: 8px; }
+:root[data-theme="light"] .bookie-period-card { border-color: #ccd3e5; border-radius: 8px; }
+:root[data-theme="light"] .bookie-period-card header { padding: 7px 8px; background: #e7eaf6; }
+:root[data-theme="light"] .bookie-period-card :is(th,td) { padding: 6px 7px; }
+:root[data-theme="light"] .bookie-period-note { padding: 7px 9px; }
+
+:root[data-theme="light"] .admin-workspace { padding: 18px 20px; }
+:root[data-theme="light"] .admin-workspace-heading { margin-bottom: 15px; }
+:root[data-theme="light"] .admin-heading-icon { width: 38px; height: 38px; background: #e5efff; border-color: #ccd3e5; color: #1d4ed8; }
+:root[data-theme="light"] .admin-workspace-heading h1 { font-size: 23px; }
+:root[data-theme="light"] .admin-workspace-body { grid-template-columns: 190px minmax(0, 1fr); gap: 16px; }
+:root[data-theme="light"] .admin-navigation { top: calc(var(--site-content-offset) + 12px); padding: 9px 7px; border-color: #ccd3e5; background: #f7f8fc; }
+:root[data-theme="light"] .admin-nav-group + .admin-nav-group { margin-top: 11px; }
+:root[data-theme="light"] .admin-navigation button { padding: 7px 8px; font-size: 11px; }
+:root[data-theme="light"] .admin-navigation button.is-active { color: #ffffff; background: #2563eb; }
+:root[data-theme="light"] .admin-section-heading { margin-bottom: 13px; padding-bottom: 10px; border-color: #bdd6d1; }
+:root[data-theme="light"] .admin-content :is(th,td) { padding-top: 9px; padding-bottom: 9px; }
+:root[data-theme="light"] .admin-content input:not([type="checkbox"]),
+:root[data-theme="light"] .admin-content select,
+:root[data-theme="light"] .admin-content textarea { min-height: 34px; }
+:root[data-theme="light"] .ui-page { padding: 24px 18px 36px; }
+:root[data-theme="light"] .ui-page-heading { margin-bottom: 16px; }
+:root[data-theme="light"] .ui-page-heading h1 { font-size: 25px; margin-bottom: 5px; }
+:root[data-theme="light"] .ui-page > .glass-card { padding: 17px; }
+:root[data-theme="light"] .ui-page button,
+:root[data-theme="light"] .ui-page a.glass-card { min-height: 39px; }
+
+@media (min-width: 1600px) {
+  :root[data-theme="light"] .league-sidebar { width: 220px; }
+  :root[data-theme="light"] .hub-header,
+  :root[data-theme="light"] .hub-results { padding-left: 24px; padding-right: 24px; }
+}
+@media (max-width: 1100px) {
+  :root[data-theme="light"] .hub-header { flex-wrap: wrap; }
+  :root[data-theme="light"] .hub-controls { width: 100%; }
+  :root[data-theme="light"] .hub-filter-row { width: 100%; }
+}
+@media (max-width: 767px) {
+  :root[data-theme="light"] { --site-header-height: 52px; }
+  :root[data-theme="light"] .site-header { height: 52px; }
+  :root[data-theme="light"] .site-header-inner { height: 52px; padding: 0 10px; gap: 8px; }
+  :root[data-theme="light"] .site-brand { gap: 7px; }
+  :root[data-theme="light"] .site-brand img { width: 27px; height: 27px; }
+  :root[data-theme="light"] .site-header .site-brand-name { font-size: 17px; }
+  :root[data-theme="light"] .site-header-inner > button { min-width: 34px; min-height: 34px; padding: 6px; }
+  :root[data-theme="light"] .site-account-trigger { min-height: 34px; padding: 4px 6px; }
+  :root[data-theme="light"] .site-header .site-login-button { min-height: 34px; padding: 6px 10px; }
+  :root[data-theme="light"] .site-nav { position: fixed; inset: auto 0 0; z-index: 60; height: 52px; padding: 4px 8px; background: #ffffff; border-top: 1px solid #d4dbea; box-shadow: 0 -4px 16px #0f172a12; }
+  :root[data-theme="light"] .site-nav a { height: 44px; max-width: none; flex-direction: column; gap: 1px; padding: 4px 8px; color: #64748b; border-radius: 8px; font-size: 10px; }
+  :root[data-theme="light"] .site-nav a svg { width: 17px; height: 17px; }
+  :root[data-theme="light"] .site-nav a.is-active { color: #1d4ed8; background: #eaf2ff; box-shadow: none; }
+  :root[data-theme="light"] .site-main { padding-bottom: 52px; }
+  :root[data-theme="light"] .sports-workspace { height: calc(100dvh - var(--site-content-offset) - 52px); }
+  :root[data-theme="light"] .hub-header { padding: 7px 8px; gap: 6px; }
+  :root[data-theme="light"] .hub-controls { min-width: 0; gap: 5px; }
+  :root[data-theme="light"] .hub-search { min-height: 34px; padding: 5px 8px; }
+  :root[data-theme="light"] .hub-search input { font-size: 14px; }
+  :root[data-theme="light"] .hub-league-trigger { width: 36px; min-height: 34px; }
+  :root[data-theme="light"] .hub-filter-row { gap: 4px; overflow-x: auto; padding-bottom: 1px; }
+  :root[data-theme="light"] .hub-filter-row button { flex: 0 0 auto; min-height: 29px; padding: 4px 8px; font-size: 10px; }
+  :root[data-theme="light"] .hub-results { padding: 9px 8px 16px; }
+  :root[data-theme="light"] .match-grid { gap: 6px; }
+  :root[data-theme="light"] .match-card { padding: 8px; }
+  :root[data-theme="light"] .match-team-name strong { font-size: 11px; }
+  :root[data-theme="light"] .toss-market-row { min-height: 60px; padding: 7px 8px; }
+  :root[data-theme="light"] .detail-page { padding: 10px !important; }
+  :root[data-theme="light"] .detail-page > .sticky { margin-left: -10px; margin-right: -10px; padding: 6px 10px; }
+  :root[data-theme="light"] .detail-page .glass-card { padding: 11px; }
+  :root[data-theme="light"] .admin-workspace { padding: 14px 10px; }
+  :root[data-theme="light"] .ui-page { padding: 18px 11px 28px; }
+}
+
+/* Final colour controls: data profit/loss colours stay semantic; navigation,
+   actions, cards and category chrome use the navy/indigo palette. */
+:root[data-theme="light"] :is(.ui-button-primary, .admin-content .md-button-primary, .auth-page form > button) {
+  color: #ffffff !important;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+}
+:root[data-theme="light"] :is(.ui-button-primary, .admin-content .md-button-primary, .auth-page form > button):hover {
+  background: #3730a3 !important;
+  border-color: #3730a3 !important;
+}
+:root[data-theme="light"] .ui-button-secondary {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #b8cae8;
+}
+:root[data-theme="light"] .ui-button-secondary:hover { background: #dbeafe; border-color: #93b4e5; }
+:root[data-theme="light"] .site-trial-banner { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
+:root[data-theme="light"] [class*="text-teal-"] { color: #0f766e !important; }
+:root[data-theme="light"] [class*="text-emerald-"],
+:root[data-theme="light"] [class*="text-green-"] { color: #15803d !important; }
+:root[data-theme="light"] [class*="bg-emerald-"] { background-color: #ecfdf5 !important; }
+:root[data-theme="light"] [class*="border-emerald-"] { border-color: #86efac !important; }
+
+/* Brighter market identity: the first selection stays green and the second
+   stays red everywhere, while P/L values keep their profit/loss colour. */
+:root[data-theme="light"] body,
+:root[data-theme="light"] .app-shell,
+:root[data-theme="light"] .sports-workspace,
+:root[data-theme="light"] .sports-content { background: #f3f6ff; }
+:root[data-theme="light"] .site-header {
+  background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 42%, #fff1f2 100%);
+  border-bottom-color: #cbd5e1;
+  box-shadow: 0 4px 18px #1e3a8a0d;
+}
+:root[data-theme="light"] .site-header .site-brand-name { color: #0f172a; }
+:root[data-theme="light"] .site-header .site-brand-name .text-primary { color: #2563eb; }
+:root[data-theme="light"] .site-header .site-nav a { color: #475569; }
+:root[data-theme="light"] .site-header .site-nav a:hover { color: #1e3a8a; background: #dbeafe; }
+:root[data-theme="light"] .site-header .site-nav a.is-active { color: #ffffff; background: #2563eb; border-color: #2563eb; }
+:root[data-theme="light"] .site-header .site-admin-link { color: #334155; border-color: #cbd5e1; background: #ffffffb8; }
+:root[data-theme="light"] .site-header .site-account-trigger { background: #ffffffcc; border-color: #cbd5e1; }
+:root[data-theme="light"] .site-header [style*="rgba(37,99,235,0.12)"] { color: #1d4ed8 !important; }
+:root[data-theme="light"] .hub-header {
+  background: linear-gradient(120deg, #eff6ff 0%, #f5f3ff 50%, #ecfdf5 100%);
+  border-bottom-color: #c7d2fe;
+}
+:root[data-theme="light"] .hub-results {
+  background: radial-gradient(circle at 12% 0%, #dcfce733 0, transparent 24%),
+              radial-gradient(circle at 88% 0%, #fee2e233 0, transparent 24%),
+              #f3f6ff;
+}
+:root[data-theme="light"] .match-card {
+  border-color: #cbd5e1;
+  box-shadow: 0 5px 18px #1e3a8a10;
+}
+:root[data-theme="light"] .match-card:hover {
+  border-color: #818cf8;
+  box-shadow: 0 10px 26px #4338ca18;
+}
+:root[data-theme="light"] .team-monogram-0 { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+:root[data-theme="light"] .team-monogram-1 { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+:root[data-theme="light"] .match-team-0 .match-team-name strong,
+:root[data-theme="light"] .match-team-0 .match-odds strong { color: #15803d; }
+:root[data-theme="light"] .match-team-0 .match-odds strong { background: #ecfdf5; border: 1px solid #86efac; }
+:root[data-theme="light"] .match-team-1 .match-team-name strong,
+:root[data-theme="light"] .match-team-1 .match-odds strong { color: #b91c1c; }
+:root[data-theme="light"] .match-team-1 .match-odds strong { background: #fff1f2; border: 1px solid #fda4af; }
+:root[data-theme="light"] .match-flow { display: flex; background: #e2e8f0; }
+:root[data-theme="light"] .match-flow .match-flow-team-1 { background: #22c55e; }
+:root[data-theme="light"] .match-flow .match-flow-team-2 { background: #ef4444; }
+
+:root[data-theme="light"] .toss-market-row { border-left: 3px solid transparent; }
+:root[data-theme="light"] .toss-market-row:hover {
+  background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 50%, #fff1f2 100%);
+  border-left-color: #6366f1;
+}
+:root[data-theme="light"] .market-team-column { padding: 5px 7px; border-radius: 9px; }
+:root[data-theme="light"] .market-team-green { background: #f0fdf4; border: 1px solid #bbf7d0; }
+:root[data-theme="light"] .market-team-green :is(.market-team-name,.market-team-value,.market-team-odds) { color: #15803d; }
+:root[data-theme="light"] .market-team-green .market-team-percent { color: #166534; background: #dcfce7; border: 1px solid #86efac; }
+:root[data-theme="light"] .market-team-red { background: #fff1f2; border: 1px solid #fecdd3; }
+:root[data-theme="light"] .market-team-red :is(.market-team-name,.market-team-value,.market-team-odds) { color: #b91c1c; }
+:root[data-theme="light"] .market-team-red .market-team-percent { color: #991b1b; background: #fee2e2; border: 1px solid #fca5a5; }
+
+:root[data-theme="light"] .bookie-period-heading h3 { color: #312e81; }
+:root[data-theme="light"] .bookie-period-card {
+  border-color: #c7d2fe;
+  box-shadow: 0 5px 16px #312e8110;
+}
+:root[data-theme="light"] .bookie-period-card header { background: linear-gradient(90deg, #eef2ff, #f5f3ff); }
+:root[data-theme="light"] .bookie-period-card .team-tone-0 { color: #15803d; background-color: #f0fdf4; }
+:root[data-theme="light"] .bookie-period-card .team-tone-1 { color: #b91c1c; background-color: #fff1f2; }
+:root[data-theme="light"] .bookie-period-card .team-tone-2 { color: #a16207; background-color: #fffbeb; }
+:root[data-theme="light"] .bookie-period-card td.text-profit { color: #15803d !important; font-weight: 750; }
+:root[data-theme="light"] .bookie-period-card td.text-loss { color: #b91c1c !important; font-weight: 750; }
+
+/* Compact match detail controls and league prediction summary. */
+:root[data-theme="light"] .detail-page-compact.space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 8px; }
+:root[data-theme="light"] .match-detail-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 -14px 6px;
+  padding: 6px 14px;
+  border-bottom: 1px solid #cbd5e1;
+  background: #f8fafce8;
+  box-shadow: 0 3px 10px #0f172a0a;
+  backdrop-filter: blur(12px);
+}
+:root[data-theme="light"] .match-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+  min-height: 30px !important;
+  padding: 4px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 750;
+}
+:root[data-theme="light"] .match-detail-back:hover { color: #1d4ed8; border-color: #93c5fd; background: #eff6ff; }
+:root[data-theme="light"] .match-detail-tabs {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 3px;
+  border: 1px solid #dbe2ee;
+  border-radius: 10px;
+  background: #eef2f7;
+}
+:root[data-theme="light"] .match-detail-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 27px !important;
+  padding: 4px 9px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  color: #64748b;
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+:root[data-theme="light"] .match-detail-tab:hover { color: #1e3a8a; background: #ffffffa8; }
+:root[data-theme="light"] .match-detail-tab.is-active {
+  color: #ffffff;
+  border-color: #1d4ed8;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  box-shadow: 0 2px 7px #2563eb2e;
+}
+
+:root[data-theme="light"] .league-prediction-card {
+  position: relative;
+  overflow: hidden;
+  padding: 9px 11px;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #2563eb;
+  border-radius: 10px;
+  color: #334155;
+}
+:root[data-theme="light"] .league-prediction-top,
+:root[data-theme="light"] .league-prediction-main,
+:root[data-theme="light"] .league-prediction-meta,
+:root[data-theme="light"] .league-evidence summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+:root[data-theme="light"] .league-prediction-tag,
+:root[data-theme="light"] .league-prediction-badges {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+:root[data-theme="light"] .league-prediction-tag span {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+:root[data-theme="light"] .league-rule-badge {
+  padding: 2px 6px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+}
+:root[data-theme="light"] .league-prediction-main { margin-top: 5px; }
+:root[data-theme="light"] .league-prediction-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: .07em;
+}
+:root[data-theme="light"] .league-prediction-label svg { color: #d97706; }
+:root[data-theme="light"] .league-prediction-main h3 {
+  overflow: hidden;
+  margin-top: 1px;
+  color: #172554;
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 900;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+:root[data-theme="light"] .league-confidence {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  background: #ffffffb8;
+  color: #1d4ed8;
+}
+:root[data-theme="light"] .league-confidence strong { font-size: 14px; font-weight: 900; line-height: 1; }
+:root[data-theme="light"] .league-confidence span { color: #64748b; font-size: 8px; font-weight: 750; }
+:root[data-theme="light"] .league-risk-line {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  padding: 4px 7px;
+  border: 1px solid #fecaca;
+  border-radius: 7px;
+  background: #fff1f2;
+  color: #b91c1c;
+  font-size: 9px;
+}
+:root[data-theme="light"] .league-risk-line svg { flex: 0 0 auto; }
+:root[data-theme="light"] .league-prediction-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  margin-top: 6px;
+  color: #475569;
+  font-size: 10px;
+  line-height: 1.35;
+}
+:root[data-theme="light"] .league-prediction-reason svg { flex: 0 0 auto; margin-top: 1px; }
+:root[data-theme="light"] .league-prediction-reason p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+:root[data-theme="light"] .league-prediction-meta {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 5px;
+  color: #64748b;
+  font-size: 8px;
+  font-weight: 700;
+}
+:root[data-theme="light"] .league-prediction-meta span + span::before { content: "•"; margin-right: 8px; color: #94a3b8; }
+:root[data-theme="light"] .league-evidence {
+  margin-top: 6px;
+  border-top: 1px solid #dbeafe;
+}
+:root[data-theme="light"] .league-evidence summary {
+  min-height: 26px;
+  color: #1e40af;
+  font-size: 9px;
+  font-weight: 850;
+  cursor: pointer;
+  list-style: none;
+}
+:root[data-theme="light"] .league-evidence summary::-webkit-details-marker { display: none; }
+:root[data-theme="light"] .league-evidence summary::after { content: "+"; margin-left: auto; font-size: 13px; }
+:root[data-theme="light"] .league-evidence[open] summary::after { content: "−"; }
+:root[data-theme="light"] .league-evidence summary span:last-child { margin-left: auto; color: #64748b; font-weight: 750; }
+:root[data-theme="light"] .league-evidence-grid {
+  overflow: hidden;
+  border: 1px solid #dbeafe;
+  border-radius: 7px;
+  background: #ffffffb8;
+}
+:root[data-theme="light"] .league-evidence-grid > div {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(65px, .7fr) minmax(65px, .7fr);
+  padding: 4px 7px;
+  color: #475569;
+  font-size: 9px;
+  font-weight: 750;
+}
+:root[data-theme="light"] .league-evidence-grid > div + div { border-top: 1px solid #eff6ff; }
+:root[data-theme="light"] .league-evidence-grid span:nth-child(n+2) { text-align: center; }
+:root[data-theme="light"] .league-evidence-grid span:nth-child(2) { color: #15803d; }
+:root[data-theme="light"] .league-evidence-grid span:nth-child(3) { color: #b91c1c; }
+:root[data-theme="light"] .league-evidence-grid .league-evidence-head { background: #f8fafc; color: #64748b; font-size: 8px; text-transform: uppercase; }
+:root[data-theme="light"] .league-exit-advice {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+  padding: 6px 8px;
+  border: 1px solid;
+  border-radius: 8px;
+  font-size: 9px;
+}
+:root[data-theme="light"] .league-exit-advice svg { flex: 0 0 auto; margin-top: 1px; }
+:root[data-theme="light"] .league-exit-advice strong { font-size: 10px; }
+:root[data-theme="light"] .league-exit-advice p { margin-top: 1px; line-height: 1.35; }
+:root[data-theme="light"] .league-exit-advice.is-danger { border-color: #fecaca; background: #fff1f2; color: #991b1b; }
+:root[data-theme="light"] .league-exit-advice.is-warning { border-color: #fde68a; background: #fffbeb; color: #92400e; }
+
+@media (max-width: 767px) {
+  :root[data-theme="light"] .match-detail-toolbar { margin: 0 -10px 5px; padding: 5px 10px; gap: 7px; }
+  :root[data-theme="light"] .match-detail-back { min-height: 29px !important; padding-inline: 7px; }
+  :root[data-theme="light"] .match-detail-tabs { flex: 1 1 auto; }
+  :root[data-theme="light"] .match-detail-tab { flex: 1 1 0; min-width: 0; min-height: 27px !important; padding: 3px 6px; }
+  :root[data-theme="light"] .league-prediction-card { padding: 8px 9px; }
+  :root[data-theme="light"] .league-prediction-reason p { -webkit-line-clamp: 1; }
+
+  /* A raised, colour-coded mobile switcher keeps the three sports easy to scan. */
+  :root[data-theme="light"] .site-header .site-nav {
+    position: fixed;
+    inset: auto 10px calc(8px + env(safe-area-inset-bottom));
+    z-index: 60;
+    height: 58px;
+    padding: 5px;
+    gap: 4px;
+    border: 1px solid #cbd5e1;
+    border-radius: 17px;
+    background: #ffffffee;
+    box-shadow: 0 8px 26px #0f172a24;
+    backdrop-filter: blur(14px);
+  }
+  :root[data-theme="light"] .site-header .site-nav a {
+    flex: 1 1 0;
+    max-width: none;
+    height: 46px;
+    padding: 4px 7px;
+    gap: 1px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 800;
+  }
+  :root[data-theme="light"] .site-header .site-nav a svg { width: 17px; height: 17px; }
+  :root[data-theme="light"] .site-header .site-nav a:hover { color: #334155; background: #f1f5f9; }
+  :root[data-theme="light"] .site-header .site-nav a:nth-child(1).is-active { color: #166534; border-color: #86efac; background: #dcfce7; }
+  :root[data-theme="light"] .site-header .site-nav a:nth-child(2).is-active { color: #92400e; border-color: #fcd34d; background: #fef3c7; }
+  :root[data-theme="light"] .site-header .site-nav a:nth-child(3).is-active { color: #1e40af; border-color: #93c5fd; background: #dbeafe; }
+  :root[data-theme="light"] .site-main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  :root[data-theme="light"] .sports-workspace { height: calc(100dvh - var(--site-content-offset) - 76px - env(safe-area-inset-bottom)); }
+}

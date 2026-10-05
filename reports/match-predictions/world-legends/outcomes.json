@@ -1,0 +1,42 @@
+{
+  "league": "World Championship of Legends T20",
+  "cutoff": "2026-10-05T12:00:00+05:30",
+  "method": "Completed winners were checked against FanCode's World Championship of Legends 2026 results. Team names published as Champions map to the corresponding Legends runner names in the saved exchange feed.",
+  "fixtures": [
+    {
+      "matchId": "36126552",
+      "outcome": "winner",
+      "actualWinner": "India Legends",
+      "publishedWinner": "India Champions",
+      "resultText": "India Champions beat Australia Champions by 46 runs",
+      "source": "FanCode",
+      "sourceUrl": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/video-highlights/india-champions-beat-australia-champions-by-46-runs-match-1-223756"
+    },
+    {
+      "matchId": "36128071",
+      "outcome": "unresolved",
+      "resultText": null,
+      "exclusionReason": "No completed winner was published by the cutoff, so this archived market is not scored as a played match.",
+      "source": "FanCode",
+      "sourceUrl": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/matches"
+    },
+    {
+      "matchId": "36130557",
+      "outcome": "winner",
+      "actualWinner": "South Africa Legends",
+      "publishedWinner": "South Africa Champions",
+      "resultText": "South Africa Champions beat West Indies Champions by 97 runs",
+      "source": "FanCode",
+      "sourceUrl": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/matches"
+    },
+    {
+      "matchId": "36147996",
+      "outcome": "winner",
+      "actualWinner": "England Legends",
+      "publishedWinner": "England Champions",
+      "resultText": "England Champions beat India Champions by 21 runs",
+      "source": "FanCode",
+      "sourceUrl": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/matches/india-champions-vs-england-champions-4249223/live-match-info"
+    }
+  ]
+}

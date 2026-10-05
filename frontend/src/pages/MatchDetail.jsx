@@ -3,20 +3,21 @@ import TossDetail from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, BarChart3, ChevronDown, ChevronUp, TrendingUp, Radio, Trophy, Sparkles, Shield, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, BarChart3, BookOpen, ChevronDown, ChevronUp, Coins, TrendingUp, Radio, Trophy, Sparkles, Shield, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchWinner, predictSmartMarketWinner } from '../utils/matchWinnerPredictor'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
-import { getBookiePl, splitMatchOutcomes } from '../utils/bookiePl'
+import { getBookiePl, splitMatchOutcomes, finiteNumber, timestamp, tradeSide, getSelectionStakes, latestMatchedPrice } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
-import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
+import { RiskBadge } from '../components/PredictionMeta'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
 import { getCricketMatchBundle } from '../api'
+import { isCompleteMatchBundle } from '../utils/matchBundle'
 
 const fmt = (n) => {
   if (n === null || n === undefined) return '—'
@@ -25,17 +26,17 @@ const fmt = (n) => {
 
 const fmtRs = (n) => {
   if (n === null || n === undefined) return '—'
-  const sign = n >= 0 ? '+' : ''
-  return `${sign}€${fmt(n)}`
+  const sign = n >= 0 ? '+' : '−'
+  return `${sign}€${fmt(Math.abs(n))}`
 }
 
 const fmtTossRs = (n) => {
   if (n === null || n === undefined) return '—'
   const rounded = Math.round(Number(n))
-  return `${rounded >= 0 ? '+' : ''}€${rounded.toLocaleString('en-IN')}`
+  return `${rounded >= 0 ? '+' : '−'}€${Math.abs(rounded).toLocaleString('en-IN')}`
 }
 
-const pnlCls = (n) => n >= 0 ? 'text-profit' : 'text-loss'
+const pnlCls = (n) => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
 
 const fmtVol = (n) => {
   if (!n) return '0.00'
@@ -48,7 +49,8 @@ const formatMoney = (val) => {
 }
 
 const formatBetfairVol = (val) => {
-  if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
+  if (val === null || val === undefined) return '—'
+  if (val === 0 || val === '0') return '0.00'
   const num = Number(val)
   if (isNaN(num)) return String(val)
   const abs = Math.abs(num)
@@ -59,7 +61,8 @@ const formatBetfairVol = (val) => {
 }
 
 const formatVolStr = (val) => {
-  if (val === null || val === undefined || val === 0 || val === '0') return '0.00'
+  if (val === null || val === undefined) return '—'
+  if (val === 0 || val === '0') return '0.00'
   const num = Number(val)
   if (isNaN(num)) return val.toString()
   const abs = Math.abs(num)
@@ -79,27 +82,6 @@ const formatOdds = (val) => {
   return Number(val).toFixed(2)
 }
 
-function extractTossOdds(trades, fallback = null) {
-  if (!Array.isArray(trades) || trades.length === 0) return fallback
-  const tossTrades = trades.filter((t) => {
-    const p = parseFloat(t.price)
-    return !isNaN(p) && p >= 1.70 && p <= 2.30
-  })
-  if (tossTrades.length > 0) {
-    const sorted = [...tossTrades].sort((a, b) => b.updatedAt - a.updatedAt)
-    return parseFloat(sorted[0].price)
-  }
-  const broader = trades.filter((t) => {
-    const p = parseFloat(t.price)
-    return !isNaN(p) && p >= 1.60 && p <= 2.40
-  })
-  if (broader.length > 0) {
-    const sorted = [...broader].sort((a, b) => b.updatedAt - a.updatedAt)
-    return parseFloat(sorted[0].price)
-  }
-  return fallback
-}
-
 /** Match scheduled start — not live clock / serverTime */
 const formatMatchSchedule = (ts) => {
   if (ts == null || ts === '') return null
@@ -117,226 +99,12 @@ const formatMatchSchedule = (ts) => {
   return { date, time, label: `${date} • ${time}` }
 }
 
-const getPredictionVisuals = (pred) => {
-  if (!pred) return null
-  if (pred.modelScope === 'rules') {
-    return {
-      gradient: '#0c101d', border: '#1e2538', shadow: 'none',
-      textColor: 'text-slate-300', badgeBg: 'bg-slate-700 text-white',
-      tagText: 'NORMAL LEAGUE ALGORITHM', pill: 'Rule based',
-      desc: pred.reason, meterPct: 0,
-    }
-  }
-  const tier = pred.tier
-
-  if (tier === 'WOMENS_ASIA_CUP_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(20, 184, 166, 0.22) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(20, 184, 166, 0.5)',
-      shadow: '0 8px 30px rgba(20, 184, 166, 0.2)',
-      textColor: 'text-teal-400',
-      badgeBg: 'bg-teal-400 text-black',
-      tagText: "👩 WOMEN'S ASIA CUP (100% BACKTESTED)",
-      pill: '100% Verified (9/9 Won)',
-      desc: "Women's Asia Cup matches evaluate Pre-Match smart money inflow margins, dominant volume leadership, and bookmaker lay resistance. Verified 100% accuracy on tournament history.",
-      meterPct: 100,
-    }
-  }
-
-  if (tier === 'INTERNATIONAL_T20_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(16, 185, 129, 0.45)',
-      shadow: '0 8px 30px rgba(16, 185, 129, 0.18)',
-      textColor: 'text-emerald-400',
-      badgeBg: 'bg-emerald-400 text-black',
-      tagText: '🌍 INTL T20 SPECIAL ALGO',
-      pill: 'High Liquidity Flow',
-      desc: 'International T20 matches rely on high-liquidity Pre-Match data. The AI evaluates Pre-Match Bookmaker P/L exposure, Smart Lay Pressure, and Public Overload Traps to predict the true winner.',
-      meterPct: 92,
-    }
-  }
-
-  if (tier === 'WCPL_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(236, 72, 153, 0.22) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(236, 72, 153, 0.5)',
-      shadow: '0 8px 30px rgba(236, 72, 153, 0.2)',
-      textColor: 'text-pink-400',
-      badgeBg: 'bg-pink-500 text-black',
-      tagText: "👩 WCPL SPECIAL ALGO",
-      pill: 'Dual Flow Margin',
-      desc: "Women's Caribbean Premier League (WCPL) matches evaluate Pre-Match Lay Resistance Dumps, dual flow advantages, and smart money margins to predict the true winner.",
-      meterPct: 95,
-    }
-  }
-
-  if (tier === 'CPL_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(168, 85, 247, 0.45)',
-      shadow: '0 8px 30px rgba(168, 85, 247, 0.18)',
-      textColor: 'text-purple-400',
-      badgeBg: 'bg-purple-400 text-black',
-      tagText: '⚡ CPL BOOKIE TRAP FADE',
-      pill: 'Public Trap Fade',
-      desc: 'CPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.',
-      meterPct: 90,
-    }
-  }
-
-  if (tier === 'KERALA_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(20, 184, 166, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(20, 184, 166, 0.45)',
-      shadow: '0 8px 30px rgba(20, 184, 166, 0.18)',
-      textColor: 'text-teal-400',
-      badgeBg: 'bg-teal-400 text-black',
-      tagText: '🌴 KERALA T20 SPECIAL',
-      pill: 'Dominant Inflow Leader',
-      desc: 'Kerala matches evaluate Pre-Match Lay Resistance Dumps and Dominant Inflow Margins to identify the true market winner.',
-      meterPct: 88,
-    }
-  }
-
-  if (tier === 'DELHI_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(244, 63, 94, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(244, 63, 94, 0.45)',
-      shadow: '0 8px 30px rgba(244, 63, 94, 0.18)',
-      textColor: 'text-rose-400',
-      badgeBg: 'bg-rose-500 text-black',
-      tagText: '🇮🇳 DELHI T20 SPECIAL',
-      pill: 'Bookie Trap Fade',
-      desc: 'Delhi matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.',
-      meterPct: 87,
-    }
-  }
-
-  if (tier === 'UP_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(99, 102, 241, 0.45)',
-      shadow: '0 8px 30px rgba(99, 102, 241, 0.18)',
-      textColor: 'text-indigo-400',
-      badgeBg: 'bg-indigo-400 text-black',
-      tagText: '🇮🇳 UP T20 SPECIAL',
-      pill: 'Engagement Margin',
-      desc: 'Uttar Pradesh matches evaluate Pre-Match market activity engagement, smart volume accumulation, and bookmaker lay resistance to pinpoint the true winner.',
-      meterPct: 89,
-    }
-  }
-
-  if (tier === 'PUNJAB_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(245, 158, 11, 0.5)',
-      shadow: '0 8px 30px rgba(245, 158, 11, 0.2)',
-      textColor: 'text-amber-400',
-      badgeBg: 'bg-amber-400 text-black',
-      tagText: '🦁 SHER-E-PUNJAB ALGO',
-      pill: 'Bookmaker Trap Alignment',
-      desc: 'Sher-e-Punjab T20 matches strictly act as Bookie Traps. The AI strictly fades the heavy public money to pick the team with maximum bookmaker profitability.',
-      meterPct: 91,
-    }
-  }
-
-  if (tier === 'SRILANKA_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(234, 88, 12, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(234, 88, 12, 0.45)',
-      shadow: '0 8px 30px rgba(234, 88, 12, 0.18)',
-      textColor: 'text-orange-400',
-      badgeBg: 'bg-orange-400 text-black',
-      tagText: '🇱🇰 SRI LANKA MAJOR CLUBS',
-      pill: 'Reversed Result Fade',
-      desc: 'Sri Lanka Major Clubs T20 matches show a strong trend of reversed results. The AI strictly fades the public money to align with the bookmaker trap.',
-      meterPct: 86,
-    }
-  }
-
-  if (tier === 'ECS_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(14, 165, 233, 0.45)',
-      shadow: '0 8px 30px rgba(14, 165, 233, 0.18)',
-      textColor: 'text-sky-400',
-      badgeBg: 'bg-sky-400 text-black',
-      tagText: '🇪🇺 ECS SPECIAL ALGO',
-      pill: 'High Odds Trap Fade',
-      desc: 'European Cricket Series (ECS) matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.',
-      meterPct: 88,
-    }
-  }
-
-  if (tier === 'WOMENS_T20_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(217, 70, 239, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(217, 70, 239, 0.45)',
-      shadow: '0 8px 30px rgba(217, 70, 239, 0.18)',
-      textColor: 'text-fuchsia-400',
-      badgeBg: 'bg-fuchsia-400 text-black',
-      tagText: "👩 WOMEN'S T20 SPECIAL",
-      pill: 'Smart Inflow Margin',
-      desc: "Women's T20 matches evaluate Pre-Match smart money inflow margins and dual volume leadership to identify the true market winner.",
-      meterPct: 90,
-    }
-  }
-
-  if (tier === 'TNPL_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(234, 179, 8, 0.45)',
-      shadow: '0 8px 30px rgba(234, 179, 8, 0.18)',
-      textColor: 'text-amber-400',
-      badgeBg: 'bg-amber-400 text-black',
-      tagText: '🇮🇳 TNPL SPECIAL ALGO',
-      pill: 'Bookie Trap Fade',
-      desc: 'TNPL matches consistently act as Bookie Traps. The AI strictly fades the public money and picks the team that yields maximum profitability for the bookmaker.',
-      meterPct: 89,
-    }
-  }
-
-  if (tier === 'HUNDRED_SPECIAL') {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(6, 182, 212, 0.45)',
-      shadow: '0 8px 30px rgba(6, 182, 212, 0.18)',
-      textColor: 'text-cyan-400',
-      badgeBg: 'bg-cyan-400 text-black',
-      tagText: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 THE HUNDRED SPECIAL',
-      pill: 'Volume Accumulation Margin',
-      desc: 'The Hundred matches evaluate Pre-Match volume accumulation margins and dual volume advantages.',
-      meterPct: 87,
-    }
-  }
-
-  if (tier === 1) {
-    return {
-      gradient: 'linear-gradient(135deg, rgba(234, 179, 8, 0.2) 0%, rgba(13, 17, 23, 0.95) 100%)',
-      border: 'rgba(234, 179, 8, 0.45)',
-      shadow: '0 8px 30px rgba(234, 179, 8, 0.18)',
-      textColor: 'text-amber-400',
-      badgeBg: 'bg-amber-400 text-black',
-      tagText: '⭐ TIER 1 PREDICTION (100% BACKTESTED)',
-      pill: 'Triple Volume Alignment',
-      desc: '100% backtested accuracy. PreMatch Back Volume, Lay Volume, and Liability all strongly align towards this team winning.',
-      meterPct: 98,
-    }
-  }
-
-  return {
-    gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.18) 0%, rgba(13, 17, 23, 0.95) 100%)',
-    border: 'rgba(59, 130, 246, 0.4)',
-    shadow: '0 8px 30px rgba(59, 130, 246, 0.15)',
-    textColor: 'text-blue-400',
-    badgeBg: 'bg-blue-400 text-black',
-    tagText: '🎯 QUANT MARKET PREDICTION',
-    pill: 'Volume Leadership Margin',
-    desc: 'PreMatch market orderbook analysis shows a significant volume accumulation and odds resilience for this team.',
-    meterPct: 82,
-  }
-}
+const getPredictionVisuals = pred => pred ? {
+  gradient: '#eff6ff', border: '#bfdbfe', shadow: 'none',
+  textColor: 'text-primary', badgeBg: 'bg-primary text-white',
+  tagText: 'LEAGUE ALGORITHM', pill: 'Rule based', desc: pred.reason,
+  meterPct: pred.confidence?.calibrated ? finiteNumber(pred.confidence.pct) : null,
+} : null
 
 const processTeamData = (teamName, teamData, timeFilter = 'all') => {
   let trades = teamData?.trades || []
@@ -450,7 +218,6 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
 
   if (!teamData) return null
 
-  const pl = teamData.bookieProfitIfWins || 0
 
   const getSessionPlForLine = (lineItem) => {
     if (!isSession || !teamData.orderBook) return 0
@@ -842,7 +609,7 @@ export default function MatchDetail({ sport }) {
     const socket = getSocket()
 
     const onSpecificBundle = (bundle) => {
-      if (String(bundle?.matchId) === String(matchId)) {
+      if (String(bundle?.matchId) === String(matchId) && isCompleteMatchBundle(bundle)) {
         handleBundle(bundle)
       }
     }
@@ -970,7 +737,7 @@ export default function MatchDetail({ sport }) {
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full py-3 rounded-xl font-bold text-white text-sm mb-3"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
+            style={{ background: 'linear-gradient(135deg,#1d4ed8,#2563eb)' }}
           >
             🚀 Buy Pro — Telegram pe Contact Karo
           </a>
@@ -995,7 +762,7 @@ export default function MatchDetail({ sport }) {
           <button
             onClick={() => window.location.reload()}
             className="px-5 py-2 rounded-xl text-white text-sm font-semibold"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
+            style={{ background: 'linear-gradient(135deg,#1d4ed8,#2563eb)' }}
           >
             Dubara try karo
           </button>
@@ -1043,7 +810,7 @@ export default function MatchDetail({ sport }) {
   )
 
   const cachedStart =
-    location.state?.startTime ??
+    location.state?.startTime ?? location.state?.matchData?.startTime ??
     (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`match_start_${matchId}`) : null)
   const matchSchedule = formatMatchSchedule(
     snapshot.startTime ?? snapshot.openDate ?? snapshot.marketStartTime ?? cachedStart
@@ -1056,9 +823,9 @@ export default function MatchDetail({ sport }) {
   const drawTrades = hasDraw ? ((snapshot.teams?.[drawName] || {}).trades || []) : []
 
   const getLatestOdds = (trades, teamKey) => {
-    const sorted = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
-    let back = sorted.find(t => t.type === 'back')?.price
-    let lay = sorted.find(t => t.type === 'lay')?.price
+    const sorted = [...trades].sort((a, b) => (timestamp(b.updatedAt) || 0) - (timestamp(a.updatedAt) || 0))
+    let back = sorted.find(t => tradeSide(t) === 'back')?.price
+    let lay = sorted.find(t => tradeSide(t) === 'lay')?.price
 
     // Fallback to runners from seed snapshot / matchLoad
     if (back == null || lay == null) {
@@ -1067,38 +834,20 @@ export default function MatchDetail({ sport }) {
         (teamKey && r.runnerName && teamKey.toLowerCase().includes(r.runnerName.toLowerCase()))
       )
       if (runner) {
-        if (back == null) back = runner.price || runner.back
-        if (lay == null) lay = runner.lay || (runner.price ? (parseFloat(runner.price) + 0.02).toFixed(2) : null)
+        if (back == null) back = runner.back || runner.backPrice || runner.ex?.availableToBack?.[0]?.price || null
+        if (lay == null) lay = runner.lay || runner.layPrice || runner.ex?.availableToLay?.[0]?.price || null
       }
     }
 
-    // Fallback to CREX live rates only for cricket
-    if (sport === 'cricket' && (back == null || lay == null) && crexData?.odds) {
-      const co = crexData.odds
-      const r1 = co.rate != null ? Number(co.rate) : (co.back != null ? Number(co.back) : null)
-      const r2 = co.rate2 != null ? Number(co.rate2) : (co.lay != null ? Number(co.lay) : null)
-      if (r1 !== null && back == null) {
-        back = r1 > 0 ? (r1 < 10 ? (1 + r1 / 100).toFixed(2) : (r1 < 100 ? (1 + r1 / 100).toFixed(2) : (r1 / 100).toFixed(2))) : '1.01'
-      }
-      if (r2 !== null && lay == null) {
-        lay = r2 > 0 ? (r2 < 10 ? (1 + r2 / 100).toFixed(2) : (r2 < 100 ? (1 + r2 / 100).toFixed(2) : (r2 / 100).toFixed(2))) : '1.02'
-      }
-    }
-
-    return { back, lay }
+    return { back: finiteNumber(back) > 1 ? finiteNumber(back) : null, lay: finiteNumber(lay) > 1 ? finiteNumber(lay) : null }
   }
   const t1Odds = getLatestOdds(t1Trades, t1)
   const t2Odds = getLatestOdds(t2Trades, t2)
   const drawOdds = hasDraw ? getLatestOdds(drawTrades, drawName) : null
-  const am1 = snapshot.advancedMetrics?.team1 || {}
-  const am2 = snapshot.advancedMetrics?.team2 || {}
-  const sp = dm.simplePL || {}
-  const dp = dm.derivedPL || {}
-  const teams = snapshot.teams || {}
-  const t1Data = teams[t1] || {}
-  const t2Data = teams[t2] || {}
+  const am1 = getSelectionStakes(snapshot, t1)
+  const am2 = getSelectionStakes(snapshot, t2)
 
-  const { pl1, pl2, plDraw } = getBookiePl(snapshot, t1, t2, drawName)
+  const { pl1, pl2, plDraw, stats: bookieStats } = getBookiePl(snapshot, t1, t2, drawName)
   const matchStartPred = lockedStartPred || liveStartPred
 
   const pickName = matchStartPred?.winnerName
@@ -1114,12 +863,10 @@ export default function MatchDetail({ sport }) {
     })
     : null
 
-  const dpl1 = dp.team1_win
-  const dpl2 = dp.team2_win
 
-  const marketBet1 = dm.totals?.totalBetTeam1 ?? t1Data.totalBet ?? 0
-  const marketBet2 = dm.totals?.totalBetTeam2 ?? t2Data.totalBet ?? 0
-  const marketBetDraw = hasDraw ? (teams[drawName]?.totalBet ?? 0) : 0
+  const marketBet1 = bookieStats?.[t1] ? bookieStats[t1].tBack + bookieStats[t1].tLay : null
+  const marketBet2 = bookieStats?.[t2] ? bookieStats[t2].tBack + bookieStats[t2].tLay : null
+  const marketBetDraw = hasDraw ? (bookieStats?.[drawName] ? bookieStats[drawName].tBack + bookieStats[drawName].tLay : null) : 0
   const marketBetTotal = marketBet1 + marketBet2 + marketBetDraw
   const marketBetPct1 = marketBetTotal > 0 ? (marketBet1 / marketBetTotal) * 100 : 50
   const marketBetPct2 = marketBetTotal > 0 ? (marketBet2 / marketBetTotal) * 100 : 50
@@ -1142,31 +889,29 @@ export default function MatchDetail({ sport }) {
     ? (aRatio < bRatio ? t1 : t2)
     : null
 
+  // Original provider period metrics shown on the first version of this page.
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
   const pp = snapshot.preMatchPnl || {}
   const pb = snapshot.preMatchTotalBets || {}
   const iv = snapshot.inPlayVolume || {}
   const pv = snapshot.preMatchVolume || {}
-
   const tmp = snapshot.threeMinPnl || {}
   const tmb = snapshot.threeMinTotalBets || {}
   const tmv = snapshot.threeMinVolume || {}
 
-  // Fallback 3-min metrics from raw trades if not pre-aggregated
-  const get3mMetrics = (tName) => {
-    const trades = snapshot?.teams?.[tName]?.trades || []
+  const get3mMetrics = (teamName) => {
+    const trades = snapshot?.teams?.[teamName]?.trades || []
     if (!trades.length) return { back: 0, lay: 0, total: 0 }
-    const now = Date.now()
-    const cutoff = now - 3 * 60 * 1000
-    let back = 0, lay = 0
-    for (const tr of trades) {
-      const time = new Date(tr.updatedAt).getTime()
-      if (time >= cutoff) {
-        const size = parseFloat(tr.size) || 0
-        if (tr.side === 'B') back += size
-        else if (tr.side === 'L') lay += size
-      }
+    const cutoff = Date.now() - 3 * 60 * 1000
+    let back = 0
+    let lay = 0
+    for (const trade of trades) {
+      if (new Date(trade.updatedAt).getTime() < cutoff) continue
+      const size = parseFloat(trade.size) || 0
+      const side = tradeSide(trade)
+      if (side === 'back') back += size
+      else if (side === 'lay') lay += size
     }
     return { back, lay, total: back + lay }
   }
@@ -1180,6 +925,7 @@ export default function MatchDetail({ sport }) {
     team2: tmb.team2 ?? (snapshot.teams?.[t2]?.trades?.filter(t => (Date.now() - new Date(t.updatedAt).getTime()) <= 180000).length || 0),
   }
   const finalTmp = tmp
+
   const exp = snapshot.bookmakerExposure || {}
   const exp1 = exp.team1 || {}
   const exp2 = exp.team2 || {}
@@ -1198,8 +944,8 @@ export default function MatchDetail({ sport }) {
   const tossSnap = tossSnapshot
   const tossT1Name = tossSnap?.teamNames?.[0] || t1
   const tossT2Name = tossSnap?.teamNames?.[1] || t2
-  const tossM1 = tossSnap?.advancedMetricsV2?.team1 || tossSnap?.supportMetrics?.team1 || (tossSnap?.teams?.[tossT1Name] ? { totalBet: tossSnap.teams[tossT1Name].totalBet || 0, back: tossSnap.teams[tossT1Name].totalBet || 0, lay: 0 } : null)
-  const tossM2 = tossSnap?.advancedMetricsV2?.team2 || tossSnap?.supportMetrics?.team2 || (tossSnap?.teams?.[tossT2Name] ? { totalBet: tossSnap.teams[tossT2Name].totalBet || 0, back: tossSnap.teams[tossT2Name].totalBet || 0, lay: 0 } : null)
+  const tossM1 = getSelectionStakes(tossSnap, tossT1Name)
+  const tossM2 = getSelectionStakes(tossSnap, tossT2Name)
   const tossS1 = tossSnap?.syntheticSupport?.teamA
   const tossS2 = tossSnap?.syntheticSupport?.teamB
   const tossSup1 = tossSnap?.supportMetrics?.team1
@@ -1214,27 +960,23 @@ export default function MatchDetail({ sport }) {
   const tossT1GraphData = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], effectiveTimeFilter) : null
   const tossT2GraphData = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], effectiveTimeFilter) : null
   const tossMarketVol = (tossT1GraphData?.totalBet || 0) + (tossT2GraphData?.totalBet || 0)
-  const tossT1PctVol = tossMarketVol > 0 ? ((tossT1GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
-  const tossT2PctVol = tossMarketVol > 0 ? ((tossT2GraphData?.totalBet || 0) / tossMarketVol) * 100 : 50
 
-  const tossTradeVol1 = tossTrades1.length > 0 ? tossTrades1.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
-  const tossTradeVol2 = tossTrades2.length > 0 ? tossTrades2.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
 
-  const tossVol1 = tossTradeVol1 || tossT1GraphData?.totalBet || tossM1?.totalBet || tossSnap?.preMatchTotalBets?.team1 || 0
-  const tossVol2 = tossTradeVol2 || tossT2GraphData?.totalBet || tossM2?.totalBet || tossSnap?.preMatchTotalBets?.team2 || 0
+  const tossVol1 = tossM1.totalBet
+  const tossVol2 = tossM2.totalBet
 
-  const tossOdds1 = extractTossOdds(tossTrades1) || (tossSnap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(tossSnap.syntheticSupport.teamA.averageOdds.toFixed(2)) : null) || (tossSnap?.runners?.[0]?.price && tossSnap.runners[0].price >= 1.60 && tossSnap.runners[0].price <= 2.40 ? tossSnap.runners[0].price : null) || null
-  const tossOdds2 = extractTossOdds(tossTrades2) || (tossSnap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(tossSnap.syntheticSupport.teamB.averageOdds.toFixed(2)) : null) || (tossSnap?.runners?.[1]?.price && tossSnap.runners[1].price >= 1.60 && tossSnap.runners[1].price <= 2.40 ? tossSnap.runners[1].price : null) || null
+  const tossOdds1 = latestMatchedPrice(tossTrades1)
+  const tossOdds2 = latestMatchedPrice(tossTrades2)
 
-  const tossTot = tossVol1 + tossVol2
-  const tossPct1 = (tossTot > 0) ? Math.round((tossVol1 / tossTot) * 100) : (tossT1PctVol ? Math.round(tossT1PctVol) : 50)
-  const tossPct2 = (tossTot > 0) ? (100 - tossPct1) : (100 - tossPct1)
+  const tossTot = tossVol1 != null && tossVol2 != null ? tossVol1 + tossVol2 : null
+  const tossPct1 = tossTot > 0 ? Math.round(tossVol1 / tossTot * 100) : null
+  const tossPct2 = tossPct1 == null ? null : 100 - tossPct1
 
   const tossPrediction = tossSnap ? predictTossWinner(tossSnap, tossSnap?.competitionName || snapshot?.competitionName || '') : null
   const predictedTossWinner = tossPrediction?.winnerName || 'Waiting for more data...'
   const tossPredictionReason = tossPrediction?.reason || ''
 
-  // Bookie P/L on graph — same source as Simple Book (simplePL), not sampled-trade pnlIfWins
+  // The summary and graphs use the same verified settlement calculation.
   if (t1GraphData) t1GraphData.bookieProfitIfWins = pl1
   if (t2GraphData) t2GraphData.bookieProfitIfWins = pl2
   if (tossT1GraphData) tossT1GraphData.bookieProfitIfWins = tossT1BookiePL
@@ -1245,52 +987,45 @@ export default function MatchDetail({ sport }) {
 
 
   return (
-    <div className="p-2 sm:p-3 md:p-4 w-full fade-in stagger space-y-2.5 sm:space-y-3">
+    <div className="detail-page detail-page-compact w-full fade-in stagger space-y-4">
 
       {/* Header with Tabs */}
-      <div className="flex items-center justify-between mb-2.5 sticky top-0 py-1.5 z-30 -mx-2 sm:-mx-3 md:-mx-4 px-2 sm:px-3 md:px-4 border-b border-[#1f2638] backdrop-blur-xl bg-[#080a12]/90 shadow-md">
+      <div className="match-detail-toolbar sticky top-0 z-30">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="flex items-center gap-1 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white bg-[#141824] hover:bg-[#1a2030] border border-[#222a3e] transition-all shadow-sm shrink-0"
+          className="match-detail-back"
         >
-          <ArrowLeft size={12} className="sm:w-[13px] sm:h-[13px]" /> <span>Back</span>
+          <ArrowLeft size={14} /> <span>Back</span>
         </button>
 
-        <div className="flex items-center rounded-lg p-0.5 gap-0.5 sm:gap-1 overflow-x-auto no-scrollbar max-w-[calc(100vw-75px)] sm:max-w-none bg-[#10131e] border border-[#1f273b]">
+        <div className="match-detail-tabs" role="tablist" aria-label="Match views">
           {[
-            { key: 'simple', label: 'Simple Book', mobileLabel: 'Simple Book' },
+            { key: 'simple', label: 'Market', icon: <BookOpen size={13} /> },
             sport === 'cricket' && crexData ? {
               key: 'crex',
-              label: 'Live & Commentary',
-              mobileLabel: 'Live Comm',
-              icon: <Radio className="w-2.5 h-2.5 sm:w-[11px] sm:h-[11px] text-red-400 animate-pulse" />
+              label: 'Live',
+              icon: <Radio size={13} />
             } : null,
             sport === 'cricket' && hasTossData ? {
               key: 'toss',
-              label: 'Toss Market',
-              mobileLabel: 'Toss'
+              label: 'Toss',
+              icon: <Coins size={13} />
             } : null,
-          ].filter(Boolean).map(({ key, label, mobileLabel, icon }) => {
+          ].filter(Boolean).map(({ key, label, icon }) => {
             const isActive = activeTab === key
             return (
               <button
                 key={key}
+                type="button"
+                role="tab"
+                aria-label={label}
+                aria-selected={isActive}
                 onClick={() => handleTabChange(key)}
-                className={`px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[10.5px] sm:text-xs font-bold transition-all flex items-center gap-1 whitespace-nowrap flex-shrink-0 ${isActive
-                    ? 'text-white shadow-sm'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                style={isActive ? {
-                  background: key === 'crex' ? 'linear-gradient(135deg,#059669,#10b981)'
-                    : key === 'toss' ? 'linear-gradient(135deg,#7c3aed,#a855f7)'
-                      : key === 'session' ? 'linear-gradient(135deg,#b45309,#f59e0b)'
-                        : 'linear-gradient(135deg,#dc2626,#ea580c)'
-                } : {}}
+                className={`match-detail-tab${isActive ? ' is-active' : ''}`}
               >
                 {icon}
-                <span className="hidden sm:inline">{label}</span>
-                <span className="sm:hidden">{mobileLabel || label}</span>
+                <span>{label}</span>
               </button>
             )
           })}
@@ -1302,62 +1037,6 @@ export default function MatchDetail({ sport }) {
 
       {activeTab === 'toss' ? (
         <div className="space-y-4">
-          {/* Toss Winner / Decision Banner */}
-          {(() => {
-            const rawToss =
-              crexData?.scorecard?.tossText ||
-              crexData?.toss?.text ||
-              crexData?.tossText ||
-              (crexData?.scorecard?.statusEquation && /opt|chose|elected|toss/i.test(crexData.scorecard.statusEquation) ? crexData.scorecard.statusEquation : null) ||
-              tossSnapshot?.tossText ||
-              (tossSnapshot?.actualWinner ? `Toss Winner: ${tossSnapshot.actualWinner}` : null) ||
-              (tossSnapshot?.tossWinner ? `Toss Winner: ${tossSnapshot.tossWinner}` : null) ||
-              null;
-            if (!rawToss) return null;
-
-            let cleaned = String(rawToss)
-              .replace(/<[^>]*>?/gm, ' ')
-              .replace(/Player\s+of\s+the\s+Match.*$/i, '')
-              .replace(/\b\d+\/\d+\s*\(.*$/i, '')
-              .replace(/Com$/i, '')
-              .replace(/[\u2026\.\s]+$/, '')
-              .trim();
-
-            if (!cleaned) return null;
-
-            let tossBannerText = cleaned;
-            const decMatch = cleaned.match(/(?:opt(?:ed)?|chose|elected|decided)\s+to\s+(bat|bowl|field)/i);
-            const decision = decMatch ? ((decMatch[1].toLowerCase() === 'field' || decMatch[1].toLowerCase() === 'bowl') ? 'opt to Bowl' : 'opt to Bat') : null;
-
-            const t1 = tossT1Name || t1Name || '';
-            const t2 = tossT2Name || t2Name || '';
-            let winner = null;
-
-            const preMatch = cleaned.match(/^\s*([a-zA-Z0-9\s\-]+?)\s+(?:have\s+)?(?:opt(?:ed)?|chose|elected|decided|won\s+(?:the\s+)?toss)/i);
-            if (preMatch) {
-              const cand = preMatch[1].trim();
-              if (t1 && (cand.toLowerCase() === t1.toLowerCase() || t1.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(t1.toLowerCase()))) winner = t1;
-              else if (t2 && (cand.toLowerCase() === t2.toLowerCase() || t2.toLowerCase().includes(cand.toLowerCase()) || cand.toLowerCase().includes(t2.toLowerCase()))) winner = t2;
-              else winner = cand;
-            } else if (/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i.test(cleaned)) {
-              winner = cleaned.match(/^Toss\s+Winner:\s*([a-zA-Z0-9\s\-]+)/i)[1].trim();
-            } else if (t1 && cleaned.toLowerCase().includes(t1.toLowerCase())) {
-              winner = t1;
-            } else if (t2 && cleaned.toLowerCase().includes(t2.toLowerCase())) {
-              winner = t2;
-            }
-
-            if (winner) {
-              tossBannerText = decision ? `Toss Winner: ${winner} (${decision})` : `Toss Winner: ${winner}`;
-            }
-
-            return (
-              <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-amber-400/10 border border-amber-400/30 text-sm font-bold text-amber-400">
-                <span>🪙</span>
-                <span>{tossBannerText}</span>
-              </div>
-            );
-          })()}
           {tossSnapshot ? (
             <>
               {/* Toss Team Comparison Card (100% Width) */}
@@ -1378,7 +1057,7 @@ export default function MatchDetail({ sport }) {
                           : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
                         }`}
                     >
-                      {tossPct1}%
+                      {tossPct1 == null ? '—' : `${tossPct1}%`}
                     </span>
                     {/* Odds */}
                     <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
@@ -1402,7 +1081,7 @@ export default function MatchDetail({ sport }) {
                           : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
                         }`}
                     >
-                      {tossPct2}%
+                      {tossPct2 == null ? '—' : `${tossPct2}%`}
                     </span>
                     {/* Odds */}
                     <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
@@ -1415,7 +1094,7 @@ export default function MatchDetail({ sport }) {
                 {/* Micro Inflow Bar */}
                 <div className="mt-2 h-1.5 w-full bg-[#1b2234] rounded-full overflow-hidden flex">
                   <div
-                    style={{ width: `${tossPct1}%` }}
+                    style={{ width: `${tossPct1 ?? 0}%` }}
                     className={`h-full transition-all duration-300 ${
                       tossPct1 >= tossPct2
                         ? 'bg-gradient-to-r from-emerald-700 to-green-600'
@@ -1423,7 +1102,7 @@ export default function MatchDetail({ sport }) {
                     }`}
                   />
                   <div
-                    style={{ width: `${tossPct2}%` }}
+                    style={{ width: `${tossPct2 ?? 0}%` }}
                     className={`h-full transition-all duration-300 ${
                       tossPct2 > tossPct1
                         ? 'bg-gradient-to-r from-emerald-700 to-green-600'
@@ -1498,7 +1177,7 @@ export default function MatchDetail({ sport }) {
                     </div>
                     <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
                       {[{ name: tossT1Name, pl: tossT1BookiePL }, { name: tossT2Name, pl: tossT2BookiePL }].map(({ name, pl }) => {
-                        const isProf = (pl ?? 0) >= 0
+                        const isProf = pl != null && pl >= 0
                         return (
                           <div
                             key={name}
@@ -1510,7 +1189,7 @@ export default function MatchDetail({ sport }) {
                           >
                             <div className="text-sm sm:text-base font-bold text-white mb-1 truncate">{name}</div>
                             <div className={`text-xl font-black font-mono ${pnlCls(pl)}`}>{fmtTossRs(pl)}</div>
-                            <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{isProf ? '✅ PROFIT' : '❌ LOSS'}</div>
+                            <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl == null ? 'Unavailable' : isProf ? '✅ PROFIT' : '❌ LOSS'}</div>
                           </div>
                         )
                       })}
@@ -1529,7 +1208,7 @@ export default function MatchDetail({ sport }) {
                     {[
                       { label: 'Back Val', v1: <span className="text-[11px] text-sky-400 font-bold">€{formatVolStr(tossM1?.back)}</span>, v2: <span className="text-[11px] text-sky-400 font-bold">€{formatVolStr(tossM2?.back)}</span> },
                       { label: 'Lay Liab', v1: <span className="text-[11px] text-rose-400 font-bold">€{formatVolStr(tossM1?.lay)}</span>, v2: <span className="text-[11px] text-rose-400 font-bold">€{formatVolStr(tossM2?.lay)}</span> },
-                      { label: 'Total Bet', v1: <span className="text-[11px] text-white font-bold">€{formatVolStr(tossM1?.totalBet)}</span>, v2: <span className="text-[11px] text-white font-bold">€{formatVolStr(tossM2?.totalBet)}</span> },
+                      { label: 'Matched stakes', v1: <span className="text-[11px] text-white font-bold">€{formatVolStr(tossM1?.totalBet)}</span>, v2: <span className="text-[11px] text-white font-bold">€{formatVolStr(tossM2?.totalBet)}</span> },
                       { label: 'Lay Trades', v1: <span className="text-[11px] text-white font-bold">{tossS1?.tradeCount ?? '—'}</span>, v2: <span className="text-[11px] text-white font-bold">{tossS2?.tradeCount ?? '—'}</span> },
                       { label: 'Support %', v1: <span className="text-[11px] font-bold" style={{ color: (tossSup1?.support ?? 0) > (tossSup2?.support ?? 0) ? '#34d399' : '#94a3b8' }}>{tossSup1 ? tossSup1.support.toFixed(1) + '%' : '—'}</span>, v2: <span className="text-[11px] font-bold" style={{ color: (tossSup2?.support ?? 0) > (tossSup1?.support ?? 0) ? '#34d399' : '#94a3b8' }}>{tossSup2 ? tossSup2.support.toFixed(1) + '%' : '—'}</span> },
                       { label: 'B/L Ratio', v1: <span className="text-[11px] text-emerald-400 font-bold">{tossM1?.lay > 0 ? (tossM1.back / tossM1.lay).toFixed(2) : '—'}</span>, v2: <span className="text-[11px] text-emerald-400 font-bold">{tossM2?.lay > 0 ? (tossM2.back / tossM2.lay).toFixed(2) : '—'}</span> },
@@ -1570,78 +1249,107 @@ export default function MatchDetail({ sport }) {
               {matchStartPred && matchStartPred.winnerName && (() => {
                 const pv = getPredictionVisuals(matchStartPred)
                 if (!pv) return null
+                const avoidEntry = matchStartPred.risk?.avoidEntry || matchStartPred.risk?.tier === 'high'
                 return (
+                  <>
                   <div
-                    className="relative overflow-hidden rounded-xl border p-3 sm:p-3.5 shadow-xl transition-all duration-300 backdrop-blur-md"
+                    className="league-prediction-card"
                     style={{
                       background: pv.gradient,
                       borderColor: pv.border,
                       boxShadow: pv.shadow,
                     }}
                   >
-                    {/* Top Tag & Confidence Banner */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-1.5">
-                        <div className="p-1 rounded-md bg-white/10 backdrop-blur-sm">
-                          <Sparkles size={13} className={`${pv.textColor} animate-pulse`} />
-                        </div>
-                        <span className={`text-[11px] font-black uppercase tracking-wider ${pv.textColor}`}>
+                    <div className="league-prediction-top">
+                      <div className="league-prediction-tag">
+                        <Sparkles size={12} className={pv.textColor} />
+                        <span className={pv.textColor}>
                           {pv.tagText}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className={`text-[9px] font-extrabold px-2 py-0.5 rounded-full shadow-sm ${pv.badgeBg}`}>
+                      <div className="league-prediction-badges">
+                        <span className={`league-rule-badge ${pv.badgeBg}`}>
                           {pv.pill}
                         </span>
-                        <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-black/60 border border-white/10 text-white/90 font-mono">
-                          {matchStartPred.confidence.label}
-                        </span>
+                        <RiskBadge risk={matchStartPred.risk} compact />
                       </div>
                     </div>
 
-                    {/* Winner Display */}
-                    <div className="my-2">
-                      <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 flex items-center gap-1">
-                        <Trophy size={11} className="text-amber-400" />
-                        <span>PREDICTED MATCH WINNER</span>
+                    <div className="league-prediction-main">
+                      <div className="min-w-0">
+                        <div className="league-prediction-label">
+                          <Trophy size={11} />
+                          <span>{avoidEntry ? 'MARKET LEAN · NO BET' : 'PREDICTED WINNER'}</span>
+                        </div>
+                        <h3>{matchStartPred.winnerName}</h3>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                        <span>{matchStartPred.winnerName}</span>
-                      </h3>
+                      {matchStartPred.confidence.calibrated && (
+                        <div className="league-confidence" aria-label={`${pv.meterPct}% confidence`}>
+                          <strong>{pv.meterPct}%</strong>
+                          <span>confidence</span>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Confidence Meter Bar */}
-                    {matchStartPred.confidence.calibrated && <div className="mt-2 mb-1.5">
-                      <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 mb-0.5">
-                        <span>Algorithmic Backtested Confidence</span>
-                        <span className={`font-mono ${pv.textColor}`}>{pv.meterPct}% Confidence</span>
+                    {avoidEntry && (
+                      <div className="league-risk-line" role="alert">
+                        <AlertTriangle size={13} />
+                        <span><strong>High risk:</strong> entry avoid karein</span>
                       </div>
-                      <div className="h-1.5 rounded-full overflow-hidden bg-black/50 border border-white/5">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{
-                            width: `${pv.meterPct}%`,
-                            background: pv.textColor.includes('teal') ? 'linear-gradient(90deg, #14b8a6, #2dd4bf)'
-                              : pv.textColor.includes('emerald') ? 'linear-gradient(90deg, #10b981, #34d399)'
-                                : pv.textColor.includes('pink') ? 'linear-gradient(90deg, #ec4899, #f472b6)'
-                                  : pv.textColor.includes('purple') ? 'linear-gradient(90deg, #a855f7, #c084fc)'
-                                    : pv.textColor.includes('rose') ? 'linear-gradient(90deg, #f43f5e, #fb7185)'
-                                      : pv.textColor.includes('amber') ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-                                        : 'linear-gradient(90deg, #3b82f6, #60a5fa)',
-                            boxShadow: '0 0 8px rgba(255,255,255,0.3)'
-                          }}
-                        />
-                      </div>
-                    </div>}
+                    )}
 
-                    <p className="text-[10px] text-slate-400">Independent league algorithm · {matchStartPred.algorithmLeague || 'Unregistered league fallback'}</p>
-
-                    {/* Intelligence Insight Note */}
-                    <div className="mt-2 pt-2 border-t border-white/10 flex items-start gap-1.5 text-[11px] text-slate-300 leading-snug">
-                      <Shield size={12} className={`${pv.textColor} shrink-0 mt-0.5`} />
+                    <div className="league-prediction-reason">
+                      <Shield size={12} className={pv.textColor} />
                       <p>{pv.desc}</p>
                     </div>
+
+                    <div className="league-prediction-meta">
+                      <span>{matchStartPred.algorithmLeague || 'Unregistered league'}</span>
+                      <span>Start pick locked</span>
+                      {!matchStartPred.confidence.calibrated && <span>{matchStartPred.confidence.label}</span>}
+                    </div>
+
+                    {matchStartPred.marketEvidence && (
+                      <details className="league-evidence">
+                        <summary>
+                          <span>Market evidence</span>
+                          <span>{matchStartPred.marketEvidence.agreeingSignals}/{matchStartPred.marketEvidence.signalCount} signals</span>
+                        </summary>
+                        <div className="league-evidence-grid">
+                          <div className="league-evidence-head">
+                            <span>Signal</span>
+                            <span>{t1}</span>
+                            <span>{t2}</span>
+                          </div>
+                          <div>
+                            <span>Corrected support</span>
+                            <span>{matchStartPred.marketEvidence.support.pct1.toFixed(0)}%</span>
+                            <span>{matchStartPred.marketEvidence.support.pct2.toFixed(0)}%</span>
+                          </div>
+                          <div>
+                            <span>Pre-match activity</span>
+                            <span>{matchStartPred.marketEvidence.activity.pct1.toFixed(0)}%</span>
+                            <span>{matchStartPred.marketEvidence.activity.pct2.toFixed(0)}%</span>
+                          </div>
+                          <div>
+                            <span>Bookie liability</span>
+                            <span>{matchStartPred.marketEvidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</span>
+                            <span>{matchStartPred.marketEvidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</span>
+                          </div>
+                        </div>
+                      </details>
+                    )}
                   </div>
+                  {exitAdvice && (
+                    <div className={`league-exit-advice ${exitAdvice.level === 'danger' ? 'is-danger' : 'is-warning'}`} role="alert">
+                      <AlertTriangle size={14} />
+                      <div>
+                        <strong>{exitAdvice.title}</strong>
+                        <p>{exitAdvice.message}</p>
+                      </div>
+                    </div>
+                  )}
+                  </>
                 )
               })()}
 
@@ -1668,18 +1376,16 @@ export default function MatchDetail({ sport }) {
                   {snapshot.competitionName && <div className="text-[11px] font-medium text-slate-400 mt-0.5">{snapshot.competitionName}</div>}
 
                   {(marketBetTotal > 0 || marketVol > 0) && (() => {
-                    const leaderAmt = Math.max(marketBet1, marketBet2, hasDraw ? marketBetDraw : 0)
-                    const colorFor = (amt) => amt === leaderAmt && leaderAmt > 0 ? '#fb7185' : '#34d399'
-                    const c1 = colorFor(marketBet1)
-                    const c2 = colorFor(marketBet2)
-                    const cDraw = colorFor(marketBetDraw)
+                    const c1 = '#16a34a'
+                    const c2 = '#dc2626'
+                    const cDraw = '#d97706'
                     return (
                       <div className="mt-2.5 space-y-2 pt-2 border-t border-[#1b2234]">
                         {marketBetTotal > 0 && (
                           <div>
                             <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                              <span>Total Bets Ratio</span>
-                              <span className="text-slate-500 font-mono">€{fmt(marketBetTotal)} bets</span>
+                              <span>Matched stake ratio</span>
+                              <span className="text-slate-500 font-mono">€{fmt(marketBetTotal)} stake</span>
                             </div>
                             <div className="flex h-1.5 rounded-full overflow-hidden bg-[#07090e] border border-[#1b2234] mb-1">
                               <div className="transition-all duration-500" style={{ width: `${marketBetPct1}%`, background: c1 }} />
@@ -1705,12 +1411,8 @@ export default function MatchDetail({ sport }) {
                           </div>
                         )}
                         {marketVol > 0 && (() => {
-                          const vol1 = t1GraphData?.totalBet || 0
-                          const vol2 = t2GraphData?.totalBet || 0
-                          const moneyLeader = Math.max(vol1, vol2)
-                          const moneyColor = (amt) => (amt === moneyLeader && moneyLeader > 0 ? '#34d399' : '#fb7185')
-                          const mc1 = moneyColor(vol1)
-                          const mc2 = moneyColor(vol2)
+                          const mc1 = '#16a34a'
+                          const mc2 = '#dc2626'
                           return (
                             <div>
                               <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
@@ -1822,7 +1524,7 @@ export default function MatchDetail({ sport }) {
                     key={side.name}
                     className="rounded-lg p-2.5 border bg-[#080b14] transition-all"
                     style={{
-                      borderColor: isLower ? 'rgba(16,185,129,0.45)' : '#1b2234',
+                      borderColor: isLower ? 'rgba(37,99,235,0.45)' : '#1b2234',
                     }}
                   >
                     <div className="flex items-center justify-between gap-2 mb-1.5">
@@ -1895,7 +1597,7 @@ export default function MatchDetail({ sport }) {
                         <div key={team} className="rounded-lg p-2.5 border border-[#1b2234] bg-[#080b14]">
                           <div className="text-xs font-bold text-white mb-1.5 truncate">{team}</div>
                           <div className="text-[11px] space-y-1 font-mono">
-                            <div className="flex justify-between"><span className="text-slate-400">Back Expo</span><span className="font-bold text-sky-400">{back != null ? Number(back).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
+                            <div className="flex justify-between"><span className="text-slate-400">Back stake</span><span className="font-bold text-sky-400">{back != null ? Number(back).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
                             <div className="flex justify-between"><span className="text-slate-400">Lay Stake</span><span className="font-bold text-rose-400">{lay != null ? Number(lay).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
                           </div>
                         </div>
@@ -1908,7 +1610,7 @@ export default function MatchDetail({ sport }) {
                   const v2 = dm.totals.team2 ?? dm.totals.totalBetTeam2
                   return (
                     <div>
-                      <div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">Total Bets Count</div>
+                      <div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">Provider reported total</div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         {[{ team: t1, val: v1 }, { team: t2, val: v2 }].map(({ team, val }) => {
                           const isLower = (v1 != null && v2 != null) && (team === t1 ? v1 < v2 : v2 < v1)
@@ -1963,34 +1665,32 @@ export default function MatchDetail({ sport }) {
             </div>
           )}
 
-          {/* ━━━━━━━━━━ 5. QUICK STATS ━━━━━━━━━━ */}
+          {/* ━━━━━━━━━━ Original P/L period cards ━━━━━━━━━━ */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
             {[
               { title: 'In-Play Live Metrics', pnl: ip, bets: ib, vol: iv, badge: 'IN-PLAY', badgeCls: 'text-rose-400 bg-rose-500/10 border-rose-500/25' },
               { title: '3-Minute Live Metrics', pnl: finalTmp, bets: finalTmb, vol: finalTmv, badge: '3-MIN LIVE', badgeCls: 'text-amber-400 bg-amber-500/10 border-amber-500/25' },
-              { title: 'Pre-Match Baseline', pnl: pp, bets: pb, vol: pv, badge: 'PRE-MATCH', badgeCls: 'text-sky-400 bg-sky-500/10 border-sky-500/25' }
+              { title: 'Pre-Match Baseline', pnl: pp, bets: pb, vol: pv, badge: 'PRE-MATCH', badgeCls: 'text-sky-400 bg-sky-500/10 border-sky-500/25' },
             ].map(({ title, pnl, bets, vol, badge, badgeCls }) => (
               <div key={title} className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl flex flex-col justify-between">
                 <div>
                   <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center justify-between min-h-[38px]">
                     <span className="text-[11px] font-black uppercase tracking-wider text-white truncate mr-2">{title}</span>
-                    <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border shrink-0 ${badgeCls}`}>
-                      {badge}
-                    </span>
+                    <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border shrink-0 ${badgeCls}`}>{badge}</span>
                   </div>
                   <div className="p-2.5 sm:p-3">
                     <div className="grid grid-cols-3 gap-1 mb-1.5 px-1">
                       <div />
-                      <div className="text-center text-[10px] font-extrabold text-slate-300 truncate px-1">{t1}</div>
-                      <div className="text-center text-[10px] font-extrabold text-slate-300 truncate px-1">{t2}</div>
+                      <div className="text-center text-[10px] font-extrabold text-emerald-400 truncate px-1">{t1}</div>
+                      <div className="text-center text-[10px] font-extrabold text-rose-400 truncate px-1">{t2}</div>
                     </div>
                     {[
                       { label: 'Bookie P/L', v1: <span className={`font-bold font-mono text-xs ${pnlCls(pnl?.team1)}`}>{fmtRs(pnl?.team1)}</span>, v2: <span className={`font-bold font-mono text-xs ${pnlCls(pnl?.team2)}`}>{fmtRs(pnl?.team2)}</span> },
                       { label: 'Total Bets', v1: <span className="text-[11px] font-mono text-slate-300">{fmt(bets?.team1)}</span>, v2: <span className="text-[11px] font-mono text-slate-300">{fmt(bets?.team2)}</span> },
                       { label: 'Back Vol', v1: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol?.team1?.back)}</span>, v2: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol?.team2?.back)}</span> },
                       { label: 'Lay Vol', v1: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol?.team1?.lay)}</span>, v2: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol?.team2?.lay)}</span> },
-                    ].map(({ label, v1, v2 }, i) => (
-                      <div key={label} className={`grid grid-cols-3 gap-1 py-1 px-1 rounded ${i % 2 === 0 ? 'bg-[#080b14]' : ''}`}>
+                    ].map(({ label, v1, v2 }, index) => (
+                      <div key={label} className={`grid grid-cols-3 gap-1 py-1 px-1 rounded ${index % 2 === 0 ? 'bg-[#080b14]' : ''}`}>
                         <div className="text-[10px] text-slate-400 flex items-center font-bold">{label}</div>
                         <div className="text-center flex items-center justify-center">{v1}</div>
                         <div className="text-center flex items-center justify-center">{v2}</div>

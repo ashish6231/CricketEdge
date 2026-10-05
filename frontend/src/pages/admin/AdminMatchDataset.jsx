@@ -3,6 +3,7 @@ import { ArrowRight, Check, ChevronLeft, ChevronRight, Code2, Cpu, Database, Dow
 import { adminGetMatchDataset, adminGetMatchDatasetExport } from '../../api'
 import { useToast } from '../../components/ToastProvider'
 import './AdminMatchDataset.css'
+import { getBookiePlWindows, splitMatchOutcomes } from '../../utils/bookiePl'
 
 const dateValue = value => {
   const number = typeof value === 'number' || /^\d+$/.test(String(value)) ? Number(value) : null
@@ -48,19 +49,21 @@ function SnapshotDrawer({ row, mode, onClose }) {
     return () => { document.body.style.overflow = originalOverflow; document.removeEventListener('keydown', onKey); previousFocus?.focus() }
   }, [onClose])
   const snapshot = row.snapshot
-  const algorithm = row.currentAlgorithm
+  const { t1, t2, drawName } = splitMatchOutcomes(snapshot.teamNames)
+  const preMatchPL = getBookiePlWindows(snapshot, t1, t2, drawName, { startTime: row.startTime }).preMatch.byName
+  const algorithm = row.currentAlgorithm || {}
   const factors = row.currentPrediction?.commonFactors
   return <div className="md-drawer-backdrop" onClick={onClose}>
     <section ref={drawer} role="dialog" aria-modal="true" aria-labelledby="md-snapshot-title" className="md-drawer" onClick={event => event.stopPropagation()}>
       <header className="md-drawer-heading"><div><span className="md-eyebrow">SAVED SNAPSHOT</span><h3 id="md-snapshot-title">{row.matchName || `${row.team1} v ${row.team2}`}</h3><p>{row.league} · {fmtDate(row.startTime, true)} IST</p></div><button className="md-icon-button" aria-label="Close snapshot" onClick={onClose}><X size={19} /></button></header>
       <div className="md-drawer-body">
         <div className="md-drawer-comparison"><div><span>{MODE_INFO[mode].label}</span><strong>{pickFor(row, mode) || 'No pick'}</strong></div><ArrowRight size={18} /><div><span>Actual result</span><strong>{row.actualWinner || 'Awaiting verification'}</strong></div></div>
-        <div className="md-drawer-section"><div className="md-section-label"><Database size={14} /> Frozen pre-match inputs</div><div className="md-input-table"><table><thead><tr><th>Metric</th>{snapshot.teamNames.slice(0, 2).map(team => <th key={team}>{team}</th>)}</tr></thead><tbody>{[
-          ['Back volume', snapshot.preMatchVolume?.team1?.back, snapshot.preMatchVolume?.team2?.back],
-          ['Lay volume', snapshot.preMatchVolume?.team1?.lay, snapshot.preMatchVolume?.team2?.lay],
-          ['P/L', snapshot.preMatchPnl?.team1, snapshot.preMatchPnl?.team2],
-          ['Total bets', snapshot.preMatchTotalBets?.team1, snapshot.preMatchTotalBets?.team2],
-        ].map(([label, first, second]) => <tr key={label}><td>{label}</td><td>{fmtNumber(first)}</td><td>{fmtNumber(second)}</td></tr>)}</tbody></table></div></div>
+        <div className="md-drawer-section"><div className="md-section-label"><Database size={14} /> Frozen pre-match inputs</div><div className="md-input-table"><table><thead><tr><th>Metric</th>{snapshot.teamNames.map(team => <th key={team}>{team}</th>)}</tr></thead><tbody>{[
+          ['Back stake', i => snapshot.preMatchVolume?.[`team${i + 1}`]?.back],
+          ['Lay stake', i => snapshot.preMatchVolume?.[`team${i + 1}`]?.lay],
+          ['Bookie P/L (settlement)', i => preMatchPL[snapshot.teamNames[i]]],
+          ['Provider reported total', i => snapshot.preMatchTotalBets?.[`team${i + 1}`]],
+        ].map(([label, value]) => <tr key={label}><td>{label}</td>{snapshot.teamNames.map((name, i) => <td key={name}>{fmtNumber(value(i))}</td>)}</tr>)}</tbody></table></div><p className="md-muted">Settlement P/L uses the same matched-trade formula as match details. A dash means the saved time-matched ledger cannot be verified. Original provider fields remain in the saved JSON.</p></div>
         <div className="md-drawer-section"><div className="md-section-label"><Cpu size={14} /> Algorithm</div><dl className="md-metadata"><div><dt>Active profile</dt><dd>{algorithm.mode}</dd></div><div><dt>Algorithm ID</dt><dd className="md-code">{algorithm.algorithmId}</dd></div><div><dt>Version</dt><dd>{algorithm.predictorVersion}</dd></div><div><dt>Verified training data</dt><dd>{algorithm.trainingSamples ?? '—'} matches</dd></div><div><dt>Original saved algorithm</dt><dd className="md-code">{row.algorithmId || 'Not recorded'}</dd></div></dl><p className="md-rule-reason">{mode === 'saved' ? row.predictionReason || row.predictionConfidence || 'No saved rule description.' : row[MODE_INFO[mode].pick]?.reason || 'No prediction available for this input.'}</p></div>
         {factors && <div className="md-drawer-section"><div className="md-section-label"><Code2 size={14} /> Common pre-match factor</div><dl className="md-metadata"><div><dt>Factor family</dt><dd>Relative market flow</dd></div><div><dt>Flow-dominant team</dt><dd>{snapshot.teamNames[factors.dominantTeamIndex] || '—'}</dd></div><div><dt>Total flow share</dt><dd>{fmtShare(factors.totalShare)}</dd></div><div><dt>Back / lay share</dt><dd>{fmtShare(factors.backShare)} / {fmtShare(factors.layShare)}</dd></div><div><dt>Prediction agreement</dt><dd>{factors.predictionAgreement} of 3 flow signals</dd></div></dl><p className="md-rule-reason">Back, lay and total-volume balance is the shared descriptive factor across leagues. It is combined with P/L and league-specific rules; this is not a calibrated win probability.</p></div>}
         <div className="md-drawer-section"><div className="md-section-label"><ShieldCheck size={14} /> Result & capture</div><dl className="md-metadata"><div><dt>Saved</dt><dd>{fmtDate(row.capturedAt, true)} IST</dd></div><div><dt>Data source</dt><dd>{row.datasetSource}</dd></div><div><dt>Match ID</dt><dd className="md-code">{row.matchId}</dd></div><div><dt>Input timing</dt><dd>{row.forecastIssuedBeforeStart ? 'Captured before start' : row.inputTiming === 'captured-before-start' ? 'Before-start timestamp not verified' : row.inputTiming === 'provider-frozen-fields-captured-after-start' ? 'Frozen fields collected after start' : 'Historical timing not recorded'}</dd></div></dl>{(row.resultVerification?.resultText || row.resultText) && <p className="md-rule-reason">{row.resultVerification?.resultText || row.resultText}</p>}{row.reportedWinner && !row.actualWinner && <p className="md-muted">Reported: {row.reportedWinner}. Verification pending.</p>}{row.actualWinner && row.resultVerification?.sourceUrl?.startsWith('https://') && <a className="md-source-link" href={row.resultVerification.sourceUrl} target="_blank" rel="noreferrer">View verified result <ExternalLink size={12} /></a>}</div>

@@ -63,7 +63,7 @@ export default function SubscriptionPage() {
           }
         },
         prefill: { email: user?.email || '' },
-        theme: { color: '#dc2626' }
+        theme: { color: '#167d73' }
       }
       const rzp = new window.Razorpay(options)
       rzp.open()
@@ -84,8 +84,8 @@ export default function SubscriptionPage() {
   const planLabel = onTrial ? `Trial · ${formatTrialTimeLeft(trialMinutesLeft)} left` : isPro ? '⭐ Pro' : 'Free'
 
   return (
-    <div className="max-w-2xl mx-auto p-4 space-y-4 fade-in">
-      <h1 className="text-2xl font-black text-text-primary">Subscription</h1>
+    <div className="subscription-page ui-page mx-auto space-y-5 fade-in">
+      <div className="ui-page-heading"><p className="ui-eyebrow">MEMBERSHIP</p><h1>Subscription</h1><p>Choose your access plan and manage your membership.</p></div>
 
       {/* Free Mode Announcement */}
       {isFreeMode && (
@@ -163,7 +163,7 @@ export default function SubscriptionPage() {
 
       {/* Pro Plan Card */}
       {plan && !isPro && (
-        <div className="rounded-2xl p-5" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)', border: '2px solid #fecaca' }}>
+        <div className="rounded-2xl p-5" style={{ background: '#132b2c', border: '1px solid #29645e' }}>
           <div className="flex items-center gap-2 mb-1">
             <Crown size={20} className="text-yellow-500" />
             <span className="text-lg font-black text-text-primary">{plan.name}</span>
@@ -173,9 +173,9 @@ export default function SubscriptionPage() {
           {/* Billing toggle */}
           <div className="flex gap-2 mb-4">
             {['monthly', 'yearly'].map(c => (
-              <button key={c} onClick={() => setCycle(c)}
+              <button key={c} type="button" aria-pressed={cycle === c} onClick={() => setCycle(c)}
                 className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${cycle === c ? 'text-white' : 'text-text-secondary'}`}
-                style={cycle === c ? { background: 'linear-gradient(135deg,#dc2626,#10b981)' } : { background: '#fff0f0', border: '1px solid #fecaca' }}
+                style={cycle === c ? { background: '#167d73' } : { background: '#172230', border: '1px solid #33465a' }}
               >
                 {c === 'monthly' ? `Monthly ₹${fmt(plan.price)}` : `Yearly ₹${fmt(plan.yearlyPrice)}`}
                 {c === 'yearly' && <span className="ml-1 text-xs opacity-80">(Save 2mo)</span>}
@@ -195,7 +195,7 @@ export default function SubscriptionPage() {
 
           <button onClick={handleBuy} disabled={paying}
             className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
+            style={{ background: '#167d73' }}
           >
             {paying ? <LoaderCircle size={16} className="animate-spin" /> : <Crown size={16} />}
             {paying ? 'Processing...' : `Buy Pro — ₹${fmt(price)}`}
@@ -211,7 +211,7 @@ export default function SubscriptionPage() {
           {!hasQueued && plan && (
             <button onClick={handleBuy} disabled={paying}
               className="mt-4 px-6 py-2 rounded-xl text-sm font-semibold text-white"
-              style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}
+              style={{ background: '#167d73' }}
             >
               Renew Early
             </button>

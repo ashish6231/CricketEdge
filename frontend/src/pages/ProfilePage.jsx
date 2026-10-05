@@ -20,19 +20,19 @@ export default function ProfilePage() {
   const planName = onTrial ? `Trial (${formatTrialTimeLeft(getTrialMinutesLeft(user))} left)` : isPro ? '⭐ Pro' : 'Free'
 
   return (
-    <div className="max-w-lg mx-auto p-4 space-y-4 fade-in">
-      <h1 className="text-2xl font-black text-text-primary">Profile</h1>
+    <div className="account-page ui-page mx-auto space-y-5 fade-in">
+      <div className="ui-page-heading"><p className="ui-eyebrow">YOUR ACCOUNT</p><h1>Profile</h1><p>Your account, access and membership details.</p></div>
 
       {/* User Card */}
       <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center gap-4 mb-4">
-          <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-xl font-black"
-            style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
+          <div className="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center text-white text-xl font-black"
+            style={{ background: '#2563eb' }}>
             {user.name?.[0]?.toUpperCase() || '?'}
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="font-black text-lg text-text-primary">{user.name}</div>
-            <div className="text-sm text-text-muted">{user.email}</div>
+            <div className="text-sm text-text-muted break-all">{user.email}</div>
             <div className="flex items-center gap-1 mt-1">
               {user.role === 'superadmin' && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700">Superadmin</span>}
               {user.role === 'admin' && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Admin</span>}
@@ -67,7 +67,7 @@ export default function ProfilePage() {
             <span className="font-semibold">{fmtDate(user.createdAt)}</span>
           </div>
           <div className="flex justify-between py-2">
-            <span className="text-text-muted">Auth</span>
+            <span className="text-text-muted">Sign-in method</span>
             <span className="font-semibold capitalize">{user.authProvider || 'local'}</span>
           </div>
         </div>

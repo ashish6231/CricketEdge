@@ -457,7 +457,8 @@ async function getCricketMatchesPayload() {
         if (cm) {
           // Use live crex detail cache (has latest overs/score) over stale snapshot
           const liveDetail = dataCache.getCrexDetail(cm.crexMatchId || cm.slug || String(m.matchId));
-          const sc = liveDetail?.scorecard || m.snapshot?.crex?.scorecard;
+          const rawScorecard = liveDetail?.scorecard || m.snapshot?.crex?.scorecard;
+          const sc = alignScorecardTeams(rawScorecard, m.matchName);
           m.crex = {
             matched: true,
             isReversed: Boolean(cm.isReversed),

@@ -66,3 +66,17 @@ test('getBookiePl includes plDraw from pnlIfWins', () => {
   assert.equal(pl.pl2, -5)
   assert.equal(pl.plDraw, 2)
 })
+
+test('getBookiePl restores original simplePL priority over reconstructed values', () => {
+  const snap = {
+    deepMetrics: { simplePL: { team1_win: 125, team2_win: -90 } },
+    teams: {
+      India: { pnlIfWins: 999, trades: [{ type: 'back', size: 100, price: 2 }] },
+      England: { pnlIfWins: -999, trades: [] },
+    },
+  }
+  const pl = getBookiePl(snap, 'India', 'England')
+  assert.equal(pl.pl1, 125)
+  assert.equal(pl.pl2, -90)
+  assert.equal(pl.source, 'api')
+})

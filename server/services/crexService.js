@@ -19,14 +19,15 @@ const httpsAgent = new https.Agent({
 
 let overviewCache = null;
 let overviewCacheTime = 0;
-const OVERVIEW_TTL = 1000; // 1 second — live score needs to be fresh
+const OVERVIEW_TTL = Math.max(2000, parseInt(process.env.CREX_OVERVIEW_CACHE_MS, 10) || 5000);
+let overviewInFlight = null;
 
 let schedStateCache = null;
 let schedCacheTime = 0;
 const SCHEDULE_TTL = 60000; // 60 seconds (fixtures don't change every second)
 
 const detailCache = new Map();
-const DETAIL_TTL = 1000; // 1 second — live score needs to be fresh
+const DETAIL_TTL = Math.max(1000, parseInt(process.env.CREX_DETAIL_CACHE_MS, 10) || 2500);
 
 const _inFlightDetail = new Map();
 const matchTossCache = new Map();
@@ -34,8 +35,8 @@ const seriesMatchesCache = new Map();
 
 function parseCrexSeriesMatches(html, sourceUrl) {
   const state = parseState(html);
-  const fixtures = state?.['https://stats.crickapi.com/series/getMatchesForSeriesID'];
-  const mapping = state?.['https://oc.crickapi.com/mapping/getHomeMapDataseriesmatches'];
+  const fixtures = getStateValue(state, 'https://stats.crickapi.com/series/getMatchesForSeriesID', '/series/getMatchesForSeriesID');
+  const mapping = getStateValue(state, 'https://oc.crickapi.com/mapping/getHomeMapDataseriesmatches', '/mapping/getHomeMapDataseriesmatches');
   if (!Array.isArray(fixtures) || !fixtures.length || !Array.isArray(mapping?.t)) {
     throw new Error('CREX series fixtures unavailable');
   }
@@ -78,7 +79,7 @@ async function getCrexSeriesMatches(sourceUrl) {
   return rows;
 }
 
-function fetchHttps(url) {
+function fetchHttps(url, redirectCount = 0) {
   return new Promise((resolve) => {
     const req = https.get(url, {
       agent: httpsAgent,
@@ -92,7 +93,16 @@ function fetchHttps(url) {
       },
       timeout: 5000,
     }, (res) => {
-      if (res.statusCode >= 400) return resolve(null);
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location && redirectCount < 3) {
+        const redirectUrl = new URL(res.headers.location, url).href;
+        res.resume();
+        fetchHttps(redirectUrl, redirectCount + 1).then(resolve);
+        return;
+      }
+      if (res.statusCode < 200 || res.statusCode >= 300) {
+        res.resume();
+        return resolve(null);
+      }
       let stream = res;
       const enc = res.headers['content-encoding'];
       if (enc === 'gzip') stream = res.pipe(zlib.createGunzip());
@@ -125,12 +135,35 @@ function parseState(html) {
     .replace(/&a;/g, '&')
     .replace(/&s;/g, "'")
     .replace(/&l;/g, '<')
-    .replace(/&g;/g, '>');
+    .replace(/&g;/g, '>')
+    .replace(/&quot;|&#34;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
   try {
     return JSON.parse(raw);
   } catch (e) {
     return null;
   }
+}
+
+/** CREX occasionally adds query strings or version suffixes to state keys. */
+function getStateValue(state, ...needles) {
+  if (!state || typeof state !== 'object') return undefined;
+  for (const needle of needles) {
+    if (Object.prototype.hasOwnProperty.call(state, needle)) return state[needle];
+  }
+  for (const [key, value] of Object.entries(state)) {
+    const baseKey = key.split('?')[0].replace(/\/$/, '');
+    if (needles.some(needle => {
+      const baseNeedle = String(needle).split('?')[0].replace(/\/$/, '');
+      return baseKey === baseNeedle || baseKey.endsWith(baseNeedle) || key.includes(baseNeedle);
+    })) {
+      return value;
+    }
+  }
+  return undefined;
 }
 
 function cleanText(str) {
@@ -292,7 +325,7 @@ function teamTokensMatch(nameA, nameB, shortB) {
 /**
  * Fetches all live & scheduled matches from crex.com and crex.com/schedule
  */
-async function getCrexOverview(forceRefresh = false) {
+async function refreshCrexOverview(forceRefresh = false) {
   const now = Date.now();
   if (!forceRefresh && overviewCache && (now - overviewCacheTime < OVERVIEW_TTL)) {
     return overviewCache;
@@ -328,7 +361,7 @@ async function getCrexOverview(forceRefresh = false) {
     const seenSlugs = new Set();
 
     // 1. Process fixtures from schedule (has pre-resolved team names, scores, odds)
-    const fixtures = schedState?.['https://stats.crickapi.com/fixture/getFixture'] || [];
+    const fixtures = getStateValue(schedState, 'https://stats.crickapi.com/fixture/getFixture', '/fixture/getFixture') || [];
     for (const f of fixtures) {
       const slug = f.link ? f.link.replace('/cricket-live-score/', '') : null;
       if (slug) seenSlugs.add(slug);
@@ -384,8 +417,8 @@ async function getCrexOverview(forceRefresh = false) {
     }
 
     // 2. Process home state live matches
-    const liveMatches = homeState?.['https://api.goscorer.com/api/v3/getLiveMatches'] || {};
-    const mapData = homeState?.['https://oc.crickapi.com/mapping/getHomeMapDatahome'] || {};
+    const liveMatches = getStateValue(homeState, 'https://api.goscorer.com/api/v3/getLiveMatches', '/api/v3/getLiveMatches') || {};
+    const mapData = getStateValue(homeState, 'https://oc.crickapi.com/mapping/getHomeMapDatahome', '/mapping/getHomeMapDatahome') || {};
 
     const teamsMap = {};
     if (mapData.t) {
@@ -495,6 +528,22 @@ async function getCrexOverview(forceRefresh = false) {
   } catch (err) {
     console.error('Error in getCrexOverview:', err);
     return overviewCache || [];
+  }
+}
+
+async function getCrexOverview(forceRefresh = false) {
+  const now = Date.now();
+  if (!forceRefresh && overviewCache && (now - overviewCacheTime < OVERVIEW_TTL)) {
+    return overviewCache;
+  }
+  if (overviewInFlight) return overviewInFlight;
+
+  const request = refreshCrexOverview(forceRefresh);
+  overviewInFlight = request;
+  try {
+    return await request;
+  } finally {
+    if (overviewInFlight === request) overviewInFlight = null;
   }
 }
 
@@ -704,7 +753,15 @@ function findCrexMatch(matchName, crexMatches = [], options = null) {
 async function getCrexMatchDetail(slugOrUrl) {
   if (!slugOrUrl) return null;
 
-  const cleanSlug = slugOrUrl.startsWith('/') ? slugOrUrl : (slugOrUrl.startsWith('http') ? new URL(slugOrUrl).pathname : `/cricket-live-score/${slugOrUrl}`);
+  const slugText = String(slugOrUrl).trim();
+  let cleanSlug;
+  try {
+    cleanSlug = slugText.startsWith('/')
+      ? slugText
+      : (slugText.startsWith('http') ? new URL(slugText).pathname : `/cricket-live-score/${slugText}`);
+  } catch {
+    return null;
+  }
   const cacheKey = cleanSlug;
   const now = Date.now();
 
@@ -728,13 +785,26 @@ async function getCrexMatchDetail(slugOrUrl) {
     const state = parseState(html);
     if (!state) return null;
 
-    const sv3 = state['https://api.goscorer.com/api/v3/getSV3'] || {};
+    const sv3Value = getStateValue(state, 'https://api.goscorer.com/api/v3/getSV3', '/api/v3/getSV3');
+    const sv3 = (sv3Value && typeof sv3Value === 'object' && !Array.isArray(sv3Value)) ? sv3Value : {};
     const metaKey = Object.keys(state).find(k => k.startsWith('match-'));
     const meta = metaKey ? state[metaKey] : null;
 
     // Commentary ball feeds
-    const rawFeeds = state['https://content.crickapi.com/commentary/v1/getBallFeeds'] ||
-                     state['https://content.crickapi.com/commentary/v2/getBallFeeds'] || [];
+    const rawFeedsValue = getStateValue(
+      state,
+      'https://content.crickapi.com/commentary/v2/getBallFeeds',
+      'https://content.crickapi.com/commentary/v1/getBallFeeds',
+      '/commentary/v2/getBallFeeds',
+      '/commentary/v1/getBallFeeds',
+    );
+    const rawFeeds = Array.isArray(rawFeedsValue)
+      ? rawFeedsValue
+      : (rawFeedsValue?.data || rawFeedsValue?.feeds || rawFeedsValue?.ballFeeds || []);
+
+    if (Object.keys(sv3).length === 0 && !meta && (!Array.isArray(rawFeeds) || rawFeeds.length === 0)) {
+      return detailCache.get(cacheKey)?.data || null;
+    }
 
     // Format ball feeds
     const formattedFeeds = [];
@@ -1070,6 +1140,7 @@ async function getCrexMatchDetail(slugOrUrl) {
     }
 
     const resultData = {
+      slug: cleanSlug.replace(/^\/cricket-live-score\//, ''),
       status: matchStatus,
       statusText: finalStatusText,
       runningBall,
@@ -1127,7 +1198,7 @@ async function getCrexMatchDetail(slugOrUrl) {
       ballFeeds: formattedFeeds,
     };
 
-    detailCache.set(cacheKey, { time: now, data: resultData });
+    detailCache.set(cacheKey, { time: Date.now(), data: resultData });
     return resultData;
   } catch (err) {
     console.error('Error in getCrexMatchDetail:', err);
@@ -1149,4 +1220,6 @@ module.exports = {
   getCrexMatchDetail,
   teamTokensMatch,
   extractTossString,
+  parseState,
+  getStateValue,
 };

@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Activity, ChevronRight, LoaderCircle, Lock, Radio, Search } from 'lucide-react'
 import { hasProAccess } from '../lib/subscriptionAccess'
-import { getSocket } from '../socket'
+import { getSocket, releaseFeed, requestTennisFeed } from '../socket'
 
 const SPORT_FILTERS = [
   { id: 'all', label: 'All' },
@@ -85,6 +85,8 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
 
     socket.on('cricket:matches', onCricket)
     socket.on('tennis:matches', onTennis)
+    if (socket.connected) requestTennisFeed()
+    else socket.once('connect', requestTennisFeed)
 
     const loadingTimeout = setTimeout(() => setLoading(false), 10000)
 
@@ -92,6 +94,8 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
       clearTimeout(loadingTimeout)
       socket.off('cricket:matches', onCricket)
       socket.off('tennis:matches', onTennis)
+      socket.off('connect', requestTennisFeed)
+      releaseFeed('tennis')
     }
   }, [isLoggedIn, authReady])
 

@@ -34,7 +34,7 @@
         "fsr": "P",
         "fta": "300",
         "nt": 0,
-        "is_promo_fan": 1,
+        "is_promo_fan": 0,
         "is_promo_yt": 0,
         "g": 1,
         "hide": 1,
@@ -4118,7 +4118,7 @@
           "prediction": null
         }
       },
-      "lastSeenAt": "2026-10-04T11:37:32.555Z"
+      "lastSeenAt": "2026-10-05T15:17:30.130Z"
     },
     {
       "recordId": "crex:2NK:52656",
@@ -4152,7 +4152,7 @@
         "fsr": "P",
         "fta": "300",
         "nt": 0,
-        "is_promo_fan": 1,
+        "is_promo_fan": 0,
         "is_promo_yt": 0,
         "g": 1,
         "hide": 1,
@@ -9244,7 +9244,7 @@
           "prediction": null
         }
       },
-      "lastSeenAt": "2026-10-04T11:37:32.555Z"
+      "lastSeenAt": "2026-10-05T15:17:30.130Z"
     },
     {
       "recordId": "market:36142618",
@@ -11851,7 +11851,7 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-04T11:37:32.555Z",
+      "lastSeenAt": "2026-10-05T13:03:37.228Z",
       "statusSource": "market-feed"
     },
     {
@@ -11886,7 +11886,7 @@
         "fsr": "P",
         "fta": "300",
         "nt": 0,
-        "is_promo_fan": 1,
+        "is_promo_fan": 0,
         "is_promo_yt": 0,
         "g": 1,
         "hide": 1,
@@ -12882,26 +12882,1939 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-04T11:37:32.555Z",
+      "lastSeenAt": "2026-10-05T15:17:30.130Z",
       "statusSource": "market-feed"
+    },
+    {
+      "recordId": "market:36151670",
+      "competitionName": "Emirates D10 League",
+      "matchName": "Ajman Heroes v Emirates Blues",
+      "team1": "Ajman Heroes",
+      "team2": "Emirates Blues",
+      "startTime": 1791206100000,
+      "status": "live",
+      "sourceUrl": null,
+      "sourceProvider": "market-feed",
+      "sourceFixture": {
+        "id": "36151670",
+        "matchId": "36151670",
+        "matchName": "Ajman Heroes v Emirates Blues",
+        "team1": "Ajman Heroes",
+        "team2": "Emirates Blues",
+        "competitionName": "Emirates D10",
+        "format": "T20",
+        "startTime": 1791206100000,
+        "status": "upcoming",
+        "inPlay": false,
+        "totalMatched": 48.67969600000001,
+        "source": "merged",
+        "odds": null,
+        "crex": {
+          "matched": true,
+          "isReversed": false,
+          "crexMatchId": "14MS",
+          "slug": "ajt-vs-emb-26th-match-emirates-d10-league-2026-match-updates-14MS",
+          "url": "/cricket-live-score/ajt-vs-emb-26th-match-emirates-d10-league-2026-match-updates-14MS",
+          "team1Name": "Ajman",
+          "team1Short": "AJT",
+          "team1Flag": "https://cricketvectors.akamaized.net/Teams/DF.png",
+          "team2Name": "Emirates Blues",
+          "team2Short": "EMB",
+          "team2Flag": "https://cricketvectors.akamaized.net/Teams/DD.png",
+          "score1": null,
+          "score2": null,
+          "status": "live",
+          "statusText": "Live",
+          "venue": "Seven Districts Ground, Ajman",
+          "odds": {
+            "rate": 61,
+            "rate2": 62,
+            "rateTeam": "Emirates Blues",
+            "back": 1.61,
+            "lay": 1.62
+          },
+          "runningBall": null
+        },
+        "toss": null,
+        "session": null,
+        "snapshot": null,
+        "updatedAt": 1791205447901
+      },
+      "firstSeenAt": "2026-10-05T13:04:07.551Z",
+      "actualWinner": null,
+      "resultVerification": {
+        "status": "pending"
+      },
+      "markets": {
+        "match": {
+          "marketMatchId": "36151670",
+          "lastCapturedAt": "2026-10-05T13:14:39.707Z",
+          "latestSnapshot": {
+            "serverTime": "2026-10-05T13:14:38.383Z",
+            "matchId": "36151670",
+            "matchName": "Ajman Heroes v Emirates Blues",
+            "teamNames": [
+              "Ajman Heroes",
+              "Emirates Blues"
+            ],
+            "inPlayPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "preMatchPnl": {
+              "team1": 147.9372,
+              "team2": -74.53650000000002
+            },
+            "preMatchTotalBets": {
+              "team1": 10.639199999999999,
+              "team2": 80.2565
+            },
+            "preMatchVolume": {
+              "team1": {
+                "back": 5.72,
+                "lay": 0.2400000000000002,
+                "total": 5.72
+              },
+              "team2": {
+                "back": 158.13,
+                "lay": 0,
+                "total": 158.37
+              }
+            },
+            "threeMinPnl": {
+              "team1": -422.5289999999999,
+              "team2": 311.84770000000003
+            },
+            "threeMinTotalBets": {
+              "team1": 1021.188,
+              "team2": 354.47990000000004
+            },
+            "threeMinVolume": {
+              "team1": {
+                "back": 475.86,
+                "lay": 87.96000000000001,
+                "total": 763.6
+              },
+              "team2": {
+                "back": 456.69,
+                "lay": 287.74,
+                "total": 544.65
+              }
+            },
+            "matchLoadV2": {
+              "team1": 22,
+              "team2": 12
+            },
+            "advancedMetrics": {
+              "team1": {
+                "back": 554.84,
+                "lay": 87.96000000000001,
+                "totalVolume": 642.8000000000001,
+                "backPercentage": 86.31611698817673
+              },
+              "team2": {
+                "back": 494.68000000000006,
+                "lay": 701.28,
+                "totalVolume": 1195.96,
+                "backPercentage": 41.36258737750427
+              }
+            },
+            "advancedMetricsV2": {
+              "team1": {
+                "back": 848.6948,
+                "lay": 141.96900000000005,
+                "totalBet": 990.6638
+              },
+              "team2": {
+                "back": 292.8188,
+                "lay": 480.17779999999993,
+                "totalBet": 772.9966
+              }
+            },
+            "supportMetrics": {
+              "team1": {
+                "supportMoney": 1256.12,
+                "support": 68.31342861493614
+              },
+              "team2": {
+                "supportMoney": 582.6400000000001,
+                "support": 31.686571385063857
+              }
+            },
+            "marketSignals": {
+              "moreBettedTeam": "Ajman Heroes",
+              "bookieFavouriteOutcome": "Emirates Blues",
+              "riskTeam": "Ajman Heroes",
+              "trap": {
+                "level": "high",
+                "reason": "Public heavy on one team, bookie loses if they win."
+              },
+              "supportConfidence": 36.626857229872286,
+              "mostBettedTeam": "Ajman Heroes",
+              "prediction": {
+                "team1TrueSupport": 1328.8726,
+                "team2TrueSupport": 434.78780000000006,
+                "ratio": 3.0563704869363852,
+                "bookiePnlTeam1": -760.7348,
+                "bookiePnlTeam2": 408.46119999999996,
+                "prediction": "Emirates Blues",
+                "pattern": "The Market Trap",
+                "reason": "Heavy crowd bias (3.06) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+              }
+            },
+            "bookmakerExposure": {
+              "team1": {
+                "netExposure": 706.7257999999999,
+                "backExposure": 848.6948,
+                "layExposure": 141.96900000000005,
+                "teamName": "Ajman Heroes"
+              },
+              "team2": {
+                "netExposure": -187.35899999999992,
+                "backExposure": 292.8188,
+                "layExposure": 480.17779999999993,
+                "teamName": "Emirates Blues"
+              }
+            },
+            "deepMetrics": {
+              "raw": {
+                "A_back_expo": 848.6948,
+                "A_lay_stake": 87.96000000000001,
+                "B_back_expo": 292.8188,
+                "B_lay_stake": 701.28
+              },
+              "totals": {
+                "totalBetTeam1": 1549.9748,
+                "totalBetTeam2": 380.77880000000005
+              },
+              "simplePL": {
+                "team1_win": -760.7348,
+                "team2_win": 408.46119999999996
+              },
+              "derivedPL": {
+                "team1_win": -1169.196,
+                "team2_win": 1169.196
+              }
+            },
+            "marketAnalysis": {
+              "totalVolume": {
+                "team1": {
+                  "totalBackVol": 554.84,
+                  "totalLayVol": 87.96000000000001,
+                  "totalBet": 1256.12,
+                  "profitLoss": -673.4799999999998
+                },
+                "team2": {
+                  "totalBackVol": 494.68000000000006,
+                  "totalLayVol": 701.28,
+                  "totalBet": 582.6400000000001,
+                  "profitLoss": 673.4799999999998
+                }
+              },
+              "normalTotalBet": {
+                "team1": {
+                  "totalBackExpo": 848.6948,
+                  "totalLayVol": 87.96000000000001,
+                  "totalBet": 1549.9748,
+                  "profitLoss": -913.3257999999998
+                },
+                "team2": {
+                  "totalBackExpo": 292.8188,
+                  "totalLayVol": 701.28,
+                  "totalBet": 380.77880000000005,
+                  "profitLoss": 654.239
+                }
+              },
+              "totalNetVolume": {
+                "team1": {
+                  "totalBackNetVol": 848.6948,
+                  "totalLayNetVol": 141.96900000000005,
+                  "totalBet": 1328.8726,
+                  "profitLoss": -894.0847999999999
+                },
+                "team2": {
+                  "totalBackNetVol": 292.8188,
+                  "totalLayNetVol": 480.17779999999993,
+                  "totalBet": 434.78780000000006,
+                  "profitLoss": 894.0847999999999
+                }
+              }
+            },
+            "syntheticSupport": {
+              "teamA": {
+                "tradeCount": 22,
+                "averageOdds": 2.1340909090909093,
+                "averageSize": 57.096363636363634,
+                "supportProduct": 121.8488305785124
+              },
+              "teamB": {
+                "tradeCount": 12,
+                "averageOdds": 1.8766666666666663,
+                "averageSize": 48.553333333333335,
+                "supportProduct": 91.11842222222221
+              },
+              "strongerTeam": "Ajman Heroes",
+              "supportRatio": 1.3372579068735848
+            },
+            "netSupport": {
+              "teamA": {
+                "totalBackVolume": 554.84,
+                "oppoLayVolume": 701.28,
+                "layExposure": 141.96900000000005,
+                "netSupportValue": 1114.1509999999998
+              },
+              "teamB": {
+                "totalBackVolume": 494.68000000000006,
+                "oppoLayVolume": 87.96000000000001,
+                "layExposure": 480.17779999999993,
+                "netSupportValue": 102.46220000000017
+              },
+              "strongerTeam": "Ajman Heroes",
+              "netSupportDifference": 1011.6887999999997,
+              "percentageA": 91.57807921202891,
+              "percentageB": 8.421920787971079
+            },
+            "sentimentScore": {
+              "teamA": {
+                "directNetSupport": 466.88,
+                "syntheticSupport": 701.28,
+                "opponentLiabilityRejection": 480.17779999999993,
+                "sentimentScore": 687.9821999999999
+              },
+              "teamB": {
+                "directNetSupport": -206.5999999999999,
+                "syntheticSupport": 87.96000000000001,
+                "opponentLiabilityRejection": 141.96900000000005,
+                "sentimentScore": -260.6089999999999
+              },
+              "strongerTeam": "Ajman Heroes",
+              "scoreDifference": 948.5911999999998,
+              "percentageA": 100,
+              "percentageB": 0
+            },
+            "trueMarketLoad": {
+              "team1": {
+                "name": "Ajman Heroes",
+                "matchedVolume": 645.66,
+                "directBackVolume": 658.0699999999999,
+                "layLiability": 1615.3516000000002,
+                "totalSupport": 1730.7905,
+                "supportPercentage": 35.15014778354335
+              },
+              "team2": {
+                "name": "Emirates Blues",
+                "matchedVolume": 1196.0400000000002,
+                "directBackVolume": 381.81000000000006,
+                "layLiability": 427.0605,
+                "totalSupport": 3193.2016000000003,
+                "supportPercentage": 64.84985221645665
+              },
+              "heavierSide": "Emirates Blues"
+            },
+            "teams": {
+              "Ajman Heroes": {
+                "trades": [
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.42,
+                    "type": "back",
+                    "size": 21.52,
+                    "updatedAt": 1791206032590
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.46,
+                    "type": "back",
+                    "size": 77.38,
+                    "updatedAt": 1791206006288
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.44,
+                    "type": "back",
+                    "size": 11.46,
+                    "updatedAt": 1791205921816
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.48,
+                    "type": "back",
+                    "size": 5.33,
+                    "updatedAt": 1791205849426
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.32,
+                    "type": "back",
+                    "size": 21.32,
+                    "updatedAt": 1791205754984
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.3,
+                    "type": "back",
+                    "size": 34.52,
+                    "updatedAt": 1791205754984
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.54,
+                    "type": "back",
+                    "size": 109.27,
+                    "updatedAt": 1791205744926
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.52,
+                    "type": "back",
+                    "size": 71.08,
+                    "updatedAt": 1791205744926
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.6,
+                    "type": "lay",
+                    "size": 68.21000000000001,
+                    "updatedAt": 1791205713634
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.6,
+                    "type": "back",
+                    "size": 108.47,
+                    "updatedAt": 1791205556751
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.62,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791205386646
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.66,
+                    "type": "lay",
+                    "size": 19.510000000000005,
+                    "updatedAt": 1791205260456
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.66,
+                    "type": "back",
+                    "size": 85.91,
+                    "updatedAt": 1791204546539
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.86,
+                    "type": "lay",
+                    "size": 0.2400000000000002,
+                    "updatedAt": 1791203460897
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.86,
+                    "type": "back",
+                    "size": 5.72,
+                    "updatedAt": 1791203133435
+                  }
+                ],
+                "pnlIfWins": -913.3257999999998,
+                "totalBet": 1549.9748
+              },
+              "Emirates Blues": {
+                "trades": [
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.7,
+                    "type": "lay",
+                    "size": 222.59,
+                    "updatedAt": 1791206061128
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.69,
+                    "type": "back",
+                    "size": 35.130000000000024,
+                    "updatedAt": 1791206007110
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.69,
+                    "type": "lay",
+                    "size": 130.45,
+                    "updatedAt": 1791206006280
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.72,
+                    "type": "back",
+                    "size": 2.8599999999999994,
+                    "updatedAt": 1791205949832
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.72,
+                    "type": "lay",
+                    "size": 71.39,
+                    "updatedAt": 1791205942216
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.67,
+                    "type": "lay",
+                    "size": 7.92,
+                    "updatedAt": 1791205849355
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.63,
+                    "type": "lay",
+                    "size": 72.51000000000002,
+                    "updatedAt": 1791205837242
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.63,
+                    "type": "back",
+                    "size": 90.57,
+                    "updatedAt": 1791205836946
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.64,
+                    "type": "lay",
+                    "size": 5.29,
+                    "updatedAt": 1791205826630
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.71,
+                    "type": "lay",
+                    "size": 78.35,
+                    "updatedAt": 1791205792830
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.75,
+                    "type": "lay",
+                    "size": 28.27,
+                    "updatedAt": 1791205755018
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.62,
+                    "type": "back",
+                    "size": 191.54,
+                    "updatedAt": 1791205713668
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.65,
+                    "type": "back",
+                    "size": 16.43,
+                    "updatedAt": 1791205579408
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.62,
+                    "type": "lay",
+                    "size": 52.16,
+                    "updatedAt": 1791205556808
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.5,
+                    "type": "back",
+                    "size": 107.42,
+                    "updatedAt": 1791205260443
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.6,
+                    "type": "lay",
+                    "size": 32.35,
+                    "updatedAt": 1791204548369
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.53,
+                    "type": "back",
+                    "size": 11.87,
+                    "updatedAt": 1791203460893
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.51,
+                    "type": "back",
+                    "size": 33.69,
+                    "updatedAt": 1791191946178
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.55,
+                    "type": "back",
+                    "size": 5.17,
+                    "updatedAt": 1791178019488
+                  }
+                ],
+                "pnlIfWins": 654.2389999999999,
+                "totalBet": 380.77880000000005
+              }
+            },
+            "Usr": "cricketloaduser56@gmail.com",
+            "competitionName": "Emirates D10 League"
+          },
+          "latestInputTiming": "captured-before-start",
+          "snapshot": {
+            "serverTime": "2026-10-05T13:04:08.078Z",
+            "matchId": "36151670",
+            "matchName": "Ajman Heroes v Emirates Blues",
+            "teamNames": [
+              "Ajman Heroes",
+              "Emirates Blues"
+            ],
+            "inPlayPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "preMatchPnl": {
+              "team1": 147.9372,
+              "team2": -74.53650000000002
+            },
+            "preMatchTotalBets": {
+              "team1": 10.639199999999999,
+              "team2": 80.2565
+            },
+            "preMatchVolume": {
+              "team1": {
+                "back": 5.72,
+                "lay": 0.2400000000000002,
+                "total": 5.72
+              },
+              "team2": {
+                "back": 158.13,
+                "lay": 0,
+                "total": 158.37
+              }
+            },
+            "threeMinPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "matchLoadV2": {
+              "team1": 4,
+              "team2": 6
+            },
+            "advancedMetrics": {
+              "team1": {
+                "back": 94.49,
+                "lay": 19.750000000000007,
+                "totalVolume": 114.24000000000001,
+                "backPercentage": 82.71183473389354
+              },
+              "team2": {
+                "back": 158.15,
+                "lay": 32.35,
+                "totalVolume": 190.5,
+                "backPercentage": 83.01837270341208
+              }
+            },
+            "advancedMetricsV2": {
+              "team1": {
+                "back": 157.88299999999998,
+                "lay": 32.833000000000006,
+                "totalBet": 190.71599999999998
+              },
+              "team2": {
+                "back": 80.0265,
+                "lay": 19.410000000000004,
+                "totalBet": 99.4365
+              }
+            },
+            "supportMetrics": {
+              "team1": {
+                "supportMoney": 126.84,
+                "support": 41.62236660759992
+              },
+              "team2": {
+                "supportMoney": 177.9,
+                "support": 58.37763339240007
+              }
+            },
+            "marketSignals": {
+              "moreBettedTeam": "Ajman Heroes",
+              "bookieFavouriteOutcome": "Emirates Blues",
+              "riskTeam": "Ajman Heroes",
+              "trap": {
+                "level": "none",
+                "reason": "Support is not strongly one-sided."
+              },
+              "supportConfidence": 16.75526678480015,
+              "mostBettedTeam": "Ajman Heroes",
+              "prediction": {
+                "team1TrueSupport": 177.29299999999998,
+                "team2TrueSupport": 112.8595,
+                "ratio": 1.5709178226024392,
+                "bookiePnlTeam1": -138.13299999999998,
+                "bookiePnlTeam2": -47.6765,
+                "prediction": "Emirates Blues",
+                "pattern": "The Market Trap",
+                "reason": "Heavy crowd bias (1.57) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+              }
+            },
+            "bookmakerExposure": {
+              "team1": {
+                "netExposure": 125.04999999999998,
+                "backExposure": 157.88299999999998,
+                "layExposure": 32.833000000000006,
+                "teamName": "Ajman Heroes"
+              },
+              "team2": {
+                "netExposure": 60.616499999999995,
+                "backExposure": 80.0265,
+                "layExposure": 19.410000000000004,
+                "teamName": "Emirates Blues"
+              }
+            },
+            "deepMetrics": {
+              "raw": {
+                "A_back_expo": 157.88299999999998,
+                "A_lay_stake": 19.750000000000007,
+                "B_back_expo": 80.0265,
+                "B_lay_stake": 32.35
+              },
+              "totals": {
+                "totalBetTeam1": 190.23299999999998,
+                "totalBetTeam2": 99.7765
+              },
+              "simplePL": {
+                "team1_win": -138.13299999999998,
+                "team2_win": -47.6765
+              },
+              "derivedPL": {
+                "team1_win": -90.45649999999998,
+                "team2_win": 90.45649999999998
+              }
+            },
+            "marketAnalysis": {
+              "totalVolume": {
+                "team1": {
+                  "totalBackVol": 94.49,
+                  "totalLayVol": 19.750000000000007,
+                  "totalBet": 126.84,
+                  "profitLoss": 51.06
+                },
+                "team2": {
+                  "totalBackVol": 158.15,
+                  "totalLayVol": 32.35,
+                  "totalBet": 177.9,
+                  "profitLoss": -51.06
+                }
+              },
+              "normalTotalBet": {
+                "team1": {
+                  "totalBackExpo": 157.88299999999998,
+                  "totalLayVol": 19.750000000000007,
+                  "totalBet": 190.23299999999998,
+                  "profitLoss": 0.7500000000000284
+                },
+                "team2": {
+                  "totalBackExpo": 80.0265,
+                  "totalLayVol": 32.35,
+                  "totalBet": 99.7765,
+                  "profitLoss": 14.123500000000007
+                }
+              },
+              "totalNetVolume": {
+                "team1": {
+                  "totalBackNetVol": 157.88299999999998,
+                  "totalLayNetVol": 32.833000000000006,
+                  "totalBet": 177.29299999999998,
+                  "profitLoss": -64.43349999999998
+                },
+                "team2": {
+                  "totalBackNetVol": 80.0265,
+                  "totalLayNetVol": 19.410000000000004,
+                  "totalBet": 112.8595,
+                  "profitLoss": 64.43349999999998
+                }
+              }
+            },
+            "syntheticSupport": {
+              "teamA": {
+                "tradeCount": 4,
+                "averageOdds": 2.435,
+                "averageSize": 31.71,
+                "supportProduct": 77.21385000000001
+              },
+              "teamB": {
+                "tradeCount": 6,
+                "averageOdds": 1.9349999999999998,
+                "averageSize": 29.650000000000002,
+                "supportProduct": 57.372749999999996
+              },
+              "strongerTeam": "Ajman Heroes",
+              "supportRatio": 1.3458279409650054
+            },
+            "netSupport": {
+              "teamA": {
+                "totalBackVolume": 94.49,
+                "oppoLayVolume": 32.35,
+                "layExposure": 32.833000000000006,
+                "netSupportValue": 94.007
+              },
+              "teamB": {
+                "totalBackVolume": 158.15,
+                "oppoLayVolume": 19.750000000000007,
+                "layExposure": 19.410000000000004,
+                "netSupportValue": 158.49
+              },
+              "strongerTeam": "Emirates Blues",
+              "netSupportDifference": 64.483,
+              "percentageA": 37.23093739727601,
+              "percentageB": 62.76906260272399
+            },
+            "sentimentScore": {
+              "teamA": {
+                "directNetSupport": 74.73999999999998,
+                "syntheticSupport": 32.35,
+                "opponentLiabilityRejection": 19.410000000000004,
+                "sentimentScore": 87.67999999999998
+              },
+              "teamB": {
+                "directNetSupport": 125.80000000000001,
+                "syntheticSupport": 19.750000000000007,
+                "opponentLiabilityRejection": 32.833000000000006,
+                "sentimentScore": 112.71700000000001
+              },
+              "strongerTeam": "Emirates Blues",
+              "scoreDifference": 25.037000000000035,
+              "percentageA": 43.75314999725544,
+              "percentageB": 56.246850002744566
+            },
+            "trueMarketLoad": {
+              "team1": {
+                "name": "Ajman Heroes",
+                "matchedVolume": 117.10000000000001,
+                "directBackVolume": 225.6,
+                "layLiability": 867.5918,
+                "totalSupport": 596.4566,
+                "supportPercentage": 29.115208157889032
+              },
+              "team2": {
+                "name": "Emirates Blues",
+                "matchedVolume": 190.58,
+                "directBackVolume": 393.9799999999999,
+                "layLiability": 253.7566,
+                "totalSupport": 1452.1518,
+                "supportPercentage": 70.88479184211097
+              },
+              "heavierSide": "Emirates Blues"
+            },
+            "teams": {
+              "Ajman Heroes": {
+                "trades": [
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.62,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791205386646
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.66,
+                    "type": "lay",
+                    "size": 19.510000000000005,
+                    "updatedAt": 1791205260456
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.66,
+                    "type": "back",
+                    "size": 85.91,
+                    "updatedAt": 1791204546539
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.86,
+                    "type": "lay",
+                    "size": 0.2400000000000002,
+                    "updatedAt": 1791203460897
+                  },
+                  {
+                    "team": "Ajman Heroes",
+                    "price": 2.86,
+                    "type": "back",
+                    "size": 5.72,
+                    "updatedAt": 1791203133435
+                  }
+                ],
+                "pnlIfWins": 0.7500000000000142,
+                "totalBet": 190.23299999999998
+              },
+              "Emirates Blues": {
+                "trades": [
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.5,
+                    "type": "back",
+                    "size": 107.42,
+                    "updatedAt": 1791205260443
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.6,
+                    "type": "lay",
+                    "size": 32.35,
+                    "updatedAt": 1791204548369
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.53,
+                    "type": "back",
+                    "size": 11.87,
+                    "updatedAt": 1791203460893
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.51,
+                    "type": "back",
+                    "size": 33.69,
+                    "updatedAt": 1791191946178
+                  },
+                  {
+                    "team": "Emirates Blues",
+                    "price": 1.55,
+                    "type": "back",
+                    "size": 5.17,
+                    "updatedAt": 1791178019488
+                  }
+                ],
+                "pnlIfWins": 14.123499999999998,
+                "totalBet": 99.7765
+              }
+            },
+            "Usr": "cricketloaduser56@gmail.com",
+            "competitionName": "Emirates D10 League"
+          },
+          "capturedAt": "2026-10-05T13:04:08.510Z",
+          "inputTiming": "captured-before-start",
+          "prediction": {
+            "winner": "Emirates Blues",
+            "tier": "EMIRATES_D10_2",
+            "confidence": "D10 baseline; accuracy not yet measured",
+            "reason": "Emirates D10 frozen pre-match market-flow baseline",
+            "winnerIdx": 1,
+            "predictorVersion": "match-v9-cross-market-support",
+            "algorithmId": "match-emirates-d10-league-independent-v1",
+            "algorithmLeague": "Emirates D10 League",
+            "leagueRegistered": true,
+            "ruleFamily": "league-specialist",
+            "confidenceCalibrated": false,
+            "validation": "insufficient-history",
+            "modelScope": "rules",
+            "mode": "rules",
+            "inputTiming": "frozen-pre-match-fields",
+            "ruleAdjusted": false,
+            "adjustmentTrainingSamples": 1,
+            "adjustmentRuleSupport": null,
+            "profileVersion": "league-v1-100483ecf6f4",
+            "algorithmStrategy": "league-rules",
+            "trainingSamples": 1,
+            "leafSamples": null,
+            "commonFactors": {
+              "family": "relative-market-flow",
+              "dominantTeamIndex": 1,
+              "totalShare": 0.963678469132793,
+              "backShare": 0.965090021361001,
+              "layShare": 0,
+              "activityShare": 0.882951558764606,
+              "normalizedPnlGap": -1.3558029130355294,
+              "flowAgreement": 2,
+              "predictionAgreement": 2,
+              "signals": {
+                "totalFlow": 1,
+                "backFlow": 1,
+                "layFlow": 0,
+                "activity": 1,
+                "higherPnl": 0
+              },
+              "validation": "retrospective-descriptive-factor; not a calibrated probability"
+            },
+            "capturedAt": "2026-10-05T13:04:08.511Z"
+          }
+        }
+      },
+      "lastSeenAt": "2026-10-05T15:17:30.130Z",
+      "statusSource": "market-feed"
+    },
+    {
+      "recordId": "crex:2NK:52661",
+      "crexMatchId": "14MT",
+      "seriesId": "2NK",
+      "competitionName": "Emirates D10 League 2026",
+      "matchNumber": "27",
+      "matchName": "Sharjah v Emirates Red",
+      "team1": "Sharjah",
+      "team2": "Emirates Red",
+      "team1Short": "SHA",
+      "team2Short": "EMR",
+      "startTime": 1791214200000,
+      "status": "upcoming",
+      "score1": null,
+      "score2": null,
+      "resultText": null,
+      "reportedWinner": null,
+      "sourceUrl": "https://crex.com/series/emirates-d10-league-2026-2NK/matches",
+      "sourceProvider": "CREX",
+      "sourceFixture": {
+        "t1f": "DG",
+        "t2f": "R1",
+        "sf": "2NK",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 100014,
+        "fid": 4250082,
+        "ifs": "NS",
+        "fi": "https://cricketvectors.akamaized.net/cFancode/4250082.png",
+        "fsr": "P",
+        "fta": "300",
+        "nt": 0,
+        "is_promo_fan": 0,
+        "is_promo_yt": 0,
+        "g": 1,
+        "hide": 1,
+        "global_num": {
+          "b": 1.55,
+          "fr": "Emirates Red",
+          "fri": "^R1",
+          "l": 1.75,
+          "s": 1,
+          "v": 1
+        },
+        "date": "10/5/2026",
+        "t": 1791214200000,
+        "ssd": 1790533800000,
+        "sed": 1791570600000,
+        "mn": "27",
+        "mt": 5,
+        "mf": "14MT",
+        "id": 52661,
+        "cc": 0,
+        "ft": 4,
+        "vf": "DK",
+        "odds": "{\"rate\":55,\"rate2\":75,\"rate_team_id\":\"^R1\"}",
+        "st": 27,
+        "a": "&21GHC",
+        "status": 0
+      },
+      "firstSeenAt": "2026-10-05T15:12:30.122Z",
+      "actualWinner": null,
+      "resultVerification": {
+        "status": "pending"
+      },
+      "markets": {
+        "match": {
+          "marketMatchId": "36152193",
+          "lastCapturedAt": "2026-10-05T15:17:30.132Z",
+          "latestSnapshot": {
+            "serverTime": "2026-10-05T15:17:22.304Z",
+            "matchId": "36152193",
+            "matchName": "Sharjah v Emirates Red",
+            "teamNames": [
+              "Sharjah",
+              "Emirates Red"
+            ],
+            "inPlayPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "preMatchPnl": {
+              "team1": -3.452000000000112,
+              "team2": 5.920799999999986
+            },
+            "preMatchTotalBets": {
+              "team1": 620.2020000000001,
+              "team2": 612.4295000000001
+            },
+            "preMatchVolume": {
+              "team1": {
+                "back": 606.1,
+                "lay": 0,
+                "total": 619.6600000000001
+              },
+              "team2": {
+                "back": 616.7500000000001,
+                "lay": 13.560000000000013,
+                "total": 616.7500000000001
+              }
+            },
+            "threeMinPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "matchLoadV2": {
+              "team1": 8,
+              "team2": 10
+            },
+            "advancedMetrics": {
+              "team1": {
+                "back": 616.76,
+                "lay": 6.6,
+                "totalVolume": 623.36,
+                "backPercentage": 98.94122176591375
+              },
+              "team2": {
+                "back": 648.1100000000001,
+                "lay": 27.700000000000014,
+                "totalVolume": 675.8100000000002,
+                "backPercentage": 95.9012148384901
+              }
+            },
+            "advancedMetricsV2": {
+              "team1": {
+                "back": 620.7132,
+                "lay": 12.203399999999998,
+                "totalBet": 632.9166
+              },
+              "team2": {
+                "back": 629.1902000000001,
+                "lay": 22.855300000000014,
+                "totalBet": 652.0455000000002
+              }
+            },
+            "supportMetrics": {
+              "team1": {
+                "supportMoney": 644.46,
+                "support": 49.605517368781605
+              },
+              "team2": {
+                "supportMoney": 654.7100000000002,
+                "support": 50.39448263121841
+              }
+            },
+            "marketSignals": {
+              "moreBettedTeam": "Sharjah",
+              "bookieFavouriteOutcome": "Sharjah",
+              "riskTeam": "Emirates Red",
+              "trap": {
+                "level": "none",
+                "reason": "Support is not strongly one-sided."
+              },
+              "supportConfidence": 0.788965262436804,
+              "mostBettedTeam": "Sharjah",
+              "prediction": {
+                "team1TrueSupport": 643.5685000000001,
+                "team2TrueSupport": 641.3936000000001,
+                "ratio": 1.0033908975705401,
+                "bookiePnlTeam1": -614.1132,
+                "bookiePnlTeam2": -601.4902000000001,
+                "prediction": "Sharjah",
+                "pattern": "Fair Market",
+                "reason": "Ratio (1.00) is low. Money is distributed naturally. Prediction follows Higher True Support."
+              }
+            },
+            "bookmakerExposure": {
+              "team1": {
+                "netExposure": 608.5098,
+                "backExposure": 620.7132,
+                "layExposure": 12.203399999999998,
+                "teamName": "Sharjah"
+              },
+              "team2": {
+                "netExposure": 606.3349000000001,
+                "backExposure": 629.1902000000001,
+                "layExposure": 22.855300000000014,
+                "teamName": "Emirates Red"
+              }
+            },
+            "deepMetrics": {
+              "raw": {
+                "A_back_expo": 620.7132,
+                "A_lay_stake": 6.6,
+                "B_back_expo": 629.1902000000001,
+                "B_lay_stake": 27.700000000000014
+              },
+              "totals": {
+                "totalBetTeam1": 648.4132000000001,
+                "totalBetTeam2": 635.7902000000001
+              },
+              "simplePL": {
+                "team1_win": -614.1132,
+                "team2_win": -601.4902000000001
+              },
+              "derivedPL": {
+                "team1_win": -12.622999999999934,
+                "team2_win": 12.622999999999934
+              }
+            },
+            "marketAnalysis": {
+              "totalVolume": {
+                "team1": {
+                  "totalBackVol": 616.76,
+                  "totalLayVol": 6.6,
+                  "totalBet": 644.46,
+                  "profitLoss": 10.250000000000114
+                },
+                "team2": {
+                  "totalBackVol": 648.1100000000001,
+                  "totalLayVol": 27.700000000000014,
+                  "totalBet": 654.7100000000002,
+                  "profitLoss": -10.250000000000114
+                }
+              },
+              "normalTotalBet": {
+                "team1": {
+                  "totalBackExpo": 620.7132,
+                  "totalLayVol": 6.6,
+                  "totalBet": 648.4132000000001,
+                  "profitLoss": 11.90020000000004
+                },
+                "team2": {
+                  "totalBackExpo": 629.1902000000001,
+                  "totalLayVol": 27.700000000000014,
+                  "totalBet": 635.7902000000001,
+                  "profitLoss": 3.8250999999999067
+                }
+              },
+              "totalNetVolume": {
+                "team1": {
+                  "totalBackNetVol": 620.7132,
+                  "totalLayNetVol": 12.203399999999998,
+                  "totalBet": 643.5685000000001,
+                  "profitLoss": -2.1748999999999796
+                },
+                "team2": {
+                  "totalBackNetVol": 629.1902000000001,
+                  "totalLayNetVol": 22.855300000000014,
+                  "totalBet": 641.3936000000001,
+                  "profitLoss": 2.1748999999999796
+                }
+              }
+            },
+            "syntheticSupport": {
+              "teamA": {
+                "tradeCount": 8,
+                "averageOdds": 2.025,
+                "averageSize": 80.5575,
+                "supportProduct": 163.1289375
+              },
+              "teamB": {
+                "tradeCount": 10,
+                "averageOdds": 1.8880000000000003,
+                "averageSize": 65.471,
+                "supportProduct": 123.60924800000004
+              },
+              "strongerTeam": "Sharjah",
+              "supportRatio": 1.319714666494856
+            },
+            "netSupport": {
+              "teamA": {
+                "totalBackVolume": 616.76,
+                "oppoLayVolume": 27.700000000000014,
+                "layExposure": 12.203399999999998,
+                "netSupportValue": 632.2566
+              },
+              "teamB": {
+                "totalBackVolume": 648.1100000000001,
+                "oppoLayVolume": 6.6,
+                "layExposure": 22.855300000000014,
+                "netSupportValue": 631.8547000000001
+              },
+              "strongerTeam": "Sharjah",
+              "netSupportDifference": 0.40189999999995507,
+              "percentageA": 50.01589654328698,
+              "percentageB": 49.98410345671304
+            },
+            "sentimentScore": {
+              "teamA": {
+                "directNetSupport": 610.16,
+                "syntheticSupport": 27.700000000000014,
+                "opponentLiabilityRejection": 22.855300000000014,
+                "sentimentScore": 615.0047
+              },
+              "teamB": {
+                "directNetSupport": 620.4100000000001,
+                "syntheticSupport": 6.6,
+                "opponentLiabilityRejection": 12.203399999999998,
+                "sentimentScore": 614.8066000000001
+              },
+              "strongerTeam": "Sharjah",
+              "scoreDifference": 0.1980999999998403,
+              "percentageA": 50.00805408114236,
+              "percentageB": 49.99194591885764
+            },
+            "trueMarketLoad": {
+              "team1": {
+                "name": "Sharjah",
+                "matchedVolume": 632.4199999999998,
+                "directBackVolume": 66.82000000000001,
+                "layLiability": 40.345099999999995,
+                "totalSupport": 745.6306999999999,
+                "supportPercentage": 47.90352334667373
+              },
+              "team2": {
+                "name": "Emirates Red",
+                "matchedVolume": 689.4899999999998,
+                "directBackVolume": 81.06,
+                "layLiability": 46.39070000000001,
+                "totalSupport": 810.8950999999997,
+                "supportPercentage": 52.09647665332626
+              },
+              "heavierSide": "Emirates Red"
+            },
+            "teams": {
+              "Sharjah": {
+                "trades": [
+                  {
+                    "team": "Sharjah",
+                    "price": 2.94,
+                    "type": "lay",
+                    "size": 2.31,
+                    "updatedAt": 1791213411341
+                  },
+                  {
+                    "team": "Sharjah",
+                    "price": 2.8,
+                    "type": "lay",
+                    "size": 4.29,
+                    "updatedAt": 1791213371643
+                  },
+                  {
+                    "team": "Sharjah",
+                    "price": 2.32,
+                    "type": "back",
+                    "size": 10.66,
+                    "updatedAt": 1791213325291
+                  },
+                  {
+                    "team": "Sharjah",
+                    "price": 2,
+                    "type": "back",
+                    "size": 603.2500000000001,
+                    "updatedAt": 1791206472766
+                  },
+                  {
+                    "team": "Sharjah",
+                    "price": 2.24,
+                    "type": "back",
+                    "size": 1.43,
+                    "updatedAt": 1791192289882
+                  },
+                  {
+                    "team": "Sharjah",
+                    "price": 2.14,
+                    "type": "back",
+                    "size": 1.42,
+                    "updatedAt": 1791188725982
+                  }
+                ],
+                "pnlIfWins": 11.900199999999813,
+                "totalBet": 648.4132000000001
+              },
+              "Emirates Red": {
+                "trades": [
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.51,
+                    "type": "back",
+                    "size": 4.52,
+                    "updatedAt": 1791213411353
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.55,
+                    "type": "back",
+                    "size": 11.89,
+                    "updatedAt": 1791213371640
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.54,
+                    "type": "back",
+                    "size": 2.17,
+                    "updatedAt": 1791213371640
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.53,
+                    "type": "back",
+                    "size": 9.86,
+                    "updatedAt": 1791213371640
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.52,
+                    "type": "back",
+                    "size": 2.92,
+                    "updatedAt": 1791213371640
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.75,
+                    "type": "lay",
+                    "size": 14.139999999999999,
+                    "updatedAt": 1791213325295
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.74,
+                    "type": "back",
+                    "size": 10.55,
+                    "updatedAt": 1791208259233
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2,
+                    "type": "lay",
+                    "size": 3.3600000000000136,
+                    "updatedAt": 1791206472761
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.75,
+                    "type": "back",
+                    "size": 6.3100000000000005,
+                    "updatedAt": 1791200937143
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.88,
+                    "type": "lay",
+                    "size": 1.63,
+                    "updatedAt": 1791188725797
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.87,
+                    "type": "lay",
+                    "size": 8.57,
+                    "updatedAt": 1791188725797
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2,
+                    "type": "back",
+                    "size": 599.8900000000001,
+                    "updatedAt": 1791136651560
+                  }
+                ],
+                "pnlIfWins": 3.8251000000000204,
+                "totalBet": 635.7902000000001
+              }
+            },
+            "Usr": "cricketloaduser56@gmail.com",
+            "competitionName": "Emirates D10 League"
+          },
+          "latestInputTiming": "captured-before-start",
+          "snapshot": {
+            "serverTime": "2026-10-05T15:12:22.264Z",
+            "matchId": "36152193",
+            "matchName": "Sharjah v Emirates Red",
+            "teamNames": [
+              "Sharjah",
+              "Emirates Red"
+            ],
+            "inPlayPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "preMatchPnl": {
+              "team1": -3.452000000000112,
+              "team2": 5.920799999999986
+            },
+            "preMatchTotalBets": {
+              "team1": 620.2020000000001,
+              "team2": 612.4295000000001
+            },
+            "preMatchVolume": {
+              "team1": {
+                "back": 606.1,
+                "lay": 0,
+                "total": 619.6600000000001
+              },
+              "team2": {
+                "back": 616.7500000000001,
+                "lay": 13.560000000000013,
+                "total": 616.7500000000001
+              }
+            },
+            "threeMinPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "matchLoadV2": {
+              "team1": 6,
+              "team2": 3
+            },
+            "advancedMetrics": {
+              "team1": {
+                "back": 606.1,
+                "lay": 0,
+                "totalVolume": 606.1,
+                "backPercentage": 100
+              },
+              "team2": {
+                "back": 616.7500000000001,
+                "lay": 13.560000000000013,
+                "totalVolume": 630.3100000000002,
+                "backPercentage": 97.8486776348146
+              }
+            },
+            "advancedMetricsV2": {
+              "team1": {
+                "back": 606.642,
+                "lay": 0,
+                "totalBet": 606.642
+              },
+              "team2": {
+                "back": 612.4295000000001,
+                "lay": 12.250300000000015,
+                "totalBet": 624.6798000000001
+              }
+            },
+            "supportMetrics": {
+              "team1": {
+                "supportMoney": 619.6600000000001,
+                "support": 50.11767941055151
+              },
+              "team2": {
+                "supportMoney": 616.7500000000001,
+                "support": 49.88232058944848
+              }
+            },
+            "marketSignals": {
+              "moreBettedTeam": "Sharjah",
+              "bookieFavouriteOutcome": "Emirates Red",
+              "riskTeam": "Sharjah",
+              "trap": {
+                "level": "none",
+                "reason": "Support is not strongly one-sided."
+              },
+              "supportConfidence": 0.23535882110302708,
+              "mostBettedTeam": "Sharjah",
+              "prediction": {
+                "team1TrueSupport": 618.8923000000001,
+                "team2TrueSupport": 612.4295000000001,
+                "ratio": 1.0105527248442474,
+                "bookiePnlTeam1": -606.642,
+                "bookiePnlTeam2": -598.8695,
+                "prediction": "Sharjah",
+                "pattern": "Fair Market",
+                "reason": "Ratio (1.01) is low. Money is distributed naturally. Prediction follows Higher True Support."
+              }
+            },
+            "bookmakerExposure": {
+              "team1": {
+                "netExposure": 606.642,
+                "backExposure": 606.642,
+                "layExposure": 0,
+                "teamName": "Sharjah"
+              },
+              "team2": {
+                "netExposure": 600.1792,
+                "backExposure": 612.4295000000001,
+                "layExposure": 12.250300000000015,
+                "teamName": "Emirates Red"
+              }
+            },
+            "deepMetrics": {
+              "raw": {
+                "A_back_expo": 606.642,
+                "A_lay_stake": 0,
+                "B_back_expo": 612.4295000000001,
+                "B_lay_stake": 13.560000000000013
+              },
+              "totals": {
+                "totalBetTeam1": 620.2020000000001,
+                "totalBetTeam2": 612.4295000000001
+              },
+              "simplePL": {
+                "team1_win": -606.642,
+                "team2_win": -598.8695
+              },
+              "derivedPL": {
+                "team1_win": -7.772500000000036,
+                "team2_win": 7.772500000000036
+              }
+            },
+            "marketAnalysis": {
+              "totalVolume": {
+                "team1": {
+                  "totalBackVol": 606.1,
+                  "totalLayVol": 0,
+                  "totalBet": 619.6600000000001,
+                  "profitLoss": -2.909999999999968
+                },
+                "team2": {
+                  "totalBackVol": 616.7500000000001,
+                  "totalLayVol": 13.560000000000013,
+                  "totalBet": 616.7500000000001,
+                  "profitLoss": 2.909999999999968
+                }
+              },
+              "normalTotalBet": {
+                "team1": {
+                  "totalBackExpo": 606.642,
+                  "totalLayVol": 0,
+                  "totalBet": 620.2020000000001,
+                  "profitLoss": -3.451999999999998
+                },
+                "team2": {
+                  "totalBackExpo": 612.4295000000001,
+                  "totalLayVol": 13.560000000000013,
+                  "totalBet": 612.4295000000001,
+                  "profitLoss": 5.920799999999986
+                }
+              },
+              "totalNetVolume": {
+                "team1": {
+                  "totalBackNetVol": 606.642,
+                  "totalLayNetVol": 0,
+                  "totalBet": 618.8923000000001,
+                  "profitLoss": -6.462800000000016
+                },
+                "team2": {
+                  "totalBackNetVol": 612.4295000000001,
+                  "totalLayNetVol": 12.250300000000015,
+                  "totalBet": 612.4295000000001,
+                  "profitLoss": 6.462800000000016
+                }
+              }
+            },
+            "syntheticSupport": {
+              "teamA": {
+                "tradeCount": 6,
+                "averageOdds": 2.021666666666667,
+                "averageSize": 103.27666666666669,
+                "supportProduct": 208.79099444444452
+              },
+              "teamB": {
+                "tradeCount": 3,
+                "averageOdds": 1.83,
+                "averageSize": 205.58333333333337,
+                "supportProduct": 376.2175000000001
+              },
+              "strongerTeam": "Emirates Red",
+              "supportRatio": 1.8018856656200501
+            },
+            "netSupport": {
+              "teamA": {
+                "totalBackVolume": 606.1,
+                "oppoLayVolume": 13.560000000000013,
+                "layExposure": 0,
+                "netSupportValue": 619.6600000000001
+              },
+              "teamB": {
+                "totalBackVolume": 616.7500000000001,
+                "oppoLayVolume": 0,
+                "layExposure": 12.250300000000015,
+                "netSupportValue": 604.4997000000001
+              },
+              "strongerTeam": "Sharjah",
+              "netSupportDifference": 15.160300000000007,
+              "percentageA": 50.61921250960965,
+              "percentageB": 49.38078749039035
+            },
+            "sentimentScore": {
+              "teamA": {
+                "directNetSupport": 606.1,
+                "syntheticSupport": 13.560000000000013,
+                "opponentLiabilityRejection": 12.250300000000015,
+                "sentimentScore": 607.4097
+              },
+              "teamB": {
+                "directNetSupport": 603.19,
+                "syntheticSupport": 0,
+                "opponentLiabilityRejection": 0,
+                "sentimentScore": 603.19
+              },
+              "strongerTeam": "Sharjah",
+              "scoreDifference": 4.219699999999989,
+              "percentageA": 50.174281391280694,
+              "percentageB": 49.82571860871929
+            },
+            "trueMarketLoad": {
+              "team1": {
+                "name": "Sharjah",
+                "matchedVolume": 615.1599999999999,
+                "directBackVolume": 70.91000000000001,
+                "layLiability": 33.4709,
+                "totalSupport": 713.7903999999999,
+                "supportPercentage": 48.19094185797416
+              },
+              "team2": {
+                "name": "Emirates Red",
+                "matchedVolume": 643.9899999999999,
+                "directBackVolume": 89.92,
+                "layLiability": 27.7204,
+                "totalSupport": 767.3808999999999,
+                "supportPercentage": 51.80905814202584
+              },
+              "heavierSide": "Emirates Red"
+            },
+            "teams": {
+              "Sharjah": {
+                "trades": [
+                  {
+                    "team": "Sharjah",
+                    "price": 2,
+                    "type": "back",
+                    "size": 603.2500000000001,
+                    "updatedAt": 1791206472766
+                  },
+                  {
+                    "team": "Sharjah",
+                    "price": 2.24,
+                    "type": "back",
+                    "size": 1.43,
+                    "updatedAt": 1791192289882
+                  },
+                  {
+                    "team": "Sharjah",
+                    "price": 2.14,
+                    "type": "back",
+                    "size": 1.42,
+                    "updatedAt": 1791188725982
+                  }
+                ],
+                "pnlIfWins": -3.452000000000112,
+                "totalBet": 620.2020000000001
+              },
+              "Emirates Red": {
+                "trades": [
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.74,
+                    "type": "back",
+                    "size": 10.55,
+                    "updatedAt": 1791208259233
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2,
+                    "type": "lay",
+                    "size": 3.3600000000000136,
+                    "updatedAt": 1791206472761
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.75,
+                    "type": "back",
+                    "size": 6.3100000000000005,
+                    "updatedAt": 1791200937143
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.88,
+                    "type": "lay",
+                    "size": 1.63,
+                    "updatedAt": 1791188725797
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 1.87,
+                    "type": "lay",
+                    "size": 8.57,
+                    "updatedAt": 1791188725797
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2,
+                    "type": "back",
+                    "size": 599.8900000000001,
+                    "updatedAt": 1791136651560
+                  }
+                ],
+                "pnlIfWins": 5.920799999999986,
+                "totalBet": 612.4295000000001
+              }
+            },
+            "Usr": "cricketloaduser56@gmail.com",
+            "competitionName": "Emirates D10 League"
+          },
+          "capturedAt": "2026-10-05T15:12:30.128Z",
+          "inputTiming": "captured-before-start",
+          "prediction": {
+            "winner": "Emirates Red",
+            "tier": "EMIRATES_D10_3",
+            "confidence": "D10 baseline; accuracy not yet measured",
+            "reason": "Emirates D10 frozen pre-match market-flow baseline",
+            "winnerIdx": 1,
+            "predictorVersion": "match-v9-cross-market-support",
+            "algorithmId": "match-emirates-d10-league-independent-v1",
+            "algorithmLeague": "Emirates D10 League",
+            "leagueRegistered": true,
+            "ruleFamily": "league-specialist",
+            "confidenceCalibrated": false,
+            "validation": "insufficient-history",
+            "modelScope": "rules",
+            "mode": "rules",
+            "inputTiming": "frozen-pre-match-fields",
+            "ruleAdjusted": false,
+            "adjustmentTrainingSamples": 1,
+            "adjustmentRuleSupport": null,
+            "profileVersion": "league-v1-100483ecf6f4",
+            "algorithmStrategy": "league-rules",
+            "trainingSamples": 1,
+            "leafSamples": null,
+            "commonFactors": {
+              "family": "relative-market-flow",
+              "dominantTeamIndex": 1,
+              "totalShare": 0.5097904416819663,
+              "backShare": 0.504354581510406,
+              "layShare": 1,
+              "activityShare": 0.49684719236852215,
+              "normalizedPnlGap": 0.007580656901836846,
+              "flowAgreement": 3,
+              "predictionAgreement": 3,
+              "signals": {
+                "totalFlow": 1,
+                "backFlow": 1,
+                "layFlow": 1,
+                "activity": 0,
+                "higherPnl": 1
+              },
+              "validation": "retrospective-descriptive-factor; not a calibrated probability"
+            },
+            "capturedAt": "2026-10-05T15:12:30.128Z"
+          }
+        }
+      },
+      "lastSeenAt": "2026-10-05T15:17:30.130Z"
     }
   ],
   "sync": {
-    "checkedAt": "2026-10-04T11:37:32.555Z",
+    "checkedAt": "2026-10-05T15:17:30.130Z",
     "seriesUrls": [
       "https://crex.com/series/emirates-d10-league-2026-2NK/matches"
     ],
-    "fixturesSeen": 46,
-    "feedMatchesSeen": 4,
-    "captures": 0,
-    "invalidInputs": 5,
-    "lateInputs": 3,
+    "fixturesSeen": 48,
+    "feedMatchesSeen": 7,
+    "captures": 1,
+    "invalidInputs": 11,
+    "lateInputs": 2,
     "feedStatus": "available",
     "errors": []
   },
-  "updatedAt": "2026-10-04T11:37:32.560Z",
+  "updatedAt": "2026-10-05T15:17:30.135Z",
   "marketFeedHealth": {
-    "checkedAt": "2026-10-04T11:37:32.555Z",
+    "checkedAt": "2026-10-05T15:17:30.130Z",
     "status": "available",
     "error": null
   }

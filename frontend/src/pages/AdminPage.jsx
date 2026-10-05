@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useCallback, useEffect } from 'react'
+import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
 import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown, UserMinus, Receipt, ShieldCheck, Database } from 'lucide-react'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminUsers from './admin/AdminUsers'
@@ -29,10 +29,21 @@ const ALL_TABS = [
   { id: 'audit',     label: 'Audit Logs',icon: ScrollText },
 ]
 
+const TAB_GROUPS = [
+  { label: 'Overview', ids: ['dashboard'] },
+  { label: 'Match intelligence', ids: ['match_dataset', 'toss_dataset'] },
+  { label: 'People & access', ids: ['users', 'pro_users', 'lapsed_users', 'admins'] },
+  { label: 'Billing', ids: ['sub_logs', 'plans', 'coupons'] },
+  { label: 'System', ids: ['settings', 'audit'] },
+]
+
 export default function AdminPage() {
   const navigate = useNavigate()
   const { isLoggedIn, user } = useOutletContext()
-  const [tab, setTab] = useState('dashboard')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const requestedTab = searchParams.get('tab') || 'dashboard'
+  const tab = ALL_TABS.some(item => item.id === requestedTab) ? requestedTab : 'dashboard'
+  const setTab = useCallback(value => setSearchParams(previous => { const next = new URLSearchParams(previous); next.set('tab', value); return next }, { replace: true }), [setSearchParams])
   const isSuperAdmin = user?.role === 'superadmin'
   const tabs = ALL_TABS.filter(t => isSuperAdmin || !t.superadminOnly)
 
@@ -46,7 +57,7 @@ export default function AdminPage() {
     if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings', 'toss_dataset', 'match_dataset'].includes(tab)) {
       setTab('dashboard')
     }
-  }, [tab, isSuperAdmin])
+  }, [tab, isSuperAdmin, setTab])
 
   if (!user) return (
     <div className="flex h-[80vh] items-center justify-center">
@@ -57,38 +68,45 @@ export default function AdminPage() {
   if (!['admin', 'superadmin'].includes(user.role)) return null
 
   return (
-    <div className="max-w-6xl mx-auto p-4 fade-in">
+    <div className="admin-workspace fade-in">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white"
-          style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
+      <div className="admin-workspace-heading">
+        <div className="admin-heading-icon">
           <Shield size={18} />
         </div>
         <div>
-          <h1 className="text-xl font-black text-text-primary">Admin Panel</h1>
+          <p className="ui-eyebrow">WORKSPACE</p><h1>Administration</h1>
           <p className="text-xs text-text-muted capitalize">{user?.role} · {user?.email}</p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1.5 overflow-x-auto no-scrollbar mb-5 pb-1">
-        {tabs.map(t => {
+      <div className="admin-workspace-body">
+      <label className="admin-mobile-navigation" htmlFor="admin-section-select"><span>Workspace section</span>
+        <select id="admin-section-select" aria-label="Workspace section" value={tab} onChange={event => setTab(event.target.value)}>
+          {TAB_GROUPS.map(group => <optgroup key={group.label} label={group.label}>{group.ids.map(id => tabs.find(item => item.id === id)).filter(Boolean).map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</optgroup>)}
+        </select>
+      </label>
+      <nav className="admin-navigation" aria-label="Administration">
+        {TAB_GROUPS.map(group => {
+          const items = group.ids.map(id => tabs.find(item => item.id === id)).filter(Boolean)
+          return items.length > 0 && <div className="admin-nav-group" key={group.label}><p>{group.label}</p>{items.map(t => {
           const Icon = t.icon
           const active = tab === t.id
           return (
             <button key={t.id} onClick={() => setTab(t.id)}
-              className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all"
-              style={active
-                ? { background: 'linear-gradient(135deg,#dc2626,#10b981)', color: '#fff' }
-                : { background: 'rgba(220,38,38,0.06)', color: '#374151' }
-              }
+              className={active ? 'is-active' : ''}
+              aria-current={active ? 'page' : undefined}
             >
-              <Icon size={13} />
+              <Icon size={17} />
               {t.label}
             </button>
           )
-        })}
-      </div>
+        })}</div>})}
+      </nav>
+
+      <section className="admin-content" aria-label={tabs.find(item => item.id === tab)?.label || 'Dashboard'}>
+      <div className="admin-section-heading"><span>Admin workspace</span><span>/</span><strong>{tabs.find(item => item.id === tab)?.label}</strong></div>
 
       {/* Tab Content */}
       {tab === 'dashboard' && <AdminDashboard isSuperAdmin={isSuperAdmin} />}
@@ -103,6 +121,8 @@ export default function AdminPage() {
       {tab === 'toss_dataset' && isSuperAdmin && <AdminTossDataset />}
       {tab === 'match_dataset' && isSuperAdmin && <AdminMatchDataset />}
       {tab === 'audit'     && <AdminAuditLogs />}
+      </section>
+      </div>
     </div>
   )
 }

@@ -69,14 +69,7 @@ function init() {
           if (!room || room.size === 0) return; // Nobody watching this match -> zero CPU/bandwidth waste
 
           _debounced(`bundle:${matchId}`, () => {
-            const matchPayloadService = require('../matchPayloadService');
-            matchPayloadService.getMatchBundlePayload(matchId, { isBroadcaster: true, role: 'admin' }, 'cricket')
-              .then(bundle => {
-                if (!bundle || bundle.error) return;
-                // Emit single clean event (no duplicate)
-                io.to(`match:${matchId}`).emit('match:bundle', bundle);
-              })
-              .catch(() => {});
+            socketService.broadcastMatchBundle(matchId).catch(() => {});
           }, 500);
         } catch {}
       }

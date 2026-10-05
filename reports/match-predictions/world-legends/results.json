@@ -1,0 +1,134 @@
+{
+  "generatedAt": "2026-10-05T12:00:00+05:30",
+  "league": "World Championship of Legends T20",
+  "predictorVersion": "match-v9-cross-market-support",
+  "scope": "Retrospective replay of frozen pre-match fields only",
+  "summary": {
+    "archivedMarkets": 4,
+    "completedWithVerifiedWinner": 3,
+    "correct": 3,
+    "wrong": 0,
+    "unscored": 1,
+    "accuracyPct": 100,
+    "verdict": "PASS"
+  },
+  "limitations": [
+    "This is a three-match retrospective sample, not an independent estimate of future accuracy.",
+    "The Pakistan Legends v Bangladesh Champions market is unscored because no completed winner was published by the cutoff.",
+    "No in-play trades, final odds, team identity rule, match result, or post-match field is passed into the predictor."
+  ],
+  "rows": [
+    {
+      "matchId": "36126552",
+      "startTime": 1791027000000,
+      "matchName": "India Legends v Australia Legends",
+      "savedPrediction": "Australia Legends",
+      "currentPrediction": "India Legends",
+      "actualWinner": "India Legends",
+      "verdict": "Correct",
+      "exclusionReason": null,
+      "evidence": {
+        "correctedSupportPct": [
+          68.4,
+          31.6
+        ],
+        "preMatchActivityPct": [
+          70.3,
+          29.7
+        ],
+        "bookmakerPressureTeam": "India Legends",
+        "agreeingSignals": "3/3"
+      },
+      "inputTiming": "frozen-pre-match-fields",
+      "source": {
+        "name": "FanCode",
+        "url": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/video-highlights/india-champions-beat-australia-champions-by-46-runs-match-1-223756",
+        "resultText": "India Champions beat Australia Champions by 46 runs"
+      }
+    },
+    {
+      "matchId": "36128071",
+      "startTime": 1791041400000,
+      "matchName": "Pakistan Legends v Bangladesh Champions",
+      "savedPrediction": "Pakistan Legends",
+      "currentPrediction": "Bangladesh Champions",
+      "actualWinner": null,
+      "verdict": "Unscored",
+      "exclusionReason": "No completed winner was published by the cutoff, so this archived market is not scored as a played match.",
+      "evidence": {
+        "correctedSupportPct": [
+          42,
+          58
+        ],
+        "preMatchActivityPct": [
+          17.1,
+          82.9
+        ],
+        "bookmakerPressureTeam": "Bangladesh Champions",
+        "agreeingSignals": "3/3"
+      },
+      "inputTiming": "frozen-pre-match-fields",
+      "source": {
+        "name": "FanCode",
+        "url": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/matches",
+        "resultText": null
+      }
+    },
+    {
+      "matchId": "36130557",
+      "startTime": 1791113400000,
+      "matchName": "West Indies Legends v South Africa Legends",
+      "savedPrediction": "South Africa Legends",
+      "currentPrediction": "South Africa Legends",
+      "actualWinner": "South Africa Legends",
+      "verdict": "Correct",
+      "exclusionReason": null,
+      "evidence": {
+        "correctedSupportPct": [
+          35.6,
+          64.4
+        ],
+        "preMatchActivityPct": [
+          53.8,
+          46.2
+        ],
+        "bookmakerPressureTeam": "South Africa Legends",
+        "agreeingSignals": "2/3"
+      },
+      "inputTiming": "frozen-pre-match-fields",
+      "source": {
+        "name": "FanCode",
+        "url": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/matches",
+        "resultText": "South Africa Champions beat West Indies Champions by 97 runs"
+      }
+    },
+    {
+      "matchId": "36147996",
+      "startTime": 1791127800000,
+      "matchName": "India Legends v England Legends",
+      "savedPrediction": "India Legends",
+      "currentPrediction": "England Legends",
+      "actualWinner": "England Legends",
+      "verdict": "Correct",
+      "exclusionReason": null,
+      "evidence": {
+        "correctedSupportPct": [
+          36.6,
+          63.4
+        ],
+        "preMatchActivityPct": [
+          25.1,
+          74.9
+        ],
+        "bookmakerPressureTeam": "England Legends",
+        "agreeingSignals": "3/3"
+      },
+      "inputTiming": "frozen-pre-match-fields",
+      "source": {
+        "name": "FanCode",
+        "url": "https://www.fancode.com/cricket/tour/world-championship-of-legends-2026-19879892/matches/india-champions-vs-england-champions-4249223/live-match-info",
+        "resultText": "England Champions beat India Champions by 21 runs"
+      }
+    }
+  ]
+}
