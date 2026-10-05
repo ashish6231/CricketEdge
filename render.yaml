@@ -66,6 +66,14 @@ services:
         value: 5000
       - key: TLL_POLL_INTERVAL_MS
         value: 10000
+      - key: TLL_SESSION_SUBSCRIBED_REFRESH_MS
+        value: 30000
+      - key: TLL_SESSION_LIVE_IDLE_REFRESH_MS
+        value: 300000
+      - key: TLL_SESSION_UPCOMING_REFRESH_MS
+        value: 1800000
+      - key: TLL_SESSION_BACKGROUND_PER_CYCLE
+        value: 2
 
   # ─── Frontend: Vite/React Static Site ───
   - type: web

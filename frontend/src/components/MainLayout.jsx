@@ -1,5 +1,5 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { Activity, Menu, X, Shield, LogOut, User, ChevronDown, CircleDot, Coins, Crown } from 'lucide-react'
+import { Activity, Menu, X, Shield, LogOut, User, ChevronDown, BarChart3, Coins, Crown } from 'lucide-react'
 import { Suspense, useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout, getSignupStatus, getTelegramSettings, checkTelegramStatus } from '../api'
 import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
@@ -12,7 +12,7 @@ import { getSocket, updateSocketAuth } from '../socket'
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: Activity },
   { path: '/toss', label: 'Toss', icon: Coins },
-  { path: '/tennis', label: 'Tennis', icon: CircleDot },
+  { path: '/session', label: 'Session', icon: BarChart3 },
 ]
 
 export default function MainLayout() {
@@ -362,7 +362,7 @@ export default function MainLayout() {
 
   const isSportsPage =
     location.pathname.startsWith('/cricket') ||
-    location.pathname.startsWith('/tennis') ||
+    location.pathname.startsWith('/session') ||
     location.pathname.startsWith('/toss')
 
   useEffect(() => {

@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 Allow: /cricket
 Allow: /toss
-Allow: /tennis
+Allow: /session
 Allow: /favicon.ico
 Allow: /favicon.svg
 Allow: /favicon*.png

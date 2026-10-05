@@ -10,11 +10,88 @@
 const TennisLiveLoadAdapter = require('./adapter');
 const session = require('./session');
 const { getIngestQueue } = require('../normalizer/queue');
+const { compactSessionPayload } = require('../../utils/sessionPayload');
 
 const adapter = new TennisLiveLoadAdapter();
 let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 10000;
 let _timer = null;
 let _isRunning = false;
+const _sessionDetailLastAttempt = new Map();
+const SESSION_SUBSCRIBED_REFRESH_MS = parseInt(process.env.TLL_SESSION_SUBSCRIBED_REFRESH_MS, 10) || 30 * 1000;
+const SESSION_LIVE_IDLE_REFRESH_MS = parseInt(process.env.TLL_SESSION_LIVE_IDLE_REFRESH_MS, 10) || 5 * 60 * 1000;
+const SESSION_UPCOMING_REFRESH_MS = parseInt(process.env.TLL_SESSION_UPCOMING_REFRESH_MS, 10) || 30 * 60 * 1000;
+const SESSION_ENDED_REFRESH_MS = parseInt(process.env.TLL_SESSION_ENDED_REFRESH_MS, 10) || 24 * 60 * 60 * 1000;
+const SESSION_BACKGROUND_PER_CYCLE = parseInt(process.env.TLL_SESSION_BACKGROUND_PER_CYCLE, 10) || 2;
+
+function isEndedMatch(match) {
+  const status = String(match?.status || '').toLowerCase();
+  return ['ended', 'completed', 'closed', 'verified', 'pending'].includes(status);
+}
+
+function isLiveMatch(match) {
+  const status = String(match?.status || '').toLowerCase();
+  return !isEndedMatch(match) && Boolean(match?.inPlay || status === 'live' || status === 'in-play');
+}
+
+async function refreshSessionDetails(sessionMatches, subscribedMatchIds, queue) {
+  const now = Date.now();
+  const list = Array.isArray(sessionMatches) ? sessionMatches : [];
+  const liveTargets = [];
+  const backgroundTargets = [];
+
+  for (const match of list) {
+    const matchId = String(match?.matchId || match?.id || '');
+    if (!matchId) continue;
+
+    const lastAttempt = _sessionDetailLastAttempt.get(matchId) || 0;
+    const subscribed = subscribedMatchIds.has(matchId);
+    const live = isLiveMatch(match);
+    const refreshMs = subscribed
+      ? Math.max(SESSION_SUBSCRIBED_REFRESH_MS, _pollInterval)
+      : live
+        ? SESSION_LIVE_IDLE_REFRESH_MS
+        : (isEndedMatch(match) ? SESSION_ENDED_REFRESH_MS : SESSION_UPCOMING_REFRESH_MS);
+
+    if (now - lastAttempt < refreshMs) continue;
+    const target = { matchId, match, lastAttempt, refreshMs };
+    if (live || subscribed) liveTargets.push(target);
+    else backgroundTargets.push(target);
+  }
+
+  // Warm upcoming/completed cards gradually so list polling never creates a request spike.
+  backgroundTargets.sort((a, b) => {
+    // Completed matches have final matched money, so fill those once first.
+    const tierA = isEndedMatch(a.match) ? 1 : 2;
+    const tierB = isEndedMatch(b.match) ? 1 : 2;
+    return tierA - tierB || a.lastAttempt - b.lastAttempt;
+  });
+  const targets = [...liveTargets, ...backgroundTargets.slice(0, SESSION_BACKGROUND_PER_CYCLE)];
+
+  const batchSize = 5;
+  for (let i = 0; i < targets.length; i += batchSize) {
+    const batch = targets.slice(i, i + batchSize);
+    await Promise.all(batch.map(async ({ matchId, refreshMs }) => {
+      _sessionDetailLastAttempt.set(matchId, Date.now());
+      try {
+        const trades = await adapter.getSessionTrades(matchId);
+        if (trades && !trades.error) {
+          const notifySubscribers = subscribedMatchIds.has(matchId);
+          await queue.add('ingest', {
+            source: 'tll',
+            type: 'session:trades',
+            matchId,
+            data: compactSessionPayload(trades),
+            notifySubscribers,
+          });
+        } else {
+          _sessionDetailLastAttempt.set(matchId, Date.now() - refreshMs + 30 * 1000);
+        }
+      } catch {
+        _sessionDetailLastAttempt.set(matchId, Date.now() - refreshMs + 30 * 1000);
+      }
+    }));
+  }
+}
 
 async function runPollCycle() {
   if (_isRunning) return;
@@ -26,11 +103,10 @@ async function runPollCycle() {
     const queue = getIngestQueue();
 
     // 1. Fetch raw matches lists in parallel
-    const [cricket, toss, sessionMatches, tennis] = await Promise.all([
+    const [cricket, toss, sessionMatches] = await Promise.all([
       adapter.getMatches().catch(err => ({ error: err.message })),
       adapter.getTossMatches().catch(err => ({ error: err.message })),
       adapter.getSessionMatches().catch(err => ({ error: err.message })),
-      adapter.getTennisMatches().catch(err => ({ error: err.message })),
     ]);
 
     // Push raw list ingest jobs to Normalizer
@@ -43,10 +119,6 @@ async function runPollCycle() {
     if (sessionMatches && !sessionMatches.error) {
       await queue.add('ingest', { source: 'tll', type: 'session:matches', data: sessionMatches });
     }
-    if (Array.isArray(tennis) && tennis.length) {
-      await queue.add('ingest', { source: 'tll', type: 'tennis:matches', data: tennis });
-    }
-
     // 2. Fetch snapshots for active matches (both live and upcoming) + subscribed matches
     let subscribedMatchIds = new Set();
     try {
@@ -56,13 +128,8 @@ async function runPollCycle() {
       }
     } catch {}
 
-    const isMatchEnded = (m) => {
-      const s = (m.status || '').toLowerCase();
-      return s === 'ended' || s === 'completed' || s === 'closed' || s === 'verified';
-    };
-
     const activeCricket = (Array.isArray(cricket) ? cricket : [])
-      .filter(m => !isMatchEnded(m) || subscribedMatchIds.has(String(m.id || m.matchId)));
+      .filter(m => !isEndedMatch(m) || subscribedMatchIds.has(String(m.id || m.matchId)));
 
     for (const subMid of subscribedMatchIds) {
       if (!activeCricket.some(m => String(m.id || m.matchId) === String(subMid))) {
@@ -91,19 +158,6 @@ async function runPollCycle() {
         } catch {}
 
         if (isLiveOrSub) {
-          adapter.getSessionTrades(mid)
-            .then(trades => {
-              if (trades && !trades.error) {
-                queue.add('ingest', {
-                  source: 'tll',
-                  type: 'session:trades',
-                  matchId: mid,
-                  data: trades,
-                }).catch(() => {});
-              }
-            })
-            .catch(() => {});
-
           adapter.getTossSnapshot(mid)
             .then(tossSnap => {
               if (tossSnap && !tossSnap.error) {
@@ -119,6 +173,8 @@ async function runPollCycle() {
         }
       }));
     }
+
+    await refreshSessionDetails(sessionMatches, subscribedMatchIds, queue);
   } catch (err) {
     console.error('❌ [TLL-Worker] poll cycle error:', err.message);
   } finally {
@@ -156,8 +212,36 @@ if (require.main === module) {
 }
 
 const _pendingDirectFetches = new Set();
+const _pendingDirectSessionFetches = new Set();
 
-function triggerImmediateMatchFetch(matchId) {
+function triggerImmediateSessionFetch(matchId, options = {}) {
+  if (!matchId) return;
+  const mid = String(matchId);
+  if (_pendingDirectSessionFetches.has(mid)) return;
+  _pendingDirectSessionFetches.add(mid);
+
+  const queue = getIngestQueue();
+  adapter.getSessionTrades(mid)
+    .then(trades => {
+      if (trades && !trades.error) {
+        _sessionDetailLastAttempt.set(mid, Date.now());
+        return queue.add('ingest', {
+          source: 'tll',
+          type: 'session:trades',
+          matchId: mid,
+          data: compactSessionPayload(trades),
+          notifySubscribers: options.notifySubscribers !== false,
+        });
+      }
+      return null;
+    })
+    .catch(() => {})
+    .finally(() => {
+      setTimeout(() => _pendingDirectSessionFetches.delete(mid), 10 * 1000);
+    });
+}
+
+function triggerImmediateMatchFetch(matchId, options = {}) {
   if (!matchId) return;
   const mid = String(matchId);
   if (_pendingDirectFetches.has(mid)) return;
@@ -177,17 +261,6 @@ function triggerImmediateMatchFetch(matchId) {
       }
     }).catch(() => {}),
 
-    adapter.getSessionTrades(mid).then(trades => {
-      if (trades && !trades.error) {
-        queue.add('ingest', {
-          source: 'tll',
-          type: 'session:trades',
-          matchId: mid,
-          data: trades,
-        }).catch(() => {});
-      }
-    }).catch(() => {}),
-
     adapter.getTossSnapshot(mid).then(tossSnap => {
       if (tossSnap && !tossSnap.error) {
         queue.add('ingest', {
@@ -201,6 +274,8 @@ function triggerImmediateMatchFetch(matchId) {
   ]).finally(() => {
     setTimeout(() => _pendingDirectFetches.delete(mid), 3000);
   });
+
+  triggerImmediateSessionFetch(mid, options);
 }
 
 module.exports = {
@@ -209,5 +284,5 @@ module.exports = {
   start,
   stop,
   triggerImmediateMatchFetch,
+  triggerImmediateSessionFetch,
 };
-

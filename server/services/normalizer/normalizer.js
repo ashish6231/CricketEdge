@@ -10,6 +10,7 @@ const { createNormalizedMatch, createNormalizedOdds, mergeMatches } = require('.
 const crexService = require('../crexService');
 const prisma = require('../../db/prisma');
 const crypto = require('crypto');
+const { compactSessionPayload } = require('../../utils/sessionPayload');
 
 // In-memory caches for fast normalization & merging
 let _cricketMatches = [];
@@ -22,7 +23,9 @@ const _cricketSnapshots = new Map();
 const _crexDetails = new Map();
 const _tossSnapshots = new Map();
 const _sessionTrades = new Map();
+const _sessionTradeFingerprints = new Map();
 let _crexOverviewFingerprint = '';
+let _sessionMatchesFingerprint = '';
 
 function fingerprint(value) {
   return crypto.createHash('sha1').update(JSON.stringify(value)).digest('base64');
@@ -56,7 +59,7 @@ function buildCrexField(cm) {
  * Process incoming raw ingestion job
  */
 async function processIngestJob(job) {
-  const { source, type, matchId, data } = job.data || {};
+  const { source, type, matchId, data, notifySubscribers = false } = job.data || {};
   const redis = getRedisClient();
 
   if (type === 'cricket:matches' && Array.isArray(data)) {
@@ -126,6 +129,12 @@ async function processIngestJob(job) {
 
   else if (type === 'session:matches') {
     const list = Array.isArray(data) ? data : (data?.matches || []);
+    const nextFingerprint = fingerprint(list);
+    if (_sessionMatchesFingerprint === nextFingerprint) {
+      await redis.expire('matches:session', 60);
+      return;
+    }
+    _sessionMatchesFingerprint = nextFingerprint;
     _sessionMatches = list;
     await redis.set('matches:session', JSON.stringify(data), 'EX', 60);
     await redis.publish('session:matches', JSON.stringify(data));
@@ -150,13 +159,20 @@ async function processIngestJob(job) {
 
   else if (type === 'session:trades' && matchId && data) {
     const mid = String(matchId);
-    _sessionTrades.set(mid, data);
-    await redis.set(`match:${mid}:session`, JSON.stringify(data), 'EX', 120);
+    const compactData = compactSessionPayload(data);
+    const nextFingerprint = fingerprint(compactData);
+    if (_sessionTradeFingerprints.get(mid) === nextFingerprint) return;
+    _sessionTradeFingerprints.set(mid, nextFingerprint);
+    _sessionTrades.set(mid, compactData);
+    await redis.set(`match:${mid}:session`, JSON.stringify(compactData), 'EX', 120);
 
-    const bundle = getMatchBundle(mid);
-    await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
-    await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
-    await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
+    if (notifySubscribers) {
+      const bundle = getMatchBundle(mid);
+      await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
+      await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+      await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
+    }
+    await redis.publish('session:matches', JSON.stringify({ matches: _sessionMatches }));
   }
 
   else if (type === 'cricket:snapshot' && matchId && data) {

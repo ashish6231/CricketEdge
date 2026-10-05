@@ -118,6 +118,13 @@ function init(io) {
         const room = `match:${matchId}`;
         socket.join(room);
 
+        if (sport === 'session') {
+          try {
+            const tllWorker = require('./scraper-tennisliveload');
+            tllWorker.triggerImmediateSessionFetch?.(matchId);
+          } catch {}
+        }
+
         if (bundle) {
           socket.emit('match:bundle', bundle);
         }
@@ -234,7 +241,9 @@ async function broadcastAllMatches() {
       }
     }
     if (sessionPayload) {
-      const fp = JSON.stringify(sessionPayload.matches?.map(m => `${m.matchId}_${m.status}`) || []);
+      const fp = JSON.stringify(sessionPayload.matches?.map(m => (
+        `${m.matchId}_${m.status}_${m.inPlay}_${m.sessionCount}_${m.totalMatched}_${m.sessionDataReady}`
+      )) || []);
       if (fp !== _lastSessionFp) {
         _lastSessionFp = fp;
         _io.to('feed:session').emit('session:matches', sessionPayload);

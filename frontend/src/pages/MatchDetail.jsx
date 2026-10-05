@@ -847,7 +847,7 @@ export default function MatchDetail({ sport }) {
   const am1 = getSelectionStakes(snapshot, t1)
   const am2 = getSelectionStakes(snapshot, t2)
 
-  const { pl1, pl2, plDraw, stats: bookieStats } = getBookiePl(snapshot, t1, t2, drawName)
+  const { pl1, pl2, plDraw } = getBookiePl(snapshot, t1, t2, drawName)
   const matchStartPred = lockedStartPred || liveStartPred
 
   const pickName = matchStartPred?.winnerName
@@ -863,14 +863,43 @@ export default function MatchDetail({ sport }) {
     })
     : null
 
+  const validMarketTrades = (trades) => trades.filter(trade => (
+    finiteNumber(trade?.size) > 0 && finiteNumber(trade?.price) > 1 && tradeSide(trade)
+  ))
+  const t1ValidTrades = validMarketTrades(t1Trades)
+  const t2ValidTrades = validMarketTrades(t2Trades)
+  const drawValidTrades = hasDraw ? validMarketTrades(drawTrades) : []
 
-  const marketBet1 = bookieStats?.[t1] ? bookieStats[t1].tBack + bookieStats[t1].tLay : null
-  const marketBet2 = bookieStats?.[t2] ? bookieStats[t2].tBack + bookieStats[t2].tLay : null
-  const marketBetDraw = hasDraw ? (bookieStats?.[drawName] ? bookieStats[drawName].tBack + bookieStats[drawName].tLay : null) : 0
-  const marketBetTotal = marketBet1 + marketBet2 + marketBetDraw
-  const marketBetPct1 = marketBetTotal > 0 ? (marketBet1 / marketBetTotal) * 100 : 50
-  const marketBetPct2 = marketBetTotal > 0 ? (marketBet2 / marketBetTotal) * 100 : 50
-  const marketBetPctDraw = marketBetTotal > 0 ? (marketBetDraw / marketBetTotal) * 100 : 0
+  // First bar is the actual number of matched trade rows, not stake money.
+  const marketBetCount1 = t1ValidTrades.length
+  const marketBetCount2 = t2ValidTrades.length
+  const marketBetCountDraw = drawValidTrades.length
+  const marketBetCountTotal = marketBetCount1 + marketBetCount2 + marketBetCountDraw
+  const marketBetPct1 = marketBetCountTotal > 0 ? (marketBetCount1 / marketBetCountTotal) * 100 : 50
+  const marketBetPct2 = marketBetCountTotal > 0 ? (marketBetCount2 / marketBetCountTotal) * 100 : 50
+  const marketBetPctDraw = marketBetCountTotal > 0 ? (marketBetCountDraw / marketBetCountTotal) * 100 : 0
+
+  // Second bar is money matched per selection. The declared metric is a fallback
+  // for older snapshots which do not contain the complete trade array.
+  const sumTradeMoney = (trades) => trades.reduce((sum, trade) => sum + finiteNumber(trade.size), 0)
+  const drawMetrics = hasDraw ? getSelectionStakes(snapshot, drawName) : null
+  const marketMoney1 = sumTradeMoney(t1ValidTrades) || am1.totalBet || 0
+  const marketMoney2 = sumTradeMoney(t2ValidTrades) || am2.totalBet || 0
+  const marketMoneyDraw = hasDraw ? (sumTradeMoney(drawValidTrades) || drawMetrics?.totalBet || 0) : 0
+  const marketMoneyTotal = marketMoney1 + marketMoney2 + marketMoneyDraw
+  const marketMoneyPct1 = marketMoneyTotal > 0 ? (marketMoney1 / marketMoneyTotal) * 100 : 50
+  const marketMoneyPct2 = marketMoneyTotal > 0 ? (marketMoney2 / marketMoneyTotal) * 100 : 50
+  const marketMoneyPctDraw = marketMoneyTotal > 0 ? (marketMoneyDraw / marketMoneyTotal) * 100 : 0
+
+  const comparisonColors = (values, preferHigher) => {
+    const allEqual = values.every(value => value === values[0])
+    if (allEqual) return values.map(() => '#64748b')
+    const preferred = preferHigher ? Math.max(...values) : Math.min(...values)
+    return values.map(value => value === preferred ? '#16a34a' : '#dc2626')
+  }
+  const [betColor1, betColor2] = comparisonColors([marketBetCount1, marketBetCount2], false)
+  const [moneyColor1, moneyColor2] = comparisonColors([marketMoney1, marketMoney2], true)
+  const drawColor = '#d97706'
 
   // ━━━━━━━━━━ BACK/LAY RATIO BASED PREDICTION ━━━━━━━━━━
   const aBack = am1.back || 0
@@ -982,8 +1011,6 @@ export default function MatchDetail({ sport }) {
   if (tossT1GraphData) tossT1GraphData.bookieProfitIfWins = tossT1BookiePL
   if (tossT2GraphData) tossT2GraphData.bookieProfitIfWins = tossT2BookiePL
   const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
-  const t1PctVol = marketVol > 0 ? ((t1GraphData?.totalBet || 0) / marketVol) * 100 : 50
-  const t2PctVol = marketVol > 0 ? ((t2GraphData?.totalBet || 0) / marketVol) * 100 : 50
 
 
   return (
@@ -1375,65 +1402,67 @@ export default function MatchDetail({ sport }) {
                   </div>
                   {snapshot.competitionName && <div className="text-[11px] font-medium text-slate-400 mt-0.5">{snapshot.competitionName}</div>}
 
-                  {(marketBetTotal > 0 || marketVol > 0) && (() => {
-                    const c1 = '#16a34a'
-                    const c2 = '#dc2626'
-                    const cDraw = '#d97706'
+                  {(marketBetCountTotal > 0 || marketMoneyTotal > 0) && (() => {
                     return (
                       <div className="mt-2.5 space-y-2 pt-2 border-t border-[#1b2234]">
-                        {marketBetTotal > 0 && (
+                        {marketBetCountTotal > 0 && (
                           <div>
                             <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                              <span>Matched stake ratio</span>
-                              <span className="text-slate-500 font-mono">€{fmt(marketBetTotal)} stake</span>
+                              <span>Number of Bets</span>
+                              <span className="text-slate-500 font-mono">{marketBetCountTotal.toLocaleString('en-IN')} bets</span>
                             </div>
                             <div className="flex h-1.5 rounded-full overflow-hidden bg-[#07090e] border border-[#1b2234] mb-1">
-                              <div className="transition-all duration-500" style={{ width: `${marketBetPct1}%`, background: c1 }} />
-                              {hasDraw && <div className="transition-all duration-500" style={{ width: `${marketBetPctDraw}%`, background: cDraw }} />}
-                              <div className="transition-all duration-500" style={{ width: `${marketBetPct2}%`, background: c2 }} />
+                              <div className="transition-all duration-500" style={{ width: `${marketBetPct1}%`, background: betColor1 }} />
+                              {hasDraw && <div className="transition-all duration-500" style={{ width: `${marketBetPctDraw}%`, background: drawColor }} />}
+                              <div className="transition-all duration-500" style={{ width: `${marketBetPct2}%`, background: betColor2 }} />
                             </div>
                             <div className="flex justify-between gap-2 text-[10px] font-bold font-mono">
-                              <span className="truncate" style={{ color: c1 }}>
+                              <span className="truncate" style={{ color: betColor1 }}>
                                 {t1} {marketBetPct1.toFixed(0)}%
-                                <span className="text-slate-500 font-normal ml-1">· €{fmt(marketBet1)}</span>
+                                <span className="text-slate-500 font-normal ml-1">· {marketBetCount1.toLocaleString('en-IN')} bets</span>
                               </span>
                               {hasDraw && (
-                                <span className="truncate" style={{ color: cDraw }}>
+                                <span className="truncate" style={{ color: drawColor }}>
                                   {drawName} {marketBetPctDraw.toFixed(0)}%
-                                  <span className="text-slate-500 font-normal ml-1">· €{fmt(marketBetDraw)}</span>
+                                  <span className="text-slate-500 font-normal ml-1">· {marketBetCountDraw.toLocaleString('en-IN')} bets</span>
                                 </span>
                               )}
-                              <span className="truncate text-right" style={{ color: c2 }}>
+                              <span className="truncate text-right" style={{ color: betColor2 }}>
                                 {t2} {marketBetPct2.toFixed(0)}%
-                                <span className="text-slate-500 font-normal ml-1">· €{fmt(marketBet2)}</span>
+                                <span className="text-slate-500 font-normal ml-1">· {marketBetCount2.toLocaleString('en-IN')} bets</span>
                               </span>
                             </div>
                           </div>
                         )}
-                        {marketVol > 0 && (() => {
-                          const mc1 = '#16a34a'
-                          const mc2 = '#dc2626'
-                          return (
+                        {marketMoneyTotal > 0 && (
                             <div>
                               <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                                <span>Traded Volume Ratio</span>
-                                <span className="text-slate-500 font-mono">€{fmt(marketVol)}</span>
+                                <span>Total Money</span>
+                                <span className="text-slate-500 font-mono">€{fmt(marketMoneyTotal)} matched</span>
                               </div>
                               <div className="flex h-1.5 rounded-full overflow-hidden bg-[#07090e] border border-[#1b2234] mb-1">
-                                <div className="transition-all duration-500" style={{ width: `${t1PctVol}%`, background: mc1 }} />
-                                <div className="transition-all duration-500" style={{ width: `${t2PctVol}%`, background: mc2 }} />
+                                <div className="transition-all duration-500" style={{ width: `${marketMoneyPct1}%`, background: moneyColor1 }} />
+                                {hasDraw && <div className="transition-all duration-500" style={{ width: `${marketMoneyPctDraw}%`, background: drawColor }} />}
+                                <div className="transition-all duration-500" style={{ width: `${marketMoneyPct2}%`, background: moneyColor2 }} />
                               </div>
                               <div className="flex justify-between gap-2 text-[10px] font-bold font-mono">
-                                <span className="truncate" style={{ color: mc1 }}>
-                                  {t1} {t1PctVol.toFixed(0)}%
+                                <span className="truncate" style={{ color: moneyColor1 }}>
+                                  {t1} {marketMoneyPct1.toFixed(0)}%
+                                  <span className="text-slate-500 font-normal ml-1">· €{fmt(marketMoney1)}</span>
                                 </span>
-                                <span className="truncate text-right" style={{ color: mc2 }}>
-                                  {t2} {t2PctVol.toFixed(0)}%
+                                {hasDraw && (
+                                  <span className="truncate" style={{ color: drawColor }}>
+                                    {drawName} {marketMoneyPctDraw.toFixed(0)}%
+                                    <span className="text-slate-500 font-normal ml-1">· €{fmt(marketMoneyDraw)}</span>
+                                  </span>
+                                )}
+                                <span className="truncate text-right" style={{ color: moneyColor2 }}>
+                                  {t2} {marketMoneyPct2.toFixed(0)}%
+                                  <span className="text-slate-500 font-normal ml-1">· €{fmt(marketMoney2)}</span>
                                 </span>
                               </div>
                             </div>
-                          )
-                        })()}
+                        )}
                       </div>
                     )
                   })()}

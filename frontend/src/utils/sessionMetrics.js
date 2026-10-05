@@ -246,7 +246,7 @@ export function computeSessionMetrics(oddsItem, trades = []) {
     plRowsFull,
     bestPlRow,
     hasTrades: lines.length > 0,
-    tradeCount: marketTrades.length,
+    tradeCount: marketTrades.reduce((sum, trade) => sum + (Number(trade.tradeCount) || 1), 0),
     totalVol,
     volumeChart: lines.map(l => ({ price: l.price, yes: l.yes, no: l.no, totalVol: l.totalVol })),
   }

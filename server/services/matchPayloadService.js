@@ -355,7 +355,7 @@ async function getCricketMatchesPayload() {
         try {
           const tllWorker = require('./scraper-tennisliveload');
           if (typeof tllWorker.triggerImmediateMatchFetch === 'function') {
-            tllWorker.triggerImmediateMatchFetch(m.matchId);
+            tllWorker.triggerImmediateMatchFetch(m.matchId, { notifySubscribers: false });
           }
         } catch {}
       }
@@ -578,9 +578,100 @@ async function getTossMatchesPayload() {
   };
 }
 
+const SESSION_ENDED_STATUSES = new Set(['ended', 'verified', 'pending', 'completed', 'closed']);
+
+function normalizeSessionStatus(match = {}) {
+  const rawStatus = String(match.status || '').trim().toLowerCase();
+  if (SESSION_ENDED_STATUSES.has(rawStatus)) {
+    return { status: 'ended', inPlay: false };
+  }
+  if (match.inPlay || rawStatus === 'in-play' || rawStatus === 'live') {
+    return { status: 'in-play', inPlay: true };
+  }
+  return { status: 'upcoming', inPlay: false };
+}
+
+function finitePositiveNumber(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+}
+
+function summarizeSessionData(sessionData, match = {}) {
+  const marketNames = new Set();
+  const addMarketName = (value) => {
+    const name = typeof value === 'string'
+      ? value
+      : value?.marketName || value?.team || value?.market || value?.name;
+    const normalized = String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (normalized) marketNames.add(normalized);
+  };
+
+  const odds = Array.isArray(sessionData?.odds) ? sessionData.odds : [];
+  const trades = Array.isArray(sessionData?.trades) ? sessionData.trades : [];
+  const markets = Array.isArray(sessionData?.markets)
+    ? sessionData.markets
+    : (sessionData?.markets && typeof sessionData.markets === 'object'
+      ? Object.values(sessionData.markets)
+      : []);
+
+  odds.forEach(addMarketName);
+  markets.forEach(addMarketName);
+  trades.forEach(addMarketName);
+
+  const explicitSessionCount = finitePositiveNumber(
+    match.sessionCount ?? match.marketCount ?? sessionData?.sessionCount ?? sessionData?.marketCount,
+  );
+  const sessionCount = marketNames.size || explicitSessionCount || 0;
+
+  const tradeTotal = trades.reduce((sum, trade) => sum + finitePositiveNumber(trade?.size), 0);
+  const marketTotal = markets.reduce((sum, market) => (
+    sum + finitePositiveNumber(market?.totalMatched ?? market?.matched ?? market?.volume)
+  ), 0);
+  const explicitTotal = finitePositiveNumber(
+    sessionData?.totalMatched ?? sessionData?.matched ?? sessionData?.volume ?? match.totalMatched,
+  );
+  const totalMatched = tradeTotal || marketTotal || explicitTotal || 0;
+
+  return {
+    sessionCount: Math.round(sessionCount),
+    totalMatched,
+    sessionDataReady: Boolean(sessionData && !sessionData.error),
+  };
+}
+
 async function getSessionMatchesPayload() {
   const data = dataCache.getSessionMatches();
-  const matches = Array.isArray(data) ? data : [];
+  const rawMatches = Array.isArray(data) ? data : [];
+  const matches = await Promise.all(rawMatches.map(async (match) => {
+    const matchId = String(match.matchId || match.id || '');
+    let sessionData = null;
+    if (matchId) {
+      try {
+        sessionData = await dataCache.getSessionTrades(matchId);
+        if (sessionData?.error) sessionData = null;
+      } catch {}
+    }
+
+    const normalizedStatus = normalizeSessionStatus(match);
+    const summary = summarizeSessionData(sessionData, match);
+    return {
+      ...match,
+      matchId,
+      ...normalizedStatus,
+      ...summary,
+    };
+  }));
+
+  const statusTier = (match) => match.inPlay ? 1 : (match.status === 'upcoming' ? 2 : 3);
+  matches.sort((a, b) => {
+    const tierA = statusTier(a);
+    const tierB = statusTier(b);
+    if (tierA !== tierB) return tierA - tierB;
+    const timeA = Number(a.startTime) || new Date(a.startTime || 0).getTime() || 0;
+    const timeB = Number(b.startTime) || new Date(b.startTime || 0).getTime() || 0;
+    return tierA === 2 ? timeA - timeB : timeB - timeA;
+  });
+
   return {
     total: matches.length,
     matches,
@@ -687,7 +778,7 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
       try {
         const tllWorker = require('./scraper-tennisliveload');
         if (typeof tllWorker.triggerImmediateMatchFetch === 'function') {
-          tllWorker.triggerImmediateMatchFetch(mid);
+          tllWorker.triggerImmediateMatchFetch(mid, { notifySubscribers: true });
         }
       } catch {}
     }
@@ -817,6 +908,8 @@ module.exports = {
   getCrexForMatch,
   computeMatchLoad,
   computeTossLoad,
+  normalizeSessionStatus,
+  summarizeSessionData,
   alignScorecardTeams,
   getCachedTossDataset,
   getCachedMatchDataset,

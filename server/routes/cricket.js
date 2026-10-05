@@ -538,12 +538,10 @@ router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async
 });
 
 router.get('/session/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
-  const data = await dataCache.getSessionMatches();
-  if (data?.error) return res.status(502).json({ error: data.error });
-  const matches = Array.isArray(data) ? data : [];
-  const filtered = filterMatchesForViewer(matches, req.user);
+  const payload = await matchPayloadService.getSessionMatchesPayload();
+  const filtered = filterMatchesForViewer(payload.matches, req.user);
   res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
-  res.json({ total: filtered.length, matches: filtered });
+  res.json({ ...payload, total: filtered.length, matches: filtered });
 });
 
 router.get('/session/trades/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
