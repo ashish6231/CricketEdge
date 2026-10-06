@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T16:35:00.258Z",
+  "updatedAt": "2026-10-06T02:06:16.096Z",
   "records": [
     {
       "matchId": "35901908",
@@ -57798,6 +57798,444 @@
         {
           "reason": "Critical Public Overload on Australia Legends (96% Load, 21.7x Lead) -> Faded to Pakistan Legends",
           "winner": "Pakistan Legends",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36151021",
+      "marketId": "1.263328043",
+      "matchName": "Bangladesh Champions v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "team1": "Bangladesh Champions",
+      "team2": "England Legends",
+      "startTime": 1791214200000,
+      "endedAt": "2026-10-06T02:06:16.082Z",
+      "capturedAt": "2026-10-06T02:06:16.082Z",
+      "snapshot": {
+        "serverTime": "2026-10-05T17:50:07.015Z",
+        "matchId": "36151021",
+        "matchName": "Bangladesh Champions v England Legends",
+        "teamNames": [
+          "Bangladesh Champions",
+          "England Legends"
+        ],
+        "inPlayPnl": {
+          "team1": 925.2832999999998,
+          "team2": -787.0593
+        },
+        "inPlayTotalBets": {
+          "team1": 698.9242999999999,
+          "team2": 1528.9569
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "total": 746.53
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "total": 1637.62
+          }
+        },
+        "preMatchPnl": {
+          "team1": 925.2832999999998,
+          "team2": -787.0593
+        },
+        "preMatchTotalBets": {
+          "team1": 698.9242999999999,
+          "team2": 1528.9569
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "total": 746.53
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "total": 1637.62
+          }
+        },
+        "threeMinPnl": {
+          "team1": 925.2832999999998,
+          "team2": -787.0593
+        },
+        "threeMinTotalBets": {
+          "team1": 698.9242999999999,
+          "team2": 1528.9569
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "total": 746.53
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "total": 1637.62
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 8
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "totalVolume": 725.37,
+            "backPercentage": 86.5447978273157
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "totalVolume": 1658.78,
+            "backPercentage": 92.84052134701408
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 580.1642999999999,
+            "lay": 84.18759999999999,
+            "totalBet": 664.3518999999999
+          },
+          "team2": {
+            "back": 1431.3569,
+            "lay": 114.12759999999999,
+            "totalBet": 1545.4845
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 746.53,
+            "support": 31.31220770505212
+          },
+          "team2": {
+            "supportMoney": 1637.62,
+            "support": 68.6877922949479
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "England Legends",
+          "bookieFavouriteOutcome": "Bangladesh Champions",
+          "riskTeam": "England Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 37.37558458989578,
+          "mostBettedTeam": "England Legends",
+          "prediction": {
+            "team1TrueSupport": 694.049,
+            "team2TrueSupport": 1515.4457,
+            "ratio": 2.1834851717962276,
+            "bookiePnlTeam1": -487.2613999999999,
+            "bookiePnlTeam2": -1312.5969,
+            "prediction": "Bangladesh Champions",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.18) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 495.83259999999996,
+            "backExposure": 579.9214,
+            "layExposure": 84.08879999999999,
+            "teamName": "Bangladesh Champions"
+          },
+          "team2": {
+            "netExposure": 1317.2293,
+            "backExposure": 1431.3569,
+            "layExposure": 114.12759999999999,
+            "teamName": "England Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 580.1642999999999,
+            "A_lay_stake": 97.60000000000001,
+            "B_back_expo": 1431.3569,
+            "B_lay_stake": 118.76
+          },
+          "totals": {
+            "totalBetTeam1": 698.9242999999999,
+            "totalBetTeam2": 1528.9569
+          },
+          "simplePL": {
+            "team1_win": -482.5642999999999,
+            "team2_win": -1312.5969
+          },
+          "derivedPL": {
+            "team1_win": 830.0326,
+            "team2_win": -830.0326
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 627.77,
+              "totalLayVol": 97.60000000000001,
+              "totalBet": 746.53,
+              "profitLoss": 891.0899999999999
+            },
+            "team2": {
+              "totalBackVol": 1540.02,
+              "totalLayVol": 118.76,
+              "totalBet": 1637.62,
+              "profitLoss": -891.0899999999999
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 580.1642999999999,
+              "totalLayVol": 97.60000000000001,
+              "totalBet": 698.9242999999999,
+              "profitLoss": 925.2833
+            },
+            "team2": {
+              "totalBackExpo": 1431.3569,
+              "totalLayVol": 118.76,
+              "totalBet": 1528.9569,
+              "profitLoss": -787.0592999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 580.1642999999999,
+              "totalLayNetVol": 84.18759999999999,
+              "totalBet": 694.2918999999999,
+              "profitLoss": 821.2526
+            },
+            "team2": {
+              "totalBackNetVol": 1431.3569,
+              "totalLayNetVol": 114.12759999999999,
+              "totalBet": 1515.5445,
+              "profitLoss": -821.2526
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.8157142857142858,
+            "averageSize": 106.64714285714285,
+            "supportProduct": 193.64074081632654
+          },
+          "teamB": {
+            "tradeCount": 8,
+            "averageOdds": 1.8299999999999996,
+            "averageSize": 204.7025,
+            "supportProduct": 374.6055749999999
+          },
+          "strongerTeam": "England Legends",
+          "supportRatio": 1.9345390511355425
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 627.77,
+            "oppoLayVolume": 118.76,
+            "layExposure": 84.18759999999999,
+            "netSupportValue": 662.3424
+          },
+          "teamB": {
+            "totalBackVolume": 1540.02,
+            "oppoLayVolume": 97.60000000000001,
+            "layExposure": 114.12759999999999,
+            "netSupportValue": 1523.4923999999999
+          },
+          "strongerTeam": "England Legends",
+          "netSupportDifference": 861.1499999999999,
+          "percentageA": 30.301576313086432,
+          "percentageB": 69.69842368691359
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 530.17,
+            "syntheticSupport": 118.76,
+            "opponentLiabilityRejection": 114.12759999999999,
+            "sentimentScore": 534.8023999999999
+          },
+          "teamB": {
+            "directNetSupport": 1421.26,
+            "syntheticSupport": 97.60000000000001,
+            "opponentLiabilityRejection": 84.18759999999999,
+            "sentimentScore": 1434.6724
+          },
+          "strongerTeam": "England Legends",
+          "scoreDifference": 899.87,
+          "percentageA": 27.15456932985382,
+          "percentageB": 72.84543067014617
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Bangladesh Champions",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "England Legends",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Bangladesh Champions"
+        },
+        "teams": {
+          "Bangladesh Champions": {
+            "trades": [
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.9,
+                "type": "lay",
+                "size": 86.87,
+                "updatedAt": 1791211723451
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.07,
+                "type": "back",
+                "size": 3.47,
+                "updatedAt": 1791211553467
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.02,
+                "type": "lay",
+                "size": 4.94,
+                "updatedAt": 1791211333556
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.91,
+                "type": "back",
+                "size": 15.06,
+                "updatedAt": 1791211261062
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.92,
+                "type": "back",
+                "size": 180.53999999999996,
+                "updatedAt": 1791210922310
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.93,
+                "type": "back",
+                "size": 285.8,
+                "updatedAt": 1791210397391
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.94,
+                "type": "back",
+                "size": 142.9,
+                "updatedAt": 1791210315835
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 2.02,
+                "type": "lay",
+                "size": 5.79,
+                "updatedAt": 1791207752579
+              }
+            ],
+            "pnlIfWins": 925.2832999999998,
+            "totalBet": 698.9242999999999
+          },
+          "England Legends": {
+            "trades": [
+              {
+                "team": "England Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 1183.27,
+                "updatedAt": 1791211847631
+              },
+              {
+                "team": "England Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 0.04000000000000625,
+                "updatedAt": 1791208815819
+              },
+              {
+                "team": "England Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 5.9,
+                "updatedAt": 1791207752630
+              },
+              {
+                "team": "England Legends",
+                "price": 1.96,
+                "type": "lay",
+                "size": 112.86,
+                "updatedAt": 1791205623787
+              },
+              {
+                "team": "England Legends",
+                "price": 1.92,
+                "type": "back",
+                "size": 222.92,
+                "updatedAt": 1791204900105
+              },
+              {
+                "team": "England Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 130.95000000000002,
+                "updatedAt": 1791195931644
+              },
+              {
+                "team": "England Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 2.84,
+                "updatedAt": 1791188389213
+              }
+            ],
+            "pnlIfWins": -787.0593,
+            "totalBet": 1528.9569
+          }
+        }
+      },
+      "predictedWinner": "England Legends",
+      "predictionReason": "Smart Money Inflow (England Legends: ₹1.5k Back, Lead: 2.5x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (England Legends: ₹1.5k Back, Lead: 2.5x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (England Legends: ₹1.5k Back, Lead: 2.5x)",
+          "winner": "England Legends",
           "priority": 100,
           "selected": true
         }

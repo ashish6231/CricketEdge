@@ -26,31 +26,86 @@ export function tradeMatchesMarket(trade, marketName) {
     .some(c => normalizeMarketName(c) === target)
 }
 
-export function buildLinesFromTrades(trades) {
-  if (!trades?.length) return []
-  const lineMap = {}
-  trades.forEach(t => {
-    const p = t.price
-    if (!lineMap[p]) lineMap[p] = { price: p, yes: 0, no: 0, totalVol: 0 }
-    if (t.type === 'back') lineMap[p].yes += t.size
-    else lineMap[p].no += t.size
-    lineMap[p].totalVol = lineMap[p].yes + lineMap[p].no
-  })
-  return Object.values(lineMap).sort((a, b) => a.price - b.price)
+function finiteNumber(value) {
+  if (value == null || value === '' || !['number', 'string'].includes(typeof value)) return null
+  const number = Number(value)
+  return Number.isFinite(number) ? number : null
 }
 
-function calcPlAtScore(lines, score) {
-  return lines.reduce((acc, l) => (
-    score > l.price ? acc - l.yes + l.no : acc + l.yes - l.no
-  ), 0)
+function sessionSide(trade) {
+  const side = String(trade?.type || trade?.side || '').trim().toLowerCase()
+  if (side === 'back' || side === 'b' || side === 'yes') return 'yes'
+  if (side === 'lay' || side === 'l' || side === 'no') return 'no'
+  return null
+}
+
+export function buildLinesFromTrades(trades) {
+  if (!trades?.length) return []
+  const lineMap = new Map()
+  trades.forEach(t => {
+    const price = finiteNumber(t?.price)
+    const size = finiteNumber(t?.size)
+    const side = sessionSide(t)
+    if (price == null || price < 0 || size == null || size <= 0 || !side) return
+
+    if (!lineMap.has(price)) {
+      lineMap.set(price, { price, yes: 0, no: 0, yesBets: 0, noBets: 0, totalVol: 0, betCount: 0 })
+    }
+    const line = lineMap.get(price)
+    const count = Math.max(1, Math.trunc(finiteNumber(t?.tradeCount) || 1))
+    line[side] += size
+    line[`${side}Bets`] += count
+    line.totalVol += size
+    line.betCount += count
+  })
+  return [...lineMap.values()].sort((a, b) => a.price - b.price)
+}
+
+/**
+ * Bookie ledger for an integer settlement score.
+ * Customer YES/back wins above the line, so that stake is a bookie loss.
+ * Customer NO/lay wins at/below the line, so that stake is a bookie loss.
+ */
+export function calcSessionPlBreakdown(lines, score) {
+  const result = lines.reduce((acc, line) => {
+    const price = finiteNumber(line?.price)
+    if (price == null) return acc
+    const yes = finiteNumber(line?.yes) || 0
+    const no = finiteNumber(line?.no) || 0
+    if (score > price) {
+      // YES customers win; NO customers lose.
+      acc.pays += yes
+      acc.receives += no
+    } else {
+      // NO customers win; YES customers lose.
+      acc.pays += no
+      acc.receives += yes
+    }
+    return acc
+  }, { receives: 0, pays: 0 })
+  const round = value => Math.round((value + Number.EPSILON) * 100) / 100
+  return {
+    receives: round(result.receives),
+    pays: round(result.pays),
+    pl: round(result.receives - result.pays),
+  }
+}
+
+export function calcSessionPlAtScore(lines, score) {
+  return calcSessionPlBreakdown(lines, score).pl
 }
 
 /** P/L at every run score. `full: true` = saari runs (min–max line prices), else chart window */
 export function computePlRows(lines, opts = {}) {
   if (!lines.length) return []
 
-  const prices = lines.map(l => l.price)
-  let minScore = Math.floor(Math.min(...prices)) - 1
+  const prices = lines.map(l => finiteNumber(l.price)).filter(v => v != null)
+  if (!prices.length) return []
+  for (const boundary of [opts.bestYes, opts.bestNo]) {
+    const value = finiteNumber(boundary)
+    if (value != null) prices.push(value)
+  }
+  let minScore = Math.max(0, Math.floor(Math.min(...prices)) - 1)
   let maxScore = Math.ceil(Math.max(...prices)) + 1
 
   if (!opts.full) {
@@ -74,7 +129,7 @@ export function computePlRows(lines, opts = {}) {
 
   const rows = []
   for (let s = minScore; s <= maxScore; s++) {
-    rows.push({ score: s, pl: calcPlAtScore(lines, s) })
+    rows.push({ score: s, pl: calcSessionPlAtScore(lines, s) })
   }
   return rows
 }
@@ -110,101 +165,16 @@ export function getLiquidity(gap) {
   return LIQUIDITY.low
 }
 
-/**
- * Yes/No session pick from market lines + predicted runs.
- * Yes @ yesLine = score yesLine+ jayega | No @ noLine = score noLine se neeche rahega
- */
-export function computeSessionPick({ bestYes, bestNo, predicted, gap, lines = [], bestPlRow }) {
-  if (predicted == null) return null
-
-  const yesLine = bestYes
-  const noLine = bestNo
-  const base = {
-    predictedRuns: predicted,
-    yesLine,
-    noLine,
-    gap,
-  }
-
-  if (yesLine == null && noLine == null) return { ...base, pick: null, reason: 'Line data nahi' }
-
-  let pick = null
-  let betLine = null
-  let reason = ''
-  let strength = 'medium'
-
-  if (yesLine != null && noLine != null) {
-    if (predicted >= noLine) {
-      pick = 'YES'
-      betLine = yesLine
-      strength = predicted >= noLine + 1 ? 'high' : 'medium'
-      reason = `~${predicted} runs — ${yesLine} Yes (score ${yesLine}+ expected)`
-    } else if (predicted <= yesLine) {
-      pick = 'NO'
-      betLine = noLine
-      strength = predicted <= yesLine - 1 ? 'high' : 'medium'
-      reason = `~${predicted} runs — ${noLine} No (score ${noLine} se neeche)`
-    } else {
-      const yesDist = predicted - yesLine
-      const noDist = noLine - predicted
-      if (yesDist >= noDist) {
-        pick = 'YES'
-        betLine = yesLine
-        reason = `~${predicted} runs gap mein — ${yesLine} Yes lean (+${yesDist.toFixed(1)} margin)`
-      } else {
-        pick = 'NO'
-        betLine = noLine
-        reason = `~${predicted} runs gap mein — ${noLine} No lean (+${noDist.toFixed(1)} margin)`
-      }
-      strength = gap != null && gap <= 20 ? 'low' : 'medium'
-    }
-  } else if (yesLine != null) {
-    pick = predicted >= yesLine ? 'YES' : 'NO'
-    betLine = yesLine
-    reason = pick === 'YES'
-      ? `~${predicted} runs — ${yesLine}+ expected`
-      : `~${predicted} runs — ${yesLine} se neeche`
-  } else {
-    pick = predicted < noLine ? 'NO' : 'YES'
-    betLine = noLine
-    reason = pick === 'NO'
-      ? `~${predicted} runs — ${noLine} se neeche`
-      : `~${predicted} runs — ${noLine}+ expected`
-  }
-
-  // Volume tilt at nearest line to predicted
-  let volNote = null
-  if (lines.length) {
-    const nearest = lines.reduce((best, l) => (
-      Math.abs(l.price - predicted) < Math.abs(best.price - predicted) ? l : best
-    ), lines[0])
-    if (nearest.yes + nearest.no > 0) {
-      const yesPct = (nearest.yes / (nearest.yes + nearest.no)) * 100
-      if (yesPct >= 65) volNote = `${nearest.price} line par ${yesPct.toFixed(0)}% Yes vol`
-      else if (yesPct <= 35) volNote = `${nearest.price} line par ${(100 - yesPct).toFixed(0)}% No vol`
-    }
-  }
-
-  return {
-    ...base,
-    pick,
-    betLine,
-    reason,
-    strength,
-    volNote,
-    oppositeLine: pick === 'YES' ? noLine : yesLine,
-    bookieSweetSpot: bestPlRow?.score ?? null,
-  }
-}
-
 /** Full metrics for one session market — trades filtered strictly per marketName */
-export function computeSessionMetrics(oddsItem, trades = []) {
+export function computeSessionMetrics(oddsItem, trades = [], marketSummary = null) {
   const parsed = parseSession(oddsItem.marketName)
   const marketTrades = trades.filter(t => tradeMatchesMarket(t, oddsItem.marketName))
   const lines = buildLinesFromTrades(marketTrades)
 
-  let bestYes = oddsItem.bestYes > 0 ? oddsItem.bestYes : null
-  let bestNo = oddsItem.bestNo > 0 ? oddsItem.bestNo : null
+  const oddsYes = finiteNumber(oddsItem.bestYes)
+  const oddsNo = finiteNumber(oddsItem.bestNo)
+  let bestYes = oddsYes != null && oddsYes > 0 ? oddsYes : null
+  let bestNo = oddsNo != null && oddsNo > 0 ? oddsNo : null
 
   if (bestYes == null && lines.length) {
     bestYes = lines.reduce((best, l) => (l.yes > 0 && (best == null || l.price > best) ? l.price : best), null)
@@ -213,57 +183,93 @@ export function computeSessionMetrics(oddsItem, trades = []) {
     bestNo = lines.reduce((best, l) => (l.no > 0 && (best == null || l.price < best) ? l.price : best), null)
   }
 
-  const predicted = bestYes != null && bestNo != null
+  // This is a quote midpoint, not a score prediction.
+  const marketMid = bestYes != null && bestNo != null
     ? Math.round((bestYes + bestNo) / 2 * 2) / 2
     : bestYes ?? bestNo ?? null
+  // Backwards-compatible field for older consumers. UI must call it Market Mid.
+  const predicted = marketMid
 
   const gap = bestYes != null && bestNo != null ? bestNo - bestYes : null
-  const plRowsFull = lines.length ? computePlRows(lines, { full: true }) : []
+  const plRowsFull = lines.length ? computePlRows(lines, { full: true, bestYes, bestNo }) : []
   const plRows = lines.length
-    ? computePlRows(lines, { bestYes, bestNo, predicted, over: parsed.over })
+    ? computePlRows(lines, { bestYes, bestNo, predicted: marketMid, over: parsed.over })
     : []
   const bestPlRow = plRowsFull.length
     ? plRowsFull.reduce((best, r) => (r.pl > best.pl ? r : best), plRowsFull[0])
     : null
   const totalVol = lines.reduce((s, l) => s + l.totalVol, 0)
+  const tradeCount = lines.reduce((sum, line) => sum + line.betCount, 0)
+  const providerVolume = finiteNumber(
+    marketSummary?.totalVolume ?? marketSummary?.totalMatched ?? marketSummary?.matched ?? marketSummary?.volume,
+  )
+  const providerTradeCount = finiteNumber(
+    marketSummary?.tradeCount ?? marketSummary?.tradesCount ?? marketSummary?.betCount,
+  )
+  const volumeMatches = providerVolume == null || Math.abs(totalVol - providerVolume) <= Math.max(0.02, Math.abs(providerVolume) * 1e-8)
+  const countMatches = providerTradeCount == null || tradeCount === providerTradeCount
+  const hasProviderTotals = providerVolume != null || providerTradeCount != null
+  const hasCompleteProviderTotals = providerVolume != null && providerTradeCount != null
+  const ledgerStatus = !lines.length
+    ? 'quotes-only'
+    : hasCompleteProviderTotals && volumeMatches && countMatches
+      ? 'verified'
+      : hasProviderTotals && (!volumeMatches || !countMatches)
+        ? 'syncing'
+        : 'calculated'
   const liquidity = getLiquidity(gap)
-
-  const sessionPick = computeSessionPick({
-    bestYes, bestNo, predicted, gap, lines, bestPlRow, totalVol,
-  })
 
   return {
     ...parsed,
     marketName: oddsItem.marketName,
     bestYes,
     bestNo,
+    marketMid,
     predicted,
     gap,
     liquidity,
-    sessionPick,
     lines,
     plRows,
     plRowsFull,
     bestPlRow,
     hasTrades: lines.length > 0,
-    tradeCount: marketTrades.reduce((sum, trade) => sum + (Number(trade.tradeCount) || 1), 0),
+    tradeCount,
     totalVol,
-    volumeChart: lines.map(l => ({ price: l.price, yes: l.yes, no: l.no, totalVol: l.totalVol })),
+    providerVolume,
+    providerTradeCount,
+    ledgerStatus,
+    volumeChart: lines.map(l => ({
+      price: l.price,
+      yes: l.yes,
+      no: l.no,
+      yesBets: l.yesBets,
+      noBets: l.noBets,
+      totalVol: l.totalVol,
+    })),
   }
 }
 
-export function mergeOddsAndTrades(odds = [], trades = []) {
-  const names = new Set()
-  odds?.forEach(o => o.marketName && names.add(o.marketName))
-  trades?.forEach(t => t.team && names.add(t.team))
-  const oddsMap = Object.fromEntries((odds || []).map(o => [o.marketName, o]))
-  return [...names].map(name => oddsMap[name] || { marketName: name, bestYes: null, bestNo: null })
+export function mergeOddsAndTrades(odds = [], trades = [], markets = []) {
+  const names = new Map()
+  const remember = (name) => {
+    const normalized = normalizeMarketName(name)
+    if (normalized && !names.has(normalized)) names.set(normalized, String(name).trim())
+  }
+  odds?.forEach(o => remember(o?.marketName))
+  markets?.forEach(m => remember(m?.marketName || m?.name || m?.team))
+  trades?.forEach(t => remember(t?.team || t?.marketName || t?.market))
+  const oddsMap = new Map((odds || []).map(o => [normalizeMarketName(o?.marketName), o]))
+  return [...names].map(([normalized, name]) => oddsMap.get(normalized) || { marketName: name, bestYes: null, bestNo: null })
 }
 
-export function buildAllSessions(odds = [], trades = []) {
-  const merged = mergeOddsAndTrades(odds, trades)
+export function buildAllSessions(odds = [], trades = [], markets = []) {
+  const merged = mergeOddsAndTrades(odds, trades, markets)
+  const marketMap = new Map((markets || []).map(m => [
+    normalizeMarketName(m?.marketName || m?.name || m?.team),
+    m,
+  ]))
   return merged
-    .map(o => computeSessionMetrics(o, trades))
+    .map(o => computeSessionMetrics(o, trades, marketMap.get(normalizeMarketName(o.marketName)) || null))
     .sort((a, b) => a.inning - b.inning || a.over - b.over)
 }
 
@@ -281,6 +287,11 @@ export function sessionDataFingerprint(data) {
   fp += `|o${odds.length}`
   if (odds.length) {
     fp += ':' + odds.map(o => `${o.marketName}:${o.bestYes}:${o.bestNo}`).join(';')
+  }
+  const markets = Array.isArray(data.markets) ? data.markets : Object.values(data.markets || {})
+  fp += `|m${markets.length}`
+  if (markets.length) {
+    fp += ':' + markets.map(m => `${m.marketName || m.name}:${m.tradeCount}:${m.totalVolume ?? m.totalMatched}`).join(';')
   }
   return fp
 }

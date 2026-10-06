@@ -221,7 +221,8 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
 
   const getSessionPlForLine = (lineItem) => {
     if (!isSession || !teamData.orderBook) return 0
-    const score = Math.floor(lineItem.price)
+    // A half-run session line settles YES at the next integer score.
+    const score = Math.ceil(Number(lineItem.price))
     let sessionPl = 0
     teamData.orderBook.forEach(line => {
       if (score > line.price) {
@@ -368,7 +369,7 @@ const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }
                 <div className="text-right text-sky-400">To Back</div>
                 <div className="text-right text-rose-400">To Lay</div>
                 <div className="text-right text-emerald-400">Traded</div>
-                {isSession && <div className="text-right text-purple-400">P/L</div>}
+                {isSession && <div className="text-right text-purple-400">P/L @ Next Run</div>}
               </div>
               <div className="max-h-[240px] overflow-y-auto divide-y divide-[#1b2234]/50">
                 {teamData.orderBook.filter(item => !activeOnly || item.totalVol > 0).map((item, idx) => (
@@ -483,48 +484,12 @@ export default function MatchDetail({ sport }) {
   const [showTipperPick, setShowTipperPick] = useState(false)
   const [sessionTrades, setSessionTrades] = useState([])
   const [sessionOdds, setSessionOdds] = useState([])
+  const [sessionMarkets, setSessionMarkets] = useState([])
   const [activeSessions, setActiveSessions] = useState([])
 
   const isSessionMarket = marketType.startsWith('session_')
   const selectedSessionName = isSessionMarket ? marketType.replace('session_', '') : ''
   const selectedSessionTrades = isSessionMarket ? sessionTrades.filter(t => tradeMatchesMarket(t, selectedSessionName)) : []
-
-  const sessionOrderBook = useMemo(() => {
-    if (!isSessionMarket || !selectedSessionTrades.length) return []
-    const lineMap = {}
-    selectedSessionTrades.forEach(t => {
-      const p = t.price
-      if (!lineMap[p]) lineMap[p] = { price: p, yesVol: 0, noVol: 0 }
-      if (t.type === 'back') lineMap[p].yesVol += t.size
-      else lineMap[p].noVol += t.size
-    })
-    return Object.values(lineMap).map(l => ({
-      ...l,
-      totalVol: l.yesVol + l.noVol
-    })).sort((a, b) => a.price - b.price)
-  }, [selectedSessionTrades, isSessionMarket])
-
-  const sessionScoresPL = useMemo(() => {
-    if (!isSessionMarket || !sessionOrderBook.length) return []
-    const minLine = Math.floor(sessionOrderBook[0].price)
-    const maxLine = Math.ceil(sessionOrderBook[sessionOrderBook.length - 1].price)
-
-    const scores = []
-    for (let score = minLine - 1; score <= maxLine + 1; score++) {
-      let pl = 0
-      sessionOrderBook.forEach(line => {
-        if (score > line.price) {
-          pl -= line.yesVol
-          pl += line.noVol
-        } else {
-          pl += line.yesVol
-          pl -= line.noVol
-        }
-      })
-      scores.push({ score, pl })
-    }
-    return scores
-  }, [sessionOrderBook, isSessionMarket])
 
   useEffect(() => {
     let cancelled = false
@@ -537,6 +502,9 @@ export default function MatchDetail({ sport }) {
       lastSessionFp = fp
       if (sessionData.trades) setSessionTrades(sessionData.trades)
       if (sessionData.odds) setSessionOdds(sessionData.odds)
+      if (sessionData.markets) {
+        setSessionMarkets(Array.isArray(sessionData.markets) ? sessionData.markets : Object.values(sessionData.markets))
+      }
       let activeSessionNames = []
       if (sessionData.odds?.length > 0) {
         activeSessionNames = [...new Set(sessionData.odds.map(o => o.marketName))]
@@ -1267,7 +1235,7 @@ export default function MatchDetail({ sport }) {
           )}
         </div>
       ) : activeTab === 'session' ? (
-        <SessionPanel odds={sessionOdds} trades={sessionTrades} t1={t1} t2={t2} />
+        <SessionPanel odds={sessionOdds} trades={sessionTrades} markets={sessionMarkets} t1={t1} t2={t2} />
       ) : activeTab === 'crex' && sport === 'cricket' && crexData ? (
         <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
       ) : (
