@@ -1,6 +1,6 @@
 import { lazy, useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
-import { LoaderCircle, Info, Coins, X, Trophy } from 'lucide-react'
+import { LoaderCircle, ChevronRight, Coins, X, Trophy } from 'lucide-react'
 import { getSocket, releaseFeed, requestTossFeed } from '../socket'
 import { getTossMatches } from '../api'
 import SportHubHeader from '../components/SportHubHeader'
@@ -369,102 +369,37 @@ export default function TossPage() {
         key={match.matchId}
         role="link" tabIndex={0} aria-label={`Open ${t1Name} versus ${t2Name} toss market`}
         onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } }) } }}
-        className="toss-market-row flex items-center justify-between cursor-pointer group"
+        className="toss-market-row cursor-pointer group"
         onClick={() => navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } })}
       >
-        {/* Left: Info icon */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } })
-          }}
-          className="flex-shrink-0 w-5 h-5 md:w-6 md:h-6 rounded-full border border-white/20 hover:border-amber-400/60 text-white/50 hover:text-amber-300 flex items-center justify-center transition-colors bg-white/5"
-          title="View Toss AI Predictions & Smart Money Flow"
-        >
-          <Info size={12} />
-        </button>
-
-        {/* Scheduled Time & Countdown Column */}
-        <div className="flex flex-col items-start min-w-[75px] md:min-w-[95px] flex-shrink-0">
-          {dt && (
-            <span className="text-xs md:text-sm font-bold text-[#f59e0b] leading-tight tracking-tight">
-              {dt}
+        <div className="toss-card-summary">
+          <div className="toss-card-meta">
+            <span className={`toss-status-pill ${isLive ? 'is-live' : isEnded ? 'is-completed' : 'is-upcoming'}`}>
+              {isLive && <span className="status-dot animate-pulse" />}
+              {isLive ? 'LIVE' : isEnded ? 'COMPLETED' : 'UPCOMING'}
             </span>
-          )}
-          {isLive ? (
-            <span className="flex items-center gap-1 text-[10px] md:text-[11px] font-extrabold text-red-400 leading-tight mt-0.5">
-              <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse inline-block" />
-              LIVE
-            </span>
-          ) : countdown ? (
-            <span className="text-[11px] md:text-xs font-mono font-bold text-[#f59e0b] leading-tight mt-0.5">
-              ⏰ {countdown}
-            </span>
-          ) : isEnded ? (
-            <span className="text-[10px] font-bold text-slate-400 leading-tight mt-0.5">
-              COMPLETED
-            </span>
-          ) : (
-            <span className="text-[10px] font-medium text-slate-400 leading-tight mt-0.5">
-              SCHEDULED
-            </span>
-          )}
+            {dt && <span className="toss-card-time">{dt}</span>}
+            {!isLive && countdown && <span className="toss-card-countdown">Starts in {countdown}</span>}
+          </div>
+          <span className="toss-card-league">{match.competitionName || 'T20 Cricket League'}</span>
+          <div className="toss-card-title-row">
+            <strong className="toss-card-title">{match.matchName}</strong>
+            <span className="toss-open-cue">View toss <ChevronRight size={16} aria-hidden="true" /></span>
+          </div>
         </div>
 
-        {/* Competition & Match Title Column */}
-        <div className="flex flex-col min-w-0 flex-1 pr-2">
-          <span className="text-[10px] md:text-[11px] text-slate-400 font-medium truncate leading-tight">
-            {match.competitionName || 'T20 Cricket League'}
-          </span>
-          <span className="text-xs md:text-sm font-bold text-white group-hover:text-amber-300 transition-colors truncate leading-tight mt-0.5">
-            {match.matchName}
-          </span>
-        </div>
-
-        {/* Right: Team 1 & Team 2 Columns */}
-        <div className="flex items-center gap-3 sm:gap-6 md:gap-8 flex-shrink-0">
-          {/* Team 1 Column */}
-          <div className="market-team-column market-team-green flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
-            <span className="market-team-name text-[10px] md:text-[11px] font-semibold truncate max-w-full leading-tight">
-              {team1.name}
-            </span>
-            <span className="market-team-value text-xs md:text-sm font-black tracking-tight leading-none my-0.5" title="On this selection">
-              {formatVolStr(team1.money)}
-            </span>
-            {/* Percentage Badge */}
-            <span
-              className="market-team-percent text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105"
-            >
-              {team1.percent}%
-            </span>
-            {/* Odds */}
-            <div className="market-team-odds flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold leading-tight mt-0.5" title="Last price matched">
-              <span className="text-[9px]">▲</span>
-              <span>{formatOdds(team1.odds)}</span>
+        <div className="toss-card-teams" aria-label="Team toss activity">
+          {[team1, team2].map((team, index) => (
+            <div key={`${match.matchId}-${team.name}-${index}`} className={`market-team-column ${index === 0 ? 'market-team-green' : 'market-team-red'}`}>
+              <span className="market-team-name" title={team.name}>{team.name}</span>
+              <span className="market-team-label">Matched money</span>
+              <strong className="market-team-value">€{formatVolStr(team.money)}</strong>
+              <div className="market-team-footer">
+                <span className="market-team-percent">{team.percent}% support</span>
+                <span className="market-team-odds" title="Last price matched">Odds {formatOdds(team.odds)}</span>
+              </div>
             </div>
-          </div>
-
-          {/* Team 2 Column */}
-          <div className="market-team-column market-team-red flex flex-col items-center w-20 sm:w-28 md:w-32 text-center">
-            <span className="market-team-name text-[10px] md:text-[11px] font-semibold truncate max-w-full leading-tight">
-              {team2.name}
-            </span>
-            <span className="market-team-value text-xs md:text-sm font-black tracking-tight leading-none my-0.5" title="On this selection">
-              {formatVolStr(team2.money)}
-            </span>
-            {/* Percentage Badge */}
-            <span
-              className="market-team-percent text-[10px] md:text-[11px] font-bold px-2 py-0.5 rounded-full inline-block leading-none transition-transform group-hover:scale-105"
-            >
-              {team2.percent}%
-            </span>
-            {/* Odds */}
-            <div className="market-team-odds flex items-center justify-center gap-0.5 text-[11px] md:text-xs font-bold leading-tight mt-0.5" title="Last price matched">
-              <span className="text-[9px]">▲</span>
-              <span>{formatOdds(team2.odds)}</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     )
@@ -594,7 +529,7 @@ export default function TossPage() {
                           {liveMatches.length}
                         </span>
                       </div>
-                      <div className="rounded-xl border border-red-500/30 bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
+                      <div className="toss-market-list rounded-xl border border-red-500/30 bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
                         {liveMatches.map(renderMatchRow)}
                       </div>
                     </div>
@@ -610,7 +545,7 @@ export default function TossPage() {
                           {upcomingMatches.length}
                         </span>
                       </div>
-                      <div className="rounded-xl border border-[#1e2536] bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
+                      <div className="toss-market-list rounded-xl border border-[#1e2536] bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
                         {upcomingMatches.map(renderMatchRow)}
                       </div>
                     </div>
@@ -626,7 +561,7 @@ export default function TossPage() {
                           {endedMatches.length}
                         </span>
                       </div>
-                      <div className="rounded-xl border border-[#1e2536]/60 bg-[#0a0d14] opacity-80 hover:opacity-100 transition-opacity shadow-lg overflow-hidden divide-y divide-[#1e2536]/60">
+                      <div className="toss-market-list rounded-xl border border-[#1e2536]/60 bg-[#0a0d14] opacity-80 hover:opacity-100 transition-opacity shadow-lg overflow-hidden divide-y divide-[#1e2536]/60">
                         {endedMatches.map(renderMatchRow)}
                       </div>
                     </div>

@@ -232,127 +232,89 @@ export default function TossDetail({ isEmbedded = false }) {
   const pct2 = pct1 == null ? null : 100 - pct1
 
   const tossPrediction = predictTossWinner(snap, snap?.competitionName || snap?.seriesName || '')
+  const team1Tone = pct1 == null || pct2 == null ? 'neutral' : pct1 >= pct2 ? 'leading' : 'trailing'
+  const team2Tone = pct1 == null || pct2 == null ? 'neutral' : pct2 > pct1 ? 'leading' : 'trailing'
 
   return (
-    <div className={`w-full fade-in space-y-4 ${isEmbedded ? '' : 'detail-page'}`}>
+    <div className={`toss-detail-page w-full fade-in space-y-4 ${isEmbedded ? '' : 'detail-page'}`}>
 
       {!isEmbedded && (
-        <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-text-muted hover:text-primary text-sm font-medium transition-colors">
-          <ArrowLeft size={15} /> Back
+        <button onClick={() => navigate(-1)} className="toss-detail-back">
+          <ArrowLeft size={16} /> Back to toss matches
         </button>
-      )}      {/* Header */}
-      <div className="glass-card rounded-2xl p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-xl font-bold text-text-primary">{t1} vs {t2}</h1>
-            <div className="text-xs text-text-muted mt-1">🪙 Toss Market • {timestamp(snap.serverTime) == null ? 'Capture time unavailable' : new Date(timestamp(snap.serverTime)).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' })}</div>
+      )}
+
+      <section className="toss-detail-hero" aria-labelledby="toss-detail-title">
+        <div className="toss-detail-heading">
+          <div className="min-w-0">
+            <span className="toss-detail-eyebrow">🪙 Toss market</span>
+            <h1 id="toss-detail-title">{t1} <span>vs</span> {t2}</h1>
+            <div className="toss-detail-date">
+              Updated {timestamp(snap.serverTime) == null ? 'time unavailable' : new Date(timestamp(snap.serverTime)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}
+            </div>
           </div>
           {snap.inPlay && (
-            <span className="flex items-center gap-1.5 text-xs font-bold px-3 py-1 rounded-full" style={{ background: '#fee2e2', color: '#dc2626' }}>
-              <span className="pulse-dot h-2 w-2 rounded-full" style={{ background: '#dc2626' }} /> LIVE
+            <span className="toss-detail-live">
+              <span className="pulse-dot" /> LIVE
             </span>
           )}
         </div>
-      </div>
+      </section>
 
-      {/* Toss Team Comparison Card (100% Width) */}
-      <div className="w-full rounded-xl border border-[#1e2536] bg-[#0c1018] py-2.5 px-4 sm:px-6 shadow-md mb-3">
-        <div className="flex items-center justify-around gap-4 sm:gap-12 w-full">
-          {/* Team 1 Column */}
-          <div className="flex flex-col items-center flex-1 min-w-0 text-center">
-            <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
-              {t1}
-            </span>
-            <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
-              {formatVolStr(vol1)}
-            </span>
-            {/* Percentage Badge */}
-            <span
-              className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
-                pct1 >= 50
-                  ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                  : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-              }`}
-            >
-              {pct1 == null ? '—' : `${pct1}%`}
-            </span>
-            {/* Odds */}
-            <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
-              <span className="text-[9px]">▲</span>
-              <span>{formatOdds(tossOdds1)}</span>
-            </div>
+      <section className="toss-comparison-card" aria-labelledby="market-activity-heading">
+        <div className="toss-comparison-heading">
+          <div>
+            <h2 id="market-activity-heading">Market activity</h2>
+            <p>Matched money, support and latest toss odds</p>
           </div>
-
-          {/* Team 2 Column */}
-          <div className="flex flex-col items-center flex-1 min-w-0 text-center">
-            <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
-              {t2}
-            </span>
-            <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
-              {formatVolStr(vol2)}
-            </span>
-            {/* Percentage Badge */}
-            <span
-              className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${
-                pct2 >= 50
-                  ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                  : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-              }`}
-            >
-              {pct2 == null ? '—' : `${pct2}%`}
-            </span>
-            {/* Odds */}
-            <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
-              <span className="text-[9px]">▲</span>
-              <span>{formatOdds(tossOdds2)}</span>
-            </div>
-          </div>
+          <strong>€{formatVolStr(totVol)}</strong>
         </div>
 
-        {/* Micro Inflow Bar */}
-        <div className="mt-2 h-1.5 w-full bg-[#1b2234] rounded-full overflow-hidden flex">
-          <div
-            style={{ width: `${pct1 ?? 0}%` }}
-            className={`h-full transition-all duration-300 ${
-              pct1 >= pct2
-                ? 'bg-gradient-to-r from-emerald-700 to-green-600'
-                : 'bg-gradient-to-r from-red-600 to-rose-600'
-            }`}
-          />
-          <div
-            style={{ width: `${pct2 ?? 0}%` }}
-            className={`h-full transition-all duration-300 ${
-              pct2 > pct1
-                ? 'bg-gradient-to-r from-emerald-700 to-green-600'
-                : 'bg-gradient-to-r from-red-600 to-rose-600'
-            }`}
-          />
+        <div className="toss-comparison-grid">
+          {[
+            { name: t1, volume: vol1, percentage: pct1, odds: tossOdds1, tone: team1Tone },
+            { name: t2, volume: vol2, percentage: pct2, odds: tossOdds2, tone: team2Tone },
+          ].map(team => (
+            <article key={team.name} className={`toss-comparison-team is-${team.tone}`}>
+              <div className="toss-comparison-team-top">
+                <h3>{team.name}</h3>
+                <span>{team.percentage == null ? '—' : `${team.percentage}%`}</span>
+              </div>
+              <div className="toss-comparison-money">
+                <small>Matched money</small>
+                <strong>€{formatVolStr(team.volume)}</strong>
+              </div>
+              <div className="toss-comparison-odds">
+                <span>Support</span><strong>{team.percentage == null ? '—' : `${team.percentage}%`}</strong>
+                <span>Latest odds</span><strong>{formatOdds(team.odds)}</strong>
+              </div>
+            </article>
+          ))}
         </div>
-      </div>
+
+        <div className="toss-support-bar" aria-label={`${t1} ${pct1 ?? 0}% support, ${t2} ${pct2 ?? 0}% support`}>
+          <span className={`is-${team1Tone}`} style={{ width: `${pct1 ?? 0}%` }} />
+          <span className={`is-${team2Tone}`} style={{ width: `${pct2 ?? 0}%` }} />
+        </div>
+      </section>
       {/* ━━━━━━━━━━ TOSS WINNER PREDICTION ━━━━━━━━━━ */}
       {tossPrediction && (
-        <div className="rounded-xl overflow-hidden" style={{ border: '1px solid #d1d5db' }}>
+        <div className="toss-prediction-card rounded-xl overflow-hidden" style={{ border: '1px solid #d1d5db' }}>
           {/* Header */}
-          <div className="px-3 py-2 flex items-center gap-1.5 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
+          <div className="toss-prediction-header px-3 py-2 flex items-center gap-1.5 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
             <span className="text-sm">🪙</span>
             <span className="text-xs font-bold text-text-primary">Toss Winner Prediction</span>
-            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>Historical rules · live accuracy unvalidated</span>
-            {tossPrediction.algoName && (
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-                {tossPrediction.algoName}
-              </span>
-            )}
-            {tossPrediction.risk && <RiskBadge risk={tossPrediction.risk} compact />}
+            <span className="toss-prediction-note text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>Rule-based · accuracy unvalidated</span>
             <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
           </div>
 
           <div className="p-3">
             {/* Winner Banner */}
-            <div className="rounded-lg px-3 py-2.5 text-center mb-3" style={{
+            <div className="toss-prediction-winner rounded-lg px-3 py-2.5 text-center mb-3" style={{
               background: 'rgba(22,163,74,0.08)',
               border: '1px solid rgba(22,163,74,0.3)'
             }}>
-              <div className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">Predicted Toss Winner</div>
+              <div className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">Prediction</div>
               <div className="text-lg font-black leading-tight text-profit">
                 {tossPrediction.winnerName}
               </div>
@@ -377,7 +339,7 @@ export default function TossDetail({ isEmbedded = false }) {
             {/* Signals breakdown */}
             <div className="space-y-2 mb-3">
               {tossPrediction.signals.filter(r => r.label !== 'Bookie Pre-P/L').map(r => (
-                <div key={r.label} className="rounded-xl px-3 py-2.5" style={{
+                <div key={r.label} className="toss-prediction-signal rounded-xl px-3 py-2.5" style={{
                   background: r.active ? 'rgba(22,163,74,0.06)' : 'rgba(100,100,100,0.04)',
                   border: `1px solid ${r.active ? 'rgba(22,163,74,0.2)' : 'rgba(100,100,100,0.15)'}`
                 }}>
@@ -391,7 +353,7 @@ export default function TossDetail({ isEmbedded = false }) {
                   </div>
                   <div className="text-[10px] text-text-muted mb-1">{r.label === 'Pre-Match Lay' ? 'Matched lay stakes' : r.sublabel}</div>
                   {r.v2 && (
-                    <div className="flex justify-between items-center">
+                    <div className="toss-signal-comparison flex justify-between items-center">
                       <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{t1}: {r.v1}</span>
                       <span className="text-[10px] text-text-muted px-2">vs</span>
                       <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 1 ? 'text-profit' : 'text-text-muted'}`}>{t2}: {r.v2}</span>
@@ -427,7 +389,7 @@ export default function TossDetail({ isEmbedded = false }) {
                     { key: 'B_back_expo', label: `${t2} Back Expo` },
                     { key: 'B_lay_stake', label: `${t2} Lay Stake` },
                   ].filter(({ key }) => raw[key] != null).map(({ key, label }) => (
-                    <div key={key} className="flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
+                    <div key={key} className="toss-metric-row flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
                       <span className="text-xs text-text-secondary font-medium">{label}</span>
                       <span className="text-xs font-bold text-text-primary">{Number(raw[key]).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
                     </div>
@@ -442,7 +404,7 @@ export default function TossDetail({ isEmbedded = false }) {
                   {Object.entries(tot).map(([key, val]) => {
                     const name = key === 'team1' ? t1 : key === 'team2' ? t2 : key === 'totalBetTeam1' ? t1 : key === 'totalBetTeam2' ? t2 : key
                     return (
-                      <div key={key} className="flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
+                      <div key={key} className="toss-metric-row flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
                         <span className="text-xs text-text-secondary font-medium">{name}</span>
                         <span className="text-xs font-bold text-text-primary">{Number(val).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
                       </div>
@@ -461,7 +423,7 @@ export default function TossDetail({ isEmbedded = false }) {
       {(exp1.netExposure != null || exp2.netExposure != null) && (
         <div className="glass-card rounded-2xl p-4">
           <div className="text-sm font-bold text-text-secondary mb-3">Bookie ka risk — Kitna exposed hai?</div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="toss-two-team-grid grid grid-cols-2 gap-3">
             {[{ e: exp1, team: t1 }, { e: exp2, team: t2 }].map(({ e, team }) => (
               <div key={team} className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
                 <div className="text-sm font-medium mb-2">{e.teamName || team}</div>
@@ -482,10 +444,10 @@ export default function TossDetail({ isEmbedded = false }) {
           <div className="text-xs font-bold text-text-muted uppercase mb-3">
             📈 Bookie P/L (Agar Team Jeete){plSource === 'api' ? ' • API' : ' • Trades'}
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="toss-two-team-grid grid grid-cols-2 gap-3">
             {[{ name: t1, pl: t1BookiePL }, { name: t2, pl: t2BookiePL }].map(({ name, pl }) => (
               <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
-                <div className="text-base font-bold text-text-primary mb-1 truncate">{name}</div>
+                <div className="toss-pl-team-name text-base font-bold text-text-primary mb-1">{name}</div>
                 <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
                 <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl == null ? 'Unavailable' : pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
               </div>

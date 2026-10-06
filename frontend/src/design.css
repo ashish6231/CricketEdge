@@ -113,8 +113,74 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
 .match-card-bottom > span:first-child { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .match-access { display: flex; align-items: center; gap: 4px; white-space: nowrap; color: #354e6e; }
 .match-card-bottom > svg { color: #13907d; flex-shrink: 0; }
-.toss-market-row { padding: 20px; gap: 14px; min-height: 106px; background: #ffffff; }
+.toss-market-row { display: grid; grid-template-columns: minmax(240px, 1fr) auto; align-items: center; gap: 18px; min-height: 106px; padding: 16px 18px; background: #ffffff; }
 .toss-market-row:hover { background: #ffffff; }
+.toss-card-summary { min-width: 0; }
+.toss-card-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 9px; margin-bottom: 6px; }
+.toss-status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 7px; border-radius: 999px; font-size: 9px; font-weight: 750; letter-spacing: .35px; white-space: nowrap; }
+.toss-card-time, .toss-card-countdown { color: #64748b; font-size: 10px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.toss-card-countdown { color: #a16207; }
+.toss-card-league { display: block; overflow: hidden; margin-bottom: 2px; color: #64748b; font-size: 10px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.toss-card-title-row { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.toss-card-title { overflow: hidden; color: #172b43; font-size: 14px; font-weight: 750; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+.toss-open-cue { display: inline-flex; align-items: center; gap: 2px; flex: 0 0 auto; color: #2563eb; font-size: 10px; font-weight: 750; white-space: nowrap; }
+.toss-card-teams { display: grid; grid-template-columns: repeat(2, minmax(116px, 142px)); gap: 8px; }
+.market-team-column { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 8px 10px; border-radius: 10px; text-align: left; }
+.market-team-name { display: block; width: 100%; overflow: hidden; font-size: 11px; font-weight: 750; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.market-team-label { margin-top: 5px; color: #64748b; font-size: 8px; font-weight: 650; letter-spacing: .35px; text-transform: uppercase; }
+.market-team-value { margin-top: 1px; font-size: 14px; font-weight: 800; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.market-team-footer { display: flex; align-items: center; justify-content: space-between; gap: 5px; width: 100%; margin-top: 6px; }
+.market-team-percent { padding: 2px 6px; border-radius: 999px; font-size: 9px; font-weight: 750; white-space: nowrap; }
+.market-team-odds { font-size: 9px; font-weight: 750; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.toss-detail-page { max-width: 1040px; }
+.toss-detail-back { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 9px; background: #ffffff; color: #475569; font-size: 12px; font-weight: 700; }
+.toss-detail-back:hover { border-color: #93c5fd; background: #eff6ff; color: #1d4ed8; }
+.toss-detail-hero { padding: 18px 20px; border: 1px solid #cbd5e1; border-radius: 13px; background: linear-gradient(120deg, #eff6ff, #ffffff 48%, #f0fdf4); box-shadow: 0 6px 22px #1e3a8a0c; }
+.toss-detail-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.toss-detail-eyebrow { display: block; margin-bottom: 5px; color: #2563eb; font-size: 10px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; }
+.toss-detail-heading h1 { color: #172b43; font-size: 22px; font-weight: 800; letter-spacing: -.35px; line-height: 1.25; }
+.toss-detail-heading h1 span { color: #94a3b8; font-size: .72em; font-weight: 650; }
+.toss-detail-date { margin-top: 6px; color: #64748b; font-size: 11px; font-variant-numeric: tabular-nums; }
+.toss-detail-live { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; padding: 5px 9px; border: 1px solid #fecdd3; border-radius: 999px; background: #fff1f2; color: #be123c; font-size: 10px; font-weight: 800; }
+.toss-detail-live .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #e11d48; }
+.toss-comparison-card { padding: 16px; border: 1px solid #cbd5e1; border-radius: 13px; background: #ffffff; box-shadow: 0 6px 22px #1e3a8a0c; }
+.toss-comparison-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.toss-comparison-heading h2 { color: #172b43; font-size: 14px; font-weight: 800; }
+.toss-comparison-heading p { margin-top: 2px; color: #64748b; font-size: 10px; }
+.toss-comparison-heading > strong { color: #1e3a8a; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.toss-comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.toss-comparison-team { min-width: 0; padding: 12px; border: 1px solid #dbe3ef; border-radius: 11px; background: #f8fafc; }
+.toss-comparison-team.is-leading { border-color: #86efac; background: #f0fdf4; }
+.toss-comparison-team.is-trailing { border-color: #fecaca; background: #fff1f2; }
+.toss-comparison-team-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.toss-comparison-team-top h3 { min-width: 0; overflow-wrap: anywhere; color: #172b43; font-size: 13px; font-weight: 800; line-height: 1.3; }
+.toss-comparison-team-top > span { flex: 0 0 auto; padding: 2px 6px; border-radius: 999px; background: #e2e8f0; color: #475569; font-size: 9px; font-weight: 800; }
+.toss-comparison-team.is-leading .toss-comparison-team-top > span { background: #dcfce7; color: #166534; }
+.toss-comparison-team.is-trailing .toss-comparison-team-top > span { background: #fee2e2; color: #991b1b; }
+.toss-comparison-money { margin: 11px 0; }
+.toss-comparison-money small { display: block; color: #64748b; font-size: 8px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; }
+.toss-comparison-money strong { display: block; margin-top: 2px; color: #172b43; font-size: 20px; font-weight: 850; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.toss-comparison-team.is-leading .toss-comparison-money strong { color: #15803d; }
+.toss-comparison-team.is-trailing .toss-comparison-money strong { color: #b91c1c; }
+.toss-comparison-odds { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; padding-top: 9px; border-top: 1px solid #dbe3ef; font-size: 10px; }
+.toss-comparison-odds span { color: #64748b; }
+.toss-comparison-odds strong { color: #172b43; font-weight: 800; font-variant-numeric: tabular-nums; }
+.toss-support-bar { display: flex; width: 100%; height: 7px; margin-top: 12px; overflow: hidden; border-radius: 999px; background: #e2e8f0; }
+.toss-support-bar > span { display: block; height: 100%; transition: width .3s ease; }
+.toss-support-bar > .is-leading { background: #22c55e; }
+.toss-support-bar > .is-trailing { background: #ef4444; }
+.toss-support-bar > .is-neutral { background: #94a3b8; }
+.toss-prediction-card { background: #ffffff; }
+.toss-prediction-header { border-bottom: 1px solid #dbe3ef; }
+.toss-prediction-winner { overflow-wrap: anywhere; }
+.toss-prediction-signal { overflow: hidden; }
+.toss-signal-comparison { gap: 8px; }
+.toss-signal-comparison > span:not(:nth-child(2)) { min-width: 0; overflow-wrap: anywhere; }
+.toss-metric-row { gap: 12px; }
+.toss-metric-row > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.toss-metric-row > span:last-child { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
+.toss-two-team-grid > * { min-width: 0; }
+.toss-pl-team-name { overflow-wrap: anywhere; line-height: 1.25; }
 .ui-empty-state { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; text-align: center; min-height: 260px; padding: 32px; border: 1px dashed #dce4ee; border-radius: 12px; color: #5b6d84; }
 .ui-empty-state h2 { color: #1d4d86; font-size: 18px; font-weight: 600; }
 .ui-empty-state p { font-size: 13px; }
@@ -215,9 +281,54 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
   .match-grid { gap: 14px; }
   .match-card { padding: 17px; }
   .match-team-name strong { font-size: 14px; }
-  .toss-market-row { flex-wrap: wrap; padding: 16px 12px; gap: 12px; }
-  .toss-market-row > div:last-child { width: 100%; flex: 1 0 100%; }
-  .toss-market-row > div:last-child > div { align-items: center; }
+  .toss-market-row { display: block; min-height: 0; padding: 13px 12px; }
+  .toss-card-meta { gap: 5px 7px; margin-bottom: 7px; }
+  .toss-card-time { margin-left: auto; }
+  .toss-card-countdown { flex: 1 0 100%; }
+  .toss-card-league { margin-bottom: 3px; font-size: 9px; }
+  .toss-card-title-row { align-items: flex-start; }
+  .toss-card-title { display: -webkit-box; flex: 1; overflow: hidden; font-size: 13px; white-space: normal; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .toss-open-cue { padding-top: 1px; }
+  .toss-card-teams { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; margin-top: 11px; }
+  .market-team-column { min-height: 91px; padding: 8px; }
+  .market-team-name { min-height: 28px; overflow: visible; font-size: 10px; white-space: normal; }
+  .market-team-label { margin-top: 3px; font-size: 7px; }
+  .market-team-value { font-size: 13px; }
+  .market-team-footer { align-items: flex-end; gap: 3px; margin-top: 5px; }
+  .market-team-percent { padding: 2px 4px; font-size: 8px; }
+  .market-team-odds { font-size: 8px; }
+  .toss-detail-page.space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 9px; }
+  .toss-detail-back { width: 100%; min-height: 38px; justify-content: flex-start; padding: 7px 9px; }
+  .toss-detail-hero { padding: 13px; border-radius: 11px; }
+  .toss-detail-heading { gap: 8px; }
+  .toss-detail-heading h1 { font-size: 17px; line-height: 1.28; overflow-wrap: anywhere; }
+  .toss-detail-date { font-size: 9px; line-height: 1.4; }
+  .toss-detail-live { padding: 4px 7px; font-size: 9px; }
+  .toss-comparison-card { padding: 11px; border-radius: 11px; }
+  .toss-comparison-heading { align-items: center; margin-bottom: 9px; }
+  .toss-comparison-heading p { display: none; }
+  .toss-comparison-heading > strong { font-size: 13px; }
+  .toss-comparison-grid { gap: 7px; }
+  .toss-comparison-team { padding: 9px 8px; }
+  .toss-comparison-team-top { display: block; }
+  .toss-comparison-team-top h3 { min-height: 32px; font-size: 11px; }
+  .toss-comparison-team-top > span { display: inline-block; margin-top: 5px; }
+  .toss-comparison-money { margin: 8px 0; }
+  .toss-comparison-money strong { font-size: 16px; }
+  .toss-comparison-odds { gap: 3px 5px; padding-top: 7px; font-size: 9px; }
+  .toss-support-bar { height: 6px; margin-top: 9px; }
+  .toss-prediction-header { align-items: flex-start; padding: 9px 10px; }
+  .toss-prediction-header > .ml-auto { margin-left: auto; padding-top: 2px; }
+  .toss-prediction-note { display: none; }
+  .toss-prediction-winner { padding: 10px 8px; }
+  .toss-prediction-winner .text-lg { font-size: 15px; }
+  .toss-prediction-signal { padding: 9px; }
+  .toss-signal-comparison { align-items: flex-start; }
+  .toss-signal-comparison > span { font-size: 10px; }
+  .toss-two-team-grid { gap: 7px; }
+  .toss-two-team-grid > div { padding: 9px; }
+  .toss-two-team-grid .text-base { font-size: 12px; }
+  .toss-two-team-grid .text-xl { font-size: 16px; }
   .admin-workspace { padding: 22px 14px; }
   .admin-workspace-heading { margin-bottom: 20px; }
   .admin-workspace-heading h1 { font-size: 23px; }

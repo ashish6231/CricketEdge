@@ -450,7 +450,7 @@
 :root[data-theme="light"] .match-card-bottom { gap: 5px; margin-top: 7px; padding-top: 6px; border-color: #e0e4ef; font-size: 8px; }
 :root[data-theme="light"] .match-access { color: #1d4ed8; }
 
-:root[data-theme="light"] .toss-market-row { min-height: 64px; padding: 8px 11px; gap: 7px; background: #ffffff; }
+:root[data-theme="light"] .toss-market-row { min-height: 74px; padding: 10px 12px; gap: 10px; background: #ffffff; }
 :root[data-theme="light"] .toss-market-row:hover { background: #f5f6ff; }
 :root[data-theme="light"] .glass-card { border-color: #ccd3e5; border-radius: 9px; background: #ffffff; box-shadow: 0 2px 9px #1720330b; }
 :root[data-theme="light"] .detail-page { max-width: 1380px; padding: 14px !important; }
@@ -524,7 +524,7 @@
   :root[data-theme="light"] .match-grid { gap: 6px; }
   :root[data-theme="light"] .match-card { padding: 8px; }
   :root[data-theme="light"] .match-team-name strong { font-size: 11px; }
-  :root[data-theme="light"] .toss-market-row { min-height: 60px; padding: 7px 8px; }
+  :root[data-theme="light"] .toss-market-row { min-height: 0; padding: 12px 10px; }
   :root[data-theme="light"] .detail-page { padding: 10px !important; }
   :root[data-theme="light"] .detail-page > .sticky { margin-left: -10px; margin-right: -10px; padding: 6px 10px; }
   :root[data-theme="light"] .detail-page .glass-card { padding: 11px; }
@@ -609,13 +609,38 @@
   background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 50%, #fff1f2 100%);
   border-left-color: #6366f1;
 }
-:root[data-theme="light"] .market-team-column { padding: 5px 7px; border-radius: 9px; }
+:root[data-theme="light"] .market-team-column { padding: 8px 9px; border-radius: 9px; }
 :root[data-theme="light"] .market-team-green { background: #f0fdf4; border: 1px solid #bbf7d0; }
 :root[data-theme="light"] .market-team-green :is(.market-team-name,.market-team-value,.market-team-odds) { color: #15803d; }
 :root[data-theme="light"] .market-team-green .market-team-percent { color: #166534; background: #dcfce7; border: 1px solid #86efac; }
 :root[data-theme="light"] .market-team-red { background: #fff1f2; border: 1px solid #fecdd3; }
 :root[data-theme="light"] .market-team-red :is(.market-team-name,.market-team-value,.market-team-odds) { color: #b91c1c; }
 :root[data-theme="light"] .market-team-red .market-team-percent { color: #991b1b; background: #fee2e2; border: 1px solid #fca5a5; }
+
+@media (max-width: 767px) {
+  :root[data-theme="light"] .hub-results.fade-in,
+  :root[data-theme="light"] .toss-detail-page.fade-in { animation: none; }
+  :root[data-theme="light"] .toss-market-list {
+    display: grid;
+    gap: 8px;
+    overflow: visible;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+  }
+  :root[data-theme="light"] .toss-market-list .toss-market-row {
+    border: 1px solid #d7dfec;
+    border-left: 1px solid #d7dfec;
+    border-radius: 11px;
+    box-shadow: 0 4px 14px #1e3a8a0d;
+  }
+  :root[data-theme="light"] .toss-market-row:hover { border-left-color: transparent; }
+  :root[data-theme="light"] .market-team-column { padding: 8px; }
+  :root[data-theme="light"] .toss-card-time { color: #475569; }
+  :root[data-theme="light"] .toss-open-cue { min-height: 28px; padding: 4px 0 4px 5px; }
+  :root[data-theme="light"] .toss-detail-page { padding-bottom: 22px !important; }
+}
 
 :root[data-theme="light"] .bookie-period-heading h3 { color: #312e81; }
 :root[data-theme="light"] .bookie-period-card {
@@ -860,11 +885,16 @@
   /* A raised, colour-coded mobile switcher keeps the three sports easy to scan. */
   :root[data-theme="light"] .site-header .site-nav {
     position: fixed;
-    inset: auto 10px calc(8px + env(safe-area-inset-bottom));
+    inset: auto 10px calc(8px + env(safe-area-inset-bottom)) 10px;
     z-index: 60;
+    width: auto;
+    min-width: 0;
+    max-width: calc(100vw - 20px);
     height: 58px;
     padding: 5px;
     gap: 4px;
+    overflow: hidden;
+    box-sizing: border-box;
     border: 1px solid #cbd5e1;
     border-radius: 17px;
     background: #ffffffee;
@@ -873,6 +903,7 @@
   }
   :root[data-theme="light"] .site-header .site-nav a {
     flex: 1 1 0;
+    min-width: 0;
     max-width: none;
     height: 46px;
     padding: 4px 7px;

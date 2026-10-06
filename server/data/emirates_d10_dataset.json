@@ -4118,7 +4118,7 @@
           "prediction": null
         }
       },
-      "lastSeenAt": "2026-10-06T02:47:25.462Z"
+      "lastSeenAt": "2026-10-06T03:34:55.502Z"
     },
     {
       "recordId": "crex:2NK:52656",
@@ -9244,7 +9244,7 @@
           "prediction": null
         }
       },
-      "lastSeenAt": "2026-10-06T02:47:25.462Z"
+      "lastSeenAt": "2026-10-06T03:34:55.502Z"
     },
     {
       "recordId": "market:36142618",
@@ -12882,7 +12882,7 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T02:47:25.462Z",
+      "lastSeenAt": "2026-10-06T03:34:55.502Z",
       "statusSource": "market-feed"
     },
     {
@@ -13896,7 +13896,7 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T02:47:25.462Z",
+      "lastSeenAt": "2026-10-06T03:34:55.502Z",
       "statusSource": "market-feed"
     },
     {
@@ -14887,7 +14887,7 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T02:47:25.462Z",
+      "lastSeenAt": "2026-10-06T03:34:55.502Z",
       "statusSource": "market-feed"
     },
     {
@@ -15894,12 +15894,12 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T02:47:25.462Z",
+      "lastSeenAt": "2026-10-06T03:34:55.502Z",
       "statusSource": "market-feed"
     }
   ],
   "sync": {
-    "checkedAt": "2026-10-06T02:47:25.462Z",
+    "checkedAt": "2026-10-06T03:34:55.502Z",
     "seriesUrls": [
       "https://crex.com/series/emirates-d10-league-2026-2NK/matches"
     ],
@@ -15911,9 +15911,9 @@
     "feedStatus": "available",
     "errors": []
   },
-  "updatedAt": "2026-10-06T02:47:27.278Z",
+  "updatedAt": "2026-10-06T03:34:55.508Z",
   "marketFeedHealth": {
-    "checkedAt": "2026-10-06T02:47:25.462Z",
+    "checkedAt": "2026-10-06T03:34:55.502Z",
     "status": "available",
     "error": null
   }
