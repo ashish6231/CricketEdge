@@ -319,6 +319,16 @@ function alignScorecardTeams(scorecard, matchName) {
   return scorecard;
 }
 
+function compactRunners(runnersList) {
+  if (!Array.isArray(runnersList)) return [];
+  return runnersList.map(r => ({
+    runnerName: r.runnerName || r.name || '',
+    back: r.back || r.backPrice || r.price || r.ex?.availableToBack?.[0]?.price || null,
+    lay: r.lay || r.layPrice || r.ex?.availableToLay?.[0]?.price || null,
+    price: r.price || r.back || null,
+  }));
+}
+
 /**
  * Builds the complete cricket matches feed payload (for HTTP and WebSocket)
  */
@@ -370,7 +380,7 @@ async function getCricketMatchesPayload() {
         inPlay: Boolean(m.inPlay),
         startTime: m.startTime || m.openDate || null,
         totalMatched: load?.totalMatched || m.totalMatched || 0,
-        runners: snap?.runners || m.runners || [],
+        runners: compactRunners(snap?.runners || m.runners || []),
         matchLoad: load,
       });
     }
@@ -385,7 +395,7 @@ async function getCricketMatchesPayload() {
           const load = computeMatchLoad(snap, m);
           endedMatchesCache.set(String(m.matchId), {
             matchLoad: load,
-            runners: snap?.runners || m.runners || [],
+            runners: compactRunners(snap?.runners || m.runners || []),
             totalMatched: load?.totalMatched || m.totalMatched || 0,
           });
           hasNew = true;
@@ -406,7 +416,7 @@ async function getCricketMatchesPayload() {
         inPlay: false,
         startTime: m.startTime || m.openDate || null,
         totalMatched: cached?.totalMatched || load?.totalMatched || m.totalMatched || 0,
-        runners: cached?.runners || m.runners || [],
+        runners: compactRunners(cached?.runners || m.runners || []),
         matchLoad: load,
       });
     }
@@ -423,7 +433,7 @@ async function getCricketMatchesPayload() {
           inPlay: Boolean(m.inPlay),
           startTime: m.startTime || m.openDate || null,
           totalMatched: m.totalMatched || 0,
-          runners: m.runners || [],
+          runners: compactRunners(m.runners || []),
           matchLoad: load,
         });
       }

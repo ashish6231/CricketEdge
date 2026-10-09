@@ -192,6 +192,11 @@ export function unsubscribeMatch(matchId) {
   }
 }
 
+export function requestCricketFeed() {
+  const s = getSocket();
+  if (s && s.connected) s.emit('feed:cricket');
+}
+
 export function requestTossFeed() {
   const s = getSocket();
   if (s && s.connected) s.emit('feed:toss');
@@ -208,6 +213,6 @@ export function requestSessionFeed() {
 }
 
 export function releaseFeed(feed) {
-  if (!['toss', 'tennis', 'session'].includes(feed)) return;
+  if (!['cricket', 'toss', 'tennis', 'session'].includes(feed)) return;
   if (socket?.connected) socket.emit('feed:unsubscribe', feed);
 }

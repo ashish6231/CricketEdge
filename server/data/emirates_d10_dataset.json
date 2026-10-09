@@ -28,14 +28,7 @@
         "tt": 0,
         "dt_id": "0",
         "es_id": 100008,
-        "fid": 4250076,
-        "ifs": "C",
-        "fi": "https://cricketvectors.akamaized.net/cFancode/4250076.png",
-        "fsr": "P",
-        "fta": "300",
         "nt": 0,
-        "is_promo_fan": 0,
-        "is_promo_yt": 0,
         "g": 1,
         "hide": 1,
         "global_num": {
@@ -4118,7 +4111,7 @@
           "prediction": null
         }
       },
-      "lastSeenAt": "2026-10-06T03:34:55.502Z"
+      "lastSeenAt": "2026-10-09T16:15:16.985Z"
     },
     {
       "recordId": "crex:2NK:52656",
@@ -4146,14 +4139,7 @@
         "tt": 0,
         "dt_id": "0",
         "es_id": 100009,
-        "fid": 4250077,
-        "ifs": "C",
-        "fi": "https://cricketvectors.akamaized.net/cFancode/4250077.png",
-        "fsr": "P",
-        "fta": "300",
         "nt": 0,
-        "is_promo_fan": 0,
-        "is_promo_yt": 0,
         "g": 1,
         "hide": 1,
         "global_num": {
@@ -9244,7 +9230,7 @@
           "prediction": null
         }
       },
-      "lastSeenAt": "2026-10-06T03:34:55.502Z"
+      "lastSeenAt": "2026-10-09T16:15:16.985Z"
     },
     {
       "recordId": "market:36142618",
@@ -11880,14 +11866,7 @@
         "tt": 0,
         "dt_id": "0",
         "es_id": 100011,
-        "fid": 4250079,
-        "ifs": "C",
-        "fi": "https://cricketvectors.akamaized.net/cFancode/4250079.png",
-        "fsr": "P",
-        "fta": "300",
         "nt": 0,
-        "is_promo_fan": 0,
-        "is_promo_yt": 0,
         "g": 1,
         "hide": 1,
         "global_num": {
@@ -12882,7 +12861,7 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T03:34:55.502Z",
+      "lastSeenAt": "2026-10-09T16:15:16.985Z",
       "statusSource": "market-feed"
     },
     {
@@ -13896,7 +13875,7 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T03:34:55.502Z",
+      "lastSeenAt": "2026-10-06T13:19:01.793Z",
       "statusSource": "market-feed"
     },
     {
@@ -13925,14 +13904,7 @@
         "tt": 0,
         "dt_id": "0",
         "es_id": 100014,
-        "fid": 4250082,
-        "ifs": "C",
-        "fi": "https://cricketvectors.akamaized.net/cFancode/4250082.png",
-        "fsr": "P",
-        "fta": "300",
         "nt": 0,
-        "is_promo_fan": 0,
-        "is_promo_yt": 0,
         "g": 1,
         "hide": 1,
         "global_num": {
@@ -14887,7 +14859,7 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T03:34:55.502Z",
+      "lastSeenAt": "2026-10-09T16:15:16.985Z",
       "statusSource": "market-feed"
     },
     {
@@ -15894,26 +15866,981 @@
           }
         }
       },
-      "lastSeenAt": "2026-10-06T03:34:55.502Z",
+      "lastSeenAt": "2026-10-06T13:19:01.793Z",
       "statusSource": "market-feed"
+    },
+    {
+      "recordId": "crex:2NK:52664",
+      "competitionName": "Emirates D10 League 2026",
+      "matchName": "Abu Dhabi v Emirates Red",
+      "team1": "Abu Dhabi",
+      "team2": "Emirates Red",
+      "startTime": 1791292500000,
+      "status": "completed",
+      "sourceUrl": "https://crex.com/series/emirates-d10-league-2026-2NK/matches",
+      "sourceProvider": "CREX",
+      "sourceFixture": {
+        "t1f": "DC",
+        "t2f": "R1",
+        "sf": "2NK",
+        "tt": 0,
+        "dt_id": "0",
+        "es_id": 100017,
+        "nt": 0,
+        "g": 1,
+        "hide": 1,
+        "global_num": {
+          "b": 0,
+          "fr": "Emirates Red",
+          "fri": "^R1",
+          "l": 1.01,
+          "s": 1,
+          "v": 1
+        },
+        "date": "10/6/2026",
+        "t": 1791292500000,
+        "ssd": 1790533800000,
+        "sed": 1791570600000,
+        "mn": "30",
+        "mt": 5,
+        "mf": "14MW",
+        "id": 52664,
+        "cc": 0,
+        "bf": "R1",
+        "s2": "119/4",
+        "o2": "10.0",
+        "s1": "103/9",
+        "o1": "10.0",
+        "w": "R1",
+        "ft": 4,
+        "vf": "DK",
+        "st": 27,
+        "a": "",
+        "status": 2,
+        "result": "EMR Won by 16 runs",
+        "resultExtraComment": "EMR Won by 16 runs"
+      },
+      "firstSeenAt": "2026-10-06T13:01:01.751Z",
+      "actualWinner": null,
+      "resultVerification": {
+        "status": "pending"
+      },
+      "markets": {
+        "match": {
+          "marketMatchId": "36156560",
+          "lastCapturedAt": "2026-10-06T13:08:31.771Z",
+          "latestSnapshot": {
+            "serverTime": "2026-10-06T13:04:52.503Z",
+            "matchId": "36156560",
+            "matchName": "Abu Dhabi v Emirates Red",
+            "teamNames": [
+              "Abu Dhabi",
+              "Emirates Red"
+            ],
+            "inPlayPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "preMatchPnl": {
+              "team1": 32.87729999999999,
+              "team2": -42.56580000000002
+            },
+            "preMatchTotalBets": {
+              "team1": 42.9087,
+              "team2": 131.1558
+            },
+            "preMatchVolume": {
+              "team1": {
+                "back": 88.59,
+                "lay": 7.51,
+                "total": 88.59
+              },
+              "team2": {
+                "back": 71.28,
+                "lay": 0,
+                "total": 78.79
+              }
+            },
+            "threeMinPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "matchLoadV2": {
+              "team1": 7,
+              "team2": 12
+            },
+            "advancedMetrics": {
+              "team1": {
+                "back": 94.02000000000001,
+                "lay": 9.839999999999998,
+                "totalVolume": 103.86000000000001,
+                "backPercentage": 90.52570768341998
+              },
+              "team2": {
+                "back": 72.52999999999999,
+                "lay": 0,
+                "totalVolume": 72.52999999999999,
+                "backPercentage": 100
+              }
+            },
+            "advancedMetricsV2": {
+              "team1": {
+                "back": 45.4065,
+                "lay": 5.7286,
+                "totalBet": 51.1351
+              },
+              "team2": {
+                "back": 126.01259999999999,
+                "lay": 0,
+                "totalBet": 126.01259999999999
+              }
+            },
+            "supportMetrics": {
+              "team1": {
+                "supportMoney": 94.02000000000001,
+                "support": 53.30234140257385
+              },
+              "team2": {
+                "supportMoney": 82.36999999999999,
+                "support": 46.697658597426155
+              }
+            },
+            "marketSignals": {
+              "moreBettedTeam": "Emirates Red",
+              "bookieFavouriteOutcome": "Abu Dhabi",
+              "riskTeam": "Emirates Red",
+              "trap": {
+                "level": "none",
+                "reason": "Support is not strongly one-sided."
+              },
+              "supportConfidence": 6.6046828051476965,
+              "mostBettedTeam": "Emirates Red",
+              "prediction": {
+                "team1TrueSupport": 45.4065,
+                "team2TrueSupport": 131.7412,
+                "ratio": 2.9013731514210517,
+                "bookiePnlTeam1": -35.566500000000005,
+                "bookiePnlTeam2": -126.01259999999999,
+                "prediction": "Abu Dhabi",
+                "pattern": "The Market Trap",
+                "reason": "Heavy crowd bias (2.90) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+              }
+            },
+            "bookmakerExposure": {
+              "team1": {
+                "netExposure": 39.6779,
+                "backExposure": 45.4065,
+                "layExposure": 5.7286,
+                "teamName": "Abu Dhabi"
+              },
+              "team2": {
+                "netExposure": 126.01259999999999,
+                "backExposure": 126.01259999999999,
+                "layExposure": 0,
+                "teamName": "Emirates Red"
+              }
+            },
+            "deepMetrics": {
+              "raw": {
+                "A_back_expo": 45.4065,
+                "A_lay_stake": 9.839999999999998,
+                "B_back_expo": 126.01259999999999,
+                "B_lay_stake": 0
+              },
+              "totals": {
+                "totalBetTeam1": 45.4065,
+                "totalBetTeam2": 135.8526
+              },
+              "simplePL": {
+                "team1_win": -35.566500000000005,
+                "team2_win": -126.01259999999999
+              },
+              "derivedPL": {
+                "team1_win": 90.4461,
+                "team2_win": -90.4461
+              }
+            },
+            "marketAnalysis": {
+              "totalVolume": {
+                "team1": {
+                  "totalBackVol": 94.02000000000001,
+                  "totalLayVol": 9.839999999999998,
+                  "totalBet": 94.02000000000001,
+                  "profitLoss": -11.65000000000002
+                },
+                "team2": {
+                  "totalBackVol": 72.52999999999999,
+                  "totalLayVol": 0,
+                  "totalBet": 82.36999999999999,
+                  "profitLoss": 11.65000000000002
+                }
+              },
+              "normalTotalBet": {
+                "team1": {
+                  "totalBackExpo": 45.4065,
+                  "totalLayVol": 9.839999999999998,
+                  "totalBet": 45.4065,
+                  "profitLoss": 32.852099999999986
+                },
+                "team2": {
+                  "totalBackExpo": 126.01259999999999,
+                  "totalLayVol": 0,
+                  "totalBet": 135.8526,
+                  "profitLoss": -41.832599999999985
+                }
+              },
+              "totalNetVolume": {
+                "team1": {
+                  "totalBackNetVol": 45.4065,
+                  "totalLayNetVol": 5.7286,
+                  "totalBet": 45.4065,
+                  "profitLoss": 86.3347
+                },
+                "team2": {
+                  "totalBackNetVol": 126.01259999999999,
+                  "totalLayNetVol": 0,
+                  "totalBet": 131.7412,
+                  "profitLoss": -86.3347
+                }
+              }
+            },
+            "syntheticSupport": {
+              "teamA": {
+                "tradeCount": 7,
+                "averageOdds": 1.5185714285714285,
+                "averageSize": 13.431428571428572,
+                "supportProduct": 20.396583673469387
+              },
+              "teamB": {
+                "tradeCount": 12,
+                "averageOdds": 2.47,
+                "averageSize": 6.864166666666667,
+                "supportProduct": 16.95449166666667
+              },
+              "strongerTeam": "Abu Dhabi",
+              "supportRatio": 1.2030194755747252
+            },
+            "netSupport": {
+              "teamA": {
+                "totalBackVolume": 94.02000000000001,
+                "oppoLayVolume": 0,
+                "layExposure": 5.7286,
+                "netSupportValue": 88.29140000000001
+              },
+              "teamB": {
+                "totalBackVolume": 72.52999999999999,
+                "oppoLayVolume": 9.839999999999998,
+                "layExposure": 0,
+                "netSupportValue": 82.36999999999999
+              },
+              "strongerTeam": "Abu Dhabi",
+              "netSupportDifference": 5.92140000000002,
+              "percentageA": 51.734838692287774,
+              "percentageB": 48.26516130771222
+            },
+            "sentimentScore": {
+              "teamA": {
+                "directNetSupport": 84.18,
+                "syntheticSupport": 0,
+                "opponentLiabilityRejection": 0,
+                "sentimentScore": 84.18
+              },
+              "teamB": {
+                "directNetSupport": 72.52999999999999,
+                "syntheticSupport": 9.839999999999998,
+                "opponentLiabilityRejection": 5.7286,
+                "sentimentScore": 76.64139999999999
+              },
+              "strongerTeam": "Abu Dhabi",
+              "scoreDifference": 7.538600000000017,
+              "percentageA": 52.34378011881504,
+              "percentageB": 47.65621988118497
+            },
+            "trueMarketLoad": {
+              "team1": {
+                "name": "Abu Dhabi",
+                "matchedVolume": 108.71000000000001,
+                "directBackVolume": 1042.88,
+                "layLiability": 490.25980000000004,
+                "totalSupport": 1359.2713,
+                "supportPercentage": 65.98528972221854
+              },
+              "team2": {
+                "name": "Emirates Red",
+                "matchedVolume": 75.44,
+                "directBackVolume": 134.99,
+                "layLiability": 207.68129999999996,
+                "totalSupport": 700.6898000000001,
+                "supportPercentage": 34.014710277781454
+              },
+              "heavierSide": "Abu Dhabi"
+            },
+            "teams": {
+              "Abu Dhabi": {
+                "trades": [
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.54,
+                    "type": "lay",
+                    "size": 1.44,
+                    "updatedAt": 1791291817508
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.5,
+                    "type": "lay",
+                    "size": 0.8899999999999988,
+                    "updatedAt": 1791291817508
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.46,
+                    "type": "back",
+                    "size": 59.79,
+                    "updatedAt": 1791291462719
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.47,
+                    "type": "back",
+                    "size": 5.71,
+                    "updatedAt": 1791289236633
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.5,
+                    "type": "back",
+                    "size": 9.15,
+                    "updatedAt": 1791288088869
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.6,
+                    "type": "lay",
+                    "size": 7.51,
+                    "updatedAt": 1791285038140
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.58,
+                    "type": "back",
+                    "size": 4.31,
+                    "updatedAt": 1791284990449
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.51,
+                    "type": "back",
+                    "size": 4.74,
+                    "updatedAt": 1791273889818
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.55,
+                    "type": "back",
+                    "size": 5.2,
+                    "updatedAt": 1791270164861
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.56,
+                    "type": "back",
+                    "size": 5.12,
+                    "updatedAt": 1791268489949
+                  }
+                ],
+                "pnlIfWins": 32.85209999999999,
+                "totalBet": 45.4065
+              },
+              "Emirates Red": {
+                "trades": [
+                  {
+                    "team": "Emirates Red",
+                    "price": 3,
+                    "type": "back",
+                    "size": 1.5600000000000003,
+                    "updatedAt": 1791291817404
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.84,
+                    "type": "back",
+                    "size": 0.79,
+                    "updatedAt": 1791291817404
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.66,
+                    "type": "back",
+                    "size": 36.13999999999999,
+                    "updatedAt": 1791291683287
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.96,
+                    "type": "back",
+                    "size": 14.98,
+                    "updatedAt": 1791287910789
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.62,
+                    "type": "back",
+                    "size": 5.13,
+                    "updatedAt": 1791285260890
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.6,
+                    "type": "back",
+                    "size": 5.35,
+                    "updatedAt": 1791285260890
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.82,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791270164878
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.8,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791268489952
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.7,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791244509988
+                  }
+                ],
+                "pnlIfWins": -41.832599999999985,
+                "totalBet": 135.8526
+              }
+            },
+            "Usr": "cricketloaduser56@gmail.com",
+            "competitionName": "Emirates D10 League"
+          },
+          "latestInputTiming": "captured-before-start",
+          "snapshot": {
+            "serverTime": "2026-10-06T13:01:03.105Z",
+            "matchId": "36156560",
+            "matchName": "Abu Dhabi v Emirates Red",
+            "teamNames": [
+              "Abu Dhabi",
+              "Emirates Red"
+            ],
+            "inPlayPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "inPlayVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "preMatchPnl": {
+              "team1": 32.87729999999999,
+              "team2": -42.56580000000002
+            },
+            "preMatchTotalBets": {
+              "team1": 42.9087,
+              "team2": 131.1558
+            },
+            "preMatchVolume": {
+              "team1": {
+                "back": 88.59,
+                "lay": 7.51,
+                "total": 88.59
+              },
+              "team2": {
+                "back": 71.28,
+                "lay": 0,
+                "total": 78.79
+              }
+            },
+            "threeMinPnl": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinTotalBets": {
+              "team1": null,
+              "team2": null
+            },
+            "threeMinVolume": {
+              "team1": {
+                "back": null,
+                "lay": null,
+                "total": null
+              },
+              "team2": {
+                "back": null,
+                "lay": null,
+                "total": null
+              }
+            },
+            "matchLoadV2": {
+              "team1": 7,
+              "team2": 9
+            },
+            "advancedMetrics": {
+              "team1": {
+                "back": 94.02000000000001,
+                "lay": 7.51,
+                "totalVolume": 101.53000000000002,
+                "backPercentage": 92.6031714764109
+              },
+              "team2": {
+                "back": 71.28,
+                "lay": 0,
+                "totalVolume": 71.28,
+                "backPercentage": 100
+              }
+            },
+            "advancedMetricsV2": {
+              "team1": {
+                "back": 45.4065,
+                "lay": 4.506,
+                "totalBet": 49.9125
+              },
+              "team2": {
+                "back": 123.6458,
+                "lay": 0,
+                "totalBet": 123.6458
+              }
+            },
+            "supportMetrics": {
+              "team1": {
+                "supportMoney": 94.02000000000001,
+                "support": 54.40657369365199
+              },
+              "team2": {
+                "supportMoney": 78.79,
+                "support": 45.593426306348015
+              }
+            },
+            "marketSignals": {
+              "moreBettedTeam": "Emirates Red",
+              "bookieFavouriteOutcome": "Abu Dhabi",
+              "riskTeam": "Emirates Red",
+              "trap": {
+                "level": "none",
+                "reason": "Support is not strongly one-sided."
+              },
+              "supportConfidence": 8.813147387303978,
+              "mostBettedTeam": "Emirates Red",
+              "prediction": {
+                "team1TrueSupport": 45.4065,
+                "team2TrueSupport": 128.15179999999998,
+                "ratio": 2.8223227951945202,
+                "bookiePnlTeam1": -37.8965,
+                "bookiePnlTeam2": -123.6458,
+                "prediction": "Abu Dhabi",
+                "pattern": "The Market Trap",
+                "reason": "Heavy crowd bias (2.82) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+              }
+            },
+            "bookmakerExposure": {
+              "team1": {
+                "netExposure": 40.9005,
+                "backExposure": 45.4065,
+                "layExposure": 4.506,
+                "teamName": "Abu Dhabi"
+              },
+              "team2": {
+                "netExposure": 123.6458,
+                "backExposure": 123.6458,
+                "layExposure": 0,
+                "teamName": "Emirates Red"
+              }
+            },
+            "deepMetrics": {
+              "raw": {
+                "A_back_expo": 45.4065,
+                "A_lay_stake": 7.51,
+                "B_back_expo": 123.6458,
+                "B_lay_stake": 0
+              },
+              "totals": {
+                "totalBetTeam1": 45.4065,
+                "totalBetTeam2": 131.1558
+              },
+              "simplePL": {
+                "team1_win": -37.8965,
+                "team2_win": -123.6458
+              },
+              "derivedPL": {
+                "team1_win": 85.7493,
+                "team2_win": -85.7493
+              }
+            },
+            "marketAnalysis": {
+              "totalVolume": {
+                "team1": {
+                  "totalBackVol": 94.02000000000001,
+                  "totalLayVol": 7.51,
+                  "totalBet": 94.02000000000001,
+                  "profitLoss": -15.230000000000004
+                },
+                "team2": {
+                  "totalBackVol": 71.28,
+                  "totalLayVol": 0,
+                  "totalBet": 78.79,
+                  "profitLoss": 15.230000000000004
+                }
+              },
+              "normalTotalBet": {
+                "team1": {
+                  "totalBackExpo": 45.4065,
+                  "totalLayVol": 7.51,
+                  "totalBet": 45.4065,
+                  "profitLoss": 30.3795
+                },
+                "team2": {
+                  "totalBackExpo": 123.6458,
+                  "totalLayVol": 0,
+                  "totalBet": 131.1558,
+                  "profitLoss": -37.13579999999999
+                }
+              },
+              "totalNetVolume": {
+                "team1": {
+                  "totalBackNetVol": 45.4065,
+                  "totalLayNetVol": 4.506,
+                  "totalBet": 45.4065,
+                  "profitLoss": 82.74529999999999
+                },
+                "team2": {
+                  "totalBackNetVol": 123.6458,
+                  "totalLayNetVol": 0,
+                  "totalBet": 128.15179999999998,
+                  "profitLoss": -82.74529999999999
+                }
+              }
+            },
+            "syntheticSupport": {
+              "teamA": {
+                "tradeCount": 7,
+                "averageOdds": 1.5185714285714285,
+                "averageSize": 13.431428571428572,
+                "supportProduct": 20.396583673469387
+              },
+              "teamB": {
+                "tradeCount": 9,
+                "averageOdds": 2.64,
+                "averageSize": 8.754444444444445,
+                "supportProduct": 23.111733333333337
+              },
+              "strongerTeam": "Emirates Red",
+              "supportRatio": 1.1331178644095996
+            },
+            "netSupport": {
+              "teamA": {
+                "totalBackVolume": 94.02000000000001,
+                "oppoLayVolume": 0,
+                "layExposure": 4.506,
+                "netSupportValue": 89.51400000000001
+              },
+              "teamB": {
+                "totalBackVolume": 71.28,
+                "oppoLayVolume": 7.51,
+                "layExposure": 0,
+                "netSupportValue": 78.79
+              },
+              "strongerTeam": "Abu Dhabi",
+              "netSupportDifference": 10.724000000000004,
+              "percentageA": 53.18590170168267,
+              "percentageB": 46.814098298317326
+            },
+            "sentimentScore": {
+              "teamA": {
+                "directNetSupport": 86.51,
+                "syntheticSupport": 0,
+                "opponentLiabilityRejection": 0,
+                "sentimentScore": 86.51
+              },
+              "teamB": {
+                "directNetSupport": 71.28,
+                "syntheticSupport": 7.51,
+                "opponentLiabilityRejection": 4.506,
+                "sentimentScore": 74.284
+              },
+              "strongerTeam": "Abu Dhabi",
+              "scoreDifference": 12.225999999999999,
+              "percentageA": 53.801758772093486,
+              "percentageB": 46.198241227906514
+            },
+            "trueMarketLoad": {
+              "team1": {
+                "name": "Abu Dhabi",
+                "matchedVolume": 106.38000000000001,
+                "directBackVolume": 1086.49,
+                "layLiability": 554.7125000000001,
+                "totalSupport": 1375.1240000000003,
+                "supportPercentage": 64.30601478250277
+              },
+              "team2": {
+                "name": "Emirates Red",
+                "matchedVolume": 74.19,
+                "directBackVolume": 134.38,
+                "layLiability": 182.25400000000002,
+                "totalSupport": 763.2825,
+                "supportPercentage": 35.693985217497236
+              },
+              "heavierSide": "Abu Dhabi"
+            },
+            "teams": {
+              "Abu Dhabi": {
+                "trades": [
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.46,
+                    "type": "back",
+                    "size": 59.79,
+                    "updatedAt": 1791291462719
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.47,
+                    "type": "back",
+                    "size": 5.71,
+                    "updatedAt": 1791289236633
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.5,
+                    "type": "back",
+                    "size": 9.15,
+                    "updatedAt": 1791288088869
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.6,
+                    "type": "lay",
+                    "size": 7.51,
+                    "updatedAt": 1791285038140
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.58,
+                    "type": "back",
+                    "size": 4.31,
+                    "updatedAt": 1791284990449
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.51,
+                    "type": "back",
+                    "size": 4.74,
+                    "updatedAt": 1791273889818
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.55,
+                    "type": "back",
+                    "size": 5.2,
+                    "updatedAt": 1791270164861
+                  },
+                  {
+                    "team": "Abu Dhabi",
+                    "price": 1.56,
+                    "type": "back",
+                    "size": 5.12,
+                    "updatedAt": 1791268489949
+                  }
+                ],
+                "pnlIfWins": 30.379499999999997,
+                "totalBet": 45.4065
+              },
+              "Emirates Red": {
+                "trades": [
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.96,
+                    "type": "back",
+                    "size": 14.98,
+                    "updatedAt": 1791287910789
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.62,
+                    "type": "back",
+                    "size": 5.13,
+                    "updatedAt": 1791285260890
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.6,
+                    "type": "back",
+                    "size": 5.35,
+                    "updatedAt": 1791285260890
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 3,
+                    "type": "back",
+                    "size": 1.12,
+                    "updatedAt": 1791285095882
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.66,
+                    "type": "back",
+                    "size": 36.12,
+                    "updatedAt": 1791285038149
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.82,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791270164878
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.8,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791268489952
+                  },
+                  {
+                    "team": "Emirates Red",
+                    "price": 2.7,
+                    "type": "back",
+                    "size": 2.86,
+                    "updatedAt": 1791244509988
+                  }
+                ],
+                "pnlIfWins": -37.13580000000001,
+                "totalBet": 131.1558
+              }
+            },
+            "Usr": "cricketloaduser56@gmail.com",
+            "competitionName": "Emirates D10 League"
+          },
+          "capturedAt": "2026-10-06T13:01:06.883Z",
+          "inputTiming": "captured-before-start",
+          "prediction": {
+            "winner": "Abu Dhabi",
+            "tier": "EMIRATES_D10_3",
+            "confidence": "D10 baseline; accuracy not yet measured",
+            "reason": "Emirates D10 frozen pre-match market-flow baseline",
+            "winnerIdx": 0,
+            "predictorVersion": "match-v9-cross-market-support",
+            "algorithmId": "match-emirates-d10-league-independent-v1",
+            "algorithmLeague": "Emirates D10 League",
+            "leagueRegistered": true,
+            "ruleFamily": "league-specialist",
+            "confidenceCalibrated": false,
+            "validation": "insufficient-history",
+            "modelScope": "rules",
+            "mode": "rules",
+            "inputTiming": "frozen-pre-match-fields",
+            "ruleAdjusted": false,
+            "adjustmentTrainingSamples": 1,
+            "adjustmentRuleSupport": null,
+            "profileVersion": "league-v1-100483ecf6f4",
+            "algorithmStrategy": "league-rules",
+            "trainingSamples": 1,
+            "leafSamples": null,
+            "commonFactors": {
+              "family": "relative-market-flow",
+              "dominantTeamIndex": 0,
+              "totalShare": 0.5741426693750747,
+              "backShare": 0.5541377369112404,
+              "layShare": 1,
+              "activityShare": 0.24651034530303423,
+              "normalizedPnlGap": 0.4507294778348669,
+              "flowAgreement": 3,
+              "predictionAgreement": 3,
+              "signals": {
+                "totalFlow": 0,
+                "backFlow": 0,
+                "layFlow": 0,
+                "activity": 1,
+                "higherPnl": 0
+              },
+              "validation": "retrospective-descriptive-factor; not a calibrated probability"
+            },
+            "capturedAt": "2026-10-06T13:01:06.883Z"
+          }
+        }
+      },
+      "lastSeenAt": "2026-10-09T16:15:16.985Z",
+      "crexMatchId": "14MW",
+      "seriesId": "2NK",
+      "matchNumber": "30",
+      "team1Short": "ABD",
+      "team2Short": "EMR",
+      "score1": "103/9 (10.0)",
+      "score2": "119/4 (10.0)",
+      "resultText": "EMR Won by 16 runs",
+      "reportedWinner": "Emirates Red"
     }
   ],
   "sync": {
-    "checkedAt": "2026-10-06T03:34:55.502Z",
+    "checkedAt": "2026-10-09T16:15:16.985Z",
     "seriesUrls": [
       "https://crex.com/series/emirates-d10-league-2026-2NK/matches"
     ],
-    "fixturesSeen": 48,
-    "feedMatchesSeen": 8,
+    "fixturesSeen": 47,
+    "feedMatchesSeen": 6,
     "captures": 0,
-    "invalidInputs": 16,
-    "lateInputs": 0,
+    "invalidInputs": 10,
+    "lateInputs": 2,
     "feedStatus": "available",
     "errors": []
   },
-  "updatedAt": "2026-10-06T03:34:55.508Z",
+  "updatedAt": "2026-10-09T16:15:17.978Z",
   "marketFeedHealth": {
-    "checkedAt": "2026-10-06T03:34:55.502Z",
+    "checkedAt": "2026-10-09T16:15:16.985Z",
     "status": "available",
     "error": null
   }

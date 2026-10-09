@@ -54,6 +54,7 @@ class TennisLiveLoadAdapter extends SourceAdapter {
       httpsAgent: agent,
       headers: {
         'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip, deflate, br',
         'Accept-Language': 'en-US,en;q=0.9',
       },
     });

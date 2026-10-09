@@ -5,7 +5,7 @@ import { getCricketMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
-import { getSocket, releaseFeed, requestTossFeed } from '../socket'
+import { getSocket, releaseFeed, requestTossFeed, requestCricketFeed } from '../socket'
 import { crexScoreFingerprint, mergeCrexUpdate, resolveCrexScores } from '../utils/crexScore'
 
 const MatchDetail = lazy(() => import('./MatchDetail'))
@@ -432,9 +432,14 @@ export default function CricketPage() {
     socket.on('cricket:matches', onMatchesUpdate)
     socket.on('crex:live', onCrexLive)
 
+    if (socket.connected) requestCricketFeed()
+    else socket.once('connect', requestCricketFeed)
+
     return () => {
       socket.off('cricket:matches', onMatchesUpdate)
       socket.off('crex:live', onCrexLive)
+      socket.off('connect', requestCricketFeed)
+      releaseFeed('cricket')
     }
   }, [matchId])
 

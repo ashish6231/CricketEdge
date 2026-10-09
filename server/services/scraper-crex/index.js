@@ -90,11 +90,12 @@ function buildDetailCandidates(overview, now) {
     const directlySubscribed = subscribedIds.has(`crex-${key}`) || subscribedIds.has(key);
     const isSubscribed = directlySubscribed || (localMatchId && subscribedIds.has(localMatchId));
 
-    // Overview scores are sufficient for list cards. Full detail scraping is
-    // reserved for matches we actually expose or a user is actively viewing.
+    // Overview scores are sufficient for list cards. Full detail HTML scraping
+    // is reserved for matches a user is actively viewing in a room.
+    // When no room subscriber is present, use a relaxed background cadence (60s).
     if (!localMatch && !isSubscribed) continue;
 
-    const cadence = isSubscribed ? SUBSCRIBED_DETAIL_POLL_MS : DETAIL_POLL_MS;
+    const cadence = isSubscribed ? SUBSCRIBED_DETAIL_POLL_MS : 60000;
     const lastFetched = _lastDetailFetchAt.get(key) || 0;
     if (now - lastFetched < cadence) continue;
 

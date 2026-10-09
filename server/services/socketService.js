@@ -26,7 +26,7 @@ const _lastBundleFps = new Map();
 
 function fingerprintMatches(matches) {
   if (!Array.isArray(matches)) return '';
-  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${m.matchLoad?.team1?.money}_${m.matchLoad?.team2?.money}_${m.matchLoad?.team1?.percent}_${m.matchLoad?.team2?.percent}_${m.crex?.score1}_${m.crex?.score2}_${m.crex?.statusText}`).join('|');
+  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${m.matchLoad?.team1?.money}_${m.matchLoad?.team2?.money}_${m.matchLoad?.team1?.percent}_${m.matchLoad?.team2?.percent}`).join('|');
 }
 
 async function _refreshActiveTokenCache() {
@@ -141,6 +141,14 @@ function init(io) {
     });
 
     // Request specific list on tab switch
+    socket.on('feed:cricket', async () => {
+      try {
+        socket.join('feed:cricket');
+        const cricket = await matchPayloadService.getCricketMatchesPayload().catch(() => null);
+        if (cricket) socket.emit('cricket:matches', cricket);
+      } catch {}
+    });
+
     socket.on('feed:toss', async () => {
       try {
         socket.join('feed:toss');
@@ -166,7 +174,7 @@ function init(io) {
     });
 
     socket.on('feed:unsubscribe', (feed) => {
-      if (feed === 'toss' || feed === 'tennis' || feed === 'session') {
+      if (['cricket', 'toss', 'tennis', 'session'].includes(feed)) {
         socket.leave(`feed:${feed}`);
       }
     });

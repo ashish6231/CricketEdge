@@ -1,5 +1,5 @@
 const { captureWNCL } = require('./wnclCapture');
-function startWNCLWorker({ intervalMs = Number(process.env.WNCL_CAPTURE_INTERVAL_MS || 30000), capture = captureWNCL } = {}) {
+function startWNCLWorker({ intervalMs = Number(process.env.WNCL_CAPTURE_INTERVAL_MS || 15 * 60 * 1000), capture = captureWNCL } = {}) {
   if (!Number.isFinite(intervalMs) || intervalMs < 1000) throw new Error('Invalid WNCL capture interval');
   let running = false, stopped = false;
   const tick = async () => {

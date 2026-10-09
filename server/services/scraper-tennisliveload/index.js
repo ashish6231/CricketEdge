@@ -17,6 +17,8 @@ let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 10000;
 let _timer = null;
 let _isRunning = false;
 const _sessionDetailLastAttempt = new Map();
+const _upcomingSnapshotLastAttempt = new Map();
+const UPCOMING_SNAPSHOT_REFRESH_MS = parseInt(process.env.TLL_UPCOMING_SNAPSHOT_REFRESH_MS, 10) || 3 * 60 * 1000;
 const SESSION_SUBSCRIBED_REFRESH_MS = parseInt(process.env.TLL_SESSION_SUBSCRIBED_REFRESH_MS, 10) || 30 * 1000;
 const SESSION_LIVE_IDLE_REFRESH_MS = parseInt(process.env.TLL_SESSION_LIVE_IDLE_REFRESH_MS, 10) || 5 * 60 * 1000;
 const SESSION_UPCOMING_REFRESH_MS = parseInt(process.env.TLL_SESSION_UPCOMING_REFRESH_MS, 10) || 30 * 60 * 1000;
@@ -144,6 +146,13 @@ async function runPollCycle() {
       await Promise.all(batch.map(async (m) => {
         const mid = m.id || m.matchId;
         const isLiveOrSub = m.inPlay || m.status === 'live' || m.status === 'in-play' || subscribedMatchIds.has(String(mid));
+
+        const now = Date.now();
+        const lastSnapshotFetch = _upcomingSnapshotLastAttempt.get(String(mid)) || 0;
+        if (!isLiveOrSub && (now - lastSnapshotFetch < UPCOMING_SNAPSHOT_REFRESH_MS)) {
+          return;
+        }
+        _upcomingSnapshotLastAttempt.set(String(mid), now);
 
         try {
           const snapshot = await adapter.getSnapshot(mid);

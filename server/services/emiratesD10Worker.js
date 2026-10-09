@@ -1,5 +1,5 @@
 const { captureEmiratesD10 } = require('./emiratesD10Capture');
-function startEmiratesD10Worker({ intervalMs = Number(process.env.EMIRATES_D10_CAPTURE_INTERVAL_MS || 30000), capture = captureEmiratesD10 } = {}) {
+function startEmiratesD10Worker({ intervalMs = Number(process.env.EMIRATES_D10_CAPTURE_INTERVAL_MS || 15 * 60 * 1000), capture = captureEmiratesD10 } = {}) {
   if (!Number.isFinite(intervalMs) || intervalMs < 1000) throw new Error('Invalid D10 capture interval');
   let running = false, stopped = false;
   const tick = async () => {

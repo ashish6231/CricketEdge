@@ -72,7 +72,7 @@ async function getCrexSeriesMatches(sourceUrl) {
     throw new Error('Invalid CREX series URL');
   }
   const cached = seriesMatchesCache.get(url.href);
-  if (cached && Date.now() - cached.at < 60000) return cached.rows;
+  if (cached && Date.now() - cached.at < 15 * 60 * 1000) return cached.rows;
   const html = await fetchHttps(url.href);
   const rows = parseCrexSeriesMatches(html, url.href);
   seriesMatchesCache.set(url.href, { at: Date.now(), rows });
