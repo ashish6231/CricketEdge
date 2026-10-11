@@ -5,7 +5,7 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
-import { getBookiePl, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
+import { getBookiePlFromMatchedTrades, getMarketExposureFromTrades, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../socket'
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
 import { hasTossSnapshot, isCompleteMatchBundle } from '../utils/matchBundle'
@@ -208,7 +208,7 @@ export default function TossDetail({ isEmbedded = false }) {
   const tot = snap.deepMetrics?.totals || {}
   const am1 = getSelectionStakes(snap, t1)
   const am2 = getSelectionStakes(snap, t2)
-  const exp = snap.bookmakerExposure || {}
+  const exp = getMarketExposureFromTrades(snap, t1, t2)
   const exp1 = exp.team1 || {}
   const exp2 = exp.team2 || {}
   const ns = snap.netSupport || {}
@@ -218,7 +218,7 @@ export default function TossDetail({ isEmbedded = false }) {
   const t1Trades = (snap.teams?.[t1] || {}).trades || []
   const t2Trades = (snap.teams?.[t2] || {}).trades || []
 
-  const { pl1: t1BookiePL, pl2: t2BookiePL, source: plSource } = getBookiePl(snap, t1, t2)
+  const { pl1: t1BookiePL, pl2: t2BookiePL } = getBookiePlFromMatchedTrades(snap, t1, t2)
 
 
   const vol1 = am1.totalBet
@@ -422,7 +422,8 @@ export default function TossDetail({ isEmbedded = false }) {
       {/* Bookie ka risk */}
       {(exp1.netExposure != null || exp2.netExposure != null) && (
         <div className="glass-card rounded-2xl p-4">
-          <div className="text-sm font-bold text-text-secondary mb-3">Bookie ka risk — Kitna exposed hai?</div>
+          <div className="text-sm font-bold text-text-secondary mb-1">Bookie ka risk — Kitna exposed hai?</div>
+          <div className="text-[11px] text-text-muted mb-3">Har matched odds par volume × (odds − 1) se calculated</div>
           <div className="toss-two-team-grid grid grid-cols-2 gap-3">
             {[{ e: exp1, team: t1 }, { e: exp2, team: t2 }].map(({ e, team }) => (
               <div key={team} className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
@@ -438,11 +439,11 @@ export default function TossDetail({ isEmbedded = false }) {
         </div>
       )}
 
-      {/* Original provider Bookie P/L, with trades fallback */}
+      {/* Bookie P/L calculated from the complete per-odds trade ledger */}
       {(t1BookiePL != null || t2BookiePL != null || t1Trades.length > 0 || t2Trades.length > 0) && (
         <div className="glass-card rounded-2xl p-4">
           <div className="text-xs font-bold text-text-muted uppercase mb-3">
-            📈 Bookie P/L (Agar Team Jeete){plSource === 'api' ? ' • API' : ' • Trades'}
+            📈 Bookie P/L (Agar Team Jeete) • Per-odds Trades
           </div>
           <div className="toss-two-team-grid grid grid-cols-2 gap-3">
             {[{ name: t1, pl: t1BookiePL }, { name: t2, pl: t2BookiePL }].map(({ name, pl }) => (

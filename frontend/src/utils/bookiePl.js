@@ -54,6 +54,53 @@ export function getTradeStats(trades = []) {
   return { tBack, tLay, tBackLiab, tLayLiab, invalid }
 }
 
+/**
+ * Calculate one selection's exposure exclusively from its matched per-odds
+ * trade ledger. Provider exposure summaries are intentionally not consulted.
+ *
+ * Back/Lay exposure = sum(size * (price - 1))
+ * Net exposure      = back exposure - lay exposure
+ */
+export function getSelectionExposureFromTrades(snap, name) {
+  const trades = snap?.teams?.[name]?.trades
+  if (!Array.isArray(trades)) {
+    return {
+      teamName: name,
+      backExposure: null,
+      layExposure: null,
+      netExposure: null,
+      source: 'unavailable',
+    }
+  }
+
+  const stats = getTradeStats(trades)
+  if (stats.invalid) {
+    return {
+      teamName: name,
+      backExposure: null,
+      layExposure: null,
+      netExposure: null,
+      source: 'unavailable',
+    }
+  }
+
+  return {
+    teamName: name,
+    backExposure: stats.tBackLiab,
+    layExposure: stats.tLayLiab,
+    netExposure: stats.tBackLiab - stats.tLayLiab,
+    source: 'per-odds-trades',
+  }
+}
+
+/** Two-runner exposure shape used by the toss UI. */
+export function getMarketExposureFromTrades(snap, team1, team2) {
+  return {
+    team1: getSelectionExposureFromTrades(snap, team1),
+    team2: getSelectionExposureFromTrades(snap, team2),
+  }
+}
+
 const DRAW_NAME_RE = /^(the\s+)?draw$/i
 
 export function isDrawOutcomeName(name) {
@@ -118,6 +165,37 @@ export function filterTradesByTime(trades = [], timeFilter = 'all') {
 const close = (a, b) => a != null && b != null && Math.abs(a - b) <= Math.max(0.02, Math.abs(b) * 1e-8)
 const namesFor = (snap, names) => [...new Set([...(snap?.teamNames || []), ...names].filter(Boolean))]
 const resultFor = (byName, names, source, extra = {}) => ({ byName, pl1: byName[names[0]] ?? null, pl2: byName[names[1]] ?? null, plDraw: names[2] ? byName[names[2]] ?? null : null, source, ...extra })
+
+/**
+ * Two-outcome bookie P/L calculated exclusively from the complete matched
+ * per-odds trade rows. Provider P/L summaries are intentionally ignored.
+ */
+export function getBookiePlFromMatchedTrades(snap, team1, team2) {
+  const selected = [team1, team2]
+  const team1Trades = snap?.teams?.[team1]?.trades
+  const team2Trades = snap?.teams?.[team2]?.trades
+  if (!Array.isArray(team1Trades) || !Array.isArray(team2Trades)) {
+    return resultFor({}, selected, 'unavailable', {
+      verified: false,
+      reason: 'Complete per-odds trades are unavailable.',
+    })
+  }
+
+  const calculated = calcBookiePlFromTrades(team1Trades, team2Trades)
+  const stats = { [team1]: calculated.s1, [team2]: calculated.s2 }
+  if (calculated.team1Win == null || calculated.team2Win == null) {
+    return resultFor({}, selected, 'unavailable', {
+      verified: false,
+      reason: 'One or more per-odds trades are malformed.',
+      stats,
+    })
+  }
+
+  return resultFor({
+    [team1]: calculated.team1Win,
+    [team2]: calculated.team2Win,
+  }, selected, 'per-odds-trades', { verified: true, stats })
+}
 
 function ledger(snap, names) {
   const trades = Object.fromEntries(names.map(name => [name, Array.isArray(snap?.teams?.[name]?.trades) ? snap.teams[name].trades : []]))

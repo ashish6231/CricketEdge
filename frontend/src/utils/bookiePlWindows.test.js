@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
-import { finiteNumber, getBookiePlWindows, getSelectionStakes, latestMatchedPrice, calcBookiePlMulti, getBookiePl } from './bookiePl.js'
+import { finiteNumber, getBookiePlFromMatchedTrades, getBookiePlWindows, getMarketExposureFromTrades, getSelectionExposureFromTrades, getSelectionStakes, latestMatchedPrice, calcBookiePlMulti, getBookiePl } from './bookiePl.js'
 
 const start = Date.parse('2026-09-20T10:00:00Z')
 const snap = () => ({
@@ -144,6 +144,140 @@ test('displayed stake volume uses V1 stakes rather than V2 liabilities or synthe
 test('matched price is the latest actual trade without an arbitrary odds clamp', () => {
   assert.equal(latestMatchedPrice([{ type: 'back', price: '3.20', size: '10', updatedAt: start }]), 3.2)
   assert.equal(latestMatchedPrice([{ type: 'back', price: 'invalid', size: 10, updatedAt: start }]), null)
+})
+
+test('selection exposure is calculated from every matched price and ignores provider summaries', () => {
+  const s = {
+    bookmakerExposure: {
+      team1: { teamName: 'A', backExposure: 999, layExposure: 888, netExposure: 111 },
+    },
+    teams: {
+      A: {
+        trades: [
+          { type: 'back', size: 100, price: 1.95 },
+          { type: 'back', size: 50, price: 2.10 },
+          { type: 'lay', size: 20, price: 2.02 },
+        ],
+      },
+      B: { trades: [] },
+    },
+  }
+
+  const exposure = getMarketExposureFromTrades(s, 'A', 'B')
+  assert.equal(exposure.team1.backExposure, 150)
+  assert.equal(exposure.team1.layExposure, 20.4)
+  assert.ok(Math.abs(exposure.team1.netExposure - 129.6) < 1e-10)
+  assert.equal(exposure.team1.source, 'per-odds-trades')
+  assert.deepEqual(exposure.team2, {
+    teamName: 'B',
+    backExposure: 0,
+    layExposure: 0,
+    netExposure: 0,
+    source: 'per-odds-trades',
+  })
+})
+
+test('missing or malformed per-odds ledgers do not fall back to provider exposure', () => {
+  const missing = getSelectionExposureFromTrades({
+    bookmakerExposure: { team1: { teamName: 'A', netExposure: 500 } },
+  }, 'A')
+  assert.equal(missing.netExposure, null)
+  assert.equal(missing.source, 'unavailable')
+
+  const malformed = getSelectionExposureFromTrades({
+    teams: { A: { trades: [{ type: 'back', size: 10, price: 1 }] } },
+  }, 'A')
+  assert.equal(malformed.netExposure, null)
+  assert.equal(malformed.source, 'unavailable')
+})
+
+test('toss bookie P/L settles every per-odds trade and ignores provider P/L', () => {
+  const s = {
+    deepMetrics: { simplePL: { team1_win: 999, team2_win: 999 } },
+    teams: {
+      A: {
+        pnlIfWins: 777,
+        trades: [
+          { type: 'back', size: 100, price: 1.95 },
+          { type: 'back', size: 50, price: 2.10 },
+          { type: 'lay', size: 20, price: 2.02 },
+        ],
+      },
+      B: { pnlIfWins: 666, trades: [] },
+    },
+  }
+
+  const result = getBookiePlFromMatchedTrades(s, 'A', 'B')
+  assert.ok(Math.abs(result.pl1 - (-129.6)) < 1e-10)
+  assert.equal(result.pl2, 130)
+  assert.equal(result.source, 'per-odds-trades')
+  assert.equal(result.verified, true)
+})
+
+test('missing or malformed per-odds ledgers do not fall back to provider P/L', () => {
+  const missing = getBookiePlFromMatchedTrades({
+    deepMetrics: { simplePL: { team1_win: 500, team2_win: -400 } },
+  }, 'A', 'B')
+  assert.equal(missing.pl1, null)
+  assert.equal(missing.source, 'unavailable')
+
+  const malformed = getBookiePlFromMatchedTrades({
+    teams: {
+      A: { trades: [{ type: 'back', size: 10, price: 1 }] },
+      B: { trades: [] },
+    },
+  }, 'A', 'B')
+  assert.equal(malformed.pl1, null)
+  assert.equal(malformed.source, 'unavailable')
+})
+
+test('retained toss exposure is recalculated from every per-odds trade instead of copied from provider', () => {
+  const data = JSON.parse(readFileSync(new URL('../../../server/data/toss_dataset.json', import.meta.url), 'utf8'))
+  let checked = 0
+  let providerDifferences = 0
+  for (const record of data.records) {
+    const s = record.snapshot
+    const [t1, t2] = s?.teamNames || []
+    if (!t1 || !t2) continue
+    const calculated = getMarketExposureFromTrades(s, t1, t2)
+    for (const [index, key] of ['team1', 'team2'].entries()) {
+      const name = index === 0 ? t1 : t2
+      const trades = s.teams?.[name]?.trades
+      if (!Array.isArray(trades)) continue
+      const expected = trades.reduce((net, trade) => {
+        const size = Number(trade.size)
+        const price = Number(trade.price)
+        const liability = size * (price - 1)
+        return net + (trade.type === 'back' ? liability : -liability)
+      }, 0)
+      const actual = calculated[key].netExposure
+      if (actual == null) continue
+      assert.ok(Math.abs(actual - expected) < 1e-8, `${record.matchId}: ${key} per-odds net exposure`)
+      const provider = finiteNumber(s.bookmakerExposure?.[key]?.netExposure)
+      if (provider != null && Math.abs(actual - provider) >= 0.05) providerDifferences++
+      checked++
+    }
+  }
+  assert.ok(checked > 0)
+  assert.ok(providerDifferences > 0)
+})
+
+test('retained toss P/L is reproduced from the complete per-odds trade ledger', () => {
+  const data = JSON.parse(readFileSync(new URL('../../../server/data/toss_dataset.json', import.meta.url), 'utf8'))
+  let checked = 0
+  for (const record of data.records) {
+    const s = record.snapshot
+    const [t1, t2] = s?.teamNames || []
+    if (!t1 || !t2) continue
+    const calculated = getBookiePlFromMatchedTrades(s, t1, t2)
+    const expected1 = finiteNumber(s.teams?.[t1]?.pnlIfWins)
+    const expected2 = finiteNumber(s.teams?.[t2]?.pnlIfWins)
+    if (calculated.pl1 == null || calculated.pl2 == null || expected1 == null || expected2 == null) continue
+    assert.ok(Math.abs(calculated.pl1 - expected1) < 0.05, `${record.matchId}: team1 P/L`)
+    assert.ok(Math.abs(calculated.pl2 - expected2) < 0.05, `${record.matchId}: team2 P/L`)
+    checked++
+  }
+  assert.ok(checked > 0)
 })
 
 for (const dataset of ['match_dataset', 'toss_dataset']) test(`${dataset}: original provider priority is preserved for retained outcomes`, () => {

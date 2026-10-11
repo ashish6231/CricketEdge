@@ -3,7 +3,7 @@
   "league": "Women's National Cricket League",
   "records": [],
   "sync": {
-    "checkedAt": "2026-10-09T16:15:17.053Z",
+    "checkedAt": "2026-10-11T17:13:31.367Z",
     "seriesUrls": [
       "https://crex.com/series/womens-national-cricket-league-2026-27-2NG/matches"
     ],
@@ -15,9 +15,9 @@
     "feedStatus": "available",
     "errors": []
   },
-  "updatedAt": "2026-10-09T16:15:18.009Z",
+  "updatedAt": "2026-10-11T17:13:33.158Z",
   "marketFeedHealth": {
-    "checkedAt": "2026-10-09T16:15:17.053Z",
+    "checkedAt": "2026-10-11T17:13:31.367Z",
     "status": "available",
     "error": null
   }
