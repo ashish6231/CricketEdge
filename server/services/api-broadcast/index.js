@@ -14,9 +14,9 @@ const { getSubClient } = require('../../shared/redis');
 
 let _isSubscribed = false;
 
-// Debounce timers to coalesce back-to-back scrape updates (e.g. 1 broadcast per 2.5s)
+// Debounce timers to coalesce back-to-back scrape updates (e.g. 1 broadcast per 3.5s)
 const _debounceTimers = {};
-const DEBOUNCE_MS = 2500;
+const DEBOUNCE_MS = 3500;
 
 function _debounced(key, fn, delay = DEBOUNCE_MS) {
   if (_debounceTimers[key]) clearTimeout(_debounceTimers[key]);

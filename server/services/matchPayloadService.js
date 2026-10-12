@@ -495,13 +495,19 @@ async function getCricketMatchesPayload() {
   } catch (err) {}
 
   const compsSet = new Set();
+  const tossMatches = dataCache.getTossMatches();
+  const tossMatchIds = Array.isArray(tossMatches) ? tossMatches.map(m => String(m.matchId)) : [];
+  const tossIdSet = new Set(tossMatchIds);
+
   allMatches.forEach(m => {
     if (m.competitionName) compsSet.add(m.competitionName);
+    m.hasToss = tossIdSet.has(String(m.matchId));
   });
 
   return {
     total: allMatches.length,
     matches: allMatches,
+    tossMatchIds,
     competitions: Array.from(compsSet).sort(),
     updatedAt: new Date().toISOString(),
   };

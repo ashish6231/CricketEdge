@@ -62,10 +62,14 @@ services:
         value: "@cricedge_online"
       - key: TELEGRAM_GATE_ENABLED
         value: false
-      - key: CREX_POLL_INTERVAL_MS
-        value: 5000
+      - key: CREX_OVERVIEW_POLL_MS
+        value: 8000
       - key: TLL_POLL_INTERVAL_MS
         value: 10000
+      - key: TOSS_CAPTURE_INTERVAL_MS
+        value: 300000
+      - key: MATCH_CAPTURE_INTERVAL_MS
+        value: 300000
       - key: TLL_SESSION_SUBSCRIBED_REFRESH_MS
         value: 30000
       - key: TLL_SESSION_LIVE_IDLE_REFRESH_MS

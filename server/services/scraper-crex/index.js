@@ -91,11 +91,10 @@ function buildDetailCandidates(overview, now) {
     const isSubscribed = directlySubscribed || (localMatchId && subscribedIds.has(localMatchId));
 
     // Overview scores are sufficient for list cards. Full detail HTML scraping
-    // is reserved for matches a user is actively viewing in a room.
-    // When no room subscriber is present, use a relaxed background cadence (60s).
-    if (!localMatch && !isSubscribed) continue;
+    // is strictly reserved for matches a user is actively viewing in a room.
+    if (!isSubscribed) continue;
 
-    const cadence = isSubscribed ? SUBSCRIBED_DETAIL_POLL_MS : 60000;
+    const cadence = SUBSCRIBED_DETAIL_POLL_MS;
     const lastFetched = _lastDetailFetchAt.get(key) || 0;
     if (now - lastFetched < cadence) continue;
 
@@ -104,11 +103,11 @@ function buildDetailCandidates(overview, now) {
       crexMatch,
       key,
       localMatchId: localMatchId || (directlySubscribed ? key : ''),
-      priority: isSubscribed ? 0 : 1,
+      priority: 0,
     });
   }
 
-  return candidates.sort((a, b) => a.priority - b.priority);
+  return candidates;
 }
 
 async function runWithConcurrency(items, limit, handler) {
@@ -122,6 +121,26 @@ async function runWithConcurrency(items, limit, handler) {
   await Promise.all(workers);
 }
 
+function getEffectiveOverviewInterval() {
+  try {
+    const socketService = require('../socketService');
+    const clientsCount = socketService.getConnectedClientsCount?.() || 0;
+    if (clientsCount === 0) {
+      // Idle sleep mode: Nobody is looking at the site! (save 90% bandwidth)
+      return 90000;
+    }
+    const cricket = dataCache.getCricketMatches();
+    const hasLive = Array.isArray(cricket) && cricket.some(m => m.inPlay || m.status === 'live' || m.status === 'in-play');
+    if (!hasLive) {
+      // Quiet period: Visitors online, but no match is actively playing
+      return 30000;
+    }
+    return OVERVIEW_POLL_MS;
+  } catch {
+    return OVERVIEW_POLL_MS;
+  }
+}
+
 async function runPollCycle() {
   if (_isRunning) return;
   _isRunning = true;
@@ -129,8 +148,9 @@ async function runPollCycle() {
   try {
     const queue = getIngestQueue();
     const now = Date.now();
+    const overviewInterval = getEffectiveOverviewInterval();
 
-    if (!_latestOverview.length || now - _lastOverviewAt >= OVERVIEW_POLL_MS) {
+    if (!_latestOverview.length || now - _lastOverviewAt >= overviewInterval) {
       const rawOverview = await adapter.getRawOverview();
       _lastOverviewAt = Date.now();
       if (Array.isArray(rawOverview) && rawOverview.length) {
@@ -202,6 +222,10 @@ function stop() {
   console.log('⏹️  [CREX-Worker] stopped.');
 }
 
+function wakeUp() {
+  _lastOverviewAt = 0;
+}
+
 if (require.main === module) {
   require('dotenv').config();
   start();
@@ -211,6 +235,7 @@ module.exports = {
   adapter,
   start,
   stop,
+  wakeUp,
   runPollCycle,
   buildDetailCandidates,
   overviewFingerprint,

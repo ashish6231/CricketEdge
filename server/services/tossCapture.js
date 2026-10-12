@@ -136,6 +136,12 @@ async function captureEndedTosses({
   const data = await store.load();
   const byMatchId = new Map(data.records.map((record) => [String(record.matchId), record]));
 
+  const unskipped = eligible.filter((m) => !shouldSkipExisting(byMatchId.get(String(m.matchId))));
+  if (!unskipped.length) {
+    summary.skipped = eligible.length;
+    return summary;
+  }
+
   let crexOverview = [];
   try {
     crexOverview = await getCrexOverview();
@@ -143,13 +149,8 @@ async function captureEndedTosses({
     console.error('Failed to fetch CREX overview during toss capture:', err.message);
   }
 
-  for (const match of eligible) {
+  for (const match of unskipped) {
     const existing = byMatchId.get(String(match.matchId));
-
-    if (shouldSkipExisting(existing)) {
-      summary.skipped += 1;
-      continue;
-    }
 
     let snapshot;
     try {

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-11T17:05:31.460Z",
+  "updatedAt": "2026-10-11T22:28:45.548Z",
   "records": [
     {
       "matchId": "35901908",
@@ -60966,6 +60966,1618 @@
         {
           "reason": "High Trap Overload on Australia Legends (P/L: -2191.1) -> Bookmaker Safe Side on West Indies Legends (+2374.7)",
           "winner": "West Indies Legends",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36171669",
+      "marketId": "1.263614064",
+      "matchName": "Pakistan v Sri Lanka",
+      "competitionName": "International Twenty20 Matches",
+      "team1": "Pakistan",
+      "team2": "Sri Lanka",
+      "startTime": 1791723600000,
+      "endedAt": "2026-10-11T18:05:58.070Z",
+      "capturedAt": "2026-10-11T18:05:58.070Z",
+      "snapshot": {
+        "serverTime": "2026-10-11T18:04:49.754Z",
+        "matchId": "36171669",
+        "matchName": "Pakistan v Sri Lanka",
+        "teamNames": [
+          "Pakistan",
+          "Sri Lanka"
+        ],
+        "inPlayPnl": {
+          "team1": 183.42000000000007,
+          "team2": -148.081
+        },
+        "inPlayTotalBets": {
+          "team1": 644.1853,
+          "team2": 811.9277
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 625.6600000000001,
+            "lay": 244.31999999999996,
+            "total": 664.19
+          },
+          "team2": {
+            "back": 583.5800000000002,
+            "lay": 38.52999999999998,
+            "total": 827.9000000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": 183.42000000000007,
+          "team2": -148.081
+        },
+        "preMatchTotalBets": {
+          "team1": 644.1853,
+          "team2": 811.9277
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 625.6600000000001,
+            "lay": 244.31999999999996,
+            "total": 664.19
+          },
+          "team2": {
+            "back": 583.5800000000002,
+            "lay": 38.52999999999998,
+            "total": 827.9000000000001
+          }
+        },
+        "threeMinPnl": {
+          "team1": 183.42000000000007,
+          "team2": -148.081
+        },
+        "threeMinTotalBets": {
+          "team1": 644.1853,
+          "team2": 811.9277
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 625.6600000000001,
+            "lay": 244.31999999999996,
+            "total": 664.19
+          },
+          "team2": {
+            "back": 583.5800000000002,
+            "lay": 38.52999999999998,
+            "total": 827.9000000000001
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 625.6600000000001,
+            "lay": 244.31999999999996,
+            "totalVolume": 869.98,
+            "backPercentage": 71.91659578381113
+          },
+          "team2": {
+            "back": 583.5800000000002,
+            "lay": 38.52999999999998,
+            "totalVolume": 622.1100000000001,
+            "backPercentage": 93.80656154056356
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 605.6553,
+            "lay": 244.02529999999996,
+            "totalBet": 849.6805999999999
+          },
+          "team2": {
+            "back": 567.6077,
+            "lay": 38.18669999999998,
+            "totalBet": 605.7944
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 664.19,
+            "support": 44.51407086703885
+          },
+          "team2": {
+            "supportMoney": 827.9000000000001,
+            "support": 55.485929132961154
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Sri Lanka",
+          "bookieFavouriteOutcome": "Pakistan",
+          "riskTeam": "Sri Lanka",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 10.9718582659223,
+          "mostBettedTeam": "Sri Lanka",
+          "prediction": {
+            "team1TrueSupport": 643.842,
+            "team2TrueSupport": 811.633,
+            "ratio": 1.2606089692812834,
+            "bookiePnlTeam1": -361.3353000000001,
+            "bookiePnlTeam2": -529.0777,
+            "prediction": "Pakistan",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.26) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 361.63000000000005,
+            "backExposure": 605.6553,
+            "layExposure": 244.02529999999996,
+            "teamName": "Pakistan"
+          },
+          "team2": {
+            "netExposure": 529.421,
+            "backExposure": 567.6077,
+            "layExposure": 38.18669999999998,
+            "teamName": "Sri Lanka"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 605.6553,
+            "A_lay_stake": 244.31999999999996,
+            "B_back_expo": 567.6077,
+            "B_lay_stake": 38.52999999999998
+          },
+          "totals": {
+            "totalBetTeam1": 644.1853,
+            "totalBetTeam2": 811.9277
+          },
+          "simplePL": {
+            "team1_win": -361.3353000000001,
+            "team2_win": -529.0777
+          },
+          "derivedPL": {
+            "team1_win": 167.74239999999998,
+            "team2_win": -167.74239999999998
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 625.6600000000001,
+              "totalLayVol": 244.31999999999996,
+              "totalBet": 664.19,
+              "profitLoss": 163.71000000000004
+            },
+            "team2": {
+              "totalBackVol": 583.5800000000002,
+              "totalLayVol": 38.52999999999998,
+              "totalBet": 827.9000000000001,
+              "profitLoss": -163.71000000000004
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 605.6553,
+              "totalLayVol": 244.31999999999996,
+              "totalBet": 644.1853,
+              "profitLoss": 183.4200000000002
+            },
+            "team2": {
+              "totalBackExpo": 567.6077,
+              "totalLayVol": 38.52999999999998,
+              "totalBet": 811.9277,
+              "profitLoss": -148.0809999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 605.6553,
+              "totalLayNetVol": 244.02529999999996,
+              "totalBet": 643.842,
+              "profitLoss": 167.79100000000005
+            },
+            "team2": {
+              "totalBackNetVol": 567.6077,
+              "totalLayNetVol": 38.18669999999998,
+              "totalBet": 811.633,
+              "profitLoss": -167.79100000000005
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.977142857142857,
+            "averageSize": 94.88428571428572,
+            "supportProduct": 187.59978775510206
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.987142857142857,
+            "averageSize": 118.27142857142859,
+            "supportProduct": 235.02222448979595
+          },
+          "strongerTeam": "Sri Lanka",
+          "supportRatio": 1.2527851299949253
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 625.6600000000001,
+            "oppoLayVolume": 38.52999999999998,
+            "layExposure": 244.02529999999996,
+            "netSupportValue": 420.1647000000001
+          },
+          "teamB": {
+            "totalBackVolume": 583.5800000000002,
+            "oppoLayVolume": 244.31999999999996,
+            "layExposure": 38.18669999999998,
+            "netSupportValue": 789.7133000000001
+          },
+          "strongerTeam": "Sri Lanka",
+          "netSupportDifference": 369.5486,
+          "percentageA": 34.72785685829481,
+          "percentageB": 65.2721431417052
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 381.34000000000015,
+            "syntheticSupport": 38.52999999999998,
+            "opponentLiabilityRejection": 38.18669999999998,
+            "sentimentScore": 381.68330000000014
+          },
+          "teamB": {
+            "directNetSupport": 545.0500000000002,
+            "syntheticSupport": 244.31999999999996,
+            "opponentLiabilityRejection": 244.02529999999996,
+            "sentimentScore": 545.3447000000001
+          },
+          "strongerTeam": "Sri Lanka",
+          "scoreDifference": 163.66139999999996,
+          "percentageA": 41.172790897362326,
+          "percentageB": 58.82720910263767
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Pakistan",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Sri Lanka",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Pakistan"
+        },
+        "teams": {
+          "Pakistan": {
+            "trades": [
+              {
+                "team": "Pakistan",
+                "price": 1.96,
+                "type": "back",
+                "size": 188.83,
+                "updatedAt": 1791721403375
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.97,
+                "type": "back",
+                "size": 113.94,
+                "updatedAt": 1791721283807
+              },
+              {
+                "team": "Pakistan",
+                "price": 2,
+                "type": "lay",
+                "size": 210.58999999999997,
+                "updatedAt": 1791721083346
+              },
+              {
+                "team": "Pakistan",
+                "price": 2.02,
+                "type": "lay",
+                "size": 1.42,
+                "updatedAt": 1791720347877
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.95,
+                "type": "back",
+                "size": 145.11,
+                "updatedAt": 1791718656970
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.99,
+                "type": "lay",
+                "size": 32.31,
+                "updatedAt": 1791717908860
+              },
+              {
+                "team": "Pakistan",
+                "price": 1.99,
+                "type": "back",
+                "size": 177.78,
+                "updatedAt": 1791665476207
+              }
+            ],
+            "pnlIfWins": 183.42000000000007,
+            "totalBet": 644.1853
+          },
+          "Sri Lanka": {
+            "trades": [
+              {
+                "team": "Sri Lanka",
+                "price": 1.95,
+                "type": "back",
+                "size": 62.930000000000064,
+                "updatedAt": 1791721274605
+              },
+              {
+                "team": "Sri Lanka",
+                "price": 1.96,
+                "type": "back",
+                "size": 319.22,
+                "updatedAt": 1791721236888
+              },
+              {
+                "team": "Sri Lanka",
+                "price": 1.99,
+                "type": "lay",
+                "size": 22.75,
+                "updatedAt": 1791721083346
+              },
+              {
+                "team": "Sri Lanka",
+                "price": 2,
+                "type": "lay",
+                "size": 9.98999999999998,
+                "updatedAt": 1791720949689
+              },
+              {
+                "team": "Sri Lanka",
+                "price": 1.98,
+                "type": "lay",
+                "size": 5.790000000000001,
+                "updatedAt": 1791720949689
+              },
+              {
+                "team": "Sri Lanka",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.7,
+                "updatedAt": 1791718169602
+              },
+              {
+                "team": "Sri Lanka",
+                "price": 2,
+                "type": "back",
+                "size": 195.73000000000002,
+                "updatedAt": 1791718159537
+              }
+            ],
+            "pnlIfWins": -148.081,
+            "totalBet": 811.9277
+          }
+        }
+      },
+      "predictedWinner": "Pakistan",
+      "predictionReason": "Intl Inflow on Pakistan (₹626 Back, Lead: 1.1x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Intl Inflow on Pakistan (₹626 Back, Lead: 1.1x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Intl Inflow on Pakistan (₹626 Back, Lead: 1.1x)",
+          "winner": "Pakistan",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36172444",
+      "marketId": "1.263613983",
+      "matchName": "India v West Indies",
+      "competitionName": "International Twenty20 Matches",
+      "team1": "India",
+      "team2": "West Indies",
+      "startTime": 1791725400000,
+      "endedAt": "2026-10-11T20:03:02.780Z",
+      "capturedAt": "2026-10-11T20:03:02.780Z",
+      "snapshot": {
+        "serverTime": "2026-10-11T19:01:50.436Z",
+        "matchId": "36172444",
+        "matchName": "India v West Indies",
+        "teamNames": [
+          "India",
+          "West Indies"
+        ],
+        "inPlayPnl": {
+          "team1": 408.9045000000002,
+          "team2": -274.43349999999975
+        },
+        "inPlayTotalBets": {
+          "team1": 1746.8573,
+          "team2": 2073.1495
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 1463.0700000000002,
+            "lay": 186.32999999999996,
+            "total": 1798.1000000000001
+          },
+          "team2": {
+            "back": 1969.79,
+            "lay": 335.03,
+            "total": 2156.12
+          }
+        },
+        "preMatchPnl": {
+          "team1": 408.9045000000002,
+          "team2": -274.43349999999975
+        },
+        "preMatchTotalBets": {
+          "team1": 1746.8573,
+          "team2": 2073.1495
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 1463.0700000000002,
+            "lay": 186.32999999999996,
+            "total": 1798.1000000000001
+          },
+          "team2": {
+            "back": 1969.79,
+            "lay": 335.03,
+            "total": 2156.12
+          }
+        },
+        "threeMinPnl": {
+          "team1": 408.9045000000002,
+          "team2": -274.43349999999975
+        },
+        "threeMinTotalBets": {
+          "team1": 1746.8573,
+          "team2": 2073.1495
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 1463.0700000000002,
+            "lay": 186.32999999999996,
+            "total": 1798.1000000000001
+          },
+          "team2": {
+            "back": 1969.79,
+            "lay": 335.03,
+            "total": 2156.12
+          }
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 7
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1463.0700000000002,
+            "lay": 186.32999999999996,
+            "totalVolume": 1649.4,
+            "backPercentage": 88.70316478719535
+          },
+          "team2": {
+            "back": 1969.79,
+            "lay": 335.03,
+            "totalVolume": 2304.8199999999997,
+            "backPercentage": 85.4639407849637
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1411.8273,
+            "lay": 185.97179999999997,
+            "totalBet": 1597.7991
+          },
+          "team2": {
+            "back": 1886.8195,
+            "lay": 335.64599999999996,
+            "totalBet": 2222.4655000000002
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1798.1000000000001,
+            "support": 45.47293777280981
+          },
+          "team2": {
+            "supportMoney": 2156.12,
+            "support": 54.52706222719018
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "West Indies",
+          "bookieFavouriteOutcome": "India",
+          "riskTeam": "West Indies",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 9.054124454380371,
+          "mostBettedTeam": "West Indies",
+          "prediction": {
+            "team1TrueSupport": 1747.4732999999999,
+            "team2TrueSupport": 2072.7913,
+            "ratio": 1.1861647900428578,
+            "bookiePnlTeam1": -1225.4973,
+            "bookiePnlTeam2": -1551.7895,
+            "prediction": "India",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.19) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1225.8555,
+            "backExposure": 1411.8273,
+            "layExposure": 185.97179999999997,
+            "teamName": "India"
+          },
+          "team2": {
+            "netExposure": 1551.1735,
+            "backExposure": 1886.8195,
+            "layExposure": 335.64599999999996,
+            "teamName": "West Indies"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1411.8273,
+            "A_lay_stake": 186.32999999999996,
+            "B_back_expo": 1886.8195,
+            "B_lay_stake": 335.03
+          },
+          "totals": {
+            "totalBetTeam1": 1746.8573,
+            "totalBetTeam2": 2073.1495
+          },
+          "simplePL": {
+            "team1_win": -1225.4973,
+            "team2_win": -1551.7895
+          },
+          "derivedPL": {
+            "team1_win": 326.2922000000001,
+            "team2_win": -326.2922000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1463.0700000000002,
+              "totalLayVol": 186.32999999999996,
+              "totalBet": 1798.1000000000001,
+              "profitLoss": 358.01999999999975
+            },
+            "team2": {
+              "totalBackVol": 1969.79,
+              "totalLayVol": 335.03,
+              "totalBet": 2156.12,
+              "profitLoss": -358.01999999999975
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1411.8273,
+              "totalLayVol": 186.32999999999996,
+              "totalBet": 1746.8573,
+              "profitLoss": 408.90449999999987
+            },
+            "team2": {
+              "totalBackExpo": 1886.8195,
+              "totalLayVol": 335.03,
+              "totalBet": 2073.1495,
+              "profitLoss": -274.43349999999987
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1411.8273,
+              "totalLayNetVol": 185.97179999999997,
+              "totalBet": 1747.4732999999999,
+              "profitLoss": 325.318
+            },
+            "team2": {
+              "totalBackNetVol": 1886.8195,
+              "totalLayNetVol": 335.64599999999996,
+              "totalBet": 2072.7913,
+              "profitLoss": -325.318
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.9785714285714284,
+            "averageSize": 256.8714285714286,
+            "supportProduct": 508.2384693877552
+          },
+          "teamB": {
+            "tradeCount": 7,
+            "averageOdds": 1.977142857142857,
+            "averageSize": 308.01714285714286,
+            "supportProduct": 608.993893877551
+          },
+          "strongerTeam": "West Indies",
+          "supportRatio": 1.1982443883304819
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1463.0700000000002,
+            "oppoLayVolume": 335.03,
+            "layExposure": 185.97179999999997,
+            "netSupportValue": 1612.1282
+          },
+          "teamB": {
+            "totalBackVolume": 1969.79,
+            "oppoLayVolume": 186.32999999999996,
+            "layExposure": 335.64599999999996,
+            "netSupportValue": 1820.474
+          },
+          "strongerTeam": "West Indies",
+          "netSupportDifference": 208.34579999999983,
+          "percentageA": 46.96519159720867,
+          "percentageB": 53.03480840279132
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1276.7400000000002,
+            "syntheticSupport": 335.03,
+            "opponentLiabilityRejection": 335.64599999999996,
+            "sentimentScore": 1276.1240000000003
+          },
+          "teamB": {
+            "directNetSupport": 1634.76,
+            "syntheticSupport": 186.32999999999996,
+            "opponentLiabilityRejection": 185.97179999999997,
+            "sentimentScore": 1635.1182
+          },
+          "strongerTeam": "West Indies",
+          "scoreDifference": 358.99419999999964,
+          "percentageA": 43.834346726631,
+          "percentageB": 56.16565327336901
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "India",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "West Indies",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "India"
+        },
+        "teams": {
+          "India": {
+            "trades": [
+              {
+                "team": "India",
+                "price": 1.96,
+                "type": "back",
+                "size": 245.71,
+                "updatedAt": 1791723327668
+              },
+              {
+                "team": "India",
+                "price": 1.95,
+                "type": "back",
+                "size": 675.13,
+                "updatedAt": 1791723098146
+              },
+              {
+                "team": "India",
+                "price": 1.99,
+                "type": "back",
+                "size": 318.68,
+                "updatedAt": 1791722675000
+              },
+              {
+                "team": "India",
+                "price": 1.98,
+                "type": "back",
+                "size": 223.55,
+                "updatedAt": 1791722675000
+              },
+              {
+                "team": "India",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.85,
+                "updatedAt": 1791722166988
+              },
+              {
+                "team": "India",
+                "price": 1.96,
+                "type": "lay",
+                "size": 3.5299999999999727,
+                "updatedAt": 1791722166037
+              },
+              {
+                "team": "India",
+                "price": 2,
+                "type": "lay",
+                "size": 171.95,
+                "updatedAt": 1791721657182
+              }
+            ],
+            "pnlIfWins": 408.9045000000002,
+            "totalBet": 1746.8573
+          },
+          "West Indies": {
+            "trades": [
+              {
+                "team": "West Indies",
+                "price": 1.95,
+                "type": "back",
+                "size": 1475.99,
+                "updatedAt": 1791723229134
+              },
+              {
+                "team": "West Indies",
+                "price": 1.96,
+                "type": "lay",
+                "size": 99.67999999999998,
+                "updatedAt": 1791722771780
+              },
+              {
+                "team": "West Indies",
+                "price": 1.96,
+                "type": "back",
+                "size": 227.85,
+                "updatedAt": 1791722711017
+              },
+              {
+                "team": "West Indies",
+                "price": 2.02,
+                "type": "lay",
+                "size": 231.89,
+                "updatedAt": 1791722689361
+              },
+              {
+                "team": "West Indies",
+                "price": 1.99,
+                "type": "lay",
+                "size": 3.46,
+                "updatedAt": 1791722674878
+              },
+              {
+                "team": "West Indies",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.7,
+                "updatedAt": 1791721674975
+              },
+              {
+                "team": "West Indies",
+                "price": 2,
+                "type": "back",
+                "size": 260.25,
+                "updatedAt": 1791721657108
+              }
+            ],
+            "pnlIfWins": -274.43349999999975,
+            "totalBet": 2073.1495
+          }
+        }
+      },
+      "predictedWinner": "West Indies",
+      "predictionReason": "Intl Inflow on West Indies (₹2.0k Back, Lead: 1.3x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Intl Inflow on West Indies (₹2.0k Back, Lead: 1.3x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Intl Inflow on West Indies (₹2.0k Back, Lead: 1.3x)",
+          "winner": "West Indies",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36175445",
+      "marketId": "1.263643642",
+      "matchName": "India Legends v Bangladesh Champions",
+      "competitionName": "World Championship of Legends T20",
+      "team1": "India Legends",
+      "team2": "Bangladesh Champions",
+      "startTime": 1791732600000,
+      "endedAt": "2026-10-11T22:28:42.712Z",
+      "capturedAt": "2026-10-11T22:28:42.712Z",
+      "snapshot": {
+        "serverTime": "2026-10-11T20:41:15.536Z",
+        "matchId": "36175445",
+        "matchName": "India Legends v Bangladesh Champions",
+        "teamNames": [
+          "India Legends",
+          "Bangladesh Champions"
+        ],
+        "inPlayPnl": {
+          "team1": -204.76809999999978,
+          "team2": 271.5152999999999
+        },
+        "inPlayTotalBets": {
+          "team1": 775.2087999999999,
+          "team2": 543.0975000000001
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "total": 814.4
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "total": 570.7300000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": -204.76809999999978,
+          "team2": 271.5152999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 775.2087999999999,
+          "team2": 543.0975000000001
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "total": 814.4
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "total": 570.7300000000001
+          }
+        },
+        "threeMinPnl": {
+          "team1": -204.76809999999978,
+          "team2": 271.5152999999999
+        },
+        "threeMinTotalBets": {
+          "team1": 775.2087999999999,
+          "team2": 543.0975000000001
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "total": 814.4
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "total": 570.7300000000001
+          }
+        },
+        "matchLoadV2": {
+          "team1": 3,
+          "team2": 3
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "totalVolume": 821.84,
+            "backPercentage": 97.80005840552906
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "totalVolume": 563.2900000000001,
+            "backPercentage": 98.11109730334286
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 764.5687999999999,
+            "lay": 17.7907,
+            "totalBet": 782.3594999999999
+          },
+          "team2": {
+            "back": 525.0175,
+            "lay": 10.8528,
+            "totalBet": 535.8703
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 814.4,
+            "support": 58.79592529221084
+          },
+          "team2": {
+            "supportMoney": 570.7300000000001,
+            "support": 41.20407470778917
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "India Legends",
+          "bookieFavouriteOutcome": "Bangladesh Champions",
+          "riskTeam": "India Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 17.59185058442167,
+          "mostBettedTeam": "India Legends",
+          "prediction": {
+            "team1TrueSupport": 775.4215999999999,
+            "team2TrueSupport": 542.8082,
+            "ratio": 1.4285370044151873,
+            "bookiePnlTeam1": -746.4887999999999,
+            "bookiePnlTeam2": -514.3775,
+            "prediction": "Bangladesh Champions",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.43) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 746.7780999999999,
+            "backExposure": 764.5687999999999,
+            "layExposure": 17.7907,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 514.1647,
+            "backExposure": 525.0175,
+            "layExposure": 10.8528,
+            "teamName": "Bangladesh Champions"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 764.5687999999999,
+            "A_lay_stake": 18.08,
+            "B_back_expo": 525.0175,
+            "B_lay_stake": 10.64
+          },
+          "totals": {
+            "totalBetTeam1": 775.2087999999999,
+            "totalBetTeam2": 543.0975000000001
+          },
+          "simplePL": {
+            "team1_win": -746.4887999999999,
+            "team2_win": -514.3775
+          },
+          "derivedPL": {
+            "team1_win": -232.1112999999998,
+            "team2_win": 232.1112999999998
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 803.76,
+              "totalLayVol": 18.08,
+              "totalBet": 814.4,
+              "profitLoss": -243.66999999999985
+            },
+            "team2": {
+              "totalBackVol": 552.6500000000001,
+              "totalLayVol": 10.64,
+              "totalBet": 570.7300000000001,
+              "profitLoss": 243.66999999999985
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 764.5687999999999,
+              "totalLayVol": 18.08,
+              "totalBet": 775.2087999999999,
+              "profitLoss": -204.76809999999978
+            },
+            "team2": {
+              "totalBackExpo": 525.0175,
+              "totalLayVol": 10.64,
+              "totalBet": 543.0975000000001,
+              "profitLoss": 271.5152999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 764.5687999999999,
+              "totalLayNetVol": 17.7907,
+              "totalBet": 775.4215999999999,
+              "profitLoss": -232.61339999999984
+            },
+            "team2": {
+              "totalBackNetVol": 525.0175,
+              "totalLayNetVol": 10.8528,
+              "totalBet": 542.8082,
+              "profitLoss": 232.61339999999984
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 3,
+            "averageOdds": 1.9766666666666666,
+            "averageSize": 271.46666666666664,
+            "supportProduct": 536.599111111111
+          },
+          "teamB": {
+            "tradeCount": 3,
+            "averageOdds": 1.9733333333333334,
+            "averageSize": 190.24333333333337,
+            "supportProduct": 375.4135111111112
+          },
+          "strongerTeam": "India Legends",
+          "supportRatio": 1.4293548186982907
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 803.76,
+            "oppoLayVolume": 10.64,
+            "layExposure": 17.7907,
+            "netSupportValue": 796.6093
+          },
+          "teamB": {
+            "totalBackVolume": 552.6500000000001,
+            "oppoLayVolume": 18.08,
+            "layExposure": 10.8528,
+            "netSupportValue": 559.8772000000001
+          },
+          "strongerTeam": "India Legends",
+          "netSupportDifference": 236.73209999999983,
+          "percentageA": 58.72592908222825,
+          "percentageB": 41.274070917771766
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 785.68,
+            "syntheticSupport": 10.64,
+            "opponentLiabilityRejection": 10.8528,
+            "sentimentScore": 785.4671999999999
+          },
+          "teamB": {
+            "directNetSupport": 542.0100000000001,
+            "syntheticSupport": 18.08,
+            "opponentLiabilityRejection": 17.7907,
+            "sentimentScore": 542.2993000000001
+          },
+          "strongerTeam": "India Legends",
+          "scoreDifference": 243.1678999999998,
+          "percentageA": 59.15702798647201,
+          "percentageB": 40.842972013527984
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "India Legends",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Bangladesh Champions",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "India Legends"
+        },
+        "teams": {
+          "India Legends": {
+            "trades": [
+              {
+                "team": "India Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 704.0799999999999,
+                "updatedAt": 1791730495078
+              },
+              {
+                "team": "India Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 99.68,
+                "updatedAt": 1791730217022
+              },
+              {
+                "team": "India Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.85,
+                "updatedAt": 1791729334676
+              },
+              {
+                "team": "India Legends",
+                "price": 1.99,
+                "type": "lay",
+                "size": 7.23,
+                "updatedAt": 1791727070009
+              }
+            ],
+            "pnlIfWins": -204.76809999999978,
+            "totalBet": 775.2087999999999
+          },
+          "Bangladesh Champions": {
+            "trades": [
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.95,
+                "type": "back",
+                "size": 552.6500000000001,
+                "updatedAt": 1791729734199
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 2.02,
+                "type": "lay",
+                "size": 10.64,
+                "updatedAt": 1791729334705
+              }
+            ],
+            "pnlIfWins": 271.5152999999999,
+            "totalBet": 543.0975000000001
+          }
+        }
+      },
+      "predictedWinner": "India Legends",
+      "predictionReason": "Smart Money Inflow (India Legends: ₹804 Back, Lead: 1.5x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (India Legends: ₹804 Back, Lead: 1.5x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (India Legends: ₹804 Back, Lead: 1.5x)",
+          "winner": "India Legends",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "actualWinner": null,
+      "lastCaptureError": null,
+      "status": "pending",
+      "confirmedAt": null,
+      "confirmedByEmail": null,
+      "confirmedById": null
+    },
+    {
+      "matchId": "36166395",
+      "marketId": "1.263551204",
+      "matchName": "Titans v Eastern Storm",
+      "competitionName": "South Africa T20 Challenge",
+      "team1": "Titans",
+      "team2": "Eastern Storm",
+      "startTime": 1791734400000,
+      "endedAt": "2026-10-11T22:28:42.751Z",
+      "capturedAt": "2026-10-11T22:28:42.751Z",
+      "snapshot": {
+        "serverTime": "2026-10-11T22:12:08.266Z",
+        "matchId": "36166395",
+        "matchName": "Titans v Eastern Storm",
+        "teamNames": [
+          "Titans",
+          "Eastern Storm"
+        ],
+        "inPlayPnl": {
+          "team1": -252.00649999999993,
+          "team2": 270.76300000000003
+        },
+        "inPlayTotalBets": {
+          "team1": 423.6065,
+          "team2": 164.907
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 395.08000000000004,
+            "lay": 37.74,
+            "total": 435.6700000000001
+          },
+          "team2": {
+            "back": 133.86,
+            "lay": 40.59,
+            "total": 171.60000000000002
+          }
+        },
+        "preMatchPnl": {
+          "team1": -252.00649999999993,
+          "team2": 270.76300000000003
+        },
+        "preMatchTotalBets": {
+          "team1": 423.6065,
+          "team2": 164.907
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 395.08000000000004,
+            "lay": 37.74,
+            "total": 435.6700000000001
+          },
+          "team2": {
+            "back": 133.86,
+            "lay": 40.59,
+            "total": 171.60000000000002
+          }
+        },
+        "threeMinPnl": {
+          "team1": -252.00649999999993,
+          "team2": 270.76300000000003
+        },
+        "threeMinTotalBets": {
+          "team1": 423.6065,
+          "team2": 164.907
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 395.08000000000004,
+            "lay": 37.74,
+            "total": 435.6700000000001
+          },
+          "team2": {
+            "back": 133.86,
+            "lay": 40.59,
+            "total": 171.60000000000002
+          }
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 2
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 395.08000000000004,
+            "lay": 37.74,
+            "totalVolume": 432.82000000000005,
+            "backPercentage": 91.28043990573448
+          },
+          "team2": {
+            "back": 133.86,
+            "lay": 40.59,
+            "totalVolume": 174.45000000000002,
+            "backPercentage": 76.73258813413585
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 383.01649999999995,
+            "lay": 37.74,
+            "totalBet": 420.75649999999996
+          },
+          "team2": {
+            "back": 127.167,
+            "lay": 40.59,
+            "totalBet": 167.757
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 435.6700000000001,
+            "support": 71.74238806461706
+          },
+          "team2": {
+            "supportMoney": 171.60000000000002,
+            "support": 28.257611935382943
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Titans",
+          "bookieFavouriteOutcome": "Eastern Storm",
+          "riskTeam": "Titans",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 43.48477612923412,
+          "mostBettedTeam": "Titans",
+          "prediction": {
+            "team1TrueSupport": 423.6065,
+            "team2TrueSupport": 164.907,
+            "ratio": 2.568759967739392,
+            "bookiePnlTeam1": -345.27649999999994,
+            "bookiePnlTeam2": -86.577,
+            "prediction": "Eastern Storm",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.57) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 345.27649999999994,
+            "backExposure": 383.01649999999995,
+            "layExposure": 37.74,
+            "teamName": "Titans"
+          },
+          "team2": {
+            "netExposure": 86.577,
+            "backExposure": 127.167,
+            "layExposure": 40.59,
+            "teamName": "Eastern Storm"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 383.01649999999995,
+            "A_lay_stake": 37.74,
+            "B_back_expo": 127.167,
+            "B_lay_stake": 40.59
+          },
+          "totals": {
+            "totalBetTeam1": 423.6065,
+            "totalBetTeam2": 164.907
+          },
+          "simplePL": {
+            "team1_win": -345.27649999999994,
+            "team2_win": -86.577
+          },
+          "derivedPL": {
+            "team1_win": -258.69949999999994,
+            "team2_win": 258.69949999999994
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 395.08000000000004,
+              "totalLayVol": 37.74,
+              "totalBet": 435.6700000000001,
+              "profitLoss": -264.07000000000005
+            },
+            "team2": {
+              "totalBackVol": 133.86,
+              "totalLayVol": 40.59,
+              "totalBet": 171.60000000000002,
+              "profitLoss": 264.07000000000005
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 383.01649999999995,
+              "totalLayVol": 37.74,
+              "totalBet": 423.6065,
+              "profitLoss": -252.00649999999996
+            },
+            "team2": {
+              "totalBackExpo": 127.167,
+              "totalLayVol": 40.59,
+              "totalBet": 164.907,
+              "profitLoss": 270.76300000000003
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 383.01649999999995,
+              "totalLayNetVol": 37.74,
+              "totalBet": 423.6065,
+              "profitLoss": -258.69949999999994
+            },
+            "team2": {
+              "totalBackNetVol": 127.167,
+              "totalLayNetVol": 40.59,
+              "totalBet": 164.907,
+              "profitLoss": 258.69949999999994
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.975,
+            "averageSize": 108.9175,
+            "supportProduct": 215.1120625
+          },
+          "teamB": {
+            "tradeCount": 2,
+            "averageOdds": 1.975,
+            "averageSize": 85.80000000000001,
+            "supportProduct": 169.45500000000004
+          },
+          "strongerTeam": "Titans",
+          "supportRatio": 1.2694347319347317
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 395.08000000000004,
+            "oppoLayVolume": 40.59,
+            "layExposure": 37.74,
+            "netSupportValue": 397.93000000000006
+          },
+          "teamB": {
+            "totalBackVolume": 133.86,
+            "oppoLayVolume": 37.74,
+            "layExposure": 40.59,
+            "netSupportValue": 131.01000000000002
+          },
+          "strongerTeam": "Titans",
+          "netSupportDifference": 266.9200000000001,
+          "percentageA": 75.23159526600371,
+          "percentageB": 24.768404733996295
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 357.34000000000003,
+            "syntheticSupport": 40.59,
+            "opponentLiabilityRejection": 40.59,
+            "sentimentScore": 357.34000000000003
+          },
+          "teamB": {
+            "directNetSupport": 93.27000000000001,
+            "syntheticSupport": 37.74,
+            "opponentLiabilityRejection": 37.74,
+            "sentimentScore": 93.27000000000001
+          },
+          "strongerTeam": "Titans",
+          "scoreDifference": 264.07000000000005,
+          "percentageA": 79.30139144714943,
+          "percentageB": 20.69860855285058
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Titans",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Eastern Storm",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Titans"
+        },
+        "teams": {
+          "Titans": {
+            "trades": [
+              {
+                "team": "Titans",
+                "price": 1.95,
+                "type": "back",
+                "size": 200.68,
+                "updatedAt": 1791732207282
+              },
+              {
+                "team": "Titans",
+                "price": 2,
+                "type": "lay",
+                "size": 37.74,
+                "updatedAt": 1791732197356
+              },
+              {
+                "team": "Titans",
+                "price": 1.96,
+                "type": "back",
+                "size": 2.85,
+                "updatedAt": 1791731557718
+              },
+              {
+                "team": "Titans",
+                "price": 1.99,
+                "type": "back",
+                "size": 191.55,
+                "updatedAt": 1791723900678
+              }
+            ],
+            "pnlIfWins": -252.00649999999993,
+            "totalBet": 423.6065
+          },
+          "Eastern Storm": {
+            "trades": [
+              {
+                "team": "Eastern Storm",
+                "price": 2,
+                "type": "lay",
+                "size": 40.59,
+                "updatedAt": 1791732198576
+              },
+              {
+                "team": "Eastern Storm",
+                "price": 1.95,
+                "type": "back",
+                "size": 133.86,
+                "updatedAt": 1791728993108
+              }
+            ],
+            "pnlIfWins": 270.76300000000003,
+            "totalBet": 164.907
+          }
+        }
+      },
+      "predictedWinner": "Eastern Storm",
+      "predictionReason": "Micro Liquidity Bookie Safe on Eastern Storm (P/L: +270.8 vs Titans: -252.0)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Micro Liquidity Bookie Safe on Eastern Storm (P/L: +270.8 vs Titans: -252.0)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Micro Liquidity Bookie Safe on Eastern Storm (P/L: +270.8 vs Titans: -252.0)",
+          "winner": "Eastern Storm",
           "priority": 100,
           "selected": true
         }

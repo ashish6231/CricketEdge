@@ -1,5 +1,5 @@
 function startTossCaptureWorker({
-  intervalMs = Number(process.env.TOSS_CAPTURE_INTERVAL_MS || 60000),
+  intervalMs = Number(process.env.TOSS_CAPTURE_INTERVAL_MS || 5 * 60 * 1000),
   captureEndedTosses = require('./tossCapture').captureEndedTosses,
 } = {}) {
   let stopped = false;

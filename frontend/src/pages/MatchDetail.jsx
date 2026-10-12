@@ -1,9 +1,10 @@
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, Cell, CartesianGrid } from "recharts"
+import TeamCard from '../components/SelectionVolumeCard'
+import { processTeamData } from '../utils/selectionVolume'
 import TossDetail from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, BarChart3, BookOpen, ChevronDown, ChevronUp, Coins, TrendingUp, Radio, Trophy, Sparkles, Shield, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, BarChart3, BookOpen, ChevronDown, ChevronUp, Coins, Radio, Trophy, Sparkles, Shield, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
@@ -43,23 +44,6 @@ const fmtVol = (n) => {
   return formatVolStr(n)
 }
 
-const formatMoney = (val) => {
-  if (!val) return '0.00'
-  return val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
-
-const formatBetfairVol = (val) => {
-  if (val === null || val === undefined) return '—'
-  if (val === 0 || val === '0') return '0.00'
-  const num = Number(val)
-  if (isNaN(num)) return String(val)
-  const abs = Math.abs(num)
-  const sign = num < 0 ? '-' : ''
-  if (abs >= 1000000) return `${sign}${(abs / 1000000).toFixed(2)}M`
-  if (abs >= 1000) return `${sign}${(abs / 1000).toFixed(2)}k`
-  return `${sign}${abs.toFixed(2)}`
-}
-
 const formatVolStr = (val) => {
   if (val === null || val === undefined) return '—'
   if (val === 0 || val === '0') return '0.00'
@@ -70,11 +54,6 @@ const formatVolStr = (val) => {
   if (abs >= 100000) return `${num < 0 ? '-' : ''}${(abs / 100000).toFixed(2)}L`
   if (abs >= 1000) return `${num < 0 ? '-' : ''}${(abs / 1000).toFixed(2)}k`
   return num.toFixed(2)
-}
-
-const formatVolTooltip = (val) => {
-  if (!val) return '0.00'
-  return formatVolStr(val)
 }
 
 const formatOdds = (val) => {
@@ -106,293 +85,10 @@ const getPredictionVisuals = pred => pred ? {
   meterPct: pred.confidence?.calibrated ? finiteNumber(pred.confidence.pct) : null,
 } : null
 
-const processTeamData = (teamName, teamData, timeFilter = 'all') => {
-  let trades = teamData?.trades || []
+const findMarketRunner = (marketSnapshot, teamName) => (marketSnapshot?.runners || []).find(runner =>
+  teamEq(runner?.runnerName || runner?.name || runner?.team, teamName)
+) || null
 
-  if (timeFilter !== 'all' && trades.length > 0) {
-    const hours = timeFilter === '1h' ? 1 : 3
-    const maxTime = Math.max(...trades.map(t => t.updatedAt))
-    const cutoff = maxTime - (hours * 60 * 60 * 1000)
-    trades = trades.filter(t => t.updatedAt >= cutoff)
-  }
-
-  if (trades.length === 0) return {
-    name: teamName, low: 0, high: 0, totalBet: 0, lastPrice: 0, trend: 'Neutral', orderBook: [], maxVol: 0, peakPrice: 0, timeSeries: []
-  }
-
-  const prices = trades.map(t => t.price)
-  const low = Math.min(...prices)
-  const high = Math.max(...prices)
-
-  const totalBet = trades.reduce((sum, t) => sum + (parseFloat(t.size) || 0), 0)
-
-  const sortedTrades = [...trades].sort((a, b) => b.updatedAt - a.updatedAt)
-  const lastPrice = parseFloat(sortedTrades[0]?.price) || 0
-
-  let trend = 'Neutral'
-  if (sortedTrades.length >= 2) {
-    const last = parseFloat(sortedTrades[0].price) || 0
-    const prev = parseFloat(sortedTrades.find(t => t.price !== sortedTrades[0].price)?.price) || last
-    if (last > prev) trend = 'Rising'
-    else if (last < prev) trend = 'Dropping'
-  }
-
-  let totalBack = 0
-  let totalLay = 0
-  let totalBackLiability = 0
-  let totalLayLiability = 0
-  let backValue = 0
-  let layTradeCount = 0
-
-  const priceMap = {}
-  trades.forEach(t => {
-    const p = parseFloat(t.price) || 0
-    const s = parseFloat(t.size) || 0
-
-    if (!priceMap[p]) {
-      priceMap[p] = { price: p, back: 0, lay: 0, traded: 0, totalVol: 0 }
-    }
-    if (t.type === 'back') {
-      priceMap[p].back += s
-      totalBack += s
-      totalBackLiability += s * (p - 1)
-      backValue += p * s
-    } else if (t.type === 'lay') {
-      priceMap[p].lay += s
-      totalLay += s
-      totalLayLiability += s * (p - 1)
-      layTradeCount++
-    }
-
-    priceMap[p].traded += s
-    priceMap[p].totalVol += s
-  })
-
-  const orderBook = Object.values(priceMap).sort((a, b) => a.price - b.price)
-  const maxVol = orderBook.length > 0 ? Math.max(...orderBook.map(o => o.totalVol)) : 0
-  const peakPrice = orderBook.find(o => o.totalVol === maxVol)?.price
-
-  const timeSeries = sortedTrades.slice().reverse().map(t => ({
-    time: new Date(t.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    price: parseFloat(t.price) || 0,
-    volume: parseFloat(t.size) || 0
-  }))
-
-  const backLayRatio = totalLayLiability > 0 ? backValue / totalLayLiability : 0
-
-  return {
-    name: teamName,
-    low, high, totalBet, lastPrice, trend, orderBook, maxVol, peakPrice, timeSeries,
-    totalBack, totalLay, totalBackLiability, totalLayLiability, backValue, backLayRatio, layTradeCount
-  }
-}
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-[#1c1c1e] border border-[#2c2c2e] p-2 rounded text-xs shadow-xl">
-        <p className="text-gray-300 font-bold mb-1">{`Price: ${formatOdds(payload[0].payload.price)}`}</p>
-        <p className="text-[#3b82f6] font-medium">{`Traded: ${formatVolTooltip(payload[0].payload.totalVol)}`}</p>
-      </div>
-    );
-  }
-  return null;
-};
-
-const TimeTooltip = ({ active, payload, label }) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-[#1c1c1e] border border-[#2c2c2e] p-2 rounded text-xs shadow-xl">
-        <p className="text-gray-300 font-bold mb-1">{`Time: ${label}`}</p>
-        <p className="text-[#10b981] font-medium">{`Price: ${formatOdds(payload[0].payload.price)}`}</p>
-        <p className="text-[#3b82f6] font-medium">{`Vol: ${formatVolTooltip(payload[0].payload.volume)}`}</p>
-      </div>
-    );
-  }
-  return null;
-};
-
-const TeamCard = ({ teamData, isToss = false, isSession = false, marketVol = 0 }) => {
-  const [activeTab, setActiveTab] = useState('volume')
-  const [activeOnly, setActiveOnly] = useState(true)
-
-  if (!teamData) return null
-
-
-  const getSessionPlForLine = (lineItem) => {
-    if (!isSession || !teamData.orderBook) return 0
-    // A half-run session line settles YES at the next integer score.
-    const score = Math.ceil(Number(lineItem.price))
-    let sessionPl = 0
-    teamData.orderBook.forEach(line => {
-      if (score > line.price) {
-        sessionPl -= line.back
-        sessionPl += line.lay
-      } else {
-        sessionPl += line.back
-        sessionPl -= line.lay
-      }
-    })
-    return sessionPl
-  }
-  return (
-    <div className="bg-[#0c101d] rounded-xl border border-[#1e2538] shadow-xl overflow-hidden mb-3.5 backdrop-blur-sm flex flex-col h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-2 px-3.5 sm:px-4 py-2.5 border-b border-[#1b2234] bg-[#0f1422]/60 min-h-[46px]">
-        <div className="flex items-center gap-2 min-w-0">
-          <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] shrink-0" />
-          <div className="font-bold text-white text-sm sm:text-base tracking-tight truncate">{teamData.name}</div>
-          {teamData.trend && (
-            <div className={`hidden sm:flex text-[10px] items-center gap-1 font-bold px-1.5 py-0.5 rounded-md shrink-0 ${
-              teamData.trend === 'Rising' 
-                ? 'text-rose-400 bg-rose-500/10 border border-rose-500/20' 
-                : teamData.trend === 'Dropping' 
-                  ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
-                  : 'text-slate-400 bg-slate-800/40 border border-slate-700/30'
-            }`}>
-              {teamData.trend === 'Rising' ? <TrendingUp size={10} /> : teamData.trend === 'Dropping' ? <TrendingUp size={10} className="rotate-180" /> : null}
-              <span>{teamData.trend}</span>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <div className="flex bg-[#07090e] rounded-lg p-0.5 border border-[#1e273b]">
-            <button onClick={() => setActiveTab('volume')} className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all ${activeTab === 'volume' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>Chart</button>
-            <button onClick={() => setActiveTab('time')} className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all ${activeTab === 'time' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>History</button>
-            <button onClick={() => setActiveTab('book')} className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all ${activeTab === 'book' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>Order Book</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Card (Betfair Selection Info) */}
-      <div className="p-3 sm:p-3.5 pb-2.5">
-        <div className="bg-[#121622] border border-[#22293a] rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 space-y-2.5 shadow-inner">
-          <div className="flex justify-between items-center text-xs sm:text-[13px]">
-            <span className="text-[#9ca3af] font-normal">Range:</span>
-            <span className="text-white font-mono font-bold tracking-tight">
-              Low: {formatOdds(teamData.low)} High: {formatOdds(teamData.high)}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center text-xs sm:text-[13px]">
-            <span className="text-[#9ca3af] font-normal">On this selection:</span>
-            <span className="text-white font-mono font-bold tracking-tight">
-              €{formatBetfairVol(teamData.totalBet)}
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center text-xs sm:text-[13px]">
-            <span className="text-[#9ca3af] font-normal">Last price matched:</span>
-            <span className="text-white font-mono font-bold tracking-tight">
-              {formatOdds(teamData.lastPrice)}
-            </span>
-          </div>
-        </div>
-
-        {/* Toss specific Stakes if present */}
-        {isToss && (teamData.totalBack > 0 || teamData.totalLay > 0) && (
-          <div className="grid grid-cols-2 gap-2 mt-2">
-            <div className="bg-[#121622] border border-[#22293a] rounded-lg px-3 py-1.5 flex justify-between items-center">
-              <span className="text-[#9ca3af] text-[11px]">Back Stake:</span>
-              <span className="text-sky-400 text-xs font-mono font-bold">€{formatBetfairVol(teamData.totalBack)}</span>
-            </div>
-            <div className="bg-[#121622] border border-[#22293a] rounded-lg px-3 py-1.5 flex justify-between items-center">
-              <span className="text-[#9ca3af] text-[11px]">Lay Stake:</span>
-              <span className="text-rose-400 text-xs font-mono font-bold">€{formatBetfairVol(teamData.totalLay)}</span>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Tab Content */}
-      {activeTab === 'volume' && (
-        <div className="px-3.5 sm:px-4 pb-3.5">
-          <div className="flex justify-between items-center mb-2.5">
-            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-              <BarChart3 size={11} className="text-blue-400" /> Volume by Price
-            </span>
-            <span className="text-slate-400 text-[11px] font-medium">Peak @ <b className="text-white font-mono">{formatOdds(teamData.peakPrice)}</b></span>
-          </div>
-          <div className="h-[175px] w-full bg-[#080a12]/50 rounded-lg p-1.5 border border-[#181f30]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={teamData.orderBook} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f273b" vertical={false} />
-                <XAxis dataKey="price" stroke="#64748b" tick={{ fontSize: 9 }} tickFormatter={(val) => formatOdds(val)} minTickGap={20} />
-                <YAxis stroke="#64748b" tick={{ fontSize: 9 }} tickFormatter={(val) => formatVolStr(val)} />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#1f273b', opacity: 0.35 }} />
-                <Bar dataKey="totalVol" radius={[2, 2, 0, 0]}>
-                  {teamData.orderBook.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.price === teamData.peakPrice ? '#38bdf8' : '#334155'} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'time' && (
-        <div className="px-3.5 sm:px-4 pb-3.5">
-          <div className="flex justify-between items-center mb-2.5">
-            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-              <TrendingUp size={11} className="text-emerald-400" /> Price History
-            </span>
-          </div>
-          <div className="h-[175px] w-full bg-[#080a12]/50 rounded-lg p-1.5 border border-[#181f30]">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={teamData.timeSeries} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f273b" vertical={false} />
-                <XAxis dataKey="time" stroke="#64748b" tick={{ fontSize: 9 }} minTickGap={30} />
-                <YAxis domain={['auto', 'auto']} stroke="#64748b" tick={{ fontSize: 9 }} tickFormatter={(val) => formatOdds(val)} />
-                <Tooltip content={<TimeTooltip />} />
-                <Line type="monotone" dataKey="price" stroke="#10b981" strokeWidth={2} dot={false} activeDot={{ r: 4, fill: '#34d399' }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
-
-      {activeTab === 'book' && (
-        <div className="px-3.5 sm:px-4 pb-3.5">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5 mb-2">
-            <span className="text-slate-400 text-[11px] font-medium">Showing {teamData.orderBook.length} price levels</span>
-            <div className="flex bg-[#07090e] rounded-lg p-0.5 border border-[#1e273b]">
-              <button onClick={() => setActiveOnly(true)} className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all ${activeOnly ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>Active Only</button>
-              <button onClick={() => setActiveOnly(false)} className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all ${!activeOnly ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>All Prices</button>
-            </div>
-          </div>
-
-          <div className="w-full overflow-x-auto rounded-lg border border-[#1b2234] bg-[#080b14]">
-            <div className="min-w-[320px] text-xs">
-              <div className={`grid ${isSession ? 'grid-cols-5' : 'grid-cols-4'} py-1.5 px-2.5 border-b border-[#1b2234] bg-[#0e1322] font-bold text-slate-400 text-[10px]`}>
-                <div>Price</div>
-                <div className="text-right text-sky-400">To Back</div>
-                <div className="text-right text-rose-400">To Lay</div>
-                <div className="text-right text-emerald-400">Traded</div>
-                {isSession && <div className="text-right text-purple-400">P/L @ Next Run</div>}
-              </div>
-              <div className="max-h-[240px] overflow-y-auto divide-y divide-[#1b2234]/50">
-                {teamData.orderBook.filter(item => !activeOnly || item.totalVol > 0).map((item, idx) => (
-                  <div key={idx} className={`grid ${isSession ? 'grid-cols-5' : 'grid-cols-4'} py-1.5 px-2.5 hover:bg-white/[0.02] transition-colors items-center font-mono text-[11px]`}>
-                    <div className="text-white font-bold">{formatOdds(item.price)}</div>
-                    <div className="text-sky-400 text-right font-medium">{item.back > 0 ? formatVolStr(item.back) : '-'}</div>
-                    <div className="text-rose-400 text-right font-medium">{item.lay > 0 ? formatVolStr(item.lay) : '-'}</div>
-                    <div className="text-emerald-400 text-right font-medium">{item.traded > 0 ? formatVolStr(item.traded) : '-'}</div>
-                    {isSession && (
-                      <div className={`text-right font-bold ${getSessionPlForLine(item) >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                        {formatVolStr(getSessionPlForLine(item))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
 
 export default function MatchDetail({ sport }) {
   const { matchId } = useParams()
@@ -933,8 +629,8 @@ export default function MatchDetail({ sport }) {
   const graphT1 = t1
   const graphT2 = t2
   const effectiveTimeFilter = timeFilter
-  const t1GraphData = processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter)
-  const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter)
+  const t1GraphData = processTeamData(graphT1, graphSnap?.teams?.[graphT1], effectiveTimeFilter, findMarketRunner(graphSnap, graphT1))
+  const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter, findMarketRunner(graphSnap, graphT2))
   const sessionGraphData = isSessionMarket ? processTeamData('Total Runs', { trades: selectedSessionTrades }, timeFilter) : null
 
   // ━━━━━ TOSS AI PREDICTION LOGIC ━━━━━
@@ -954,8 +650,8 @@ export default function MatchDetail({ sport }) {
     ? getBookiePl(tossSnap, tossT1Name, tossT2Name)
     : {}
 
-  const tossT1GraphData = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], effectiveTimeFilter) : null
-  const tossT2GraphData = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], effectiveTimeFilter) : null
+  const tossT1GraphData = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], effectiveTimeFilter, findMarketRunner(tossSnap, tossT1Name)) : null
+  const tossT2GraphData = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], effectiveTimeFilter, findMarketRunner(tossSnap, tossT2Name)) : null
   const tossMarketVol = (tossT1GraphData?.totalBet || 0) + (tossT2GraphData?.totalBet || 0)
 
 
@@ -1704,8 +1400,8 @@ export default function MatchDetail({ sport }) {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 pb-2.5 border-b border-[#1b2234]">
               <div className="flex items-center gap-2 flex-wrap">
                 <BarChart3 size={15} className="text-blue-400" />
-                <span className="text-xs sm:text-sm font-extrabold text-white">Market Odds & Depth Analysis</span>
-                <span className="text-[11px] font-mono text-slate-400 ml-1">Vol: <b className="text-white font-bold">€{formatVolStr(marketVol)}</b></span>
+                <span className="text-xs sm:text-sm font-extrabold text-white">Market Odds & Recorded Volume</span>
+                <span className="text-[11px] font-mono text-slate-400 ml-1">All-period vol: <b className="text-white font-bold">€{formatVolStr(marketVol)}</b></span>
               </div>
               <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
                 <div className="flex bg-[#07090e] p-0.5 rounded-lg border border-[#1e273b]">

@@ -24,9 +24,16 @@ let _lastSessionFp = null;
 const _lastCrexLiveFps = new Map();
 const _lastBundleFps = new Map();
 
+function roundMoneyFp(val) {
+  const n = Number(val) || 0;
+  if (n < 1000) return Math.round(n / 100) * 100;
+  if (n < 50000) return Math.round(n / 500) * 500;
+  return Math.round(n / 2000) * 2000;
+}
+
 function fingerprintMatches(matches) {
   if (!Array.isArray(matches)) return '';
-  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${m.matchLoad?.team1?.money}_${m.matchLoad?.team2?.money}_${m.matchLoad?.team1?.percent}_${m.matchLoad?.team2?.percent}`).join('|');
+  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${roundMoneyFp(m.matchLoad?.team1?.money)}_${roundMoneyFp(m.matchLoad?.team2?.money)}_${Math.round(m.matchLoad?.team1?.percent || 0)}_${Math.round(m.matchLoad?.team2?.percent || 0)}`).join('|');
 }
 
 async function _refreshActiveTokenCache() {
@@ -90,15 +97,13 @@ function init(io) {
 
   // 2. Client connection & subscriptions
   io.on('connection', async (socket) => {
-    // console.log(`🔌 Client connected [${socket.id}], guest: ${Boolean(socket.isGuest)}`);
-
-    // Cricket is the default feed. Other feeds are opt-in so a user on one page
-    // does not pay bandwidth for every sport and market in the application.
-    socket.join('feed:cricket');
+    // Wake up background workers if they were in idle sleep mode
     try {
-      const cricket = await matchPayloadService.getCricketMatchesPayload().catch(() => null);
-      if (cricket) socket.emit('cricket:matches', cricket);
-    } catch (e) {}
+      const crexWorker = require('./scraper-crex');
+      const tllWorker = require('./scraper-tennisliveload');
+      crexWorker.wakeUp?.();
+      tllWorker.wakeUp?.();
+    } catch {}
 
     // Match Room Subscription (When user opens MatchDetail)
     socket.on('match:subscribe', async (data) => {
@@ -211,19 +216,39 @@ async function broadcastMatchBundle(matchId) {
   return true;
 }
 
+function getConnectedClientsCount() {
+  return _io?.engine?.clientsCount || 0;
+}
+
+function hasActiveFeedSubscribers(feed) {
+  if (!_io) return false;
+  if (!feed) return getConnectedClientsCount() > 0;
+  const room = _io.sockets.adapter?.rooms?.get(`feed:${feed}`);
+  return Boolean(room && room.size > 0);
+}
+
 /**
  * Broadcasts all match lists & updates active match rooms
  * Called whenever dataCache completes a tennisliveload poll cycle
  */
 async function broadcastAllMatches() {
   if (!_io) return;
+  if (getConnectedClientsCount() === 0) return;
+
+  const hasCricket = hasActiveFeedSubscribers('cricket');
+  const hasToss = hasActiveFeedSubscribers('toss');
+  const hasTennis = hasActiveFeedSubscribers('tennis');
+  const hasSession = hasActiveFeedSubscribers('session');
+  const activeRooms = getActiveSubscribedMatchIds();
+
+  if (!hasCricket && !hasToss && !hasTennis && !hasSession && activeRooms.length === 0) return;
 
   try {
     const [cricketPayload, tossPayload, tennisPayload, sessionPayload] = await Promise.all([
-      matchPayloadService.getCricketMatchesPayload().catch(() => null),
-      matchPayloadService.getTossMatchesPayload().catch(() => null),
-      matchPayloadService.getTennisMatchesPayload().catch(() => null),
-      matchPayloadService.getSessionMatchesPayload().catch(() => null),
+      hasCricket ? matchPayloadService.getCricketMatchesPayload().catch(() => null) : null,
+      hasToss ? matchPayloadService.getTossMatchesPayload().catch(() => null) : null,
+      hasTennis ? matchPayloadService.getTennisMatchesPayload().catch(() => null) : null,
+      hasSession ? matchPayloadService.getSessionMatchesPayload().catch(() => null) : null,
     ]);
 
     // Broadcast list feeds ONLY if data actually changed (avoids 100s of identical emits per minute)
@@ -260,15 +285,11 @@ async function broadcastAllMatches() {
 
     // Active Match Rooms Broadcast
     // Only compute bundles for rooms that have actual connected subscribers!
-    const rooms = _io.sockets.adapter?.rooms;
-    if (rooms) {
-      for (const [roomName, socketSet] of rooms.entries()) {
-        if (roomName.startsWith('match:') && socketSet.size > 0) {
-          const matchId = roomName.replace('match:', '');
-          try {
-            await broadcastMatchBundle(matchId);
-          } catch (e) {}
-        }
+    if (activeRooms.length > 0) {
+      for (const matchId of activeRooms) {
+        try {
+          await broadcastMatchBundle(matchId);
+        } catch (e) {}
       }
     }
   } catch (err) {
@@ -282,6 +303,11 @@ async function broadcastAllMatches() {
  */
 async function broadcastCrexUpdates() {
   if (!_io) return;
+  if (getConnectedClientsCount() === 0) return;
+
+  const hasCricket = hasActiveFeedSubscribers('cricket');
+  const activeRooms = getActiveSubscribedMatchIds();
+  if (!hasCricket && activeRooms.length === 0) return;
 
   try {
     const cricketMatches = dataCache.getCricketMatches();
@@ -308,7 +334,9 @@ async function broadcastCrexUpdates() {
         team1Short: scorecard?.team1?.shortName || detail.team1Short || null,
         team2Short: scorecard?.team2?.shortName || detail.team2Short || null,
       };
-      _io.to('feed:cricket').emit('crex:live', payload);
+      if (hasCricket) {
+        _io.to('feed:cricket').emit('crex:live', payload);
+      }
 
       // The room receives one deduplicated bundle containing this CREX update.
       await broadcastMatchBundle(mid).catch(() => {});
@@ -366,6 +394,8 @@ function broadcastCrexForMatch(matchId, detail) {
 module.exports = {
   init,
   getIo,
+  getConnectedClientsCount,
+  hasActiveFeedSubscribers,
   getActiveSubscribedMatchIds,
   broadcastMatchBundle,
   broadcastAllMatches,

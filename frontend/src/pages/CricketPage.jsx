@@ -5,7 +5,7 @@ import { getCricketMatches } from '../api'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
-import { getSocket, releaseFeed, requestTossFeed, requestCricketFeed } from '../socket'
+import { getSocket, releaseFeed, requestCricketFeed } from '../socket'
 import { crexScoreFingerprint, mergeCrexUpdate, resolveCrexScores } from '../utils/crexScore'
 
 const MatchDetail = lazy(() => import('./MatchDetail'))
@@ -255,29 +255,6 @@ export default function CricketPage() {
     return () => clearInterval(timer)
   }, [])
 
-  // Toss match IDs for indicator in tournament pills — via socket
-  useEffect(() => {
-    const socket = getSocket()
-    const onTossUpdate = (payload) => {
-      const tossArr = Array.isArray(payload?.matches)
-        ? payload.matches
-        : Array.isArray(payload)
-        ? payload
-        : []
-      if (tossArr.length) {
-        setTossMatchIds(new Set(tossArr.map((m) => m.matchId)))
-      }
-    }
-    socket.on('toss:matches', onTossUpdate)
-    if (socket.connected) requestTossFeed()
-    else socket.once('connect', requestTossFeed)
-    return () => {
-      socket.off('toss:matches', onTossUpdate)
-      socket.off('connect', requestTossFeed)
-      releaseFeed('toss')
-    }
-  }, [])
-
   const processMatches = (data) => {
     if (!data) return
     setLoadError('')
@@ -288,6 +265,14 @@ export default function CricketPage() {
       : Array.isArray(data)
       ? data
       : []
+
+    // Derive tossMatchIds directly from cricket payload without joining toss feed
+    if (Array.isArray(data?.tossMatchIds)) {
+      setTossMatchIds(new Set(data.tossMatchIds))
+    } else {
+      const ids = rawList.filter(m => m.hasToss).map(m => m.matchId)
+      if (ids.length) setTossMatchIds(new Set(ids))
+    }
 
     const getMatchTier = (m) => {
       const s = (m.status || '').toLowerCase()
@@ -657,7 +642,7 @@ export default function CricketPage() {
         {Object.entries(competitions).filter(([comp]) => comp.toLowerCase().includes(leagueQuery.toLowerCase())).map(([comp, compMatches]) => {
           const compLiveCount = compMatches.filter((m) => isLiveMatch(m)).length
           const isSelected = selectedComp === comp && !hasSearch
-          const hasToss = compMatches.some((m) => tossMatchIds.has(m.matchId))
+          const hasToss = compMatches.some((m) => tossMatchIds.has(m.matchId) || m.hasToss)
 
           return (
             <button

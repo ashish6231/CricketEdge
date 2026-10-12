@@ -4796,6 +4796,27 @@
     "runners": [],
     "totalMatched": 48118
   },
+  "36166395": {
+    "matchLoad": {
+      "team1": {
+        "name": "Titans",
+        "money": 1589974,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Eastern Storm",
+        "money": 12948,
+        "percent": 0,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 1602922
+    },
+    "runners": [],
+    "totalMatched": 1602922
+  },
   "36166505": {
     "matchLoad": {
       "team1": {
@@ -5174,6 +5195,69 @@
     "runners": [],
     "totalMatched": 356
   },
+  "36170947": {
+    "matchLoad": {
+      "team1": {
+        "name": "United Arab Emirates",
+        "money": 8689,
+        "percent": 2,
+        "odds": 55,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "USA",
+        "money": 411989,
+        "percent": 98,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "totalMatched": 420678
+    },
+    "runners": [],
+    "totalMatched": 420678
+  },
+  "36171669": {
+    "matchLoad": {
+      "team1": {
+        "name": "Pakistan",
+        "money": 25469056,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Sri Lanka",
+        "money": 391435,
+        "percent": 0,
+        "odds": 340,
+        "trend": "up"
+      },
+      "totalMatched": 25860491
+    },
+    "runners": [],
+    "totalMatched": 25860491
+  },
+  "36172444": {
+    "matchLoad": {
+      "team1": {
+        "name": "India",
+        "money": 121165487,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "West Indies",
+        "money": 1494085,
+        "percent": 0,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 122659572
+    },
+    "runners": [],
+    "totalMatched": 122659572
+  },
   "36172480": {
     "matchLoad": {
       "team1": {
@@ -5257,6 +5341,27 @@
     },
     "runners": [],
     "totalMatched": 1201
+  },
+  "36175445": {
+    "matchLoad": {
+      "team1": {
+        "name": "India Legends",
+        "money": 13537084,
+        "percent": 0,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Bangladesh Champions",
+        "money": 14243534,
+        "percent": 100,
+        "odds": 1.22,
+        "trend": "up"
+      },
+      "totalMatched": 27780618
+    },
+    "runners": [],
+    "totalMatched": 27780618
   },
   "36176822": {
     "matchLoad": {

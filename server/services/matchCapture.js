@@ -95,6 +95,12 @@ async function captureEndedMatches({
   const data = await store.load();
   const byMatchId = new Map(data.records.map((record) => [String(record.matchId), record]));
 
+  const unskipped = eligible.filter((m) => !shouldSkipExisting(byMatchId.get(String(m.matchId || m.id)), m.matchId || m.id));
+  if (!unskipped.length) {
+    summary.skipped = eligible.length;
+    return summary;
+  }
+
   // Fetch CREX overview to try and auto-resolve actual winners
   let crexOverview = [];
   try {
@@ -103,14 +109,9 @@ async function captureEndedMatches({
     console.error('Failed to fetch CREX overview during match capture:', err.message);
   }
 
-  for (const match of eligible) {
+  for (const match of unskipped) {
     const matchId = String(match.matchId || match.id);
     const existing = byMatchId.get(matchId);
-
-    if (shouldSkipExisting(existing, matchId)) {
-      summary.skipped += 1;
-      continue;
-    }
 
     let snapshot;
     try {

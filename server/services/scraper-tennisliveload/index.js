@@ -35,6 +35,22 @@ function isLiveMatch(match) {
   return !isEndedMatch(match) && Boolean(match?.inPlay || status === 'live' || status === 'in-play');
 }
 
+function mergeLiveOdds(snapshot, liveOdds) {
+  if (!snapshot || !Array.isArray(liveOdds?.runners) || !liveOdds.runners.length) return snapshot;
+  const existing = Array.isArray(snapshot.runners) ? snapshot.runners : [];
+  const normalizeName = value => String(value || '').trim().toLowerCase();
+  const merged = liveOdds.runners.map(next => {
+    const nextName = normalizeName(next.runnerName || next.name);
+    const previous = existing.find(item => normalizeName(item.runnerName || item.name) === nextName);
+    return { ...(previous || {}), ...next };
+  });
+  const liveNames = new Set(merged.map(item => normalizeName(item.runnerName || item.name)));
+  for (const item of existing) {
+    if (!liveNames.has(normalizeName(item.runnerName || item.name))) merged.push(item);
+  }
+  return { ...snapshot, runners: merged, liveOddsUpdatedAt: liveOdds.updatedAt || Date.now() };
+}
+
 async function refreshSessionDetails(sessionMatches, subscribedMatchIds, queue) {
   const now = Date.now();
   const list = Array.isArray(sessionMatches) ? sessionMatches : [];
@@ -155,7 +171,11 @@ async function runPollCycle() {
         _upcomingSnapshotLastAttempt.set(String(mid), now);
 
         try {
-          const snapshot = await adapter.getSnapshot(mid);
+          const [rawSnapshot, liveOdds] = await Promise.all([
+            adapter.getSnapshot(mid),
+            isLiveOrSub ? adapter.getOdds(mid).catch(() => null) : Promise.resolve(null),
+          ]);
+          const snapshot = mergeLiveOdds(rawSnapshot, liveOdds);
           if (snapshot && !snapshot.error) {
             await queue.add('ingest', {
               source: 'tll',
@@ -191,8 +211,51 @@ async function runPollCycle() {
   }
 }
 
+function getEffectivePollInterval() {
+  try {
+    const socketService = require('../socketService');
+    const clientsCount = socketService.getConnectedClientsCount?.() || 0;
+    if (clientsCount === 0) {
+      // Idle sleep mode: Nobody is looking at the site! (save 80% bandwidth)
+      return 60000;
+    }
+    const subscribedMatchIds = socketService.getActiveSubscribedMatchIds?.() || [];
+    if (subscribedMatchIds.length > 0) {
+      return _pollInterval;
+    }
+    const dataCache = require('../dataCache');
+    const cricket = dataCache.getCricketMatches();
+    const hasLive = Array.isArray(cricket) && cricket.some(m => m.inPlay || m.status === 'live' || m.status === 'in-play');
+    if (!hasLive) {
+      // Quiet period: Visitors online, but all matches are upcoming/ended
+      return 30000;
+    }
+    return _pollInterval;
+  } catch {
+    return _pollInterval;
+  }
+}
+
+let _stopped = true;
+
+async function pollTick() {
+  if (_stopped) return;
+  await runPollCycle().catch(() => {});
+  if (_stopped) return;
+  const nextInterval = getEffectivePollInterval();
+  _timer = setTimeout(pollTick, nextInterval);
+  _timer.unref?.();
+}
+
+function wakeUp() {
+  if (_stopped) return;
+  if (_timer) clearTimeout(_timer);
+  pollTick().catch(() => {});
+}
+
 async function start() {
   console.log('🚀 [TLL-Worker] starting TennisLiveLoad ingestion service...');
+  _stopped = false;
   await session.loadSavedSession();
 
   // Try to acquire singleton lock (wait up to 30s during deploy handoff)
@@ -201,16 +264,14 @@ async function start() {
     console.warn('⏸️  [TLL-Worker] running in standby mode (waiting for lock)...');
   }
 
-  // Start polling loop
-  if (_timer) clearInterval(_timer);
-  _timer = setInterval(runPollCycle, _pollInterval);
-
-  // Run initial cycle
-  runPollCycle().catch(() => {});
+  // Start adaptive polling loop
+  if (_timer) clearTimeout(_timer);
+  pollTick().catch(() => {});
 }
 
 function stop() {
-  if (_timer) clearInterval(_timer);
+  _stopped = true;
+  if (_timer) clearTimeout(_timer);
   _timer = null;
   console.log('⏹️  [TLL-Worker] stopped.');
 }
@@ -259,7 +320,11 @@ function triggerImmediateMatchFetch(matchId, options = {}) {
   const queue = getIngestQueue();
 
   Promise.all([
-    adapter.getSnapshot(mid).then(snapshot => {
+    Promise.all([
+      adapter.getSnapshot(mid),
+      adapter.getOdds(mid).catch(() => null),
+    ]).then(([rawSnapshot, liveOdds]) => {
+      const snapshot = mergeLiveOdds(rawSnapshot, liveOdds);
       if (snapshot && !snapshot.error) {
         queue.add('ingest', {
           source: 'tll',
@@ -292,6 +357,7 @@ module.exports = {
   session,
   start,
   stop,
+  wakeUp,
   triggerImmediateMatchFetch,
   triggerImmediateSessionFetch,
 };

@@ -1,5 +1,5 @@
 function startMatchCaptureWorker({
-  intervalMs = Number(process.env.MATCH_CAPTURE_INTERVAL_MS || 60000),
+  intervalMs = Number(process.env.MATCH_CAPTURE_INTERVAL_MS || 5 * 60 * 1000),
   captureEndedMatches = require('./matchCapture').captureEndedMatches,
 } = {}) {
   let stopped = false;
