@@ -1,0 +1,1795 @@
+{
+  "sourceQueriedAt": "2026-10-17T02:30:44.526Z",
+  "parameters": {
+    "highLayBackRatio": 0.1,
+    "minDominantBackLead": 3,
+    "maxZeroLayBackLead": 3
+  },
+  "scope": "Corrected frozen sample: 9 known Legends outcomes, 8 database verified + 1 user reported; two abandoned records excluded.",
+  "validation": "Outcome-informed retrospective factor audit, not a causal explanation or independent future validation.",
+  "backtestChangesActiveAlgorithm": false,
+  "activeAlgorithmVersion": "toss-world-legends-support-activity-v3",
+  "summary": {
+    "knownOutcomes": 9,
+    "verifiedOutcomes": 8,
+    "userReportedOutcomes": 1,
+    "baselinePass": 7,
+    "baselineFail": 2,
+    "correctedWithCombined": 2,
+    "regressedWithCombined": 0,
+    "preservedWithCombined": 7,
+    "combinedPass": 9,
+    "verifiedCombinedPass": 8,
+    "samePicksAsV2": 9,
+    "samePicksAsActive": 9,
+    "allBaselineLeadersHaveNegativePnlAndHigherExposure": true,
+    "preTossCaptureVerified": 0
+  },
+  "observations": [
+    {
+      "matchId": "36126552",
+      "match": "India Legends v Australia Legends",
+      "startTime": 1791027000000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "Australia Legends",
+      "baselinePick": "Australia Legends",
+      "baselineCorrect": true,
+      "factors": {
+        "leaderTeam": "Australia Legends",
+        "otherTeam": "India Legends",
+        "leaderBack": 284.25,
+        "leaderLay": 0,
+        "otherBack": 150.59,
+        "otherLay": 72.46,
+        "anyLayZero": true,
+        "bothLaysZero": false,
+        "layBackRatio": 0,
+        "backLead": 1.8875755362241848,
+        "highLay": false,
+        "dominantBack": false,
+        "moderateBack": true
+      },
+      "selectedPnl": -191.9194,
+      "opposingPnl": 213.64950000000002,
+      "selectedExposure": 270.04940000000005,
+      "opposingExposure": 70.6005,
+      "selectedSupportPct": 70.31539522964715,
+      "selectedActivityPct": 70.53760951821766,
+      "archivedV2Pick": "Australia Legends",
+      "activePick": "Australia Legends"
+    },
+    {
+      "matchId": "36130557",
+      "match": "West Indies Legends v South Africa Legends",
+      "startTime": 1791113400000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "South Africa Legends",
+      "baselinePick": "South Africa Legends",
+      "baselineCorrect": true,
+      "factors": {
+        "leaderTeam": "South Africa Legends",
+        "otherTeam": "West Indies Legends",
+        "leaderBack": 722.4799999999999,
+        "leaderLay": 13.7,
+        "otherBack": 388.6,
+        "otherLay": 10.65,
+        "anyLayZero": false,
+        "bothLaysZero": false,
+        "layBackRatio": 0.018962462628723288,
+        "backLead": 1.8591868244981984,
+        "highLay": false,
+        "dominantBack": false,
+        "moderateBack": true
+      },
+      "selectedPnl": -278.5727999999999,
+      "opposingPnl": 356.8255,
+      "selectedExposure": 656.5228000000001,
+      "opposingExposure": 351.9545,
+      "selectedSupportPct": 64.56848947094933,
+      "selectedActivityPct": 64.37971408788256,
+      "archivedV2Pick": "South Africa Legends",
+      "activePick": "South Africa Legends"
+    },
+    {
+      "matchId": "36147996",
+      "match": "India Legends v England Legends",
+      "startTime": 1791127800000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "India Legends",
+      "baselinePick": "England Legends",
+      "baselineCorrect": false,
+      "factors": {
+        "leaderTeam": "England Legends",
+        "otherTeam": "India Legends",
+        "leaderBack": 2178.19,
+        "leaderLay": 307.82000000000005,
+        "otherBack": 423.4099999999999,
+        "otherLay": 111.01,
+        "anyLayZero": false,
+        "bothLaysZero": false,
+        "layBackRatio": 0.14131916866756344,
+        "backLead": 5.144399045842093,
+        "highLay": true,
+        "dominantBack": true,
+        "moderateBack": false
+      },
+      "selectedPnl": -1391.4569,
+      "opposingPnl": 1592.1789999999996,
+      "selectedExposure": 1703.8569,
+      "opposingExposure": 278.1909999999999,
+      "selectedSupportPct": 75.79053313601044,
+      "selectedActivityPct": 74.89059656579546,
+      "archivedV2Pick": "India Legends",
+      "activePick": "India Legends"
+    },
+    {
+      "matchId": "36151021",
+      "match": "Bangladesh Champions v England Legends",
+      "startTime": 1791214200000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "England Legends",
+      "baselinePick": "England Legends",
+      "baselineCorrect": true,
+      "factors": {
+        "leaderTeam": "England Legends",
+        "otherTeam": "Bangladesh Champions",
+        "leaderBack": 1540.02,
+        "leaderLay": 118.76,
+        "otherBack": 627.77,
+        "otherLay": 97.60000000000001,
+        "anyLayZero": false,
+        "bothLaysZero": false,
+        "layBackRatio": 0.07711588161192712,
+        "backLead": 2.4531595966675694,
+        "highLay": false,
+        "dominantBack": false,
+        "moderateBack": true
+      },
+      "selectedPnl": -787.0593,
+      "opposingPnl": 925.2832999999998,
+      "selectedExposure": 1317.2293,
+      "opposingExposure": 495.83259999999996,
+      "selectedSupportPct": 68.6877922949479,
+      "selectedActivityPct": 68.62829579961445,
+      "archivedV2Pick": "England Legends",
+      "activePick": "England Legends"
+    },
+    {
+      "matchId": "36151023",
+      "match": "India Legends v South Africa Legends",
+      "startTime": 1791646200000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "South Africa Legends",
+      "baselinePick": "India Legends",
+      "baselineCorrect": false,
+      "factors": {
+        "leaderTeam": "India Legends",
+        "otherTeam": "South Africa Legends",
+        "leaderBack": 1171.82,
+        "leaderLay": 0,
+        "otherBack": 576.7,
+        "otherLay": 0,
+        "anyLayZero": true,
+        "bothLaysZero": true,
+        "layBackRatio": 0,
+        "backLead": 2.0319403502687705,
+        "highLay": false,
+        "dominantBack": false,
+        "moderateBack": true
+      },
+      "selectedPnl": -538.7755,
+      "opposingPnl": 621.6454,
+      "selectedExposure": 1115.4755,
+      "opposingExposure": 550.1745999999999,
+      "selectedSupportPct": 67.01782078557866,
+      "selectedActivityPct": 66.96937730199159,
+      "archivedV2Pick": "South Africa Legends",
+      "activePick": "South Africa Legends"
+    },
+    {
+      "matchId": "36172480",
+      "match": "Australia Legends v West Indies Legends",
+      "startTime": 1791718200000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "Australia Legends",
+      "baselinePick": "Australia Legends",
+      "baselineCorrect": true,
+      "factors": {
+        "leaderTeam": "Australia Legends",
+        "otherTeam": "West Indies Legends",
+        "leaderBack": 2810.29,
+        "leaderLay": 10.85,
+        "otherBack": 457.37,
+        "otherLay": 10.64,
+        "anyLayZero": false,
+        "bothLaysZero": false,
+        "layBackRatio": 0.0038608115176725533,
+        "backLead": 6.144456348251962,
+        "highLay": false,
+        "dominantBack": true,
+        "moderateBack": false
+      },
+      "selectedPnl": -2191.0929000000006,
+      "opposingPnl": 2374.6521000000002,
+      "selectedExposure": 2637.8229000000006,
+      "opposingExposure": 424.7879,
+      "selectedSupportPct": 85.76471124758676,
+      "selectedActivityPct": 85.62298343250193,
+      "archivedV2Pick": "Australia Legends",
+      "activePick": "Australia Legends"
+    },
+    {
+      "matchId": "36175445",
+      "match": "India Legends v Bangladesh Champions",
+      "startTime": 1791732600000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "India Legends",
+      "baselinePick": "India Legends",
+      "baselineCorrect": true,
+      "factors": {
+        "leaderTeam": "India Legends",
+        "otherTeam": "Bangladesh Champions",
+        "leaderBack": 803.76,
+        "leaderLay": 18.08,
+        "otherBack": 552.6500000000001,
+        "otherLay": 10.64,
+        "anyLayZero": false,
+        "bothLaysZero": false,
+        "layBackRatio": 0.02249427689857669,
+        "backLead": 1.4543743779969236,
+        "highLay": false,
+        "dominantBack": false,
+        "moderateBack": true
+      },
+      "selectedPnl": -204.76809999999978,
+      "opposingPnl": 271.5152999999999,
+      "selectedExposure": 746.7780999999999,
+      "opposingExposure": 514.1647,
+      "selectedSupportPct": 58.79592529221084,
+      "selectedActivityPct": 58.80339038052082,
+      "archivedV2Pick": "India Legends",
+      "activePick": "India Legends"
+    },
+    {
+      "matchId": "36194405",
+      "match": "South Africa Legends v England Legends",
+      "startTime": 1792150200000,
+      "outcomeSource": "database-verified",
+      "actualWinner": "South Africa Legends",
+      "baselinePick": "South Africa Legends",
+      "baselineCorrect": true,
+      "factors": {
+        "leaderTeam": "South Africa Legends",
+        "otherTeam": "England Legends",
+        "leaderBack": 684.4599999999999,
+        "leaderLay": 3.36,
+        "otherBack": 488.77000000000004,
+        "otherLay": 0,
+        "anyLayZero": true,
+        "bothLaysZero": false,
+        "layBackRatio": 0.004908979341378605,
+        "backLead": 1.4003723632792517,
+        "highLay": false,
+        "dominantBack": false,
+        "moderateBack": true
+      },
+      "selectedPnl": -159.88339999999985,
+      "opposingPnl": 216.16899999999987,
+      "selectedExposure": 648.6533999999999,
+      "opposingExposure": 464.93100000000004,
+      "selectedSupportPct": 58.173195420664804,
+      "selectedActivityPct": 58.19715681643136,
+      "archivedV2Pick": "South Africa Legends",
+      "activePick": "South Africa Legends"
+    },
+    {
+      "matchId": "36194408",
+      "match": "Australia Legends v West Indies Legends",
+      "startTime": 1792164600000,
+      "outcomeSource": "user-reported; database pending",
+      "actualWinner": "Australia Legends",
+      "baselinePick": "Australia Legends",
+      "baselineCorrect": true,
+      "factors": {
+        "leaderTeam": "Australia Legends",
+        "otherTeam": "West Indies Legends",
+        "leaderBack": 713.14,
+        "leaderLay": 101.91,
+        "otherBack": 533.1400000000001,
+        "otherLay": 10.78,
+        "anyLayZero": false,
+        "bothLaysZero": false,
+        "layBackRatio": 0.14290321675968254,
+        "backLead": 1.3376223881156917,
+        "highLay": true,
+        "dominantBack": false,
+        "moderateBack": true
+      },
+      "selectedPnl": -55.98399999999991,
+      "opposingPnl": 111.55539999999989,
+      "selectedExposure": 578.344,
+      "opposingExposure": 499.67459999999994,
+      "selectedSupportPct": 53.26975577091473,
+      "selectedActivityPct": 53.03640279417136,
+      "archivedV2Pick": "Australia Legends",
+      "activePick": "Australia Legends"
+    }
+  ],
+  "candidates": [
+    {
+      "id": "baseline",
+      "label": "Support + activity only",
+      "condition": "No reversal",
+      "summary": {
+        "samples": 9,
+        "correct": 7,
+        "failed": 2,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 6,
+        "failed": 2,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [],
+      "regressedPasses": [],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194405",
+        "36194408"
+      ],
+      "changedRows": [],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "any-zero-lay",
+      "label": "Reverse if either lay is zero",
+      "condition": "At least one lay = 0",
+      "summary": {
+        "samples": 9,
+        "correct": 6,
+        "failed": 3,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 5,
+        "failed": 3,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36151023"
+      ],
+      "regressedPasses": [
+        "36126552",
+        "36194405"
+      ],
+      "preservedPasses": [
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194408"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "England Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "England Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "both-zero-lay",
+      "label": "Reverse if both lays are zero",
+      "condition": "Both lays = 0",
+      "summary": {
+        "samples": 9,
+        "correct": 8,
+        "failed": 1,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 7,
+        "failed": 1,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36151023"
+      ],
+      "regressedPasses": [],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194405",
+        "36194408"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "high-lay-only",
+      "label": "Reverse on high lay/back alone",
+      "condition": "Selected lay/back ≥10%",
+      "summary": {
+        "samples": 9,
+        "correct": 7,
+        "failed": 2,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 7,
+        "failed": 1,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 0,
+        "failed": 1,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36147996"
+      ],
+      "regressedPasses": [
+        "36194408"
+      ],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194405"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "West Indies Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "West Indies Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        }
+      ]
+    },
+    {
+      "id": "large-back-only",
+      "label": "Reverse on large back lead alone",
+      "condition": "Selected back lead ≥3×",
+      "summary": {
+        "samples": 9,
+        "correct": 7,
+        "failed": 2,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 6,
+        "failed": 2,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36147996"
+      ],
+      "regressedPasses": [
+        "36172480"
+      ],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36175445",
+        "36194405",
+        "36194408"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "West Indies Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "West Indies Legends",
+          "reversed": true,
+          "baselineCorrect": true,
+          "correct": false
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "guarded-high-lay",
+      "label": "High lay/back + dominant back",
+      "condition": "Selected lay/back ≥10% AND back lead ≥3×",
+      "summary": {
+        "samples": 9,
+        "correct": 8,
+        "failed": 1,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 7,
+        "failed": 1,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36147996"
+      ],
+      "regressedPasses": [],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194405",
+        "36194408"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "guarded-zero-lay",
+      "label": "Both zero lay + moderate back",
+      "condition": "Both lays = 0 AND selected back lead <3×",
+      "summary": {
+        "samples": 9,
+        "correct": 8,
+        "failed": 1,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 7,
+        "failed": 1,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36151023"
+      ],
+      "regressedPasses": [],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194405",
+        "36194408"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": false,
+          "correct": false
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "combined",
+      "label": "Both guarded exceptions",
+      "condition": "(lay/back ≥10% AND back lead ≥3×) OR (both lays = 0 AND back lead <3×)",
+      "summary": {
+        "samples": 9,
+        "correct": 9,
+        "failed": 0,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 8,
+        "failed": 0,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36147996",
+        "36151023"
+      ],
+      "regressedPasses": [],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194405",
+        "36194408"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    },
+    {
+      "id": "high-guard-any-both-zero",
+      "label": "Guarded high lay + any both-zero lay",
+      "condition": "(lay/back ≥10% AND back lead ≥3×) OR both lays = 0",
+      "summary": {
+        "samples": 9,
+        "correct": 9,
+        "failed": 0,
+        "noPick": 0
+      },
+      "verified": {
+        "samples": 8,
+        "correct": 8,
+        "failed": 0,
+        "noPick": 0
+      },
+      "userReported": {
+        "samples": 1,
+        "correct": 1,
+        "failed": 0,
+        "noPick": 0
+      },
+      "correctedFailures": [
+        "36147996",
+        "36151023"
+      ],
+      "regressedPasses": [],
+      "preservedPasses": [
+        "36126552",
+        "36130557",
+        "36151021",
+        "36172480",
+        "36175445",
+        "36194405",
+        "36194408"
+      ],
+      "changedRows": [
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        }
+      ],
+      "rows": [
+        {
+          "matchId": "36126552",
+          "match": "India Legends v Australia Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36130557",
+          "match": "West Indies Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36147996",
+          "match": "India Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "India Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36151021",
+          "match": "Bangladesh Champions v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "England Legends",
+          "baselinePick": "England Legends",
+          "candidatePick": "England Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36151023",
+          "match": "India Legends v South Africa Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": true,
+          "baselineCorrect": false,
+          "correct": true
+        },
+        {
+          "matchId": "36172480",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36175445",
+          "match": "India Legends v Bangladesh Champions",
+          "outcomeSource": "database-verified",
+          "actualWinner": "India Legends",
+          "baselinePick": "India Legends",
+          "candidatePick": "India Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194405",
+          "match": "South Africa Legends v England Legends",
+          "outcomeSource": "database-verified",
+          "actualWinner": "South Africa Legends",
+          "baselinePick": "South Africa Legends",
+          "candidatePick": "South Africa Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        },
+        {
+          "matchId": "36194408",
+          "match": "Australia Legends v West Indies Legends",
+          "outcomeSource": "user-reported; database pending",
+          "actualWinner": "Australia Legends",
+          "baselinePick": "Australia Legends",
+          "candidatePick": "Australia Legends",
+          "reversed": false,
+          "baselineCorrect": true,
+          "correct": true
+        }
+      ]
+    }
+  ],
+  "factorSupport": [
+    {
+      "id": "any-zero-lay",
+      "condition": "At least one lay = 0",
+      "matchingPasses": 2,
+      "matchingFailures": 1,
+      "matchingIds": [
+        "36126552",
+        "36151023",
+        "36194405"
+      ]
+    },
+    {
+      "id": "both-zero-lay",
+      "condition": "Both lays = 0",
+      "matchingPasses": 0,
+      "matchingFailures": 1,
+      "matchingIds": [
+        "36151023"
+      ]
+    },
+    {
+      "id": "high-lay-only",
+      "condition": "Selected lay/back ≥10%",
+      "matchingPasses": 1,
+      "matchingFailures": 1,
+      "matchingIds": [
+        "36147996",
+        "36194408"
+      ]
+    },
+    {
+      "id": "large-back-only",
+      "condition": "Selected back lead ≥3×",
+      "matchingPasses": 1,
+      "matchingFailures": 1,
+      "matchingIds": [
+        "36147996",
+        "36172480"
+      ]
+    },
+    {
+      "id": "guarded-high-lay",
+      "condition": "Selected lay/back ≥10% AND back lead ≥3×",
+      "matchingPasses": 0,
+      "matchingFailures": 1,
+      "matchingIds": [
+        "36147996"
+      ]
+    },
+    {
+      "id": "guarded-zero-lay",
+      "condition": "Both lays = 0 AND selected back lead <3×",
+      "matchingPasses": 0,
+      "matchingFailures": 1,
+      "matchingIds": [
+        "36151023"
+      ]
+    }
+  ],
+  "limitations": [
+    "Each guarded exception matches exactly one verified failure. Zero regression across seven passed examples is not independent validation.",
+    "Australia–Pakistan was corrected to abandoned/no result and is not a passed zero-lay control. No scored both-zero-lay pass remains; the <3x zero-lay guard is not distinguishable from an unbounded both-zero-lay reversal in this sample.",
+    "The 10% and 3x high-lay cutoffs were selected after inspecting outcomes earlier in the session and were present in archived exposure/lay v2.",
+    "All scored records were captured after listed match start. Availability of these inputs before the toss is not established.",
+    "Support, activity, P/L and exposure are related market quantities; agreement is not independent evidence and cannot establish why a toss result occurred.",
+    "The latest approved support/activity rule with guarded high lay OR both-zero-lay is active as v3. Archived exposure/lay v2 agrees on this sample but can differ on other inputs."
+  ]
+}

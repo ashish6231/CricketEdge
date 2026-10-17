@@ -1,0 +1,1413 @@
+{
+  "queriedAt": "2026-10-17T02:15:56.005Z",
+  "source": "Read-only SELECT of PredictionRecord, dataset tosses; World Championship of Legends only",
+  "reportedOutcomes": [
+    {
+      "matchId": "36194408",
+      "actualWinner": "Australia Legends",
+      "source": "User report in this conversation; database outcome is still pending",
+      "reportedOn": "2026-10-17"
+    }
+  ],
+  "rows": [
+    {
+      "matchId": "36126552",
+      "matchName": "India Legends v Australia Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791027000000,
+      "capturedAt": "2026-10-03T16:42:14.250Z",
+      "status": "verified",
+      "actualWinner": "Australia Legends",
+      "predictedWinner": "India Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Micro Liquidity Bookie Safe on India Legends (P/L: +213.6 vs Australia Legends: -191.9)",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "Australia Legends"
+        ],
+        "serverTime": "2026-10-03T16:41:48.452Z",
+        "matchId": "36126552",
+        "matchName": "India Legends v Australia Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 150.59,
+            "lay": 72.46,
+            "total": 150.59
+          },
+          "team2": {
+            "back": 284.25,
+            "lay": 0,
+            "total": 356.71
+          }
+        },
+        "preMatchPnl": {
+          "team1": 213.64950000000002,
+          "team2": -191.9194
+        },
+        "preMatchTotalBets": {
+          "team1": 143.0605,
+          "team2": 342.5094
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 70.6005,
+            "backExposure": 143.0605,
+            "layExposure": 72.46,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 270.04940000000005,
+            "backExposure": 270.04940000000005,
+            "layExposure": 0,
+            "teamName": "Australia Legends"
+          }
+        },
+        "teams": {
+          "India Legends": {
+            "trades": [
+              {
+                "team": "India Legends",
+                "price": 2,
+                "type": "lay",
+                "size": 72.46,
+                "updatedAt": 1791024496581
+              },
+              {
+                "team": "India Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 150.59,
+                "updatedAt": 1791022862920
+              }
+            ],
+            "pnlIfWins": 213.64950000000002,
+            "totalBet": 143.0605
+          },
+          "Australia Legends": {
+            "trades": [
+              {
+                "team": "Australia Legends",
+                "price": 1.8,
+                "type": "back",
+                "size": 0.11,
+                "updatedAt": 1791024859118
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 281.3,
+                "updatedAt": 1791024544610
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 2.84,
+                "updatedAt": 1791024496656
+              }
+            ],
+            "pnlIfWins": -191.9194,
+            "totalBet": 342.5094
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36128071",
+      "matchName": "Pakistan Legends v Bangladesh Champions",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791041400000,
+      "capturedAt": "2026-10-04T10:55:32.600Z",
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictedWinner": "Pakistan Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Smart Money Inflow (Pakistan Legends: ₹265 Back, Lead: 1.2x)",
+      "snapshot": {
+        "teamNames": [
+          "Pakistan Legends",
+          "Bangladesh Champions"
+        ],
+        "serverTime": "2026-10-03T19:10:52.485Z",
+        "matchId": "36128071",
+        "matchName": "Pakistan Legends v Bangladesh Champions",
+        "preMatchVolume": {
+          "team1": {
+            "back": 265,
+            "lay": 4.83,
+            "total": 265
+          },
+          "team2": {
+            "back": 217.23,
+            "lay": 0,
+            "total": 222.06
+          }
+        },
+        "preMatchPnl": {
+          "team1": -25.85900000000001,
+          "team2": 56.725400000000036
+        },
+        "preMatchTotalBets": {
+          "team1": 247.8707,
+          "team2": 208.2746
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 243.089,
+            "backExposure": 247.8707,
+            "layExposure": 4.7817,
+            "teamName": "Pakistan Legends"
+          },
+          "team2": {
+            "netExposure": 203.44459999999998,
+            "backExposure": 203.44459999999998,
+            "layExposure": 0,
+            "teamName": "Bangladesh Champions"
+          }
+        },
+        "teams": {
+          "Pakistan Legends": {
+            "trades": [
+              {
+                "team": "Pakistan Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 122.93,
+                "updatedAt": 1791036512674
+              },
+              {
+                "team": "Pakistan Legends",
+                "price": 1.99,
+                "type": "lay",
+                "size": 4.83,
+                "updatedAt": 1791034532814
+              },
+              {
+                "team": "Pakistan Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 142.07,
+                "updatedAt": 1791031809450
+              }
+            ],
+            "pnlIfWins": -25.85900000000001,
+            "totalBet": 247.8707
+          },
+          "Bangladesh Champions": {
+            "trades": [
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.93,
+                "type": "back",
+                "size": 75.16,
+                "updatedAt": 1791037993283
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.94,
+                "type": "back",
+                "size": 142.07,
+                "updatedAt": 1791034560254
+              }
+            ],
+            "pnlIfWins": 56.725400000000036,
+            "totalBet": 208.2746
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36130557",
+      "matchName": "West Indies Legends v South Africa Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791113400000,
+      "capturedAt": "2026-10-04T17:24:59.017Z",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "South Africa Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Smart Money Inflow (South Africa Legends: ₹722 Back, Lead: 1.9x)",
+      "snapshot": {
+        "teamNames": [
+          "West Indies Legends",
+          "South Africa Legends"
+        ],
+        "serverTime": "2026-10-04T17:23:40.349Z",
+        "matchId": "36130557",
+        "matchName": "West Indies Legends v South Africa Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 388.6,
+            "lay": 10.65,
+            "total": 402.3
+          },
+          "team2": {
+            "back": 722.4799999999999,
+            "lay": 13.7,
+            "total": 733.1299999999999
+          }
+        },
+        "preMatchPnl": {
+          "team1": 356.8255,
+          "team2": -278.5727999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 376.5175,
+          "team2": 680.5136
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 351.9545,
+            "backExposure": 362.8175,
+            "layExposure": 10.863000000000001,
+            "teamName": "West Indies Legends"
+          },
+          "team2": {
+            "netExposure": 656.5228000000001,
+            "backExposure": 669.8636,
+            "layExposure": 13.3408,
+            "teamName": "South Africa Legends"
+          }
+        },
+        "teams": {
+          "West Indies Legends": {
+            "trades": [
+              {
+                "team": "West Indies Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 246.65,
+                "updatedAt": 1791110193497
+              },
+              {
+                "team": "West Indies Legends",
+                "price": 2.02,
+                "type": "lay",
+                "size": 10.65,
+                "updatedAt": 1791109210801
+              },
+              {
+                "team": "West Indies Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 141.95,
+                "updatedAt": 1791107075475
+              }
+            ],
+            "pnlIfWins": 356.8255,
+            "totalBet": 376.5175
+          },
+          "South Africa Legends": {
+            "trades": [
+              {
+                "team": "South Africa Legends",
+                "price": 1.92,
+                "type": "back",
+                "size": 321.43,
+                "updatedAt": 1791110298554
+              },
+              {
+                "team": "South Africa Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.86,
+                "updatedAt": 1791109211021
+              },
+              {
+                "team": "South Africa Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 283.9,
+                "updatedAt": 1791107922689
+              },
+              {
+                "team": "South Africa Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 117.14999999999999,
+                "updatedAt": 1791107043333
+              },
+              {
+                "team": "South Africa Legends",
+                "price": 1.95,
+                "type": "lay",
+                "size": 2.84,
+                "updatedAt": 1791104127471
+              }
+            ],
+            "pnlIfWins": -278.5727999999999,
+            "totalBet": 680.5136
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36147996",
+      "matchName": "India Legends v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791127800000,
+      "capturedAt": "2026-10-05T01:10:29.270Z",
+      "status": "verified",
+      "actualWinner": "India Legends",
+      "predictedWinner": "England Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Smart Money Inflow (England Legends: ₹2.2k Back, Lead: 5.1x)",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "England Legends"
+        ],
+        "serverTime": "2026-10-04T18:03:58.656Z",
+        "matchId": "36147996",
+        "matchName": "India Legends v England Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 423.4099999999999,
+            "lay": 111.01,
+            "total": 731.23
+          },
+          "team2": {
+            "back": 2178.19,
+            "lay": 307.82000000000005,
+            "total": 2289.2000000000003
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1592.1789999999996,
+          "team2": -1391.4569
+        },
+        "preMatchTotalBets": {
+          "team1": 703.0068,
+          "team2": 2096.7682
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 278.1909999999999,
+            "backExposure": 395.18679999999995,
+            "layExposure": 116.9958,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 1703.8569,
+            "backExposure": 1985.7582,
+            "layExposure": 281.9013,
+            "teamName": "England Legends"
+          }
+        },
+        "teams": {
+          "India Legends": {
+            "trades": [
+              {
+                "team": "India Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 283.9,
+                "updatedAt": 1791124209255
+              },
+              {
+                "team": "India Legends",
+                "price": 1.92,
+                "type": "back",
+                "size": 0.4,
+                "updatedAt": 1791124209255
+              },
+              {
+                "team": "India Legends",
+                "price": 1.94,
+                "type": "lay",
+                "size": 9.890000000000015,
+                "updatedAt": 1791123514100
+              },
+              {
+                "team": "India Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 136.26999999999998,
+                "updatedAt": 1791123513556
+              },
+              {
+                "team": "India Legends",
+                "price": 2,
+                "type": "lay",
+                "size": 18.88,
+                "updatedAt": 1791123159550
+              },
+              {
+                "team": "India Legends",
+                "price": 2.08,
+                "type": "lay",
+                "size": 82.24,
+                "updatedAt": 1791122807298
+              },
+              {
+                "team": "India Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 2.84,
+                "updatedAt": 1791119712101
+              }
+            ],
+            "pnlIfWins": 1592.1789999999996,
+            "totalBet": 703.0068
+          },
+          "England Legends": {
+            "trades": [
+              {
+                "team": "England Legends",
+                "price": 1.89,
+                "type": "back",
+                "size": 283.9,
+                "updatedAt": 1791123592544
+              },
+              {
+                "team": "England Legends",
+                "price": 1.88,
+                "type": "back",
+                "size": 28.39,
+                "updatedAt": 1791123592544
+              },
+              {
+                "team": "England Legends",
+                "price": 1.9,
+                "type": "lay",
+                "size": 19.880000000000052,
+                "updatedAt": 1791123159653
+              },
+              {
+                "team": "England Legends",
+                "price": 1.9,
+                "type": "back",
+                "size": 425.84,
+                "updatedAt": 1791123156555
+              },
+              {
+                "team": "England Legends",
+                "price": 1.91,
+                "type": "lay",
+                "size": 89.54999999999995,
+                "updatedAt": 1791122807613
+              },
+              {
+                "team": "England Legends",
+                "price": 1.91,
+                "type": "back",
+                "size": 582.7,
+                "updatedAt": 1791122801378
+              },
+              {
+                "team": "England Legends",
+                "price": 1.92,
+                "type": "lay",
+                "size": 198.39000000000004,
+                "updatedAt": 1791122278241
+              },
+              {
+                "team": "England Legends",
+                "price": 1.92,
+                "type": "back",
+                "size": 425.84,
+                "updatedAt": 1791122277690
+              },
+              {
+                "team": "England Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 283.9,
+                "updatedAt": 1791121553805
+              },
+              {
+                "team": "England Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 144.78,
+                "updatedAt": 1791117816158
+              },
+              {
+                "team": "England Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 2.84,
+                "updatedAt": 1791111926727
+              }
+            ],
+            "pnlIfWins": -1391.4569,
+            "totalBet": 2096.7682
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36148172",
+      "matchName": "Australia Legends v Pakistan Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791199800000,
+      "capturedAt": "2026-10-05T16:35:00.249Z",
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictedWinner": "Pakistan Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Critical Public Overload on Australia Legends (96% Load, 21.7x Lead) -> Faded to Pakistan Legends",
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "Pakistan Legends"
+        ],
+        "serverTime": "2026-10-05T16:34:07.063Z",
+        "matchId": "36148172",
+        "matchName": "Australia Legends v Pakistan Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 239.7,
+            "lay": 0,
+            "total": 239.7
+          },
+          "team2": {
+            "back": 11.06,
+            "lay": 0,
+            "total": 11.06
+          }
+        },
+        "preMatchPnl": {
+          "team1": -212.1754,
+          "team2": 229.27499999999998
+        },
+        "preMatchTotalBets": {
+          "team1": 223.2354,
+          "team2": 10.425
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 223.2354,
+            "backExposure": 223.2354,
+            "layExposure": 0,
+            "teamName": "Australia Legends"
+          },
+          "team2": {
+            "netExposure": 10.425,
+            "backExposure": 10.425,
+            "layExposure": 0,
+            "teamName": "Pakistan Legends"
+          }
+        },
+        "teams": {
+          "Australia Legends": {
+            "trades": [
+              {
+                "team": "Australia Legends",
+                "price": 1.91,
+                "type": "back",
+                "size": 57.16,
+                "updatedAt": 1791196830399
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 140.04,
+                "updatedAt": 1791193912896
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 39.64,
+                "updatedAt": 1791193912896
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 2.86,
+                "updatedAt": 1791192324022
+              }
+            ],
+            "pnlIfWins": -212.1754,
+            "totalBet": 223.2354
+          },
+          "Pakistan Legends": {
+            "trades": [
+              {
+                "team": "Pakistan Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 8.200000000000001,
+                "updatedAt": 1791194725694
+              },
+              {
+                "team": "Pakistan Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 2.86,
+                "updatedAt": 1791192329031
+              }
+            ],
+            "pnlIfWins": 229.27499999999998,
+            "totalBet": 10.425
+          }
+        }
+      },
+      "predictionCorrect": null,
+      "resultCorrection": {
+        "source": "user-conversation",
+        "correctedOn": "2026-10-17",
+        "previous": {
+          "status": "verified",
+          "actualWinner": "Australia Legends"
+        },
+        "reason": "User confirmed toss abandoned; no winner. Excluded from scoring."
+      }
+    },
+    {
+      "matchId": "36151021",
+      "matchName": "Bangladesh Champions v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791214200000,
+      "capturedAt": "2026-10-06T02:06:16.082Z",
+      "status": "verified",
+      "actualWinner": "England Legends",
+      "predictedWinner": "England Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Smart Money Inflow (England Legends: ₹1.5k Back, Lead: 2.5x)",
+      "snapshot": {
+        "teamNames": [
+          "Bangladesh Champions",
+          "England Legends"
+        ],
+        "serverTime": "2026-10-05T17:50:07.015Z",
+        "matchId": "36151021",
+        "matchName": "Bangladesh Champions v England Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "total": 746.53
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "total": 1637.62
+          }
+        },
+        "preMatchPnl": {
+          "team1": 925.2832999999998,
+          "team2": -787.0593
+        },
+        "preMatchTotalBets": {
+          "team1": 698.9242999999999,
+          "team2": 1528.9569
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 495.83259999999996,
+            "backExposure": 579.9214,
+            "layExposure": 84.08879999999999,
+            "teamName": "Bangladesh Champions"
+          },
+          "team2": {
+            "netExposure": 1317.2293,
+            "backExposure": 1431.3569,
+            "layExposure": 114.12759999999999,
+            "teamName": "England Legends"
+          }
+        },
+        "teams": {
+          "Bangladesh Champions": {
+            "trades": [
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.9,
+                "type": "lay",
+                "size": 86.87,
+                "updatedAt": 1791211723451
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.07,
+                "type": "back",
+                "size": 3.47,
+                "updatedAt": 1791211553467
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.02,
+                "type": "lay",
+                "size": 4.94,
+                "updatedAt": 1791211333556
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.91,
+                "type": "back",
+                "size": 15.06,
+                "updatedAt": 1791211261062
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.92,
+                "type": "back",
+                "size": 180.53999999999996,
+                "updatedAt": 1791210922310
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.93,
+                "type": "back",
+                "size": 285.8,
+                "updatedAt": 1791210397391
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.94,
+                "type": "back",
+                "size": 142.9,
+                "updatedAt": 1791210315835
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 2.02,
+                "type": "lay",
+                "size": 5.79,
+                "updatedAt": 1791207752579
+              }
+            ],
+            "pnlIfWins": 925.2832999999998,
+            "totalBet": 698.9242999999999
+          },
+          "England Legends": {
+            "trades": [
+              {
+                "team": "England Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 1183.27,
+                "updatedAt": 1791211847631
+              },
+              {
+                "team": "England Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 0.04000000000000625,
+                "updatedAt": 1791208815819
+              },
+              {
+                "team": "England Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 5.9,
+                "updatedAt": 1791207752630
+              },
+              {
+                "team": "England Legends",
+                "price": 1.96,
+                "type": "lay",
+                "size": 112.86,
+                "updatedAt": 1791205623787
+              },
+              {
+                "team": "England Legends",
+                "price": 1.92,
+                "type": "back",
+                "size": 222.92,
+                "updatedAt": 1791204900105
+              },
+              {
+                "team": "England Legends",
+                "price": 1.94,
+                "type": "back",
+                "size": 130.95000000000002,
+                "updatedAt": 1791195931644
+              },
+              {
+                "team": "England Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 2.84,
+                "updatedAt": 1791188389213
+              }
+            ],
+            "pnlIfWins": -787.0593,
+            "totalBet": 1528.9569
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36151023",
+      "matchName": "India Legends v South Africa Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791646200000,
+      "capturedAt": "2026-10-11T16:23:31.367Z",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "India Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Smart Money Inflow (India Legends: ₹1.2k Back, Lead: 2.0x)",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "South Africa Legends"
+        ],
+        "serverTime": "2026-10-11T16:23:05.813Z",
+        "matchId": "36151023",
+        "matchName": "India Legends v South Africa Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 1171.82,
+            "lay": 0,
+            "total": 1171.82
+          },
+          "team2": {
+            "back": 576.7,
+            "lay": 0,
+            "total": 576.7
+          }
+        },
+        "preMatchPnl": {
+          "team1": -538.7755,
+          "team2": 621.6454
+        },
+        "preMatchTotalBets": {
+          "team1": 1115.4755,
+          "team2": 550.1745999999999
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1115.4755,
+            "backExposure": 1115.4755,
+            "layExposure": 0,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 550.1745999999999,
+            "backExposure": 550.1745999999999,
+            "layExposure": 0,
+            "teamName": "South Africa Legends"
+          }
+        },
+        "teams": {
+          "India Legends": {
+            "trades": [
+              {
+                "team": "India Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 224.65,
+                "updatedAt": 1791643754273
+              },
+              {
+                "team": "India Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 947.17,
+                "updatedAt": 1791643754273
+              }
+            ],
+            "pnlIfWins": -538.7755,
+            "totalBet": 1115.4755
+          },
+          "South Africa Legends": {
+            "trades": [
+              {
+                "team": "South Africa Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 345.74,
+                "updatedAt": 1791644121934
+              },
+              {
+                "team": "South Africa Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 230.96,
+                "updatedAt": 1791643693923
+              }
+            ],
+            "pnlIfWins": 621.6454,
+            "totalBet": 550.1745999999999
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36172480",
+      "matchName": "Australia Legends v West Indies Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791718200000,
+      "capturedAt": "2026-10-11T17:05:31.450Z",
+      "status": "verified",
+      "actualWinner": "Australia Legends",
+      "predictedWinner": "West Indies Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "High Trap Overload on Australia Legends (P/L: -2191.1) -> Bookmaker Safe Side on West Indies Legends (+2374.7)",
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "West Indies Legends"
+        ],
+        "serverTime": "2026-10-11T17:04:43.456Z",
+        "matchId": "36172480",
+        "matchName": "Australia Legends v West Indies Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 2810.29,
+            "lay": 10.85,
+            "total": 2820.93
+          },
+          "team2": {
+            "back": 457.37,
+            "lay": 10.64,
+            "total": 468.22
+          }
+        },
+        "preMatchPnl": {
+          "team1": -2191.0929000000006,
+          "team2": 2374.6521000000002
+        },
+        "preMatchTotalBets": {
+          "team1": 2659.0959000000003,
+          "team2": 446.4907
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 2637.8229000000006,
+            "backExposure": 2648.4559000000004,
+            "layExposure": 10.633,
+            "teamName": "Australia Legends"
+          },
+          "team2": {
+            "netExposure": 424.7879,
+            "backExposure": 435.6407,
+            "layExposure": 10.8528,
+            "teamName": "West Indies Legends"
+          }
+        },
+        "teams": {
+          "Australia Legends": {
+            "trades": [
+              {
+                "team": "Australia Legends",
+                "price": 1.92,
+                "type": "back",
+                "size": 462.87,
+                "updatedAt": 1791715974284
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.93,
+                "type": "back",
+                "size": 401.58,
+                "updatedAt": 1791715971020
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 1886.03,
+                "updatedAt": 1791715385247
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.85,
+                "updatedAt": 1791715091562
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 59.81,
+                "updatedAt": 1791713473510
+              }
+            ],
+            "pnlIfWins": -2191.0929000000006,
+            "totalBet": 2659.0959000000003
+          },
+          "West Indies Legends": {
+            "trades": [
+              {
+                "team": "West Indies Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 343.45,
+                "updatedAt": 1791715618892
+              },
+              {
+                "team": "West Indies Legends",
+                "price": 2.02,
+                "type": "lay",
+                "size": 10.64,
+                "updatedAt": 1791715128347
+              },
+              {
+                "team": "West Indies Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 113.92,
+                "updatedAt": 1791714307619
+              }
+            ],
+            "pnlIfWins": 2374.6521000000002,
+            "totalBet": 446.4907
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36175445",
+      "matchName": "India Legends v Bangladesh Champions",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791732600000,
+      "capturedAt": "2026-10-11T22:28:42.712Z",
+      "status": "verified",
+      "actualWinner": "India Legends",
+      "predictedWinner": "India Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Smart Money Inflow (India Legends: ₹804 Back, Lead: 1.5x)",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "Bangladesh Champions"
+        ],
+        "serverTime": "2026-10-11T20:41:15.536Z",
+        "matchId": "36175445",
+        "matchName": "India Legends v Bangladesh Champions",
+        "preMatchVolume": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "total": 814.4
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "total": 570.7300000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": -204.76809999999978,
+          "team2": 271.5152999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 775.2087999999999,
+          "team2": 543.0975000000001
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 746.7780999999999,
+            "backExposure": 764.5687999999999,
+            "layExposure": 17.7907,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 514.1647,
+            "backExposure": 525.0175,
+            "layExposure": 10.8528,
+            "teamName": "Bangladesh Champions"
+          }
+        },
+        "teams": {
+          "India Legends": {
+            "trades": [
+              {
+                "team": "India Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 704.0799999999999,
+                "updatedAt": 1791730495078
+              },
+              {
+                "team": "India Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 99.68,
+                "updatedAt": 1791730217022
+              },
+              {
+                "team": "India Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.85,
+                "updatedAt": 1791729334676
+              },
+              {
+                "team": "India Legends",
+                "price": 1.99,
+                "type": "lay",
+                "size": 7.23,
+                "updatedAt": 1791727070009
+              }
+            ],
+            "pnlIfWins": -204.76809999999978,
+            "totalBet": 775.2087999999999
+          },
+          "Bangladesh Champions": {
+            "trades": [
+              {
+                "team": "Bangladesh Champions",
+                "price": 1.95,
+                "type": "back",
+                "size": 552.6500000000001,
+                "updatedAt": 1791729734199
+              },
+              {
+                "team": "Bangladesh Champions",
+                "price": 2.02,
+                "type": "lay",
+                "size": 10.64,
+                "updatedAt": 1791729334705
+              }
+            ],
+            "pnlIfWins": 271.5152999999999,
+            "totalBet": 543.0975000000001
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36194405",
+      "matchName": "South Africa Legends v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1792150200000,
+      "capturedAt": "2026-10-16T17:33:48.975Z",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "South Africa Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "predictionReason": "Smart Money Inflow (South Africa Legends: ₹684 Back, Lead: 1.4x)",
+      "snapshot": {
+        "teamNames": [
+          "South Africa Legends",
+          "England Legends"
+        ],
+        "serverTime": "2026-10-16T17:28:09.334Z",
+        "matchId": "36194405",
+        "matchName": "South Africa Legends v England Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 684.4599999999999,
+            "lay": 3.36,
+            "total": 684.4599999999999
+          },
+          "team2": {
+            "back": 488.77000000000004,
+            "lay": 0,
+            "total": 492.13000000000005
+          }
+        },
+        "preMatchPnl": {
+          "team1": -159.88339999999985,
+          "team2": 216.16899999999987
+        },
+        "preMatchTotalBets": {
+          "team1": 651.9461999999999,
+          "team2": 468.29100000000005
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 648.6533999999999,
+            "backExposure": 651.9461999999999,
+            "layExposure": 3.2927999999999997,
+            "teamName": "South Africa Legends"
+          },
+          "team2": {
+            "netExposure": 464.93100000000004,
+            "backExposure": 464.93100000000004,
+            "layExposure": 0,
+            "teamName": "England Legends"
+          }
+        },
+        "teams": {
+          "South Africa Legends": {
+            "trades": [
+              {
+                "team": "South Africa Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 513.54,
+                "updatedAt": 1792148094273
+              },
+              {
+                "team": "South Africa Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 3.36,
+                "updatedAt": 1792147904111
+              },
+              {
+                "team": "South Africa Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 170.92,
+                "updatedAt": 1792146221664
+              }
+            ],
+            "pnlIfWins": -159.88339999999985,
+            "totalBet": 651.9461999999999
+          },
+          "England Legends": {
+            "trades": [
+              {
+                "team": "England Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 59.95000000000001,
+                "updatedAt": 1792147404179
+              },
+              {
+                "team": "England Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 428.82000000000005,
+                "updatedAt": 1792145047713
+              }
+            ],
+            "pnlIfWins": 216.16899999999987,
+            "totalBet": 468.29100000000005
+          }
+        }
+      }
+    },
+    {
+      "matchId": "36194408",
+      "matchName": "Australia Legends v West Indies Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1792164600000,
+      "capturedAt": "2026-10-17T02:10:12.878Z",
+      "status": "pending",
+      "actualWinner": null,
+      "predictedWinner": "West Indies Legends",
+      "predictorVersion": "toss-world-legends-exposure-lay-v1",
+      "predictionReason": "Australia Legends has 14.29% lay/back (at least 10%); the Legends exception selects West Indies Legends.",
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "West Indies Legends"
+        ],
+        "serverTime": "2026-10-17T02:10:12.829Z",
+        "matchId": "36194408",
+        "matchName": "Australia Legends v West Indies Legends",
+        "preMatchVolume": {
+          "team1": {
+            "back": 713.14,
+            "lay": 101.91,
+            "total": 723.92
+          },
+          "team2": {
+            "back": 533.1400000000001,
+            "lay": 10.78,
+            "total": 635.0500000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": -55.98399999999991,
+          "team2": 111.55539999999989
+        },
+        "preMatchTotalBets": {
+          "team1": 691.7922,
+          "team2": 612.5802
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 578.344,
+            "backExposure": 681.0122,
+            "layExposure": 102.66820000000001,
+            "teamName": "Australia Legends"
+          },
+          "team2": {
+            "netExposure": 499.67459999999994,
+            "backExposure": 510.67019999999997,
+            "layExposure": 10.9956,
+            "teamName": "West Indies Legends"
+          }
+        },
+        "teams": {
+          "Australia Legends": {
+            "trades": [
+              {
+                "team": "Australia Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 128.85000000000002,
+                "updatedAt": 1792162409556
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 563.92,
+                "updatedAt": 1792162409556
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.99,
+                "type": "lay",
+                "size": 63.96000000000001,
+                "updatedAt": 1792159655188
+              },
+              {
+                "team": "Australia Legends",
+                "price": 1.98,
+                "type": "lay",
+                "size": 10.99,
+                "updatedAt": 1792157423034
+              },
+              {
+                "team": "Australia Legends",
+                "price": 2.06,
+                "type": "back",
+                "size": 20.369999999999997,
+                "updatedAt": 1792153851270
+              },
+              {
+                "team": "Australia Legends",
+                "price": 2.06,
+                "type": "lay",
+                "size": 26.96,
+                "updatedAt": 1792152599810
+              }
+            ],
+            "pnlIfWins": -55.98399999999991,
+            "totalBet": 691.7922
+          },
+          "West Indies Legends": {
+            "trades": [
+              {
+                "team": "West Indies Legends",
+                "price": 1.95,
+                "type": "back",
+                "size": 369.22,
+                "updatedAt": 1792161950125
+              },
+              {
+                "team": "West Indies Legends",
+                "price": 1.96,
+                "type": "back",
+                "size": 100.22,
+                "updatedAt": 1792161825602
+              },
+              {
+                "team": "West Indies Legends",
+                "price": 2,
+                "type": "back",
+                "size": 63.7,
+                "updatedAt": 1792159655407
+              },
+              {
+                "team": "West Indies Legends",
+                "price": 2.02,
+                "type": "lay",
+                "size": 10.78,
+                "updatedAt": 1792157404984
+              }
+            ],
+            "pnlIfWins": 111.55539999999989,
+            "totalBet": 612.5802
+          }
+        }
+      }
+    }
+  ]
+}

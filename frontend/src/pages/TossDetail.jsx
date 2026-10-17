@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, LoaderCircle, BarChart3 } from 'lucide-react'
+import { ArrowLeft, LoaderCircle, BarChart3, Trophy } from 'lucide-react'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
-import { RiskBadge, MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
+import { MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
+import { isWorldLegendsTossLeague } from '../../../server/utils/worldLegendsTossAlgorithm'
 import { getBookiePlFromMatchedTrades, getMarketExposureFromTrades, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../socket'
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
 import { hasTossSnapshot, isCompleteMatchBundle } from '../utils/matchBundle'
+import LegendsTossMarketEvidence from '../components/LegendsTossMarketEvidence'
 
 const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : '−'}€${fmt(Math.abs(n))}`
@@ -214,288 +216,121 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   const am1 = getSelectionStakes(snap, t1)
   const am2 = getSelectionStakes(snap, t2)
   const exp = getMarketExposureFromTrades(snap, t1, t2)
-  const exp1 = exp.team1 || {}
-  const exp2 = exp.team2 || {}
-  const ns = snap.netSupport || {}
-  const sent = snap.sentimentScore || {}
-
-  // Back/Lay ratio prediction
-  const t1Trades = (snap.teams?.[t1] || {}).trades || []
-  const t2Trades = (snap.teams?.[t2] || {}).trades || []
-
-  const { pl1: t1BookiePL, pl2: t2BookiePL } = getBookiePlFromMatchedTrades(snap, t1, t2)
-
-
-  const vol1 = am1.totalBet
-  const vol2 = am2.totalBet
-
-  const tossOdds1 = latestMatchedPrice(t1Trades)
-  const tossOdds2 = latestMatchedPrice(t2Trades)
-
-  const totVol = vol1 != null && vol2 != null ? vol1 + vol2 : null
-  const pct1 = totVol > 0 ? Math.round((vol1 / totVol) * 100) : null
+  const exp1 = exp.team1 || {}, exp2 = exp.team2 || {}
+  const ns = snap.netSupport || {}, sent = snap.sentimentScore || {}
+  const t1Trades = snap.teams?.[t1]?.trades || []
+  const t2Trades = snap.teams?.[t2]?.trades || []
+  const { pl1, pl2 } = getBookiePlFromMatchedTrades(snap, t1, t2)
+  const totVol = am1.totalBet != null && am2.totalBet != null ? am1.totalBet + am2.totalBet : null
+  const pct1 = totVol > 0 ? Math.round(am1.totalBet / totVol * 100) : null
   const pct2 = pct1 == null ? null : 100 - pct1
-
-  const tossPrediction = predictTossWinner(snap, snap?.competitionName || snap?.seriesName || '')
-  const team1Tone = pct1 == null || pct2 == null ? 'neutral' : pct1 >= pct2 ? 'leading' : 'trailing'
-  const team2Tone = pct1 == null || pct2 == null ? 'neutral' : pct2 > pct1 ? 'leading' : 'trailing'
+  const competition = snap.competitionName || snap.seriesName || ''
+  const isLegends = isWorldLegendsTossLeague(competition)
+  const prediction = predictTossWinner(snap, competition)
+  const teams = [
+    { name: t1, volume: am1.totalBet, percentage: pct1, odds: latestMatchedPrice(t1Trades) },
+    { name: t2, volume: am2.totalBet, percentage: pct2, odds: latestMatchedPrice(t2Trades) },
+  ]
+  const metricRows = [
+    { label: 'Back exposure', values: [raw.A_back_expo, raw.B_back_expo] },
+    { label: 'Lay stake', values: [raw.A_lay_stake, raw.B_lay_stake] },
+  ].filter(row => row.values.some(value => value != null))
+  const exposureRows = [
+    { label: 'Net exposure', values: [exp1.netExposure, exp2.netExposure], signed: true },
+    { label: 'Back risk', values: [exp1.backExposure, exp2.backExposure] },
+    { label: 'Lay risk', values: [exp1.layExposure, exp2.layExposure] },
+  ]
+  const hasExposure = [exp1.netExposure, exp2.netExposure].some(value => value != null)
+  const hasLedger = pl1 != null || pl2 != null || t1Trades.length > 0 || t2Trades.length > 0
+  const signals = prediction?.signals?.filter(signal => signal.label !== 'Bookie Pre-P/L') || []
+  const teamHeader = <thead><tr><th scope="col">Metric</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead>
+  const signalTable = signals.length > 0 && <table className="toss-data-table" aria-label="Additional market signals by team">
+    <thead><tr><th scope="col">Signal</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead>
+    <tbody>{signals.map(signal => <tr key={signal.label}>
+      <th scope="row" title={signal.label === 'Pre-Match Lay' ? 'Matched lay stakes' : signal.sublabel}>{signal.label}</th>
+      {signal.v2 ? <><td>{signal.v1}</td><td>{signal.v2}</td></> : <td colSpan={2}>{signal.v1 || '—'}</td>}
+    </tr>)}</tbody>
+  </table>
 
   return (
-    <div className={`toss-detail-page w-full fade-in space-y-4 ${isEmbedded ? '' : 'detail-page'}`}>
-
-      {!isEmbedded && (
-        <button onClick={onBack} className="toss-detail-back">
-          <ArrowLeft size={16} /> Back to toss matches
-        </button>
-      )}
-
-      <section className="toss-detail-hero" aria-labelledby="toss-detail-title">
+    <div className={`toss-detail-page w-full${isEmbedded ? '' : ' detail-page'}`}>
+      <header className="toss-detail-hero">
+        {!isEmbedded && <button type="button" onClick={onBack} className="toss-detail-back" aria-label="Back to toss matches"><ArrowLeft size={16} /><span>Back</span></button>}
         <div className="toss-detail-heading">
-          <div className="min-w-0">
-            <span className="toss-detail-eyebrow">🪙 Toss market</span>
-            <h1 id="toss-detail-title">{t1} <span>vs</span> {t2}</h1>
-            <div className="toss-detail-date">
-              Updated {timestamp(snap.serverTime) == null ? 'time unavailable' : new Date(timestamp(snap.serverTime)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}
-            </div>
-          </div>
-          {snap.inPlay && (
-            <span className="toss-detail-live">
-              <span className="pulse-dot" /> LIVE
-            </span>
-          )}
+          <span className="toss-detail-eyebrow">Toss market</span>
+          <h1 id="toss-detail-title">{t1} <span>vs</span> {t2}</h1>
         </div>
-      </section>
-
-      <section className="toss-comparison-card" aria-labelledby="market-activity-heading">
-        <div className="toss-comparison-heading">
-          <div>
-            <h2 id="market-activity-heading">Market activity</h2>
-            <p>Matched money, support and latest toss odds</p>
-          </div>
-          <strong>€{formatVolStr(totVol)}</strong>
+        <div className="toss-detail-meta">
+          {snap.inPlay && <span className="toss-detail-live"><span className="pulse-dot" /> LIVE</span>}
+          <span className="toss-detail-date">Updated {timestamp(snap.serverTime) == null ? 'time unavailable' : new Date(timestamp(snap.serverTime)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}</span>
         </div>
+      </header>
 
-        <div className="toss-comparison-grid">
-          {[
-            { name: t1, volume: vol1, percentage: pct1, odds: tossOdds1, tone: team1Tone },
-            { name: t2, volume: vol2, percentage: pct2, odds: tossOdds2, tone: team2Tone },
-          ].map(team => (
-            <article key={team.name} className={`toss-comparison-team is-${team.tone}`}>
-              <div className="toss-comparison-team-top">
-                <h3>{team.name}</h3>
-                <span>{team.percentage == null ? '—' : `${team.percentage}%`}</span>
-              </div>
-              <div className="toss-comparison-money">
-                <small>Matched money</small>
-                <strong>€{formatVolStr(team.volume)}</strong>
-              </div>
-              <div className="toss-comparison-odds">
-                <span>Support</span><strong>{team.percentage == null ? '—' : `${team.percentage}%`}</strong>
-                <span>Latest odds</span><strong>{formatOdds(team.odds)}</strong>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="toss-support-bar" aria-label={`${t1} ${pct1 ?? 0}% support, ${t2} ${pct2 ?? 0}% support`}>
-          <span className={`is-${team1Tone}`} style={{ width: `${pct1 ?? 0}%` }} />
-          <span className={`is-${team2Tone}`} style={{ width: `${pct2 ?? 0}%` }} />
-        </div>
-      </section>
-      {/* ━━━━━━━━━━ TOSS WINNER PREDICTION ━━━━━━━━━━ */}
-      {tossPrediction && (
-        <div className="toss-prediction-card rounded-xl overflow-hidden" style={{ border: '1px solid #d1d5db' }}>
-          {/* Header */}
-          <div className="toss-prediction-header px-3 py-2 flex items-center gap-1.5 flex-wrap" style={{ background: 'linear-gradient(135deg,#f0fdf4,#fefce8)' }}>
-            <span className="text-sm">🪙</span>
-            <span className="text-xs font-bold text-text-primary">Toss Winner Prediction</span>
-            <span className="toss-prediction-note text-[10px] font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(37,99,235,0.1)', color: '#1d4ed8' }}>Rule-based · accuracy unvalidated</span>
-            <span className={`ml-auto text-xs font-black ${tossPrediction.confidence.color}`}>{tossPrediction.confidence.label}</span>
+      <div className={`toss-overview-grid ${prediction ? '' : 'without-prediction'}`}>
+        {prediction && <section className="toss-prediction-card" aria-label="Toss winner prediction">
+          <div className="toss-prediction-header"><span><Trophy size={15} />Toss Winner Prediction</span>
+            {prediction.risk && <span className={`toss-risk-pill ${prediction.risk.avoidEntry || prediction.risk.tier === 'high' ? 'is-high' : ''}`}>{prediction.risk.shortLabel || prediction.risk.label}</span>}
           </div>
-
-          <div className="p-3">
-            {/* Winner Banner */}
-            <div className="toss-prediction-winner rounded-lg px-3 py-2.5 text-center mb-3" style={{
-              background: 'rgba(22,163,74,0.08)',
-              border: '1px solid rgba(22,163,74,0.3)'
-            }}>
-              <div className="text-[10px] text-text-muted uppercase tracking-wider mb-0.5">Prediction</div>
-              <div className="text-lg font-black leading-tight text-profit">
-                {tossPrediction.winnerName}
-              </div>
-              {tossPrediction.algoName && (
-                <div className="text-xs font-bold text-emerald-700 my-1 flex items-center justify-center gap-1.5">
-                  <span className="px-1.5 py-0.2 rounded bg-emerald-100 text-[10px] border border-emerald-300 font-black">ALGO</span>
-                  <span>{tossPrediction.algoName}</span>
-                </div>
-              )}
-              <div className="text-[10px] text-text-muted mt-1">Signal: {tossPrediction.reason} • Confidence is uncalibrated</div>
-              {tossPrediction.risk && (
-                <div className="mt-2 flex justify-center">
-                  <RiskBadge risk={tossPrediction.risk} />
-                </div>
-              )}
-              {tossPrediction.matchedRules?.length > 1 && (
-                <MatchedRulesPanel rules={tossPrediction.matchedRules} selectedReason={tossPrediction.reason} />
-              )}
-              <AvoidEntryBanner risk={tossPrediction.risk} />
-            </div>
-
-            {/* Signals breakdown */}
-            <div className="space-y-2 mb-3">
-              {tossPrediction.signals.filter(r => r.label !== 'Bookie Pre-P/L').map(r => (
-                <div key={r.label} className="toss-prediction-signal rounded-xl px-3 py-2.5" style={{
-                  background: r.active ? 'rgba(22,163,74,0.06)' : 'rgba(100,100,100,0.04)',
-                  border: `1px solid ${r.active ? 'rgba(22,163,74,0.2)' : 'rgba(100,100,100,0.15)'}`
-                }}>
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-bold" style={{ color: r.active ? '#16a34a' : '#888' }}>
-                        {r.active ? '✅' : '➡️'} {r.label}
-                      </span>
-                      {r.active && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ background: '#fef3c7', color: '#92400e' }}>ACTIVE</span>}
-                    </div>
-                  </div>
-                  <div className="text-[10px] text-text-muted mb-1">{r.label === 'Pre-Match Lay' ? 'Matched lay stakes' : r.sublabel}</div>
-                  {r.v2 && (
-                    <div className="toss-signal-comparison flex justify-between items-center">
-                      <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 0 ? 'text-profit' : 'text-text-muted'}`}>{t1}: {r.v1}</span>
-                      <span className="text-[10px] text-text-muted px-2">vs</span>
-                      <span className={`text-xs font-bold ${tossPrediction.winnerIdx === 1 ? 'text-profit' : 'text-text-muted'}`}>{t2}: {r.v2}</span>
-                    </div>
-                  )}
-                  {!r.v2 && r.v1 && <div className="text-xs font-bold text-text-primary">{r.v1}</div>}
-                </div>
-              ))}
-            </div>
-
-            <div className="text-[10px] text-text-muted p-2 rounded-lg text-center" style={{ background: 'rgba(220,38,38,0.03)', border: '1px solid rgba(220,38,38,0.08)' }}>
-              All rules evaluated — highest priority signal wins • Not guaranteed
-            </div>
+          <div className="toss-prediction-winner">
+            <div className="toss-winner-label">Predicted toss winner</div>
+            <h2 className="toss-winner-name">{prediction.winnerName}</h2>
+            {prediction.algoName && <p className="toss-prediction-algorithm">{prediction.algoName}</p>}
           </div>
-        </div>
-      )}
+          <p className="toss-prediction-reason">{prediction.reason}</p>
+          <div className="toss-prediction-note">Rule-based · future accuracy unvalidated</div>
+          {prediction.matchedRules?.length > 1 && <MatchedRulesPanel rules={prediction.matchedRules} selectedReason={prediction.reason} />}
+          <AvoidEntryBanner risk={prediction.risk} />
+        </section>}
 
-      {/* Deep Betting Metrics */}
-      {(Object.keys(raw).length > 0 || Object.keys(tot).length > 0) && (
-        <div className="glass-card rounded-2xl overflow-hidden">
-          <div className="px-4 py-3 border-b border-border flex items-center gap-2" style={{ background: 'linear-gradient(135deg,#fff5f5,#fff8f0)' }}>
-            <BarChart3 size={15} className="text-primary" />
-            <span className="text-sm font-bold text-primary">Deep Betting Metrics</span>
+        <section className="toss-comparison-card" aria-labelledby="market-activity-heading">
+          <div className="toss-comparison-heading"><h2 id="market-activity-heading">Market activity</h2><span>Total matched <strong>€{formatVolStr(totVol)}</strong></span></div>
+          <table className="toss-data-table toss-market-table" aria-label="Matched money, support and latest toss odds">
+            <thead><tr><th scope="col">Team</th><th scope="col">Matched</th><th scope="col">Support</th><th scope="col">Odds</th></tr></thead>
+            <tbody>{teams.map((team, index) => <tr key={team.name}>
+              <th scope="row"><span className={`toss-team-dot team-${index}`} />{team.name}</th>
+              <td>€{formatVolStr(team.volume)}</td><td>{team.percentage == null ? '—' : `${team.percentage}%`}</td><td>{formatOdds(team.odds)}</td>
+            </tr>)}</tbody>
+          </table>
+          <div className="toss-support-bar" aria-label={`${t1} ${pct1 ?? 0}% support, ${t2} ${pct2 ?? 0}% support`}>
+            <span className="team-0" style={{ width: `${pct1 ?? 0}%` }} /><span className="team-1" style={{ width: `${pct2 ?? 0}%` }} />
           </div>
-          <div className="p-4 space-y-4">
-            {Object.keys(raw).length > 0 && (
-              <div>
-                <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Raw Accumulated Values</div>
-                <div className="space-y-1.5">
-                  {[
-                    { key: 'A_back_expo', label: `${t1} Back Expo` },
-                    { key: 'A_lay_stake', label: `${t1} Lay Stake` },
-                    { key: 'B_back_expo', label: `${t2} Back Expo` },
-                    { key: 'B_lay_stake', label: `${t2} Lay Stake` },
-                  ].filter(({ key }) => raw[key] != null).map(({ key, label }) => (
-                    <div key={key} className="toss-metric-row flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
-                      <span className="text-xs text-text-secondary font-medium">{label}</span>
-                      <span className="text-xs font-bold text-text-primary">{Number(raw[key]).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            {Object.keys(tot).length > 0 && (
-              <div>
-                <div className="text-xs font-bold text-back mb-2 uppercase tracking-wide">Provider reported total</div>
-                <div className="space-y-1.5">
-                  {Object.entries(tot).map(([key, val]) => {
-                    const name = key === 'team1' ? t1 : key === 'team2' ? t2 : key === 'totalBetTeam1' ? t1 : key === 'totalBetTeam2' ? t2 : key
-                    return (
-                      <div key={key} className="toss-metric-row flex justify-between items-center py-1.5 border-b border-border/30 last:border-0">
-                        <span className="text-xs text-text-secondary font-medium">{name}</span>
-                        <span className="text-xs font-bold text-text-primary">{Number(val).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-
-
-      {/* Bookie ka risk */}
-      {(exp1.netExposure != null || exp2.netExposure != null) && (
-        <div className="glass-card rounded-2xl p-4">
-          <div className="text-sm font-bold text-text-secondary mb-1">Bookie ka risk — Kitna exposed hai?</div>
-          <div className="text-[11px] text-text-muted mb-3">Har matched odds par volume × (odds − 1) se calculated</div>
-          <div className="toss-two-team-grid grid grid-cols-2 gap-3">
-            {[{ e: exp1, team: t1 }, { e: exp2, team: t2 }].map(({ e, team }) => (
-              <div key={team} className="rounded-xl p-3" style={{ background: '#fff8f8', border: '1px solid #fecaca' }}>
-                <div className="text-sm font-medium mb-2">{e.teamName || team}</div>
-                <div className="text-xs space-y-1">
-                  <div className="flex justify-between"><span className="text-text-muted">Net exposure</span><span className={`font-bold ${pnlCls(e.netExposure)}`}>{fmtRs(e.netExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Back risk</span><span className="text-back">€{fmt(e.backExposure)}</span></div>
-                  <div className="flex justify-between"><span className="text-text-muted">Lay risk</span><span className="text-loss">€{fmt(e.layExposure)}</span></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Bookie P/L calculated from the complete per-odds trade ledger */}
-      {(t1BookiePL != null || t2BookiePL != null || t1Trades.length > 0 || t2Trades.length > 0) && (
-        <div className="glass-card rounded-2xl p-4">
-          <div className="text-xs font-bold text-text-muted uppercase mb-3">
-            📈 Bookie P/L (Agar Team Jeete) • Per-odds Trades
-          </div>
-          <div className="toss-two-team-grid grid grid-cols-2 gap-3">
-            {[{ name: t1, pl: t1BookiePL }, { name: t2, pl: t2BookiePL }].map(({ name, pl }) => (
-              <div key={name} className="rounded-xl p-3 text-center" style={{ background: pl >= 0 ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)', border: `1px solid ${pl >= 0 ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}` }}>
-                <div className="toss-pl-team-name text-base font-bold text-text-primary mb-1">{name}</div>
-                <div className={`text-xl font-black ${pnlCls(pl)}`}>{fmtRs(pl)}</div>
-                <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl == null ? 'Unavailable' : pl >= 0 ? '✅ PROFIT' : '❌ LOSS'}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Overall sentiment */}
-      {ns.teamA && sent.teamA && (
-        <div className="glass-card rounded-2xl p-4">
-          <div className="text-sm font-bold text-text-secondary mb-3">Overall sentiment — Logon ka mood</div>
-          <div className="mb-3">
-            {[t1, t2].map((team, i) => {
-              const key = i === 0 ? 'teamA' : 'teamB'
-              const pct = i === 0 ? ns.percentageA : ns.percentageB
-              return (
-                <div key={key} className="mb-2">
-                  <div className="flex justify-between text-xs mb-1">
-                    <span>{team}</span>
-                    <span className={`font-bold ${pct >= 50 ? 'text-profit' : 'text-loss'}`}>{pct?.toFixed(1)}%</span>
-                  </div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: '#fee2e2' }}>
-                    <div className={`h-full rounded-full ${pct >= 50 ? 'bg-profit' : 'bg-loss'}`} style={{ width: `${pct}%` }} />
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-          <div className="text-xs text-text-muted text-center">
-            Zyada support: <span className="text-profit font-bold">{sent.strongerTeam}</span> •{' '}
-            Difference: <span className="text-text-secondary">€{fmt(sent.scoreDifference)}</span>
-          </div>
-        </div>
-      )}
-
-      <div className="glass-card rounded-2xl p-5">
-        <h3 className="text-sm font-bold text-text-primary">Order cancellation data</h3>
-        <p className="text-xs text-text-muted mt-2">Unavailable. The feed does not include verified order cancellations. Back/lay imbalance alone cannot establish fake orders or spoofing.</p>
+          <p className="toss-panel-caption">Matched stakes from the toss market</p>
+        </section>
       </div>
 
+      <LegendsTossMarketEvidence snap={snap} prediction={prediction} />
 
+      {signalTable && (isLegends ? <details className="toss-signal-details"><summary>Additional market signals <span>Context only</span></summary>{signalTable}</details>
+        : <section className="toss-panel"><header className="toss-panel-heading"><h2>Market signals</h2></header>{signalTable}</section>)}
+
+      <div className="toss-analytics-grid">
+        {(hasExposure || hasLedger) && <section className="toss-panel">
+          <header className="toss-panel-heading"><h2>Bookmaker exposure &amp; P/L</h2><span>Per-odds Trades</span></header>
+          <table className="toss-data-table" aria-label="Bookmaker risk and profit by team">{teamHeader}<tbody>
+            {hasLedger && <tr className="toss-pl-row"><th scope="row">P/L if team wins</th>{[pl1, pl2].map((pl, index) => <td key={index} className={pnlCls(pl)}><strong>{fmtRs(pl)}</strong><small>{pl == null ? 'Unavailable' : pl >= 0 ? 'Profit' : 'Loss'}</small></td>)}</tr>}
+            {hasExposure && exposureRows.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{row.values.map((value, index) => <td key={index} className={row.signed ? pnlCls(value) : ''}>{row.signed ? fmtRs(value) : value == null ? '—' : `€${fmt(value)}`}</td>)}</tr>)}
+          </tbody></table>
+          <p className="toss-panel-caption">Calculated from matched trades at each odds level.</p>
+        </section>}
+
+        {(metricRows.length > 0 || Object.keys(tot).length > 0) && <section className="toss-panel">
+          <header className="toss-panel-heading"><h2><BarChart3 size={14} />Deep betting metrics</h2><span>Provider reported</span></header>
+          {metricRows.length > 0 && <table className="toss-data-table" aria-label="Raw accumulated betting values">{teamHeader}<tbody>
+            {metricRows.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{row.values.map((value, index) => <td key={index}>{value == null ? '—' : Number(value).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>)}</tr>)}
+          </tbody></table>}
+          {Object.keys(tot).length > 0 && <details className="toss-provider-details"><summary>Provider reported totals</summary><dl>{Object.entries(tot).map(([key, value]) => <div key={key}><dt>{['team1', 'totalBetTeam1'].includes(key) ? t1 : ['team2', 'totalBetTeam2'].includes(key) ? t2 : key}</dt><dd>{Number(value).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</dd></div>)}</dl></details>}
+        </section>}
+      </div>
+
+      {ns.teamA && sent.teamA && <section className="toss-panel toss-sentiment">
+        <header className="toss-panel-heading"><h2>Market sentiment</h2><span>Higher support: <strong>{sent.strongerTeam}</strong> · difference €{fmt(sent.scoreDifference)}</span></header>
+        <div className="toss-sentiment-grid">{[t1, t2].map((team, index) => {
+          const pct = index === 0 ? ns.percentageA : ns.percentageB
+          return <div key={team}><span>{team}</span><strong>{pct?.toFixed(1)}%</strong><div className="toss-sentiment-bar"><span style={{ width: `${pct || 0}%` }} /></div></div>
+        })}</div>
+      </section>}
+
+      <details className="toss-data-note"><summary>Order cancellation data</summary><p>Unavailable. The feed does not include verified order cancellations. Back/lay imbalance alone cannot establish fake orders or spoofing.</p></details>
     </div>
   )
 }

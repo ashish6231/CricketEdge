@@ -1,12 +1,13 @@
 /**
- * World Championship of Legends toss rules, fitted to 8 archived outcomes.
+ * World Championship of Legends toss rules, fitted to 8 verified archived
+ * outcomes and 1 user-reported outcome. There is no independent test set.
  * Thresholds were selected after seeing results; future accuracy is uncalibrated.
  * This module reads market inputs only, never result labels or match IDs.
  */
-export const WORLD_LEGENDS_TOSS_VERSION = 'toss-world-legends-exposure-lay-v1'
+export const WORLD_LEGENDS_TOSS_VERSION = 'toss-world-legends-support-activity-v3'
 export const WORLD_LEGENDS_TOSS_PARAMETERS = Object.freeze({
   layBackResistance: 0.10,
-  zeroLayBackLead: 3,
+  highLayMinBackLead: 3,
 })
 
 export function isWorldLegendsTossLeague(name = '') {
@@ -17,12 +18,15 @@ export function isWorldLegendsTossLeague(name = '') {
 
 export function getWorldLegendsTossPrediction(snap) {
   const metadata = {
-    tier: 'WORLD_LEGENDS_TOSS_EXPOSURE_LAY',
-    algoName: 'World Legends Exposure & Lay Toss Algorithm',
+    tier: 'WORLD_LEGENDS_TOSS_SUPPORT_ACTIVITY',
+    algoName: 'World Legends Support & Activity Toss Algorithm',
     predictorVersion: WORLD_LEGENDS_TOSS_VERSION,
     validation: 'in-sample-fit-only',
-    trainingSamples: 8,
+    trainingSamples: 9,
+    trainingVerifiedSamples: 8,
+    trainingUserReportedSamples: 1,
     holdoutSamples: 0,
+    validationNote: 'Retrospective fit: 8 verified archived tosses and 1 user-reported outcome; 2 abandoned tosses excluded; no independent pre-toss validation.',
   }
   const abstain = reason => ({ ...metadata, winner: null, abstain: true, reason })
   const names = snap?.teamNames
@@ -32,42 +36,60 @@ export function getWorldLegendsTossPrediction(snap) {
   const sides = [0, 1].map(index => {
     const key = `team${index + 1}`
     const volume = snap.preMatchVolume?.[key]
-    const exposure = snap.bookmakerExposure?.[key]
     return { team: names[index], back: volume?.back, lay: volume?.lay,
-      pnl: snap.preMatchPnl?.[key], netExposure: exposure?.netExposure, exposureTeam: exposure?.teamName }
+      activity: snap.preMatchTotalBets?.[key] }
   })
-  if (sides.some(side => ![side.back, side.lay, side.pnl, side.netExposure].every(Number.isFinite)
-    || side.back < 0 || side.lay < 0)) return abstain('Usable back, lay, P/L and net exposure are required for both teams.')
-  const normalized = name => String(name).toLowerCase().replace(/[^a-z0-9]/g, '')
-  if (sides.some(side => side.exposureTeam && normalized(side.exposureTeam) !== normalized(side.team))) {
-    return abstain('Exposure participants do not match the toss market.')
+  if (sides.some(side => ![side.back, side.lay, side.activity]
+    .every(value => Number.isFinite(value) && value >= 0))) {
+    return abstain('Usable back, lay and pre-match activity are required for both teams.')
   }
-  if (sides[0].netExposure === sides[1].netExposure) return abstain('Net exposure is tied.')
-  const leader = sides[0].netExposure > sides[1].netExposure ? sides[0] : sides[1]
-  const other = sides.find(side => side !== leader)
-  if (!(leader.netExposure > 0 && leader.pnl < 0 && other.pnl > 0 && leader.back > 0)) {
-    return abstain('Higher positive exposure and negative P/L do not align.')
+  const support1 = sides[0].back + sides[1].lay
+  const support2 = sides[1].back + sides[0].lay
+  const supportTotal = support1 + support2
+  const activityTotal = sides[0].activity + sides[1].activity
+  if (![supportTotal, activityTotal].every(total => Number.isFinite(total) && total > 0)) {
+    return abstain('Corrected support and activity totals must be positive and finite.')
   }
+  if (support1 === support2 || sides[0].activity === sides[1].activity) {
+    return abstain('Corrected support or pre-match activity is tied.')
+  }
+  const supportIdx = support1 > support2 ? 0 : 1
+  const activityIdx = sides[0].activity > sides[1].activity ? 0 : 1
+  if (supportIdx !== activityIdx) return abstain('Corrected support and pre-match activity favor different teams.')
+  const leader = sides[supportIdx], other = sides[1 - supportIdx]
+  const support = { team1: support1, team2: support2,
+    pct1: support1 / supportTotal * 100, pct2: support2 / supportTotal * 100, leaderIdx: supportIdx }
+  const activity = { team1: sides[0].activity, team2: sides[1].activity,
+    pct1: sides[0].activity / activityTotal * 100, pct2: sides[1].activity / activityTotal * 100, leaderIdx: activityIdx }
 
-  const layBackRatio = leader.lay / leader.back
+  const layBackRatio = leader.back > 0 ? leader.lay / leader.back : null
   const bothZeroLay = leader.lay === 0 && other.lay === 0
   const backLead = other.back > 0 ? leader.back / other.back : null
+  const highLayResistance = layBackRatio !== null && layBackRatio >= WORLD_LEGENDS_TOSS_PARAMETERS.layBackResistance
+  // High relative lay alone also occurs in fairly balanced markets. Require
+  // back dominance as well before reversing the support/activity selection.
+  // Zero opposing back is complete dominance, represented without Infinity.
+  const highLayBackDominance = leader.back > 0 && (other.back === 0 || backLead >= WORLD_LEGENDS_TOSS_PARAMETERS.highLayMinBackLead)
   let winner = leader.team
-  let pattern = 'WORLD_LEGENDS_EXPOSURE_AND_NEGATIVE_PL'
-  let reason = `${leader.team} has higher positive net exposure (${leader.netExposure.toFixed(2)}) and negative P/L (${leader.pnl.toFixed(2)}); opponent P/L is positive.`
-  if (layBackRatio >= WORLD_LEGENDS_TOSS_PARAMETERS.layBackResistance) {
+  let pattern = 'WORLD_LEGENDS_SUPPORT_ACTIVITY_CONSENSUS'
+  let reason = `${leader.team} leads corrected support (${(supportIdx === 0 ? support.pct1 : support.pct2).toFixed(2)}%) and pre-match activity (${(activityIdx === 0 ? activity.pct1 : activity.pct2).toFixed(2)}%); both signals agree.`
+  if (highLayResistance && highLayBackDominance) {
     winner = other.team
-    pattern = 'WORLD_LEGENDS_HIGH_LAY_RELATIVE_TO_BACK'
-    reason = `${leader.team} has ${(layBackRatio * 100).toFixed(2)}% lay/back (at least 10%); the Legends exception selects ${winner}.`
-  } else if (bothZeroLay && backLead !== null && backLead < WORLD_LEGENDS_TOSS_PARAMETERS.zeroLayBackLead) {
+    pattern = 'WORLD_LEGENDS_HIGH_LAY_AND_BACK_DOMINANCE'
+    const leadText = backLead === null ? 'no opposing back volume' : `${backLead.toFixed(2)}x back lead (at least ${WORLD_LEGENDS_TOSS_PARAMETERS.highLayMinBackLead}x)`
+    reason = `${leader.team} has ${(layBackRatio * 100).toFixed(2)}% lay/back (at least ${WORLD_LEGENDS_TOSS_PARAMETERS.layBackResistance * 100}%) and ${leadText}; the Legends exception selects ${winner}.`
+  } else if (bothZeroLay) {
     winner = other.team
-    pattern = 'WORLD_LEGENDS_ZERO_LAY_MODERATE_BACK_LEAD'
-    reason = `Both lays are zero and ${leader.team}'s back lead is ${backLead.toFixed(2)}x (below 3x); the Legends exception selects ${winner}.`
+    pattern = 'WORLD_LEGENDS_BOTH_ZERO_LAY'
+    reason = `Both matched lay stakes are zero; the Legends exception reverses the support/activity selection (${leader.team}) to ${winner}.`
+  } else if (highLayResistance) {
+    reason += ` Lay/back is ${(layBackRatio * 100).toFixed(2)}%, but the ${backLead.toFixed(2)}x back lead is below ${WORLD_LEGENDS_TOSS_PARAMETERS.highLayMinBackLead}x, so the high-lay exception does not apply.`
   }
-  return { ...metadata, winner, pattern, reason, verdictTag: 'WORLD LEGENDS EXPOSURE / LAY RULE',
+  return { ...metadata, winner, pattern, reason, verdictTag: 'WORLD LEGENDS SUPPORT / ACTIVITY RULE',
     confidence: { label: 'League rule; future accuracy uncalibrated', color: 'text-yellow-500', pct: 'Uncalibrated', calibrated: false },
-    evidence: { exposureLeader: leader.team, leaderExposure: leader.netExposure,
-      otherExposure: other.netExposure, leaderPnl: leader.pnl, otherPnl: other.pnl,
-      layBackRatio, backLead, bothZeroLay },
+    evidence: { baselineLeader: leader.team, baselineIdx: supportIdx, support, activity,
+      layBackRatio, backLead, bothZeroLay, highLayResistance, highLayBackDominance,
+      highLayExceptionApplied: highLayResistance && highLayBackDominance,
+      zeroLayExceptionApplied: bothZeroLay, inputSource: 'toss-pre-match' },
   }
 }

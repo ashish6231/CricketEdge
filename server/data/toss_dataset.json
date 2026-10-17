@@ -57803,12 +57803,22 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "No Result",
       "lastCaptureError": null,
-      "status": "pending",
+      "status": "abandoned",
       "confirmedAt": null,
       "confirmedByEmail": null,
-      "confirmedById": null
+      "confirmedById": null,
+      "predictionCorrect": null,
+      "resultCorrection": {
+        "source": "user-conversation",
+        "correctedOn": "2026-10-17",
+        "previous": {
+          "status": "pending",
+          "actualWinner": null
+        },
+        "reason": "User confirmed toss abandoned; no winner. Excluded from scoring."
+      }
     },
     {
       "matchId": "36151021",

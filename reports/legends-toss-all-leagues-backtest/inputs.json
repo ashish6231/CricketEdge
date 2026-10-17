@@ -1,0 +1,5168 @@
+{
+  "queriedAt": "2026-10-17T03:30:52.663Z",
+  "source": "Configured PredictionRecord database, datasetKey=tosses; read-only SELECT.",
+  "rawPayloadSha256": "c761d0e06099b4aa5b83e9c445e4539fcca26daded929938f0dac3ba4710d994",
+  "records": [
+    {
+      "matchId": "35901908",
+      "matchName": "Jamaica Kingsmen v Guyana Amazon Warriors",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors",
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786665600000,
+      "capturedAt": "2026-08-15T03:01:49.238Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786665600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Jamaica Kingsmen",
+          "Guyana Amazon Warriors"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 281.34000000000003,
+            "lay": 181.66000000000003,
+            "total": 434.6300000000001
+          },
+          "team2": {
+            "back": 2096.19,
+            "lay": 153.29000000000008,
+            "total": 2277.85
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 433.6452000000001,
+          "team2": 2218.1350999999995
+        }
+      }
+    },
+    {
+      "matchId": "35913612",
+      "matchName": "England v Pakistan",
+      "competitionName": "Test Matches",
+      "status": "verified",
+      "actualWinner": "England",
+      "predictedWinner": "England",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1787133600000,
+      "capturedAt": "2026-08-19T16:44:56.355Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787133600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England",
+          "Pakistan"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 3079.51,
+            "lay": 1054.2299999999998,
+            "total": 4335.68
+          },
+          "team2": {
+            "back": 1621.13,
+            "lay": 1256.1699999999998,
+            "total": 2675.3599999999997
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 4256.5773,
+          "team2": 2654.9981
+        }
+      }
+    },
+    {
+      "matchId": "35913614",
+      "matchName": "Sri Lanka v India",
+      "competitionName": "Test Matches",
+      "status": "verified",
+      "actualWinner": "India",
+      "predictedWinner": "India",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786768200000,
+      "capturedAt": "2026-08-15T09:59:27.054Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786768200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Sri Lanka",
+          "India"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 701.1499999999999,
+            "lay": 28.32,
+            "total": 1293.53
+          },
+          "team2": {
+            "back": 1285.4099999999999,
+            "lay": 592.3800000000001,
+            "total": 1313.7299999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1292.8022999999998,
+          "team2": 1283.7002
+        }
+      }
+    },
+    {
+      "matchId": "35929461",
+      "matchName": "Sunrisers Leeds W v Southern Brave W",
+      "competitionName": "The Hundred - Womens",
+      "status": "verified",
+      "actualWinner": "Sunrisers Leeds W",
+      "predictedWinner": "Sunrisers Leeds W",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786713300000,
+      "capturedAt": "2026-08-15T03:01:49.744Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786713300000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Sunrisers Leeds W",
+          "Southern Brave W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 748.6500000000001,
+            "lay": 404.3399999999999,
+            "total": 1271.98
+          },
+          "team2": {
+            "back": 1124.58,
+            "lay": 523.33,
+            "total": 1528.9199999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1266.0948000000003,
+          "team2": 1480.3722999999998
+        }
+      }
+    },
+    {
+      "matchId": "35931559",
+      "matchName": "Ireland v Afghanistan",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "Afghanistan",
+      "predictedWinner": "Afghanistan",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786787100000,
+      "capturedAt": "2026-08-15T18:06:29.231Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786787100000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Ireland",
+          "Afghanistan"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 648.9200000000001,
+            "lay": 414.46999999999997,
+            "total": 1062.16
+          },
+          "team2": {
+            "back": 1238.39,
+            "lay": 413.24,
+            "total": 1652.8600000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1052.0713,
+          "team2": 1586.2943
+        }
+      }
+    },
+    {
+      "matchId": "35931569",
+      "matchName": "St. Lucia Kings v Antigua & Barbuda Falcons",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St. Lucia Kings",
+      "predictedWinner": "St. Lucia Kings",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786748400000,
+      "capturedAt": "2026-08-15T05:04:27.240Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786748400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St. Lucia Kings",
+          "Antigua & Barbuda Falcons"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1072.98,
+            "lay": 346.53,
+            "total": 1381.56
+          },
+          "team2": {
+            "back": 1000.37,
+            "lay": 308.58000000000004,
+            "total": 1346.9
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1342.6443,
+          "team2": 1338.2469999999998
+        }
+      }
+    },
+    {
+      "matchId": "35933619",
+      "matchName": "Manchester Super Giants v Sunrisers Leeds",
+      "competitionName": "The Hundred",
+      "status": "verified",
+      "actualWinner": "Sunrisers Leeds",
+      "predictedWinner": "Sunrisers Leeds",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786726800000,
+      "capturedAt": "2026-08-15T03:01:50.372Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786726800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Manchester Super Giants",
+          "Sunrisers Leeds"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2156.96,
+            "lay": 189.04000000000002,
+            "total": 2538.43
+          },
+          "team2": {
+            "back": 180.59999999999997,
+            "lay": 381.46999999999997,
+            "total": 369.64
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2472.3974999999996,
+          "team2": 368.9245
+        }
+      }
+    },
+    {
+      "matchId": "35933934",
+      "matchName": "Jamaica Kingsmen v Trinbago Knight Riders",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Jamaica Kingsmen",
+      "predictedWinner": "Jamaica Kingsmen",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786838400000,
+      "capturedAt": "2026-08-16T06:13:20.039Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786838400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Jamaica Kingsmen",
+          "Trinbago Knight Riders"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1264.2,
+            "lay": 498.69,
+            "total": 1619.65
+          },
+          "team2": {
+            "back": 106.25999999999999,
+            "lay": 355.45,
+            "total": 604.95
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1560.3852,
+          "team2": 604.437
+        }
+      }
+    },
+    {
+      "matchId": "35938017",
+      "matchName": "St. Lucia Kings v Barbados Tridents",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St. Lucia Kings",
+      "predictedWinner": "St. Lucia Kings",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786921200000,
+      "capturedAt": "2026-08-17T05:00:02.073Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786921200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St. Lucia Kings",
+          "Barbados Tridents"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 366.93,
+            "lay": 1307.87,
+            "total": 1308.32
+          },
+          "team2": {
+            "back": 1754.73,
+            "lay": 941.39,
+            "total": 3062.6
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1300.1320999999998,
+          "team2": 2938.8363
+        }
+      }
+    },
+    {
+      "matchId": "35940115",
+      "matchName": "Trent Rockets W v Sunrisers Leeds W",
+      "competitionName": "The Hundred - Womens",
+      "status": "verified",
+      "actualWinner": "Trent Rockets W",
+      "predictedWinner": "Trent Rockets W",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786886100000,
+      "capturedAt": "2026-08-16T18:59:37.354Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786886100000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Trent Rockets W",
+          "Sunrisers Leeds W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2014.05,
+            "lay": 236.18000000000006,
+            "total": 2278.56
+          },
+          "team2": {
+            "back": 946.49,
+            "lay": 264.51,
+            "total": 1182.67
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2228.6008,
+          "team2": 1194.1208000000001
+        }
+      }
+    },
+    {
+      "matchId": "35941131",
+      "matchName": "Trent Rockets v Manchester Super Giants",
+      "competitionName": "The Hundred",
+      "status": "verified",
+      "actualWinner": "Manchester Super Giants",
+      "predictedWinner": "Manchester Super Giants",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1786899600000,
+      "capturedAt": "2026-08-17T02:18:01.472Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1786899600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Trent Rockets",
+          "Manchester Super Giants"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1163.1799999999998,
+            "lay": 808.3900000000001,
+            "total": 1990.1599999999999
+          },
+          "team2": {
+            "back": 2617.81,
+            "lay": 826.98,
+            "total": 3426.2
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1977.7504,
+          "team2": 3355.6834
+        }
+      }
+    },
+    {
+      "matchId": "35946930",
+      "matchName": "Jamaica Kingsmen v St. Kitts and Nevis Patriots",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St. Kitts and Nevis Patriots",
+      "predictedWinner": "St. Kitts and Nevis Patriots",
+      "predictorVersion": "toss-v7-layvol-stronger",
+      "startTime": 1787097600000,
+      "capturedAt": "2026-08-19T05:50:01.745Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787097600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Jamaica Kingsmen",
+          "St. Kitts and Nevis Patriots"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 537.38,
+            "lay": 905.6600000000001,
+            "total": 1560.04
+          },
+          "team2": {
+            "back": 4887.349999999999,
+            "lay": 1022.66,
+            "total": 5793.009999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1565.3429999999998,
+          "team2": 3160.7394999999997
+        }
+      }
+    },
+    {
+      "matchId": "35946931",
+      "matchName": "St. Lucia Kings v Guyana Amazon Warriors",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors",
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787180400000,
+      "capturedAt": "2026-08-20T04:17:44.769Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787180400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St. Lucia Kings",
+          "Guyana Amazon Warriors"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1130.1100000000001,
+            "lay": 200.75,
+            "total": 1381.52
+          },
+          "team2": {
+            "back": 1593.22,
+            "lay": 251.40999999999997,
+            "total": 1793.97
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1338.2006000000001,
+          "team2": 1751.5578
+        }
+      }
+    },
+    {
+      "matchId": "35947011",
+      "matchName": "Australia v Bangladesh",
+      "competitionName": "Test Matches",
+      "status": "verified",
+      "actualWinner": "Australia",
+      "predictedWinner": "Australia",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787356800000,
+      "capturedAt": "2026-08-22T15:38:51.199Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787356800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Australia",
+          "Bangladesh"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 4172.410000000001,
+            "lay": 350.37000000000006,
+            "total": 4579.740000000001
+          },
+          "team2": {
+            "back": 878.7900000000003,
+            "lay": 407.3299999999999,
+            "total": 1229.1600000000003
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 4348.3652999999995,
+          "team2": 1221.4304000000002
+        }
+      }
+    },
+    {
+      "matchId": "35948552",
+      "matchName": "Dindigul Dragons v Ruby Trichy Warriors",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Dindigul Dragons",
+      "predictedWinner": "Dindigul Dragons",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787148000000,
+      "capturedAt": "2026-08-20T03:34:28.870Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787148000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Dindigul Dragons",
+          "Ruby Trichy Warriors"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 35.37,
+            "lay": 62.26,
+            "total": 64.14
+          },
+          "team2": {
+            "back": 534.0600000000001,
+            "lay": 28.770000000000003,
+            "total": 596.32
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 63.0789,
+          "team2": 576.733
+        }
+      }
+    },
+    {
+      "matchId": "35950773",
+      "matchName": "Nellai Royal Kings v Salem Spartans",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Salem Spartans",
+      "predictedWinner": "Salem Spartans",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787234400000,
+      "capturedAt": "2026-08-21T02:37:12.243Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787234400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Nellai Royal Kings",
+          "Salem Spartans"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1076.18,
+            "lay": 529.9799999999999,
+            "total": 1701
+          },
+          "team2": {
+            "back": 1659.6499999999999,
+            "lay": 624.8199999999999,
+            "total": 2189.6299999999997
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1648.8726,
+          "team2": 2077.5110999999997
+        }
+      }
+    },
+    {
+      "matchId": "35954424",
+      "matchName": "Antigua & Barbuda Falco v St. Kitts and Nevis Pat",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Antigua & Barbuda Falco",
+      "predictedWinner": "Antigua & Barbuda Falco",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787266800000,
+      "capturedAt": "2026-08-21T05:14:06.565Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787266800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Antigua & Barbuda Falco",
+          "St. Kitts and Nevis Pat"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2329.02,
+            "lay": 8354.349999999999,
+            "total": 2769.12
+          },
+          "team2": {
+            "back": 1319.38,
+            "lay": 440.09999999999997,
+            "total": 9673.73
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 970.7526,
+          "team2": 9618.324499999999
+        }
+      }
+    },
+    {
+      "matchId": "35955958",
+      "matchName": "Madurai Panthers v Tiruppur Tamizhans",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Tiruppur Tamizhans",
+      "predictedWinner": "Tiruppur Tamizhans",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787220000000,
+      "capturedAt": "2026-08-20T15:18:04.962Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787220000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Madurai Panthers",
+          "Tiruppur Tamizhans"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 223.93,
+            "lay": 0,
+            "total": 227.08
+          },
+          "team2": {
+            "back": 638.76,
+            "lay": 3.15,
+            "total": 638.76
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 220.3621,
+          "team2": 613.9128999999999
+        }
+      }
+    },
+    {
+      "matchId": "35958346",
+      "matchName": "Ruby Trichy Warriors v Chepauk Super Gillies",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Ruby Trichy Warriors",
+      "predictedWinner": "Ruby Trichy Warriors",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787320800000,
+      "capturedAt": "2026-08-22T15:38:49.032Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787320800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Ruby Trichy Warriors",
+          "Chepauk Super Gillies"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 8.999999999999996,
+            "lay": 589.4699999999999,
+            "total": 254.7
+          },
+          "team2": {
+            "back": 1710.1,
+            "lay": 245.7,
+            "total": 2299.5699999999997
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 254.82739999999998,
+          "team2": 2191.9399
+        }
+      }
+    },
+    {
+      "matchId": "35958414",
+      "matchName": "Lyca Kovai Kings v Dindigul Dragons",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Dindigul Dragons",
+      "predictedWinner": "Dindigul Dragons",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787306400000,
+      "capturedAt": "2026-08-22T15:38:48.479Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787306400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Lyca Kovai Kings",
+          "Dindigul Dragons"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 227.48000000000002,
+            "lay": 1009.5100000000001,
+            "total": 297.9
+          },
+          "team2": {
+            "back": 915.44,
+            "lay": 70.41999999999996,
+            "total": 1924.9500000000003
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 291.0756,
+          "team2": 1925.0064000000002
+        }
+      }
+    },
+    {
+      "matchId": "35962365",
+      "matchName": "Tiruppur Tamizhans v Salem Spartans",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Salem Spartans",
+      "predictedWinner": "Salem Spartans",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787392800000,
+      "capturedAt": "2026-08-22T15:38:51.745Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787392800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Tiruppur Tamizhans",
+          "Salem Spartans"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 314.16999999999996,
+            "lay": 2.8100000000000023,
+            "total": 342.34
+          },
+          "team2": {
+            "back": 105.32000000000001,
+            "lay": 28.169999999999998,
+            "total": 108.13000000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 342.2797,
+          "team2": 101.50380000000001
+        }
+      }
+    },
+    {
+      "matchId": "35962407",
+      "matchName": "Nellai Royal Kings v Madurai Panthers",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Madurai Panthers",
+      "predictedWinner": "Madurai Panthers",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787407200000,
+      "capturedAt": "2026-08-22T19:32:26.321Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787407200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Nellai Royal Kings",
+          "Madurai Panthers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 732.8499999999999,
+            "lay": 593.63,
+            "total": 1187.37
+          },
+          "team2": {
+            "back": 0,
+            "lay": 454.52000000000004,
+            "total": 593.63
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1176.941,
+          "team2": 593.63
+        }
+      }
+    },
+    {
+      "matchId": "35962894",
+      "matchName": "St. Lucia Kings v Jamaica Kingsmen",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St. Lucia Kings",
+      "predictedWinner": "St. Lucia Kings",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787353200000,
+      "capturedAt": "2026-08-22T15:38:50.631Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787353200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St. Lucia Kings",
+          "Jamaica Kingsmen"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1979.6100000000001,
+            "lay": 333.89000000000004,
+            "total": 2460.31
+          },
+          "team2": {
+            "back": 374.02000000000004,
+            "lay": 480.69999999999993,
+            "total": 707.9100000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2381.1103999999996,
+          "team2": 697.5847000000001
+        }
+      }
+    },
+    {
+      "matchId": "35966902",
+      "matchName": "England v Pakistan",
+      "competitionName": "Test Matches",
+      "status": "verified",
+      "actualWinner": "Pakistan",
+      "predictedWinner": "Pakistan",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787824800000,
+      "capturedAt": "2026-08-28T03:26:43.342Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787824800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England",
+          "Pakistan"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2047.7600000000002,
+            "lay": 166.78000000000003,
+            "total": 2064.82
+          },
+          "team2": {
+            "back": 861.9300000000001,
+            "lay": 17.06000000000001,
+            "total": 1028.71
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1984.7379,
+          "team2": 1021.9380000000001
+        }
+      }
+    },
+    {
+      "matchId": "35970079",
+      "matchName": "St. Kitts and Nevis Patriots v Jamaica Kingsmen",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St. Kitts and Nevis Patriots",
+      "predictedWinner": "St. Kitts and Nevis Patriots",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787871600000,
+      "capturedAt": "2026-08-28T04:24:49.688Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787871600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St. Kitts and Nevis Patriots",
+          "Jamaica Kingsmen"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1246834.7199999993,
+            "lay": 336668.6900000001,
+            "total": 1856194.5799999991
+          },
+          "team2": {
+            "back": 743892.3599999998,
+            "lay": 609359.8599999999,
+            "total": 1080561.0499999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1854070.5477999991,
+          "team2": 1080122.3022999999
+        }
+      }
+    },
+    {
+      "matchId": "35972909",
+      "matchName": "Antigua & Barbuda Falc v Barbados Tridents",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Barbados Tridents",
+      "predictedWinner": "Barbados Tridents",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787698800000,
+      "capturedAt": "2026-08-26T16:15:05.655Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787698800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Antigua & Barbuda Falc",
+          "Barbados Tridents"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1640.9200000000003,
+            "lay": 365.26,
+            "total": 2187.5800000000004
+          },
+          "team2": {
+            "back": 3456.9500000000003,
+            "lay": 546.66,
+            "total": 3822.21
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2193.3408999999997,
+          "team2": 3556.5868999999993
+        }
+      }
+    },
+    {
+      "matchId": "35972917",
+      "matchName": "Trinbago Knight Riders v St. Lucia Kings",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders",
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787785200000,
+      "capturedAt": "2026-08-28T03:26:42.940Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787785200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "St. Lucia Kings"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1731.3200000000002,
+            "lay": 462.74,
+            "total": 2407.6000000000004
+          },
+          "team2": {
+            "back": 832.01,
+            "lay": 676.28,
+            "total": 1294.75
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2285.6025,
+          "team2": 1293.1272
+        }
+      }
+    },
+    {
+      "matchId": "35973277",
+      "matchName": "Lyca Kovai Kings v Tiruppur Tamizhans",
+      "competitionName": "Tamil Nadu Premier League",
+      "status": "verified",
+      "actualWinner": "Lyca Kovai Kings",
+      "predictedWinner": "Lyca Kovai Kings",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787580000000,
+      "capturedAt": "2026-08-25T18:43:35.342Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787580000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Lyca Kovai Kings",
+          "Tiruppur Tamizhans"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1539.02,
+            "lay": 700.9000000000001,
+            "total": 2049.7200000000003
+          },
+          "team2": {
+            "back": 1342.94,
+            "lay": 510.70000000000005,
+            "total": 2043.8400000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1955.6899,
+          "team2": 1995.8263000000002
+        }
+      }
+    },
+    {
+      "matchId": "35977014",
+      "matchName": "Belfast Wolves v Dublin Guardians",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Dublin Guardians",
+      "predictedWinner": "Belfast Wolves",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787823000000,
+      "capturedAt": "2026-08-28T03:26:43.139Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787823000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Belfast Wolves",
+          "Dublin Guardians"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 784.72,
+            "lay": 202.83999999999997,
+            "total": 784.72
+          },
+          "team2": {
+            "back": 71.09,
+            "lay": 0,
+            "total": 273.92999999999995
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 727.3521,
+          "team2": 268.6563
+        }
+      }
+    },
+    {
+      "matchId": "35977921",
+      "matchName": "Namibia v South Africa",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "South Africa",
+      "predictedWinner": "South Africa",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787918400000,
+      "capturedAt": "2026-08-28T17:24:13.959Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787918400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Namibia",
+          "South Africa"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 635.4200000000001,
+            "lay": 0.019999999999999574,
+            "total": 635.4200000000001
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "total": 0.019999999999999574
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 590.7256,
+          "team2": 0.019999999999999574
+        }
+      }
+    },
+    {
+      "matchId": "35979895",
+      "matchName": "Edinburgh Castle Rockers v Glasgow Cosmic",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787836500000,
+      "capturedAt": "2026-08-28T03:26:43.546Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787836500000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Edinburgh Castle Rockers",
+          "Glasgow Cosmic"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1651.53,
+            "lay": 0,
+            "total": 1651.53
+          },
+          "team2": {
+            "back": 1423.73,
+            "lay": 0,
+            "total": 1423.73
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1515.1170999999997,
+          "team2": 1308.0551
+        }
+      }
+    },
+    {
+      "matchId": "35982250",
+      "matchName": "Hong Kong W v Thailand W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Hong Kong W",
+      "predictedWinner": "Thailand W",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787927400000,
+      "capturedAt": "2026-08-29T04:54:58.309Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787927400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Hong Kong W",
+          "Thailand W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 14.91,
+            "lay": 7.79,
+            "total": 14.91
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "total": 7.79
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 13.5681,
+          "team2": 7.79
+        }
+      }
+    },
+    {
+      "matchId": "35982257",
+      "matchName": "United Arab Emirates W v Sri Lanka W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Sri Lanka W",
+      "predictedWinner": "Sri Lanka W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788013800000,
+      "capturedAt": "2026-08-29T20:30:12.104Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788013800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "United Arab Emirates W",
+          "Sri Lanka W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 251.39,
+            "lay": 110.06,
+            "total": 394.7
+          },
+          "team2": {
+            "back": 851.74,
+            "lay": 143.31,
+            "total": 961.8
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 379.1681,
+          "team2": 836.9811
+        }
+      }
+    },
+    {
+      "matchId": "35982267",
+      "matchName": "India W v Thailand W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Thailand W",
+      "predictedWinner": "India W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788100200000,
+      "capturedAt": "2026-08-31T17:47:58.011Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788100200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "India W",
+          "Thailand W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1811.76,
+            "lay": 552.81,
+            "total": 2136.99
+          },
+          "team2": {
+            "back": 0,
+            "lay": 325.22999999999996,
+            "total": 552.81
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1984.9506999999999,
+          "team2": 552.81
+        }
+      }
+    },
+    {
+      "matchId": "35982279",
+      "matchName": "Bangladesh W v Indonesia W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Indonesia W",
+      "predictedWinner": "Bangladesh W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788186600000,
+      "capturedAt": "2026-09-01T03:56:44.683Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788186600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Bangladesh W",
+          "Indonesia W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1401.49,
+            "lay": 39.699999999999996,
+            "total": 1754.92
+          },
+          "team2": {
+            "back": 462.07000000000005,
+            "lay": 353.43000000000006,
+            "total": 501.77000000000004
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1644.5895999999998,
+          "team2": 472.2436
+        }
+      }
+    },
+    {
+      "matchId": "35986052",
+      "matchName": "Trinbago Knight Riders v Barbados Tridents",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders",
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787961600000,
+      "capturedAt": "2026-08-29T05:25:02.788Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787961600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "Barbados Tridents"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1304.08,
+            "lay": 169.44000000000003,
+            "total": 1514.3399999999997
+          },
+          "team2": {
+            "back": 2025.3899999999999,
+            "lay": 210.25999999999988,
+            "total": 2194.83
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1471.687,
+          "team2": 2069.4002
+        }
+      }
+    },
+    {
+      "matchId": "35988957",
+      "matchName": "Amsterdam Flames v Edinburgh Castle Rockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictorVersion": "toss-v8-layvol-ratio-gate",
+      "startTime": 1787922900000,
+      "capturedAt": "2026-08-28T18:36:26.204Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787922900000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Amsterdam Flames",
+          "Edinburgh Castle Rockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 818.1800000000001,
+            "lay": 207.1,
+            "total": 890.07
+          },
+          "team2": {
+            "back": 1460.02,
+            "lay": 71.89,
+            "total": 1667.12
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 852.4188,
+          "team2": 1590.2881999999997
+        }
+      }
+    },
+    {
+      "matchId": "35989000",
+      "matchName": "St Kitts & Nevis Pats v Antigua & Barbuda Falcs",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Antigua & Barbuda Falcs",
+      "predictedWinner": "Antigua & Barbuda Falcs",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788130800000,
+      "capturedAt": "2026-08-31T17:47:58.220Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788130800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St Kitts & Nevis Pats",
+          "Antigua & Barbuda Falcs"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2981.35,
+            "lay": 14.789999999999985,
+            "total": 3412.68
+          },
+          "team2": {
+            "back": 449.91999999999996,
+            "lay": 431.33,
+            "total": 464.7099999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 3238.0694,
+          "team2": 439.11699999999996
+        }
+      }
+    },
+    {
+      "matchId": "35989760",
+      "matchName": "Rotterdam Dockers v Belfast Wolves",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Belfast Wolves",
+      "predictedWinner": "Belfast Wolves",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788009300000,
+      "capturedAt": "2026-08-29T18:29:06.897Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788009300000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Rotterdam Dockers",
+          "Belfast Wolves"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 604.75,
+            "lay": 158.73000000000002,
+            "total": 661.2
+          },
+          "team2": {
+            "back": 225.2,
+            "lay": 56.45,
+            "total": 383.93
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 626.2188,
+          "team2": 363.9116
+        }
+      }
+    },
+    {
+      "matchId": "35989974",
+      "matchName": "Glasgow Cosmic v Dublin Guardians",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Dublin Guardians",
+      "predictedWinner": "Glasgow Cosmic",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1787995800000,
+      "capturedAt": "2026-08-29T16:29:27.247Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1787995800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Glasgow Cosmic",
+          "Dublin Guardians"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 683.97,
+            "lay": 70.56,
+            "total": 688.12
+          },
+          "team2": {
+            "back": 1306.4399999999998,
+            "lay": 4.15,
+            "total": 1376.9999999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 640.7791000000001,
+          "team2": 1265.5754999999997
+        }
+      }
+    },
+    {
+      "matchId": "35993805",
+      "matchName": "South Africa v Zimbabwe",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Zimbabwe",
+      "predictedWinner": "Zimbabwe",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788004800000,
+      "capturedAt": "2026-08-29T17:23:02.278Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788004800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "South Africa",
+          "Zimbabwe"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 167.8,
+            "lay": 205.62000000000003,
+            "total": 266.26
+          },
+          "team2": {
+            "back": 326.49,
+            "lay": 98.46000000000001,
+            "total": 532.11
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 258.71850000000006,
+          "team2": 523.5907
+        }
+      }
+    },
+    {
+      "matchId": "35994441",
+      "matchName": "England W v Ireland W",
+      "competitionName": "Womens One Day Internationals",
+      "status": "verified",
+      "actualWinner": "England W",
+      "predictedWinner": "England W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788264000000,
+      "capturedAt": "2026-09-01T18:37:08.387Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788264000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England W",
+          "Ireland W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 982.26,
+            "lay": 7.659999999999999,
+            "total": 994.66
+          },
+          "team2": {
+            "back": 606.0600000000002,
+            "lay": 12.399999999999977,
+            "total": 613.7200000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 946.3997999999999,
+          "team2": 610.9485000000001
+        }
+      }
+    },
+    {
+      "matchId": "35997455",
+      "matchName": "Edinburgh Castle Rockers v Dublin Guardians",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Dublin Guardians",
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788095700000,
+      "capturedAt": "2026-08-31T17:47:57.792Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788095700000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Edinburgh Castle Rockers",
+          "Dublin Guardians"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 319.34,
+            "lay": 46.629999999999995,
+            "total": 344.71999999999997
+          },
+          "team2": {
+            "back": 371.88,
+            "lay": 25.38,
+            "total": 418.51
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 323.4771999999999,
+          "team2": 394.36549999999994
+        }
+      }
+    },
+    {
+      "matchId": "35998050",
+      "matchName": "Namibia v Zimbabwe",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Namibia",
+      "predictedWinner": "Namibia",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788177600000,
+      "capturedAt": "2026-08-31T17:47:58.463Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788177600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Namibia",
+          "Zimbabwe"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1145.3799999999999,
+            "lay": 254.36000000000007,
+            "total": 1208.9999999999998
+          },
+          "team2": {
+            "back": 1297.1300000000003,
+            "lay": 63.61999999999999,
+            "total": 1551.4900000000005
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1167.6493999999998,
+          "team2": 1462.0306000000003
+        }
+      }
+    },
+    {
+      "matchId": "35998693",
+      "matchName": "Glasgow Cosmic v Rotterdam Dockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Rotterdam Dockers",
+      "predictedWinner": "Rotterdam Dockers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788268500000,
+      "capturedAt": "2026-09-01T18:50:05.317Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788268500000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Glasgow Cosmic",
+          "Rotterdam Dockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 55.570000000000014,
+            "lay": 42.839999999999996,
+            "total": 96.74000000000001
+          },
+          "team2": {
+            "back": 433.34000000000003,
+            "lay": 41.17,
+            "total": 476.18
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 85.63210000000001,
+          "team2": 465.239
+        }
+      }
+    },
+    {
+      "matchId": "35998885",
+      "matchName": "Amsterdam Flames v Belfast Wolves",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Belfast Wolves",
+      "predictedWinner": "Belfast Wolves",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788082200000,
+      "capturedAt": "2026-08-31T17:47:57.561Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788082200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Amsterdam Flames",
+          "Belfast Wolves"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 106.82000000000001,
+            "lay": 38.50999999999999,
+            "total": 128.38
+          },
+          "team2": {
+            "back": 410.2099999999999,
+            "lay": 21.560000000000002,
+            "total": 448.7199999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 121.65480000000001,
+          "team2": 419.1262
+        }
+      }
+    },
+    {
+      "matchId": "36004104",
+      "matchName": "Trinbago Knight Riders v Guyana Amazon Warriors",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders",
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788210000000,
+      "capturedAt": "2026-09-01T03:56:45.015Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788210000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "Guyana Amazon Warriors"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1092.5400000000002,
+            "lay": 31.43,
+            "total": 1404.2200000000003
+          },
+          "team2": {
+            "back": 1175.25,
+            "lay": 311.67999999999995,
+            "total": 1206.68
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1346.5573999999997,
+          "team2": 1146.6540000000002
+        }
+      }
+    },
+    {
+      "matchId": "36004314",
+      "matchName": "St Kitts & Nevis Pats v Barbados Tridents",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St Kitts & Nevis Pats",
+      "predictedWinner": "St Kitts & Nevis Pats",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788303600000,
+      "capturedAt": "2026-09-02T13:56:24.291Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788303600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St Kitts & Nevis Pats",
+          "Barbados Tridents"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1600.81,
+            "lay": 2492.16,
+            "total": 1804.4499999999998
+          },
+          "team2": {
+            "back": 319.58000000000004,
+            "lay": 203.64,
+            "total": 2811.74
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1714.621,
+          "team2": 2795.1425
+        }
+      }
+    },
+    {
+      "matchId": "36007810",
+      "matchName": "Pakistan W v Thailand W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Pakistan W",
+      "predictedWinner": "Pakistan W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788273000000,
+      "capturedAt": "2026-09-01T19:50:58.767Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788273000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Pakistan W",
+          "Thailand W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 589.23,
+            "lay": 0,
+            "total": 642.71
+          },
+          "team2": {
+            "back": 294.07000000000005,
+            "lay": 53.48,
+            "total": 294.07000000000005
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 601.4131,
+          "team2": 280.57079999999996
+        }
+      }
+    },
+    {
+      "matchId": "36013997",
+      "matchName": "Zimbabwe v South Africa",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "South Africa",
+      "predictedWinner": "South Africa",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788264000000,
+      "capturedAt": "2026-09-01T18:37:09.368Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788264000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe",
+          "South Africa"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1198.9699999999998,
+            "lay": 378.22999999999996,
+            "total": 1279.0699999999997
+          },
+          "team2": {
+            "back": 254.23,
+            "lay": 80.1,
+            "total": 632.4599999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1228.5985999999998,
+          "team2": 632.4603999999999
+        }
+      }
+    },
+    {
+      "matchId": "36016128",
+      "matchName": "Belfast Wolves v Edinburgh Castle Rockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Belfast Wolves",
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788354900000,
+      "capturedAt": "2026-09-02T19:10:23.965Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788354900000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Belfast Wolves",
+          "Edinburgh Castle Rockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1516.63,
+            "lay": 6.740000000000009,
+            "total": 1588.93
+          },
+          "team2": {
+            "back": 111.62,
+            "lay": 72.3,
+            "total": 118.36000000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1505.7252,
+          "team2": 104.01190000000001
+        }
+      }
+    },
+    {
+      "matchId": "36018220",
+      "matchName": "Indonesia W v Sri Lanka W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Indonesia W",
+      "predictedWinner": "Sri Lanka W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788359400000,
+      "capturedAt": "2026-09-02T20:15:23.749Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788359400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Indonesia W",
+          "Sri Lanka W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 485.53999999999996,
+            "lay": 351.18,
+            "total": 646.8599999999999
+          },
+          "team2": {
+            "back": 2037.2399999999998,
+            "lay": 161.32,
+            "total": 2388.4199999999996
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 616.3517999999999,
+          "team2": 2216.2516
+        }
+      }
+    },
+    {
+      "matchId": "36018454",
+      "matchName": "Trinbago Knight Riders v Antigua & Barbuda Falcs",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders",
+      "predictedWinner": "Trinbago Knight Riders",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788390000000,
+      "capturedAt": "2026-09-03T15:55:04.126Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788390000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Trinbago Knight Riders",
+          "Antigua & Barbuda Falcs"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 512.79,
+            "lay": 3933.5199999999995,
+            "total": 748.1500000000001
+          },
+          "team2": {
+            "back": 2217.3199999999997,
+            "lay": 235.3600000000001,
+            "total": 6150.839999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 750.0731000000001,
+          "team2": 6025.350699999999
+        }
+      }
+    },
+    {
+      "matchId": "36019388",
+      "matchName": "Guyana Amazon Warriors v Jamaica Kingsmen",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors",
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788562800000,
+      "capturedAt": "2026-09-05T16:19:34.368Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788562800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Guyana Amazon Warriors",
+          "Jamaica Kingsmen"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2546.62,
+            "lay": 117.47999999999999,
+            "total": 2828.2
+          },
+          "team2": {
+            "back": 528.2,
+            "lay": 281.58000000000004,
+            "total": 645.6800000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2004.6985,
+          "team2": 637.2869000000002
+        }
+      }
+    },
+    {
+      "matchId": "36019390",
+      "matchName": "St Kitts & Nevis Pats v St. Lucia Kings",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St. Lucia Kings",
+      "predictedWinner": "St. Lucia Kings",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788476400000,
+      "capturedAt": "2026-09-04T16:56:15.310Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788476400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "St Kitts & Nevis Pats",
+          "St. Lucia Kings"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1527.4399999999998,
+            "lay": 415.85,
+            "total": 3857.6499999999996
+          },
+          "team2": {
+            "back": 1277.1,
+            "lay": 2330.21,
+            "total": 1692.9499999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 3787.1561,
+          "team2": 1620.8912999999998
+        }
+      }
+    },
+    {
+      "matchId": "36020245",
+      "matchName": "Namibia v Zimbabwe",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Zimbabwe",
+      "predictedWinner": "Zimbabwe",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788436800000,
+      "capturedAt": "2026-09-03T17:24:05.611Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788436800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Namibia",
+          "Zimbabwe"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 121.87999999999997,
+            "lay": 321.67,
+            "total": 125.13999999999999
+          },
+          "team2": {
+            "back": 1115.9199999999998,
+            "lay": 3.2600000000000193,
+            "total": 1437.59
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 123.2528,
+          "team2": 1368.588
+        }
+      }
+    },
+    {
+      "matchId": "36020340",
+      "matchName": "Dublin Guardians v Rotterdam Dockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Rotterdam Dockers",
+      "predictedWinner": "Rotterdam Dockers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788341400000,
+      "capturedAt": "2026-09-02T16:03:31.629Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788341400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Dublin Guardians",
+          "Rotterdam Dockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2.8100000000000005,
+            "lay": 44.870000000000005,
+            "total": 33.81000000000002
+          },
+          "team2": {
+            "back": 642.65,
+            "lay": 31.000000000000014,
+            "total": 687.52
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 33.781900000000014,
+          "team2": 642.583
+        }
+      }
+    },
+    {
+      "matchId": "36020432",
+      "matchName": "Amsterdam Flames v Glasgow Cosmic",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Glasgow Cosmic",
+      "predictedWinner": "Amsterdam Flames",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788441300000,
+      "capturedAt": "2026-09-03T18:24:05.268Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788441300000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Amsterdam Flames",
+          "Glasgow Cosmic"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1673.06,
+            "lay": 5.52,
+            "total": 1765.01
+          },
+          "team2": {
+            "back": 439,
+            "lay": 91.95,
+            "total": 444.52
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1659.1941999999997,
+          "team2": 416.0062
+        }
+      }
+    },
+    {
+      "matchId": "36021032",
+      "matchName": "Hong Kong W v India W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Hong Kong W",
+      "predictedWinner": "India W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788445800000,
+      "capturedAt": "2026-09-03T20:32:25.835Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788445800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Hong Kong W",
+          "India W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 3.120000000000001,
+            "lay": 71.60000000000001,
+            "total": 44.480000000000004
+          },
+          "team2": {
+            "back": 1258.1399999999999,
+            "lay": 41.36,
+            "total": 1329.7399999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 44.4488,
+          "team2": 1229.5645999999997
+        }
+      }
+    },
+    {
+      "matchId": "36021300",
+      "matchName": "England W v Ireland W",
+      "competitionName": "Womens One Day Internationals",
+      "status": "verified",
+      "actualWinner": "England W",
+      "predictedWinner": "England W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788436800000,
+      "capturedAt": "2026-09-03T17:24:05.147Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788436800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England W",
+          "Ireland W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1072.84,
+            "lay": 83.21,
+            "total": 1225.21
+          },
+          "team2": {
+            "back": 209.54000000000002,
+            "lay": 152.37,
+            "total": 292.75
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1145.0555,
+          "team2": 280.3316
+        }
+      }
+    },
+    {
+      "matchId": "36023009",
+      "matchName": "United Arab Emirates W v Indonesia W",
+      "competitionName": "Women's Asia Cup T20",
+      "status": "verified",
+      "actualWinner": "United Arab Emirates W",
+      "predictedWinner": "United Arab Emirates W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788532200000,
+      "capturedAt": "2026-09-05T01:33:40.633Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788532200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "United Arab Emirates W",
+          "Indonesia W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 841.48,
+            "lay": 79.17999999999999,
+            "total": 986.2
+          },
+          "team2": {
+            "back": 164.70000000000005,
+            "lay": 144.72,
+            "total": 243.88000000000005
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 907.9848000000001,
+          "team2": 233.28360000000004
+        }
+      }
+    },
+    {
+      "matchId": "36023089",
+      "matchName": "Bangladesh W v Sri Lanka W",
+      "competitionName": "Women's Asia Cup T20",
+      "status": "verified",
+      "actualWinner": "Sri Lanka W",
+      "predictedWinner": "Sri Lanka W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788705000000,
+      "capturedAt": "2026-09-07T00:45:59.487Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788705000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Bangladesh W",
+          "Sri Lanka W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 232.83999999999997,
+            "lay": 94.54000000000002,
+            "total": 286.42999999999995
+          },
+          "team2": {
+            "back": 594.95,
+            "lay": 53.58999999999999,
+            "total": 689.49
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 274.5412,
+          "team2": 648.6858
+        }
+      }
+    },
+    {
+      "matchId": "36023098",
+      "matchName": "Barbados Tridents W v Trinbago Knight Riders W",
+      "competitionName": "Women's Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Barbados Tridents W",
+      "predictedWinner": "Trinbago Knight Riders W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788634800000,
+      "capturedAt": "2026-09-06T00:42:27.451Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788634800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Barbados Tridents W",
+          "Trinbago Knight Riders W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 562,
+            "lay": 88.58,
+            "total": 771.72
+          },
+          "team2": {
+            "back": 1189.1599999999999,
+            "lay": 209.72,
+            "total": 1277.7399999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 739.6419999999999,
+          "team2": 1184.5438
+        }
+      }
+    },
+    {
+      "matchId": "36023506",
+      "matchName": "Guyana Amazon Warriors W v Jamaica Empress W",
+      "competitionName": "Women's Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Jamaica Empress W",
+      "predictedWinner": "Jamaica Empress W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788703200000,
+      "capturedAt": "2026-09-07T00:45:57.923Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788703200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Guyana Amazon Warriors W",
+          "Jamaica Empress W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 455.04999999999995,
+            "lay": 36.420000000000016,
+            "total": 503.30999999999995
+          },
+          "team2": {
+            "back": 884.7900000000001,
+            "lay": 48.26,
+            "total": 921.21
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 472.1895999999999,
+          "team2": 774.8176000000001
+        }
+      }
+    },
+    {
+      "matchId": "36023515",
+      "matchName": "Rotterdam Dockers v Edinburgh Castle Rockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Rotterdam Dockers",
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788600600000,
+      "capturedAt": "2026-09-05T16:19:36.365Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788600600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Rotterdam Dockers",
+          "Edinburgh Castle Rockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 809.33,
+            "lay": 8.619999999999997,
+            "total": 907.9100000000001
+          },
+          "team2": {
+            "back": 572.98,
+            "lay": 98.58,
+            "total": 581.6
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 850.9669999999999,
+          "team2": 554.7424
+        }
+      }
+    },
+    {
+      "matchId": "36023549",
+      "matchName": "Barbados Tridents v Trinbago Knight Riders",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Barbados Tridents",
+      "predictedWinner": "Barbados Tridents",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788652800000,
+      "capturedAt": "2026-09-06T11:58:47.853Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788652800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Barbados Tridents",
+          "Trinbago Knight Riders"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 7342.249999999999,
+            "lay": 3418.459999999999,
+            "total": 7526.899999999999
+          },
+          "team2": {
+            "back": 130.04999999999998,
+            "lay": 184.65,
+            "total": 3548.5099999999993
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1884.3488000000002,
+          "team2": 3545.419099999999
+        }
+      }
+    },
+    {
+      "matchId": "36026448",
+      "matchName": "Namibia v South Africa",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Namibia",
+      "predictedWinner": "Namibia",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788523200000,
+      "capturedAt": "2026-09-04T17:23:15.650Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788523200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Namibia",
+          "South Africa"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1091.05,
+            "lay": 319,
+            "total": 1165.94
+          },
+          "team2": {
+            "back": 463.69,
+            "lay": 74.89,
+            "total": 782.69
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1093.7319,
+          "team2": 753.3634
+        }
+      }
+    },
+    {
+      "matchId": "36027092",
+      "matchName": "Glasgow Cosmic v Belfast Wolves",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Glasgow Cosmic",
+      "predictedWinner": "Belfast Wolves",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788527700000,
+      "capturedAt": "2026-09-04T18:26:16.691Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788527700000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Glasgow Cosmic",
+          "Belfast Wolves"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1248.28,
+            "lay": 12.39,
+            "total": 1335.26
+          },
+          "team2": {
+            "back": 549.14,
+            "lay": 86.98,
+            "total": 561.53
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1270.4335999999996,
+          "team2": 527.3462
+        }
+      }
+    },
+    {
+      "matchId": "36027440",
+      "matchName": "Dublin Guardians v Amsterdam Flames",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Dublin Guardians",
+      "predictedWinner": "Amsterdam Flames",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788612000000,
+      "capturedAt": "2026-09-05T18:40:49.164Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788614100000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Dublin Guardians",
+          "Amsterdam Flames"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 706.45,
+            "lay": 0,
+            "total": 800.8000000000001
+          },
+          "team2": {
+            "back": 350.78000000000003,
+            "lay": 94.35,
+            "total": 350.78000000000003
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 776.2899999999998,
+          "team2": 343.4691
+        }
+      }
+    },
+    {
+      "matchId": "36027587",
+      "matchName": "India W v Pakistan W",
+      "competitionName": "Women's Asia Cup T20",
+      "status": "verified",
+      "actualWinner": "Pakistan W",
+      "predictedWinner": "India W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788618600000,
+      "capturedAt": "2026-09-05T19:52:32.784Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788618600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "India W",
+          "Pakistan W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1288.1999999999998,
+            "lay": 353.21999999999997,
+            "total": 1494.62
+          },
+          "team2": {
+            "back": 3237.66,
+            "lay": 206.42,
+            "total": 3590.8799999999997
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1408.0122,
+          "team2": 3313.1339999999996
+        }
+      }
+    },
+    {
+      "matchId": "36027911",
+      "matchName": "England W v Ireland W",
+      "competitionName": "Womens One Day Internationals",
+      "status": "verified",
+      "actualWinner": "Ireland W",
+      "predictedWinner": "Ireland W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788687000000,
+      "capturedAt": "2026-09-06T16:01:16.146Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788687000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England W",
+          "Ireland W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1322.12,
+            "lay": 247.5800000000001,
+            "total": 1501.5099999999998
+          },
+          "team2": {
+            "back": 707.96,
+            "lay": 179.39,
+            "total": 955.5400000000002
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1413.4013999999997,
+          "team2": 922.903
+        }
+      }
+    },
+    {
+      "matchId": "36029412",
+      "matchName": "Guyana Amazon Warriors v St Kitts & Nevis Pats",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "St Kitts & Nevis Pats",
+      "predictedWinner": "St Kitts & Nevis Pats",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788721200000,
+      "capturedAt": "2026-09-07T00:48:57.464Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788721200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Guyana Amazon Warriors",
+          "St Kitts & Nevis Pats"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2154.08,
+            "lay": 25.819999999999972,
+            "total": 2243.35
+          },
+          "team2": {
+            "back": 284.27,
+            "lay": 89.27000000000001,
+            "total": 310.09
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2104.2933,
+          "team2": 310.64979999999997
+        }
+      }
+    },
+    {
+      "matchId": "36032174",
+      "matchName": "South Africa v Zimbabwe",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "South Africa",
+      "predictedWinner": "South Africa",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788696000000,
+      "capturedAt": "2026-09-06T17:48:34.219Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788696000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "South Africa",
+          "Zimbabwe"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1143.1599999999999,
+            "lay": 396.68999999999994,
+            "total": 1733.4699999999998
+          },
+          "team2": {
+            "back": 2445.54,
+            "lay": 590.31,
+            "total": 2842.23
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1690.019,
+          "team2": 2675.6841999999992
+        }
+      }
+    },
+    {
+      "matchId": "36034130",
+      "matchName": "Barbados Tridents v St. Lucia Kings",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Barbados Tridents",
+      "predictedWinner": "Barbados Tridents",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788735600000,
+      "capturedAt": "2026-09-07T13:26:48.586Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788735600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Barbados Tridents",
+          "St. Lucia Kings"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 657.61,
+            "lay": 322.55,
+            "total": 971.27
+          },
+          "team2": {
+            "back": 1607.0199999999998,
+            "lay": 313.6599999999999,
+            "total": 1929.5699999999997
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 958.6897999999999,
+          "team2": 1838.6831999999997
+        }
+      }
+    },
+    {
+      "matchId": "36034286",
+      "matchName": "Glasgow Cosmic v Edinburgh Castle Rockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictedWinner": "Edinburgh Castle Rockers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788687000000,
+      "capturedAt": "2026-09-06T16:01:16.734Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788687000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Glasgow Cosmic",
+          "Edinburgh Castle Rockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 154.42,
+            "lay": 67.19,
+            "total": 165.14
+          },
+          "team2": {
+            "back": 1161.95,
+            "lay": 10.72,
+            "total": 1229.14
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 155.4536,
+          "team2": 1158.0676
+        }
+      }
+    },
+    {
+      "matchId": "36034385",
+      "matchName": "Amsterdam Flames v Rotterdam Dockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Amsterdam Flames",
+      "predictedWinner": "Amsterdam Flames",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788700500000,
+      "capturedAt": "2026-09-07T00:45:56.585Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788700500000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Amsterdam Flames",
+          "Rotterdam Dockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "total": 131.53
+          },
+          "team2": {
+            "back": 170.82999999999998,
+            "lay": 131.53,
+            "total": 170.82999999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 131.53,
+          "team2": 158.57209999999998
+        }
+      }
+    },
+    {
+      "matchId": "36034463",
+      "matchName": "Hong Kong W v Pakistan W",
+      "competitionName": "Women's Asia Cup T20",
+      "status": "verified",
+      "actualWinner": "Pakistan W",
+      "predictedWinner": "Pakistan W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788791400000,
+      "capturedAt": "2026-09-07T20:55:26.956Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788791400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Hong Kong W",
+          "Pakistan W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 455.98,
+            "lay": 112.41,
+            "total": 561.8399999999999
+          },
+          "team2": {
+            "back": 1275.96,
+            "lay": 105.85999999999989,
+            "total": 1388.3700000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 552.8734999999998,
+          "team2": 1330.5194
+        }
+      }
+    },
+    {
+      "matchId": "36039351",
+      "matchName": "United Arab Emirates W v Bangladesh W",
+      "competitionName": "Women's Asia Cup T20",
+      "status": "verified",
+      "actualWinner": "United Arab Emirates W",
+      "predictedWinner": "United Arab Emirates W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1788877800000,
+      "capturedAt": "2026-09-09T00:40:02.962Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1788877800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "United Arab Emirates W",
+          "Bangladesh W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 531.14,
+            "lay": 120.16,
+            "total": 618.55
+          },
+          "team2": {
+            "back": 1835.71,
+            "lay": 87.41,
+            "total": 1955.8700000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 516.8568999999999,
+          "team2": 1806.7248999999997
+        }
+      }
+    },
+    {
+      "matchId": "36040032",
+      "matchName": "Rotterdam Dockers v Glasgow Cosmic",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Glasgow Cosmic",
+      "predictedWinner": "Glasgow Cosmic",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789032600000,
+      "capturedAt": "2026-09-11T01:33:06.646Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789032600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Rotterdam Dockers",
+          "Glasgow Cosmic"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 890.8,
+            "lay": 13.57,
+            "total": 901.7099999999999
+          },
+          "team2": {
+            "back": 469.40999999999997,
+            "lay": 10.91,
+            "total": 482.97999999999996
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 872.3051999999999,
+          "team2": 454.53419999999994
+        }
+      }
+    },
+    {
+      "matchId": "36040305",
+      "matchName": "Jamaica Empress W v Trinbago Knight Riders W",
+      "competitionName": "Women's Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders W",
+      "predictedWinner": "Trinbago Knight Riders W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789048800000,
+      "capturedAt": "2026-09-11T01:33:08.532Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789048800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Jamaica Empress W",
+          "Trinbago Knight Riders W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 36.18,
+            "lay": 97.28,
+            "total": 164.64000000000001
+          },
+          "team2": {
+            "back": 1305.38,
+            "lay": 128.46,
+            "total": 1402.66
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 162.0222,
+          "team2": 1295.2694999999999
+        }
+      }
+    },
+    {
+      "matchId": "36045869",
+      "matchName": "Belfast Wolves v Amsterdam Flames",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Belfast Wolves",
+      "predictedWinner": "Belfast Wolves",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789046100000,
+      "capturedAt": "2026-09-11T01:33:07.589Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789046100000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Belfast Wolves",
+          "Amsterdam Flames"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 953.0799999999999,
+            "lay": 121.89,
+            "total": 1084.33
+          },
+          "team2": {
+            "back": 376.90999999999997,
+            "lay": 131.24999999999997,
+            "total": 498.79999999999995
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1023.5101999999998,
+          "team2": 477.9619
+        }
+      }
+    },
+    {
+      "matchId": "36045879",
+      "matchName": "Dublin Guardians v Edinburgh Castle Rockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Dublin Guardians",
+      "predictedWinner": "Dublin Guardians",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789132500000,
+      "capturedAt": "2026-09-12T15:47:56.539Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789132500000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Dublin Guardians",
+          "Edinburgh Castle Rockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 241.47000000000003,
+            "lay": 73.03,
+            "total": 303.68
+          },
+          "team2": {
+            "back": 1254.8799999999999,
+            "lay": 62.21,
+            "total": 1327.9099999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 290.23999999999995,
+          "team2": 1223.7085
+        }
+      }
+    },
+    {
+      "matchId": "36049024",
+      "matchName": "Sri Lanka W v Pakistan W",
+      "competitionName": "Women's Asia Cup T20",
+      "status": "verified",
+      "actualWinner": "Sri Lanka W",
+      "predictedWinner": "Sri Lanka W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789137000000,
+      "capturedAt": "2026-09-12T15:47:56.551Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789137000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Sri Lanka W",
+          "Pakistan W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1276.87,
+            "lay": 382.57000000000005,
+            "total": 1597.07
+          },
+          "team2": {
+            "back": 2287.35,
+            "lay": 320.2,
+            "total": 2669.92
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1510.6807000000001,
+          "team2": 2467.559
+        }
+      }
+    },
+    {
+      "matchId": "36049475",
+      "matchName": "India W v Bangladesh W",
+      "competitionName": "Women's Asia Cup T20",
+      "status": "verified",
+      "actualWinner": "Bangladesh W",
+      "predictedWinner": "Bangladesh W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789050600000,
+      "capturedAt": "2026-09-11T01:33:09.205Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789050600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "India W",
+          "Bangladesh W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1131.6100000000001,
+            "lay": 141.87999999999997,
+            "total": 1288.7
+          },
+          "team2": {
+            "back": 905.8799999999999,
+            "lay": 157.08999999999997,
+            "total": 1047.7599999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1207.8577,
+          "team2": 980.9147999999999
+        }
+      }
+    },
+    {
+      "matchId": "36050870",
+      "matchName": "Zimbabwe W v South Africa W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Zimbabwe W",
+      "predictedWinner": "Zimbabwe W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789126200000,
+      "capturedAt": "2026-09-12T15:47:56.264Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789126200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe W",
+          "South Africa W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "total": 0
+          },
+          "team2": {
+            "back": 5.51,
+            "lay": 0,
+            "total": 5.51
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 0,
+          "team2": 4.848799999999999
+        }
+      }
+    },
+    {
+      "matchId": "36054787",
+      "matchName": "Guyana Amazon Warriors v Trinbago Knight Riders",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Guyana Amazon Warriors",
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789167600000,
+      "capturedAt": "2026-09-12T15:47:57.600Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789167600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Guyana Amazon Warriors",
+          "Trinbago Knight Riders"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1975.6800000000003,
+            "lay": 787.8699999999999,
+            "total": 2226.9700000000003
+          },
+          "team2": {
+            "back": 191.84000000000006,
+            "lay": 251.29000000000002,
+            "total": 979.7099999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2101.3412,
+          "team2": 978.1069
+        }
+      }
+    },
+    {
+      "matchId": "36054985",
+      "matchName": "Guyana Amazon War W v Trinbago Knight Rid W",
+      "competitionName": "Women's Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Trinbago Knight Riders W",
+      "predictedWinner": "Guyana Amazon Warriors W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789221600000,
+      "capturedAt": "2026-09-13T01:18:56.164Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789221600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Guyana Amazon Warriors W",
+          "Trinbago Knight Riders W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1995.9299999999998,
+            "lay": 126.90999999999998,
+            "total": 2707.25
+          },
+          "team2": {
+            "back": 697.1999999999999,
+            "lay": 711.32,
+            "total": 824.1099999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2532.0685,
+          "team2": 771.7147
+        }
+      }
+    },
+    {
+      "matchId": "36055328",
+      "matchName": "Barbados Tridents W v Jamaica Empress W",
+      "competitionName": "Women's Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Barbados Tridents W",
+      "predictedWinner": "Barbados Tridents W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789239600000,
+      "capturedAt": "2026-09-13T01:18:57.118Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789239600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Barbados Tridents W",
+          "Jamaica Empress W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2089.24,
+            "lay": 245.52000000000004,
+            "total": 2346.1899999999996
+          },
+          "team2": {
+            "back": 397.59,
+            "lay": 256.95,
+            "total": 643.11
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2166.0397,
+          "team2": 613.5359000000001
+        }
+      }
+    },
+    {
+      "matchId": "36055698",
+      "matchName": "Belfast Wolves v Rotterdam Dockers",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Rotterdam Dockers",
+      "predictedWinner": "Rotterdam Dockers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789205400000,
+      "capturedAt": "2026-09-12T15:47:58.670Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789205400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Belfast Wolves",
+          "Rotterdam Dockers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 194.57,
+            "lay": 110.16,
+            "total": 304.73
+          },
+          "team2": {
+            "back": 81.11999999999999,
+            "lay": 110.16,
+            "total": 191.27999999999997
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 290.2088,
+          "team2": 181.88189999999997
+        }
+      }
+    },
+    {
+      "matchId": "36057946",
+      "matchName": "Dublin Guardians v Glasgow Cosmic",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Dublin Guardians",
+      "predictedWinner": "Glasgow Cosmic",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789218900000,
+      "capturedAt": "2026-09-13T01:18:55.707Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789218900000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Dublin Guardians",
+          "Glasgow Cosmic"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 783.1600000000001,
+            "lay": 4.41,
+            "total": 804.9900000000001
+          },
+          "team2": {
+            "back": 1195.31,
+            "lay": 21.83000000000002,
+            "total": 1199.72
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 744.8471000000001,
+          "team2": 1143.4213000000002
+        }
+      }
+    },
+    {
+      "matchId": "36075087",
+      "matchName": "Leicestershire v Middlesex",
+      "competitionName": "Metro Bank One Day Cup",
+      "status": "verified",
+      "actualWinner": "Leicestershire",
+      "predictedWinner": "Middlesex",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789898400000,
+      "capturedAt": "2026-09-20T16:30:18.264Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789898400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Leicestershire",
+          "Middlesex"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 79.75,
+            "lay": 0,
+            "total": 83.97
+          },
+          "team2": {
+            "back": 144.29,
+            "lay": 4.22,
+            "total": 144.29
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 80.27709999999999,
+          "team2": 137.0035
+        }
+      }
+    },
+    {
+      "matchId": "36082542",
+      "matchName": "England v Sri Lanka",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "England",
+      "predictedWinner": "England",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789824600000,
+      "capturedAt": "2026-09-20T06:40:35.399Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789824600000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England",
+          "Sri Lanka"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1235.7799999999997,
+            "lay": 279.64000000000004,
+            "total": 1361.0499999999997
+          },
+          "team2": {
+            "back": 195.48999999999998,
+            "lay": 125.27000000000002,
+            "total": 475.13
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1272.4488999999999,
+          "team2": 473.65500000000003
+        }
+      }
+    },
+    {
+      "matchId": "36082765",
+      "matchName": "Zimbabwe W v South Africa W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "South Africa W",
+      "predictedWinner": "Zimbabwe W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789817400000,
+      "capturedAt": "2026-09-20T06:40:33.498Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789817400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe W",
+          "South Africa W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1208.85,
+            "lay": 36.81000000000003,
+            "total": 1335.01
+          },
+          "team2": {
+            "back": 192.55,
+            "lay": 126.16,
+            "total": 229.36000000000004
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1262.0218,
+          "team2": 220.13300000000004
+        }
+      }
+    },
+    {
+      "matchId": "36083840",
+      "matchName": "South Africa v Australia",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "Australia",
+      "predictedWinner": "South Africa",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790236800000,
+      "capturedAt": "2026-09-25T17:52:42.340Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790236800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "South Africa",
+          "Australia"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1202.5500000000002,
+            "lay": 146.26,
+            "total": 1215.9700000000003
+          },
+          "team2": {
+            "back": 1077.6100000000001,
+            "lay": 13.419999999999959,
+            "total": 1223.8700000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1157.4645,
+          "team2": 1169.8334
+        }
+      }
+    },
+    {
+      "matchId": "36084485",
+      "matchName": "Amsterdam Flames v Belfast Wolves",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Belfast Wolves",
+      "predictedWinner": "Belfast Wolves",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789823700000,
+      "capturedAt": "2026-09-20T06:40:34.595Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789823700000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Amsterdam Flames",
+          "Belfast Wolves"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 631.26,
+            "lay": 62.260000000000005,
+            "total": 693.67
+          },
+          "team2": {
+            "back": 704.8000000000001,
+            "lay": 62.41,
+            "total": 767.0600000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 648.8154,
+          "team2": 726.6610000000001
+        }
+      }
+    },
+    {
+      "matchId": "36085029",
+      "matchName": "Guyana Amazon Warriors v Jamaica Kingsmen",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Jamaica Kingsmen",
+      "predictedWinner": "Guyana Amazon Warriors",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789772400000,
+      "capturedAt": "2026-09-20T06:40:32.752Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789772400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Guyana Amazon Warriors",
+          "Jamaica Kingsmen"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1026.01,
+            "lay": 111.99000000000001,
+            "total": 7367.210000000002
+          },
+          "team2": {
+            "back": 2441.2799999999997,
+            "lay": 6341.200000000002,
+            "total": 2553.2699999999995
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 7330.798800000001,
+          "team2": 2439.7258
+        }
+      }
+    },
+    {
+      "matchId": "36085898",
+      "matchName": "Zimbabwe v Australia",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "Zimbabwe",
+      "predictedWinner": "Australia",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789889400000,
+      "capturedAt": "2026-09-20T16:30:17.950Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789889400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe",
+          "Australia"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 105.73,
+            "lay": 124.07,
+            "total": 179.73000000000002
+          },
+          "team2": {
+            "back": 1032.4199999999998,
+            "lay": 74,
+            "total": 1156.4899999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 179.92260000000002,
+          "team2": 1121.5401999999997
+        }
+      }
+    },
+    {
+      "matchId": "36090636",
+      "matchName": "Antigua & Barbuda Falcs v Jamaica Kingsmen",
+      "competitionName": "Caribbean Premier League",
+      "status": "verified",
+      "actualWinner": "Antigua & Barbuda Falcs",
+      "predictedWinner": "Antigua & Barbuda Falcs",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789945200000,
+      "capturedAt": "2026-09-21T13:32:16.501Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789945200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Antigua & Barbuda Falcs",
+          "Jamaica Kingsmen"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1576.5600000000002,
+            "lay": 204.61,
+            "total": 1627.14
+          },
+          "team2": {
+            "back": 968.6999999999998,
+            "lay": 50.580000000000005,
+            "total": 1173.31
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1554.2856000000002,
+          "team2": 1120.5243999999998
+        }
+      }
+    },
+    {
+      "matchId": "36092701",
+      "matchName": "Edinburgh Castle Rockers v Belfast Wolves",
+      "competitionName": "European T20 Premier League",
+      "status": "verified",
+      "actualWinner": "Edinburgh Castle Rockers",
+      "predictedWinner": "Belfast Wolves",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1789910100000,
+      "capturedAt": "2026-09-20T18:39:12.524Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1789910100000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Edinburgh Castle Rockers",
+          "Belfast Wolves"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1516.2200000000003,
+            "lay": 7.029999999999999,
+            "total": 1571.3300000000002
+          },
+          "team2": {
+            "back": 37.63000000000001,
+            "lay": 55.11,
+            "total": 44.66000000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1493.8474999999999,
+          "team2": 44.354000000000006
+        }
+      }
+    },
+    {
+      "matchId": "36100425",
+      "matchName": "India v West Indies",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "India",
+      "predictedWinner": "West Indies",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790497800000,
+      "capturedAt": "2026-09-27T15:30:51.020Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790497800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "India",
+          "West Indies"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 558.69,
+            "lay": 225.74,
+            "total": 671.8900000000001
+          },
+          "team2": {
+            "back": 974.79,
+            "lay": 113.2,
+            "total": 1200.53
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 650.4743000000001,
+          "team2": 1135.0018
+        }
+      }
+    },
+    {
+      "matchId": "36103490",
+      "matchName": "Zimbabwe W v West Indies W",
+      "competitionName": "Womens One Day Internationals",
+      "status": "verified",
+      "actualWinner": "West Indies W",
+      "predictedWinner": "West Indies W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790235000000,
+      "capturedAt": "2026-09-25T17:52:39.604Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790235000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe W",
+          "West Indies W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 52.17,
+            "lay": 114.1,
+            "total": 71.29
+          },
+          "team2": {
+            "back": 1037.1200000000001,
+            "lay": 19.12,
+            "total": 1151.22
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 68.0855,
+          "team2": 1136.3002999999999
+        }
+      }
+    },
+    {
+      "matchId": "36103843",
+      "matchName": "England v Sri Lanka",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "Sri Lanka",
+      "predictedWinner": "Sri Lanka",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790249400000,
+      "capturedAt": "2026-09-25T17:52:43.396Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790249400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England",
+          "Sri Lanka"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1219.42,
+            "lay": 29.059999999999985,
+            "total": 1219.42
+          },
+          "team2": {
+            "back": 340.09,
+            "lay": 0,
+            "total": 369.15
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1164.3379,
+          "team2": 364.6408
+        }
+      }
+    },
+    {
+      "matchId": "36108897",
+      "matchName": "Afghanistan v Nepal",
+      "competitionName": "Asian Games T20",
+      "status": "verified",
+      "actualWinner": "Afghanistan",
+      "predictedWinner": "Afghanistan",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790312400000,
+      "capturedAt": "2026-09-25T17:52:45.279Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790312400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Afghanistan",
+          "Nepal"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 546.26,
+            "lay": 0,
+            "total": 546.26
+          },
+          "team2": {
+            "back": 426.45,
+            "lay": 0,
+            "total": 426.45
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 524.7307000000001,
+          "team2": 410.7011
+        }
+      }
+    },
+    {
+      "matchId": "36110371",
+      "matchName": "Zimbabwe W v West Indies W",
+      "competitionName": "Womens One Day Internationals",
+      "status": "verified",
+      "actualWinner": "West Indies W",
+      "predictedWinner": "West Indies W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790494200000,
+      "capturedAt": "2026-09-27T13:00:13.429Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790494200000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe W",
+          "West Indies W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 145.57000000000002,
+            "lay": 21.919999999999998,
+            "total": 166.72000000000003
+          },
+          "team2": {
+            "back": 724,
+            "lay": 21.15,
+            "total": 745.92
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 157.5354,
+          "team2": 693.0494
+        }
+      }
+    },
+    {
+      "matchId": "36111199",
+      "matchName": "South Africa v Australia",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "Australia",
+      "predictedWinner": "South Africa",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790496000000,
+      "capturedAt": "2026-09-27T15:30:51.001Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790496000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "South Africa",
+          "Australia"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 762.47,
+            "lay": 693.9699999999999,
+            "total": 1008.13
+          },
+          "team2": {
+            "back": 742.65,
+            "lay": 245.66,
+            "total": 1436.62
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 974.3974,
+          "team2": 1427.6218
+        }
+      }
+    },
+    {
+      "matchId": "36111684",
+      "matchName": "England v Sri Lanka",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "England",
+      "predictedWinner": "England",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790501400000,
+      "capturedAt": "2026-09-27T15:30:51.154Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790501400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "England",
+          "Sri Lanka"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1634.75,
+            "lay": 598.98,
+            "total": 1757.4
+          },
+          "team2": {
+            "back": 1156.55,
+            "lay": 122.64999999999999,
+            "total": 1755.53
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1646.0865000000001,
+          "team2": 1689.9785
+        }
+      }
+    },
+    {
+      "matchId": "36123677",
+      "matchName": "Zimbabwe W v West Indies W",
+      "competitionName": "Womens One Day Internationals",
+      "status": "verified",
+      "actualWinner": "Zimbabwe W",
+      "predictedWinner": "Zimbabwe W",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790753400000,
+      "capturedAt": "2026-10-01T16:29:14.198Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790753400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe W",
+          "West Indies W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 312.32000000000005,
+            "lay": 28.529999999999973,
+            "total": 345.68000000000006
+          },
+          "team2": {
+            "back": 343.77000000000004,
+            "lay": 33.36,
+            "total": 372.3
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 318.6231000000001,
+          "team2": 351.4762
+        }
+      }
+    },
+    {
+      "matchId": "36124730",
+      "matchName": "South Africa v Australia",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "South Africa",
+      "predictedWinner": "South Africa",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790767800000,
+      "capturedAt": "2026-09-30T16:42:57.468Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790767800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "South Africa",
+          "Australia"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1784.7,
+            "lay": 627.2,
+            "total": 2550.1
+          },
+          "team2": {
+            "back": 578.88,
+            "lay": 765.4,
+            "total": 1206.08
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2451.2127,
+          "team2": 1211.5104999999999
+        }
+      }
+    },
+    {
+      "matchId": "36125669",
+      "matchName": "India v West Indies",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "India",
+      "predictedWinner": "West Indies",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790757000000,
+      "capturedAt": "2026-09-30T16:42:57.296Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790757000000
+      },
+      "snapshot": {
+        "teamNames": [
+          "India",
+          "West Indies"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 389.85,
+            "lay": 148.60000000000002,
+            "total": 400.68
+          },
+          "team2": {
+            "back": 545.97,
+            "lay": 10.83,
+            "total": 694.57
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 384.6832,
+          "team2": 683.7981
+        }
+      }
+    },
+    {
+      "matchId": "36126552",
+      "matchName": "India Legends v Australia Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "Australia Legends",
+      "predictedWinner": "India Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791027000000,
+      "capturedAt": "2026-10-03T16:42:14.250Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "Australia Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 150.59,
+            "lay": 72.46,
+            "total": 150.59
+          },
+          "team2": {
+            "back": 284.25,
+            "lay": 0,
+            "total": 356.71
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 143.0605,
+          "team2": 342.5094
+        }
+      }
+    },
+    {
+      "matchId": "36127430",
+      "matchName": "Garden Route Badgers v Eastern Cape Linyathi",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Garden Route Badgers",
+      "predictedWinner": "Garden Route Badgers",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790852400000,
+      "capturedAt": "2026-10-01T16:34:14.178Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790852400000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Garden Route Badgers",
+          "Eastern Cape Linyathi"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 4.23,
+            "total": 4.21
+          },
+          "team2": {
+            "back": 65.17,
+            "lay": 4.21,
+            "total": 69.4
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 4.21,
+          "team2": 65.61699999999999
+        }
+      }
+    },
+    {
+      "matchId": "36128071",
+      "matchName": "Pakistan Legends v Bangladesh Champions",
+      "competitionName": "World Championship of Legends T20",
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictedWinner": "Pakistan Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791041400000,
+      "capturedAt": "2026-10-04T10:55:32.600Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Pakistan Legends",
+          "Bangladesh Champions"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 265,
+            "lay": 4.83,
+            "total": 265
+          },
+          "team2": {
+            "back": 217.23,
+            "lay": 0,
+            "total": 222.06
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 247.8707,
+          "team2": 208.2746
+        }
+      }
+    },
+    {
+      "matchId": "36130557",
+      "matchName": "West Indies Legends v South Africa Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "South Africa Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791113400000,
+      "capturedAt": "2026-10-04T17:24:59.017Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "West Indies Legends",
+          "South Africa Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 388.6,
+            "lay": 10.65,
+            "total": 402.3
+          },
+          "team2": {
+            "back": 722.4799999999999,
+            "lay": 13.7,
+            "total": 733.1299999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 376.5175,
+          "team2": 680.5136
+        }
+      }
+    },
+    {
+      "matchId": "36131166",
+      "matchName": "Bangladesh v Pakistan",
+      "competitionName": "Asian Games T20",
+      "status": "verified",
+      "actualWinner": "Pakistan",
+      "predictedWinner": "Bangladesh",
+      "predictorVersion": "toss-v9-league-specific-algorithms",
+      "startTime": 1790812800000,
+      "capturedAt": "2026-10-01T13:46:08.457Z",
+      "resultVerification": {
+        "verification": "verified",
+        "sourceStartTime": 1790812800000
+      },
+      "snapshot": {
+        "teamNames": [
+          "Bangladesh",
+          "Pakistan"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 491.57,
+            "lay": 2.88,
+            "total": 511.45000000000005
+          },
+          "team2": {
+            "back": 335.20000000000005,
+            "lay": 19.880000000000024,
+            "total": 338.08000000000004
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 487.952,
+          "team2": 325.9234
+        }
+      }
+    },
+    {
+      "matchId": "36132274",
+      "matchName": "Western Province v South Africa Emerging",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "South Africa Emerging",
+      "predictedWinner": "South Africa Emerging",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791129600000,
+      "capturedAt": "2026-10-05T01:10:29.316Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Western Province",
+          "South Africa Emerging"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 327.18999999999994,
+            "lay": 35.14,
+            "total": 327.18999999999994
+          },
+          "team2": {
+            "back": 0,
+            "lay": 0,
+            "total": 35.14
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 304.86879999999996,
+          "team2": 35.14
+        }
+      }
+    },
+    {
+      "matchId": "36134105",
+      "matchName": "Limpopo v Dolphins",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Limpopo",
+      "predictedWinner": "Limpopo",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791111600000,
+      "capturedAt": "2026-10-04T16:24:58.002Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Limpopo",
+          "Dolphins"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 5.68,
+            "lay": 0,
+            "total": 5.68
+          },
+          "team2": {
+            "back": 68.72999999999999,
+            "lay": 0,
+            "total": 68.72999999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 5.6232,
+          "team2": 66.2256
+        }
+      }
+    },
+    {
+      "matchId": "36135356",
+      "matchName": "Zimbabwe W v West Indies W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "West Indies W",
+      "predictedWinner": "West Indies W",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791025200000,
+      "capturedAt": "2026-10-03T16:42:12.134Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe W",
+          "West Indies W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 606.6099999999999,
+            "lay": 22.910000000000004,
+            "total": 711.8499999999999
+          },
+          "team2": {
+            "back": 685.27,
+            "lay": 105.24000000000002,
+            "total": 708.18
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 676.6763,
+          "team2": 669.2068999999999
+        }
+      }
+    },
+    {
+      "matchId": "36137653",
+      "matchName": "India v West Indies",
+      "competitionName": "One Day Internationals",
+      "status": "verified",
+      "actualWinner": "India",
+      "predictedWinner": "India",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791016200000,
+      "capturedAt": "2026-10-03T15:12:49.276Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "India",
+          "West Indies"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 702.87,
+            "lay": 10.41,
+            "total": 848.42
+          },
+          "team2": {
+            "back": 2070.4,
+            "lay": 145.54999999999995,
+            "total": 2080.81
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 840.3758,
+          "team2": 1834.3706000000002
+        }
+      }
+    },
+    {
+      "matchId": "36139329",
+      "matchName": "Bangladesh v Sri Lanka",
+      "competitionName": "Asian Games T20",
+      "status": "verified",
+      "actualWinner": "Bangladesh",
+      "predictedWinner": "Bangladesh",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1790985600000,
+      "capturedAt": "2026-10-03T16:25:47.040Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Bangladesh",
+          "Sri Lanka"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1106.29,
+            "lay": 14.55000000000001,
+            "total": 1193.05
+          },
+          "team2": {
+            "back": 198.25,
+            "lay": 86.75999999999999,
+            "total": 212.8
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1119.5399999999997,
+          "team2": 202.8586
+        }
+      }
+    },
+    {
+      "matchId": "36140257",
+      "matchName": "South Africa v Australia",
+      "competitionName": "Test Matches",
+      "status": "verified",
+      "actualWinner": "Australia",
+      "predictedWinner": "South Africa",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791531000000,
+      "capturedAt": "2026-10-09T14:10:35.871Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "South Africa",
+          "Australia"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 208.89000000000001,
+            "lay": 378.22,
+            "total": 584.23
+          },
+          "team2": {
+            "back": 87.85999999999999,
+            "lay": 375.34000000000003,
+            "total": 466.08000000000004
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 579.0146,
+          "team2": 464.3797
+        }
+      }
+    },
+    {
+      "matchId": "36141686",
+      "matchName": "Tuskers v Boland",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Boland",
+      "predictedWinner": "Tuskers",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791111600000,
+      "capturedAt": "2026-10-04T16:24:59.803Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Tuskers",
+          "Boland"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 0,
+            "lay": 0,
+            "total": 0
+          },
+          "team2": {
+            "back": 6.84,
+            "lay": 0,
+            "total": 6.84
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 0,
+          "team2": 6.458
+        }
+      }
+    },
+    {
+      "matchId": "36142352",
+      "matchName": "Warriors v Lions",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictedWinner": "Warriors",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791129600000,
+      "capturedAt": "2026-10-05T01:10:29.298Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Warriors",
+          "Lions"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1055.2100000000003,
+            "lay": 113.11999999999995,
+            "total": 1159.6300000000003
+          },
+          "team2": {
+            "back": 417.33,
+            "lay": 104.42,
+            "total": 530.4499999999999
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1083.8808,
+          "team2": 502.66999999999996
+        }
+      }
+    },
+    {
+      "matchId": "36147968",
+      "matchName": "Zimbabwe W v West Indies W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "West Indies W",
+      "predictedWinner": "Zimbabwe W",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791194400000,
+      "capturedAt": "2026-10-05T15:35:00.325Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Zimbabwe W",
+          "West Indies W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 360.16999999999996,
+            "lay": 1415.0300000000002,
+            "total": 407.44999999999993
+          },
+          "team2": {
+            "back": 1506.6100000000001,
+            "lay": 47.28,
+            "total": 2921.6400000000003
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 400.39289999999994,
+          "team2": 2792.3976000000002
+        }
+      }
+    },
+    {
+      "matchId": "36147996",
+      "matchName": "India Legends v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "India Legends",
+      "predictedWinner": "England Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791127800000,
+      "capturedAt": "2026-10-05T01:10:29.270Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "England Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 423.4099999999999,
+            "lay": 111.01,
+            "total": 731.23
+          },
+          "team2": {
+            "back": 2178.19,
+            "lay": 307.82000000000005,
+            "total": 2289.2000000000003
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 703.0068,
+          "team2": 2096.7682
+        }
+      }
+    },
+    {
+      "matchId": "36148172",
+      "matchName": "Australia Legends v Pakistan Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictedWinner": "Pakistan Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791199800000,
+      "capturedAt": "2026-10-05T16:35:00.249Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "Pakistan Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 239.7,
+            "lay": 0,
+            "total": 239.7
+          },
+          "team2": {
+            "back": 11.06,
+            "lay": 0,
+            "total": 11.06
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 223.2354,
+          "team2": 10.425
+        }
+      }
+    },
+    {
+      "matchId": "36150877",
+      "matchName": "Limpopo v Garden Route Badgers",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Limpopo",
+      "predictedWinner": "Limpopo",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791198000000,
+      "capturedAt": "2026-10-05T16:34:57.820Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Limpopo",
+          "Garden Route Badgers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 10.98,
+            "lay": 0,
+            "total": 13.5
+          },
+          "team2": {
+            "back": 7.119999999999997,
+            "lay": 2.52,
+            "total": 7.119999999999997
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 13.464,
+          "team2": 6.9343999999999975
+        }
+      }
+    },
+    {
+      "matchId": "36151021",
+      "matchName": "Bangladesh Champions v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "England Legends",
+      "predictedWinner": "England Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791214200000,
+      "capturedAt": "2026-10-06T02:06:16.082Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Bangladesh Champions",
+          "England Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "total": 746.53
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "total": 1637.62
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 698.9242999999999,
+          "team2": 1528.9569
+        }
+      }
+    },
+    {
+      "matchId": "36151023",
+      "matchName": "India Legends v South Africa Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "India Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791646200000,
+      "capturedAt": "2026-10-11T16:23:31.367Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "South Africa Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1171.82,
+            "lay": 0,
+            "total": 1171.82
+          },
+          "team2": {
+            "back": 576.7,
+            "lay": 0,
+            "total": 576.7
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1115.4755,
+          "team2": 550.1745999999999
+        }
+      }
+    },
+    {
+      "matchId": "36155820",
+      "matchName": "Afghanistan v Bangladesh",
+      "competitionName": "Test Matches",
+      "status": "verified",
+      "actualWinner": "Bangladesh",
+      "predictedWinner": "Bangladesh",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791525600000,
+      "capturedAt": "2026-10-09T14:10:35.841Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Afghanistan",
+          "Bangladesh"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 160.26999999999998,
+            "lay": 113.10000000000001,
+            "total": 171.1
+          },
+          "team2": {
+            "back": 209.89,
+            "lay": 10.83,
+            "total": 322.99
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 163.08749999999998,
+          "team2": 316.2936
+        }
+      }
+    },
+    {
+      "matchId": "36156552",
+      "matchName": "Mpumalanga Rhinos v Western Province",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Western Province",
+      "predictedWinner": "Mpumalanga Rhinos",
+      "predictorVersion": "toss-v14-calculated-pnl-retrospective",
+      "startTime": 1791630000000,
+      "capturedAt": "2026-10-11T15:53:30.727Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Mpumalanga Rhinos",
+          "Western Province"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 3.32,
+            "lay": 3.32,
+            "total": 6.64
+          },
+          "team2": {
+            "back": 501.89000000000004,
+            "lay": 3.32,
+            "total": 505.21000000000004
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 6.64,
+          "team2": 482.1588
+        }
+      }
+    },
+    {
+      "matchId": "36163472",
+      "matchName": "North West Dragons v Garden Route Badgers",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "North West Dragons",
+      "predictedWinner": "Garden Route Badgers",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791648000000,
+      "capturedAt": "2026-10-11T16:23:31.402Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "North West Dragons",
+          "Garden Route Badgers"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 586.27,
+            "lay": 28.510000000000005,
+            "total": 591.99
+          },
+          "team2": {
+            "back": 688.6600000000001,
+            "lay": 5.72,
+            "total": 717.1700000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 570.6042,
+          "team2": 686.6993
+        }
+      }
+    },
+    {
+      "matchId": "36166332",
+      "matchName": "South Africa Emerging v Boland",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Boland",
+      "predictedWinner": "South Africa Emerging",
+      "predictorVersion": "toss-v14-calculated-pnl-retrospective",
+      "startTime": 1791716400000,
+      "capturedAt": "2026-10-11T16:05:28.927Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "South Africa Emerging",
+          "Boland"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 668.0600000000001,
+            "lay": 2.9300000000000006,
+            "total": 695.3900000000001
+          },
+          "team2": {
+            "back": 370.27,
+            "lay": 27.330000000000005,
+            "total": 373.2
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 664.5445000000001,
+          "team2": 358.3011
+        }
+      }
+    },
+    {
+      "matchId": "36166395",
+      "matchName": "Titans v Eastern Storm",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Titans",
+      "predictedWinner": "Eastern Storm",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791734400000,
+      "capturedAt": "2026-10-11T22:28:42.751Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Titans",
+          "Eastern Storm"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 395.08000000000004,
+            "lay": 37.74,
+            "total": 435.6700000000001
+          },
+          "team2": {
+            "back": 133.86,
+            "lay": 40.59,
+            "total": 171.60000000000002
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 423.6065,
+          "team2": 164.907
+        }
+      }
+    },
+    {
+      "matchId": "36171669",
+      "matchName": "Pakistan v Sri Lanka",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "Sri Lanka",
+      "predictedWinner": "Pakistan",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791723600000,
+      "capturedAt": "2026-10-11T18:05:58.070Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Pakistan",
+          "Sri Lanka"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 625.6600000000001,
+            "lay": 244.31999999999996,
+            "total": 664.19
+          },
+          "team2": {
+            "back": 583.5800000000002,
+            "lay": 38.52999999999998,
+            "total": 827.9000000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 644.1853,
+          "team2": 811.9277
+        }
+      }
+    },
+    {
+      "matchId": "36172444",
+      "matchName": "India v West Indies",
+      "competitionName": "International Twenty20 Matches",
+      "status": "verified",
+      "actualWinner": "West Indies",
+      "predictedWinner": "West Indies",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791725400000,
+      "capturedAt": "2026-10-11T20:03:02.780Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "India",
+          "West Indies"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1463.0700000000002,
+            "lay": 186.32999999999996,
+            "total": 1798.1000000000001
+          },
+          "team2": {
+            "back": 1969.79,
+            "lay": 335.03,
+            "total": 2156.12
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 1746.8573,
+          "team2": 2073.1495
+        }
+      }
+    },
+    {
+      "matchId": "36172480",
+      "matchName": "Australia Legends v West Indies Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "Australia Legends",
+      "predictedWinner": "West Indies Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791718200000,
+      "capturedAt": "2026-10-11T17:05:31.450Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "West Indies Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 2810.29,
+            "lay": 10.85,
+            "total": 2820.93
+          },
+          "team2": {
+            "back": 457.37,
+            "lay": 10.64,
+            "total": 468.22
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2659.0959000000003,
+          "team2": 446.4907
+        }
+      }
+    },
+    {
+      "matchId": "36175445",
+      "matchName": "India Legends v Bangladesh Champions",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "India Legends",
+      "predictedWinner": "India Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1791732600000,
+      "capturedAt": "2026-10-11T22:28:42.712Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "Bangladesh Champions"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "total": 814.4
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "total": 570.7300000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 775.2087999999999,
+          "team2": 543.0975000000001
+        }
+      }
+    },
+    {
+      "matchId": "36175487",
+      "matchName": "Garden Route Badgers v Warriors",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Garden Route Badgers",
+      "predictedWinner": "Garden Route Badgers",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1792148400000,
+      "capturedAt": "2026-10-16T16:32:58.147Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Garden Route Badgers",
+          "Warriors"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 14.25,
+            "lay": 0,
+            "total": 14.47
+          },
+          "team2": {
+            "back": 8.57,
+            "lay": 0.2200000000000002,
+            "total": 8.57
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 14.014000000000001,
+          "team2": 8.3985
+        }
+      }
+    },
+    {
+      "matchId": "36182934",
+      "matchName": "India W v Zimbabwe W",
+      "competitionName": "Womens International Twenty20 Matches",
+      "status": "pending",
+      "actualWinner": null,
+      "predictedWinner": "Zimbabwe W",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1792157400000,
+      "capturedAt": "2026-10-17T02:10:09.716Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "India W",
+          "Zimbabwe W"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 1338.9999999999998,
+            "lay": 50.839999999999996,
+            "total": 2524.4799999999996
+          },
+          "team2": {
+            "back": 1113.83,
+            "lay": 1185.48,
+            "total": 1164.6699999999998
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 2431.3568999999998,
+          "team2": 1114.8736
+        }
+      }
+    },
+    {
+      "matchId": "36187931",
+      "matchName": "Limpopo v Eastern Cape Linyathi",
+      "competitionName": "South Africa T20 Challenge",
+      "status": "verified",
+      "actualWinner": "Eastern Cape Linyathi",
+      "predictedWinner": "Limpopo",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1792148400000,
+      "capturedAt": "2026-10-16T16:33:01.648Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Limpopo",
+          "Eastern Cape Linyathi"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 33.58,
+            "lay": 0.22999999999999998,
+            "total": 33.79
+          },
+          "team2": {
+            "back": 14.24,
+            "lay": 0.21,
+            "total": 14.47
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 33.3684,
+          "team2": 13.7865
+        }
+      }
+    },
+    {
+      "matchId": "36194405",
+      "matchName": "South Africa Legends v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "South Africa Legends",
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "startTime": 1792150200000,
+      "capturedAt": "2026-10-16T17:33:48.975Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "South Africa Legends",
+          "England Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 684.4599999999999,
+            "lay": 3.36,
+            "total": 684.4599999999999
+          },
+          "team2": {
+            "back": 488.77000000000004,
+            "lay": 0,
+            "total": 492.13000000000005
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 651.9461999999999,
+          "team2": 468.29100000000005
+        }
+      }
+    },
+    {
+      "matchId": "36194408",
+      "matchName": "Australia Legends v West Indies Legends",
+      "competitionName": "World Championship of Legends T20",
+      "status": "pending",
+      "actualWinner": null,
+      "predictedWinner": "West Indies Legends",
+      "predictorVersion": "toss-world-legends-exposure-lay-v1",
+      "startTime": 1792164600000,
+      "capturedAt": "2026-10-17T02:10:12.878Z",
+      "resultVerification": null,
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "West Indies Legends"
+        ],
+        "preMatchVolume": {
+          "team1": {
+            "back": 713.14,
+            "lay": 101.91,
+            "total": 723.92
+          },
+          "team2": {
+            "back": 533.1400000000001,
+            "lay": 10.78,
+            "total": 635.0500000000001
+          }
+        },
+        "preMatchTotalBets": {
+          "team1": 691.7922,
+          "team2": 612.5802
+        }
+      }
+    }
+  ]
+}

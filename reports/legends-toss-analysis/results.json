@@ -3,11 +3,11 @@
   "queriedAt": "2026-10-16T17:23:19.746Z",
   "summary": {
     "total": 9,
-    "verified": 8,
+    "verified": 7,
     "passed": 3,
-    "failed": 5,
-    "abandoned": 1,
-    "capturedAfterListedStart": 8
+    "failed": 4,
+    "abandoned": 2,
+    "capturedAfterListedStart": 7
   },
   "factorCounts": [
     {
@@ -15,28 +15,28 @@
       "label": "Higher back volume",
       "passedSelections": 3,
       "failedSelections": 2,
-      "actualWinners": 6
+      "actualWinners": 5
     },
     {
       "key": "negativePnl",
       "label": "Negative pre-match P/L",
       "passedSelections": 3,
       "failedSelections": 2,
-      "actualWinners": 6
+      "actualWinners": 5
     },
     {
       "key": "positiveOpponentPnl",
       "label": "Opponent has positive P/L",
       "passedSelections": 3,
       "failedSelections": 2,
-      "actualWinners": 6
+      "actualWinners": 5
     },
     {
       "key": "higherNetExposure",
       "label": "Higher net exposure",
       "passedSelections": 3,
       "failedSelections": 2,
-      "actualWinners": 6
+      "actualWinners": 5
     },
     {
       "key": "bothLayPresent",
@@ -57,14 +57,14 @@
       "label": "Higher pre-match activity",
       "passedSelections": 3,
       "failedSelections": 2,
-      "actualWinners": 6
+      "actualWinners": 5
     },
     {
       "key": "syntheticAligned",
       "label": "Synthetic support agrees",
       "passedSelections": 3,
       "failedSelections": 3,
-      "actualWinners": 5
+      "actualWinners": 4
     }
   ],
   "combinedPattern": {
@@ -336,93 +336,6 @@
         }
       ],
       "reason": "Smart Money Inflow (England Legends: ₹2.2k Back, Lead: 5.1x)"
-    },
-    {
-      "matchId": "36148172",
-      "match": "Australia Legends v Pakistan Legends",
-      "actualWinner": "Australia Legends",
-      "predictedWinner": "Pakistan Legends",
-      "pass": false,
-      "capturedAt": "2026-10-05T16:35:00.249Z",
-      "startTime": 1791199800000,
-      "capturedAfterListedStart": true,
-      "selected": {
-        "team": "Pakistan Legends",
-        "back": 11.06,
-        "lay": 0,
-        "pnl": 229.27499999999998,
-        "activity": 10.425,
-        "netExposure": 10.425,
-        "backExposure": 10.425,
-        "layExposure": 0,
-        "otherTeam": "Australia Legends",
-        "otherBack": 239.7,
-        "otherLay": 0,
-        "otherPnl": -212.1754,
-        "otherNetExposure": 223.2354,
-        "backShare": 4.410591800925188,
-        "supportShare": 4.410591800925188,
-        "backRatio": 0.0461410095953275,
-        "backLead": false,
-        "negativePnl": false,
-        "positiveOpponentPnl": false,
-        "higherNetExposure": false,
-        "bothLayPresent": false,
-        "higherLay": false,
-        "higherActivity": false,
-        "syntheticAligned": false,
-        "syntheticRatio": 10.766704862935054
-      },
-      "actual": {
-        "team": "Australia Legends",
-        "back": 239.7,
-        "lay": 0,
-        "pnl": -212.1754,
-        "activity": 223.2354,
-        "netExposure": 223.2354,
-        "backExposure": 223.2354,
-        "layExposure": 0,
-        "otherTeam": "Pakistan Legends",
-        "otherBack": 11.06,
-        "otherLay": 0,
-        "otherPnl": 229.27499999999998,
-        "otherNetExposure": 10.425,
-        "backShare": 95.58940819907481,
-        "supportShare": 95.58940819907481,
-        "backRatio": 21.67269439421338,
-        "backLead": true,
-        "negativePnl": true,
-        "positiveOpponentPnl": true,
-        "higherNetExposure": true,
-        "bothLayPresent": false,
-        "higherLay": false,
-        "higherActivity": true,
-        "syntheticAligned": true,
-        "syntheticRatio": 10.766704862935054
-      },
-      "sides": [
-        {
-          "team": "Australia Legends",
-          "back": 239.7,
-          "lay": 0,
-          "pnl": -212.1754,
-          "activity": 223.2354,
-          "netExposure": 223.2354,
-          "backExposure": 223.2354,
-          "layExposure": 0
-        },
-        {
-          "team": "Pakistan Legends",
-          "back": 11.06,
-          "lay": 0,
-          "pnl": 229.27499999999998,
-          "activity": 10.425,
-          "netExposure": 10.425,
-          "backExposure": 10.425,
-          "layExposure": 0
-        }
-      ],
-      "reason": "Critical Public Overload on Australia Legends (96% Load, 21.7x Lead) -> Faded to Pakistan Legends"
     },
     {
       "matchId": "36151021",

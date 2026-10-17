@@ -975,8 +975,8 @@
       "competitionName": "World Championship of Legends T20",
       "startTime": 1791199800000,
       "capturedAt": "2026-10-05T16:35:00.249Z",
-      "status": "verified",
-      "actualWinner": "Australia Legends",
+      "status": "abandoned",
+      "actualWinner": "No Result",
       "predictedWinner": "Pakistan Legends",
       "predictionReason": "Critical Public Overload on Australia Legends (96% Load, 21.7x Lead) -> Faded to Pakistan Legends",
       "predictionRisk": {
@@ -1209,6 +1209,16 @@
           "team1": 4,
           "team2": 2
         }
+      },
+      "predictionCorrect": null,
+      "resultCorrection": {
+        "source": "user-conversation",
+        "correctedOn": "2026-10-17",
+        "previous": {
+          "status": "verified",
+          "actualWinner": "Australia Legends"
+        },
+        "reason": "User confirmed toss abandoned; no winner. Excluded from scoring."
       }
     },
     {

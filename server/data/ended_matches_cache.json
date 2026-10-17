@@ -5636,6 +5636,27 @@
     "runners": [],
     "totalMatched": 24588
   },
+  "36182934": {
+    "matchLoad": {
+      "team1": {
+        "name": "India W",
+        "money": 4326235,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Zimbabwe W",
+        "money": 4326235,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 8652470
+    },
+    "runners": [],
+    "totalMatched": 8652470
+  },
   "36186937": {
     "matchLoad": {
       "team1": {
@@ -5972,6 +5993,27 @@
     "runners": [],
     "totalMatched": 60804358
   },
+  "36194408": {
+    "matchLoad": {
+      "team1": {
+        "name": "Australia Legends",
+        "money": 19123755,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "West Indies Legends",
+        "money": 19123755,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 38247510
+    },
+    "runners": [],
+    "totalMatched": 38247510
+  },
   "36196273": {
     "matchLoad": {
       "team1": {
@@ -6013,5 +6055,89 @@
     },
     "runners": [],
     "totalMatched": 26897
+  },
+  "36196633": {
+    "matchLoad": {
+      "team1": {
+        "name": "Hurricanes W",
+        "money": 309285,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Southern Strikers W",
+        "money": 309284,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 618569
+    },
+    "runners": [],
+    "totalMatched": 618569
+  },
+  "36196661": {
+    "matchLoad": {
+      "team1": {
+        "name": "Atlanta Fire W",
+        "money": 289005,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Seattle Thunders W",
+        "money": 289005,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 578010
+    },
+    "runners": [],
+    "totalMatched": 578010
+  },
+  "36199067": {
+    "matchLoad": {
+      "team1": {
+        "name": "East Bay Blazers",
+        "money": 4697,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "All Stars Cardinals",
+        "money": 4697,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 9394
+    },
+    "runners": [],
+    "totalMatched": 9394
+  },
+  "36199104": {
+    "matchLoad": {
+      "team1": {
+        "name": "Space City Cowboys",
+        "money": 6951,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Atlanta Lightning",
+        "money": 6952,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 13903
+    },
+    "runners": [],
+    "totalMatched": 13903
   }
 }

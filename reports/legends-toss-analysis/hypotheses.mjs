@@ -29,7 +29,7 @@ const rows = analysis.observations.map(row => {
 });
 const report = {
   sourceQueriedAt: analysis.queriedAt,
-  scope: 'Exploratory fit to eight verified archived tosses; one abandoned toss excluded',
+  scope: `Exploratory fit to ${rows.length} retained verified archived tosses; abandoned outcomes excluded after user correction`,
   validation: 'in-sample-only; features and thresholds chosen after observing outcomes',
   parameters, scored: rows.length,
   baselineCorrect: rows.filter(row => row.baselinePass).length,

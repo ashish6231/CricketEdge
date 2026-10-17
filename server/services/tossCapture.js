@@ -1,4 +1,5 @@
 const { checkPreMatchDataQuality } = require('../utils/preMatchDataQuality.mjs');
+const { isWorldLegendsTossLeague } = require('../utils/worldLegendsTossAlgorithm.js');
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
@@ -95,12 +96,19 @@ async function defaultPredictTossWinner(snapshot, competitionName) {
   return mod.predictTossWinner(snapshot, competitionName);
 }
 
+function checkTossCaptureQuality(snapshot, competitionName) {
+  return checkPreMatchDataQuality(snapshot, isWorldLegendsTossLeague(competitionName)
+    ? { requirePnl: false, requireActivity: true } : undefined);
+}
+
 function shouldSkipExisting(existing) {
   if (!existing) return false;
   if (['verified', 'abandoned'].includes(existing.status)) return true;
   if (
     existing.status === 'pending'
-    && checkPreMatchDataQuality(existing.snapshot).valid
+    // Keep older complete captures, including pre-v3 Legends snapshots.
+    && (checkPreMatchDataQuality(existing.snapshot).valid
+      || checkTossCaptureQuality(existing.snapshot, existing.competitionName).valid)
     && !existing.lastCaptureError
   ) {
     return true;
@@ -172,7 +180,7 @@ async function captureEndedTosses({
 
     const [team1, team2] = extractTeams(snapshot, match);
     snapshot = { ...snapshot, teamNames: [team1, team2] };
-    if (!checkPreMatchDataQuality(snapshot).valid) {
+    if (!checkTossCaptureQuality(snapshot, match.competitionName).valid) {
       summary.skipped += 1;
       continue;
     }

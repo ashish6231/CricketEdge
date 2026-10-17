@@ -1,20 +1,20 @@
 {
   "sourceQueriedAt": "2026-10-16T17:23:19.746Z",
-  "scope": "Exploratory fit to eight verified archived tosses; one abandoned toss excluded",
+  "scope": "Exploratory fit to 7 retained verified archived tosses; abandoned outcomes excluded after user correction",
   "validation": "in-sample-only; features and thresholds chosen after observing outcomes",
   "parameters": {
     "layBackResistance": 0.1,
     "zeroLayBackLead": 3
   },
-  "scored": 8,
-  "baselineCorrect": 6,
-  "candidateCorrect": 8,
+  "scored": 7,
+  "baselineCorrect": 5,
+  "candidateCorrect": 7,
   "noPick": 0,
   "branches": [
     {
       "rule": "EXPOSURE_AND_NEGATIVE_PL",
-      "samples": 6,
-      "correct": 6
+      "samples": 5,
+      "correct": 5
     },
     {
       "rule": "HIGH_LAY_RELATIVE_TO_BACK",
@@ -75,22 +75,6 @@
       "rule": "HIGH_LAY_RELATIVE_TO_BACK",
       "candidatePass": true,
       "baselinePass": false
-    },
-    {
-      "match": "Australia Legends v Pakistan Legends",
-      "actualWinner": "Australia Legends",
-      "savedPrediction": "Pakistan Legends",
-      "winner": "Australia Legends",
-      "exposureLeader": "Australia Legends",
-      "leaderLayBackPct": 0,
-      "backLead": 21.67269439421338,
-      "leaderExposure": 223.2354,
-      "otherExposure": 10.425,
-      "leaderPnl": -212.1754,
-      "otherPnl": 229.27499999999998,
-      "rule": "EXPOSURE_AND_NEGATIVE_PL",
-      "candidatePass": true,
-      "baselinePass": true
     },
     {
       "match": "Bangladesh Champions v England Legends",

@@ -1,0 +1,419 @@
+{
+  "sourceQueriedAt": "2026-10-17T02:30:44.526Z",
+  "scope": "All current World Championship of Legends toss records; verified and user-reported outcomes kept separate.",
+  "rule": "Pick only when the same team has strictly higher corrected support AND strictly higher pre-match activity. Otherwise no pick.",
+  "correctedSupportFormula": "Team A back + Team B lay; Team B back + Team A lay.",
+  "activitySource": "snapshot.preMatchTotalBets; no fallback to match-market inputs, total stake or final money.",
+  "validation": "Retrospective replay, not an independently held-out pre-toss accuracy estimate.",
+  "activeAlgorithmChanged": false,
+  "summary": {
+    "records": 11,
+    "verified": {
+      "knownOutcomes": 8,
+      "picks": 8,
+      "pass": 6,
+      "fail": 2,
+      "noPick": 0,
+      "passPctAmongPicks": 75,
+      "coveragePct": 100
+    },
+    "userReported": {
+      "knownOutcomes": 1,
+      "picks": 1,
+      "pass": 1,
+      "fail": 0,
+      "noPick": 0,
+      "passPctAmongPicks": 100,
+      "coveragePct": 100
+    },
+    "combined": {
+      "knownOutcomes": 9,
+      "picks": 9,
+      "pass": 7,
+      "fail": 2,
+      "noPick": 0,
+      "passPctAmongPicks": 77.77777777777779,
+      "coveragePct": 100
+    },
+    "abandonedExcluded": 2,
+    "otherExcluded": 0,
+    "capturedAfterListedStart": 9,
+    "independentlyVerifiedPreTossSnapshots": 0
+  },
+  "observations": [
+    {
+      "matchId": "36126552",
+      "match": "India Legends v Australia Legends",
+      "teamNames": [
+        "India Legends",
+        "Australia Legends"
+      ],
+      "startTime": 1791027000000,
+      "capturedAt": "2026-10-03T16:42:14.250Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "Australia Legends",
+      "result": "pass",
+      "prediction": {
+        "winner": "Australia Legends",
+        "winnerIdx": 1,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 150.59,
+          "team2": 356.71,
+          "pct1": 29.684604770352852,
+          "pct2": 70.31539522964715,
+          "leaderIdx": 1
+        },
+        "activity": {
+          "team1": 143.0605,
+          "team2": 342.5094,
+          "pct1": 29.46239048178233,
+          "pct2": 70.53760951821766,
+          "leaderIdx": 1
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36128071",
+      "match": "Pakistan Legends v Bangladesh Champions",
+      "teamNames": [
+        "Pakistan Legends",
+        "Bangladesh Champions"
+      ],
+      "startTime": 1791041400000,
+      "capturedAt": "2026-10-04T10:55:32.600Z",
+      "databaseStatus": "abandoned",
+      "outcomeSource": "excluded",
+      "actualWinner": "No Result",
+      "result": "excluded",
+      "prediction": {
+        "winner": "Pakistan Legends",
+        "winnerIdx": 0,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 265,
+          "team2": 222.06,
+          "pct1": 54.40808113990063,
+          "pct2": 45.591918860099376,
+          "leaderIdx": 0
+        },
+        "activity": {
+          "team1": 247.8707,
+          "team2": 208.2746,
+          "pct1": 54.340294638572395,
+          "pct2": 45.65970536142759,
+          "leaderIdx": 0
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36130557",
+      "match": "West Indies Legends v South Africa Legends",
+      "teamNames": [
+        "West Indies Legends",
+        "South Africa Legends"
+      ],
+      "startTime": 1791113400000,
+      "capturedAt": "2026-10-04T17:24:59.017Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "South Africa Legends",
+      "result": "pass",
+      "prediction": {
+        "winner": "South Africa Legends",
+        "winnerIdx": 1,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 402.3,
+          "team2": 733.1299999999999,
+          "pct1": 35.431510529050676,
+          "pct2": 64.56848947094933,
+          "leaderIdx": 1
+        },
+        "activity": {
+          "team1": 376.5175,
+          "team2": 680.5136,
+          "pct1": 35.62028591211744,
+          "pct2": 64.37971408788256,
+          "leaderIdx": 1
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36147996",
+      "match": "India Legends v England Legends",
+      "teamNames": [
+        "India Legends",
+        "England Legends"
+      ],
+      "startTime": 1791127800000,
+      "capturedAt": "2026-10-05T01:10:29.270Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "India Legends",
+      "result": "fail",
+      "prediction": {
+        "winner": "England Legends",
+        "winnerIdx": 1,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 731.23,
+          "team2": 2289.2000000000003,
+          "pct1": 24.20946686398956,
+          "pct2": 75.79053313601044,
+          "leaderIdx": 1
+        },
+        "activity": {
+          "team1": 703.0068,
+          "team2": 2096.7682,
+          "pct1": 25.109403434204538,
+          "pct2": 74.89059656579546,
+          "leaderIdx": 1
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36148172",
+      "match": "Australia Legends v Pakistan Legends",
+      "teamNames": [
+        "Australia Legends",
+        "Pakistan Legends"
+      ],
+      "startTime": 1791199800000,
+      "capturedAt": "2026-10-05T16:35:00.249Z",
+      "databaseStatus": "abandoned",
+      "outcomeSource": "excluded",
+      "actualWinner": "No Result",
+      "result": "excluded",
+      "prediction": {
+        "winner": "Australia Legends",
+        "winnerIdx": 0,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 239.7,
+          "team2": 11.06,
+          "pct1": 95.58940819907481,
+          "pct2": 4.410591800925188,
+          "leaderIdx": 0
+        },
+        "activity": {
+          "team1": 223.2354,
+          "team2": 10.425,
+          "pct1": 95.53839675015536,
+          "pct2": 4.4616032498446465,
+          "leaderIdx": 0
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36151021",
+      "match": "Bangladesh Champions v England Legends",
+      "teamNames": [
+        "Bangladesh Champions",
+        "England Legends"
+      ],
+      "startTime": 1791214200000,
+      "capturedAt": "2026-10-06T02:06:16.082Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "England Legends",
+      "result": "pass",
+      "prediction": {
+        "winner": "England Legends",
+        "winnerIdx": 1,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 746.53,
+          "team2": 1637.62,
+          "pct1": 31.31220770505212,
+          "pct2": 68.6877922949479,
+          "leaderIdx": 1
+        },
+        "activity": {
+          "team1": 698.9242999999999,
+          "team2": 1528.9569,
+          "pct1": 31.371704200385548,
+          "pct2": 68.62829579961445,
+          "leaderIdx": 1
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36151023",
+      "match": "India Legends v South Africa Legends",
+      "teamNames": [
+        "India Legends",
+        "South Africa Legends"
+      ],
+      "startTime": 1791646200000,
+      "capturedAt": "2026-10-11T16:23:31.367Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "South Africa Legends",
+      "result": "fail",
+      "prediction": {
+        "winner": "India Legends",
+        "winnerIdx": 0,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 1171.82,
+          "team2": 576.7,
+          "pct1": 67.01782078557866,
+          "pct2": 32.98217921442134,
+          "leaderIdx": 0
+        },
+        "activity": {
+          "team1": 1115.4755,
+          "team2": 550.1745999999999,
+          "pct1": 66.96937730199159,
+          "pct2": 33.03062269800842,
+          "leaderIdx": 0
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36172480",
+      "match": "Australia Legends v West Indies Legends",
+      "teamNames": [
+        "Australia Legends",
+        "West Indies Legends"
+      ],
+      "startTime": 1791718200000,
+      "capturedAt": "2026-10-11T17:05:31.450Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "Australia Legends",
+      "result": "pass",
+      "prediction": {
+        "winner": "Australia Legends",
+        "winnerIdx": 0,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 2820.93,
+          "team2": 468.22,
+          "pct1": 85.76471124758676,
+          "pct2": 14.235288752413238,
+          "leaderIdx": 0
+        },
+        "activity": {
+          "team1": 2659.0959000000003,
+          "team2": 446.4907,
+          "pct1": 85.62298343250193,
+          "pct2": 14.37701656749807,
+          "leaderIdx": 0
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36175445",
+      "match": "India Legends v Bangladesh Champions",
+      "teamNames": [
+        "India Legends",
+        "Bangladesh Champions"
+      ],
+      "startTime": 1791732600000,
+      "capturedAt": "2026-10-11T22:28:42.712Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "India Legends",
+      "result": "pass",
+      "prediction": {
+        "winner": "India Legends",
+        "winnerIdx": 0,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 814.4,
+          "team2": 570.7300000000001,
+          "pct1": 58.79592529221084,
+          "pct2": 41.20407470778917,
+          "leaderIdx": 0
+        },
+        "activity": {
+          "team1": 775.2087999999999,
+          "team2": 543.0975000000001,
+          "pct1": 58.80339038052082,
+          "pct2": 41.19660961947918,
+          "leaderIdx": 0
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36194405",
+      "match": "South Africa Legends v England Legends",
+      "teamNames": [
+        "South Africa Legends",
+        "England Legends"
+      ],
+      "startTime": 1792150200000,
+      "capturedAt": "2026-10-16T17:33:48.975Z",
+      "databaseStatus": "verified",
+      "outcomeSource": "database-verified",
+      "actualWinner": "South Africa Legends",
+      "result": "pass",
+      "prediction": {
+        "winner": "South Africa Legends",
+        "winnerIdx": 0,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 684.4599999999999,
+          "team2": 492.13000000000005,
+          "pct1": 58.173195420664804,
+          "pct2": 41.8268045793352,
+          "leaderIdx": 0
+        },
+        "activity": {
+          "team1": 651.9461999999999,
+          "team2": 468.29100000000005,
+          "pct1": 58.19715681643136,
+          "pct2": 41.802843183568626,
+          "leaderIdx": 0
+        }
+      },
+      "capturedAfterListedStart": true
+    },
+    {
+      "matchId": "36194408",
+      "match": "Australia Legends v West Indies Legends",
+      "teamNames": [
+        "Australia Legends",
+        "West Indies Legends"
+      ],
+      "startTime": 1792164600000,
+      "capturedAt": "2026-10-17T02:10:12.878Z",
+      "databaseStatus": "pending",
+      "outcomeSource": "user-reported; database pending",
+      "actualWinner": "Australia Legends",
+      "result": "pass",
+      "prediction": {
+        "winner": "Australia Legends",
+        "winnerIdx": 0,
+        "reason": "Higher corrected support and higher pre-match activity agree.",
+        "support": {
+          "team1": 723.92,
+          "team2": 635.0500000000001,
+          "pct1": 53.26975577091473,
+          "pct2": 46.730244229085265,
+          "leaderIdx": 0
+        },
+        "activity": {
+          "team1": 691.7922,
+          "team2": 612.5802,
+          "pct1": 53.03640279417136,
+          "pct2": 46.96359720582864,
+          "leaderIdx": 0
+        }
+      },
+      "capturedAfterListedStart": true
+    }
+  ]
+}

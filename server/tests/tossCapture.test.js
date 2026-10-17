@@ -192,23 +192,28 @@ test('worker overlap guard skips concurrent ticks', async () => {
   assert.ok(runs >= 2);
 });
 
-test('default capture saves the dedicated World Legends pick and version', async () => {
+test('default Legends capture uses support/activity without P/L and preserves the saved pick on recapture', async () => {
   const store = tempStore();
   const { WORLD_LEGENDS_TOSS_VERSION } = require('../utils/worldLegendsTossAlgorithm');
+  const scraper = {
+    getAllTossMatches: async () => [{ matchId: 'new-legends', matchName: 'Alpha v Beta',
+      competitionName: 'World Championship of Legends T20', status: 'ended', totalMatched: 431 }],
+    getTossSnapshot: async () => ({ teamNames: ['Alpha', 'Beta'],
+      preMatchVolume: { team1: { back: 300, lay: 30 }, team2: { back: 100, lay: 1 } },
+      preMatchTotalBets: { team1: 300, team2: 100 } }),
+  };
   const result = await captureEndedTosses({
     store,
-    scraper: {
-      getAllTossMatches: async () => [{ matchId: 'new-legends', matchName: 'Alpha v Beta',
-        competitionName: 'World Championship of Legends T20', status: 'ended', totalMatched: 431 }],
-      getTossSnapshot: async () => ({ teamNames: ['Alpha', 'Beta'],
-        preMatchVolume: { team1: { back: 300, lay: 30 }, team2: { back: 100, lay: 1 } },
-        preMatchPnl: { team1: -200, team2: 250 },
-        bookmakerExposure: { team1: { netExposure: 200 }, team2: { netExposure: 80 } } }),
-    },
+    scraper,
   });
   assert.equal(result.captured, 1);
   const { records } = await store.listRecords({ status: 'pending', page: 1, limit: 5 });
   assert.equal(records[0].predictedWinner, 'Beta');
   assert.equal(records[0].predictorVersion, WORLD_LEGENDS_TOSS_VERSION);
   assert.equal(records[0].predictionRisk.calibrated, false);
+  const recapture = await captureEndedTosses({ store, scraper: { ...scraper,
+    getTossSnapshot: async () => { throw Error('Saved v3 snapshot must not be recaptured'); } } });
+  assert.deepEqual(recapture, { scanned: 1, captured: 0, skipped: 1, failed: 0 });
+  const after = await store.listRecords({ status: 'pending', page: 1, limit: 5 });
+  assert.deepEqual(after.records, records);
 });

@@ -6,6 +6,15 @@ scraper_cookies.json
 scraper_auth.json
 frontend/dist/
 
+# OS metadata and generated caches
+.DS_Store
+__pycache__/
+*.py[cod]
+*.bak
+*.tmp
+*.orig
+*.rej
+
 
 
 

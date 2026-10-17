@@ -12,6 +12,16 @@ test('one zero-flow team is permitted; both zero-flow teams and missing fields a
  assert.equal(checkPreMatchDataQuality({...valid,teamNames:['A',' a ']}).valid,false);
 });
 
+test('support/activity capture quality requires activity while allowing missing context P/L',()=>{
+ const options={requirePnl:false,requireActivity:true};
+ const snapshot={...valid,preMatchPnl:null,preMatchTotalBets:{team1:200,team2:100}};
+ assert.equal(checkPreMatchDataQuality(snapshot,options).valid,true);
+ assert.equal(checkPreMatchDataQuality(snapshot).valid,false);
+ for(const activity of [undefined,{team1:200},{team1:200,team2:-1},{team1:Infinity,team2:100}]){
+  assert.equal(checkPreMatchDataQuality({...snapshot,preMatchTotalBets:activity},options).valid,false);
+ }
+});
+
 test('all active match and toss records meet the quality gate',()=>{
  for(const file of ['match_dataset.json','toss_dataset.json']){
   const rows=require('../data/'+file).records;

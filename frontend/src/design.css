@@ -132,55 +132,107 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
 .market-team-footer { display: flex; align-items: center; justify-content: space-between; gap: 5px; width: 100%; margin-top: 6px; }
 .market-team-percent { padding: 2px 6px; border-radius: 999px; font-size: 9px; font-weight: 750; white-space: nowrap; }
 .market-team-odds { font-size: 9px; font-weight: 750; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.toss-detail-page { max-width: 1040px; }
-.toss-detail-back { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 9px; background: #ffffff; color: #475569; font-size: 12px; font-weight: 700; }
-.toss-detail-back:hover { border-color: #93c5fd; background: #eff6ff; color: #1d4ed8; }
-.toss-detail-hero { padding: 18px 20px; border: 1px solid #cbd5e1; border-radius: 13px; background: linear-gradient(120deg, #eff6ff, #ffffff 48%, #f0fdf4); box-shadow: 0 6px 22px #1e3a8a0c; }
-.toss-detail-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-.toss-detail-eyebrow { display: block; margin-bottom: 5px; color: #2563eb; font-size: 10px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; }
-.toss-detail-heading h1 { color: #172b43; font-size: 22px; font-weight: 800; letter-spacing: -.35px; line-height: 1.25; }
-.toss-detail-heading h1 span { color: #94a3b8; font-size: .72em; font-weight: 650; }
-.toss-detail-date { margin-top: 6px; color: #64748b; font-size: 11px; font-variant-numeric: tabular-nums; }
-.toss-detail-live { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; padding: 5px 9px; border: 1px solid #fecdd3; border-radius: 999px; background: #fff1f2; color: #be123c; font-size: 10px; font-weight: 800; }
-.toss-detail-live .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: #e11d48; }
-.toss-comparison-card { padding: 16px; border: 1px solid #cbd5e1; border-radius: 13px; background: #ffffff; box-shadow: 0 6px 22px #1e3a8a0c; }
-.toss-comparison-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
-.toss-comparison-heading h2 { color: #172b43; font-size: 14px; font-weight: 800; }
-.toss-comparison-heading p { margin-top: 2px; color: #64748b; font-size: 10px; }
-.toss-comparison-heading > strong { color: #1e3a8a; font-size: 16px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.toss-comparison-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-.toss-comparison-team { min-width: 0; padding: 12px; border: 1px solid #dbe3ef; border-radius: 11px; background: #f8fafc; }
-.toss-comparison-team.is-leading { border-color: #86efac; background: #f0fdf4; }
-.toss-comparison-team.is-trailing { border-color: #fecaca; background: #fff1f2; }
-.toss-comparison-team-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-.toss-comparison-team-top h3 { min-width: 0; overflow-wrap: anywhere; color: #172b43; font-size: 13px; font-weight: 800; line-height: 1.3; }
-.toss-comparison-team-top > span { flex: 0 0 auto; padding: 2px 6px; border-radius: 999px; background: #e2e8f0; color: #475569; font-size: 9px; font-weight: 800; }
-.toss-comparison-team.is-leading .toss-comparison-team-top > span { background: #dcfce7; color: #166534; }
-.toss-comparison-team.is-trailing .toss-comparison-team-top > span { background: #fee2e2; color: #991b1b; }
-.toss-comparison-money { margin: 11px 0; }
-.toss-comparison-money small { display: block; color: #64748b; font-size: 8px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; }
-.toss-comparison-money strong { display: block; margin-top: 2px; color: #172b43; font-size: 20px; font-weight: 850; line-height: 1.15; font-variant-numeric: tabular-nums; }
-.toss-comparison-team.is-leading .toss-comparison-money strong { color: #15803d; }
-.toss-comparison-team.is-trailing .toss-comparison-money strong { color: #b91c1c; }
-.toss-comparison-odds { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 8px; padding-top: 9px; border-top: 1px solid #dbe3ef; font-size: 10px; }
-.toss-comparison-odds span { color: #64748b; }
-.toss-comparison-odds strong { color: #172b43; font-weight: 800; font-variant-numeric: tabular-nums; }
-.toss-support-bar { display: flex; width: 100%; height: 7px; margin-top: 12px; overflow: hidden; border-radius: 999px; background: #e2e8f0; }
-.toss-support-bar > span { display: block; height: 100%; transition: width .3s ease; }
-.toss-support-bar > .is-leading { background: #22c55e; }
-.toss-support-bar > .is-trailing { background: #ef4444; }
-.toss-support-bar > .is-neutral { background: #94a3b8; }
-.toss-prediction-card { background: #ffffff; }
-.toss-prediction-header { border-bottom: 1px solid #dbe3ef; }
-.toss-prediction-winner { overflow-wrap: anywhere; }
-.toss-prediction-signal { overflow: hidden; }
-.toss-signal-comparison { gap: 8px; }
-.toss-signal-comparison > span:not(:nth-child(2)) { min-width: 0; overflow-wrap: anywhere; }
-.toss-metric-row { gap: 12px; }
-.toss-metric-row > span:first-child { min-width: 0; overflow-wrap: anywhere; }
-.toss-metric-row > span:last-child { flex: 0 0 auto; font-variant-numeric: tabular-nums; }
-.toss-two-team-grid > * { min-width: 0; }
-.toss-pl-team-name { overflow-wrap: anywhere; line-height: 1.25; }
+/* Toss detail: compact, aligned comparisons and a high-contrast forecast. */
+.toss-detail-page { max-width: 1380px; display: flex; flex-direction: column; gap: 12px; color: #172b43; }
+.toss-detail-page > * { min-width: 0; }
+.toss-detail-hero { display: flex; align-items: center; gap: 14px; padding: 4px 0 10px; border-bottom: 1px solid #d6deea; }
+.toss-detail-back { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; min-height: 34px; padding: 5px 8px; border: 1px solid #d6deea; border-radius: 7px; background: #fff; color: #475569; font-size: 11px; font-weight: 650; }
+.toss-detail-back:hover { border-color: #93c5fd; color: #1d4ed8; }
+.toss-detail-heading { min-width: 0; flex: 1; }
+.toss-detail-eyebrow { display: block; color: #52647b; font-size: 9px; font-weight: 750; letter-spacing: .9px; text-transform: uppercase; }
+.toss-detail-heading h1 { margin: 2px 0 0; color: #172b43; font-size: clamp(16px, 1.6vw, 21px); font-weight: 800; letter-spacing: -.4px; line-height: 1.3; overflow-wrap: anywhere; }
+.toss-detail-heading h1 span { color: #718096; font-size: .72em; font-weight: 600; }
+.toss-detail-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.toss-detail-date { color: #52647b; font-size: 10px; font-variant-numeric: tabular-nums; }
+.toss-detail-live { display: inline-flex; align-items: center; gap: 5px; color: #be123c; font-size: 9px; font-weight: 800; }
+.toss-detail-live .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #e11d48; }
+.toss-overview-grid, .toss-analytics-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+.toss-overview-grid { align-items: stretch; }
+.toss-overview-grid.without-prediction { grid-template-columns: minmax(0, 1fr); }
+.toss-prediction-card { min-width: 0; padding: 16px 18px; border: 1px solid #172d4c; border-radius: 11px; background: #152b49; color: #fff; }
+.toss-prediction-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.toss-prediction-header > span:first-child { display: inline-flex; align-items: center; gap: 7px; color: #d9e6f5; font-size: 11px; font-weight: 700; }
+.toss-prediction-header svg { color: #7ee4c8; flex-shrink: 0; }
+.toss-risk-pill { padding: 3px 7px; border: 1px solid #dbb564; border-radius: 5px; background: #fff1c9; color: #764c00; font-size: 9px; font-weight: 750; white-space: nowrap; }
+.toss-risk-pill.is-high { color: #991b1b; background: #fee2e2; border-color: #fca5a5; }
+.toss-prediction-winner { padding-left: 12px; margin: 14px 0 11px; border-left: 3px solid #5ee0bb; overflow-wrap: anywhere; }
+.toss-winner-label { color: #c0d2e6; font-size: 9px; font-weight: 650; letter-spacing: .8px; text-transform: uppercase; }
+.toss-winner-name { margin: 3px 0 4px; color: #fff; font-size: clamp(21px, 2vw, 27px); line-height: 1.15; font-weight: 850; letter-spacing: -.5px; }
+.toss-prediction-algorithm { color: #8fe8d0; font-size: 10px; line-height: 1.4; font-weight: 600; }
+.toss-prediction-reason { color: #e0e9f5; font-size: 11px; line-height: 1.6; margin: 0; }
+.toss-prediction-note { margin-top: 10px; color: #b7cbe0; font-size: 9px; }
+.toss-comparison-card, .toss-panel, .toss-market-evidence { min-width: 0; padding: 13px 15px; border: 1px solid #d6deea; border-radius: 11px; background: #fff; }
+.toss-comparison-heading, .toss-panel-heading, .toss-market-evidence > header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 5px 12px; margin-bottom: 9px; }
+.toss-comparison-heading h2, .toss-panel-heading h2, .toss-market-evidence h3 { display: inline-flex; align-items: center; gap: 6px; color: #172b43; font-size: 12px; font-weight: 800; margin: 0; }
+.toss-comparison-heading > span, .toss-panel-heading > span, .toss-market-evidence > header > span { color: #52647b; font-size: 10px; }
+.toss-comparison-heading strong { margin-left: 5px; color: #172b43; font-size: 15px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.toss-data-table, .toss-market-evidence table { width: 100%; table-layout: fixed; border-collapse: collapse; color: #223750; font-size: 11px; }
+.toss-data-table th, .toss-data-table td, .toss-market-evidence th, .toss-market-evidence td { padding: 8px; text-align: right; vertical-align: middle; overflow-wrap: anywhere; line-height: 1.4; }
+.toss-data-table thead, .toss-market-evidence thead { background: #f3f6fa; color: #52647b; font-size: 9px; }
+.toss-data-table thead th, .toss-market-evidence thead th { font-weight: 700; }
+.toss-data-table th:first-child, .toss-market-evidence th:first-child { width: 38%; text-align: left; }
+.toss-data-table tbody th, .toss-market-evidence tbody th { color: #3b506a; font-weight: 600; }
+.toss-data-table tbody tr + tr > *, .toss-market-evidence tbody tr + tr > * { border-top: 1px solid #e8edf4; }
+.toss-data-table td, .toss-market-evidence td { font-weight: 700; font-variant-numeric: tabular-nums; }
+.toss-data-table small { display: block; font-size: 9px; font-weight: 500; margin-top: 1px; }
+.toss-market-table th:first-child { width: 43%; }
+.toss-market-table th, .toss-market-table td { padding: 11px 6px; }
+.toss-market-table tbody th { font-size: 12px; color: #172b43; font-weight: 700; }
+.toss-team-dot { display: inline-block; width: 6px; height: 6px; margin: 0 6px 1px 0; border-radius: 50%; }
+.toss-team-dot.team-0, .toss-support-bar .team-0 { background: #17946c; }
+.toss-team-dot.team-1, .toss-support-bar .team-1 { background: #df6070; }
+.toss-support-bar { display: flex; height: 4px; margin-top: 8px; border-radius: 4px; background: #e2e8f0; overflow: hidden; }
+.toss-support-bar > span { height: 100%; }
+.toss-panel-caption { margin: 8px 0 0; color: #52647b; font-size: 9px; line-height: 1.5; }
+.toss-market-evidence thead th:not(:first-child) { color: #314761; }
+.toss-market-evidence td:nth-child(2) { color: #13704f; }
+.toss-market-evidence td:nth-child(3) { color: #aa3244; }
+.toss-market-evidence tbody tr:nth-child(-n+2) { background: #f0f8f5; }
+.toss-market-evidence tbody tr:nth-child(-n+2) td { font-size: 13px; font-weight: 800; }
+.toss-market-evidence th:first-child { width: 38%; }
+.toss-market-evidence small { margin-left: 7px; color: #62748b; font-size: 9px; font-weight: 400; }
+.toss-evidence-footer { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 9px; padding-top: 8px; border-top: 1px solid #e8edf4; font-size: 9px; color: #52647b; line-height: 1.5; }
+.toss-evidence-footer strong { color: #314761; font-weight: 650; }
+.toss-evidence-footer p { margin: 0; }
+.toss-signal-details { padding: 9px 14px; border: 1px solid #d6deea; border-radius: 8px; background: #fff; }
+.toss-signal-details summary, .toss-provider-details summary, .toss-data-note summary { color: #3b506a; font-size: 10px; font-weight: 650; }
+.toss-signal-details summary > span { float: right; color: #62748b; font-size: 9px; font-weight: 500; }
+.toss-signal-details[open] .toss-data-table { margin-top: 9px; }
+.toss-pl-row strong { font-size: 15px; font-weight: 800; }
+.toss-provider-details { margin-top: 9px; }
+.toss-provider-details dl { margin-top: 5px; }
+.toss-provider-details dl > div { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 11px; border-top: 1px solid #e8edf4; }
+.toss-provider-details dd { font-variant-numeric: tabular-nums; font-weight: 700; }
+.toss-sentiment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.toss-sentiment-grid > div { display: grid; grid-template-columns: 1fr auto; gap: 5px; font-size: 10px; }
+.toss-sentiment-grid strong { color: #172b43; }
+.toss-sentiment-bar { grid-column: 1 / -1; height: 3px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.toss-sentiment-bar span { display: block; height: 100%; background: #17946c; }
+.toss-data-note { padding: 0 2px; }
+.toss-data-note p { color: #52647b; font-size: 10px; margin-top: 5px; line-height: 1.5; }
+@media (max-width: 1050px) {
+  .toss-overview-grid, .toss-analytics-grid { grid-template-columns: minmax(0, 1fr); }
+  .toss-detail-meta { max-width: 130px; text-align: right; }
+}
+@media (max-width: 600px) {
+  .toss-detail-page { gap: 10px; }
+  .toss-detail-hero { flex-wrap: wrap; gap: 7px 9px; padding-bottom: 9px; }
+  .toss-detail-back { min-height: 32px; }
+  .toss-detail-back span { display: none; }
+  .toss-detail-heading h1 { font-size: 17px; }
+  .toss-detail-meta { flex: 1 0 100%; max-width: none; flex-direction: row; align-items: center; text-align: left; }
+  .toss-detail-date { font-size: 9px; }
+  .toss-prediction-card { padding: 13px 14px; }
+  .toss-winner-name { font-size: 23px; }
+  .toss-prediction-winner { margin: 11px 0 9px; }
+  .toss-comparison-card, .toss-panel, .toss-market-evidence { padding: 11px 10px; }
+  .toss-data-table th, .toss-data-table td, .toss-market-evidence th, .toss-market-evidence td { padding: 8px 5px; font-size: 10px; }
+  .toss-market-table th:first-child { width: 40%; }
+  .toss-market-table tbody th { font-size: 11px; }
+  .toss-market-evidence small { display: none; }
+  .toss-market-evidence tbody tr:nth-child(-n+2) td { font-size: 12px; }
+  .toss-sentiment-grid { gap: 12px; }
+}
 .ui-empty-state { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 12px; text-align: center; min-height: 260px; padding: 32px; border: 1px dashed #dce4ee; border-radius: 12px; color: #5b6d84; }
 .ui-empty-state h2 { color: #1d4d86; font-size: 18px; font-weight: 600; }
 .ui-empty-state p { font-size: 13px; }
@@ -297,38 +349,6 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
   .market-team-footer { align-items: flex-end; gap: 3px; margin-top: 5px; }
   .market-team-percent { padding: 2px 4px; font-size: 8px; }
   .market-team-odds { font-size: 8px; }
-  .toss-detail-page.space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 9px; }
-  .toss-detail-back { width: 100%; min-height: 38px; justify-content: flex-start; padding: 7px 9px; }
-  .toss-detail-hero { padding: 13px; border-radius: 11px; }
-  .toss-detail-heading { gap: 8px; }
-  .toss-detail-heading h1 { font-size: 17px; line-height: 1.28; overflow-wrap: anywhere; }
-  .toss-detail-date { font-size: 9px; line-height: 1.4; }
-  .toss-detail-live { padding: 4px 7px; font-size: 9px; }
-  .toss-comparison-card { padding: 11px; border-radius: 11px; }
-  .toss-comparison-heading { align-items: center; margin-bottom: 9px; }
-  .toss-comparison-heading p { display: none; }
-  .toss-comparison-heading > strong { font-size: 13px; }
-  .toss-comparison-grid { gap: 7px; }
-  .toss-comparison-team { padding: 9px 8px; }
-  .toss-comparison-team-top { display: block; }
-  .toss-comparison-team-top h3 { min-height: 32px; font-size: 11px; }
-  .toss-comparison-team-top > span { display: inline-block; margin-top: 5px; }
-  .toss-comparison-money { margin: 8px 0; }
-  .toss-comparison-money strong { font-size: 16px; }
-  .toss-comparison-odds { gap: 3px 5px; padding-top: 7px; font-size: 9px; }
-  .toss-support-bar { height: 6px; margin-top: 9px; }
-  .toss-prediction-header { align-items: flex-start; padding: 9px 10px; }
-  .toss-prediction-header > .ml-auto { margin-left: auto; padding-top: 2px; }
-  .toss-prediction-note { display: none; }
-  .toss-prediction-winner { padding: 10px 8px; }
-  .toss-prediction-winner .text-lg { font-size: 15px; }
-  .toss-prediction-signal { padding: 9px; }
-  .toss-signal-comparison { align-items: flex-start; }
-  .toss-signal-comparison > span { font-size: 10px; }
-  .toss-two-team-grid { gap: 7px; }
-  .toss-two-team-grid > div { padding: 9px; }
-  .toss-two-team-grid .text-base { font-size: 12px; }
-  .toss-two-team-grid .text-xl { font-size: 16px; }
   .admin-workspace { padding: 22px 14px; }
   .admin-workspace-heading { margin-bottom: 20px; }
   .admin-workspace-heading h1 { font-size: 23px; }
