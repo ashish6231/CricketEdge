@@ -7,6 +7,7 @@ import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
 import { getSocket, releaseFeed, requestCricketFeed } from '../socket'
 import { crexScoreFingerprint, mergeCrexUpdate, resolveCrexScores } from '../utils/crexScore'
+import { isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
 
 const MatchDetail = lazy(() => import('./MatchDetail'))
 
@@ -132,9 +133,8 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
 
   const crex = crexScore || match.crex || null
 
-  const s = (match.status || '').toLowerCase()
-  const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-  const isLive = !isEnded && (match.inPlay || s === 'in-play' || s === 'live')
+  const isEnded = isMatchEnded(match)
+  const isLive = isMatchLiveByStart(match, now)
   const accessType = isEnded ? 'free' : isPro ? 'pro' : 'locked'
   const resolvedScores = resolveCrexScores(crex, team1.name, team2.name)
   const score1 = isLive || isEnded ? resolvedScores.team1Score : null
@@ -275,14 +275,8 @@ export default function CricketPage() {
     }
 
     const getMatchTier = (m) => {
-      const s = (m.status || '').toLowerCase()
-      const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-        || m.crex?.status === 'completed'
-        || m.crex?.scorecard?.status === 'completed'
-        || /won by|won the|match drawn|match tied|no result/i.test(m.crex?.statusText || '')
-      if (isEnded) return 3
-      const isLive = m.inPlay || s === 'in-play' || s === 'live'
-      if (isLive) return 1
+      if (isMatchEnded(m)) return 3
+      if (isMatchLiveByStart(m)) return 1
       return 2
     }
 
@@ -521,16 +515,8 @@ export default function CricketPage() {
     }
   }, [matchId])
 
-  const isEndedMatch = (m) => {
-    const s = (m.status || '').toLowerCase()
-    return s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
-  }
-
-  const isLiveMatch = (m) => {
-    if (isEndedMatch(m)) return false
-    const s = (m.status || '').toLowerCase()
-    return m.inPlay || s === 'in-play' || s === 'live'
-  }
+  const isEndedMatch = isMatchEnded
+  const isLiveMatch = useCallback((match) => isMatchLiveByStart(match, now), [now])
 
   const hasSearch = Boolean(searchQuery.trim())
 
@@ -562,11 +548,11 @@ export default function CricketPage() {
       if (aEnded && !bEnded) return 1
       return (a.startTime || 0) - (b.startTime || 0)
     })
-  }, [selectedComp, allMatches, competitions, searchQuery, hasSearch])
+  }, [selectedComp, allMatches, competitions, searchQuery, hasSearch, isLiveMatch, isEndedMatch])
 
   const liveCount = useMemo(() => {
-    return allMatches.filter(m => !isEndedMatch(m) && (m.inPlay || (m.status || '').toLowerCase() === 'in-play' || (m.status || '').toLowerCase() === 'live')).length
-  }, [allMatches])
+    return allMatches.filter(isLiveMatch).length
+  }, [allMatches, isLiveMatch])
 
   if (!matchId && loading && !allMatches.length) {
     return (
@@ -769,7 +755,7 @@ export default function CricketPage() {
       {/* ── Main Content Area ── */}
       <div ref={scrollRef} className="sports-content flex-1 overflow-y-auto">
         {matchId ? (
-          <MatchDetail sport="cricket" />
+          <MatchDetail key={matchId} sport="cricket" />
         ) : (
           <>
             <SportHubHeader title="Cricket matches" description="Live scores, market flow and league predictions in one place."

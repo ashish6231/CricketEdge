@@ -17,6 +17,49 @@ function initials(value) {
   return identity(value).split(' ').filter(Boolean).map(word => word[0]).join('')
 }
 
+function teamIsMentioned(text, team) {
+  const haystack = ` ${identity(text)} `
+  const aliases = [identity(team?.name), identity(team?.shortName), initials(team?.name)]
+    .filter(alias => alias.length >= 2)
+  return aliases.some(alias => haystack.includes(` ${alias} `))
+}
+
+function hasRecordedScore(team) {
+  const score = validCrexScore(team?.score)
+  return Boolean(score && !/yet to bat|yet to begin|upcoming/i.test(score))
+}
+
+/** Keep the scorecard in innings order: first-innings batting side, then the chasing side. */
+export function orderCrexTeamsByInnings(crex, team1Name, team2Name) {
+  const scorecard = crex?.scorecard || {}
+  const teams = [
+    { ...(scorecard.team1 || {}), name: scorecard.team1?.name || team1Name || 'Team 1' },
+    { ...(scorecard.team2 || {}), name: scorecard.team2?.name || team2Name || 'Team 2' },
+  ]
+
+  const scored = teams.map(hasRecordedScore)
+  if (scored[0] !== scored[1]) return scored[0] ? teams : [teams[1], teams[0]]
+
+  const chaseText = scorecard.statusEquation || crex?.statusText || ''
+  const chaseStatement = chaseText.match(/^(.+?)\s+(?:need|needs|require|requires)\b/i)
+  if (chaseStatement) {
+    const chasingIndex = teams.findIndex(team => teamIsMentioned(chaseStatement[1], team))
+    if (chasingIndex >= 0) return chasingIndex === 1 ? teams : [teams[1], teams[0]]
+  }
+
+  const tossText = scorecard.tossText || crex?.tossText || ''
+  const decision = tossText.match(/\b(?:opt(?:ed)?|chose|elected|decided)(?:\s+to)?\s+(bat|bowl|field)\b/i)
+  if (!decision) return teams
+
+  const winnerText = tossText.slice(0, decision.index)
+  const winnerIndex = teams.findIndex(team => teamIsMentioned(winnerText, team))
+  if (winnerIndex < 0) return teams
+
+  const winnerBattedFirst = decision[1].toLowerCase() === 'bat'
+  const firstInningsIndex = winnerBattedFirst ? winnerIndex : 1 - winnerIndex
+  return firstInningsIndex === 0 ? teams : [teams[1], teams[0]]
+}
+
 export function teamIdentityMatches(localName, providerName, providerShort = '') {
   const local = identity(localName)
   const provider = identity(providerName)

@@ -1,4 +1,77 @@
-import { finiteNumber, tradeSide, tradeTimestamp } from './bookiePl.js'
+import { finiteNumber, timestamp, tradeSide, tradeTimestamp } from './bookiePl.js'
+import { isMatchEnded, isMatchLiveByStart } from './matchTiming.js'
+
+const providerTotalPair = source => {
+  const values = Array.isArray(source)
+    ? source
+    : [source?.team1 ?? source?.totalBetTeam1, source?.team2 ?? source?.totalBetTeam2]
+  const pair = values.slice(0, 2).map(finiteNumber)
+  return pair.length === 2 && pair.some(value => value != null) ? pair : null
+}
+
+/** Current provider totals. These may continue changing after the market goes live. */
+export function getLiveProviderTotals(snapshot) {
+  return providerTotalPair(snapshot?.deepMetrics?.totals)
+}
+
+/** Stable pre-match provider totals, including persisted values captured before start. */
+export function getFrozenPreMatchProviderTotals(snapshot, stored = null) {
+  return providerTotalPair(stored)
+    || providerTotalPair(snapshot?.preMatchProviderTotals)
+    || providerTotalPair(snapshot?.deepMetrics?.preMatchTotals)
+    || providerTotalPair(snapshot?.preMatchTotalBets)
+}
+
+/** Provider totals can only be refreshed before the scheduled start. */
+export function canCapturePreMatchProviderTotals(snapshot, now = Date.now()) {
+  return Boolean(snapshot) && !isMatchEnded(snapshot) && !isMatchLiveByStart(snapshot, now)
+}
+
+const reportedActivityPair = source => {
+  const values = [finiteNumber(source?.team1), finiteNumber(source?.team2)]
+    .map(value => value != null && value >= 0 ? value : null)
+  return values.some(value => value != null) ? values : null
+}
+
+/** Provider-reported total-bet/activity ledger for the current period.
+ * This is distinct from deepMetrics.totals, whose values are exposure-based
+ * selection support (own back exposure + the opposing runner's lay stake). */
+export function getMarketBetActivity(snapshot, { live = false, frozenPreMatchBets = null } = {}) {
+  const useInPlay = live || isMatchEnded(snapshot)
+  const liveValues = reportedActivityPair(snapshot?.inPlayTotalBets)
+  const preValues = reportedActivityPair(frozenPreMatchBets)
+    || reportedActivityPair(snapshot?.preMatchTotalBets)
+  const values = (useInPlay ? liveValues : null) || preValues
+  return {
+    values: values || [null, null],
+    total: values ? values.reduce((sum, value) => sum + (value || 0), 0) : null,
+    period: useInPlay && liveValues ? 'in-play' : 'pre-match',
+  }
+}
+
+/** Counts captured trade entries, not provider activity totals or unique bets. */
+export function getPreMatchTradeActivity(snapshot, { startTime } = {}) {
+  const start = timestamp(snapshot?.startTime) ?? timestamp(startTime)
+  const names = snapshot?.teamNames
+  const unavailable = reason => ({ available: false, counts: {}, total: null, reason })
+  if (start == null) return unavailable('Match start time unavailable.')
+  if (!Array.isArray(names) || names.length < 2) return unavailable('Selection trade history unavailable.')
+
+  const counts = {}
+  for (const name of names) {
+    const trades = snapshot?.teams?.[name]?.trades
+    if (!Array.isArray(trades)) return unavailable('Selection trade history unavailable.')
+    let count = 0
+    for (const trade of trades) {
+      if (!(finiteNumber(trade?.size) > 0 && finiteNumber(trade?.price) > 1 && tradeSide(trade))) continue
+      const time = tradeTimestamp(trade)
+      if (time == null) return unavailable('One or more recorded trades have no valid timestamp.')
+      if (time < start) count++
+    }
+    counts[name] = count
+  }
+  return { available: true, counts, total: Object.values(counts).reduce((sum, count) => sum + count, 0) }
+}
 
 const ladderArray = (...values) => values.find(Array.isArray)
 

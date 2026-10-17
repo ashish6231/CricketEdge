@@ -17,7 +17,7 @@ test('standalone and embedded toss sections settle the same ledger and refresh c
       preMatchTotalBets: { team1: 300, team2: 100 },
       preMatchPnl: { team1: -200, team2: 250 },
       bookmakerExposure: { team1: { netExposure: 200 }, team2: { netExposure: 80 } },
-      deepMetrics: { simplePL: { team1_win: 999, team2_win: -888 } },
+      deepMetrics: { simplePL: { team1_win: 999, team2_win: -888 }, totals: { totalBetTeam1: 1234, totalBetTeam2: 5678 } },
       advancedMetrics: { team1: { back: 100, lay: 20 }, team2: { back: 50, lay: 10 } },
       teams: {
         Alpha: { trades: [{ type: 'back', size: 100, price: 2 }, { type: 'lay', size: 20, price: 3 }] },
@@ -28,6 +28,9 @@ test('standalone and embedded toss sections settle the same ledger and refresh c
     const standalone = render(false), embedded = render(true)
     for (const html of [standalone, embedded]) {
       assert.match(html, /Per-odds Trades/)
+      assert.match(html, /Provider total/)
+      assert.match(html, /€1\.23k/)
+      assert.match(html, /€5\.68k/)
       assert.match(html, /−€20/)
       assert.match(html, /\+€30/)
       assert.match(html, /\+€60/)

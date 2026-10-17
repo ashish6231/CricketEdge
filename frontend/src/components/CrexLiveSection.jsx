@@ -1,4 +1,5 @@
 import React from 'react'
+import { orderCrexTeamsByInnings } from '../utils/crexScore'
 
 /**
  * Clean HTML formatting tags from string
@@ -261,6 +262,12 @@ export function CrexScorecardBanner({ crexData, t1, t2, matchInPlay = false }) {
   const hasOdds = (co?.rate !== null && co?.rate !== undefined && co?.rate !== '') ||
                   (co?.rate2 !== null && co?.rate2 !== undefined && co?.rate2 !== '') ||
                   (co?.back !== null && co?.back !== undefined && co?.back !== '')
+  const decimalFromRate = value => {
+    const rate = Number(value)
+    return Number.isFinite(rate) && rate > 0 ? (1 + rate / 100).toFixed(2) : null
+  }
+  const decimalBack = co.back || decimalFromRate(co.rate)
+  const decimalLay = co.lay || decimalFromRate(co.rate2 != null && co.rate2 !== '' ? co.rate2 : co.rate)
 
   // Active over balls: prioritize currentOverBalls, fallback to latest over from lastovers
   const displayBalls = (runningBall?.currentOverBalls && runningBall.currentOverBalls.length > 0)
@@ -279,27 +286,7 @@ export function CrexScorecardBanner({ crexData, t1, t2, matchInPlay = false }) {
   const isSix = !isRunning && (outcomeVal === '6' || /^six$/i.test(String(outcomeVal)))
   const isWicket = !isRunning && (outcomeVal === 'W' || outcomeVal === 'w' || /wicket|caught|bowled|lbw|run out|stumped/i.test(String(outcomeVal)))
 
-  // Ensure team1 aligns to t1 and team2 aligns to t2
-  let dispTeam1 = sc?.team1
-  let dispTeam2 = sc?.team2
-  if (t1 && t2 && sc?.team1?.name && sc?.team2?.name) {
-    const t1Norm = t1.toLowerCase().replace(/[^a-z0-9]/g, '')
-    const t2Norm = t2.toLowerCase().replace(/[^a-z0-9]/g, '')
-    const sc1Norm = sc.team1.name.toLowerCase().replace(/[^a-z0-9]/g, '')
-    const sc2Norm = sc.team2.name.toLowerCase().replace(/[^a-z0-9]/g, '')
-
-    const reverse = (sc1Norm.includes(t2Norm) || t2Norm.includes(sc1Norm)) &&
-                    (sc2Norm.includes(t1Norm) || t1Norm.includes(sc2Norm))
-    if (reverse) {
-      dispTeam1 = sc.team2
-      dispTeam2 = sc.team1
-    }
-  }
-
-  const teams = [
-    { ...dispTeam1, name: dispTeam1?.name || t1 || 'Team 1' },
-    { ...dispTeam2, name: dispTeam2?.name || t2 || 'Team 2' },
-  ]
+  const teams = orderCrexTeamsByInnings(crexData, t1, t2)
   const status = isLive ? 'live' : isCompleted ? 'completed' : 'upcoming'
   const deliveryTone = isRunning ? 'running' : isWicket ? 'wicket' : isSix ? 'six' : isFour ? 'four' : 'normal'
   const statusText = isCompleted ? sc.statusEquation && sc.statusEquation !== matchResultText ? sc.statusEquation : null : sc.statusEquation
@@ -352,12 +339,20 @@ export function CrexScorecardBanner({ crexData, t1, t2, matchInPlay = false }) {
       </div>}
 
       {(hasOdds || statusText) && <div className="crex-match-context">
-        {hasOdds && <div className="crex-market-rate"><span className="crex-section-label">Market rate</span>
-          <span className="crex-rate-team">{co.rateTeam || sc.team1?.name || t1}</span>
-          <span className="crex-rate-values"><strong>{formatRateBox(co.rate)}</strong><span>/</span><strong>{formatRateBox(co.rate2 != null && co.rate2 !== '' ? co.rate2 : co.rate)}</strong></span>
-          {co.back && <span className="crex-rate-back">({co.back})</span>}
+        {hasOdds && <div className="crex-market-rate">
+          <div className="crex-rate-main">
+            <span className="crex-rate-team"><CricketBallIcon size={12} />{co.rateTeam || sc.team1?.name || t1}</span>
+            <span className="crex-rate-values" aria-label={`CREX back ${formatRateBox(co.rate)}, lay ${formatRateBox(co.rate2 != null && co.rate2 !== '' ? co.rate2 : co.rate)}`}>
+              <span className="crex-rate-box"><small>Back</small><strong>{formatRateBox(co.rate)}</strong></span>
+              <span className="crex-rate-box is-lay"><small>Lay</small><strong>{formatRateBox(co.rate2 != null && co.rate2 !== '' ? co.rate2 : co.rate)}</strong></span>
+            </span>
+          </div>
+          <div className="crex-rate-footer">
+            {statusText && <p className="crex-status-equation">{statusText}</p>}
+            {(decimalBack || decimalLay) && <span className="crex-rate-decimal">Decimal <strong>{decimalBack || '—'}</strong><span>/</span><strong>{decimalLay || decimalBack || '—'}</strong></span>}
+          </div>
         </div>}
-        {statusText && <p className="crex-status-equation">{statusText}</p>}
+        {!hasOdds && statusText && <p className="crex-status-equation">{statusText}</p>}
       </div>}
       </div>
 

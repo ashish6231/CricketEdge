@@ -11,6 +11,7 @@ import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
 import { hasTossSnapshot, isCompleteMatchBundle } from '../utils/matchBundle'
 import LegendsTossMarketEvidence from '../components/LegendsTossMarketEvidence'
+import { getFrozenPreMatchProviderTotals, getLiveProviderTotals } from '../utils/selectionVolume'
 
 const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : '−'}€${fmt(Math.abs(n))}`
@@ -212,7 +213,6 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
   const raw = snap.deepMetrics?.raw || {}
-  const tot = snap.deepMetrics?.totals || {}
   const am1 = getSelectionStakes(snap, t1)
   const am2 = getSelectionStakes(snap, t2)
   const exp = getMarketExposureFromTrades(snap, t1, t2)
@@ -221,6 +221,7 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   const t1Trades = snap.teams?.[t1]?.trades || []
   const t2Trades = snap.teams?.[t2]?.trades || []
   const { pl1, pl2 } = getBookiePlFromMatchedTrades(snap, t1, t2)
+  const providerTotals = getLiveProviderTotals(snap) || getFrozenPreMatchProviderTotals(snap) || [null, null]
   const totVol = am1.totalBet != null && am2.totalBet != null ? am1.totalBet + am2.totalBet : null
   const pct1 = totVol > 0 ? Math.round(am1.totalBet / totVol * 100) : null
   const pct2 = pct1 == null ? null : 100 - pct1
@@ -228,8 +229,8 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   const isLegends = isWorldLegendsTossLeague(competition)
   const prediction = predictTossWinner(snap, competition)
   const teams = [
-    { name: t1, volume: am1.totalBet, percentage: pct1, odds: latestMatchedPrice(t1Trades) },
-    { name: t2, volume: am2.totalBet, percentage: pct2, odds: latestMatchedPrice(t2Trades) },
+    { name: t1, volume: am1.totalBet, percentage: pct1, odds: latestMatchedPrice(t1Trades), providerTotal: providerTotals[0], pl: pl1 },
+    { name: t2, volume: am2.totalBet, percentage: pct2, odds: latestMatchedPrice(t2Trades), providerTotal: providerTotals[1], pl: pl2 },
   ]
   const metricRows = [
     { label: 'Back exposure', values: [raw.A_back_expo, raw.B_back_expo] },
@@ -253,7 +254,7 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   </table>
 
   return (
-    <div className={`toss-detail-page w-full${isEmbedded ? '' : ' detail-page'}`}>
+    <div className={`toss-detail-page toss-v2 w-full${isEmbedded ? '' : ' detail-page'}`}>
       <header className="toss-detail-hero">
         {!isEmbedded && <button type="button" onClick={onBack} className="toss-detail-back" aria-label="Back to toss matches"><ArrowLeft size={16} /><span>Back</span></button>}
         <div className="toss-detail-heading">
@@ -266,35 +267,43 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
         </div>
       </header>
 
-      <div className={`toss-overview-grid ${prediction ? '' : 'without-prediction'}`}>
+      <div className="toss-v2-stack">
         {prediction && <section className="toss-prediction-card" aria-label="Toss winner prediction">
           <div className="toss-prediction-header"><span><Trophy size={15} />Toss Winner Prediction</span>
-            {prediction.risk && <span className={`toss-risk-pill ${prediction.risk.avoidEntry || prediction.risk.tier === 'high' ? 'is-high' : ''}`}>{prediction.risk.shortLabel || prediction.risk.label}</span>}
+            <div><span className="toss-prediction-note">Rule-based · future accuracy unvalidated</span>{prediction.risk && <span className={`toss-risk-pill ${prediction.risk.avoidEntry || prediction.risk.tier === 'high' ? 'is-high' : ''}`}>{prediction.risk.shortLabel || prediction.risk.label}</span>}</div>
           </div>
-          <div className="toss-prediction-winner">
-            <div className="toss-winner-label">Predicted toss winner</div>
-            <h2 className="toss-winner-name">{prediction.winnerName}</h2>
-            {prediction.algoName && <p className="toss-prediction-algorithm">{prediction.algoName}</p>}
+          <div className="toss-prediction-main">
+            <div className="toss-prediction-winner">
+              <div className="toss-winner-label">Predicted toss winner</div>
+              <h2 className="toss-winner-name">{prediction.winnerName}</h2>
+              {prediction.algoName && <p className="toss-prediction-algorithm">{prediction.algoName}</p>}
+            </div>
+            <p className="toss-prediction-reason">{prediction.reason}</p>
           </div>
-          <p className="toss-prediction-reason">{prediction.reason}</p>
-          <div className="toss-prediction-note">Rule-based · future accuracy unvalidated</div>
           {prediction.matchedRules?.length > 1 && <MatchedRulesPanel rules={prediction.matchedRules} selectedReason={prediction.reason} />}
           <AvoidEntryBanner risk={prediction.risk} />
         </section>}
 
         <section className="toss-comparison-card" aria-labelledby="market-activity-heading">
           <div className="toss-comparison-heading"><h2 id="market-activity-heading">Market activity</h2><span>Total matched <strong>€{formatVolStr(totVol)}</strong></span></div>
-          <table className="toss-data-table toss-market-table" aria-label="Matched money, support and latest toss odds">
-            <thead><tr><th scope="col">Team</th><th scope="col">Matched</th><th scope="col">Support</th><th scope="col">Odds</th></tr></thead>
-            <tbody>{teams.map((team, index) => <tr key={team.name}>
-              <th scope="row"><span className={`toss-team-dot team-${index}`} />{team.name}</th>
-              <td>€{formatVolStr(team.volume)}</td><td>{team.percentage == null ? '—' : `${team.percentage}%`}</td><td>{formatOdds(team.odds)}</td>
-            </tr>)}</tbody>
-          </table>
-          <div className="toss-support-bar" aria-label={`${t1} ${pct1 ?? 0}% support, ${t2} ${pct2 ?? 0}% support`}>
-            <span className="team-0" style={{ width: `${pct1 ?? 0}%` }} /><span className="team-1" style={{ width: `${pct2 ?? 0}%` }} />
+          <div className="match-market-cards toss-market-cards" aria-label="Toss market activity by team">
+            {teams.map((team, index) => <article className={`match-market-team team-${index}`} key={team.name}>
+              <header className="match-market-team-name"><span>{team.name.split(/\s+/).map(word => word[0]).join('').slice(0, 3)}</span><h3>{team.name}</h3></header>
+              <div className="toss-market-team-quote">
+                <div><small>Latest odds</small><strong>{formatOdds(team.odds)}</strong></div>
+                <div><small>Support</small><strong>{team.percentage == null ? '—' : `${team.percentage}%`}</strong></div>
+              </div>
+              <div className="match-market-team-stats">
+                <div><small>Provider total</small><strong>{team.providerTotal == null ? '—' : `€${formatVolStr(team.providerTotal)}`}</strong></div>
+                <div><small>P/L if wins</small><strong className={pnlCls(team.pl)}>{fmtRs(team.pl)}</strong></div>
+              </div>
+              <div className="match-market-team-matched">
+                <div><small>Total matched</small><strong>€{formatVolStr(team.volume)}</strong><span>of €{formatVolStr(totVol)}</span></div>
+                <b>{team.percentage == null ? '—' : `${team.percentage}%`}</b>
+              </div>
+              <div className="match-market-team-bar" aria-label={`${team.name} ${team.percentage ?? 0}% support`}><span style={{ width: `${team.percentage ?? 0}%` }} /></div>
+            </article>)}
           </div>
-          <p className="toss-panel-caption">Matched stakes from the toss market</p>
         </section>
       </div>
 
@@ -310,15 +319,14 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
             {hasLedger && <tr className="toss-pl-row"><th scope="row">P/L if team wins</th>{[pl1, pl2].map((pl, index) => <td key={index} className={pnlCls(pl)}><strong>{fmtRs(pl)}</strong><small>{pl == null ? 'Unavailable' : pl >= 0 ? 'Profit' : 'Loss'}</small></td>)}</tr>}
             {hasExposure && exposureRows.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{row.values.map((value, index) => <td key={index} className={row.signed ? pnlCls(value) : ''}>{row.signed ? fmtRs(value) : value == null ? '—' : `€${fmt(value)}`}</td>)}</tr>)}
           </tbody></table>
-          <p className="toss-panel-caption">Calculated from matched trades at each odds level.</p>
+          <p className="toss-panel-caption">Exposure and settlement P/L are calculated from matched toss trades.</p>
         </section>}
 
-        {(metricRows.length > 0 || Object.keys(tot).length > 0) && <section className="toss-panel">
+        {metricRows.length > 0 && <section className="toss-panel">
           <header className="toss-panel-heading"><h2><BarChart3 size={14} />Deep betting metrics</h2><span>Provider reported</span></header>
-          {metricRows.length > 0 && <table className="toss-data-table" aria-label="Raw accumulated betting values">{teamHeader}<tbody>
+          <table className="toss-data-table" aria-label="Raw accumulated betting values">{teamHeader}<tbody>
             {metricRows.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{row.values.map((value, index) => <td key={index}>{value == null ? '—' : Number(value).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>)}</tr>)}
-          </tbody></table>}
-          {Object.keys(tot).length > 0 && <details className="toss-provider-details"><summary>Provider reported totals</summary><dl>{Object.entries(tot).map(([key, value]) => <div key={key}><dt>{['team1', 'totalBetTeam1'].includes(key) ? t1 : ['team2', 'totalBetTeam2'].includes(key) ? t2 : key}</dt><dd>{Number(value).toLocaleString('en-IN', { maximumFractionDigits: 2 })}</dd></div>)}</dl></details>}
+          </tbody></table>
         </section>}
       </div>
 

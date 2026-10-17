@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Activity, ChevronRight, LoaderCircle, Lock, Radio, Search } from 'lucide-react'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import { getSocket, releaseFeed, requestTennisFeed } from '../socket'
+import { getMatchStartTimestamp, isMatchLiveByStart } from '../utils/matchTiming'
 
 const SPORT_FILTERS = [
   { id: 'all', label: 'All' },
@@ -22,13 +23,13 @@ const fmtWhen = (ts) => {
   return `${date} · ${time}`
 }
 
-const isLive = (m) => {
+const isLive = (m, now = Date.now()) => {
   if (m.sport === 'tennis') return m.status === 'in-play' || (m.inPlay && m.status !== 'ended')
-  return Boolean(m.inPlay && m.status === 'in-play')
+  return isMatchLiveByStart(m, now)
 }
 
-const isUpcoming = (m) => {
-  if (isLive(m) || m.status === 'ended') return false
+const isUpcoming = (m, now = Date.now()) => {
+  if (isLive(m, now) || m.status === 'ended') return false
   return m.status === 'upcoming' || !m.status || m.status !== 'ended'
 }
 
@@ -53,6 +54,7 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
   const [cricketMatches, setCricketMatches] = useState([])
   const [tennisMatches, setTennisMatches] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [now, setNow] = useState(() => Date.now())
   const [sportFilter, setSportFilter] = useState(() => {
     try {
       const saved = sessionStorage.getItem(FILTER_KEY)
@@ -101,6 +103,16 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
 
   const matches = useMemo(() => [...cricketMatches, ...tennisMatches], [cricketMatches, tennisMatches])
 
+  useEffect(() => {
+    const nextStart = cricketMatches
+      .map(getMatchStartTimestamp)
+      .filter(start => start != null && start > now)
+      .sort((a, b) => a - b)[0]
+    if (nextStart == null) return
+    const timer = setTimeout(() => setNow(Date.now()), Math.min(nextStart - Date.now() + 25, 2_147_483_647))
+    return () => clearTimeout(timer)
+  }, [cricketMatches, now])
+
   const filtered = useMemo(() => {
     let list = sportFilter === 'all' ? matches : matches.filter((m) => m.sport === sportFilter)
     const q = searchQuery.trim().toLowerCase()
@@ -116,16 +128,16 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
   }, [matches, sportFilter, searchQuery])
 
   const liveMatches = useMemo(
-    () => filtered.filter(isLive).sort((a, b) => (b.totalMatched || 0) - (a.totalMatched || 0)),
-    [filtered],
+    () => filtered.filter(match => isLive(match, now)).sort((a, b) => (b.totalMatched || 0) - (a.totalMatched || 0)),
+    [filtered, now],
   )
 
   const upcomingMatches = useMemo(
     () =>
       filtered
-        .filter(isUpcoming)
+        .filter(match => isUpcoming(match, now))
         .sort((a, b) => (a.startTime || Infinity) - (b.startTime || Infinity)),
-    [filtered],
+    [filtered, now],
   )
 
   // Restore scroll / focus after list is painted (back from match detail)

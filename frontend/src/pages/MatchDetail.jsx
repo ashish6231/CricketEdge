@@ -1,14 +1,13 @@
 import TeamCard from '../components/SelectionVolumeCard'
-import { processTeamData } from '../utils/selectionVolume'
+import { processTeamData, getPreMatchTradeActivity, getLiveProviderTotals, getFrozenPreMatchProviderTotals, canCapturePreMatchProviderTotals, getMarketBetActivity } from '../utils/selectionVolume'
 import { TossSnapshotDetails } from './TossDetail'
 
-import { useEffect, useState, useContext, useMemo, useRef } from 'react'
+import { useEffect, useState, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, BarChart3, BookOpen, ChevronDown, ChevronUp, Coins, Radio, Trophy, Sparkles, Shield, ExternalLink, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, BarChart3, BookOpen, Coins, Radio, Sparkles, AlertTriangle, Trophy, ChevronDown, LockKeyhole } from 'lucide-react'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
-import { predictMatchWinner, predictSmartMarketWinner } from '../utils/matchWinnerPredictor'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
 import { getBookiePl, splitMatchOutcomes, finiteNumber, timestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
@@ -18,6 +17,7 @@ import { RiskBadge } from '../components/PredictionMeta'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
 import { getCricketMatchBundle } from '../api'
 import { isCompleteMatchBundle } from '../utils/matchBundle'
+import { getMatchStartTimestamp, isMatchLiveByStart } from '../utils/matchTiming'
 
 const fmt = (n) => {
   if (n === null || n === undefined) return '—'
@@ -31,11 +31,6 @@ const fmtRs = (n) => {
 }
 
 const pnlCls = (n) => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
-
-const fmtVol = (n) => {
-  if (!n) return '0.00'
-  return formatVolStr(n)
-}
 
 const formatVolStr = (val) => {
   if (val === null || val === undefined) return '—'
@@ -54,6 +49,13 @@ const formatOdds = (val) => {
   return Number(val).toFixed(2)
 }
 
+const formatTotalBets = (val) => {
+  const number = finiteNumber(val)
+  if (number == null) return '—'
+  if (Math.abs(number) >= 1000) return formatVolStr(number)
+  return number.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+}
+
 /** Match scheduled start — not live clock / serverTime */
 const formatMatchSchedule = (ts) => {
   if (ts == null || ts === '') return null
@@ -70,13 +72,6 @@ const formatMatchSchedule = (ts) => {
   const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
   return { date, time, label: `${date} • ${time}` }
 }
-
-const getPredictionVisuals = pred => pred ? {
-  gradient: '#eff6ff', border: '#bfdbfe', shadow: 'none',
-  textColor: 'text-primary', badgeBg: 'bg-primary text-white',
-  tagText: 'LEAGUE ALGORITHM', pill: 'Rule based', desc: pred.reason,
-  meterPct: pred.confidence?.calibrated ? finiteNumber(pred.confidence.pct) : null,
-} : null
 
 const findMarketRunner = (marketSnapshot, teamName) => (marketSnapshot?.runners || []).find(runner =>
   teamEq(runner?.runnerName || runner?.name || runner?.team, teamName)
@@ -149,8 +144,7 @@ export default function MatchDetail({ sport }) {
   const [fetchError, setFetchError] = useState(null)
   const [requiresLogin, setRequiresLogin] = useState(() => authReady && !isLoggedIn)
   const [requiresPro, setRequiresPro] = useState(false)
-  const [lastUpdated, setLastUpdated] = useState(null)
-  const [showAdvancedGraph, setShowAdvancedGraph] = useState(false)
+  const [, setLastUpdated] = useState(null)
   const [crexData, setCrexData] = useState(seedCrex)
   const crexDataRef = useRef(seedCrex)
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem(`tab_${matchId}`) || 'simple')
@@ -160,7 +154,7 @@ export default function MatchDetail({ sport }) {
   }
   const [timeFilter, setTimeFilter] = useState('all')
   const [marketType, setMarketType] = useState('match_odds')
-  const [showMarketMenu, setShowMarketMenu] = useState(false)
+  const [metricsPeriod, setMetricsPeriod] = useState('pre')
   const [tossSnapshot, setTossSnapshot] = useState(prefetched?.toss || null)
   const [lockedStartPred, setLockedStartPred] = useState(() => {
     try {
@@ -170,11 +164,27 @@ export default function MatchDetail({ sport }) {
       return null
     }
   })
-  const [showTipperPick, setShowTipperPick] = useState(false)
+  const [frozenPreMatchProviderTotals, setFrozenPreMatchProviderTotals] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`pre_match_provider_totals_v2_${matchId}`)
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
+  const [frozenPreMatchFields, setFrozenPreMatchFields] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem(`pre_match_fields_v1_${matchId}`)
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
   const [sessionTrades, setSessionTrades] = useState([])
   const [sessionOdds, setSessionOdds] = useState([])
   const [sessionMarkets, setSessionMarkets] = useState([])
   const [activeSessions, setActiveSessions] = useState([])
+  const [timingNow, setTimingNow] = useState(() => Date.now())
 
   const isSessionMarket = marketType.startsWith('session_')
   const selectedSessionName = isSessionMarket ? marketType.replace('session_', '') : ''
@@ -316,10 +326,25 @@ export default function MatchDetail({ sport }) {
     return predictMatchStart(snapshot)
   }, [snapshot])
 
+  const effectiveInPlay = isMatchLiveByStart(snapshot, timingNow)
+
+  useEffect(() => {
+    const start = getMatchStartTimestamp({
+      startTime: snapshot?.startTime,
+      openDate: snapshot?.openDate,
+      marketStartTime: snapshot?.marketStartTime,
+    })
+    if (start == null) return
+    const delay = start - Date.now()
+    if (delay <= 0) return
+    const timer = setTimeout(() => setTimingNow(Date.now()), Math.min(delay + 25, 2_147_483_647))
+    return () => clearTimeout(timer)
+  }, [snapshot?.startTime, snapshot?.openDate, snapshot?.marketStartTime, timingNow])
+
   useEffect(() => {
     if (liveStartPred) {
       setLockedStartPred((prev) => {
-        const next = lockMatchStartPrediction(liveStartPred, prev, { inPlay: snapshot?.inPlay })
+        const next = lockMatchStartPrediction(liveStartPred, prev, { inPlay: effectiveInPlay })
         if (next && matchId) {
           try {
             sessionStorage.setItem(`match_start_${PREDICTOR_VERSION}_${matchId}`, JSON.stringify(next))
@@ -328,7 +353,65 @@ export default function MatchDetail({ sport }) {
         return next
       })
     }
-  }, [liveStartPred, snapshot?.inPlay, matchId])
+  }, [liveStartPred, effectiveInPlay, matchId])
+
+  useEffect(() => {
+    if (!snapshot || !matchId) return
+    const storageKey = `pre_match_provider_totals_v2_${matchId}`
+    let stored = null
+    try {
+      const raw = sessionStorage.getItem(storageKey)
+      stored = raw ? JSON.parse(raw) : null
+    } catch { }
+
+    if (canCapturePreMatchProviderTotals(snapshot)) {
+      const current = getLiveProviderTotals(snapshot)
+      if (!current) {
+        setFrozenPreMatchProviderTotals(getFrozenPreMatchProviderTotals(snapshot, stored))
+        return
+      }
+      setFrozenPreMatchProviderTotals(current)
+      try {
+        sessionStorage.setItem(storageKey, JSON.stringify(current))
+      } catch { }
+      return
+    }
+
+    // Once scheduled start/live status is reached, only a previously captured
+    // value or the provider's explicit frozen pre-match fields may be shown.
+    setFrozenPreMatchProviderTotals(getFrozenPreMatchProviderTotals(snapshot, stored))
+  }, [snapshot, matchId])
+
+  useEffect(() => {
+    if (!snapshot || !matchId) return
+    const storageKey = `pre_match_fields_v1_${matchId}`
+    let stored = null
+    try {
+      const raw = sessionStorage.getItem(storageKey)
+      stored = raw ? JSON.parse(raw) : null
+    } catch { }
+
+    if (!canCapturePreMatchProviderTotals(snapshot)) {
+      setFrozenPreMatchFields(stored)
+      return
+    }
+
+    const current = {
+      pnl: { ...(snapshot.preMatchPnl || {}) },
+      bets: { ...(snapshot.preMatchTotalBets || {}) },
+      volume: {
+        team1: { ...(snapshot.preMatchVolume?.team1 || {}) },
+        team2: { ...(snapshot.preMatchVolume?.team2 || {}) },
+      },
+    }
+    const hasValues = [current.pnl, current.bets, current.volume.team1, current.volume.team2]
+      .some(group => Object.keys(group).length > 0)
+    if (!hasValues) return
+    setFrozenPreMatchFields(current)
+    try {
+      sessionStorage.setItem(storageKey, JSON.stringify(current))
+    } catch { }
+  }, [snapshot, matchId])
 
   const hasTossData = useMemo(() => {
     if (sport !== 'cricket' || !tossSnapshot || tossSnapshot.error) return false
@@ -345,12 +428,6 @@ export default function MatchDetail({ sport }) {
     return Boolean(mTotal > 0 || hasTrades || hasOdds || hasPnl || hasSynthetic || hasSimplePl || hasTeamPl)
   }, [sport, tossSnapshot])
 
-  const hasSessionData = useMemo(() => {
-    if (sport !== 'cricket') return false
-    const hasOdds = Array.isArray(sessionOdds) && sessionOdds.length > 0
-    const hasTrades = Array.isArray(sessionTrades) && sessionTrades.length > 0
-    return hasOdds || hasTrades
-  }, [sport, sessionOdds, sessionTrades])
 
   useEffect(() => {
     if (authReady && !isLoggedIn) setRequiresLogin(true)
@@ -454,12 +531,11 @@ export default function MatchDetail({ sport }) {
   const cachedStart =
     location.state?.startTime ?? location.state?.matchData?.startTime ??
     (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`match_start_${matchId}`) : null)
-  const matchSchedule = formatMatchSchedule(
-    snapshot.startTime ?? snapshot.openDate ?? snapshot.marketStartTime ?? cachedStart
-  )
+  const matchStartTime = snapshot.startTime ?? snapshot.openDate ?? snapshot.marketStartTime ?? cachedStart
+  const matchSchedule = formatMatchSchedule(matchStartTime)
+  const preMatchActivity = getPreMatchTradeActivity(snapshot, { startTime: matchStartTime })
   const { t1, t2, drawName } = splitMatchOutcomes(snapshot.teamNames)
   const hasDraw = !!drawName
-  const dm = snapshot.deepMetrics || {}
   const t1Trades = (snapshot.teams?.[t1] || {}).trades || []
   const t2Trades = (snapshot.teams?.[t2] || {}).trades || []
   const drawTrades = hasDraw ? ((snapshot.teams?.[drawName] || {}).trades || []) : []
@@ -496,10 +572,10 @@ export default function MatchDetail({ sport }) {
   const isPickT1 = pickName ? teamEq(pickName, t1) : false
   const pickBackOdds = isPickT1 ? t1Odds?.back : t2Odds?.back
   const oppBackOdds = isPickT1 ? t2Odds?.back : t1Odds?.back
-  const exitAdvice = (matchStartPred && snapshot?.inPlay && pickName)
+  const exitAdvice = (matchStartPred && effectiveInPlay && pickName)
     ? getMatchStartExitAdvice({
       lockedPick: matchStartPred,
-      inPlay: snapshot.inPlay,
+      inPlay: effectiveInPlay,
       pickBackOdds: typeof pickBackOdds === 'number' ? pickBackOdds : parseFloat(pickBackOdds),
       opponentBackOdds: typeof oppBackOdds === 'number' ? oppBackOdds : parseFloat(oppBackOdds),
     })
@@ -512,14 +588,13 @@ export default function MatchDetail({ sport }) {
   const t2ValidTrades = validMarketTrades(t2Trades)
   const drawValidTrades = hasDraw ? validMarketTrades(drawTrades) : []
 
-  // First bar is the actual number of matched trade rows, not stake money.
-  const marketBetCount1 = t1ValidTrades.length
-  const marketBetCount2 = t2ValidTrades.length
-  const marketBetCountDraw = drawValidTrades.length
-  const marketBetCountTotal = marketBetCount1 + marketBetCount2 + marketBetCountDraw
-  const marketBetPct1 = marketBetCountTotal > 0 ? (marketBetCount1 / marketBetCountTotal) * 100 : 50
-  const marketBetPct2 = marketBetCountTotal > 0 ? (marketBetCount2 / marketBetCountTotal) * 100 : 50
-  const marketBetPctDraw = marketBetCountTotal > 0 ? (marketBetCountDraw / marketBetCountTotal) * 100 : 0
+  // The provider exposes two different metrics: this total-bet/activity ledger,
+  // and an exposure-based provider total shown separately in Period data.
+  const marketBetActivity = getMarketBetActivity(snapshot, {
+    live: effectiveInPlay,
+    frozenPreMatchBets: frozenPreMatchFields?.bets,
+  })
+  const [marketBets1, marketBets2] = marketBetActivity.values
 
   // Second bar is money matched per selection. The declared metric is a fallback
   // for older snapshots which do not contain the complete trade array.
@@ -532,16 +607,6 @@ export default function MatchDetail({ sport }) {
   const marketMoneyPct1 = marketMoneyTotal > 0 ? (marketMoney1 / marketMoneyTotal) * 100 : 50
   const marketMoneyPct2 = marketMoneyTotal > 0 ? (marketMoney2 / marketMoneyTotal) * 100 : 50
   const marketMoneyPctDraw = marketMoneyTotal > 0 ? (marketMoneyDraw / marketMoneyTotal) * 100 : 0
-
-  const comparisonColors = (values, preferHigher) => {
-    const allEqual = values.every(value => value === values[0])
-    if (allEqual) return values.map(() => '#64748b')
-    const preferred = preferHigher ? Math.max(...values) : Math.min(...values)
-    return values.map(value => value === preferred ? '#16a34a' : '#dc2626')
-  }
-  const [betColor1, betColor2] = comparisonColors([marketBetCount1, marketBetCount2], false)
-  const [moneyColor1, moneyColor2] = comparisonColors([marketMoney1, marketMoney2], true)
-  const drawColor = '#d97706'
 
   // ━━━━━━━━━━ BACK/LAY RATIO BASED PREDICTION ━━━━━━━━━━
   const aBack = am1.back || 0
@@ -563,10 +628,18 @@ export default function MatchDetail({ sport }) {
   // Original provider period metrics shown on the first version of this page.
   const ip = snapshot.inPlayPnl || {}
   const ib = snapshot.inPlayTotalBets || {}
-  const pp = snapshot.preMatchPnl || {}
-  const pb = snapshot.preMatchTotalBets || {}
+  const currentPreMatchFields = {
+    pnl: snapshot.preMatchPnl || {},
+    bets: snapshot.preMatchTotalBets || {},
+    volume: snapshot.preMatchVolume || {},
+  }
+  const preMatchFields = canCapturePreMatchProviderTotals(snapshot, timingNow)
+    ? currentPreMatchFields
+    : (frozenPreMatchFields || currentPreMatchFields)
+  const pp = preMatchFields.pnl || {}
+  const pb = preMatchFields.bets || {}
   const iv = snapshot.inPlayVolume || {}
-  const pv = snapshot.preMatchVolume || {}
+  const pv = preMatchFields.volume || {}
   const tmp = snapshot.threeMinPnl || {}
   const tmb = snapshot.threeMinTotalBets || {}
   const tmv = snapshot.threeMinVolume || {}
@@ -626,8 +699,60 @@ export default function MatchDetail({ sport }) {
   const marketVol = (t1GraphData?.totalBet || 0) + (t2GraphData?.totalBet || 0)
 
 
+  const marketSelections = [
+    { name: t1, odds: t1Odds, pl: pl1, money: marketMoney1, moneyPct: marketMoneyPct1, bets: marketBets1 },
+    { name: t2, odds: t2Odds, pl: pl2, money: marketMoney2, moneyPct: marketMoneyPct2, bets: marketBets2 },
+    ...(hasDraw ? [{ name: drawName, odds: drawOdds, pl: plDraw, money: marketMoneyDraw, moneyPct: marketMoneyPctDraw, bets: null }] : []),
+  ]
+  const periods = [
+    { key: 'pre', label: 'Pre-match', pnl: pp, bets: pb, vol: pv },
+    { key: 'live', label: 'In-play', pnl: ip, bets: ib, vol: iv },
+    { key: '3min', label: 'Last 3 min', pnl: finalTmp, bets: finalTmb, vol: finalTmv },
+  ]
+  const period = periods.find(item => item.key === metricsPeriod) || periods[0]
+  const liveProviderTotals = getLiveProviderTotals(snapshot) || getFrozenPreMatchProviderTotals(snapshot) || [null, null]
+  const preMatchProviderTotals = frozenPreMatchProviderTotals || getFrozenPreMatchProviderTotals(snapshot) || [null, null]
+  const flowRows = [
+    { label: 'Back stake', values: [am1.back, am2.back], format: 'currency', tone: 'back' },
+    { label: 'Lay stake', values: [am1.lay, am2.lay], format: 'currency', tone: 'lay' },
+    { label: 'Back / lay ratio', values: [aRatio, bRatio], format: 'ratio' },
+    { label: 'Back / lay share', values: [aTotalBL > 0 ? aBackPct : null, bTotalBL > 0 ? bBackPct : null], format: 'split' },
+    { label: 'Net exposure', values: [exp1.netExposure, exp2.netExposure], format: 'signed' },
+    { label: 'Back risk', values: [exp1.backExposure, exp2.backExposure], format: 'currency', tone: 'back' },
+    { label: 'Lay risk', values: [exp1.layExposure, exp2.layExposure], format: 'currency', tone: 'lay' },
+    ...(liveProviderTotals.some(value => value != null) ? [{ label: 'Provider total', values: liveProviderTotals, format: 'currency', emphasis: true }] : []),
+    ...(ns.teamA && sent.teamA ? [{ label: 'Market sentiment', values: [ns.percentageA, ns.percentageB], format: 'percent' }] : []),
+  ]
+  const periodRows = [
+    { label: 'Bookie P/L', values: [period.pnl?.team1, period.pnl?.team2], format: 'signed' },
+    { label: 'Reported activity', values: [period.bets?.team1, period.bets?.team2], format: 'number' },
+    ...(metricsPeriod === 'pre' && preMatchProviderTotals.some(value => value != null) ? [{ label: 'Provider total', values: preMatchProviderTotals, format: 'currency', emphasis: true }] : []),
+    ...(metricsPeriod === 'pre' ? [{
+      label: 'Recorded trades',
+      values: [t1, t2].map(name => preMatchActivity.available ? {
+        count: preMatchActivity.counts[name],
+        pct: preMatchActivity.total > 0 ? preMatchActivity.counts[name] / preMatchActivity.total * 100 : null,
+      } : null),
+      format: 'activity',
+    }] : []),
+    { label: 'Back volume', values: [period.vol?.team1?.back, period.vol?.team2?.back], format: 'currency', tone: 'back' },
+    { label: 'Lay volume', values: [period.vol?.team1?.lay, period.vol?.team2?.lay], format: 'currency', tone: 'lay' },
+  ]
+  const insightRows = metricsPeriod === 'exposure' ? flowRows : periodRows
+  const evidence = matchStartPred?.marketEvidence
+  const percentage = value => Number.isFinite(value) ? `${value.toFixed(0)}%` : '—'
+  const formatInsightValue = (row, value) => {
+    if (row.format === 'activity') return value == null ? '—' : <>{value.count.toLocaleString('en-IN')} <small>{value.pct == null ? '(—)' : `(${percentage(value.pct)})`}</small></>
+    if (row.format === 'signed') return fmtRs(value)
+    if (row.format === 'currency') return value == null ? '—' : `€${fmt(value)}`
+    if (row.format === 'ratio') return value == null ? '—' : `${value.toFixed(2)}×`
+    if (row.format === 'split') return value == null ? '—' : `${value.toFixed(0)}% / ${(100 - value).toFixed(0)}%`
+    if (row.format === 'percent') return value == null ? '—' : `${Number(value).toFixed(1)}%`
+    return fmt(value)
+  }
+
   return (
-    <div className="detail-page detail-page-compact w-full fade-in stagger space-y-4">
+    <div className="detail-page match-workbench w-full">
 
       {/* Header with Tabs */}
       <div className="match-detail-toolbar sticky top-0 z-30">
@@ -672,8 +797,13 @@ export default function MatchDetail({ sport }) {
         </div>
       </div>
 
+      {activeTab !== 'toss' && <header className="match-page-heading">
+        <div><span className="match-eyebrow">{snapshot.competitionName || 'Match market'}</span><h1>{t1} <span>vs</span> {t2}</h1></div>
+        <div className="match-schedule">{effectiveInPlay && <span className="match-live-tag"><span />Live</span>}{matchSchedule && <span>{matchSchedule.date} · {matchSchedule.time}</span>}</div>
+      </header>}
+
       {/* ── Live Scorecard Hero Banner — cricket only ── */}
-      {sport === 'cricket' && activeTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} matchInPlay={snapshot?.inPlay || false} />}
+      {sport === 'cricket' && activeTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} matchInPlay={effectiveInPlay} />}
 
       {activeTab === 'toss' ? (
         <div className="space-y-4">
@@ -702,527 +832,75 @@ export default function MatchDetail({ sport }) {
       ) : activeTab === 'crex' && sport === 'cricket' && crexData ? (
         <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
       ) : (
-        <>
-          {/* ━━━━━━━━━━ 🤖 QUANT AI PREDICTION ━━━━━━━━━━ */}
-              {matchStartPred && matchStartPred.winnerName && (() => {
-                const pv = getPredictionVisuals(matchStartPred)
-                if (!pv) return null
-                const avoidEntry = matchStartPred.risk?.avoidEntry || matchStartPred.risk?.tier === 'high'
-                return (
-                  <>
-                  <div
-                    className="league-prediction-card"
-                    style={{
-                      background: pv.gradient,
-                      borderColor: pv.border,
-                      boxShadow: pv.shadow,
-                    }}
-                  >
-                    <div className="league-prediction-top">
-                      <div className="league-prediction-tag">
-                        <Sparkles size={12} className={pv.textColor} />
-                        <span className={pv.textColor}>
-                          {pv.tagText}
-                        </span>
-                      </div>
-                      <div className="league-prediction-badges">
-                        <span className={`league-rule-badge ${pv.badgeBg}`}>
-                          {pv.pill}
-                        </span>
-                        <RiskBadge risk={matchStartPred.risk} compact />
-                      </div>
-                    </div>
+        <div className="match-v2-shell">
+          {exitAdvice && <div className={`match-exit-advice is-${exitAdvice.level}`} role="alert"><AlertTriangle size={16} /><div><strong>{exitAdvice.title}</strong><p>{exitAdvice.message}</p></div></div>}
+          {matchStartPred?.winnerName && <section className="match-v2-prediction" aria-label="Match winner prediction">
+              <div className="match-v2-prediction-title"><span><Sparkles size={14} />League prediction</span><div><span className="match-rule-tag">Rule based</span><RiskBadge risk={matchStartPred.risk} compact /></div></div>
+              <div className="match-v2-pick"><span className="match-v2-pick-icon"><Trophy size={18} /></span><div><small>{matchStartPred.risk?.avoidEntry || matchStartPred.risk?.tier === 'high' ? 'Market lean · no bet' : 'Predicted winner'}</small><h2>{matchStartPred.winnerName}</h2></div></div>
+              <div className="match-v2-prediction-copy">
+                {matchStartPred.confidence?.calibrated && <strong>{matchStartPred.confidence.pct}% calibrated confidence</strong>}
+                {(matchStartPred.risk?.avoidEntry || matchStartPred.risk?.tier === 'high') && <span className="match-risk-notice" role="alert"><AlertTriangle size={13} />High risk: entry avoid karein</span>}
+                <p>{matchStartPred.reason}</p>
+                <div><span><LockKeyhole size={10} />Start pick locked</span>{!matchStartPred.confidence?.calibrated && <span>Accuracy unvalidated</span>}</div>
+              </div>
+              {evidence && <details className="match-v2-evidence"><summary><span>Market evidence</span><span>{evidence.agreeingSignals}/{evidence.signalCount} signals</span></summary>
+                <table className="match-data-table" aria-label="Prediction market evidence"><thead><tr><th scope="col">Signal</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead><tbody>
+                  <tr><th scope="row">Corrected support</th><td>{percentage(evidence.support?.pct1)}</td><td>{percentage(evidence.support?.pct2)}</td></tr>
+                  <tr><th scope="row">Pre-match activity</th><td>{percentage(evidence.activity?.pct1)}</td><td>{percentage(evidence.activity?.pct2)}</td></tr>
+                  <tr><th scope="row">Bookie liability</th><td>{evidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</td><td>{evidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</td></tr>
+                </tbody></table>
+              </details>}
+            </section>}
 
-                    <div className="league-prediction-main">
-                      <div className="min-w-0">
-                        <div className="league-prediction-label">
-                          <Trophy size={11} />
-                          <span>{avoidEntry ? 'MARKET LEAN · NO BET' : 'PREDICTED WINNER'}</span>
-                        </div>
-                        <h3>{matchStartPred.winnerName}</h3>
-                      </div>
-                      {matchStartPred.confidence.calibrated && (
-                        <div className="league-confidence" aria-label={`${pv.meterPct}% confidence`}>
-                          <strong>{pv.meterPct}%</strong>
-                          <span>confidence</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {avoidEntry && (
-                      <div className="league-risk-line" role="alert">
-                        <AlertTriangle size={13} />
-                        <span><strong>High risk:</strong> entry avoid karein</span>
-                      </div>
-                    )}
-
-                    <div className="league-prediction-reason">
-                      <Shield size={12} className={pv.textColor} />
-                      <p>{pv.desc}</p>
-                    </div>
-
-                    <div className="league-prediction-meta">
-                      <span>{matchStartPred.algorithmLeague || 'Unregistered league'}</span>
-                      <span>Start pick locked</span>
-                      {!matchStartPred.confidence.calibrated && <span>{matchStartPred.confidence.label}</span>}
-                    </div>
-
-                    {matchStartPred.marketEvidence && (
-                      <details className="league-evidence">
-                        <summary>
-                          <span>Market evidence</span>
-                          <span>{matchStartPred.marketEvidence.agreeingSignals}/{matchStartPred.marketEvidence.signalCount} signals</span>
-                        </summary>
-                        <div className="league-evidence-grid">
-                          <div className="league-evidence-head">
-                            <span>Signal</span>
-                            <span>{t1}</span>
-                            <span>{t2}</span>
-                          </div>
-                          <div>
-                            <span>Corrected support</span>
-                            <span>{matchStartPred.marketEvidence.support.pct1.toFixed(0)}%</span>
-                            <span>{matchStartPred.marketEvidence.support.pct2.toFixed(0)}%</span>
-                          </div>
-                          <div>
-                            <span>Pre-match activity</span>
-                            <span>{matchStartPred.marketEvidence.activity.pct1.toFixed(0)}%</span>
-                            <span>{matchStartPred.marketEvidence.activity.pct2.toFixed(0)}%</span>
-                          </div>
-                          <div>
-                            <span>Bookie liability</span>
-                            <span>{matchStartPred.marketEvidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</span>
-                            <span>{matchStartPred.marketEvidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</span>
-                          </div>
-                        </div>
-                      </details>
-                    )}
-                  </div>
-                  {exitAdvice && (
-                    <div className={`league-exit-advice ${exitAdvice.level === 'danger' ? 'is-danger' : 'is-warning'}`} role="alert">
-                      <AlertTriangle size={14} />
-                      <div>
-                        <strong>{exitAdvice.title}</strong>
-                        <p>{exitAdvice.message}</p>
-                      </div>
-                    </div>
-                  )}
-                  </>
-                )
-              })()}
-
-
-              {/* ━━━━━━━━━━ 1. MATCH HEADER + ODDS + P/L ━━━━━━━━━━ */}
-              <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">
-                {/* Date / Title */}
-                <div className="px-3.5 sm:px-4 py-2.5 border-b border-[#1b2234] bg-[#0f1422]/60">
-                  {matchSchedule && (
-                    <div className="text-[10px] font-semibold text-slate-400 mb-1 flex items-center gap-1.5">
-                      <span>📅 {matchSchedule.date}</span>
-                      <span>•</span>
-                      <span>⏰ {matchSchedule.time}</span>
-                    </div>
-                  )}
-                  <div className="flex items-center justify-between gap-3">
-                    <h1 className="text-sm sm:text-base font-bold text-white tracking-tight">{t1} vs {t2}</h1>
-                    {snapshot.inPlay && (
-                      <span className="text-rose-400 bg-rose-500/10 border border-rose-500/20 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1 shrink-0">
-                        <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-rose-500" /> LIVE
-                      </span>
-                    )}
-                  </div>
-                  {snapshot.competitionName && <div className="text-[11px] font-medium text-slate-400 mt-0.5">{snapshot.competitionName}</div>}
-
-                  {(marketBetCountTotal > 0 || marketMoneyTotal > 0) && (() => {
-                    return (
-                      <div className="mt-2.5 space-y-2 pt-2 border-t border-[#1b2234]">
-                        {marketBetCountTotal > 0 && (
-                          <div>
-                            <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                              <span>Number of Bets</span>
-                              <span className="text-slate-500 font-mono">{marketBetCountTotal.toLocaleString('en-IN')} bets</span>
-                            </div>
-                            <div className="flex h-1.5 rounded-full overflow-hidden bg-[#07090e] border border-[#1b2234] mb-1">
-                              <div className="transition-all duration-500" style={{ width: `${marketBetPct1}%`, background: betColor1 }} />
-                              {hasDraw && <div className="transition-all duration-500" style={{ width: `${marketBetPctDraw}%`, background: drawColor }} />}
-                              <div className="transition-all duration-500" style={{ width: `${marketBetPct2}%`, background: betColor2 }} />
-                            </div>
-                            <div className="flex justify-between gap-2 text-[10px] font-bold font-mono">
-                              <span className="truncate" style={{ color: betColor1 }}>
-                                {t1} {marketBetPct1.toFixed(0)}%
-                                <span className="text-slate-500 font-normal ml-1">· {marketBetCount1.toLocaleString('en-IN')} bets</span>
-                              </span>
-                              {hasDraw && (
-                                <span className="truncate" style={{ color: drawColor }}>
-                                  {drawName} {marketBetPctDraw.toFixed(0)}%
-                                  <span className="text-slate-500 font-normal ml-1">· {marketBetCountDraw.toLocaleString('en-IN')} bets</span>
-                                </span>
-                              )}
-                              <span className="truncate text-right" style={{ color: betColor2 }}>
-                                {t2} {marketBetPct2.toFixed(0)}%
-                                <span className="text-slate-500 font-normal ml-1">· {marketBetCount2.toLocaleString('en-IN')} bets</span>
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                        {marketMoneyTotal > 0 && (
-                            <div>
-                              <div className="flex justify-between items-center text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                                <span>Total Money</span>
-                                <span className="text-slate-500 font-mono">€{fmt(marketMoneyTotal)} matched</span>
-                              </div>
-                              <div className="flex h-1.5 rounded-full overflow-hidden bg-[#07090e] border border-[#1b2234] mb-1">
-                                <div className="transition-all duration-500" style={{ width: `${marketMoneyPct1}%`, background: moneyColor1 }} />
-                                {hasDraw && <div className="transition-all duration-500" style={{ width: `${marketMoneyPctDraw}%`, background: drawColor }} />}
-                                <div className="transition-all duration-500" style={{ width: `${marketMoneyPct2}%`, background: moneyColor2 }} />
-                              </div>
-                              <div className="flex justify-between gap-2 text-[10px] font-bold font-mono">
-                                <span className="truncate" style={{ color: moneyColor1 }}>
-                                  {t1} {marketMoneyPct1.toFixed(0)}%
-                                  <span className="text-slate-500 font-normal ml-1">· €{fmt(marketMoney1)}</span>
-                                </span>
-                                {hasDraw && (
-                                  <span className="truncate" style={{ color: drawColor }}>
-                                    {drawName} {marketMoneyPctDraw.toFixed(0)}%
-                                    <span className="text-slate-500 font-normal ml-1">· €{fmt(marketMoneyDraw)}</span>
-                                  </span>
-                                )}
-                                <span className="truncate text-right" style={{ color: moneyColor2 }}>
-                                  {t2} {marketMoneyPct2.toFixed(0)}%
-                                  <span className="text-slate-500 font-normal ml-1">· €{fmt(marketMoney2)}</span>
-                                </span>
-                              </div>
-                            </div>
-                        )}
-                      </div>
-                    )
-                  })()}
+          <section className="match-v2-card" aria-labelledby="match-market-heading">
+            <header className="match-v2-section-head"><div><h2 id="match-market-heading">Market overview</h2><p>Latest recorded odds and settlement</p></div><span><strong>€{fmt(marketMoneyTotal)}</strong> matched · {formatTotalBets(marketBetActivity.total)} total bets</span></header>
+            <div className={`match-market-cards${hasDraw ? ' has-three' : ''}`} aria-label="Market activity, odds and bookmaker profit">
+              {marketSelections.map((side, index) => <article className={`match-market-team team-${index}`} key={side.name}>
+                <header className="match-market-team-name"><span>{side.name.split(/\s+/).map(word=>word[0]).join('').slice(0,3)}</span><h3>{side.name}</h3></header>
+                <div className="match-market-team-odds" aria-label={`${side.name} best odds`}>
+                  <div><small>Back</small><strong>{formatOdds(side.odds?.back)}</strong></div>
+                  <div><small>Lay</small><strong>{formatOdds(side.odds?.lay)}</strong></div>
                 </div>
-
-                {/* Betfair-Style Odds — Back (Azure) & Lay (Coral Pink) */}
-                <div
-                  className={`grid divide-x divide-[#1b2234] ${hasDraw ? 'grid-cols-3' : 'grid-cols-2'}`}
-                  style={{ borderBottom: '1px solid #1b2234' }}
-                >
-                  {[
-                    { name: t1, odds: t1Odds },
-                    { name: t2, odds: t2Odds },
-                    ...(hasDraw ? [{ name: drawName, odds: drawOdds }] : []),
-                  ].map(({ name, odds }) => (
-                    <div key={name} className="px-2.5 sm:px-3 py-2 bg-[#080b14]/50">
-                      <div className="text-[11px] font-bold text-slate-200 truncate mb-1.5">{name}</div>
-                      <div className="flex gap-1.5">
-                        <div className="flex-1 rounded-lg py-1 px-1 text-center bg-[#0284c7]/10 border border-[#0284c7]/30 hover:bg-[#0284c7]/20 transition-all shadow-sm">
-                          <div className="text-[9px] font-bold text-sky-400 uppercase tracking-wider">Back</div>
-                          <div className="text-sm sm:text-base font-black font-mono text-sky-300">{odds?.back ?? '—'}</div>
-                        </div>
-                        <div className="flex-1 rounded-lg py-1 px-1 text-center bg-[#f43f5e]/10 border border-[#f43f5e]/30 hover:bg-[#f43f5e]/20 transition-all shadow-sm">
-                          <div className="text-[9px] font-bold text-rose-400 uppercase tracking-wider">Lay</div>
-                          <div className="text-sm sm:text-base font-black font-mono text-rose-300">{odds?.lay ?? '—'}</div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="match-market-team-stats">
+                  <div><small>Total bets</small><strong>{formatTotalBets(side.bets)}</strong></div>
+                  <div><small>Bookie P/L</small><strong className={pnlCls(side.pl)}>{fmtRs(side.pl)}</strong></div>
                 </div>
-
-                {/* Bookmaker P/L */}
-                {pl1 != null && pl2 != null && (
-                  <div className="p-3 sm:p-3.5 bg-[#080b14]">
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Bookmaker Profit & Loss</div>
-                    <div className={`grid gap-2 ${hasDraw ? 'grid-cols-3' : 'grid-cols-2'}`}>
-                      {[
-                        { name: t1, pl: pl1 },
-                        { name: t2, pl: pl2 },
-                        ...(hasDraw && plDraw != null ? [{ name: drawName, pl: plDraw }] : []),
-                      ].map(({ name, pl }) => {
-                        const isProf = pl >= 0
-                        return (
-                          <div
-                            key={name}
-                            className={`rounded-lg p-2.5 text-center border transition-all ${isProf
-                                ? 'bg-emerald-500/[0.07] border-emerald-500/30 shadow-sm'
-                                : 'bg-rose-500/[0.07] border-rose-500/30 shadow-sm'
-                              }`}
-                          >
-                            <div className="text-[11px] font-bold text-slate-300 mb-0.5 truncate">{name}</div>
-                            <div className={`text-sm sm:text-base font-black font-mono tracking-tight ${isProf ? 'text-emerald-400' : 'text-rose-400'}`}>
-                              {fmtRs(pl)}
-                            </div>
-                            <div className="mt-1">
-                              <span className={`text-[9px] font-bold px-1.5 py-0.2 rounded ${isProf ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
-                                }`}>
-                                {isProf ? 'BOOKIE PROFIT' : 'BOOKIE LOSS'}
-                              </span>
-                            </div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-          {/* ━━━━━━━━━━ B/L RATIO ━━━━━━━━━━ */}
-          <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">
-            <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center justify-between">
-              <span className="text-xs sm:text-sm font-extrabold text-white flex items-center gap-1.5">
-                <BarChart3 size={13} className="text-blue-400" />
-                <span>Back / Lay Order Ratio</span>
-              </span>
-              {lowerRatioTeam && (
-                <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
-                  Lower: {lowerRatioTeam}
-                </span>
-              )}
-            </div>
-            <div className="p-3 sm:p-3.5 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {[{ name: t1, ratio: aRatio, back: aBack, lay: aLay, backPct: aBackPct },
-              { name: t2, ratio: bRatio, back: bBack, lay: bLay, backPct: bBackPct }].map((side) => {
-                const isLower = lowerRatioTeam === side.name
-                return (
-                  <div
-                    key={side.name}
-                    className="rounded-lg p-2.5 border bg-[#080b14] transition-all"
-                    style={{
-                      borderColor: isLower ? 'rgba(37,99,235,0.45)' : '#1b2234',
-                    }}
-                  >
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <div className="text-xs font-bold text-white truncate">{side.name}</div>
-                      {isLower && (
-                        <span className="text-[8px] font-extrabold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-1.5 py-0.5 rounded shrink-0">LOWER</span>
-                      )}
-                    </div>
-                    <div className="text-lg sm:text-xl font-black font-mono tracking-tight text-white mb-0.5">
-                      {side.ratio != null ? `${side.ratio.toFixed(2)}x` : '—'}
-                    </div>
-                    <div className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Back / Lay Split</div>
-                    <div className="flex h-1.5 rounded-full overflow-hidden bg-[#07090e] border border-[#1b2234] mb-1">
-                      <div className="bg-sky-400 transition-all duration-500" style={{ width: `${side.backPct}%` }} />
-                      <div className="bg-rose-400 transition-all duration-500" style={{ width: `${100 - side.backPct}%` }} />
-                    </div>
-                    <div className="flex justify-between text-[10px] font-bold font-mono">
-                      <span className="text-sky-400">Back {side.backPct.toFixed(0)}%</span>
-                      <span className="text-rose-400">Lay {(100 - side.backPct).toFixed(0)}%</span>
-                    </div>
-                    <div className="flex justify-between text-[10px] font-mono text-slate-400 mt-2 pt-1.5 border-t border-[#1b2234]">
-                      <span>€{fmt(side.back)}</span>
-                      <span>€{fmt(side.lay)}</span>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* ━━━━━━━━━━ 8. BOOKMAKER EXPOSURE ━━━━━━━━━━ */}
-          <div className="rounded-xl p-3 sm:p-3.5 bg-[#0c101d] border border-[#1e2538] shadow-xl">
-            <div className="text-xs sm:text-sm font-extrabold text-white mb-2.5 flex items-center gap-1.5">
-              <Shield size={13} className="text-emerald-400" />
-              <span>Bookmaker Market Exposure</span>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <div className="rounded-lg p-2.5 border border-[#1b2234] bg-[#080b14]">
-                <div className="text-xs font-bold mb-1.5 text-white truncate">{exp1.teamName || t1}</div>
-                <div className="text-[11px] space-y-1 font-mono">
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Net Exp</span><span className={`font-bold ${pnlCls(exp1.netExposure)}`}>{fmtRs(exp1.netExposure)}</span></div>
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Back</span><span className="text-sky-400 font-bold">€{fmt(exp1.backExposure)}</span></div>
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Lay</span><span className="text-rose-400 font-bold">€{fmt(exp1.layExposure)}</span></div>
+                <div className="match-market-team-matched">
+                  <div><small>Total matched</small><strong>€{fmt(side.money)}</strong><span>of €{fmt(marketMoneyTotal)}</span></div>
+                  <b>{marketMoneyTotal > 0 ? percentage(side.moneyPct) : '—'}</b>
                 </div>
-              </div>
-              <div className="rounded-lg p-2.5 border border-[#1b2234] bg-[#080b14]">
-                <div className="text-xs font-bold mb-1.5 text-white truncate">{exp2.teamName || t2}</div>
-                <div className="text-[11px] space-y-1 font-mono">
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Net Exp</span><span className={`font-bold ${pnlCls(exp2.netExposure)}`}>{fmtRs(exp2.netExposure)}</span></div>
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Back</span><span className="text-sky-400 font-bold">€{fmt(exp2.backExposure)}</span></div>
-                  <div className="flex justify-between items-center"><span className="text-slate-400">Lay</span><span className="text-rose-400 font-bold">€{fmt(exp2.layExposure)}</span></div>
-                </div>
-              </div>
+                <div className="match-market-team-bar" aria-label={`${side.name} ${marketMoneyTotal > 0 ? percentage(side.moneyPct) : 'matched share unavailable'}`}><span style={{ width: `${marketMoneyTotal > 0 ? Math.max(0, Math.min(100, side.moneyPct)) : 0}%` }} /></div>
+              </article>)}
             </div>
-          </div>
+          </section>
 
-          {/* ━━━━━━━━━━ 4. DEEP BETTING METRICS ━━━━━━━━━━ */}
-          {(dm.raw || dm.totals) && (
-            <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl">
-              <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center gap-1.5">
-                <BarChart3 size={13} className="text-sky-400" />
-                <span className="text-xs sm:text-sm font-extrabold text-white">Deep Betting Quant Metrics</span>
-              </div>
-              <div className="p-3 sm:p-3.5 space-y-3">
-                {dm.raw && Object.keys(dm.raw).length > 0 && (
-                  <div>
-                    <div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">Raw Accumulated Values</div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                      {[{ team: t1, back: am1.back, lay: am1.lay }, { team: t2, back: am2.back, lay: am2.lay }].map(({ team, back, lay }) => (
-                        <div key={team} className="rounded-lg p-2.5 border border-[#1b2234] bg-[#080b14]">
-                          <div className="text-xs font-bold text-white mb-1.5 truncate">{team}</div>
-                          <div className="text-[11px] space-y-1 font-mono">
-                            <div className="flex justify-between"><span className="text-slate-400">Back stake</span><span className="font-bold text-sky-400">{back != null ? Number(back).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
-                            <div className="flex justify-between"><span className="text-slate-400">Lay Stake</span><span className="font-bold text-rose-400">{lay != null ? Number(lay).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</span></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {dm.totals && Object.keys(dm.totals).length > 0 && (() => {
-                  const v1 = dm.totals.team1 ?? dm.totals.totalBetTeam1
-                  const v2 = dm.totals.team2 ?? dm.totals.totalBetTeam2
-                  return (
-                    <div>
-                      <div className="text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-wide">Provider reported total</div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        {[{ team: t1, val: v1 }, { team: t2, val: v2 }].map(({ team, val }) => {
-                          const isLower = (v1 != null && v2 != null) && (team === t1 ? v1 < v2 : v2 < v1)
-                          const isHigher = (v1 != null && v2 != null) && (team === t1 ? v1 > v2 : v2 > v1)
-                          return (
-                            <div key={team} className="rounded-lg p-2.5 border border-[#1b2234] bg-[#080b14]">
-                              <div className="text-xs font-bold text-white mb-1 truncate">{team}</div>
-                              <div className="flex items-center gap-1 font-mono">
-                                <div className="text-xs sm:text-sm font-bold text-white">{val != null ? Number(val).toLocaleString('en-IN', { maximumFractionDigits: 2 }) : '—'}</div>
-                                {isLower && <ChevronDown size={15} className="text-rose-400 shrink-0" />}
-                                {isHigher && <ChevronUp size={15} className="text-emerald-400 shrink-0" />}
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )
-                })()}
-              </div>
+          <section className="match-v2-card match-v2-insights">
+            <header className="match-v2-section-head"><div><h2>Period data</h2><p>{metricsPeriod === 'exposure' ? 'Recorded market totals' : metricsPeriod === 'pre' ? 'Values captured before match start' : 'Provider-reported period values'}</p></div></header>
+            <div className="match-v2-tabs" role="tablist" aria-label="Metrics period">{[...periods, { key: 'exposure', label: 'Exposure' }].map(item => <button key={item.key} type="button" role="tab" aria-selected={metricsPeriod === item.key} onClick={()=>setMetricsPeriod(item.key)}>{item.label}</button>)}</div>
+            <div className="match-v2-table" style={{ '--team-count': 2 }} role="table" aria-label={metricsPeriod === 'exposure' ? 'Market stakes ratios and exposure' : `${period.label} metrics`}>
+              <div className="match-v2-table-head" role="row"><span role="columnheader">Metric</span>{[t1, t2].map(name => <div role="columnheader" key={name}><span>{name.split(/\s+/).map(word=>word[0]).join('').slice(0,3)}</span><strong>{name}</strong></div>)}</div>
+              {insightRows.map(row => <div className={`match-v2-table-row${row.emphasis ? ' is-emphasis' : ''}`} role="row" key={row.label}>
+                <span role="rowheader">{row.label}</span>
+                {row.values.map((value,index) => <strong role="cell" key={index} className={row.format === 'signed' ? pnlCls(value) : row.tone ? `match-tone-${row.tone}` : ''}>{formatInsightValue(row, value)}</strong>)}
+              </div>)}
             </div>
-          )}
+            {metricsPeriod === 'exposure' && lowerRatioTeam && <p className="match-panel-note">Lower back/lay ratio: <strong>{lowerRatioTeam}</strong></p>}
+            {metricsPeriod === 'pre' && <p className="match-panel-note">{preMatchActivity.available ? <>Captured Back + Lay entries before scheduled start.{hasDraw && <> Draw: {preMatchActivity.counts[drawName].toLocaleString('en-IN')} ({preMatchActivity.total > 0 ? percentage(preMatchActivity.counts[drawName] / preMatchActivity.total * 100) : '—'}).</>}</> : `Recorded trades unavailable: ${preMatchActivity.reason}`}</p>}
+          </section>
 
-          {/* ━━━━━━━━━━ 9. NET SUPPORT & SENTIMENT ━━━━━━━━━━ */}
-          {ns.teamA && sent.teamA && (
-            <div className="rounded-xl p-3 sm:p-3.5 bg-[#0c101d] border border-[#1e2538] shadow-xl">
-              <div className="flex items-center justify-between gap-2 mb-2">
-                <span className="text-xs sm:text-sm font-extrabold text-white">Sentiment & Net Support</span>
-                {sent.strongerTeam && (
-                  <span className="text-[9px] font-bold text-slate-300 bg-[#080b14] px-2 py-0.5 rounded border border-[#1b2234]">
-                    Dominant: <b className="text-white ml-1">{sent.strongerTeam}</b>
-                  </span>
-                )}
+          <details className="match-v2-card match-depth-panel">
+            <summary className="match-depth-summary"><span><BarChart3 size={16} /><strong>Market depth &amp; trades</strong><small>€{formatVolStr(marketVol)} volume</small></span><ChevronDown size={16} /></summary>
+            <div className="match-depth-content">
+            <header className="match-depth-toolbar"><div><h2>Recorded trades</h2><p>Filter price history and market depth</p></div>
+              <div className="match-depth-controls"><div className="match-period-tabs" aria-label="Trade history range">{[['all','All'],['3h','3H'],['1h','1H']].map(([key,label])=><button key={key} type="button" aria-pressed={timeFilter===key} onClick={()=>setTimeFilter(key)}>{label}</button>)}</div>
+                {activeSessions?.length > 0 && <select aria-label="Recorded market" value={marketType} onChange={event=>setMarketType(event.target.value)}><option value="match_odds">Match odds</option>{activeSessions.map(session=><option key={session} value={`session_${session}`}>{session}</option>)}</select>}
               </div>
-              <div className="space-y-2">
-                {[t1, t2].map((team, i) => {
-                  const key = i === 0 ? 'teamA' : 'teamB'
-                  const pct = i === 0 ? ns.percentageA : ns.percentageB
-                  return (
-                    <div key={key}>
-                      <div className="flex justify-between text-[11px] mb-1 font-semibold">
-                        <span className="text-white">{team}</span>
-                        <span className={`font-mono font-bold ${pct >= 50 ? 'text-emerald-400' : 'text-rose-400'}`}>{pct?.toFixed(1)}%</span>
-                      </div>
-                      <div className="h-1.5 rounded-full overflow-hidden bg-[#07090e] border border-[#1b2234]">
-                        <div className={`h-full rounded-full transition-all duration-500 ${pct >= 50 ? 'bg-emerald-400' : 'bg-rose-400'}`} style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+            </header>
+            {isSessionMarket ? <div><h3 className="match-session-title">{selectedSessionName} · €{formatVolStr(sessionGraphData?.totalBet || 0)}</h3><TeamCard teamData={sessionGraphData} isToss={false} isSession={true} marketVol={sessionGraphData?.totalBet || 0} /></div>
+              : <div className="match-price-grid"><TeamCard teamData={t1GraphData} isToss={false} marketVol={marketVol} /><TeamCard teamData={t2GraphData} isToss={false} marketVol={marketVol} /></div>}
             </div>
-          )}
-
-          {/* ━━━━━━━━━━ Original P/L period cards ━━━━━━━━━━ */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-            {[
-              { title: 'In-Play Live Metrics', pnl: ip, bets: ib, vol: iv, badge: 'IN-PLAY', badgeCls: 'text-rose-400 bg-rose-500/10 border-rose-500/25' },
-              { title: '3-Minute Live Metrics', pnl: finalTmp, bets: finalTmb, vol: finalTmv, badge: '3-MIN LIVE', badgeCls: 'text-amber-400 bg-amber-500/10 border-amber-500/25' },
-              { title: 'Pre-Match Baseline', pnl: pp, bets: pb, vol: pv, badge: 'PRE-MATCH', badgeCls: 'text-sky-400 bg-sky-500/10 border-sky-500/25' },
-            ].map(({ title, pnl, bets, vol, badge, badgeCls }) => (
-              <div key={title} className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl flex flex-col justify-between">
-                <div>
-                  <div className="px-3 sm:px-3.5 py-2 border-b border-[#1b2234] bg-[#0f1422]/60 flex items-center justify-between min-h-[38px]">
-                    <span className="text-[11px] font-black uppercase tracking-wider text-white truncate mr-2">{title}</span>
-                    <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border shrink-0 ${badgeCls}`}>{badge}</span>
-                  </div>
-                  <div className="p-2.5 sm:p-3">
-                    <div className="grid grid-cols-3 gap-1 mb-1.5 px-1">
-                      <div />
-                      <div className="text-center text-[10px] font-extrabold text-emerald-400 truncate px-1">{t1}</div>
-                      <div className="text-center text-[10px] font-extrabold text-rose-400 truncate px-1">{t2}</div>
-                    </div>
-                    {[
-                      { label: 'Bookie P/L', v1: <span className={`font-bold font-mono text-xs ${pnlCls(pnl?.team1)}`}>{fmtRs(pnl?.team1)}</span>, v2: <span className={`font-bold font-mono text-xs ${pnlCls(pnl?.team2)}`}>{fmtRs(pnl?.team2)}</span> },
-                      { label: 'Total Bets', v1: <span className="text-[11px] font-mono text-slate-300">{fmt(bets?.team1)}</span>, v2: <span className="text-[11px] font-mono text-slate-300">{fmt(bets?.team2)}</span> },
-                      { label: 'Back Vol', v1: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol?.team1?.back)}</span>, v2: <span className="text-[11px] font-mono text-sky-400">€{fmt(vol?.team2?.back)}</span> },
-                      { label: 'Lay Vol', v1: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol?.team1?.lay)}</span>, v2: <span className="text-[11px] font-mono text-rose-400">€{fmt(vol?.team2?.lay)}</span> },
-                    ].map(({ label, v1, v2 }, index) => (
-                      <div key={label} className={`grid grid-cols-3 gap-1 py-1 px-1 rounded ${index % 2 === 0 ? 'bg-[#080b14]' : ''}`}>
-                        <div className="text-[10px] text-slate-400 flex items-center font-bold">{label}</div>
-                        <div className="text-center flex items-center justify-center">{v1}</div>
-                        <div className="text-center flex items-center justify-center">{v2}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* ━━━━━━━━━━ 11. MARKET ODDS & DEPTH ANALYSIS (GRAPHS) ━━━━━━━━━━ */}
-          <div className="rounded-xl overflow-hidden bg-[#0c101d] border border-[#1e2538] shadow-xl p-3 sm:p-4 space-y-3.5">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5 pb-2.5 border-b border-[#1b2234]">
-              <div className="flex items-center gap-2 flex-wrap">
-                <BarChart3 size={15} className="text-blue-400" />
-                <span className="text-xs sm:text-sm font-extrabold text-white">Market Odds & Recorded Volume</span>
-                <span className="text-[11px] font-mono text-slate-400 ml-1">All-period vol: <b className="text-white font-bold">€{formatVolStr(marketVol)}</b></span>
-              </div>
-              <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-                <div className="flex bg-[#07090e] p-0.5 rounded-lg border border-[#1e273b]">
-                  <button onClick={() => setTimeFilter('all')} className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${timeFilter === 'all' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>All</button>
-                  <button onClick={() => setTimeFilter('3h')} className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${timeFilter === '3h' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>3H</button>
-                  <button onClick={() => setTimeFilter('1h')} className={`px-2.5 py-1 text-xs rounded-md font-bold transition-all ${timeFilter === '1h' ? 'bg-[#1e273d] text-white shadow' : 'text-slate-400 hover:text-white'}`}>1H</button>
-                </div>
-                {activeSessions && activeSessions.length > 0 && (
-                  <div className="relative">
-                    <div
-                      onClick={() => setShowMarketMenu(!showMarketMenu)}
-                      className="bg-[#0e121e] text-white text-xs px-3 py-1.5 rounded-lg border border-[#1f273b] flex items-center gap-2 cursor-pointer font-semibold hover:bg-[#151b2c] transition-colors"
-                    >
-                      <span className="truncate max-w-[120px]">{marketType.startsWith('session_') ? marketType.replace('session_', '') : 'Match Odds'}</span>
-                      <ChevronDown size={13} className="text-slate-400 shrink-0" />
-                    </div>
-                    {showMarketMenu && (
-                      <div className="absolute bottom-full right-0 mb-1 w-44 bg-[#0e1320] border border-[#222b40] rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl">
-                        <div
-                          onClick={() => { setMarketType('match_odds'); setShowMarketMenu(false); }}
-                          className="px-4 py-2 text-xs font-bold text-white hover:bg-white/5 cursor-pointer"
-                        >
-                          Match Odds
-                        </div>
-                        {activeSessions.map(session => (
-                          <div key={session} onClick={() => { setMarketType('session_' + session); setShowMarketMenu(false); }} className="px-4 py-2 text-xs font-bold text-white hover:bg-white/5 cursor-pointer border-t border-[#1f2638]">
-                            {session}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {isSessionMarket ? (
-              <div className="w-full">
-                <div className="flex justify-between items-center mb-3 px-1">
-                  <h3 className="text-white font-extrabold text-sm sm:text-base tracking-wide">{selectedSessionName}</h3>
-                  <div className="text-slate-400 text-xs font-medium">
-                    On this market: <span className="text-emerald-400 font-mono font-bold ml-1">€{formatVolStr(sessionGraphData?.totalBet || 0)}</span>
-                  </div>
-                </div>
-                <TeamCard teamData={sessionGraphData} isToss={false} isSession={true} marketVol={sessionGraphData?.totalBet || 0} />
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5 items-stretch">
-                <TeamCard teamData={t1GraphData} isToss={false} marketVol={marketVol} />
-                <TeamCard teamData={t2GraphData} isToss={false} marketVol={marketVol} />
-              </div>
-            )}
-          </div>
-        </>
+          </details>
+        </div>
       )}
     </div>
   )

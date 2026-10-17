@@ -1,6 +1,61 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { processTeamData } from './selectionVolume.js'
+import { canCapturePreMatchProviderTotals, getFrozenPreMatchProviderTotals, getLiveProviderTotals, getMarketBetActivity, processTeamData } from './selectionVolume.js'
+
+test('pre-match provider total stays on the frozen value after live totals change', () => {
+  const beforeStart = {
+    startTime: '2026-10-17T10:00:00Z',
+    inPlay: false,
+    deepMetrics: { totals: { team1: 406000, team2: 181000 } },
+    preMatchTotalBets: { team1: 120, team2: 80 },
+  }
+  const frozen = getLiveProviderTotals(beforeStart)
+  const liveUpdate = {
+    ...beforeStart,
+    inPlay: true,
+    deepMetrics: { totals: { team1: 900000, team2: 700000 } },
+  }
+
+  assert.deepEqual(frozen, [406000, 181000])
+  assert.deepEqual(getFrozenPreMatchProviderTotals(liveUpdate, frozen), [406000, 181000])
+  assert.equal(canCapturePreMatchProviderTotals(liveUpdate, Date.parse('2026-10-17T09:00:00Z')), false)
+})
+
+test('direct live load falls back to provider frozen pre-match fields', () => {
+  const snapshot = {
+    inPlay: true,
+    deepMetrics: { totals: { team1: 900000, team2: 700000 } },
+    preMatchTotalBets: { team1: 433.65, team2: 2220 },
+  }
+  assert.deepEqual(getFrozenPreMatchProviderTotals(snapshot), [433.65, 2220])
+})
+
+test('market Total bets uses the provider activity ledger, not exposure-based provider totals', () => {
+  const snapshot = {
+    status: 'live',
+    inPlayTotalBets: { team1: 12790, team2: 7640 },
+    preMatchTotalBets: { team1: 266, team2: 229 },
+    deepMetrics: { totals: { team1: 405847.61, team2: 180658.69 } },
+  }
+
+  assert.deepEqual(getMarketBetActivity(snapshot, { live: true }), {
+    values: [12790, 7640],
+    total: 20430,
+    period: 'in-play',
+  })
+  assert.deepEqual(getLiveProviderTotals(snapshot), [405847.61, 180658.69])
+})
+
+test('upcoming market Total bets uses frozen pre-match activity', () => {
+  const snapshot = { status: 'upcoming', preMatchTotalBets: { team1: 120, team2: 80 } }
+  assert.deepEqual(getMarketBetActivity(snapshot, {
+    frozenPreMatchBets: { team1: 266, team2: 229 },
+  }), {
+    values: [266, 229],
+    total: 495,
+    period: 'pre-match',
+  })
+})
 
 test('summary and ladder sum the same normalized stake rows, not liability', () => {
   const d = processTeamData('A', { trades: [

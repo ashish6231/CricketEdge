@@ -5,6 +5,7 @@ import { getSocket, releaseFeed, requestTossFeed } from '../socket'
 import { getTossMatches } from '../api'
 import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
+import { isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
 
 const TossDetail = lazy(() => import('./TossDetail'))
 
@@ -79,15 +80,11 @@ function extractTossOdds(trades, fallback = null) {
 }
 
 function isEndedMatch(m) {
-  if (!m) return false
-  const s = (m.status || '').toLowerCase()
-  return s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed'
+  return isMatchEnded(m)
 }
 
 function isLiveMatch(m) {
-  if (!m || isEndedMatch(m)) return false
-  const s = (m.status || '').toLowerCase()
-  return Boolean(m.inPlay || s === 'in-play' || s === 'live')
+  return isMatchLiveByStart(m)
 }
 
 function getMatchTier(m) {
@@ -228,8 +225,8 @@ export default function TossPage() {
 
   // Count active live matches (strictly non-ended)
   const liveCount = useMemo(() => {
-    return allMatches.filter(isLiveMatch).length
-  }, [allMatches])
+    return allMatches.filter(match => isMatchLiveByStart(match, now)).length
+  }, [allMatches, now])
 
   const renderLeaguesList = () => {
     if (loading && !allMatches.length) {
