@@ -1,5 +1,4 @@
 import React from 'react'
-import { Radio, Activity, TrendingUp, ShieldCheck, Zap } from 'lucide-react'
 
 /**
  * Clean HTML formatting tags from string
@@ -297,138 +296,87 @@ export function CrexScorecardBanner({ crexData, t1, t2, matchInPlay = false }) {
     }
   }
 
+  const teams = [
+    { ...dispTeam1, name: dispTeam1?.name || t1 || 'Team 1' },
+    { ...dispTeam2, name: dispTeam2?.name || t2 || 'Team 2' },
+  ]
+  const status = isLive ? 'live' : isCompleted ? 'completed' : 'upcoming'
+  const deliveryTone = isRunning ? 'running' : isWicket ? 'wicket' : isSix ? 'six' : isFour ? 'four' : 'normal'
+  const statusText = isCompleted ? sc.statusEquation && sc.statusEquation !== matchResultText ? sc.statusEquation : null : sc.statusEquation
+
   return (
-    <div className="rounded-xl border border-[#1b2234] bg-[#0a0d18] px-3 py-1.5 shadow-md text-white mb-2">
-      {/* Row 1: Status + Series + Target/CRR/RRR */}
-      <div className="flex items-center justify-between gap-2 border-b border-[#1b2234] pb-1 mb-1">
-        <div className="flex items-center gap-1.5 min-w-0">
-          <span className={`flex items-center gap-1 px-1.5 py-0.2 rounded-full text-[9px] font-black uppercase tracking-wider flex-shrink-0 ${
-            isLive ? 'bg-red-500/15 border border-red-500/40 text-red-400'
-              : isCompleted ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
-              : 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
-          }`}>
-            <span className={`w-1 h-1 rounded-full ${isLive ? 'bg-red-500 animate-pulse' : isCompleted ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-            {isLive ? 'LIVE' : isCompleted ? 'COMPLETED' : 'UPCOMING'}
-          </span>
-          <span className="font-medium text-slate-400 truncate text-[10px]">{crexData.seriesName || 'Live Match'}</span>
+    <section className="crex-scorecard" aria-label="Live match scorecard">
+      <header className="crex-scorecard-header">
+        <div className="crex-match-status">
+          <span className={`crex-status-pill is-${status}`}><span />{status}</span>
+          <span className="crex-series-name">{crexData.seriesName || 'Live Match'}</span>
         </div>
-        <div className="flex items-center gap-2 text-[10px] font-mono flex-shrink-0">
-          {sc?.target && <span className="text-amber-400 font-bold">Target: {sc.target}</span>}
-          {sc?.crr && <span className="text-slate-400">CRR: <strong className="text-emerald-400">{sc.crr}</strong></span>}
-          {sc?.rrr && <span className="text-slate-400">RRR: <strong className="text-amber-400">{sc.rrr}</strong></span>}
-        </div>
-      </div>
-
-      {/* Row 2: Teams & Scores */}
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-1.5 py-0.5">
-        <div className="flex items-center gap-1.5 min-w-0">
-          {dispTeam1?.flag
-            ? <img src={dispTeam1.flag} alt="" className="w-4 h-4 rounded-full bg-white/5 object-contain flex-shrink-0" />
-            : <div className="w-4 h-4 rounded-full bg-[#121626] border border-[#1e2638] text-emerald-400 font-bold flex items-center justify-center text-[7px] flex-shrink-0">{(dispTeam1?.shortName || t1 || 'T1').slice(0, 2)}</div>
-          }
-          <span className="font-bold text-xs truncate text-white">{dispTeam1?.name || t1}</span>
-          <span className="font-mono font-bold text-xs text-emerald-400 whitespace-nowrap ml-1 flex-shrink-0">{dispTeam1?.score || 'Yet to bat'}</span>
-        </div>
-        <span className="text-[8px] font-black text-slate-500 px-1">vs</span>
-        <div className="flex items-center gap-1.5 min-w-0 justify-end">
-          <span className="font-bold text-xs truncate text-white">{dispTeam2?.name || t2}</span>
-          <span className="font-mono font-bold text-xs text-sky-400 whitespace-nowrap mr-1 flex-shrink-0">{dispTeam2?.score || 'Yet to bat'}</span>
-          {dispTeam2?.flag
-            ? <img src={dispTeam2.flag} alt="" className="w-4 h-4 rounded-full bg-white/5 object-contain flex-shrink-0" />
-            : <div className="w-4 h-4 rounded-full bg-[#121626] border border-[#1e2638] text-sky-400 font-bold flex items-center justify-center text-[7px] flex-shrink-0">{(dispTeam2?.shortName || t2 || 'T2').slice(0, 2)}</div>
-          }
-        </div>
-      </div>
-
-      {/* Row 3: Over balls + Outcome */}
-      {(isLive || isCompleted || runningBall) && (
-        <div className={`grid grid-cols-[1fr_auto_1fr] items-center gap-2 mt-1 py-1 px-2 rounded-lg border transition-all duration-300 ${
-          isRunning
-            ? 'bg-[#0f1322] border-[#1f273b]'
-            : isFour
-            ? 'bg-blue-500/10 border-blue-500/40'
-            : isSix
-            ? 'bg-emerald-500/10 border-emerald-500/40'
-            : isWicket
-            ? 'bg-red-600/10 border-red-600/40'
-            : 'bg-[#0f1322] border-[#1f273b]'
-        }`}>
-          {/* Left: over balls */}
-          <div className="flex items-center gap-1">
-            {displayBalls.length > 0 ? displayBalls.map((b, bIdx) => {
-              const isW = b === 'W' || b === 'w'
-              const is4 = b === '4'
-              const is6 = b === '6'
-              const isExtra = /wd|nb|lb/i.test(b)
-              return (
-                <span key={bIdx} className={`min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center font-mono font-black text-[8px] ${
-                  bIdx === displayBalls.length - 1 ? 'ring-1 ring-amber-400' : ''
-                } ${
-                  isW ? 'bg-red-600 text-white' : is6 ? 'bg-emerald-500 text-black' : is4 ? 'bg-blue-500 text-white' : isExtra ? 'bg-amber-600 text-white' : b === '0' ? 'bg-[#1e2436] text-slate-400' : 'bg-[#28314a] text-white'
-                }`}>{b}</span>
-              )
-            }) : <span className="text-[9px] text-slate-500 italic">Between overs</span>}
-          </div>
-          {/* Centre: outcome or match result */}
-          <div className="flex items-center justify-center gap-1.5">
-            {isRunning && <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" /><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-400" /></span>}
-            {isCompleted ? (
-              <span className="text-xs font-bold text-amber-400 tracking-tight text-center px-2 py-0.5 rounded-md bg-amber-400/10 border border-amber-400/20">
-                🏆 {matchResultText}
-              </span>
-            ) : (
-              <span className={`text-xs font-bold tracking-tight whitespace-nowrap px-2 py-0.5 rounded-md border ${
-                isRunning
-                  ? 'text-amber-400 bg-amber-400/10 border-amber-400/20'
-                  : isFour
-                  ? 'text-blue-400 bg-blue-500/15 border-blue-500/30'
-                  : isSix
-                  ? 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30'
-                  : isWicket
-                  ? 'text-red-400 bg-red-600/15 border-red-600/30'
-                  : 'text-amber-400 bg-amber-400/10 border-amber-400/20'
-              }`}>{outcomeFormatted}</span>
-            )}
-          </div>
-          <div />
-        </div>
-      )}
-
-      {/* Row 4: Odds + Status Equation */}
-      {(hasOdds || sc?.statusEquation || sc?.matchResult) && (
-        <div className="mt-1 py-0.5 px-2 rounded-lg bg-[#0e1220] border border-[#1b2234] flex items-center justify-between gap-2 text-[10px]">
-          {hasOdds && (
-            <MarketRateDisplay team={co.rateTeam || sc?.team1?.name || t1} rate={co.rate} rate2={co.rate2} back={co.back} size="sm" />
-          )}
-          {isCompleted ? (
-            <span className="text-amber-300 font-medium truncate ml-auto text-[10px]">{sc?.statusEquation || matchResultText}</span>
-          ) : sc?.statusEquation ? (
-            <span className="text-slate-300 font-medium truncate ml-auto text-[10px]">{sc.statusEquation}</span>
-          ) : null}
-        </div>
-      )}
-
-      {/* Row 5: Batters + Bowler */}
-      {((sc?.batters?.length > 0) || sc?.bowler) && (
-        <div className="mt-1.5 pt-1.5 border-t border-[#2c2c2e] flex items-center gap-1 overflow-hidden">
-          {sc.batters?.map((b, idx) => (
-            <div key={idx} className="flex items-center gap-0.5 bg-[#1a1a1a] border border-[#2c2c2e] px-1.5 py-0.5 rounded text-[10px] flex-shrink-0">
-              <span className="font-semibold text-[#e5e5ea] truncate max-w-[80px]">{b.name}{b.onStrike ? '*' : ''}:</span>
-              <span className="font-mono font-black text-emerald-400">{b.runs}</span>
-              <span className="text-[#8e8e93]">({b.balls})</span>
-            </div>
+        <dl className="crex-match-rates">
+          {[["Target", sc.target], ["CRR", sc.crr], ["RRR", sc.rrr]].filter(([, value]) => value != null && value !== '').map(([label, value]) => (
+            <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
           ))}
-          {sc?.bowler && (
-            <div className="flex items-center gap-0.5 bg-[#1a1a1a] border border-[#2c2c2e] px-1.5 py-0.5 rounded text-[10px] ml-auto flex-shrink-0">
-              <span className="text-[#8e8e93]">Bowl:</span>
-              <span className="font-semibold text-[#e5e5ea] truncate max-w-[80px]">{sc.bowler.name}</span>
-              <span className="font-mono font-black text-amber-400">{sc.bowler.wicketsRuns}</span>
-              <span className="text-[#8e8e93]">({sc.bowler.overs} ov)</span>
+        </dl>
+      </header>
+
+      <div className="crex-teams-grid">
+        {teams.map((team, index) => {
+          const score = String(team.score || 'Yet to bat')
+          const scoreParts = score.match(/^(.*?)\s+\(?([0-9]+\.[0-9]+)\)?(?:\s*(?:ov|overs))?$/i)
+          return <div key={index} className={`crex-team-score team-${index}`}>
+            <div className="crex-team-name">
+              {team.flag ? <img src={team.flag} alt="" /> : <span className="crex-team-initials">{(team.shortName || team.name).slice(0, 2)}</span>}
+              <h2>{team.name}</h2>
             </div>
-          )}
+            <div className="crex-score-value"><strong className={/yet to bat/i.test(score) ? 'is-waiting' : ''}>{scoreParts ? scoreParts[1] : score}</strong>
+              {scoreParts && <span>{scoreParts[2]} <small>overs</small></span>}
+            </div>
+          </div>
+        })}
+      </div>
+
+      <div className="crex-live-details">
+      {(isLive || isCompleted || runningBall) && <div className="crex-delivery-strip">
+        <div className="crex-over-summary"><span className="crex-section-label">{isCompleted ? 'Last over' : 'Recent balls'}</span>
+          <div className="crex-over-balls" aria-label="Recent deliveries">
+            {displayBalls.length > 0 ? displayBalls.map((ball, index) => {
+              const value = String(ball)
+              const tone = /^w$/i.test(value) ? 'wicket' : value === '6' ? 'six' : value === '4' ? 'four' : /wd|nb|lb/i.test(value) ? 'extra' : value === '0' ? 'dot' : 'run'
+              return <span key={index} className={`crex-ball is-${tone} ${index === displayBalls.length - 1 ? 'is-latest' : ''}`} aria-label={`${value}${index === displayBalls.length - 1 ? ', latest delivery' : ''}`}>{value}</span>
+            }) : <span className="crex-between-overs">Between overs</span>}
+          </div>
         </div>
-      )}
-    </div>
+        <div className={`crex-delivery-result is-${isCompleted ? 'completed' : deliveryTone}`}>
+          <span className="crex-section-label">{isCompleted ? 'Result' : isRunning ? 'Live delivery' : 'Last delivery'}</span>
+          <strong>{isCompleted ? matchResultText : outcomeFormatted}</strong>
+        </div>
+      </div>}
+
+      {(hasOdds || statusText) && <div className="crex-match-context">
+        {hasOdds && <div className="crex-market-rate"><span className="crex-section-label">Market rate</span>
+          <span className="crex-rate-team">{co.rateTeam || sc.team1?.name || t1}</span>
+          <span className="crex-rate-values"><strong>{formatRateBox(co.rate)}</strong><span>/</span><strong>{formatRateBox(co.rate2 != null && co.rate2 !== '' ? co.rate2 : co.rate)}</strong></span>
+          {co.back && <span className="crex-rate-back">({co.back})</span>}
+        </div>}
+        {statusText && <p className="crex-status-equation">{statusText}</p>}
+      </div>}
+      </div>
+
+      {(sc.batters?.length > 0 || sc.bowler) && <div className="crex-players-grid">
+        {sc.batters?.length > 0 && <div className="crex-batters">
+          <span className="crex-section-label">Batting</span>
+          <div className="crex-batter-list">{sc.batters.map((batter, index) => <div key={index} className={`crex-player ${batter.onStrike ? 'on-strike' : ''}`}>
+            <span className="crex-player-name" title={batter.onStrike ? 'On strike' : undefined}>{batter.name}{batter.onStrike && <span className="crex-striker" aria-label="On strike">*</span>}</span>
+            <span className="crex-player-figures"><strong>{batter.runs ?? '—'}</strong><span>({batter.balls ?? '—'})</span></span>
+          </div>)}</div>
+        </div>}
+        {sc.bowler && <div className="crex-bowling">
+          <span className="crex-section-label">Bowling</span>
+          <div className="crex-player"><span className="crex-player-name">{sc.bowler.name}</span>
+            <span className="crex-player-figures"><strong>{sc.bowler.wicketsRuns || '—'}</strong><span>{sc.bowler.overs != null ? `${sc.bowler.overs} ov` : '—'}</span></span>
+          </div>
+        </div>}
+      </div>}
+    </section>
   )
 }
 

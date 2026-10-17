@@ -132,6 +132,114 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
 .market-team-footer { display: flex; align-items: center; justify-content: space-between; gap: 5px; width: 100%; margin-top: 6px; }
 .market-team-percent { padding: 2px 6px; border-radius: 999px; font-size: 9px; font-weight: 750; white-space: nowrap; }
 .market-team-odds { font-size: 9px; font-weight: 750; white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* Live cricket scorecard */
+.crex-scorecard { margin-bottom: 12px; overflow: hidden; border: 1px solid #d6dfeb; border-radius: 12px; background: #fff; color: #172b43; }
+.crex-scorecard-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 16px; padding: 10px 16px; border-bottom: 1px solid #e6ecf3; background: #f8fafc; }
+.crex-match-status { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.crex-status-pill { display: inline-flex; align-items: center; gap: 5px; flex-shrink: 0; padding: 3px 7px; border: 1px solid #e2c98b; border-radius: 5px; color: #87580c; background: #fff8e7; font-size: 9px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; }
+.crex-status-pill > span { height: 5px; width: 5px; border-radius: 50%; background: currentColor; }
+.crex-status-pill.is-live { border-color: #fecdd3; background: #fff1f2; color: #be123c; }
+.crex-status-pill.is-completed { border-color: #b5e2d1; background: #edf9f3; color: #11724f; }
+.crex-series-name { color: #52647b; font-size: 11px; font-weight: 550; overflow-wrap: anywhere; }
+.crex-match-rates { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; }
+.crex-match-rates > div { display: flex; align-items: baseline; gap: 6px; }
+.crex-match-rates dt { color: #62748b; font-size: 9px; font-weight: 650; }
+.crex-match-rates dd { margin: 0; color: #172b43; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.crex-teams-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; padding: 13px 16px; background: #152b49; }
+.crex-team-score { min-width: 0; }
+.crex-team-score + .crex-team-score { border-left: 1px solid #40536e; padding-left: 18px; }
+.crex-team-name { display: flex; align-items: center; gap: 8px; }
+.crex-team-name img, .crex-team-initials { flex-shrink: 0; width: 25px; height: 25px; border-radius: 6px; object-fit: contain; background: #f0f4f8; }
+.crex-team-initials { display: grid; place-items: center; color: #425772; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+.crex-team-name h2 { margin: 0; color: #e6eef8; font-size: 13px; font-weight: 750; line-height: 1.3; overflow-wrap: anywhere; }
+.crex-score-value { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 10px; margin: 5px 0 0 33px; font-variant-numeric: tabular-nums; }
+.crex-score-value > strong { color: #fff; font-size: 28px; font-weight: 850; letter-spacing: -.8px; line-height: 1.2; overflow-wrap: anywhere; }
+.crex-score-value > strong.is-waiting { color: #c2d2e6; font-size: 19px; font-weight: 600; letter-spacing: -.3px; }
+.crex-score-value > span { color: #c2d2e6; font-size: 12px; font-weight: 650; }
+.crex-score-value small { font-size: 10px; font-weight: 500; }
+.crex-live-details { display: flex; align-items: center; flex-wrap: wrap; background: #f5f8fc; border-bottom: 1px solid #e6ecf3; }
+.crex-delivery-strip { display: flex; align-items: center; flex: 1; flex-wrap: wrap; gap: 9px 22px; padding: 11px 16px; }
+.crex-section-label { color: #62748b; font-size: 9px; font-weight: 650; letter-spacing: .6px; text-transform: uppercase; }
+.crex-over-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
+.crex-over-balls { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.crex-ball { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; min-width: 25px; height: 25px; padding: 0 5px; border: 1px solid #d5e0ec; border-radius: 7px; background: #fff; color: #314761; font-size: 11px; font-weight: 750; font-variant-numeric: tabular-nums; }
+.crex-ball.is-wicket { background: #be123c; border-color: #be123c; color: #fff; }
+.crex-ball.is-four { background: #2563eb; border-color: #2563eb; color: #fff; }
+.crex-ball.is-six { background: #08795b; border-color: #08795b; color: #fff; }
+.crex-ball.is-extra { background: #fff1d2; border-color: #efd399; color: #87580c; }
+.crex-ball.is-dot { background: #e7edf5; color: #62748b; }
+.crex-ball.is-latest { outline: 2px solid #8499b4; outline-offset: 2px; }
+.crex-between-overs { color: #62748b; font-size: 11px; }
+.crex-delivery-result { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.crex-delivery-result > strong { padding: 4px 9px; border-radius: 6px; background: #e5edf9; color: #254774; font-size: 12px; font-weight: 800; line-height: 1.4; overflow-wrap: anywhere; }
+.crex-delivery-result.is-wicket > strong { background: #ffe4e8; color: #a71134; }
+.crex-delivery-result.is-four > strong { background: #dbeafe; color: #1d4ed8; }
+.crex-delivery-result.is-six > strong, .crex-delivery-result.is-completed > strong { background: #dff5eb; color: #106447; }
+.crex-match-context { display: flex; align-items: flex-end; flex-direction: column; flex-wrap: wrap; gap: 4px; padding: 8px 16px; }
+.crex-market-rate { display: flex; align-items: center; flex-wrap: wrap; gap: 5px 8px; min-width: 0; }
+.crex-rate-team { color: #314761; font-size: 11px; font-weight: 600; overflow-wrap: anywhere; }
+.crex-rate-values { display: inline-flex; align-items: center; gap: 5px; padding: 2px 7px; border: 1px solid #cbdcf3; border-radius: 5px; background: #eff5ff; font-size: 12px; font-variant-numeric: tabular-nums; }
+.crex-rate-values > strong { color: #1d4d86; font-weight: 800; }
+.crex-rate-values > span, .crex-rate-back { color: #62748b; font-size: 10px; }
+.crex-status-equation { margin: 0; color: #52647b; font-size: 11px; line-height: 1.4; overflow-wrap: anywhere; }
+.crex-players-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 16px; margin: 0 16px; padding: 9px 0; }
+.crex-batters, .crex-bowling { min-width: 0; }
+.crex-batter-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 18px; }
+.crex-bowling { padding-left: 16px; border-left: 1px solid #e6ecf3; }
+.crex-player { display: flex; align-items: center; gap: 8px; min-width: 0; padding-top: 4px; }
+.crex-player-name { color: #223750; font-size: 12px; font-weight: 650; line-height: 1.4; overflow-wrap: anywhere; }
+.crex-striker { color: #08795b; margin-left: 2px; font-weight: 850; }
+.crex-player-figures { display: inline-flex; align-items: baseline; flex-wrap: wrap; justify-content: flex-end; gap: 4px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.crex-player-figures > strong { color: #11724f; font-size: 14px; font-weight: 800; }
+.crex-player-figures > span { color: #62748b; font-size: 10px; }
+.crex-bowling .crex-player-figures > strong { color: #254774; }
+@media (max-width: 650px) {
+  .crex-scorecard { border-radius: 9px; margin-bottom: 9px; }
+  .crex-scorecard-header { padding: 6px 10px; gap: 5px 10px; }
+  .crex-match-status { flex: 1; gap: 6px; }
+  .crex-status-pill { padding: 2px 6px; font-size: 8px; }
+  .crex-series-name { font-size: 10px; }
+  .crex-match-rates { gap: 4px 10px; }
+  .crex-match-rates dd { font-size: 12px; }
+  .crex-teams-grid { grid-template-columns: minmax(0, 1fr); padding: 5px 10px; gap: 0; }
+  .crex-team-score { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 0; }
+  .crex-team-score + .crex-team-score { padding: 6px 0; border-left: 0; border-top: 1px solid #40536e; }
+  .crex-team-name { gap: 6px; }
+  .crex-team-name img, .crex-team-initials { width: 19px; height: 19px; border-radius: 4px; }
+  .crex-team-name h2 { font-size: 11px; line-height: 1.3; }
+  .crex-score-value { justify-content: flex-end; margin: 0; gap: 4px; }
+  .crex-score-value > strong { font-size: 21px; letter-spacing: -.5px; }
+  .crex-score-value > strong.is-waiting { font-size: 12px; letter-spacing: 0; }
+  .crex-score-value > span, .crex-score-value small { font-size: 9px; }
+  .crex-live-details { display: block; }
+  .crex-delivery-strip { display: grid; grid-template-columns: minmax(0, 1fr) auto; padding: 7px 10px; gap: 8px; }
+  .crex-section-label { font-size: 8px; letter-spacing: .4px; }
+  .crex-over-summary { flex-wrap: nowrap; min-width: 0; gap: 6px; }
+  .crex-over-summary > .crex-section-label { flex-shrink: 0; }
+  .crex-over-balls { min-width: 0; gap: 4px; }
+  .crex-ball { min-width: 20px; height: 21px; padding: 0 3px; border-radius: 5px; font-size: 10px; }
+  .crex-ball.is-latest { outline-width: 1px; outline-offset: 1px; }
+  .crex-delivery-result { gap: 0; }
+  .crex-delivery-result > .crex-section-label { display: none; }
+  .crex-delivery-result > strong { padding: 3px 6px; font-size: 10px; max-width: 115px; }
+  .crex-match-context { align-items: stretch; padding: 6px 10px; gap: 3px; border-top: 1px solid #e6ecf3; }
+  .crex-market-rate { gap: 4px 6px; }
+  .crex-rate-team { flex: 1; font-size: 10px; }
+  .crex-rate-values { padding: 1px 6px; font-size: 11px; gap: 4px; }
+  .crex-status-equation { font-size: 10px; }
+  .crex-players-grid { grid-template-columns: minmax(0, 1fr); gap: 4px; margin: 0 10px; padding: 6px 0; }
+  .crex-batters, .crex-bowling { display: grid; grid-template-columns: 43px minmax(0, 1fr); align-items: start; gap: 7px; }
+  .crex-batters > .crex-section-label, .crex-bowling > .crex-section-label { padding-top: 4px; }
+  .crex-batter-list { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .crex-player { align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 1px; }
+  .crex-player-name { font-size: 11px; }
+  .crex-player-figures { gap: 3px; }
+  .crex-player-figures > strong { font-size: 12px; }
+  .crex-player-figures > span { font-size: 9px; }
+  .crex-bowling { padding: 4px 0 0; border-left: 0; border-top: 1px solid #e6ecf3; }
+  .crex-bowling .crex-player { justify-content: space-between; gap: 8px; }
+}
+
 /* Toss detail: compact, aligned comparisons and a high-contrast forecast. */
 .toss-detail-page { max-width: 1380px; display: flex; flex-direction: column; gap: 12px; color: #172b43; }
 .toss-detail-page > * { min-width: 0; }
