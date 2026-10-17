@@ -186,7 +186,10 @@ export function predictMatchStart(snap, { mode = 'rules' } = {}) {
     timing: 'match_start', lockedAt: 'match_open',
     moreBetted: publicTeam, apiMoreBetted: m.moreBetted,
     publicOverridden, msDisagreesPublic, extremeDogFade, algorithmDisagreesMarket,
-    signals: [...evidenceSignals, {
+    signals: [...(prediction.trapOverrideEvidence ? [{
+      label: 'Pre-match trap + support', sublabel: `Both favor ${winner}; synthetic ratio ${prediction.trapOverrideEvidence.supportRatio.toFixed(2)}x`, active: true,
+      v1: winner === t1 ? 'Pick' : '—', v2: winner === t2 ? 'Pick' : '—',
+    }] : []), ...evidenceSignals, {
       label: 'League algorithm', sublabel: prediction.algorithmLeague || 'Unregistered league fallback', active: true,
       v1: winner === t1 ? 'Pick' : '—', v2: winner === t2 ? 'Pick' : '—',
     }, {
@@ -222,10 +225,10 @@ export function lockMatchStartPrediction(current, locked, { inPlay = false } = {
   const withFreshSafety = {
     ...locked,
     risk: current.risk ?? locked.risk,
-    confidence: current.confidence ?? locked.confidence,
+    confidence: locked.trapOverrideEvidence ? locked.confidence : current.confidence ?? locked.confidence,
     preOdds: locked.preOdds ?? current.preOdds,
-    signals: current.signals ?? locked.signals,
-    marketEvidence: current.marketEvidence ?? locked.marketEvidence,
+    signals: locked.trapOverrideEvidence ? locked.signals : current.signals ?? locked.signals,
+    marketEvidence: locked.trapOverrideEvidence ? locked.marketEvidence : current.marketEvidence ?? locked.marketEvidence,
     algorithmLeague: current.algorithmLeague ?? locked.algorithmLeague,
     lockedAt: locked.lockedAt || 'match_open',
   }

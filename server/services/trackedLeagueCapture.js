@@ -41,7 +41,7 @@ async function captureTrackedLeague({
   store, scraper = require('./dataCache'),
   fetchSeries = getCrexSeriesMatches, seriesUrls = [], initialFixtures = [], sourceErrors = [], now = () => new Date(),
   leagueName, isLeague, normalizeTeam = teamKey, summarize, preMatchOnly = false,
-  predict = predictMatchWinner,
+  predict = predictMatchWinner, persistFixtures = false, marketKinds = ['match', 'toss'],
 } = {}) {
   const capturedAt = now().toISOString();
   const saved = await store.load();
@@ -90,7 +90,7 @@ async function captureTrackedLeague({
       else fixtures.push(fixture);
     }
     // Discover fixtures in memory; persist them only alongside a usable snapshot.
-    for (const kind of ['match', 'toss']) {
+    for (const kind of marketKinds) {
       try {
         const method = kind === 'match' ? scraper.getCricketSnapshot : scraper.getTossSnapshot;
         if (!method) continue;
@@ -102,6 +102,10 @@ async function captureTrackedLeague({
           invalidInputs++; continue;
         }
         const snapshotCapturedAt = now().toISOString();
+        if (persistFixtures) {
+          snapshot.startTime = fixture.startTime;
+          snapshot.capturedAt = snapshotCapturedAt;
+        }
         const snapshotCapturedMs = Date.parse(snapshotCapturedAt);
         const deadline = kind === 'toss' ? timestamp(snapshot.startTime) || fixture.startTime : fixture.startTime;
         const beforeStart = snapshotCapturedMs < deadline && fixture.status === 'upcoming' && !match.inPlay && !snapshot.inPlay &&
@@ -130,7 +134,7 @@ async function captureTrackedLeague({
         if (candidate) { existing.delete(candidate.recordId); candidate.recordId = fixture.recordId; record = candidate; }
       }
       if (!record) {
-        if (!capturedRecords.has(fixture.recordId)) continue;
+        if (!capturedRecords.has(fixture.recordId) && !persistFixtures) continue;
         record = { ...fixture, firstSeenAt: capturedAt, actualWinner: null,
           resultVerification: { status: 'pending' }, markets: {} };
         data.records.push(record); existing.set(record.recordId, record);
@@ -157,7 +161,7 @@ async function captureTrackedLeague({
         capturedAt: capture.capturedAt, inputTiming: capture.inputTiming, prediction: capture.prediction });
       record.markets[capture.kind] = { ...previous, ...next };
     }
-    pruneTrackedLeagueSnapshots(data, {isLeague, normalizeTeam});
+    pruneTrackedLeagueSnapshots(data, {isLeague, normalizeTeam, persistFixtures});
     data.records.sort((a,b) => a.startTime - b.startTime || a.recordId.localeCompare(b.recordId));
     data.sync = { checkedAt: capturedAt, seriesUrls, fixturesSeen: fixtures.length, feedMatchesSeen: feed.length,
       captures: captures.length, invalidInputs, lateInputs, feedStatus, errors };

@@ -124,3 +124,18 @@ test('capture endpoint returns summary', async () => {
   });
   assert.deepEqual(res.body.data, { scanned: 2, captured: 1, skipped: 1, failed: 0 });
 });
+
+test('abandoned result is persisted, audited and returned under the abandoned filter', async () => {
+  const store = createStore({ filePath: path.join(os.tmpdir(), `toss_abandoned_${Date.now()}.json`) });
+  await store.upsertPendingCapture({ matchId: 'abandoned', team1: 'A', team2: 'B',
+    snapshot: { teamNames: ['A', 'B'] }, predictedWinner: 'A' });
+  const response = mockRes(), audits = [];
+  await patchTossActualWinner({ params: { matchId: 'abandoned' }, body: { actualWinner: 'No Result' },
+    user: { userId: 1, email: 'admin@test.invalid' } }, response, { store, auditLog: async (...args) => audits.push(args) });
+  assert.equal(response.body.data.status, 'abandoned');
+  assert.match(audits[0][6], /abandoned/);
+  const listing = mockRes();
+  await getTossDataset({ query: { status: 'abandoned' } }, listing, { store });
+  assert.equal(listing.body.records.length, 1);
+  assert.equal(listing.body.records[0].actualWinner, 'No Result');
+});

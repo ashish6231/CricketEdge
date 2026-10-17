@@ -1,6 +1,6 @@
 import TeamCard from '../components/SelectionVolumeCard'
 import { processTeamData } from '../utils/selectionVolume'
-import TossDetail from './TossDetail'
+import { TossSnapshotDetails } from './TossDetail'
 
 import { useEffect, useState, useContext, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
@@ -8,10 +8,9 @@ import { ArrowLeft, BarChart3, BookOpen, ChevronDown, ChevronUp, Coins, Radio, T
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
-import { predictTossWinner } from '../utils/tossPredictor'
 import { predictMatchWinner, predictSmartMarketWinner } from '../utils/matchWinnerPredictor'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
-import { getBookiePl, splitMatchOutcomes, finiteNumber, timestamp, tradeSide, getSelectionStakes, latestMatchedPrice } from '../utils/bookiePl'
+import { getBookiePl, splitMatchOutcomes, finiteNumber, timestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
@@ -29,12 +28,6 @@ const fmtRs = (n) => {
   if (n === null || n === undefined) return '—'
   const sign = n >= 0 ? '+' : '−'
   return `${sign}€${fmt(Math.abs(n))}`
-}
-
-const fmtTossRs = (n) => {
-  if (n === null || n === undefined) return '—'
-  const rounded = Math.round(Number(n))
-  return `${rounded >= 0 ? '+' : '−'}€${Math.abs(rounded).toLocaleString('en-IN')}`
 }
 
 const pnlCls = (n) => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
@@ -189,6 +182,8 @@ export default function MatchDetail({ sport }) {
 
   useEffect(() => {
     let cancelled = false
+    // A cached snapshot is only the initial view; always refresh this route.
+    setTossSnapshot(getMatchBundle(matchId)?.toss || null)
 
     let lastSessionFp = ''
     const applySessionData = (sessionData) => {
@@ -293,29 +288,13 @@ export default function MatchDetail({ sport }) {
       })
     }
 
-    // Fast delivery via WebSocket; fallback to HTTP only if socket is not connected or delayed
-    let httpFetchTimeout = null
-    if (!prefetched?.cricket || prefetched?._seeded) {
-      if (!socket.connected) {
-        setLoading(true)
-        getCricketMatchBundle(matchId)
-          .then(data => {
-            if (!cancelled && data && !data.error) handleBundle(data)
-          })
-          .catch(() => { })
-      } else {
-        // Fallback after 1200ms only if socket hasn't delivered full bundle
-        httpFetchTimeout = setTimeout(() => {
-          if (!cancelled) {
-            getCricketMatchBundle(matchId)
-              .then(data => {
-                if (!cancelled && data && !data.error) handleBundle(data)
-              })
-              .catch(() => { })
-          }
-        }, 1200)
-      }
-    }
+    // Refresh even a full sessionStorage bundle: it may contain an old toss snapshot.
+    // Keep the room subscription for subsequent live updates.
+    getCricketMatchBundle(matchId)
+      .then(data => {
+        if (!cancelled && data) handleBundle(data)
+      })
+      .catch(() => { })
 
     // Safety timeout — agar 8s mein data nahi aaya toh loading hatao
     const loadingTimeout = setTimeout(() => {
@@ -325,7 +304,6 @@ export default function MatchDetail({ sport }) {
     return () => {
       cancelled = true
       clearTimeout(loadingTimeout)
-      if (httpFetchTimeout) clearTimeout(httpFetchTimeout)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, onSpecificBundle)
       socket.off('match:bundle', onSpecificBundle)
@@ -633,43 +611,14 @@ export default function MatchDetail({ sport }) {
   const t2GraphData = processTeamData(graphT2, graphSnap?.teams?.[graphT2], effectiveTimeFilter, findMarketRunner(graphSnap, graphT2))
   const sessionGraphData = isSessionMarket ? processTeamData('Total Runs', { trades: selectedSessionTrades }, timeFilter) : null
 
-  // ━━━━━ TOSS AI PREDICTION LOGIC ━━━━━
-  const tossSnap = tossSnapshot
-  const tossT1Name = tossSnap?.teamNames?.[0] || t1
-  const tossT2Name = tossSnap?.teamNames?.[1] || t2
-  const tossM1 = getSelectionStakes(tossSnap, tossT1Name)
-  const tossM2 = getSelectionStakes(tossSnap, tossT2Name)
-  const tossS1 = tossSnap?.syntheticSupport?.teamA
-  const tossS2 = tossSnap?.syntheticSupport?.teamB
-  const tossSup1 = tossSnap?.supportMetrics?.team1
-  const tossSup2 = tossSnap?.supportMetrics?.team2
-
-  const tossTrades1 = (tossSnap?.teams?.[tossT1Name] || {}).trades || []
-  const tossTrades2 = (tossSnap?.teams?.[tossT2Name] || {}).trades || []
-  const { pl1: tossT1BookiePL, pl2: tossT2BookiePL, source: tossPlSource } = tossSnap
-    ? getBookiePl(tossSnap, tossT1Name, tossT2Name)
-    : {}
-
-  const tossT1GraphData = tossSnap ? processTeamData(tossT1Name, tossSnap?.teams?.[tossT1Name], effectiveTimeFilter, findMarketRunner(tossSnap, tossT1Name)) : null
-  const tossT2GraphData = tossSnap ? processTeamData(tossT2Name, tossSnap?.teams?.[tossT2Name], effectiveTimeFilter, findMarketRunner(tossSnap, tossT2Name)) : null
+  const tossT1Name = tossSnapshot?.teamNames?.[0] || t1
+  const tossT2Name = tossSnapshot?.teamNames?.[1] || t2
+  const { pl1: tossT1BookiePL, pl2: tossT2BookiePL } = getBookiePlFromMatchedTrades(tossSnapshot, tossT1Name, tossT2Name)
+  const tossT1GraphData = tossSnapshot ? processTeamData(tossT1Name, tossSnapshot.teams?.[tossT1Name], effectiveTimeFilter, findMarketRunner(tossSnapshot, tossT1Name)) : null
+  const tossT2GraphData = tossSnapshot ? processTeamData(tossT2Name, tossSnapshot.teams?.[tossT2Name], effectiveTimeFilter, findMarketRunner(tossSnapshot, tossT2Name)) : null
   const tossMarketVol = (tossT1GraphData?.totalBet || 0) + (tossT2GraphData?.totalBet || 0)
 
-
-  const tossVol1 = tossM1.totalBet
-  const tossVol2 = tossM2.totalBet
-
-  const tossOdds1 = latestMatchedPrice(tossTrades1)
-  const tossOdds2 = latestMatchedPrice(tossTrades2)
-
-  const tossTot = tossVol1 != null && tossVol2 != null ? tossVol1 + tossVol2 : null
-  const tossPct1 = tossTot > 0 ? Math.round(tossVol1 / tossTot * 100) : null
-  const tossPct2 = tossPct1 == null ? null : 100 - tossPct1
-
-  const tossPrediction = tossSnap ? predictTossWinner(tossSnap, tossSnap?.competitionName || snapshot?.competitionName || '') : null
-  const predictedTossWinner = tossPrediction?.winnerName || 'Waiting for more data...'
-  const tossPredictionReason = tossPrediction?.reason || ''
-
-  // The summary and graphs use the same verified settlement calculation.
+  // Keep graph settlement values aligned with their respective summaries.
   if (t1GraphData) t1GraphData.bookieProfitIfWins = pl1
   if (t2GraphData) t2GraphData.bookieProfitIfWins = pl2
   if (tossT1GraphData) tossT1GraphData.bookieProfitIfWins = tossT1BookiePL
@@ -730,189 +679,7 @@ export default function MatchDetail({ sport }) {
         <div className="space-y-4">
           {tossSnapshot ? (
             <>
-              {/* Toss Team Comparison Card (100% Width) */}
-              <div className="w-full rounded-xl border border-[#1e2536] bg-[#0c1018] py-2.5 px-4 sm:px-6 shadow-md mb-3">
-                <div className="flex items-center justify-around gap-4 sm:gap-12 w-full">
-                  {/* Team 1 Column */}
-                  <div className="flex flex-col items-center flex-1 min-w-0 text-center">
-                    <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
-                      {tossT1Name}
-                    </span>
-                    <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
-                      {formatVolStr(tossVol1)}
-                    </span>
-                    {/* Percentage Badge */}
-                    <span
-                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${tossPct1 >= 50
-                          ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                          : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-                        }`}
-                    >
-                      {tossPct1 == null ? '—' : `${tossPct1}%`}
-                    </span>
-                    {/* Odds */}
-                    <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
-                      <span className="text-[9px]">▲</span>
-                      <span>{formatOdds(tossOdds1)}</span>
-                    </div>
-                  </div>
-
-                  {/* Team 2 Column */}
-                  <div className="flex flex-col items-center flex-1 min-w-0 text-center">
-                    <span className="text-xs sm:text-sm font-semibold text-slate-300 truncate max-w-full leading-tight">
-                      {tossT2Name}
-                    </span>
-                    <span className="text-sm sm:text-base font-extrabold text-white tracking-tight leading-snug my-0.5" title="Traded volume on this selection">
-                      {formatVolStr(tossVol2)}
-                    </span>
-                    {/* Percentage Badge */}
-                    <span
-                      className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block leading-none my-0.5 ${tossPct2 >= 50
-                          ? 'border border-[#10b981] bg-[#10b981]/15 text-[#10b981]'
-                          : 'border border-slate-700/80 bg-slate-800/80 text-slate-400'
-                        }`}
-                    >
-                      {tossPct2 == null ? '—' : `${tossPct2}%`}
-                    </span>
-                    {/* Odds */}
-                    <div className="flex items-center justify-center gap-0.5 text-[11px] sm:text-xs font-bold text-[#10b981] leading-tight mt-0.5" title="Last price matched">
-                      <span className="text-[9px]">▲</span>
-                      <span>{formatOdds(tossOdds2)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Micro Inflow Bar */}
-                <div className="mt-2 h-1.5 w-full bg-[#1b2234] rounded-full overflow-hidden flex">
-                  <div
-                    style={{ width: `${tossPct1 ?? 0}%` }}
-                    className={`h-full transition-all duration-300 ${
-                      tossPct1 >= tossPct2
-                        ? 'bg-gradient-to-r from-emerald-700 to-green-600'
-                        : 'bg-gradient-to-r from-red-600 to-rose-600'
-                    }`}
-                  />
-                  <div
-                    style={{ width: `${tossPct2 ?? 0}%` }}
-                    className={`h-full transition-all duration-300 ${
-                      tossPct2 > tossPct1
-                        ? 'bg-gradient-to-r from-emerald-700 to-green-600'
-                        : 'bg-gradient-to-r from-red-600 to-rose-600'
-                    }`}
-                  />
-                </div>
-              </div>
-
-              {/* 🎯 TOSS SMART MONEY & INFLOW PREDICTOR */}
-              <div className="rounded-xl overflow-hidden border border-[#1e2538] shadow-xl bg-[#0c101d] p-3 sm:p-3.5 space-y-3">
-                {/* Header */}
-                <div className="flex items-center justify-between gap-2 flex-wrap">
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs sm:text-sm font-extrabold text-white flex items-center gap-1.5">
-                      🎯 Toss Smart Money & Inflow Predictor
-                    </span>
-                  </div>
-                  <span className="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-purple-500/15 text-purple-300 border border-purple-500/30">
-                    EXCHANGE INFLOW
-                  </span>
-                </div>
-
-                <p className="text-[11px] text-slate-400 leading-relaxed">
-                  Toss market smart money accumulation, back-volume dominance, and syndicate trade flow detection.
-                </p>
-
-                {/* 🏆 PREDICTED TOSS WINNER */}
-                <div className="rounded-lg p-3 sm:p-3.5 border bg-emerald-500/[0.08] border-emerald-500/30 shadow-md">
-                  <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
-                    <div className="text-[9px] font-extrabold uppercase tracking-widest text-emerald-400 flex items-center gap-1.5">
-                      <Trophy size={12} className="text-amber-400" />
-                      <span>PREDICTED TOSS WINNER</span>
-                    </div>
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      {tossPrediction?.algoName && (
-                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300 border border-blue-500/30">
-                          {tossPrediction.algoName}
-                        </span>
-                      )}
-                      <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-emerald-400 text-black shadow-sm">
-                        {tossPrediction?.verdictTag || 'SMART MONEY INFLOW'}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="text-lg sm:text-xl font-black text-white mb-1.5 flex items-center gap-2">
-                    <span>{predictedTossWinner}</span>
-                  </div>
-
-                  <div className="text-xs text-slate-300 leading-relaxed space-y-1 pt-1 border-t border-white/5">
-                    <div className="text-[11px] text-slate-300">
-                      💡 <b>Inflow Analysis:</b> {tossPredictionReason || 'Analyzing orderbook accumulation...'}
-                    </div>
-                    {tossPrediction?.algoName && (
-                      <div className="text-[10px] text-sky-400 font-medium flex items-center gap-1.5 pt-0.5">
-                        <span className="text-[9px] px-1 py-0.2 rounded bg-sky-500/20 border border-sky-500/30 text-sky-300 font-bold uppercase tracking-wider">Algo</span>
-                        <span>{tossPrediction.algoName}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* 📈 Bookie P/L (Agar Team Jeete) — Just below Predicted Winner */}
-                {(tossT1BookiePL != null || tossT2BookiePL != null || tossTrades1.length > 0 || tossTrades2.length > 0) && (
-                  <div className="rounded-lg p-3 sm:p-3.5 border border-[#1b2234] bg-[#080b14]">
-                    <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center justify-between">
-                      <span>📈 Bookie P/L (Agar Team Jeete){tossPlSource === 'api' ? ' • API' : ' • Trades'}</span>
-                      <span className="text-[9px] font-extrabold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono">
-                        TOSS P/L
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
-                      {[{ name: tossT1Name, pl: tossT1BookiePL }, { name: tossT2Name, pl: tossT2BookiePL }].map(({ name, pl }) => {
-                        const isProf = pl != null && pl >= 0
-                        return (
-                          <div
-                            key={name}
-                            className="rounded-xl p-3 text-center border transition-all"
-                            style={{
-                              background: isProf ? 'rgba(22,163,74,0.07)' : 'rgba(220,38,38,0.07)',
-                              border: `1px solid ${isProf ? 'rgba(22,163,74,0.25)' : 'rgba(220,38,38,0.25)'}`
-                            }}
-                          >
-                            <div className="text-sm sm:text-base font-bold text-white mb-1 truncate">{name}</div>
-                            <div className={`text-xl font-black font-mono ${pnlCls(pl)}`}>{fmtTossRs(pl)}</div>
-                            <div className={`text-xs font-bold mt-1 ${pnlCls(pl)}`}>{pl == null ? 'Unavailable' : isProf ? '✅ PROFIT' : '❌ LOSS'}</div>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                )}
-
-                {/* 2. 6-Metric Breakdown Table */}
-                <div className="pt-1">
-                  <div className="grid grid-cols-3 gap-1 mb-1.5 px-1">
-                    <div className="text-[9px] font-bold text-slate-400 uppercase">Metrics</div>
-                    <div className="text-center text-[9px] font-bold text-slate-300 truncate">{tossT1Name}</div>
-                    <div className="text-center text-[9px] font-bold text-slate-300 truncate">{tossT2Name}</div>
-                  </div>
-                  <div className="rounded-lg border border-[#1b2234] p-1.5 bg-[#080b14] font-mono">
-                    {[
-                      { label: 'Back Val', v1: <span className="text-[11px] text-sky-400 font-bold">€{formatVolStr(tossM1?.back)}</span>, v2: <span className="text-[11px] text-sky-400 font-bold">€{formatVolStr(tossM2?.back)}</span> },
-                      { label: 'Lay Liab', v1: <span className="text-[11px] text-rose-400 font-bold">€{formatVolStr(tossM1?.lay)}</span>, v2: <span className="text-[11px] text-rose-400 font-bold">€{formatVolStr(tossM2?.lay)}</span> },
-                      { label: 'Matched stakes', v1: <span className="text-[11px] text-white font-bold">€{formatVolStr(tossM1?.totalBet)}</span>, v2: <span className="text-[11px] text-white font-bold">€{formatVolStr(tossM2?.totalBet)}</span> },
-                      { label: 'Lay Trades', v1: <span className="text-[11px] text-white font-bold">{tossS1?.tradeCount ?? '—'}</span>, v2: <span className="text-[11px] text-white font-bold">{tossS2?.tradeCount ?? '—'}</span> },
-                      { label: 'Support %', v1: <span className="text-[11px] font-bold" style={{ color: (tossSup1?.support ?? 0) > (tossSup2?.support ?? 0) ? '#34d399' : '#94a3b8' }}>{tossSup1 ? tossSup1.support.toFixed(1) + '%' : '—'}</span>, v2: <span className="text-[11px] font-bold" style={{ color: (tossSup2?.support ?? 0) > (tossSup1?.support ?? 0) ? '#34d399' : '#94a3b8' }}>{tossSup2 ? tossSup2.support.toFixed(1) + '%' : '—'}</span> },
-                      { label: 'B/L Ratio', v1: <span className="text-[11px] text-emerald-400 font-bold">{tossM1?.lay > 0 ? (tossM1.back / tossM1.lay).toFixed(2) : '—'}</span>, v2: <span className="text-[11px] text-emerald-400 font-bold">{tossM2?.lay > 0 ? (tossM2.back / tossM2.lay).toFixed(2) : '—'}</span> },
-                    ].map(({ label, v1, v2 }, i, arr) => (
-                      <div key={label} className={`grid grid-cols-3 gap-1 py-1 px-1.5 ${i !== arr.length - 1 ? 'border-b border-[#1b2234]/60' : ''}`}>
-                        <div className="text-[9px] text-slate-400 flex items-center font-semibold font-sans">{label}</div>
-                        <div className="text-center flex items-center justify-center">{v1}</div>
-                        <div className="text-center flex items-center justify-center">{v2}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+              <TossSnapshotDetails snap={tossSnapshot} isEmbedded />
 
               {/* Toss Graph Team Cards */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mt-4">

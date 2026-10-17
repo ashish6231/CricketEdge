@@ -13,7 +13,7 @@ function snapshotMatchesRecord(snapshot, record, normalizeTeam = teamKey) {
 
 // Fixtures are discovery inputs, not stored samples. Keep each market only when
 // its saved input snapshot is usable and belongs to this match's participants.
-function pruneTrackedLeagueSnapshots(data, { isLeague, normalizeTeam = teamKey }) {
+function pruneTrackedLeagueSnapshots(data, { isLeague, normalizeTeam = teamKey, persistFixtures = false }) {
   let removedRecords = 0, removedMarkets = 0;
   data.records = data.records.filter(record => {
     if (!isLeague(record.competitionName)) { removedRecords++; return false; }
@@ -31,7 +31,10 @@ function pruneTrackedLeagueSnapshots(data, { isLeague, normalizeTeam = teamKey }
       markets[kind] = clean;
     }
     record.markets = markets;
-    if (!Object.keys(markets).length) { removedRecords++; return false; }
+    const validFixture = persistFixtures && Number.isFinite(record.startTime) && record.startTime > 0
+      && normalizeTeam(record.team1) && normalizeTeam(record.team2)
+      && normalizeTeam(record.team1) !== normalizeTeam(record.team2);
+    if (!Object.keys(markets).length && !validFixture) { removedRecords++; return false; }
     return true;
   });
   return { removedRecords, removedMarkets };

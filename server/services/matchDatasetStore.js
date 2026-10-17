@@ -1,6 +1,7 @@
 const fsp = require('fs/promises');
 const path = require('path');
 const { checkMatchRecordQuality } = require('./matchRecordQuality');
+const { createPredictionDatasetPersistence } = require('./predictionDatasetPersistence');
 
 const DEFAULT_DATASET_PATH = path.join(__dirname, '../data/match_dataset.json');
 
@@ -16,16 +17,18 @@ function httpError(status, message) {
   return Object.assign(new Error(message), { status });
 }
 
-function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
+function createStore({ filePath = DEFAULT_DATASET_PATH, persistence } = {}) {
+  const database = persistence === undefined ? createPredictionDatasetPersistence({ filePath }) : persistence;
   let chain = Promise.resolve();
 
   function enqueue(fn) {
-    const result = chain.then(fn);
+    const result = chain.then(() => database ? database.runExclusive(fn) : fn());
     chain = result.catch(() => {});
     return result;
   }
 
   async function readDatasetFromDisk() {
+    if (database) return database.read();
     try {
       const raw = await fsp.readFile(filePath, 'utf8');
       const parsed = JSON.parse(raw);
@@ -43,6 +46,7 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
 
   async function writeDatasetToDisk(data) {
     data.updatedAt = new Date().toISOString();
+    if (database) return database.write(data);
     const dir = path.dirname(filePath);
     await fsp.mkdir(dir, { recursive: true });
     const tmpPath = `${filePath}.${Math.random().toString(16).slice(2)}.tmp`;

@@ -41,4 +41,6 @@ import profile39 from './womens-international-twenty20-matches.mjs';
 import profile40 from './womens-one-day-internationals.mjs';
 import profile41 from './world-championship-of-legends-t20.mjs';
 
-export const INDEPENDENT_LEAGUE_PROFILES = Object.freeze([profile0, profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8, profile9, profile10, profile11, profile12, profile13, profile14, profile15, profile16, profile17, profile18, profile19, profile20, profile21, profile22, profile23, profile24, profile25, profile26, profile27, profile28, profile29, profile30, profile31, profile32, profile33, profile34, profile35, profile36, profile37, profile38, profile39, profile40, profile41]);
+import springProfile from './women-s-t20-spring-challenge.mjs';
+
+export const INDEPENDENT_LEAGUE_PROFILES = Object.freeze([profile0, profile1, profile2, profile3, profile4, profile5, profile6, profile7, profile8, profile9, profile10, profile11, profile12, profile13, profile14, profile15, profile16, profile17, profile18, profile19, profile20, profile21, profile22, profile23, profile24, profile25, profile26, profile27, profile28, profile29, profile30, profile31, profile32, profile33, profile34, profile35, profile36, profile37, profile38, profile39, profile40, profile41, springProfile]);

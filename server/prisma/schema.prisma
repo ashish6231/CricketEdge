@@ -241,3 +241,25 @@ model SiteSettings {
 
   @@index([category])
 }
+
+// Durable prediction archives. The dataset header is also the transaction lock
+// used to serialize capture workers across deploys and multiple server replicas.
+model PredictionDataset {
+  id          String   @id @db.VarChar(64)
+  metadata    String   @db.LongText
+  initialized Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+}
+
+model PredictionRecord {
+  id         String   @id @db.VarChar(64)
+  datasetKey String   @db.VarChar(64)
+  recordKey  String   @db.VarChar(191)
+  payload    String   @db.LongText
+  position   Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([datasetKey, recordKey])
+  @@index([datasetKey, position])
+}

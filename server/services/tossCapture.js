@@ -97,7 +97,7 @@ async function defaultPredictTossWinner(snapshot, competitionName) {
 
 function shouldSkipExisting(existing) {
   if (!existing) return false;
-  if (existing.status === 'verified') return true;
+  if (['verified', 'abandoned'].includes(existing.status)) return true;
   if (
     existing.status === 'pending'
     && checkPreMatchDataQuality(existing.snapshot).valid
@@ -124,13 +124,15 @@ async function captureEndedTosses({
     return { scanned: 0, captured: 0, skipped: 0, failed: 1 };
   }
 
+  matches = matches?.matches || matches;
   if (!Array.isArray(matches) || matches.error) {
     return { scanned: 0, captured: 0, skipped: 0, failed: 1 };
   }
 
-  const eligible = matches.filter(
-    (match) => match.status === 'ended' && (match.totalMatched || 0) > 0,
-  );
+  const completed = new Set(['ended', 'completed', 'closed', 'verified']);
+  const eligible = matches.filter(match => completed.has(String(match.status || '').toLowerCase())
+    && (match.totalMatched || 0) > 0 && (match.matchId || match.id))
+    .map(match => ({ ...match, matchId: String(match.matchId || match.id) }));
   summary.scanned = eligible.length;
 
   const data = await store.load();
@@ -154,7 +156,8 @@ async function captureEndedTosses({
 
     let snapshot;
     try {
-      snapshot = scraper.getTossSnapshot ? await scraper.getTossSnapshot(match.matchId) : await scraper.fetchTossSnapshot(match.matchId);
+      const fetchSnapshot = scraper.getTossCaptureSnapshot || scraper.getTossSnapshot || scraper.fetchTossSnapshot;
+      snapshot = await fetchSnapshot.call(scraper, match.matchId);
     } catch (err) {
       snapshot = { error: err.message };
     }

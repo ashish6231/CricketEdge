@@ -19,9 +19,9 @@ test('normal is the default and does not load the experimental fitted model', ()
 });
 
 test('every saved league has a separate algorithm ID and independent parameter object', () => {
-  assert.equal(LEAGUE_MATCH_ALGORITHMS.length, 42);
-  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(a => a.algorithmId)).size, 42);
-  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(a => a.parameters)).size, 42);
+  assert.equal(LEAGUE_MATCH_ALGORITHMS.length, 43);
+  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(a => a.algorithmId)).size, 43);
+  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(a => a.parameters)).size, 43);
   for (const record of records) {
     const algorithm = getLeagueMatchAlgorithm(record.competitionName);
     assert.ok(algorithm, `Unregistered league: ${record.competitionName}`);

@@ -8,12 +8,12 @@ const { listMatchDataset } = require('../services/adminMatchDataset');
 const rows = require('../data/match_dataset.json').records;
 const winners = rows.filter(row => row.status === 'verified' && row.resultVerification?.verification === 'verified');
 
-test('all 42 dropdown leagues have their own immutable module, predictor and profile version', () => {
+test('all 43 dropdown leagues have their own immutable module, predictor and profile version', () => {
   const modules = fs.readdirSync(path.join(__dirname, '../utils/matchLeagueProfiles')).filter(name => name !== 'index.mjs');
-  assert.equal(modules.length, 42);
-  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(algorithm => algorithm.predict)).size, 42);
-  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(algorithm => algorithm.profile)).size, 42);
-  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(algorithm => algorithm.profile.profileVersion)).size, 42);
+  assert.equal(modules.length, 43);
+  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(algorithm => algorithm.predict)).size, 43);
+  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(algorithm => algorithm.profile)).size, 43);
+  assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(algorithm => algorithm.profile.profileVersion)).size, 43);
   for (const algorithm of LEAGUE_MATCH_ALGORITHMS) {
     assert.ok(Object.isFrozen(algorithm.profile));
     assert.ok(Object.isFrozen(algorithm.profile.parameters));

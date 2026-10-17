@@ -202,6 +202,11 @@ export default function TossDetail({ isEmbedded = false }) {
     </div>
   )
 
+  return <TossSnapshotDetails snap={snap} isEmbedded={isEmbedded} onBack={() => navigate(-1)} />
+}
+
+// Shared by the dedicated toss page and Match Detail's toss section.
+export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
   const raw = snap.deepMetrics?.raw || {}
@@ -239,7 +244,7 @@ export default function TossDetail({ isEmbedded = false }) {
     <div className={`toss-detail-page w-full fade-in space-y-4 ${isEmbedded ? '' : 'detail-page'}`}>
 
       {!isEmbedded && (
-        <button onClick={() => navigate(-1)} className="toss-detail-back">
+        <button onClick={onBack} className="toss-detail-back">
           <ArrowLeft size={16} /> Back to toss matches
         </button>
       )}

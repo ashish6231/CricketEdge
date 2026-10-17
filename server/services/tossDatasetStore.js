@@ -1,5 +1,6 @@
 const fsp = require('fs/promises');
 const path = require('path');
+const { createPredictionDatasetPersistence } = require('./predictionDatasetPersistence');
 
 const DEFAULT_DATASET_PATH = path.join(__dirname, '../data/toss_dataset.json');
 
@@ -19,16 +20,18 @@ function hasUsableSnapshot(snapshot) {
   return snapshot !== null && typeof snapshot === 'object' && !Array.isArray(snapshot);
 }
 
-function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
+function createStore({ filePath = DEFAULT_DATASET_PATH, persistence } = {}) {
+  const database = persistence === undefined ? createPredictionDatasetPersistence({ filePath }) : persistence;
   let chain = Promise.resolve();
 
   function enqueue(fn) {
-    const result = chain.then(fn);
+    const result = chain.then(() => database ? database.runExclusive(fn) : fn());
     chain = result.catch(() => {});
     return result;
   }
 
   async function readDatasetFromDisk() {
+    if (database) return database.read();
     try {
       const raw = await fsp.readFile(filePath, 'utf8');
       const parsed = JSON.parse(raw);
@@ -48,6 +51,7 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
 
   async function writeDatasetToDisk(data) {
     data.updatedAt = new Date().toISOString();
+    if (database) return database.write(data);
     const dir = path.dirname(filePath);
     await fsp.mkdir(dir, { recursive: true });
     const tmpPath = `${filePath}.${Math.random().toString(16).slice(2)}.tmp`;
@@ -101,7 +105,7 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
       const existing = data.records.find((r) => String(r.matchId) === matchId);
 
       const isVerified = !!record.actualWinner;
-      const status = isVerified ? 'verified' : 'pending';
+      const status = record.actualWinner === 'No Result' ? 'abandoned' : isVerified ? 'verified' : 'pending';
       const actualWinner = record.actualWinner || null;
       const confirmedAt = isVerified ? (record.capturedAt || new Date().toISOString()) : null;
       const confirmedByEmail = isVerified ? 'crex-auto' : null;
@@ -122,7 +126,7 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
         return { record: newRecord, created: true, updated: false };
       }
 
-      if (existing.status === 'verified') {
+      if (['verified', 'abandoned'].includes(existing.status)) {
         return { record: existing, created: false, updated: false };
       }
 
@@ -152,20 +156,23 @@ function createStore({ filePath = DEFAULT_DATASET_PATH } = {}) {
         throw httpError(404, 'Match not found in toss dataset');
       }
 
-      if (actualWinner !== existing.team1 && actualWinner !== existing.team2) {
-        throw httpError(400, 'actualWinner must be team1 or team2');
+      if (![existing.team1, existing.team2, 'No Result'].includes(actualWinner)) {
+        throw httpError(400, 'actualWinner must be team1, team2 or No Result');
       }
 
-      if (existing.status === 'verified' && existing.actualWinner === actualWinner) {
+      const nextStatus = actualWinner === 'No Result' ? 'abandoned' : 'verified';
+      if (existing.status === nextStatus && existing.actualWinner === actualWinner) {
         return { record: existing, changed: false };
       }
 
-      const wasVerified = existing.status === 'verified';
-      existing.status = 'verified';
+      const wasVerified = ['verified', 'abandoned'].includes(existing.status);
+      existing.status = nextStatus;
       existing.actualWinner = actualWinner;
       existing.confirmedAt = new Date().toISOString();
       existing.confirmedByEmail = admin.email;
       existing.confirmedById = admin.userId;
+      existing.predictionCorrect = actualWinner === 'No Result' || !existing.predictedWinner
+        ? null : existing.predictedWinner === actualWinner;
 
       await writeDatasetToDisk(data);
       return { record: existing, changed: true, edited: wasVerified };

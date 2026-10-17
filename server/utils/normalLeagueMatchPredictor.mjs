@@ -1,3 +1,4 @@
+import { isWomensSpringT20, WOMENS_SPRING_LEAGUE, applyWomensSpringTrapOverride } from './womensSpringMatchPredictor.mjs';
 import { LEAGUE_PREMATCH_ADJUSTMENTS } from './leaguePreMatchAdjustments.mjs';
 import { extractRuleAdjustmentFeatures, applyRuleAdjustments, describeAdjustment } from './preMatchRuleAdjustments.mjs';
 import { getLeagueAlgorithmPrediction, getDefaultAlgorithmPrediction } from './leagueAlgorithms.mjs';
@@ -17,6 +18,7 @@ const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(p
 export const LEAGUE_MATCH_ALGORITHMS = Object.freeze([
   EMIRATES_D10_ALGORITHM,
   WNCL_ALGORITHM,
+  { league: WOMENS_SPRING_LEAGUE },
   { league: "ACC Men's Premier Cup", algorithmId: "match-acc-men-s-premier-cup-rules-v2", parameters: { totalRatio: 1.5, backRatio: 1.4 } },
   { league: "Asian Games Men", algorithmId: "match-asian-games-men-rules-v2", parameters: { totalRatio: 1.5, backRatio: 1.4 } },
   { league: "Asian Games T20", algorithmId: "match-asian-games-t20-rules-v2", parameters: { totalRatio: 1.5, backRatio: 1.4 } },
@@ -72,6 +74,7 @@ const aliases = {
   dpl: 'Delhi Premier League',
 };
 export function getLeagueMatchAlgorithm(name) {
+  if (isWomensSpringT20(name)) return registry.get(normalize(WOMENS_SPRING_LEAGUE));
   if (isWNCLLeague(name)) return registry.get(normalize(WNCL_ALGORITHM.league));
   if (isEmiratesD10League(name)) return registry.get(normalize(EMIRATES_D10_ALGORITHM.league));
   const key = normalize(name);
@@ -162,7 +165,7 @@ export function predictNormalLeagueMatch(input) {
   if (!baseline) return null;
   if (!algorithm) return baseline;
   const frozen = normalizeFrozenMatchInput(input);
-  return algorithm.predict(frozen, baseline);
+  return algorithm.predict(frozen, applyWomensSpringTrapOverride(input, baseline));
 }
 
 export function predictLeagueTrainingFit(input) {

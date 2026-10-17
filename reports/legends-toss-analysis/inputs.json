@@ -1,0 +1,2183 @@
+{
+  "queriedAt": "2026-10-16T17:23:19.746Z",
+  "rows": [
+    {
+      "matchId": "36126552",
+      "matchName": "India Legends v Australia Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791027000000,
+      "capturedAt": "2026-10-03T16:42:14.250Z",
+      "status": "verified",
+      "actualWinner": "Australia Legends",
+      "predictedWinner": "India Legends",
+      "predictionReason": "Micro Liquidity Bookie Safe on India Legends (P/L: +213.6 vs Australia Legends: -191.9)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Micro Liquidity Bookie Safe on India Legends (P/L: +213.6 vs Australia Legends: -191.9)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "Australia Legends"
+        ],
+        "serverTime": "2026-10-03T16:41:48.452Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 150.59,
+            "lay": 72.46,
+            "total": 150.59
+          },
+          "team2": {
+            "back": 284.25,
+            "lay": 0,
+            "total": 356.71
+          }
+        },
+        "preMatchPnl": {
+          "team1": 213.64950000000002,
+          "team2": -191.9194
+        },
+        "preMatchTotalBets": {
+          "team1": 143.0605,
+          "team2": 342.5094
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 150.59,
+            "lay": 72.46,
+            "totalVolume": 223.05,
+            "backPercentage": 67.51401031158932
+          },
+          "team2": {
+            "back": 284.25,
+            "lay": 0,
+            "totalVolume": 284.25,
+            "backPercentage": 100
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 143.0605,
+            "lay": 72.46,
+            "totalBet": 215.52049999999997
+          },
+          "team2": {
+            "back": 270.04940000000005,
+            "lay": 0,
+            "totalBet": 270.04940000000005
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 70.6005,
+            "backExposure": 143.0605,
+            "layExposure": 72.46,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 270.04940000000005,
+            "backExposure": 270.04940000000005,
+            "layExposure": 0,
+            "teamName": "Australia Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 143.0605,
+            "A_lay_stake": 72.46,
+            "B_back_expo": 270.04940000000005,
+            "B_lay_stake": 0
+          },
+          "totals": {
+            "totalBetTeam1": 143.0605,
+            "totalBetTeam2": 342.5094
+          },
+          "simplePL": {
+            "team1_win": -70.6005,
+            "team2_win": -270.04940000000005
+          },
+          "derivedPL": {
+            "team1_win": 199.44890000000004,
+            "team2_win": -199.44890000000004
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Australia Legends",
+          "bookieFavouriteOutcome": "India Legends",
+          "riskTeam": "Australia Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 40.6307904592943,
+          "mostBettedTeam": "Australia Legends",
+          "prediction": {
+            "team1TrueSupport": 143.0605,
+            "team2TrueSupport": 342.5094,
+            "ratio": 2.394157716490576,
+            "bookiePnlTeam1": -70.6005,
+            "bookiePnlTeam2": -270.04940000000005,
+            "prediction": "India Legends",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.39) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 150.59,
+              "totalLayVol": 72.46,
+              "totalBet": 150.59,
+              "profitLoss": 206.11999999999998
+            },
+            "team2": {
+              "totalBackVol": 284.25,
+              "totalLayVol": 0,
+              "totalBet": 356.71,
+              "profitLoss": -206.11999999999998
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 143.0605,
+              "totalLayVol": 72.46,
+              "totalBet": 143.0605,
+              "profitLoss": 213.6495
+            },
+            "team2": {
+              "totalBackExpo": 270.04940000000005,
+              "totalLayVol": 0,
+              "totalBet": 342.5094,
+              "profitLoss": -191.91940000000002
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 143.0605,
+              "totalLayNetVol": 72.46,
+              "totalBet": 143.0605,
+              "profitLoss": 199.44890000000004
+            },
+            "team2": {
+              "totalBackNetVol": 270.04940000000005,
+              "totalLayNetVol": 0,
+              "totalBet": 342.5094,
+              "profitLoss": -199.44890000000004
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 1,
+            "averageOdds": 1.95,
+            "averageSize": 150.59,
+            "supportProduct": 293.6505
+          },
+          "teamB": {
+            "tradeCount": 4,
+            "averageOdds": 1.9275,
+            "averageSize": 89.1775,
+            "supportProduct": 171.88963124999998
+          },
+          "strongerTeam": "India Legends",
+          "supportRatio": 1.7083665714129574
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 150.59,
+            "oppoLayVolume": 0,
+            "layExposure": 72.46,
+            "netSupportValue": 78.13000000000001
+          },
+          "teamB": {
+            "totalBackVolume": 284.25,
+            "oppoLayVolume": 72.46,
+            "layExposure": 0,
+            "netSupportValue": 356.71
+          },
+          "strongerTeam": "Australia Legends",
+          "netSupportDifference": 278.58,
+          "percentageA": 17.967528286266216,
+          "percentageB": 82.03247171373378
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 150.59,
+            "support": 29.684604770352852
+          },
+          "team2": {
+            "supportMoney": 356.71,
+            "support": 70.31539522964715
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 78.13000000000001,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 78.13000000000001
+          },
+          "teamB": {
+            "directNetSupport": 284.25,
+            "syntheticSupport": 72.46,
+            "opponentLiabilityRejection": 72.46,
+            "sentimentScore": 284.25
+          },
+          "strongerTeam": "Australia Legends",
+          "scoreDifference": 206.12,
+          "percentageA": 21.560240631381426,
+          "percentageB": 78.43975936861858
+        },
+        "matchLoadV2": {
+          "team1": 1,
+          "team2": 4
+        }
+      }
+    },
+    {
+      "matchId": "36128071",
+      "matchName": "Pakistan Legends v Bangladesh Champions",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791041400000,
+      "capturedAt": "2026-10-04T10:55:32.600Z",
+      "status": "abandoned",
+      "actualWinner": "No Result",
+      "predictedWinner": "Pakistan Legends",
+      "predictionReason": "Smart Money Inflow (Pakistan Legends: ₹265 Back, Lead: 1.2x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (Pakistan Legends: ₹265 Back, Lead: 1.2x)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "Pakistan Legends",
+          "Bangladesh Champions"
+        ],
+        "serverTime": "2026-10-03T19:10:52.485Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 265,
+            "lay": 4.83,
+            "total": 265
+          },
+          "team2": {
+            "back": 217.23,
+            "lay": 0,
+            "total": 222.06
+          }
+        },
+        "preMatchPnl": {
+          "team1": -25.85900000000001,
+          "team2": 56.725400000000036
+        },
+        "preMatchTotalBets": {
+          "team1": 247.8707,
+          "team2": 208.2746
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 265,
+            "lay": 4.83,
+            "totalVolume": 269.83,
+            "backPercentage": 98.20998406404033
+          },
+          "team2": {
+            "back": 217.23,
+            "lay": 0,
+            "totalVolume": 217.23,
+            "backPercentage": 100
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 247.8707,
+            "lay": 4.7817,
+            "totalBet": 252.6524
+          },
+          "team2": {
+            "back": 203.44459999999998,
+            "lay": 0,
+            "totalBet": 203.44459999999998
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 243.089,
+            "backExposure": 247.8707,
+            "layExposure": 4.7817,
+            "teamName": "Pakistan Legends"
+          },
+          "team2": {
+            "netExposure": 203.44459999999998,
+            "backExposure": 203.44459999999998,
+            "layExposure": 0,
+            "teamName": "Bangladesh Champions"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 247.8707,
+            "A_lay_stake": 4.83,
+            "B_back_expo": 203.44459999999998,
+            "B_lay_stake": 0
+          },
+          "totals": {
+            "totalBetTeam1": 247.8707,
+            "totalBetTeam2": 208.2746
+          },
+          "simplePL": {
+            "team1_win": -243.0407,
+            "team2_win": -203.44459999999998
+          },
+          "derivedPL": {
+            "team1_win": -39.59610000000001,
+            "team2_win": 39.59610000000001
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Pakistan Legends",
+          "bookieFavouriteOutcome": "Bangladesh Champions",
+          "riskTeam": "Pakistan Legends",
+          "trap": {
+            "level": "none",
+            "reason": "Support is not strongly one-sided."
+          },
+          "supportConfidence": 8.816162279801254,
+          "mostBettedTeam": "Pakistan Legends",
+          "prediction": {
+            "team1TrueSupport": 247.8707,
+            "team2TrueSupport": 208.22629999999998,
+            "ratio": 1.1903909352468927,
+            "bookiePnlTeam1": -243.0407,
+            "bookiePnlTeam2": -203.44459999999998,
+            "prediction": "Bangladesh Champions",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.19) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 265,
+              "totalLayVol": 4.83,
+              "totalBet": 265,
+              "profitLoss": -42.94
+            },
+            "team2": {
+              "totalBackVol": 217.23,
+              "totalLayVol": 0,
+              "totalBet": 222.06,
+              "profitLoss": 42.94
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 247.8707,
+              "totalLayVol": 4.83,
+              "totalBet": 247.8707,
+              "profitLoss": -25.85900000000001
+            },
+            "team2": {
+              "totalBackExpo": 203.44459999999998,
+              "totalLayVol": 0,
+              "totalBet": 208.2746,
+              "profitLoss": 56.72540000000001
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 247.8707,
+              "totalLayNetVol": 4.7817,
+              "totalBet": 247.8707,
+              "profitLoss": -39.64440000000002
+            },
+            "team2": {
+              "totalBackNetVol": 203.44459999999998,
+              "totalLayNetVol": 0,
+              "totalBet": 208.22629999999998,
+              "profitLoss": 39.64440000000002
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 2,
+            "averageOdds": 1.935,
+            "averageSize": 132.5,
+            "supportProduct": 256.3875
+          },
+          "teamB": {
+            "tradeCount": 3,
+            "averageOdds": 1.9533333333333334,
+            "averageSize": 74.02,
+            "supportProduct": 144.58573333333334
+          },
+          "strongerTeam": "Pakistan Legends",
+          "supportRatio": 1.7732558675683077
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 265,
+            "oppoLayVolume": 0,
+            "layExposure": 4.7817,
+            "netSupportValue": 260.2183
+          },
+          "teamB": {
+            "totalBackVolume": 217.23,
+            "oppoLayVolume": 4.83,
+            "layExposure": 0,
+            "netSupportValue": 222.06
+          },
+          "strongerTeam": "Pakistan Legends",
+          "netSupportDifference": 38.1583,
+          "percentageA": 53.956045710536834,
+          "percentageB": 46.04395428946316
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 265,
+            "support": 54.40808113990063
+          },
+          "team2": {
+            "supportMoney": 222.06,
+            "support": 45.591918860099376
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 260.17,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 260.17
+          },
+          "teamB": {
+            "directNetSupport": 217.23,
+            "syntheticSupport": 4.83,
+            "opponentLiabilityRejection": 4.7817,
+            "sentimentScore": 217.2783
+          },
+          "strongerTeam": "Pakistan Legends",
+          "scoreDifference": 42.891700000000014,
+          "percentageA": 54.49176382029217,
+          "percentageB": 45.508236179707836
+        },
+        "matchLoadV2": {
+          "team1": 2,
+          "team2": 3
+        }
+      }
+    },
+    {
+      "matchId": "36130557",
+      "matchName": "West Indies Legends v South Africa Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791113400000,
+      "capturedAt": "2026-10-04T17:24:59.017Z",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "South Africa Legends",
+      "predictionReason": "Smart Money Inflow (South Africa Legends: ₹722 Back, Lead: 1.9x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (South Africa Legends: ₹722 Back, Lead: 1.9x)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "West Indies Legends",
+          "South Africa Legends"
+        ],
+        "serverTime": "2026-10-04T17:23:40.349Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 388.6,
+            "lay": 10.65,
+            "total": 402.3
+          },
+          "team2": {
+            "back": 722.4799999999999,
+            "lay": 13.7,
+            "total": 733.1299999999999
+          }
+        },
+        "preMatchPnl": {
+          "team1": 356.8255,
+          "team2": -278.5727999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 376.5175,
+          "team2": 680.5136
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 388.6,
+            "lay": 10.65,
+            "totalVolume": 399.25,
+            "backPercentage": 97.33249843456481
+          },
+          "team2": {
+            "back": 722.4799999999999,
+            "lay": 13.7,
+            "totalVolume": 736.18,
+            "backPercentage": 98.13904208209948
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 362.8175,
+            "lay": 10.863000000000001,
+            "totalBet": 373.6805
+          },
+          "team2": {
+            "back": 669.8636,
+            "lay": 13.3408,
+            "totalBet": 683.2044
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 351.9545,
+            "backExposure": 362.8175,
+            "layExposure": 10.863000000000001,
+            "teamName": "West Indies Legends"
+          },
+          "team2": {
+            "netExposure": 656.5228000000001,
+            "backExposure": 669.8636,
+            "layExposure": 13.3408,
+            "teamName": "South Africa Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 362.8175,
+            "A_lay_stake": 10.65,
+            "B_back_expo": 669.8636,
+            "B_lay_stake": 13.7
+          },
+          "totals": {
+            "totalBetTeam1": 376.5175,
+            "totalBetTeam2": 680.5136
+          },
+          "simplePL": {
+            "team1_win": -352.1675,
+            "team2_win": -656.1636
+          },
+          "derivedPL": {
+            "team1_win": 303.9961,
+            "team2_win": -303.9961
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "South Africa Legends",
+          "bookieFavouriteOutcome": "West Indies Legends",
+          "riskTeam": "South Africa Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 29.136978941898654,
+          "mostBettedTeam": "South Africa Legends",
+          "prediction": {
+            "team1TrueSupport": 376.1583,
+            "team2TrueSupport": 680.7266000000001,
+            "ratio": 1.8096811900734346,
+            "bookiePnlTeam1": -352.1675,
+            "bookiePnlTeam2": -656.1636,
+            "prediction": "West Indies Legends",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.81) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 388.6,
+              "totalLayVol": 10.65,
+              "totalBet": 402.3,
+              "profitLoss": 330.82999999999987
+            },
+            "team2": {
+              "totalBackVol": 722.4799999999999,
+              "totalLayVol": 13.7,
+              "totalBet": 733.1299999999999,
+              "profitLoss": -330.82999999999987
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 362.8175,
+              "totalLayVol": 10.65,
+              "totalBet": 376.5175,
+              "profitLoss": 356.8255
+            },
+            "team2": {
+              "totalBackExpo": 669.8636,
+              "totalLayVol": 13.7,
+              "totalBet": 680.5136,
+              "profitLoss": -278.5728
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 362.8175,
+              "totalLayNetVol": 10.863000000000001,
+              "totalBet": 376.1583,
+              "profitLoss": 304.5683000000001
+            },
+            "team2": {
+              "totalBackNetVol": 669.8636,
+              "totalLayNetVol": 13.3408,
+              "totalBet": 680.7266000000001,
+              "profitLoss": -304.5683000000001
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.9499999999999997,
+            "averageSize": 100.575,
+            "supportProduct": 196.12124999999997
+          },
+          "teamB": {
+            "tradeCount": 4,
+            "averageOdds": 1.9524999999999997,
+            "averageSize": 183.28249999999997,
+            "supportProduct": 357.85908124999986
+          },
+          "strongerTeam": "South Africa Legends",
+          "supportRatio": 1.824682849257793
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 388.6,
+            "oppoLayVolume": 13.7,
+            "layExposure": 10.863000000000001,
+            "netSupportValue": 391.437
+          },
+          "teamB": {
+            "totalBackVolume": 722.4799999999999,
+            "oppoLayVolume": 10.65,
+            "layExposure": 13.3408,
+            "netSupportValue": 719.7891999999999
+          },
+          "strongerTeam": "South Africa Legends",
+          "netSupportDifference": 328.3521999999999,
+          "percentageA": 35.22568132392846,
+          "percentageB": 64.77431867607152
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 402.3,
+            "support": 35.431510529050676
+          },
+          "team2": {
+            "supportMoney": 733.1299999999999,
+            "support": 64.56848947094933
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 377.95000000000005,
+            "syntheticSupport": 13.7,
+            "opponentLiabilityRejection": 13.3408,
+            "sentimentScore": 378.30920000000003
+          },
+          "teamB": {
+            "directNetSupport": 708.7799999999999,
+            "syntheticSupport": 10.65,
+            "opponentLiabilityRejection": 10.863000000000001,
+            "sentimentScore": 708.5669999999998
+          },
+          "strongerTeam": "South Africa Legends",
+          "scoreDifference": 330.25779999999975,
+          "percentageA": 34.807018499439046,
+          "percentageB": 65.19298150056096
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 4
+        }
+      }
+    },
+    {
+      "matchId": "36147996",
+      "matchName": "India Legends v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791127800000,
+      "capturedAt": "2026-10-05T01:10:29.270Z",
+      "status": "verified",
+      "actualWinner": "India Legends",
+      "predictedWinner": "England Legends",
+      "predictionReason": "Smart Money Inflow (England Legends: ₹2.2k Back, Lead: 5.1x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (England Legends: ₹2.2k Back, Lead: 5.1x)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "England Legends"
+        ],
+        "serverTime": "2026-10-04T18:03:58.656Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 423.4099999999999,
+            "lay": 111.01,
+            "total": 731.23
+          },
+          "team2": {
+            "back": 2178.19,
+            "lay": 307.82000000000005,
+            "total": 2289.2000000000003
+          }
+        },
+        "preMatchPnl": {
+          "team1": 1592.1789999999996,
+          "team2": -1391.4569
+        },
+        "preMatchTotalBets": {
+          "team1": 703.0068,
+          "team2": 2096.7682
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 423.4099999999999,
+            "lay": 111.01,
+            "totalVolume": 534.42,
+            "backPercentage": 79.22794805583622
+          },
+          "team2": {
+            "back": 2178.19,
+            "lay": 307.82000000000005,
+            "totalVolume": 2486.01,
+            "backPercentage": 87.61790982337159
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 395.18679999999995,
+            "lay": 116.9958,
+            "totalBet": 512.1826
+          },
+          "team2": {
+            "back": 1985.7582,
+            "lay": 281.9013,
+            "totalBet": 2267.6594999999998
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 278.1909999999999,
+            "backExposure": 395.18679999999995,
+            "layExposure": 116.9958,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 1703.8569,
+            "backExposure": 1985.7582,
+            "layExposure": 281.9013,
+            "teamName": "England Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 395.18679999999995,
+            "A_lay_stake": 111.01,
+            "B_back_expo": 1985.7582,
+            "B_lay_stake": 307.82000000000005
+          },
+          "totals": {
+            "totalBetTeam1": 703.0068,
+            "totalBetTeam2": 2096.7682
+          },
+          "simplePL": {
+            "team1_win": -284.17679999999996,
+            "team2_win": -1677.9382
+          },
+          "derivedPL": {
+            "team1_win": 1393.7613999999999,
+            "team2_win": -1393.7613999999999
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "England Legends",
+          "bookieFavouriteOutcome": "India Legends",
+          "riskTeam": "England Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 51.58106627202088,
+          "mostBettedTeam": "England Legends",
+          "prediction": {
+            "team1TrueSupport": 677.0880999999999,
+            "team2TrueSupport": 2102.754,
+            "ratio": 3.1055840443806355,
+            "bookiePnlTeam1": -284.17679999999996,
+            "bookiePnlTeam2": -1677.9382,
+            "prediction": "India Legends",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (3.11) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 423.4099999999999,
+              "totalLayVol": 111.01,
+              "totalBet": 731.23,
+              "profitLoss": 1557.9700000000003
+            },
+            "team2": {
+              "totalBackVol": 2178.19,
+              "totalLayVol": 307.82000000000005,
+              "totalBet": 2289.2000000000003,
+              "profitLoss": -1557.9700000000003
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 395.18679999999995,
+              "totalLayVol": 111.01,
+              "totalBet": 703.0068,
+              "profitLoss": 1592.179
+            },
+            "team2": {
+              "totalBackExpo": 1985.7582,
+              "totalLayVol": 307.82000000000005,
+              "totalBet": 2096.7682,
+              "profitLoss": -1391.4569000000001
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 395.18679999999995,
+              "totalLayNetVol": 116.9958,
+              "totalBet": 677.0880999999999,
+              "profitLoss": 1425.6659
+            },
+            "team2": {
+              "totalBackNetVol": 1985.7582,
+              "totalLayNetVol": 281.9013,
+              "totalBet": 2102.754,
+              "profitLoss": -1425.6659
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.9242857142857142,
+            "averageSize": 104.46142857142857,
+            "supportProduct": 201.01363469387752
+          },
+          "teamB": {
+            "tradeCount": 11,
+            "averageOdds": 1.9399999999999997,
+            "averageSize": 208.1090909090909,
+            "supportProduct": 403.73163636363626
+          },
+          "strongerTeam": "England Legends",
+          "supportRatio": 2.0084788625332646
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 423.4099999999999,
+            "oppoLayVolume": 307.82000000000005,
+            "layExposure": 116.9958,
+            "netSupportValue": 614.2342
+          },
+          "teamB": {
+            "totalBackVolume": 2178.19,
+            "oppoLayVolume": 111.01,
+            "layExposure": 281.9013,
+            "netSupportValue": 2007.2987000000003
+          },
+          "strongerTeam": "England Legends",
+          "netSupportDifference": 1393.0645000000004,
+          "percentageA": 23.43034489477511,
+          "percentageB": 76.56965510522488
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 731.23,
+            "support": 24.20946686398956
+          },
+          "team2": {
+            "supportMoney": 2289.2000000000003,
+            "support": 75.79053313601044
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 312.3999999999999,
+            "syntheticSupport": 307.82000000000005,
+            "opponentLiabilityRejection": 281.9013,
+            "sentimentScore": 338.31870000000004
+          },
+          "teamB": {
+            "directNetSupport": 1870.37,
+            "syntheticSupport": 111.01,
+            "opponentLiabilityRejection": 116.9958,
+            "sentimentScore": 1864.3842
+          },
+          "strongerTeam": "England Legends",
+          "scoreDifference": 1526.0655,
+          "percentageA": 15.359252489293947,
+          "percentageB": 84.64074751070603
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 11
+        }
+      }
+    },
+    {
+      "matchId": "36148172",
+      "matchName": "Australia Legends v Pakistan Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791199800000,
+      "capturedAt": "2026-10-05T16:35:00.249Z",
+      "status": "verified",
+      "actualWinner": "Australia Legends",
+      "predictedWinner": "Pakistan Legends",
+      "predictionReason": "Critical Public Overload on Australia Legends (96% Load, 21.7x Lead) -> Faded to Pakistan Legends",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Critical Public Overload on Australia Legends (96% Load, 21.7x Lead) -> Faded to Pakistan Legends"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "Pakistan Legends"
+        ],
+        "serverTime": "2026-10-05T16:34:07.063Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 239.7,
+            "lay": 0,
+            "total": 239.7
+          },
+          "team2": {
+            "back": 11.06,
+            "lay": 0,
+            "total": 11.06
+          }
+        },
+        "preMatchPnl": {
+          "team1": -212.1754,
+          "team2": 229.27499999999998
+        },
+        "preMatchTotalBets": {
+          "team1": 223.2354,
+          "team2": 10.425
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 239.7,
+            "lay": 0,
+            "totalVolume": 239.7,
+            "backPercentage": 100
+          },
+          "team2": {
+            "back": 11.06,
+            "lay": 0,
+            "totalVolume": 11.06,
+            "backPercentage": 100
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 223.2354,
+            "lay": 0,
+            "totalBet": 223.2354
+          },
+          "team2": {
+            "back": 10.425,
+            "lay": 0,
+            "totalBet": 10.425
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 223.2354,
+            "backExposure": 223.2354,
+            "layExposure": 0,
+            "teamName": "Australia Legends"
+          },
+          "team2": {
+            "netExposure": 10.425,
+            "backExposure": 10.425,
+            "layExposure": 0,
+            "teamName": "Pakistan Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 223.2354,
+            "A_lay_stake": 0,
+            "B_back_expo": 10.425,
+            "B_lay_stake": 0
+          },
+          "totals": {
+            "totalBetTeam1": 223.2354,
+            "totalBetTeam2": 10.425
+          },
+          "simplePL": {
+            "team1_win": -223.2354,
+            "team2_win": -10.425
+          },
+          "derivedPL": {
+            "team1_win": -212.8104,
+            "team2_win": 212.8104
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Australia Legends",
+          "bookieFavouriteOutcome": "Pakistan Legends",
+          "riskTeam": "Australia Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 91.17881639814962,
+          "mostBettedTeam": "Australia Legends",
+          "prediction": {
+            "team1TrueSupport": 223.2354,
+            "team2TrueSupport": 10.425,
+            "ratio": 21.41346762589928,
+            "bookiePnlTeam1": -223.2354,
+            "bookiePnlTeam2": -10.425,
+            "prediction": "Pakistan Legends",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (21.41) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 239.7,
+              "totalLayVol": 0,
+              "totalBet": 239.7,
+              "profitLoss": -228.64
+            },
+            "team2": {
+              "totalBackVol": 11.06,
+              "totalLayVol": 0,
+              "totalBet": 11.06,
+              "profitLoss": 228.64
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 223.2354,
+              "totalLayVol": 0,
+              "totalBet": 223.2354,
+              "profitLoss": -212.1754
+            },
+            "team2": {
+              "totalBackExpo": 10.425,
+              "totalLayVol": 0,
+              "totalBet": 10.425,
+              "profitLoss": 229.27499999999998
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 223.2354,
+              "totalLayNetVol": 0,
+              "totalBet": 223.2354,
+              "profitLoss": -212.8104
+            },
+            "team2": {
+              "totalBackNetVol": 10.425,
+              "totalLayNetVol": 0,
+              "totalBet": 10.425,
+              "profitLoss": 212.8104
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.9324999999999999,
+            "averageSize": 59.925,
+            "supportProduct": 115.80506249999999
+          },
+          "teamB": {
+            "tradeCount": 2,
+            "averageOdds": 1.9449999999999998,
+            "averageSize": 5.53,
+            "supportProduct": 10.755849999999999
+          },
+          "strongerTeam": "Australia Legends",
+          "supportRatio": 10.766704862935054
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 239.7,
+            "oppoLayVolume": 0,
+            "layExposure": 0,
+            "netSupportValue": 239.7
+          },
+          "teamB": {
+            "totalBackVolume": 11.06,
+            "oppoLayVolume": 0,
+            "layExposure": 0,
+            "netSupportValue": 11.06
+          },
+          "strongerTeam": "Australia Legends",
+          "netSupportDifference": 228.64,
+          "percentageA": 95.58940819907481,
+          "percentageB": 4.410591800925188
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 239.7,
+            "support": 95.58940819907481
+          },
+          "team2": {
+            "supportMoney": 11.06,
+            "support": 4.410591800925188
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 239.7,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 239.7
+          },
+          "teamB": {
+            "directNetSupport": 11.06,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 11.06
+          },
+          "strongerTeam": "Australia Legends",
+          "scoreDifference": 228.64,
+          "percentageA": 95.58940819907481,
+          "percentageB": 4.410591800925188
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 2
+        }
+      }
+    },
+    {
+      "matchId": "36151021",
+      "matchName": "Bangladesh Champions v England Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791214200000,
+      "capturedAt": "2026-10-06T02:06:16.082Z",
+      "status": "verified",
+      "actualWinner": "England Legends",
+      "predictedWinner": "England Legends",
+      "predictionReason": "Smart Money Inflow (England Legends: ₹1.5k Back, Lead: 2.5x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (England Legends: ₹1.5k Back, Lead: 2.5x)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "Bangladesh Champions",
+          "England Legends"
+        ],
+        "serverTime": "2026-10-05T17:50:07.015Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "total": 746.53
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "total": 1637.62
+          }
+        },
+        "preMatchPnl": {
+          "team1": 925.2832999999998,
+          "team2": -787.0593
+        },
+        "preMatchTotalBets": {
+          "team1": 698.9242999999999,
+          "team2": 1528.9569
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 627.77,
+            "lay": 97.60000000000001,
+            "totalVolume": 725.37,
+            "backPercentage": 86.5447978273157
+          },
+          "team2": {
+            "back": 1540.02,
+            "lay": 118.76,
+            "totalVolume": 1658.78,
+            "backPercentage": 92.84052134701408
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 580.1642999999999,
+            "lay": 84.18759999999999,
+            "totalBet": 664.3518999999999
+          },
+          "team2": {
+            "back": 1431.3569,
+            "lay": 114.12759999999999,
+            "totalBet": 1545.4845
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 495.83259999999996,
+            "backExposure": 579.9214,
+            "layExposure": 84.08879999999999,
+            "teamName": "Bangladesh Champions"
+          },
+          "team2": {
+            "netExposure": 1317.2293,
+            "backExposure": 1431.3569,
+            "layExposure": 114.12759999999999,
+            "teamName": "England Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 580.1642999999999,
+            "A_lay_stake": 97.60000000000001,
+            "B_back_expo": 1431.3569,
+            "B_lay_stake": 118.76
+          },
+          "totals": {
+            "totalBetTeam1": 698.9242999999999,
+            "totalBetTeam2": 1528.9569
+          },
+          "simplePL": {
+            "team1_win": -482.5642999999999,
+            "team2_win": -1312.5969
+          },
+          "derivedPL": {
+            "team1_win": 830.0326,
+            "team2_win": -830.0326
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "England Legends",
+          "bookieFavouriteOutcome": "Bangladesh Champions",
+          "riskTeam": "England Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 37.37558458989578,
+          "mostBettedTeam": "England Legends",
+          "prediction": {
+            "team1TrueSupport": 694.049,
+            "team2TrueSupport": 1515.4457,
+            "ratio": 2.1834851717962276,
+            "bookiePnlTeam1": -487.2613999999999,
+            "bookiePnlTeam2": -1312.5969,
+            "prediction": "Bangladesh Champions",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.18) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 627.77,
+              "totalLayVol": 97.60000000000001,
+              "totalBet": 746.53,
+              "profitLoss": 891.0899999999999
+            },
+            "team2": {
+              "totalBackVol": 1540.02,
+              "totalLayVol": 118.76,
+              "totalBet": 1637.62,
+              "profitLoss": -891.0899999999999
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 580.1642999999999,
+              "totalLayVol": 97.60000000000001,
+              "totalBet": 698.9242999999999,
+              "profitLoss": 925.2833
+            },
+            "team2": {
+              "totalBackExpo": 1431.3569,
+              "totalLayVol": 118.76,
+              "totalBet": 1528.9569,
+              "profitLoss": -787.0592999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 580.1642999999999,
+              "totalLayNetVol": 84.18759999999999,
+              "totalBet": 694.2918999999999,
+              "profitLoss": 821.2526
+            },
+            "team2": {
+              "totalBackNetVol": 1431.3569,
+              "totalLayNetVol": 114.12759999999999,
+              "totalBet": 1515.5445,
+              "profitLoss": -821.2526
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 7,
+            "averageOdds": 1.8157142857142858,
+            "averageSize": 106.64714285714285,
+            "supportProduct": 193.64074081632654
+          },
+          "teamB": {
+            "tradeCount": 8,
+            "averageOdds": 1.8299999999999996,
+            "averageSize": 204.7025,
+            "supportProduct": 374.6055749999999
+          },
+          "strongerTeam": "England Legends",
+          "supportRatio": 1.9345390511355425
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 627.77,
+            "oppoLayVolume": 118.76,
+            "layExposure": 84.18759999999999,
+            "netSupportValue": 662.3424
+          },
+          "teamB": {
+            "totalBackVolume": 1540.02,
+            "oppoLayVolume": 97.60000000000001,
+            "layExposure": 114.12759999999999,
+            "netSupportValue": 1523.4923999999999
+          },
+          "strongerTeam": "England Legends",
+          "netSupportDifference": 861.1499999999999,
+          "percentageA": 30.301576313086432,
+          "percentageB": 69.69842368691359
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 746.53,
+            "support": 31.31220770505212
+          },
+          "team2": {
+            "supportMoney": 1637.62,
+            "support": 68.6877922949479
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 530.17,
+            "syntheticSupport": 118.76,
+            "opponentLiabilityRejection": 114.12759999999999,
+            "sentimentScore": 534.8023999999999
+          },
+          "teamB": {
+            "directNetSupport": 1421.26,
+            "syntheticSupport": 97.60000000000001,
+            "opponentLiabilityRejection": 84.18759999999999,
+            "sentimentScore": 1434.6724
+          },
+          "strongerTeam": "England Legends",
+          "scoreDifference": 899.87,
+          "percentageA": 27.15456932985382,
+          "percentageB": 72.84543067014617
+        },
+        "matchLoadV2": {
+          "team1": 7,
+          "team2": 8
+        }
+      }
+    },
+    {
+      "matchId": "36151023",
+      "matchName": "India Legends v South Africa Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791646200000,
+      "capturedAt": "2026-10-11T16:23:31.367Z",
+      "status": "verified",
+      "actualWinner": "South Africa Legends",
+      "predictedWinner": "India Legends",
+      "predictionReason": "Smart Money Inflow (India Legends: ₹1.2k Back, Lead: 2.0x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (India Legends: ₹1.2k Back, Lead: 2.0x)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "South Africa Legends"
+        ],
+        "serverTime": "2026-10-11T16:23:05.813Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 1171.82,
+            "lay": 0,
+            "total": 1171.82
+          },
+          "team2": {
+            "back": 576.7,
+            "lay": 0,
+            "total": 576.7
+          }
+        },
+        "preMatchPnl": {
+          "team1": -538.7755,
+          "team2": 621.6454
+        },
+        "preMatchTotalBets": {
+          "team1": 1115.4755,
+          "team2": 550.1745999999999
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 1171.82,
+            "lay": 0,
+            "totalVolume": 1171.82,
+            "backPercentage": 100
+          },
+          "team2": {
+            "back": 576.7,
+            "lay": 0,
+            "totalVolume": 576.7,
+            "backPercentage": 100
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 1115.4755,
+            "lay": 0,
+            "totalBet": 1115.4755
+          },
+          "team2": {
+            "back": 550.1745999999999,
+            "lay": 0,
+            "totalBet": 550.1745999999999
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 1115.4755,
+            "backExposure": 1115.4755,
+            "layExposure": 0,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 550.1745999999999,
+            "backExposure": 550.1745999999999,
+            "layExposure": 0,
+            "teamName": "South Africa Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 1115.4755,
+            "A_lay_stake": 0,
+            "B_back_expo": 550.1745999999999,
+            "B_lay_stake": 0
+          },
+          "totals": {
+            "totalBetTeam1": 1115.4755,
+            "totalBetTeam2": 550.1745999999999
+          },
+          "simplePL": {
+            "team1_win": -1115.4755,
+            "team2_win": -550.1745999999999
+          },
+          "derivedPL": {
+            "team1_win": -565.3009000000001,
+            "team2_win": 565.3009000000001
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "India Legends",
+          "bookieFavouriteOutcome": "South Africa Legends",
+          "riskTeam": "India Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 34.03564157115732,
+          "mostBettedTeam": "India Legends",
+          "prediction": {
+            "team1TrueSupport": 1115.4755,
+            "team2TrueSupport": 550.1745999999999,
+            "ratio": 2.0274936356567537,
+            "bookiePnlTeam1": -1115.4755,
+            "bookiePnlTeam2": -550.1745999999999,
+            "prediction": "South Africa Legends",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.03) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 1171.82,
+              "totalLayVol": 0,
+              "totalBet": 1171.82,
+              "profitLoss": -595.1199999999999
+            },
+            "team2": {
+              "totalBackVol": 576.7,
+              "totalLayVol": 0,
+              "totalBet": 576.7,
+              "profitLoss": 595.1199999999999
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 1115.4755,
+              "totalLayVol": 0,
+              "totalBet": 1115.4755,
+              "profitLoss": -538.7755
+            },
+            "team2": {
+              "totalBackExpo": 550.1745999999999,
+              "totalLayVol": 0,
+              "totalBet": 550.1745999999999,
+              "profitLoss": 621.6454
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 1115.4755,
+              "totalLayNetVol": 0,
+              "totalBet": 1115.4755,
+              "profitLoss": -565.3009000000001
+            },
+            "team2": {
+              "totalBackNetVol": 550.1745999999999,
+              "totalLayNetVol": 0,
+              "totalBet": 550.1745999999999,
+              "profitLoss": 565.3009000000001
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 2,
+            "averageOdds": 1.955,
+            "averageSize": 585.91,
+            "supportProduct": 1145.45405
+          },
+          "teamB": {
+            "tradeCount": 2,
+            "averageOdds": 1.955,
+            "averageSize": 288.35,
+            "supportProduct": 563.7242500000001
+          },
+          "strongerTeam": "India Legends",
+          "supportRatio": 2.0319403502687705
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 1171.82,
+            "oppoLayVolume": 0,
+            "layExposure": 0,
+            "netSupportValue": 1171.82
+          },
+          "teamB": {
+            "totalBackVolume": 576.7,
+            "oppoLayVolume": 0,
+            "layExposure": 0,
+            "netSupportValue": 576.7
+          },
+          "strongerTeam": "India Legends",
+          "netSupportDifference": 595.1199999999999,
+          "percentageA": 67.01782078557866,
+          "percentageB": 32.98217921442134
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 1171.82,
+            "support": 67.01782078557866
+          },
+          "team2": {
+            "supportMoney": 576.7,
+            "support": 32.98217921442134
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 1171.82,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 1171.82
+          },
+          "teamB": {
+            "directNetSupport": 576.7,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 576.7
+          },
+          "strongerTeam": "India Legends",
+          "scoreDifference": 595.1199999999999,
+          "percentageA": 67.01782078557866,
+          "percentageB": 32.98217921442134
+        },
+        "matchLoadV2": {
+          "team1": 2,
+          "team2": 2
+        }
+      }
+    },
+    {
+      "matchId": "36172480",
+      "matchName": "Australia Legends v West Indies Legends",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791718200000,
+      "capturedAt": "2026-10-11T17:05:31.450Z",
+      "status": "verified",
+      "actualWinner": "Australia Legends",
+      "predictedWinner": "West Indies Legends",
+      "predictionReason": "High Trap Overload on Australia Legends (P/L: -2191.1) -> Bookmaker Safe Side on West Indies Legends (+2374.7)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "High Trap Overload on Australia Legends (P/L: -2191.1) -> Bookmaker Safe Side on West Indies Legends (+2374.7)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "Australia Legends",
+          "West Indies Legends"
+        ],
+        "serverTime": "2026-10-11T17:04:43.456Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 2810.29,
+            "lay": 10.85,
+            "total": 2820.93
+          },
+          "team2": {
+            "back": 457.37,
+            "lay": 10.64,
+            "total": 468.22
+          }
+        },
+        "preMatchPnl": {
+          "team1": -2191.0929000000006,
+          "team2": 2374.6521000000002
+        },
+        "preMatchTotalBets": {
+          "team1": 2659.0959000000003,
+          "team2": 446.4907
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 2810.29,
+            "lay": 10.85,
+            "totalVolume": 2821.14,
+            "backPercentage": 99.61540370204953
+          },
+          "team2": {
+            "back": 457.37,
+            "lay": 10.64,
+            "totalVolume": 468.01,
+            "backPercentage": 97.72654430460888
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 2648.4559000000004,
+            "lay": 10.633,
+            "totalBet": 2659.0889
+          },
+          "team2": {
+            "back": 435.6407,
+            "lay": 10.8528,
+            "totalBet": 446.4935
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 2637.8229000000006,
+            "backExposure": 2648.4559000000004,
+            "layExposure": 10.633,
+            "teamName": "Australia Legends"
+          },
+          "team2": {
+            "netExposure": 424.7879,
+            "backExposure": 435.6407,
+            "layExposure": 10.8528,
+            "teamName": "West Indies Legends"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 2648.4559000000004,
+            "A_lay_stake": 10.85,
+            "B_back_expo": 435.6407,
+            "B_lay_stake": 10.64
+          },
+          "totals": {
+            "totalBetTeam1": 2659.0959000000003,
+            "totalBetTeam2": 446.4907
+          },
+          "simplePL": {
+            "team1_win": -2637.6059000000005,
+            "team2_win": -425.0007
+          },
+          "derivedPL": {
+            "team1_win": -2212.6052000000004,
+            "team2_win": 2212.6052000000004
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Australia Legends",
+          "bookieFavouriteOutcome": "West Indies Legends",
+          "riskTeam": "Australia Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 71.52942249517352,
+          "mostBettedTeam": "Australia Legends",
+          "prediction": {
+            "team1TrueSupport": 2659.3087000000005,
+            "team2TrueSupport": 446.27369999999996,
+            "ratio": 5.958918708406973,
+            "bookiePnlTeam1": -2637.6059000000005,
+            "bookiePnlTeam2": -425.0007,
+            "prediction": "West Indies Legends",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (5.96) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 2810.29,
+              "totalLayVol": 10.85,
+              "totalBet": 2820.93,
+              "profitLoss": -2352.71
+            },
+            "team2": {
+              "totalBackVol": 457.37,
+              "totalLayVol": 10.64,
+              "totalBet": 468.22,
+              "profitLoss": 2352.71
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 2648.4559000000004,
+              "totalLayVol": 10.85,
+              "totalBet": 2659.0959000000003,
+              "profitLoss": -2191.0929
+            },
+            "team2": {
+              "totalBackExpo": 435.6407,
+              "totalLayVol": 10.64,
+              "totalBet": 446.4907,
+              "profitLoss": 2374.6521000000002
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 2648.4559000000004,
+              "totalLayNetVol": 10.633,
+              "totalBet": 2659.3087000000005,
+              "profitLoss": -2213.0350000000008
+            },
+            "team2": {
+              "totalBackNetVol": 435.6407,
+              "totalLayNetVol": 10.8528,
+              "totalBet": 446.27369999999996,
+              "profitLoss": 2213.0350000000008
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 5,
+            "averageOdds": 1.956,
+            "averageSize": 564.1859999999999,
+            "supportProduct": 1103.5478159999998
+          },
+          "teamB": {
+            "tradeCount": 3,
+            "averageOdds": 1.9633333333333332,
+            "averageSize": 156.07333333333335,
+            "supportProduct": 306.4239777777778
+          },
+          "strongerTeam": "Australia Legends",
+          "supportRatio": 3.601375532042422
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 2810.29,
+            "oppoLayVolume": 10.64,
+            "layExposure": 10.633,
+            "netSupportValue": 2810.297
+          },
+          "teamB": {
+            "totalBackVolume": 457.37,
+            "oppoLayVolume": 10.85,
+            "layExposure": 10.8528,
+            "netSupportValue": 457.3672
+          },
+          "strongerTeam": "Australia Legends",
+          "netSupportDifference": 2352.9298,
+          "percentageA": 86.00323741956105,
+          "percentageB": 13.996762580438956
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 2820.93,
+            "support": 85.76471124758676
+          },
+          "team2": {
+            "supportMoney": 468.22,
+            "support": 14.235288752413238
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 2799.44,
+            "syntheticSupport": 10.64,
+            "opponentLiabilityRejection": 10.8528,
+            "sentimentScore": 2799.2272
+          },
+          "teamB": {
+            "directNetSupport": 446.73,
+            "syntheticSupport": 10.85,
+            "opponentLiabilityRejection": 10.633,
+            "sentimentScore": 446.94700000000006
+          },
+          "strongerTeam": "Australia Legends",
+          "scoreDifference": 2352.2801999999997,
+          "percentageA": 86.23157685129776,
+          "percentageB": 13.768423148702249
+        },
+        "matchLoadV2": {
+          "team1": 5,
+          "team2": 3
+        }
+      }
+    },
+    {
+      "matchId": "36175445",
+      "matchName": "India Legends v Bangladesh Champions",
+      "competitionName": "World Championship of Legends T20",
+      "startTime": 1791732600000,
+      "capturedAt": "2026-10-11T22:28:42.712Z",
+      "status": "verified",
+      "actualWinner": "India Legends",
+      "predictedWinner": "India Legends",
+      "predictionReason": "Smart Money Inflow (India Legends: ₹804 Back, Lead: 1.5x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (India Legends: ₹804 Back, Lead: 1.5x)"
+      },
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "snapshot": {
+        "teamNames": [
+          "India Legends",
+          "Bangladesh Champions"
+        ],
+        "serverTime": "2026-10-11T20:41:15.536Z",
+        "preMatchVolume": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "total": 814.4
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "total": 570.7300000000001
+          }
+        },
+        "preMatchPnl": {
+          "team1": -204.76809999999978,
+          "team2": 271.5152999999999
+        },
+        "preMatchTotalBets": {
+          "team1": 775.2087999999999,
+          "team2": 543.0975000000001
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 803.76,
+            "lay": 18.08,
+            "totalVolume": 821.84,
+            "backPercentage": 97.80005840552906
+          },
+          "team2": {
+            "back": 552.6500000000001,
+            "lay": 10.64,
+            "totalVolume": 563.2900000000001,
+            "backPercentage": 98.11109730334286
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 764.5687999999999,
+            "lay": 17.7907,
+            "totalBet": 782.3594999999999
+          },
+          "team2": {
+            "back": 525.0175,
+            "lay": 10.8528,
+            "totalBet": 535.8703
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 746.7780999999999,
+            "backExposure": 764.5687999999999,
+            "layExposure": 17.7907,
+            "teamName": "India Legends"
+          },
+          "team2": {
+            "netExposure": 514.1647,
+            "backExposure": 525.0175,
+            "layExposure": 10.8528,
+            "teamName": "Bangladesh Champions"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 764.5687999999999,
+            "A_lay_stake": 18.08,
+            "B_back_expo": 525.0175,
+            "B_lay_stake": 10.64
+          },
+          "totals": {
+            "totalBetTeam1": 775.2087999999999,
+            "totalBetTeam2": 543.0975000000001
+          },
+          "simplePL": {
+            "team1_win": -746.4887999999999,
+            "team2_win": -514.3775
+          },
+          "derivedPL": {
+            "team1_win": -232.1112999999998,
+            "team2_win": 232.1112999999998
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "India Legends",
+          "bookieFavouriteOutcome": "Bangladesh Champions",
+          "riskTeam": "India Legends",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 17.59185058442167,
+          "mostBettedTeam": "India Legends",
+          "prediction": {
+            "team1TrueSupport": 775.4215999999999,
+            "team2TrueSupport": 542.8082,
+            "ratio": 1.4285370044151873,
+            "bookiePnlTeam1": -746.4887999999999,
+            "bookiePnlTeam2": -514.3775,
+            "prediction": "Bangladesh Champions",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.43) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 803.76,
+              "totalLayVol": 18.08,
+              "totalBet": 814.4,
+              "profitLoss": -243.66999999999985
+            },
+            "team2": {
+              "totalBackVol": 552.6500000000001,
+              "totalLayVol": 10.64,
+              "totalBet": 570.7300000000001,
+              "profitLoss": 243.66999999999985
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 764.5687999999999,
+              "totalLayVol": 18.08,
+              "totalBet": 775.2087999999999,
+              "profitLoss": -204.76809999999978
+            },
+            "team2": {
+              "totalBackExpo": 525.0175,
+              "totalLayVol": 10.64,
+              "totalBet": 543.0975000000001,
+              "profitLoss": 271.5152999999999
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 764.5687999999999,
+              "totalLayNetVol": 17.7907,
+              "totalBet": 775.4215999999999,
+              "profitLoss": -232.61339999999984
+            },
+            "team2": {
+              "totalBackNetVol": 525.0175,
+              "totalLayNetVol": 10.8528,
+              "totalBet": 542.8082,
+              "profitLoss": 232.61339999999984
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 3,
+            "averageOdds": 1.9766666666666666,
+            "averageSize": 271.46666666666664,
+            "supportProduct": 536.599111111111
+          },
+          "teamB": {
+            "tradeCount": 3,
+            "averageOdds": 1.9733333333333334,
+            "averageSize": 190.24333333333337,
+            "supportProduct": 375.4135111111112
+          },
+          "strongerTeam": "India Legends",
+          "supportRatio": 1.4293548186982907
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 803.76,
+            "oppoLayVolume": 10.64,
+            "layExposure": 17.7907,
+            "netSupportValue": 796.6093
+          },
+          "teamB": {
+            "totalBackVolume": 552.6500000000001,
+            "oppoLayVolume": 18.08,
+            "layExposure": 10.8528,
+            "netSupportValue": 559.8772000000001
+          },
+          "strongerTeam": "India Legends",
+          "netSupportDifference": 236.73209999999983,
+          "percentageA": 58.72592908222825,
+          "percentageB": 41.274070917771766
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 814.4,
+            "support": 58.79592529221084
+          },
+          "team2": {
+            "supportMoney": 570.7300000000001,
+            "support": 41.20407470778917
+          }
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 785.68,
+            "syntheticSupport": 10.64,
+            "opponentLiabilityRejection": 10.8528,
+            "sentimentScore": 785.4671999999999
+          },
+          "teamB": {
+            "directNetSupport": 542.0100000000001,
+            "syntheticSupport": 18.08,
+            "opponentLiabilityRejection": 17.7907,
+            "sentimentScore": 542.2993000000001
+          },
+          "strongerTeam": "India Legends",
+          "scoreDifference": 243.1678999999998,
+          "percentageA": 59.15702798647201,
+          "percentageB": 40.842972013527984
+        },
+        "matchLoadV2": {
+          "team1": 3,
+          "team2": 3
+        }
+      }
+    }
+  ]
+}

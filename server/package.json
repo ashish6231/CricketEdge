@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "node scripts/fix-agent-base.js",
     "prestart": "node scripts/fix-agent-base.js",
-    "start": "node scripts/fix-agent-base.js && node index.js",
+    "start": "node scripts/fix-agent-base.js && node scripts/migrate_prediction_datasets.js && node index.js",
     "dev": "nodemon index.js",
     "dev:test": "NODE_ENV=test nodemon index.js",
     "start:test": "NODE_ENV=test node index.js",
@@ -14,6 +14,8 @@
     "backtest:toss": "node backtest_toss.mjs",
     "sync:emirates-d10": "node scripts/sync_emirates_d10.js",
     "sync:wncl": "node scripts/sync_wncl.js",
+    "sync:spring-t20": "node scripts/sync_womens_spring.js",
+    "migrate:predictions": "node scripts/migrate_prediction_datasets.js",
     "revoke:all-trials": "node scripts/revoke_all_trials.js"
   },
   "dependencies": {

@@ -65,6 +65,7 @@ export function predictTossWinner(snap, compName = '') {
 
   // 🏆 1. TRY LEAGUE-SPECIFIC ALGORITHM FIRST
   const leaguePred = getLeagueTossPrediction(snap, actualCompName)
+  if (leaguePred?.abstain) return null
   if (leaguePred && leaguePred.winner) {
     winner = leaguePred.winner
     reason = leaguePred.reason
@@ -248,9 +249,16 @@ export function predictTossWinner(snap, compName = '') {
     verdictTag,
     tier,
     algoName,
-    predictorVersion: PREDICTOR_VERSION,
-    confidence,
-    risk: computeTossRisk(reason, matchedRules),
+    predictorVersion: leaguePred?.predictorVersion || PREDICTOR_VERSION,
+    confidence: leaguePred?.confidence || confidence,
+    risk: {
+      ...computeTossRisk(reason, matchedRules),
+      ...(leaguePred?.validation ? { wrongPct: 'Uncalibrated', calibrated: false,
+        note: 'Fitted to 8 archived tosses; no independent validation.' } : {}),
+    },
+    ...(leaguePred?.validation ? { validation: leaguePred.validation,
+      trainingSamples: leaguePred.trainingSamples, holdoutSamples: leaguePred.holdoutSamples,
+      algorithmEvidence: leaguePred.evidence } : {}),
     signals,
     activeSignals: signals.filter(s => s.active).length,
     metrics: {

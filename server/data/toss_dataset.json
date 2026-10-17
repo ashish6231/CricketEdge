@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-11T22:28:45.548Z",
+  "updatedAt": "2026-10-16T17:03:52.977Z",
   "records": [
     {
       "matchId": "35901908",
@@ -58630,12 +58630,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "Bangladesh",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T17:03:52.977Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36140257",
@@ -59033,12 +59033,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "Australia",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T17:02:57.302Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36156552",
@@ -59408,12 +59408,12 @@
         }
       ],
       "predictorVersion": "toss-v14-calculated-pnl-retrospective",
-      "actualWinner": null,
+      "actualWinner": "Western Province",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T17:00:38.681Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36166332",
@@ -59811,12 +59811,12 @@
         }
       ],
       "predictorVersion": "toss-v14-calculated-pnl-retrospective",
-      "actualWinner": null,
+      "actualWinner": "Boland",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T17:00:11.338Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36151023",
@@ -60172,12 +60172,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "South Africa Legends",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:59:34.881Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36163472",
@@ -60582,12 +60582,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "North West Dragons",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:59:24.649Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36172480",
@@ -60971,12 +60971,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "Australia Legends",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:59:08.712Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36171669",
@@ -61402,12 +61402,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "Sri Lanka",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:58:58.230Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36172444",
@@ -61833,12 +61833,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "West Indies",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:58:48.180Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36175445",
@@ -62208,12 +62208,12 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "India Legends",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:58:35.315Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     },
     {
       "matchId": "36166395",
@@ -62583,12 +62583,762 @@
         }
       ],
       "predictorVersion": "toss-v10-league-rules-retrospective",
-      "actualWinner": null,
+      "actualWinner": "Titans",
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:58:22.159Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
+    },
+    {
+      "matchId": "36175487",
+      "marketId": "1.263644147",
+      "matchName": "Garden Route Badgers v Warriors",
+      "competitionName": "South Africa T20 Challenge",
+      "team1": "Garden Route Badgers",
+      "team2": "Warriors",
+      "startTime": 1792148400000,
+      "endedAt": "2026-10-16T16:32:58.147Z",
+      "capturedAt": "2026-10-16T16:32:58.147Z",
+      "snapshot": {
+        "serverTime": "2026-10-16T16:28:58.758Z",
+        "matchId": "36175487",
+        "matchName": "Garden Route Badgers v Warriors",
+        "teamNames": [
+          "Garden Route Badgers",
+          "Warriors"
+        ],
+        "inPlayPnl": {
+          "team1": -5.444000000000001,
+          "team2": 6.0626999999999995
+        },
+        "inPlayTotalBets": {
+          "team1": 14.014000000000001,
+          "team2": 8.3985
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 14.25,
+            "lay": 0,
+            "total": 14.47
+          },
+          "team2": {
+            "back": 8.57,
+            "lay": 0.2200000000000002,
+            "total": 8.57
+          }
+        },
+        "preMatchPnl": {
+          "team1": -5.444000000000001,
+          "team2": 6.0626999999999995
+        },
+        "preMatchTotalBets": {
+          "team1": 14.014000000000001,
+          "team2": 8.3985
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 14.25,
+            "lay": 0,
+            "total": 14.47
+          },
+          "team2": {
+            "back": 8.57,
+            "lay": 0.2200000000000002,
+            "total": 8.57
+          }
+        },
+        "threeMinPnl": {
+          "team1": -5.444000000000001,
+          "team2": 6.0626999999999995
+        },
+        "threeMinTotalBets": {
+          "team1": 14.014000000000001,
+          "team2": 8.3985
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 14.25,
+            "lay": 0,
+            "total": 14.47
+          },
+          "team2": {
+            "back": 8.57,
+            "lay": 0.2200000000000002,
+            "total": 8.57
+          }
+        },
+        "matchLoadV2": {
+          "team1": 4,
+          "team2": 2
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 14.25,
+            "lay": 0,
+            "totalVolume": 14.25,
+            "backPercentage": 100
+          },
+          "team2": {
+            "back": 8.57,
+            "lay": 0.2200000000000002,
+            "totalVolume": 8.790000000000001,
+            "backPercentage": 97.4971558589306
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 13.794,
+            "lay": 0,
+            "totalBet": 13.794
+          },
+          "team2": {
+            "back": 8.3985,
+            "lay": 0.2112000000000002,
+            "totalBet": 8.6097
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 14.47,
+            "support": 62.80381944444445
+          },
+          "team2": {
+            "supportMoney": 8.57,
+            "support": 37.19618055555556
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Garden Route Badgers",
+          "bookieFavouriteOutcome": "Warriors",
+          "riskTeam": "Garden Route Badgers",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 25.607638888888893,
+          "mostBettedTeam": "Garden Route Badgers",
+          "prediction": {
+            "team1TrueSupport": 14.0052,
+            "team2TrueSupport": 8.3985,
+            "ratio": 1.6675834970530452,
+            "bookiePnlTeam1": -13.794,
+            "bookiePnlTeam2": -8.1785,
+            "prediction": "Warriors",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (1.67) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 13.794,
+            "backExposure": 13.794,
+            "layExposure": 0,
+            "teamName": "Garden Route Badgers"
+          },
+          "team2": {
+            "netExposure": 8.1873,
+            "backExposure": 8.3985,
+            "layExposure": 0.2112000000000002,
+            "teamName": "Warriors"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 13.794,
+            "A_lay_stake": 0,
+            "B_back_expo": 8.3985,
+            "B_lay_stake": 0.2200000000000002
+          },
+          "totals": {
+            "totalBetTeam1": 14.014000000000001,
+            "totalBetTeam2": 8.3985
+          },
+          "simplePL": {
+            "team1_win": -13.794,
+            "team2_win": -8.1785
+          },
+          "derivedPL": {
+            "team1_win": -5.615500000000001,
+            "team2_win": 5.615500000000001
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 14.25,
+              "totalLayVol": 0,
+              "totalBet": 14.47,
+              "profitLoss": -5.9
+            },
+            "team2": {
+              "totalBackVol": 8.57,
+              "totalLayVol": 0.2200000000000002,
+              "totalBet": 8.57,
+              "profitLoss": 5.9
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 13.794,
+              "totalLayVol": 0,
+              "totalBet": 14.014000000000001,
+              "profitLoss": -5.444000000000001
+            },
+            "team2": {
+              "totalBackExpo": 8.3985,
+              "totalLayVol": 0.2200000000000002,
+              "totalBet": 8.3985,
+              "profitLoss": 6.0626999999999995
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 13.794,
+              "totalLayNetVol": 0,
+              "totalBet": 14.0052,
+              "profitLoss": -5.6067
+            },
+            "team2": {
+              "totalBackNetVol": 8.3985,
+              "totalLayNetVol": 0.2112000000000002,
+              "totalBet": 8.3985,
+              "profitLoss": 5.6067
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 4,
+            "averageOdds": 1.965,
+            "averageSize": 3.6175,
+            "supportProduct": 7.108387500000001
+          },
+          "teamB": {
+            "tradeCount": 2,
+            "averageOdds": 1.975,
+            "averageSize": 4.285,
+            "supportProduct": 8.462875
+          },
+          "strongerTeam": "Warriors",
+          "supportRatio": 1.1905477859781841
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 14.25,
+            "oppoLayVolume": 0.2200000000000002,
+            "layExposure": 0,
+            "netSupportValue": 14.47
+          },
+          "teamB": {
+            "totalBackVolume": 8.57,
+            "oppoLayVolume": 0,
+            "layExposure": 0.2112000000000002,
+            "netSupportValue": 8.3588
+          },
+          "strongerTeam": "Garden Route Badgers",
+          "netSupportDifference": 6.1112,
+          "percentageA": 63.384847210541075,
+          "percentageB": 36.615152789458925
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 14.25,
+            "syntheticSupport": 0.2200000000000002,
+            "opponentLiabilityRejection": 0.2112000000000002,
+            "sentimentScore": 14.2588
+          },
+          "teamB": {
+            "directNetSupport": 8.35,
+            "syntheticSupport": 0,
+            "opponentLiabilityRejection": 0,
+            "sentimentScore": 8.35
+          },
+          "strongerTeam": "Garden Route Badgers",
+          "scoreDifference": 5.908800000000001,
+          "percentageA": 63.06747815010084,
+          "percentageB": 36.932521849899146
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Garden Route Badgers",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Warriors",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Garden Route Badgers"
+        },
+        "teams": {
+          "Garden Route Badgers": {
+            "trades": [
+              {
+                "team": "Garden Route Badgers",
+                "price": 1.95,
+                "type": "back",
+                "size": 5.7,
+                "updatedAt": 1792146293951
+              },
+              {
+                "team": "Garden Route Badgers",
+                "price": 1.96,
+                "type": "back",
+                "size": 2.85,
+                "updatedAt": 1792146279291
+              },
+              {
+                "team": "Garden Route Badgers",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.7,
+                "updatedAt": 1792146261237
+              }
+            ],
+            "pnlIfWins": -5.444000000000001,
+            "totalBet": 14.014000000000001
+          },
+          "Warriors": {
+            "trades": [
+              {
+                "team": "Warriors",
+                "price": 1.96,
+                "type": "lay",
+                "size": 0.2200000000000002,
+                "updatedAt": 1792145864061
+              },
+              {
+                "team": "Warriors",
+                "price": 1.96,
+                "type": "back",
+                "size": 2.86,
+                "updatedAt": 1792145840330
+              },
+              {
+                "team": "Warriors",
+                "price": 1.99,
+                "type": "back",
+                "size": 5.710000000000001,
+                "updatedAt": 1792144322696
+              }
+            ],
+            "pnlIfWins": 6.0626999999999995,
+            "totalBet": 8.3985
+          }
+        }
+      },
+      "predictedWinner": "Garden Route Badgers",
+      "predictionReason": "Smart Money Inflow (Garden Route Badgers: ₹14 Back, Lead: 1.7x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (Garden Route Badgers: ₹14 Back, Lead: 1.7x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (Garden Route Badgers: ₹14 Back, Lead: 1.7x)",
+          "winner": "Garden Route Badgers",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "actualWinner": "Garden Route Badgers",
+      "lastCaptureError": null,
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:57:15.607Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
+    },
+    {
+      "matchId": "36187931",
+      "marketId": "1.263809989",
+      "matchName": "Limpopo v Eastern Cape Linyathi",
+      "competitionName": "South Africa T20 Challenge",
+      "team1": "Limpopo",
+      "team2": "Eastern Cape Linyathi",
+      "startTime": 1792148400000,
+      "endedAt": "2026-10-16T16:33:01.648Z",
+      "capturedAt": "2026-10-16T16:33:01.648Z",
+      "snapshot": {
+        "serverTime": "2026-10-16T16:28:56.805Z",
+        "matchId": "36187931",
+        "matchName": "Limpopo v Eastern Cape Linyathi",
+        "teamNames": [
+          "Limpopo",
+          "Eastern Cape Linyathi"
+        ],
+        "inPlayPnl": {
+          "team1": -18.907599999999995,
+          "team2": 20.011899999999997
+        },
+        "inPlayTotalBets": {
+          "team1": 33.3684,
+          "team2": 13.7865
+        },
+        "inPlayVolume": {
+          "team1": {
+            "back": 33.58,
+            "lay": 0.22999999999999998,
+            "total": 33.79
+          },
+          "team2": {
+            "back": 14.24,
+            "lay": 0.21,
+            "total": 14.47
+          }
+        },
+        "preMatchPnl": {
+          "team1": -18.907599999999995,
+          "team2": 20.011899999999997
+        },
+        "preMatchTotalBets": {
+          "team1": 33.3684,
+          "team2": 13.7865
+        },
+        "preMatchVolume": {
+          "team1": {
+            "back": 33.58,
+            "lay": 0.22999999999999998,
+            "total": 33.79
+          },
+          "team2": {
+            "back": 14.24,
+            "lay": 0.21,
+            "total": 14.47
+          }
+        },
+        "threeMinPnl": {
+          "team1": -18.907599999999995,
+          "team2": 20.011899999999997
+        },
+        "threeMinTotalBets": {
+          "team1": 33.3684,
+          "team2": 13.7865
+        },
+        "threeMinVolume": {
+          "team1": {
+            "back": 33.58,
+            "lay": 0.22999999999999998,
+            "total": 33.79
+          },
+          "team2": {
+            "back": 14.24,
+            "lay": 0.21,
+            "total": 14.47
+          }
+        },
+        "matchLoadV2": {
+          "team1": 3,
+          "team2": 3
+        },
+        "advancedMetrics": {
+          "team1": {
+            "back": 33.58,
+            "lay": 0.22999999999999998,
+            "totalVolume": 33.809999999999995,
+            "backPercentage": 99.31972789115648
+          },
+          "team2": {
+            "back": 14.24,
+            "lay": 0.21,
+            "totalVolume": 14.450000000000001,
+            "backPercentage": 98.54671280276816
+          }
+        },
+        "advancedMetricsV2": {
+          "team1": {
+            "back": 33.1584,
+            "lay": 0.22079999999999997,
+            "totalBet": 33.3792
+          },
+          "team2": {
+            "back": 13.5565,
+            "lay": 0.2184,
+            "totalBet": 13.7749
+          }
+        },
+        "supportMetrics": {
+          "team1": {
+            "supportMoney": 33.79,
+            "support": 70.01657687525902
+          },
+          "team2": {
+            "supportMoney": 14.47,
+            "support": 29.983423124740987
+          }
+        },
+        "marketSignals": {
+          "moreBettedTeam": "Limpopo",
+          "bookieFavouriteOutcome": "Eastern Cape Linyathi",
+          "riskTeam": "Limpopo",
+          "trap": {
+            "level": "high",
+            "reason": "Public heavy on one team, bookie loses if they win."
+          },
+          "supportConfidence": 40.03315375051803,
+          "mostBettedTeam": "Limpopo",
+          "prediction": {
+            "team1TrueSupport": 33.3768,
+            "team2TrueSupport": 13.7773,
+            "ratio": 2.4225936867165556,
+            "bookiePnlTeam1": -32.9284,
+            "bookiePnlTeam2": -13.346499999999999,
+            "prediction": "Eastern Cape Linyathi",
+            "pattern": "The Market Trap",
+            "reason": "Heavy crowd bias (2.42) but Bookie faces loss on Favorite. Trap detected. Prediction: Underdog."
+          }
+        },
+        "bookmakerExposure": {
+          "team1": {
+            "netExposure": 32.9376,
+            "backExposure": 33.1584,
+            "layExposure": 0.22079999999999997,
+            "teamName": "Limpopo"
+          },
+          "team2": {
+            "netExposure": 13.338099999999999,
+            "backExposure": 13.5565,
+            "layExposure": 0.2184,
+            "teamName": "Eastern Cape Linyathi"
+          }
+        },
+        "deepMetrics": {
+          "raw": {
+            "A_back_expo": 33.1584,
+            "A_lay_stake": 0.22999999999999998,
+            "B_back_expo": 13.5565,
+            "B_lay_stake": 0.21
+          },
+          "totals": {
+            "totalBetTeam1": 33.3684,
+            "totalBetTeam2": 13.7865
+          },
+          "simplePL": {
+            "team1_win": -32.9284,
+            "team2_win": -13.346499999999999
+          },
+          "derivedPL": {
+            "team1_win": -19.5819,
+            "team2_win": 19.5819
+          }
+        },
+        "marketAnalysis": {
+          "totalVolume": {
+            "team1": {
+              "totalBackVol": 33.58,
+              "totalLayVol": 0.22999999999999998,
+              "totalBet": 33.79,
+              "profitLoss": -19.32
+            },
+            "team2": {
+              "totalBackVol": 14.24,
+              "totalLayVol": 0.21,
+              "totalBet": 14.47,
+              "profitLoss": 19.32
+            }
+          },
+          "normalTotalBet": {
+            "team1": {
+              "totalBackExpo": 33.1584,
+              "totalLayVol": 0.22999999999999998,
+              "totalBet": 33.3684,
+              "profitLoss": -18.907600000000002
+            },
+            "team2": {
+              "totalBackExpo": 13.5565,
+              "totalLayVol": 0.21,
+              "totalBet": 13.7865,
+              "profitLoss": 20.0119
+            }
+          },
+          "totalNetVolume": {
+            "team1": {
+              "totalBackNetVol": 33.1584,
+              "totalLayNetVol": 0.22079999999999997,
+              "totalBet": 33.3768,
+              "profitLoss": -19.599500000000003
+            },
+            "team2": {
+              "totalBackNetVol": 13.5565,
+              "totalLayNetVol": 0.2184,
+              "totalBet": 13.7773,
+              "profitLoss": 19.599500000000003
+            }
+          }
+        },
+        "syntheticSupport": {
+          "teamA": {
+            "tradeCount": 3,
+            "averageOdds": 1.9966666666666668,
+            "averageSize": 11.263333333333334,
+            "supportProduct": 22.489122222222225
+          },
+          "teamB": {
+            "tradeCount": 3,
+            "averageOdds": 1.9566666666666668,
+            "averageSize": 4.823333333333333,
+            "supportProduct": 9.437655555555557
+          },
+          "strongerTeam": "Limpopo",
+          "supportRatio": 2.382914071173514
+        },
+        "netSupport": {
+          "teamA": {
+            "totalBackVolume": 33.58,
+            "oppoLayVolume": 0.21,
+            "layExposure": 0.22079999999999997,
+            "netSupportValue": 33.5692
+          },
+          "teamB": {
+            "totalBackVolume": 14.24,
+            "oppoLayVolume": 0.22999999999999998,
+            "layExposure": 0.2184,
+            "netSupportValue": 14.2516
+          },
+          "strongerTeam": "Limpopo",
+          "netSupportDifference": 19.317600000000002,
+          "percentageA": 70.19790551391863,
+          "percentageB": 29.802094486081366
+        },
+        "sentimentScore": {
+          "teamA": {
+            "directNetSupport": 33.35,
+            "syntheticSupport": 0.21,
+            "opponentLiabilityRejection": 0.2184,
+            "sentimentScore": 33.3416
+          },
+          "teamB": {
+            "directNetSupport": 14.03,
+            "syntheticSupport": 0.22999999999999998,
+            "opponentLiabilityRejection": 0.22079999999999997,
+            "sentimentScore": 14.0392
+          },
+          "strongerTeam": "Limpopo",
+          "scoreDifference": 19.3024,
+          "percentageA": 70.36943234390301,
+          "percentageB": 29.630567656096986
+        },
+        "trueMarketLoad": {
+          "team1": {
+            "name": "Limpopo",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "team2": {
+            "name": "Eastern Cape Linyathi",
+            "matchedVolume": 0,
+            "directBackVolume": 0,
+            "layLiability": 0,
+            "totalSupport": 0,
+            "supportPercentage": 50
+          },
+          "heavierSide": "Limpopo"
+        },
+        "teams": {
+          "Limpopo": {
+            "trades": [
+              {
+                "team": "Limpopo",
+                "price": 1.96,
+                "type": "lay",
+                "size": 0.22999999999999998,
+                "updatedAt": 1792146234391
+              },
+              {
+                "team": "Limpopo",
+                "price": 1.96,
+                "type": "back",
+                "size": 2.86,
+                "updatedAt": 1792145874767
+              },
+              {
+                "team": "Limpopo",
+                "price": 1.99,
+                "type": "back",
+                "size": 30.72,
+                "updatedAt": 1792140436069
+              }
+            ],
+            "pnlIfWins": -18.907599999999995,
+            "totalBet": 33.3684
+          },
+          "Eastern Cape Linyathi": {
+            "trades": [
+              {
+                "team": "Eastern Cape Linyathi",
+                "price": 1.95,
+                "type": "back",
+                "size": 11.39,
+                "updatedAt": 1792146249447
+              },
+              {
+                "team": "Eastern Cape Linyathi",
+                "price": 2.04,
+                "type": "lay",
+                "size": 0.21,
+                "updatedAt": 1792146234279
+              },
+              {
+                "team": "Eastern Cape Linyathi",
+                "price": 1.96,
+                "type": "back",
+                "size": 2.85,
+                "updatedAt": 1792146234279
+              }
+            ],
+            "pnlIfWins": 20.011899999999997,
+            "totalBet": 13.7865
+          }
+        }
+      },
+      "predictedWinner": "Limpopo",
+      "predictionReason": "Smart Money Inflow (Limpopo: ₹34 Back, Lead: 2.4x)",
+      "predictionRisk": {
+        "tier": "medium",
+        "label": "Medium Risk",
+        "shortLabel": "Medium",
+        "color": "text-[#eab308]",
+        "hex": "#eab308",
+        "bg": "rgba(234,179,8,0.12)",
+        "border": "rgba(234,179,8,0.35)",
+        "emoji": "🟡",
+        "wrongPct": "~20–27%",
+        "reason": "Smart Money Inflow (Limpopo: ₹34 Back, Lead: 2.4x)"
+      },
+      "matchedRules": [
+        {
+          "reason": "Smart Money Inflow (Limpopo: ₹34 Back, Lead: 2.4x)",
+          "winner": "Limpopo",
+          "priority": 100,
+          "selected": true
+        }
+      ],
+      "predictorVersion": "toss-v10-league-rules-retrospective",
+      "actualWinner": "Eastern Cape Linyathi",
+      "lastCaptureError": null,
+      "status": "verified",
+      "confirmedAt": "2026-10-16T16:57:19.163Z",
+      "confirmedByEmail": "admin@cricedge.com",
+      "confirmedById": 1
     }
   ]
 }

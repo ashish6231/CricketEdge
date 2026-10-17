@@ -53,3 +53,9 @@ test('isPredictionHit matches team names loosely', () => {
   assert.equal(isPredictionHit('Ireland', 'Afghanistan'), false)
   assert.equal(isPredictionHit(null, 'India'), null)
 })
+
+test('abandoned / no-result outcomes are excluded from prediction scoring', () => {
+  assert.equal(isPredictionHit('India', 'No Result'), null)
+  assert.equal(isPredictionHit('India', 'Abandoned'), null)
+  assert.match(buildTossDatasetQuery({ status: 'abandoned' }), /status=abandoned/)
+})

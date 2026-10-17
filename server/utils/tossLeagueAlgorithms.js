@@ -4,6 +4,8 @@
  * Dedicated market dynamics and exposure patterns for each tournament format.
  */
 
+import { isWorldLegendsTossLeague, getWorldLegendsTossPrediction } from './worldLegendsTossAlgorithm.js'
+
 export function teamEq(a, b) {
   const na = String(a || '').trim().toLowerCase()
   const nb = String(b || '').trim().toLowerCase()
@@ -1375,6 +1377,8 @@ export function getLeagueTossPrediction(snap, compName = '') {
   if (!snap?.teamNames?.length) return null
 
   const comp = inferCompetition(snap, compName)
+  // Legends owns its decision, including abstention, before generic rules run.
+  if (isWorldLegendsTossLeague(comp)) return getWorldLegendsTossPrediction(snap)
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
 

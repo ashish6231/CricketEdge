@@ -23,6 +23,7 @@ const { startTossCaptureWorker } = require('./services/tossCaptureWorker');
 const { startMatchCaptureWorker } = require('./services/matchCaptureWorker');
 const { startEmiratesD10Worker } = require('./services/emiratesD10Worker');
 const { startWNCLWorker } = require('./services/wnclWorker');
+const { startWomensSpringWorker } = require('./services/womensSpringWorker');
 const { expireAllTrials } = require('./lib/subscriptionAccess');
 const telegramRoutes = require('./routes/telegram');
 const telegramService = require('./services/telegramService');
@@ -215,6 +216,7 @@ let tossCaptureWorker = null;
 let matchCaptureWorker = null;
 let emiratesD10Worker = null;
 let wnclWorker = null;
+let womensSpringWorker = null;
 
 function shutdown(signal) {
   if (shuttingDown) return;
@@ -224,6 +226,7 @@ function shutdown(signal) {
   matchCaptureWorker?.stop();
   emiratesD10Worker?.stop();
   wnclWorker?.stop();
+  womensSpringWorker?.stop();
   tllWorker?.stop();
   crexWorker?.stop();
   normalizer?.stop();
@@ -282,6 +285,7 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     matchCaptureWorker = startMatchCaptureWorker({});
     emiratesD10Worker = startEmiratesD10Worker({});
     wnclWorker = startWNCLWorker({});
+    womensSpringWorker = startWomensSpringWorker({});
   });
 
   server.on('error', (err) => {

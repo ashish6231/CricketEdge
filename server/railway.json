@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "npx prisma generate && node index.js",
+    "startCommand": "npx prisma generate && node scripts/migrate_prediction_datasets.js && node index.js",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 3
   }

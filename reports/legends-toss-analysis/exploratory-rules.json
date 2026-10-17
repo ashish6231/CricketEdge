@@ -1,0 +1,160 @@
+{
+  "sourceQueriedAt": "2026-10-16T17:23:19.746Z",
+  "scope": "Exploratory fit to eight verified archived tosses; one abandoned toss excluded",
+  "validation": "in-sample-only; features and thresholds chosen after observing outcomes",
+  "parameters": {
+    "layBackResistance": 0.1,
+    "zeroLayBackLead": 3
+  },
+  "scored": 8,
+  "baselineCorrect": 6,
+  "candidateCorrect": 8,
+  "noPick": 0,
+  "branches": [
+    {
+      "rule": "EXPOSURE_AND_NEGATIVE_PL",
+      "samples": 6,
+      "correct": 6
+    },
+    {
+      "rule": "HIGH_LAY_RELATIVE_TO_BACK",
+      "samples": 1,
+      "correct": 1
+    },
+    {
+      "rule": "ZERO_LAY_MODERATE_BACK_LEAD",
+      "samples": 1,
+      "correct": 1
+    }
+  ],
+  "rows": [
+    {
+      "match": "India Legends v Australia Legends",
+      "actualWinner": "Australia Legends",
+      "savedPrediction": "India Legends",
+      "winner": "Australia Legends",
+      "exposureLeader": "Australia Legends",
+      "leaderLayBackPct": 0,
+      "backLead": 1.8875755362241848,
+      "leaderExposure": 270.04940000000005,
+      "otherExposure": 70.6005,
+      "leaderPnl": -191.9194,
+      "otherPnl": 213.64950000000002,
+      "rule": "EXPOSURE_AND_NEGATIVE_PL",
+      "candidatePass": true,
+      "baselinePass": true
+    },
+    {
+      "match": "West Indies Legends v South Africa Legends",
+      "actualWinner": "South Africa Legends",
+      "savedPrediction": "South Africa Legends",
+      "winner": "South Africa Legends",
+      "exposureLeader": "South Africa Legends",
+      "leaderLayBackPct": 1.896246262872329,
+      "backLead": 1.8591868244981984,
+      "leaderExposure": 656.5228000000001,
+      "otherExposure": 351.9545,
+      "leaderPnl": -278.5727999999999,
+      "otherPnl": 356.8255,
+      "rule": "EXPOSURE_AND_NEGATIVE_PL",
+      "candidatePass": true,
+      "baselinePass": true
+    },
+    {
+      "match": "India Legends v England Legends",
+      "actualWinner": "India Legends",
+      "savedPrediction": "England Legends",
+      "winner": "India Legends",
+      "exposureLeader": "England Legends",
+      "leaderLayBackPct": 14.131916866756345,
+      "backLead": 5.144399045842093,
+      "leaderExposure": 1703.8569,
+      "otherExposure": 278.1909999999999,
+      "leaderPnl": -1391.4569,
+      "otherPnl": 1592.1789999999996,
+      "rule": "HIGH_LAY_RELATIVE_TO_BACK",
+      "candidatePass": true,
+      "baselinePass": false
+    },
+    {
+      "match": "Australia Legends v Pakistan Legends",
+      "actualWinner": "Australia Legends",
+      "savedPrediction": "Pakistan Legends",
+      "winner": "Australia Legends",
+      "exposureLeader": "Australia Legends",
+      "leaderLayBackPct": 0,
+      "backLead": 21.67269439421338,
+      "leaderExposure": 223.2354,
+      "otherExposure": 10.425,
+      "leaderPnl": -212.1754,
+      "otherPnl": 229.27499999999998,
+      "rule": "EXPOSURE_AND_NEGATIVE_PL",
+      "candidatePass": true,
+      "baselinePass": true
+    },
+    {
+      "match": "Bangladesh Champions v England Legends",
+      "actualWinner": "England Legends",
+      "savedPrediction": "England Legends",
+      "winner": "England Legends",
+      "exposureLeader": "England Legends",
+      "leaderLayBackPct": 7.7115881611927115,
+      "backLead": 2.4531595966675694,
+      "leaderExposure": 1317.2293,
+      "otherExposure": 495.83259999999996,
+      "leaderPnl": -787.0593,
+      "otherPnl": 925.2832999999998,
+      "rule": "EXPOSURE_AND_NEGATIVE_PL",
+      "candidatePass": true,
+      "baselinePass": true
+    },
+    {
+      "match": "India Legends v South Africa Legends",
+      "actualWinner": "South Africa Legends",
+      "savedPrediction": "India Legends",
+      "winner": "South Africa Legends",
+      "exposureLeader": "India Legends",
+      "leaderLayBackPct": 0,
+      "backLead": 2.0319403502687705,
+      "leaderExposure": 1115.4755,
+      "otherExposure": 550.1745999999999,
+      "leaderPnl": -538.7755,
+      "otherPnl": 621.6454,
+      "rule": "ZERO_LAY_MODERATE_BACK_LEAD",
+      "candidatePass": true,
+      "baselinePass": false
+    },
+    {
+      "match": "Australia Legends v West Indies Legends",
+      "actualWinner": "Australia Legends",
+      "savedPrediction": "West Indies Legends",
+      "winner": "Australia Legends",
+      "exposureLeader": "Australia Legends",
+      "leaderLayBackPct": 0.3860811517672553,
+      "backLead": 6.144456348251962,
+      "leaderExposure": 2637.8229000000006,
+      "otherExposure": 424.7879,
+      "leaderPnl": -2191.0929000000006,
+      "otherPnl": 2374.6521000000002,
+      "rule": "EXPOSURE_AND_NEGATIVE_PL",
+      "candidatePass": true,
+      "baselinePass": true
+    },
+    {
+      "match": "India Legends v Bangladesh Champions",
+      "actualWinner": "India Legends",
+      "savedPrediction": "India Legends",
+      "winner": "India Legends",
+      "exposureLeader": "India Legends",
+      "leaderLayBackPct": 2.249427689857669,
+      "backLead": 1.4543743779969236,
+      "leaderExposure": 746.7780999999999,
+      "otherExposure": 514.1647,
+      "leaderPnl": -204.76809999999978,
+      "otherPnl": 271.5152999999999,
+      "rule": "EXPOSURE_AND_NEGATIVE_PL",
+      "candidatePass": true,
+      "baselinePass": true
+    }
+  ]
+}

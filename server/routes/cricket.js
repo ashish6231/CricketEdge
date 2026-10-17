@@ -15,15 +15,12 @@ let _matchDatasetCache = null;
 let _matchDatasetCacheTs = 0;
 const MATCH_DATASET_CACHE_MS = 60 * 1000; // 60s
 
-function getMatchDataset() {
+async function getMatchDataset() {
   const now = Date.now();
   if (_matchDatasetCache && (now - _matchDatasetCacheTs) < MATCH_DATASET_CACHE_MS) return _matchDatasetCache;
   try {
-    const mdPath = path.join(__dirname, '../data/match_dataset.json');
-    if (fs.existsSync(mdPath)) {
-      _matchDatasetCache = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
-      _matchDatasetCacheTs = now;
-    }
+    _matchDatasetCache = await require('../services/matchDatasetStore').getDefaultStore().load();
+    _matchDatasetCacheTs = now;
   } catch {}
   return _matchDatasetCache;
 }
@@ -293,7 +290,7 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
   let matchInfo = findMatchInfo(matches, matchId);
   if (!matchInfo) {
     try {
-      const md = getMatchDataset();
+      const md = await getMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
       if (rec) {
         matchInfo = {
@@ -320,7 +317,7 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
   if (!data || data?.error) {
     // Fallback to match_dataset.json snapshot
     try {
-      const md = getMatchDataset();
+      const md = await getMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
       if (rec?.snapshot) {
         data = rec.snapshot;
@@ -368,7 +365,7 @@ router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
   let matchInfo = findMatchInfo(matches, matchId);
   if (!matchInfo) {
     try {
-      const md = getMatchDataset();
+      const md = await getMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
       if (rec) {
         matchInfo = {

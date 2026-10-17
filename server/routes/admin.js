@@ -777,7 +777,7 @@ async function patchTossActualWinner(req, res, deps = {}) {
       Number(matchId) || 0,
       matchId,
       { before, after: record },
-      edited ? 'Corrected toss winner' : 'Confirmed toss winner',
+      record.status === 'abandoned' ? 'Marked toss as abandoned / no result' : edited ? 'Corrected toss winner' : 'Confirmed toss winner',
       req,
     );
     res.json({ success: true, data: record });

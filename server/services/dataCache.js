@@ -44,6 +44,23 @@ async function getTossSnapshot(matchId) {
   return bundle?.toss || null;
 }
 
+let captureFeed;
+function captureClient() {
+  return captureFeed ||= require('./cachedMarketFeed').createCachedMarketFeed({
+    getCookie: () => require('./scraper-tennisliveload/session').getCookies(),
+  });
+}
+// Completed matches may never have had a browser subscriber. Capture workers
+// fetch a missing input directly with the existing session, without logging in.
+async function getCricketCaptureSnapshot(matchId) {
+  const snapshot = await getCricketSnapshot(matchId);
+  return snapshot && !snapshot.error ? snapshot : captureClient().getCricketSnapshot(matchId);
+}
+async function getTossCaptureSnapshot(matchId) {
+  const snapshot = await getTossSnapshot(matchId);
+  return snapshot && !snapshot.error ? snapshot : captureClient().getTossSnapshot(matchId);
+}
+
 async function getSessionTrades(matchId) {
   const bundle = normalizer.getMatchBundle(matchId);
   return bundle?.session || null;
@@ -110,6 +127,8 @@ module.exports = {
   getTennisMatches,
   getCricketSnapshot,
   getTossSnapshot,
+  getCricketCaptureSnapshot,
+  getTossCaptureSnapshot,
   getSessionTrades,
   getTennisSnapshot,
   getLiveOdds,

@@ -162,3 +162,25 @@ test('idempotent confirm same winner succeeds; different winner can be edited', 
   assert.equal(edited.edited, true);
   assert.equal(edited.record.confirmedByEmail, 'edit@b.com');
 });
+
+test('abandoned tosses leave pending, retain inputs, survive capture and can be corrected', async () => {
+  const store = createStore({ filePath: tempPath() });
+  const initial = baseRecord();
+  await store.upsertPendingCapture(initial);
+  const admin = { userId: 1, email: 'admin@test.invalid' };
+  const result = await store.confirmActualWinner({ matchId: 'm1', actualWinner: 'No Result', admin });
+  assert.equal(result.record.status, 'abandoned');
+  assert.equal(result.record.predictionCorrect, null);
+  assert.deepEqual(result.record.snapshot, initial.snapshot);
+  assert.equal((await store.listRecords({ status: 'pending' })).records.length, 0);
+  assert.equal((await store.listRecords({ status: 'verified' })).records.length, 0);
+  assert.equal((await store.listRecords({ status: 'abandoned' })).records.length, 1);
+  assert.equal((await store.confirmActualWinner({ matchId: 'm1', actualWinner: 'No Result', admin })).changed, false);
+  assert.equal((await store.upsertPendingCapture(baseRecord({ actualWinner: initial.team1 }))).updated, false);
+  assert.equal((await store.buildExport()).records[0].actualWinner, 'No Result');
+  const corrected = await store.confirmActualWinner({ matchId: 'm1', actualWinner: initial.team1, admin });
+  assert.equal(corrected.edited, true);
+  assert.equal(corrected.record.status, 'verified');
+  assert.equal(corrected.record.predictionCorrect, true);
+  assert.equal((await store.confirmActualWinner({ matchId: 'm1', actualWinner: 'No Result', admin })).edited, true);
+});

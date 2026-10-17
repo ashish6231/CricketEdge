@@ -12,6 +12,17 @@ function tempStore() {
   });
 }
 
+test('capture skips abandoned tosses so they cannot return to pending', async () => {
+  const result = await captureEndedTosses({
+    store: { load: async () => ({ records: [{ matchId: 'abandoned', status: 'abandoned', actualWinner: 'No Result' }] }) },
+    scraper: {
+      getAllTossMatches: async () => [{ matchId: 'abandoned', status: 'ended', totalMatched: 100 }],
+      getTossSnapshot: async () => { throw Error('Abandoned snapshot must not be recaptured'); },
+    },
+  });
+  assert.deepEqual(result, { scanned: 1, captured: 0, skipped: 1, failed: 0 });
+});
+
 test('captures only ended matches with volume', async () => {
   const store = tempStore();
   const calls = [];
@@ -179,4 +190,25 @@ test('worker overlap guard skips concurrent ticks', async () => {
   await new Promise((r) => setTimeout(r, 50));
   worker.stop();
   assert.ok(runs >= 2);
+});
+
+test('default capture saves the dedicated World Legends pick and version', async () => {
+  const store = tempStore();
+  const { WORLD_LEGENDS_TOSS_VERSION } = require('../utils/worldLegendsTossAlgorithm');
+  const result = await captureEndedTosses({
+    store,
+    scraper: {
+      getAllTossMatches: async () => [{ matchId: 'new-legends', matchName: 'Alpha v Beta',
+        competitionName: 'World Championship of Legends T20', status: 'ended', totalMatched: 431 }],
+      getTossSnapshot: async () => ({ teamNames: ['Alpha', 'Beta'],
+        preMatchVolume: { team1: { back: 300, lay: 30 }, team2: { back: 100, lay: 1 } },
+        preMatchPnl: { team1: -200, team2: 250 },
+        bookmakerExposure: { team1: { netExposure: 200 }, team2: { netExposure: 80 } } }),
+    },
+  });
+  assert.equal(result.captured, 1);
+  const { records } = await store.listRecords({ status: 'pending', page: 1, limit: 5 });
+  assert.equal(records[0].predictedWinner, 'Beta');
+  assert.equal(records[0].predictorVersion, WORLD_LEGENDS_TOSS_VERSION);
+  assert.equal(records[0].predictionRisk.calibrated, false);
 });

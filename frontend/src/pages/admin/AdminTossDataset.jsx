@@ -61,10 +61,11 @@ function ResultCell({ label, value, tone }) {
 function WinnerPickButtons({ row, confirming, onPick, highlightActual }) {
   return (
     <div className="flex flex-col sm:flex-row gap-1.5 mt-3">
-      {[row.team1, row.team2].filter(Boolean).map((team) => {
+      {[row.team1, row.team2, 'No Result'].filter(Boolean).map((team) => {
         const isCurrent = highlightActual && team === row.actualWinner
         return (
           <button
+            type="button"
             key={team}
             onClick={() => onPick(row.matchId, team)}
             disabled={confirming || (highlightActual && isCurrent)}
@@ -75,7 +76,7 @@ function WinnerPickButtons({ row, confirming, onPick, highlightActual }) {
                 : { background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#e5e5ea' }
             }
           >
-            {confirming ? <LoaderCircle size={12} className="animate-spin mx-auto" /> : team}
+            {confirming ? <LoaderCircle size={12} className="animate-spin mx-auto" /> : team === 'No Result' ? 'Abandoned / No Result' : team}
           </button>
         )
       })}
@@ -155,7 +156,7 @@ export default function AdminTossDataset() {
     setConfirmingId(matchId)
     try {
       await adminConfirmTossWinner(matchId, actualWinner)
-      toast.success(editing ? 'Winner updated' : 'Winner confirmed')
+      toast.success(actualWinner === 'No Result' ? 'Marked as abandoned / no result' : editing ? 'Winner updated' : 'Winner confirmed')
       setEditingId(null)
       load()
     } catch (e) {
@@ -175,7 +176,7 @@ export default function AdminTossDataset() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2">
         <div className="flex rounded-xl overflow-hidden glass-card">
-          {['pending', 'verified'].map((s) => (
+          {['pending', 'verified', 'abandoned'].map((s) => (
             <button
               key={s}
               onClick={() => toggle(s)}
@@ -251,6 +252,7 @@ export default function AdminTossDataset() {
                 const confirming = confirmingId === row.matchId
                 const canConfirm = hasUsableSnapshot(row.snapshot)
                 const editing = editingId === row.matchId
+                const resolved = ['verified', 'abandoned'].includes(row.status)
                 const hit = row.status === 'verified'
                   ? isPredictionHit(row.predictedWinner, row.actualWinner)
                   : null
@@ -275,7 +277,10 @@ export default function AdminTossDataset() {
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {row.status === 'verified' && <HitBadge hit={hit} />}
-                        {row.status === 'verified' && (
+                        {row.status === 'abandoned' && (
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-bold text-text-muted" style={{ background: 'rgba(142,142,147,0.12)' }}>Abandoned · Unscored</span>
+                        )}
+                        {resolved && (
                           <button
                             type="button"
                             onClick={() => setEditingId(editing ? null : row.matchId)}
@@ -289,7 +294,7 @@ export default function AdminTossDataset() {
                       </div>
                     </div>
 
-                    {row.status === 'verified' ? (
+                    {resolved ? (
                       <div
                         className="grid grid-cols-2 gap-3 rounded-xl px-3 py-2.5 mb-2"
                         style={{ background: '#1a1a1a' }}
@@ -301,8 +306,8 @@ export default function AdminTossDataset() {
                         />
                         <ResultCell
                           label="Actual"
-                          value={row.actualWinner}
-                          tone="good"
+                          value={row.status === 'abandoned' ? 'Abandoned / No Result' : row.actualWinner}
+                          tone={row.status === 'abandoned' ? null : 'good'}
                         />
                       </div>
                     ) : (
@@ -327,7 +332,7 @@ export default function AdminTossDataset() {
                         </span>
                       )}
                       <span>Captured {fmtDateTime(row.capturedAt)}</span>
-                      {row.status === 'verified' && row.confirmedAt && (
+                      {resolved && row.confirmedAt && (
                         <span>Confirmed {fmtDateTime(row.confirmedAt)}</span>
                       )}
                     </div>
@@ -341,7 +346,7 @@ export default function AdminTossDataset() {
                       </div>
                     )}
 
-                    {row.status !== 'verified' && (
+                    {!resolved && (
                       <WinnerPickButtons
                         row={row}
                         confirming={confirming}
@@ -349,10 +354,10 @@ export default function AdminTossDataset() {
                       />
                     )}
 
-                    {row.status === 'verified' && editing && (
+                    {resolved && editing && (
                       <>
                         <div className="text-[11px] text-text-muted mt-2">
-                          Select the correct toss winner
+                          Select the correct toss result
                         </div>
                         <WinnerPickButtons
                           row={row}

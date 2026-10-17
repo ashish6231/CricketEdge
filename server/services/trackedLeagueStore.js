@@ -2,6 +2,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { checkPreMatchDataQuality } = require('../utils/preMatchDataQuality.mjs');
 const { teamKey, pruneTrackedLeagueSnapshots } = require('./trackedLeagueSnapshots');
+const { createPredictionDatasetPersistence } = require('./predictionDatasetPersistence');
 
 const badInput = message => Object.assign(new Error(message), { status: 400 });
 function validateResultEvidence(url, approvedHosts, evidenceLabel = 'approved source') {
@@ -13,20 +14,27 @@ function validateResultEvidence(url, approvedHosts, evidenceLabel = 'approved so
   return parsed.href;
 }
 
-function createTrackedLeagueStore({ filePath, leagueName, isLeague, approvedHosts, evidenceLabel, normalizeTeam = teamKey }) {
+function createTrackedLeagueStore({ filePath, leagueName, isLeague, approvedHosts, evidenceLabel, normalizeTeam = teamKey, persistFixtures = false, persistence }) {
+  const database = persistence === undefined ? createPredictionDatasetPersistence({ filePath }) : persistence;
   let chain = Promise.resolve();
-  function enqueue(fn) { const next = chain.then(fn); chain = next.catch(() => {}); return next; }
+  function enqueue(fn) { const next = chain.then(() => database ? database.runExclusive(fn) : fn()); chain = next.catch(() => {}); return next; }
   async function read() {
+    if (database) {
+      const data = await database.read();
+      pruneTrackedLeagueSnapshots(data, {isLeague, normalizeTeam, persistFixtures});
+      return data;
+    }
     let raw;
     try { raw = await fs.readFile(filePath, 'utf8'); }
     catch (e) { if (e.code === 'ENOENT') return { version: 1, league: leagueName, records: [], sync: null }; throw e; }
     const data = JSON.parse(raw);
     if (!Array.isArray(data.records)) throw new Error('Invalid league dataset; refusing to overwrite');
-    pruneTrackedLeagueSnapshots(data, {isLeague, normalizeTeam});
+    pruneTrackedLeagueSnapshots(data, {isLeague, normalizeTeam, persistFixtures});
     return data;
   }
   async function write(data) {
-    pruneTrackedLeagueSnapshots(data, {isLeague, normalizeTeam});
+    pruneTrackedLeagueSnapshots(data, {isLeague, normalizeTeam, persistFixtures});
+    if (database) return database.write(data);
     await fs.mkdir(path.dirname(filePath), { recursive: true });
     const tmp = `${filePath}.${process.pid}.tmp`;
     await fs.writeFile(tmp, `${JSON.stringify(data, null, 2)}\n`);

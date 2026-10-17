@@ -36,6 +36,6 @@ export function teamNamesMatch(a, b) {
 }
 
 export function isPredictionHit(predictedWinner, actualWinner) {
-  if (!predictedWinner || !actualWinner) return null
+  if (!predictedWinner || !actualWinner || ['no result', 'abandoned'].includes(String(actualWinner).trim().toLowerCase())) return null
   return teamNamesMatch(predictedWinner, actualWinner)
 }

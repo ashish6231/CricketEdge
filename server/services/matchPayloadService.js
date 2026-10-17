@@ -40,17 +40,14 @@ let _matchDatasetCache = null;
 let _matchDatasetCacheTs = 0;
 const MATCH_DATASET_CACHE_TTL = 60 * 1000;
 
-function getCachedMatchDataset() {
+async function getCachedMatchDataset() {
   const now = Date.now();
   if (_matchDatasetCache && (now - _matchDatasetCacheTs < MATCH_DATASET_CACHE_TTL)) {
     return _matchDatasetCache;
   }
   try {
-    const mdPath = path.join(__dirname, '../data/match_dataset.json');
-    if (fs.existsSync(mdPath)) {
-      _matchDatasetCache = JSON.parse(fs.readFileSync(mdPath, 'utf8'));
-      _matchDatasetCacheTs = now;
-    }
+    _matchDatasetCache = await require('./matchDatasetStore').getDefaultStore().load();
+    _matchDatasetCacheTs = now;
   } catch {}
   return _matchDatasetCache || { records: [] };
 }
@@ -355,7 +352,7 @@ async function getCricketMatchesPayload() {
 
       if (!snap) {
         try {
-          const md = getCachedMatchDataset();
+          const md = await getCachedMatchDataset();
           const rec = (md?.records || []).find(x => String(x.matchId) === String(m.matchId));
           if (rec?.snapshot) snap = rec.snapshot;
         } catch {}
@@ -750,7 +747,7 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
 
   if (!matchInfo) {
     try {
-      const md = getCachedMatchDataset();
+      const md = await getCachedMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === mid);
       if (rec) {
         matchInfo = {
@@ -799,7 +796,7 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
       } catch {}
     }
     try {
-      const md = getCachedMatchDataset();
+      const md = await getCachedMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === mid);
       if (rec && rec.snapshot) {
         cricket = attachMatchMeta(JSON.parse(JSON.stringify(rec.snapshot)), matchInfo);

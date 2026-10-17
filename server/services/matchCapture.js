@@ -115,7 +115,8 @@ async function captureEndedMatches({
 
     let snapshot;
     try {
-      snapshot = await scraper.getCricketSnapshot(matchId);
+      const fetchSnapshot = scraper.getCricketCaptureSnapshot || scraper.getCricketSnapshot;
+      snapshot = await fetchSnapshot.call(scraper, matchId);
     } catch (err) {
       snapshot = { error: err.message };
     }

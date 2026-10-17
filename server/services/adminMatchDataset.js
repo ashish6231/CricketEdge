@@ -1,6 +1,8 @@
 const { getDefaultStore } = require('./matchDatasetStore');
 const { getDefaultD10Store } = require('./emiratesD10Store');
 const { getDefaultWNCLStore } = require('./wnclStore');
+const { getDefaultWomensSpringStore } = require('./womensSpringStore');
+const { isWomensSpringT20, springTeamKey } = require('../utils/womensSpringMatchPredictor.mjs');
 const { checkMatchRecordQuality } = require('./matchRecordQuality');
 const { snapshotMatchesRecord, teamKey } = require('./trackedLeagueSnapshots');
 const { wnclTeamKey, isWNCLLeague } = require('../utils/wnclMatchPredictor.mjs');
@@ -64,31 +66,33 @@ function decorate(record, source, predict) {
 
 function trackedRecord(record, source, normalizeTeam) {
   const market = record.markets?.match;
-  if (!market || !snapshotMatchesRecord(market.snapshot, record, normalizeTeam)) return null;
-  const snapshot = market.snapshot;
-  const names = snapshot.teamNames.slice(0, 2);
+  const fixtureOnly = source === 'womens_spring_dataset' && !market;
+  if (!fixtureOnly && (!market || !snapshotMatchesRecord(market.snapshot, record, normalizeTeam))) return null;
+  const snapshot = market?.snapshot || null;
+  const names = snapshot ? snapshot.teamNames.slice(0, 2) : [record.team1, record.team2];
   const mapWinner = name => name === 'No Result' ? name : names.find(team => normalizeTeam(team) === normalizeTeam(name)) || null;
-  const verified = record.status === 'completed' && record.resultVerification?.status === 'verified';
+  const verified = ['completed', 'cancelled'].includes(record.status) && record.resultVerification?.status === 'verified';
   const actualWinner = verified ? mapWinner(record.actualWinner) : null;
   return {
-    matchId: market.marketMatchId || record.recordId,
+    matchId: market?.marketMatchId || record.recordId,
     recordId: record.recordId,
-    marketId: snapshot.marketId || null,
+    marketId: snapshot?.marketId || null,
     matchName: record.matchName,
     competitionName: record.competitionName,
     team1: names[0], team2: names[1],
     startTime: record.startTime,
-    capturedAt: market.prediction?.capturedAt || market.capturedAt,
-    inputTiming: market.inputTiming,
+    capturedAt: market?.prediction?.capturedAt || market?.capturedAt || null,
+    inputTiming: market?.inputTiming || 'no-market-snapshot',
+    forecastMissingReason: fixtureOnly ? 'Market snapshot unavailable' : !market.prediction ? 'No prediction issued before start' : null,
     matchStatus: record.status,
     status: actualWinner === 'No Result' ? 'abandoned' : actualWinner ? 'verified' : 'pending',
     snapshot,
-    predictedWinner: mapWinner(market.prediction?.winner),
-    predictionReason: market.prediction?.reason || null,
-    predictionConfidence: market.prediction?.confidence || null,
-    predictionTier: market.prediction?.tier || null,
-    predictorVersion: market.prediction?.predictorVersion || null,
-    algorithmId: market.prediction?.algorithmId || null,
+    predictedWinner: mapWinner(market?.prediction?.winner),
+    predictionReason: market?.prediction?.reason || null,
+    predictionConfidence: market?.prediction?.confidence || null,
+    predictionTier: market?.prediction?.tier || null,
+    predictorVersion: market?.prediction?.predictorVersion || null,
+    algorithmId: market?.prediction?.algorithmId || null,
     actualWinner,
     reportedWinner: record.reportedWinner || null,
     resultVerification: record.resultVerification,
@@ -147,7 +151,7 @@ function deduplicateRecords(records) {
     const key = `${row.league}:${row.matchId}`;
     const existing = identities.get(key);
     if (!existing) { identities.set(key, row); result.push(row); continue; }
-    const normalize = isWNCLLeague(row.league) ? wnclTeamKey : teamKey;
+    const normalize = isWomensSpringT20(row.league) ? springTeamKey : isWNCLLeague(row.league) ? wnclTeamKey : teamKey;
     const teams = [existing.team1, existing.team2].map(normalize).sort();
     const sameTeams = [row.team1, row.team2].map(normalize).sort().every((name, i) => name === teams[i]);
     const firstDate = timestamp(existing.startTime), nextDate = timestamp(row.startTime);
@@ -180,6 +184,7 @@ async function loadMatchDataset({ store = getDefaultStore(), trackedStores, pred
   const sources = trackedStores || [
     { source: 'emirates_d10_dataset', store: getDefaultD10Store(), normalizeTeam: teamKey },
     { source: 'wncl_dataset', store: getDefaultWNCLStore(), normalizeTeam: wnclTeamKey },
+    { source: 'womens_spring_dataset', store: getDefaultWomensSpringStore(), normalizeTeam: springTeamKey },
   ];
   const datasets = await Promise.all([store.load(), ...sources.map(source => source.store.load())]);
   const collected = [];
@@ -192,9 +197,10 @@ async function loadMatchDataset({ store = getDefaultStore(), trackedStores, pred
     const source = sources[i];
     for (const record of datasets[i + 1].records) {
       // Toss-only samples do not belong in the match dataset view.
-      if (!record.markets?.match) continue;
+      const springFixture = source.source === 'womens_spring_dataset' && isWomensSpringT20(record.competitionName);
+      if (!record.markets?.match && !springFixture) continue;
       const normalized = trackedRecord(record, source.source, source.normalizeTeam || teamKey);
-      if (!normalized || !checkMatchRecordQuality(normalized).valid) { excluded++; continue; }
+      if (!normalized || (!springFixture && !checkMatchRecordQuality(normalized).valid)) { excluded++; continue; }
       collected.push(decorate(normalized, source.source, predict));
     }
   }
