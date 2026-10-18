@@ -14,20 +14,18 @@ export function parseSession(name) {
 }
 
 export function normalizeMarketName(name) {
-  return (name || '').trim().toLowerCase().replace(/\s+/g, ' ')
+  return String(name || '').trim().toLowerCase().replace(/\s+/g, ' ')
 }
 
 /** Session trades use `team` as the market identifier — exact market name only */
 export function tradeMatchesMarket(trade, marketName) {
   if (!trade || !marketName) return false
   const target = normalizeMarketName(marketName)
-  return [trade.team, trade.marketName, trade.market]
-    .filter(Boolean)
-    .some(c => normalizeMarketName(c) === target)
+  return normalizeMarketName(trade.team || trade.marketName || trade.market) === target
 }
 
 function finiteNumber(value) {
-  if (value == null || value === '' || !['number', 'string'].includes(typeof value)) return null
+  if (value == null || !['number', 'string'].includes(typeof value) || String(value).trim() === '') return null
   const number = Number(value)
   return Number.isFinite(number) ? number : null
 }
@@ -39,99 +37,104 @@ function sessionSide(trade) {
   return null
 }
 
-export function buildLinesFromTrades(trades) {
-  if (!trades?.length) return []
-  const lineMap = new Map()
-  trades.forEach(t => {
-    const price = finiteNumber(t?.price)
-    const size = finiteNumber(t?.size)
-    const side = sessionSide(t)
-    if (price == null || price < 0 || size == null || size <= 0 || !side) return
+function validSessionTrade(trade) {
+  const price = finiteNumber(trade?.price)
+  const size = finiteNumber(trade?.size)
+  const count = trade?.tradeCount == null ? 1 : finiteNumber(trade.tradeCount)
+  return price != null && price >= 0 && size != null && size >= 0 && sessionSide(trade) != null
+    && Number.isSafeInteger(count) && count > 0
+}
 
+export function buildLinesFromTrades(trades) {
+  if (!Array.isArray(trades)) return []
+  const lineMap = new Map()
+  for (const trade of trades) {
+    if (!validSessionTrade(trade)) continue
+    const price = Number(trade.price), size = Number(trade.size), side = sessionSide(trade)
     if (!lineMap.has(price)) {
       lineMap.set(price, { price, yes: 0, no: 0, yesBets: 0, noBets: 0, totalVol: 0, betCount: 0 })
     }
     const line = lineMap.get(price)
-    const count = Math.max(1, Math.trunc(finiteNumber(t?.tradeCount) || 1))
+    const count = trade.tradeCount == null ? 1 : Number(trade.tradeCount)
     line[side] += size
     line[`${side}Bets`] += count
     line.totalVol += size
     line.betCount += count
-  })
+  }
   return [...lineMap.values()].sort((a, b) => a.price - b.price)
 }
 
-/**
- * Bookie ledger for an integer settlement score.
- * Customer YES/back wins above the line, so that stake is a bookie loss.
- * Customer NO/lay wins at/below the line, so that stake is a bookie loss.
+const roundMoney = value => Math.round((value + Number.EPSILON) * 100) / 100
+
+/** Existing feed convention: YES wins above its run line; NO wins at/below it.
+ * Every matched stake is settled once at the requested score, including lines
+ * on either side of that score. These are net even-money stakes, not decimal odds.
  */
-export function calcSessionPlBreakdown(lines, score) {
-  const result = lines.reduce((acc, line) => {
-    const price = finiteNumber(line?.price)
-    if (price == null) return acc
-    const yes = finiteNumber(line?.yes) || 0
-    const no = finiteNumber(line?.no) || 0
-    if (score > price) {
-      // YES customers win; NO customers lose.
-      acc.pays += yes
-      acc.receives += no
-    } else {
-      // NO customers win; YES customers lose.
-      acc.pays += no
-      acc.receives += yes
-    }
-    return acc
-  }, { receives: 0, pays: 0 })
-  const round = value => Math.round((value + Number.EPSILON) * 100) / 100
-  return {
-    receives: round(result.receives),
-    pays: round(result.pays),
-    pl: round(result.receives - result.pays),
+export function settleSessionLines(lines, score) {
+  if (!Array.isArray(lines) || !Number.isSafeInteger(score) || score < 0) return null
+  const rows = []
+  for (const line of lines) {
+    const price = finiteNumber(line?.price), yes = finiteNumber(line?.yes), no = finiteNumber(line?.no)
+    if (price == null || price < 0 || yes == null || yes < 0 || no == null || no < 0) return null
+    const yesWins = score > price
+    const yesPl = yesWins ? -yes : yes
+    const noPl = yesWins ? no : -no
+    rows.push({ price, yes, no, yesWins, yesPl, noPl,
+      receives: yesWins ? no : yes, pays: yesWins ? yes : no, pl: yesPl + noPl })
   }
+  return rows
+}
+
+export function calcSessionPlBreakdown(lines, score) {
+  const rows = settleSessionLines(lines, score)
+  if (!rows) return { receives: null, pays: null, pl: null }
+  const receives = rows.reduce((sum, row) => sum + row.receives, 0)
+  const pays = rows.reduce((sum, row) => sum + row.pays, 0)
+  return { receives: roundMoney(receives), pays: roundMoney(pays), pl: roundMoney(receives - pays) }
 }
 
 export function calcSessionPlAtScore(lines, score) {
   return calcSessionPlBreakdown(lines, score).pl
 }
 
-/** P/L at every run score. `full: true` = saari runs (min–max line prices), else chart window */
+/** Full outcome domain: 0 through the last threshold, plus a constant upper tail.
+ * All scores >= the final row have identical settlement; no higher lines remain.
+ */
 export function computePlRows(lines, opts = {}) {
-  if (!lines.length) return []
-
-  const prices = lines.map(l => finiteNumber(l.price)).filter(v => v != null)
-  if (!prices.length) return []
+  if (!lines?.length || !settleSessionLines(lines, 0)) return []
+  const prices = lines.map(line => Number(line.price))
   for (const boundary of [opts.bestYes, opts.bestNo]) {
     const value = finiteNumber(boundary)
-    if (value != null) prices.push(value)
+    if (value != null && value >= 0) prices.push(value)
   }
-  let minScore = Math.max(0, Math.floor(Math.min(...prices)) - 1)
-  let maxScore = Math.ceil(Math.max(...prices)) + 1
-
+  let minScore = 0
+  let maxScore = Math.floor(Math.max(...prices)) + 1
+  if (!Number.isSafeInteger(maxScore)) return []
   if (!opts.full) {
-    const { bestYes, bestNo, predicted, over } = opts
-    const center = predicted ?? (bestYes != null && bestNo != null ? (bestYes + bestNo) / 2 : null)
-
-    if (center != null && bestYes != null && bestNo != null) {
-      const pad = Math.max(6, Math.ceil((bestNo - bestYes) * 0.6))
-      minScore = Math.floor(Math.min(bestYes, center) - pad)
-      maxScore = Math.ceil(Math.max(bestNo, center) + pad)
-    }
-
-    if (over && over !== 999 && center != null) {
-      const maxSpan = 22
-      if (maxScore - minScore > maxSpan) {
-        minScore = Math.floor(center - maxSpan / 2)
-        maxScore = Math.ceil(center + maxSpan / 2)
-      }
+    const center = finiteNumber(opts.marketMid ?? opts.predicted)
+    if (center != null) {
+      const pad = opts.over && opts.over !== 999 ? 11 : Math.max(6, Math.abs((opts.bestNo ?? center) - (opts.bestYes ?? center)))
+      minScore = Math.max(0, Math.floor(center - pad))
+      maxScore = Math.min(maxScore, Math.ceil(center + pad))
     }
   }
-
   const rows = []
-  for (let s = minScore; s <= maxScore; s++) {
-    rows.push({ score: s, pl: calcSessionPlAtScore(lines, s) })
+  for (let score = minScore; score <= maxScore; score++) {
+    rows.push({ score, pl: calcSessionPlAtScore(lines, score) })
   }
   return rows
+}
+
+export function sessionPlRanges(rows) {
+  const ranges = []
+  for (const row of rows) {
+    const outcome = row.pl > 0 ? 'profit' : row.pl < 0 ? 'loss' : 'break-even'
+    const previous = ranges.at(-1)
+    if (previous && previous.outcome === outcome && previous.to + 1 === row.score) previous.to = row.score
+    else ranges.push({ from: row.score, to: row.score, outcome })
+  }
+  if (ranges.length) ranges.at(-1).to = null // Unbounded upper tail.
+  return ranges
 }
 
 export function formatVolStr(val) {
@@ -169,7 +172,9 @@ export function getLiquidity(gap) {
 export function computeSessionMetrics(oddsItem, trades = [], marketSummary = null) {
   const parsed = parseSession(oddsItem.marketName)
   const marketTrades = trades.filter(t => tradeMatchesMarket(t, oddsItem.marketName))
+  const invalidTradeCount = marketTrades.filter(trade => !validSessionTrade(trade)).length
   const lines = buildLinesFromTrades(marketTrades)
+  const canCalculatePl = lines.length > 0 && invalidTradeCount === 0
 
   const oddsYes = finiteNumber(oddsItem.bestYes)
   const oddsNo = finiteNumber(oddsItem.bestNo)
@@ -187,13 +192,13 @@ export function computeSessionMetrics(oddsItem, trades = [], marketSummary = nul
   const marketMid = bestYes != null && bestNo != null
     ? Math.round((bestYes + bestNo) / 2 * 2) / 2
     : bestYes ?? bestNo ?? null
-  // Backwards-compatible field for older consumers. UI must call it Market Mid.
-  const predicted = marketMid
+  // A quote midpoint or profitable outcome is not a run prediction.
+  const predicted = null
 
   const gap = bestYes != null && bestNo != null ? bestNo - bestYes : null
-  const plRowsFull = lines.length ? computePlRows(lines, { full: true, bestYes, bestNo }) : []
-  const plRows = lines.length
-    ? computePlRows(lines, { bestYes, bestNo, predicted: marketMid, over: parsed.over })
+  const plRowsFull = canCalculatePl ? computePlRows(lines, { full: true, bestYes, bestNo }) : []
+  const plRows = canCalculatePl
+    ? computePlRows(lines, { bestYes, bestNo, marketMid, over: parsed.over })
     : []
   const bestPlRow = plRowsFull.length
     ? plRowsFull.reduce((best, r) => (r.pl > best.pl ? r : best), plRowsFull[0])
@@ -210,7 +215,9 @@ export function computeSessionMetrics(oddsItem, trades = [], marketSummary = nul
   const countMatches = providerTradeCount == null || tradeCount === providerTradeCount
   const hasProviderTotals = providerVolume != null || providerTradeCount != null
   const hasCompleteProviderTotals = providerVolume != null && providerTradeCount != null
-  const ledgerStatus = !lines.length
+  const ledgerStatus = invalidTradeCount > 0
+    ? 'invalid'
+    : !lines.length
     ? 'quotes-only'
     : hasCompleteProviderTotals && volumeMatches && countMatches
       ? 'verified'
@@ -232,6 +239,9 @@ export function computeSessionMetrics(oddsItem, trades = [], marketSummary = nul
     plRows,
     plRowsFull,
     bestPlRow,
+    plRanges: sessionPlRanges(plRowsFull),
+    invalidTradeCount,
+    canCalculatePl,
     hasTrades: lines.length > 0,
     tradeCount,
     totalVol,
@@ -273,25 +283,10 @@ export function buildAllSessions(odds = [], trades = [], markets = []) {
     .sort((a, b) => a.inning - b.inning || a.over - b.over)
 }
 
-/** Cheap fingerprint — skip React state updates when poll returns same data */
+/** Exact calculation inputs: corrections can change P/L without changing row
+ * count, total volume, or the last timestamp. Never discard those updates.
+ */
 export function sessionDataFingerprint(data) {
   if (!data) return ''
-  const trades = data.trades || []
-  const odds = data.odds || []
-  let fp = `t${trades.length}`
-  if (trades.length) {
-    const last = trades[trades.length - 1]
-    const vol = trades.reduce((s, t) => s + (parseFloat(t.size) || 0), 0)
-    fp += `:${last?.updatedAt || 0}:${vol.toFixed(0)}`
-  }
-  fp += `|o${odds.length}`
-  if (odds.length) {
-    fp += ':' + odds.map(o => `${o.marketName}:${o.bestYes}:${o.bestNo}`).join(';')
-  }
-  const markets = Array.isArray(data.markets) ? data.markets : Object.values(data.markets || {})
-  fp += `|m${markets.length}`
-  if (markets.length) {
-    fp += ':' + markets.map(m => `${m.marketName || m.name}:${m.tradeCount}:${m.totalVolume ?? m.totalMatched}`).join(';')
-  }
-  return fp
+  return JSON.stringify([data.trades || [], data.odds || [], data.markets || []])
 }

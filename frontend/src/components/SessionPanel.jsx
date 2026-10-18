@@ -67,7 +67,7 @@ function SessionPanel({ odds = [], trades = [], markets = [], t1 = '', t2 = '' }
 
       <details className="group overflow-hidden rounded-xl border border-border bg-white shadow-sm">
         <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-bold text-text-primary hover:bg-slate-50"><Info size={15} className="text-primary" /> P/L formula <ChevronDown size={15} className="ml-auto text-text-muted transition-transform group-open:rotate-180" /></summary>
-        <div className="border-t border-border px-4 py-3 text-xs leading-relaxed text-text-muted">Losing customer stakes received − winning customer stakes paid = bookie net P/L. “Ledger complete” ka matlab bet count aur matched money provider totals se match karte hain.</div>
+        <div className="border-t border-border px-4 py-3 text-xs leading-relaxed text-text-muted">1:1 stake basis: losing customer stakes received − winning customers ki net winnings = bookie P/L. “Ledger complete” ka matlab bet count aur matched money provider totals se match karte hain.</div>
       </details>
     </div>
   )

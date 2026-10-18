@@ -187,7 +187,7 @@ export default function SessionDetail() {
         <div className="space-y-2 border-t border-border px-4 py-3 text-xs text-text-muted">
           <p><b className="text-sky-700">YES</b>: final score line se upar hua to YES customer wins.</p>
           <p><b className="text-rose-700">NO</b>: final score line par/neeche raha to NO customer wins.</p>
-          <p><b className="text-text-primary">Bookie P/L</b>: losing customer stakes received − winning customer stakes paid.</p>
+          <p><b className="text-text-primary">Bookie P/L</b>: 1:1 stake basis par losing stakes received − winning customers ki net winnings.</p>
           <p><b className="text-emerald-700">Ledger complete</b>: received bet count aur money provider totals se match karte hain; provider direct P/L value nahi deta.</p>
         </div>
       </details>
