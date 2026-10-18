@@ -1,4 +1,4 @@
-import { isWomensSpringT20, WOMENS_SPRING_LEAGUE, applyWomensSpringTrapOverride } from './womensSpringMatchPredictor.mjs';
+import { isWomensSpringT20, WOMENS_SPRING_LEAGUE } from './womensSpringMatchPredictor.mjs';
 import { LEAGUE_PREMATCH_ADJUSTMENTS } from './leaguePreMatchAdjustments.mjs';
 import { extractRuleAdjustmentFeatures, applyRuleAdjustments, describeAdjustment } from './preMatchRuleAdjustments.mjs';
 import { getLeagueAlgorithmPrediction, getDefaultAlgorithmPrediction } from './leagueAlgorithms.mjs';
@@ -6,6 +6,7 @@ import { EMIRATES_D10_ALGORITHM, isEmiratesD10League, predictEmiratesD10Match } 
 import { checkPreMatchDataQuality } from './preMatchDataQuality.mjs';
 import { WNCL_ALGORITHM, isWNCLLeague, predictWNCLMatch } from './wnclMatchPredictor.mjs';
 import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
+import { isWorldLegendsLeague, WORLD_LEGENDS_LEAGUE } from './worldLegendsActivity.mjs';
 
 export const PREDICTOR_VERSION = 'match-v9-cross-market-support';
 export const DEFAULT_MATCH_MODE = 'rules';
@@ -74,6 +75,7 @@ const aliases = {
   dpl: 'Delhi Premier League',
 };
 export function getLeagueMatchAlgorithm(name) {
+  if (isWorldLegendsLeague(name)) return registry.get(normalize(WORLD_LEGENDS_LEAGUE));
   if (isWomensSpringT20(name)) return registry.get(normalize(WOMENS_SPRING_LEAGUE));
   if (isWNCLLeague(name)) return registry.get(normalize(WNCL_ALGORITHM.league));
   if (isEmiratesD10League(name)) return registry.get(normalize(EMIRATES_D10_ALGORITHM.league));
@@ -104,6 +106,8 @@ export function normalizeFrozenMatchInput(snap) {
 
 // Kept separately so chronological tuning can evaluate the unfitted base rules.
 export function predictFrozenLeagueBase(input) {
+  if (isWorldLegendsLeague(input?.competitionName)) return predictActivityLeague(input);
+  if (isWomensSpringT20(input?.competitionName)) return predictActivityLeague(input);
   if ((isEmiratesD10League(input?.competitionName) || isWNCLLeague(input?.competitionName)) && !checkPreMatchDataQuality(input).valid) return null;
   const snap = normalizeFrozenMatchInput(input);
   if (!snap) return null;
@@ -137,6 +141,8 @@ export function predictFrozenLeagueBase(input) {
 
 
 export function predictFrozenLeagueRules(input, independentRules) {
+  if (isWorldLegendsLeague(input?.competitionName)) return predictActivityLeague(input);
+  if (isWomensSpringT20(input?.competitionName)) return predictActivityLeague(input);
   if ((isEmiratesD10League(input?.competitionName) || isWNCLLeague(input?.competitionName)) && !checkPreMatchDataQuality(input).valid) return null;
   const frozen = normalizeFrozenMatchInput(input);
   if (!frozen) return null;
@@ -160,12 +166,20 @@ export function predictFrozenLeagueRules(input, independentRules) {
 
 // Filled with independent, versioned profiles after offline league training.
 export function predictNormalLeagueMatch(input) {
+  if (isWorldLegendsLeague(input?.competitionName)) return predictActivityLeague(input);
+  if (isWomensSpringT20(input?.competitionName)) return predictActivityLeague(input);
   const algorithm = getLeagueMatchAlgorithm(input?.competitionName);
   const baseline = predictFrozenLeagueRules(input, algorithm ? { rules: algorithm.profile.baselineAdjustments, samples: algorithm.profile.trainingSamples } : undefined);
   if (!baseline) return null;
   if (!algorithm) return baseline;
   const frozen = normalizeFrozenMatchInput(input);
-  return algorithm.predict(frozen, applyWomensSpringTrapOverride(input, baseline));
+  return algorithm.predict(frozen, baseline);
+}
+
+function predictActivityLeague(input) {
+  const prediction = getLeagueMatchAlgorithm(input?.competitionName)?.predict(input);
+  return prediction ? { ...prediction, predictorVersion: PREDICTOR_VERSION,
+    leagueRegistered: true, modelScope: 'rules', mode: DEFAULT_MATCH_MODE } : null;
 }
 
 export function predictLeagueTrainingFit(input) {

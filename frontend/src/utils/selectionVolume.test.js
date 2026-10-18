@@ -21,13 +21,20 @@ test('pre-match provider total stays on the frozen value after live totals chang
   assert.equal(canCapturePreMatchProviderTotals(liveUpdate, Date.parse('2026-10-17T09:00:00Z')), false)
 })
 
-test('direct live load falls back to provider frozen pre-match fields', () => {
+test('direct live load uses explicit provider frozen pre-match totals', () => {
   const snapshot = {
     inPlay: true,
     deepMetrics: { totals: { team1: 900000, team2: 700000 } },
-    preMatchTotalBets: { team1: 433.65, team2: 2220 },
+    preMatchProviderTotals: { team1: 433.65, team2: 2220 },
   }
   assert.deepEqual(getFrozenPreMatchProviderTotals(snapshot), [433.65, 2220])
+})
+
+test('missing provider totals never duplicate the reported activity ledger', () => {
+  assert.equal(getFrozenPreMatchProviderTotals({ inPlay: true,
+    preMatchTotalBets: { team1: 33577.6517, team2: 183175.629 },
+    deepMetrics: { totals: { totalBetTeam1: 900000, totalBetTeam2: 700000 } },
+  }), null)
 })
 
 test('market Total bets uses the provider activity ledger, not exposure-based provider totals', () => {

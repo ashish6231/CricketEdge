@@ -7,6 +7,7 @@
 
 import { computeTossRisk } from './predictionRisk.js'
 import { getLeagueTossPrediction, inferCompetition, teamEq, fmtVol } from './tossLeagueAlgorithms.js'
+import { isWorldLegendsTossLeague, getWorldLegendsTossPrediction } from './worldLegendsTossAlgorithm.js'
 
 export const PREDICTOR_VERSION = 'toss-v10-league-rules-retrospective'
 
@@ -19,6 +20,20 @@ export function predictTossWinner(snap, compName = '') {
 
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
+
+  // The Legends activity rule is independent of back/lay volume, P/L and the
+  // generic waterfall. In particular, missing activity must never fall through.
+  if (isWorldLegendsTossLeague(inferCompetition(snap, actualCompName))) {
+    const prediction = getWorldLegendsTossPrediction(snap)
+    if (prediction.abstain) return null
+    const activity = prediction.reportedActivityEvidence
+    const signals = [{label:'Pre-match reported activity',sublabel:'Higher toss activity selects the winner',active:true,
+      v1:activity.team1.toFixed(2),v2:activity.team2.toFixed(2),winnerWins:true}]
+    return {...prediction,winnerName:prediction.winner,
+      algorithmEvidence:prediction.evidence,signals,activeSignals:1,
+      risk:{tier:'unvalidated',label:'Risk unvalidated',shortLabel:'Unvalidated',wrongPct:'Uncalibrated',calibrated:false,note:prediction.validationNote},
+      metrics:{t1,t2},matchedRules:[{reason:prediction.reason,winner:prediction.winner,priority:100,selected:true}]}
+  }
 
   const pv1 = snap.preMatchVolume?.team1 || snap.advancedMetricsV2?.team1 || snap.advancedMetrics?.team1 || {}
   const pv2 = snap.preMatchVolume?.team2 || snap.advancedMetricsV2?.team2 || snap.advancedMetrics?.team2 || {}

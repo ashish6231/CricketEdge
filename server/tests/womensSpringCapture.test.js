@@ -17,6 +17,7 @@ const fixture = { recordId: 'crex:2LB:one', crexMatchId: 'one', competitionName:
 const raw = () => ({ teamNames: ['Sydney Thunder W', 'Melbourne Stars W'],
   preMatchVolume: { team1: { back: 200, lay: 600 }, team2: { back: 100, lay: 250 } },
   preMatchPnl: { team1: 190, team2: -230 }, preMatchTotalBets: { team1: 398, team2: 745 },
+  deepMetrics: { totals: { totalBetTeam1: 100, totalBetTeam2: 500 } },
   marketSignals: { prediction: { pattern: 'The Market Trap', prediction: 'Sydney Thunder W' } },
   syntheticSupport: { strongerTeam: 'Sydney Thunder W', supportRatio: 2.08 } });
 const archiveStore = { load: async () => ({ records: [] }) };
@@ -49,7 +50,7 @@ test('all fixtures survive absent snapshots, completed results are verified with
   assert.equal(view.records.find(row => row.recordId === 'crex:2LB:two').actualWinner, fixture.team1);
 });
 
-test('pre-start prediction uses Spring trap override and remains frozen after kickoff', async t => {
+test('pre-start activity prediction stays immutable when provider totals and live activity change', async t => {
   const store = await storeFor(t);
   const match = { matchId: 'market-one', competitionName: "Women's T20 Spring Challenge", team1: 'Sydney Thunder W', team2: 'Melbourne Stars W', startTime: START, status: 'upcoming' };
   const scraper = { getCricketMatches: () => [match], getCricketSnapshot: async () => raw() };
@@ -58,10 +59,11 @@ test('pre-start prediction uses Spring trap override and remains frozen after ki
   let saved = (await store.load()).records[0];
   const first = structuredClone(saved.markets.match);
   assert.equal(first.prediction.winner, fixture.team1);
-  assert.equal(first.prediction.tier, 'WOMENS_SPRING_T20_TRAP_SUPPORT_OVERRIDE');
+  assert.equal(first.prediction.tier, 'WOMENS_SPRING_T20_LOWER_REPORTED_ACTIVITY');
+  assert.deepEqual(first.snapshot.preMatchProviderTotals, { team1: 100, team2: 500 });
   assert.ok(Date.parse(first.prediction.capturedAt) < START);
   result = await captureWomensSpring({ ...options(store), now: () => new Date(START + 60000),
-    scraper: { getCricketMatches: () => [{ ...match, status: 'completed' }], getCricketSnapshot: async () => ({ ...raw(), preMatchPnl: { team1: -9000, team2: 9000 } }) },
+    scraper: { getCricketMatches: () => [{ ...match, status: 'completed' }], getCricketSnapshot: async () => ({ ...raw(), preMatchPnl: { team1: -9000, team2: 9000 }, inPlayTotalBets: {team1:9000,team2:10}, deepMetrics: {totals:{totalBetTeam1:9000,totalBetTeam2:10}} }) },
     fetchSeries: async () => [{ ...fixture, status: 'completed', reportedWinner: fixture.team1, resultText: 'SYT-W Won by 7 wickets' }] });
   saved = (await store.load()).records[0];
   assert.deepEqual(saved.markets.match.prediction, first.prediction);

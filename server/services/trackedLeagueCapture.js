@@ -2,6 +2,7 @@ const { getCrexSeriesMatches } = require('./crexService');
 const { checkPreMatchDataQuality } = require('../utils/preMatchDataQuality.mjs');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { teamKey, pruneTrackedLeagueSnapshots } = require('./trackedLeagueSnapshots');
+const { isWomensSpringT20, freezeSpringProviderTotals } = require('../utils/womensSpringMatchPredictor.mjs');
 
 const fixtureKeys = ['recordId','crexMatchId','seriesId','competitionName','matchNumber','matchName',
   'team1','team2','team1Short','team2Short','startTime','status','score1','score2','resultText',
@@ -95,7 +96,7 @@ async function captureTrackedLeague({
         const method = kind === 'match' ? scraper.getCricketSnapshot : scraper.getTossSnapshot;
         if (!method) continue;
         const raw = await method.call(scraper, matchId);
-        const snapshot = raw ? { ...raw, competitionName: leagueName } : null;
+        let snapshot = raw ? { ...raw, competitionName: leagueName } : null;
         if (!checkPreMatchDataQuality(snapshot).valid) { invalidInputs++; continue; }
         const inputTeams = snapshot.teamNames.slice(0, 2).map(normalizeTeam).sort();
         if (![normalizeTeam(fixture.team1), normalizeTeam(fixture.team2)].sort().every((name, i) => name === inputTeams[i])) {
@@ -106,6 +107,12 @@ async function captureTrackedLeague({
           snapshot.startTime = fixture.startTime;
           snapshot.capturedAt = snapshotCapturedAt;
         }
+        if (isWomensSpringT20(leagueName)) snapshot = freezeSpringProviderTotals({ ...snapshot,
+          startTime: snapshot.startTime ?? fixture.startTime,
+          capturedAt: snapshotCapturedAt,
+          inPlay: Boolean(snapshot.inPlay || match.inPlay),
+          status: snapshot.status || match.status,
+        });
         const snapshotCapturedMs = Date.parse(snapshotCapturedAt);
         const deadline = kind === 'toss' ? timestamp(snapshot.startTime) || fixture.startTime : fixture.startTime;
         const beforeStart = snapshotCapturedMs < deadline && fixture.status === 'upcoming' && !match.inPlay && !snapshot.inPlay &&

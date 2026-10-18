@@ -1,16 +1,13 @@
-// Independent Spring profile: Legends consensus plus a timestamp-gated
-// pre-match trap/support override. Future accuracy remains unvalidated.
+// Spring uses exactly one signal: the lower frozen pre-match reported activity.
 import { defineLeagueProfile } from '../leagueProfileRuntime.mjs';
+import { getWomensSpringMatchPrediction } from '../womensSpringMatchPredictor.mjs';
 
-export default defineLeagueProfile({
+const profile = defineLeagueProfile({
   "league": "Women's T20 Spring Challenge",
   "algorithmId": "match-women-s-t20-spring-challenge-independent-v1",
-  "profileVersion": "spring-t20-trap-support-v2",
-  "strategy": "league-rules",
-  "parameters": {
-    "totalRatio": 1.5,
-    "backRatio": 1.4
-  },
+  "profileVersion": "spring-t20-lower-reported-activity-v4",
+  "strategy": "lower-prematch-reported-activity",
+  "parameters": {},
   "baselineAdjustments": [],
   "model": null,
   "trainingTree": null,
@@ -52,3 +49,10 @@ export default defineLeagueProfile({
     "selection": "awaiting-data"
   }
 });
+
+export default Object.freeze({ ...profile, predict(snapshot) {
+  const result = getWomensSpringMatchPrediction(snapshot);
+  return result ? { ...result, algorithmId: profile.algorithmId, algorithmLeague: profile.league,
+    profileVersion: profile.profileVersion, algorithmStrategy: profile.strategy,
+    validation: profile.validationStatus, trainingSamples: 0 } : null;
+} });

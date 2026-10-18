@@ -2,62 +2,56 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const { predictNormalLeagueMatch } = require('../utils/normalLeagueMatchPredictor.mjs');
+const { predictNormalLeagueMatch, predictFrozenLeagueBase, predictFrozenLeagueRules, getLeagueMatchAlgorithm } = require('../utils/normalLeagueMatchPredictor.mjs');
+const league='World Championship of Legends T20';
+const input={competitionName:league,teamNames:['India Legends','England Legends'],preMatchTotalBets:{team1:100,team2:300}};
 
-const indiaEngland = {
-  competitionName: 'World Championship of Legends T20',
-  teamNames: ['India Legends', 'England Legends'],
-  preMatchVolume: {
-    team1: { back: 14550.67, lay: 23709.57 },
-    team2: { back: 4704.41, lay: 1863.38 },
-  },
-  preMatchTotalBets: { team1: 10687.5659, team2: 31860.4678 },
-  preMatchPnl: { team1: 7474.0337, team2: -14122.7934 },
-};
-
-test('World Legends treats a lay on India as support for England', () => {
-  const prediction = predictNormalLeagueMatch(indiaEngland);
-  assert.equal(prediction.winner, 'England Legends');
-  assert.equal(prediction.tier, 'WORLD_LEGENDS_PREMATCH_CONSENSUS');
-  assert.equal(prediction.marketEvidence.support.team1, 16414.05);
-  assert.ok(Math.abs(prediction.marketEvidence.support.team2 - 28413.98) < 1e-9);
-  assert.equal(Math.round(prediction.marketEvidence.support.pct2), 63);
-  assert.equal(Math.round(prediction.marketEvidence.activity.pct2), 75);
-  assert.equal(prediction.marketEvidence.bookmakerPressureIdx, 1);
-  assert.equal(prediction.marketEvidence.agreeingSignals, 3);
+test('Legends match picks higher reported activity without requiring back/lay or P/L',()=>{
+  for(const predict of [predictNormalLeagueMatch,predictFrozenLeagueBase,predictFrozenLeagueRules]) {
+    const result=predict(input);
+    assert.equal(result.winner,'England Legends');
+    assert.equal(result.reportedActivityEvidence.selection,'higher');
+    assert.equal(result.reportedActivityEvidence.signalCount,1);
+    assert.equal(result.tier,'WORLD_LEGENDS_MATCH_HIGHER_ACTIVITY');
+    assert.equal(result.confidenceCalibrated,false);
+  }
+  assert.equal(predictNormalLeagueMatch({...input,preMatchTotalBets:{team1:300,team2:0}}).winner,'India Legends');
 });
 
-test('World Legends consensus is symmetric when team slots are swapped', () => {
-  const swapped = {
-    ...indiaEngland,
-    teamNames: [...indiaEngland.teamNames].reverse(),
-    preMatchVolume: { team1: indiaEngland.preMatchVolume.team2, team2: indiaEngland.preMatchVolume.team1 },
-    preMatchTotalBets: { team1: indiaEngland.preMatchTotalBets.team2, team2: indiaEngland.preMatchTotalBets.team1 },
-    preMatchPnl: { team1: indiaEngland.preMatchPnl.team2, team2: indiaEngland.preMatchPnl.team1 },
-  };
-  const prediction = predictNormalLeagueMatch(swapped);
-  assert.equal(prediction.winner, 'England Legends');
-  assert.equal(prediction.winnerIdx, 0);
+test('Legends ignores support, provider totals, trap, P/L, live activity and result labels',()=>{
+  const baseline=predictNormalLeagueMatch(input);
+  const altered={...input,preMatchVolume:{team1:{back:99999,lay:0},team2:{back:0,lay:0}},
+    preMatchPnl:{team1:-999999,team2:999999},inPlayTotalBets:{team1:999999,team2:1},
+    preMatchProviderTotals:{team1:999999,team2:1},actualWinner:'India Legends',marketSignals:{prediction:{prediction:'India Legends'}}};
+  assert.deepEqual(predictNormalLeagueMatch(altered),baseline);
+  assert.equal(predictNormalLeagueMatch({...input,teamNames:[...input.teamNames].reverse(),preMatchTotalBets:{team1:300,team2:100}}).winner,baseline.winner);
 });
 
-test('World Legends current rule passes every independently verified completed league match', async () => {
-  const dataset = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/match_dataset.json'), 'utf8'));
-  const outcomes = JSON.parse(fs.readFileSync(
-    path.join(__dirname, '../../reports/match-predictions/world-legends/outcomes.json'), 'utf8',
-  ));
-  const { runWorldLegendsBacktest } = await import('../../reports/match-predictions/world-legends/backtest.mjs');
-  const report = runWorldLegendsBacktest(dataset, outcomes);
+test('Legends missing, equal and invalid activity abstains without fallback; aliases route correctly',()=>{
+  for(const activity of [undefined,{team1:0,team2:0},{team1:10,team2:10},{team1:10},{team1:10,team2:null},{team1:-1,team2:10},{team1:10,team2:NaN},{team1:10,team2:Infinity}])
+    assert.equal(predictNormalLeagueMatch({...input,preMatchTotalBets:activity,preMatchVolume:{team1:{back:10,lay:1},team2:{back:1,lay:1}}}),null);
+  for(const name of [league,'World Championship of Legends 2026','WCL','WCL T20 2026']) assert.equal(getLeagueMatchAlgorithm(name).algorithmId,getLeagueMatchAlgorithm(league).algorithmId);
+  assert.notEqual(getLeagueMatchAlgorithm('Legends League Cricket')?.algorithmId,getLeagueMatchAlgorithm(league).algorithmId);
+});
 
-  assert.deepEqual(report.summary, {
-    archivedMarkets: 4,
-    completedWithVerifiedWinner: 3,
-    correct: 3,
-    wrong: 0,
-    unscored: 1,
-    accuracyPct: 100,
-    verdict: 'PASS',
-  });
-  assert.equal(report.rows.find(row => row.matchId === '36147996').currentPrediction, 'England Legends');
-  assert.equal(report.rows.find(row => row.matchId === '36128071').verdict, 'Unscored');
-  assert.ok(report.rows.every(row => row.inputTiming === 'frozen-pre-match-fields'));
+test('historical Legends match replay scores the requested rule without claiming perfection',async()=>{
+  const dataset=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/match_dataset.json'),'utf8'));
+  const outcomes=JSON.parse(fs.readFileSync(path.join(__dirname,'../../reports/match-predictions/world-legends/outcomes.json'),'utf8'));
+  const {runWorldLegendsBacktest}=await import('../../reports/match-predictions/world-legends/backtest.mjs');
+  const report=runWorldLegendsBacktest(dataset,outcomes);
+  assert.equal(report.summary.completedWithVerifiedWinner,3);
+  assert.equal(report.summary.correct,2);
+  assert.equal(report.summary.wrong,1);
+  assert.equal(report.rows.find(r=>r.matchId==='36130557').currentPrediction,'West Indies Legends');
+  assert.equal(report.rows.find(r=>r.matchId==='36128071').verdict,'Unscored');
+});
+
+test('frontend uses one higher-activity signal and discards previous profile locks',async()=>{
+  const {predictMatchStart,lockMatchStartPrediction}=await import('../../frontend/src/utils/matchStartPredictor.js');
+  const result=predictMatchStart(input);
+  assert.equal(result.winnerName,'England Legends');
+  assert.equal(result.signals.length,1);
+  assert.match(result.signals[0].sublabel,/Higher activity/);
+  const old={...result,profileVersion:'league-v1-0cae91a464f8',winnerName:'India Legends'};
+  assert.equal(lockMatchStartPrediction(result,old).winnerName,result.winnerName);
 });

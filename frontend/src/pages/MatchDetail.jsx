@@ -15,9 +15,11 @@ import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetr
 import SessionPanel from '../components/SessionPanel'
 import { RiskBadge } from '../components/PredictionMeta'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
-import { getCricketMatchBundle } from '../api'
+import { getCricketMatchBundle, getCricketOdds } from '../api'
 import { isCompleteMatchBundle } from '../utils/matchBundle'
-import { getMatchStartTimestamp, isMatchLiveByStart } from '../utils/matchTiming'
+import { getMatchStartTimestamp, isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
+import { isWomensSpringT20 } from '../../../server/utils/womensSpringMatchPredictor.mjs'
+import { isWorldLegendsLeague } from '../../../server/utils/worldLegendsActivity.mjs'
 
 const fmt = (n) => {
   if (n === null || n === undefined) return '—'
@@ -146,6 +148,7 @@ export default function MatchDetail({ sport }) {
   const [requiresPro, setRequiresPro] = useState(false)
   const [, setLastUpdated] = useState(null)
   const [crexData, setCrexData] = useState(seedCrex)
+  const [liveOdds, setLiveOdds] = useState(null)
   const crexDataRef = useRef(seedCrex)
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem(`tab_${matchId}`) || 'simple')
   const handleTabChange = (key) => {
@@ -192,6 +195,7 @@ export default function MatchDetail({ sport }) {
 
   useEffect(() => {
     let cancelled = false
+    let receivedBundle = false
     // A cached snapshot is only the initial view; always refresh this route.
     setTossSnapshot(getMatchBundle(matchId)?.toss || null)
 
@@ -219,6 +223,7 @@ export default function MatchDetail({ sport }) {
 
     const handleBundle = (bundle) => {
       if (cancelled || !bundle) return
+      receivedBundle = true
       // Update cache with latest data
       if (bundle.matchId) setMatchBundle(bundle.matchId, bundle)
       if (isLoginRequiredError(bundle) || bundle?.error === 'login_required') {
@@ -298,13 +303,16 @@ export default function MatchDetail({ sport }) {
       })
     }
 
-    // Refresh even a full sessionStorage bundle: it may contain an old toss snapshot.
-    // Keep the room subscription for subsequent live updates.
-    getCricketMatchBundle(matchId)
-      .then(data => {
-        if (!cancelled && data) handleBundle(data)
-      })
-      .catch(() => { })
+    // Socket normally supplies the initial bundle. Use HTTP only as a delayed
+    // fallback so opening MatchDetail does not download the same large payload twice.
+    const bundleFallbackTimer = setTimeout(() => {
+      if (cancelled || receivedBundle) return
+      getCricketMatchBundle(matchId)
+        .then(data => {
+          if (!cancelled && !receivedBundle && data) handleBundle(data)
+        })
+        .catch(() => { })
+    }, 6000)
 
     // Safety timeout — agar 8s mein data nahi aaya toh loading hatao
     const loadingTimeout = setTimeout(() => {
@@ -314,12 +322,48 @@ export default function MatchDetail({ sport }) {
     return () => {
       cancelled = true
       clearTimeout(loadingTimeout)
+      clearTimeout(bundleFallbackTimer)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, onSpecificBundle)
       socket.off('match:bundle', onSpecificBundle)
       socket.off(`match:crex:${matchId}`, onSpecificCrex)
     }
   }, [matchId, sport, isLoggedIn])
+
+  const matchEnded = isMatchEnded(snapshot)
+
+  useEffect(() => {
+    setLiveOdds(null)
+    if (sport !== 'cricket' || !matchId || !authReady || !isLoggedIn || requiresLogin || requiresPro || matchEnded) return
+    let cancelled = false
+    let requestInFlight = false
+
+    const refreshOdds = async () => {
+      if (cancelled || requestInFlight || document.hidden) return
+      requestInFlight = true
+      try {
+        const data = await getCricketOdds(matchId)
+        if (!cancelled && data?.odds && !data.error) setLiveOdds(data)
+      } catch {
+        // The full bundle remains the fallback if the lightweight odds request fails.
+      } finally {
+        requestInFlight = false
+      }
+    }
+
+    const onVisibilityChange = () => {
+      if (!document.hidden) refreshOdds()
+    }
+
+    refreshOdds()
+    const oddsTimer = setInterval(refreshOdds, 5000)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => {
+      cancelled = true
+      clearInterval(oddsTimer)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+    }
+  }, [matchId, sport, authReady, isLoggedIn, requiresLogin, requiresPro, matchEnded])
 
   const liveStartPred = useMemo(() => {
     if (!snapshot) return null
@@ -342,6 +386,11 @@ export default function MatchDetail({ sport }) {
   }, [snapshot?.startTime, snapshot?.openDate, snapshot?.marketStartTime, timingNow])
 
   useEffect(() => {
+    if (!liveStartPred && (isWomensSpringT20(snapshot?.competitionName) || isWorldLegendsLeague(snapshot?.competitionName))) {
+      setLockedStartPred(null)
+      try { sessionStorage.removeItem(`match_start_${PREDICTOR_VERSION}_${matchId}`) } catch { }
+      return
+    }
     if (liveStartPred) {
       setLockedStartPred((prev) => {
         const next = lockMatchStartPrediction(liveStartPred, prev, { inPlay: effectiveInPlay })
@@ -353,7 +402,7 @@ export default function MatchDetail({ sport }) {
         return next
       })
     }
-  }, [liveStartPred, effectiveInPlay, matchId])
+  }, [liveStartPred, effectiveInPlay, matchId, snapshot?.competitionName])
 
   useEffect(() => {
     if (!snapshot || !matchId) return
@@ -541,9 +590,10 @@ export default function MatchDetail({ sport }) {
   const drawTrades = hasDraw ? ((snapshot.teams?.[drawName] || {}).trades || []) : []
 
   const getLatestOdds = (trades, teamKey) => {
+    const liveQuote = Object.entries(liveOdds?.odds || {}).find(([name]) => teamEq(name, teamKey))?.[1]
     const sorted = [...trades].sort((a, b) => (timestamp(b.updatedAt) || 0) - (timestamp(a.updatedAt) || 0))
-    let back = sorted.find(t => tradeSide(t) === 'back')?.price
-    let lay = sorted.find(t => tradeSide(t) === 'lay')?.price
+    let back = liveQuote?.back ?? sorted.find(t => tradeSide(t) === 'back')?.price
+    let lay = liveQuote?.lay ?? sorted.find(t => tradeSide(t) === 'lay')?.price
 
     // Fallback to runners from seed snapshot / matchLoad
     if (back == null || lay == null) {
@@ -726,7 +776,7 @@ export default function MatchDetail({ sport }) {
   const periodRows = [
     { label: 'Bookie P/L', values: [period.pnl?.team1, period.pnl?.team2], format: 'signed' },
     { label: 'Reported activity', values: [period.bets?.team1, period.bets?.team2], format: 'number' },
-    ...(metricsPeriod === 'pre' && preMatchProviderTotals.some(value => value != null) ? [{ label: 'Provider total', values: preMatchProviderTotals, format: 'currency', emphasis: true }] : []),
+    ...(metricsPeriod === 'pre' ? [{ label: 'Provider total', values: preMatchProviderTotals, format: 'currency', emphasis: true }] : []),
     ...(metricsPeriod === 'pre' ? [{
       label: 'Recorded trades',
       values: [t1, t2].map(name => preMatchActivity.available ? {
@@ -739,7 +789,10 @@ export default function MatchDetail({ sport }) {
     { label: 'Lay volume', values: [period.vol?.team1?.lay, period.vol?.team2?.lay], format: 'currency', tone: 'lay' },
   ]
   const insightRows = metricsPeriod === 'exposure' ? flowRows : periodRows
-  const evidence = matchStartPred?.marketEvidence
+  const activityEvidence = matchStartPred?.reportedActivityEvidence
+  const evidence = matchStartPred?.marketEvidence || (activityEvidence ? {
+    activity: activityEvidence, agreeingSignals: 1, signalCount: 1,
+  } : null)
   const percentage = value => Number.isFinite(value) ? `${value.toFixed(0)}%` : '—'
   const formatInsightValue = (row, value) => {
     if (row.format === 'activity') return value == null ? '—' : <>{value.count.toLocaleString('en-IN')} <small>{value.pct == null ? '(—)' : `(${percentage(value.pct)})`}</small></>
@@ -845,9 +898,9 @@ export default function MatchDetail({ sport }) {
               </div>
               {evidence && <details className="match-v2-evidence"><summary><span>Market evidence</span><span>{evidence.agreeingSignals}/{evidence.signalCount} signals</span></summary>
                 <table className="match-data-table" aria-label="Prediction market evidence"><thead><tr><th scope="col">Signal</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead><tbody>
-                  <tr><th scope="row">Corrected support</th><td>{percentage(evidence.support?.pct1)}</td><td>{percentage(evidence.support?.pct2)}</td></tr>
-                  <tr><th scope="row">Pre-match activity</th><td>{percentage(evidence.activity?.pct1)}</td><td>{percentage(evidence.activity?.pct2)}</td></tr>
-                  <tr><th scope="row">Bookie liability</th><td>{evidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</td><td>{evidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</td></tr>
+                  {evidence.support && <tr><th scope="row">Corrected support</th><td>{percentage(evidence.support.pct1)}</td><td>{percentage(evidence.support.pct2)}</td></tr>}
+                  <tr><th scope="row">Pre-match activity</th><td>{activityEvidence ? fmt(activityEvidence.team1) : percentage(evidence.activity?.pct1)}</td><td>{activityEvidence ? fmt(activityEvidence.team2) : percentage(evidence.activity?.pct2)}</td></tr>
+                  {evidence.bookmakerPressureIdx != null && <tr><th scope="row">Bookie liability</th><td>{evidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</td><td>{evidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</td></tr>}
                 </tbody></table>
               </details>}
             </section>}

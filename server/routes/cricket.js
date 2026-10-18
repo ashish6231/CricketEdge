@@ -564,20 +564,19 @@ router.get('/session/trades/:matchId', optionalAuth, assertTelegramMembership, a
 });
 
 router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) => {
+  // This is an in-memory snapshot read. Keep it fresh on every 5-second client
+  // request while returning only the tiny odds projection over the network.
   const data = await dataCache.getCricketSnapshot(req.params.matchId);
   if (data?.error) return res.json({ error: data.error });
-  const teams = data.teams || {};
-  const result = {};
-  for (const [teamName, teamData] of Object.entries(teams)) {
-    const trades = teamData.trades || [];
-    if (!trades.length) { result[teamName] = { back: null, lay: null }; continue; }
-    const sorted = [...trades].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-    result[teamName] = {
-      back: sorted.find(t => t.type === 'back')?.price ?? null,
-      lay:  sorted.find(t => t.type === 'lay')?.price  ?? null,
-    };
-  }
-  res.json({ matchId: req.params.matchId, teamNames: data.teamNames || [], odds: result });
+  const parsed = _extractOddsFromSnapshot(data);
+  if (!parsed) return res.json({ error: 'Odds unavailable' });
+  res.set('Cache-Control', 'private, max-age=4, stale-while-revalidate=1');
+  res.json({
+    matchId: req.params.matchId,
+    teamNames: parsed?.teamNames || [],
+    odds: parsed?.odds || {},
+    updatedAt: new Date().toISOString(),
+  });
 });
 const _oddsCache = new Map();
 const ODDS_FRESH_TTL = 2500;

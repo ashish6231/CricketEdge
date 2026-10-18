@@ -11,6 +11,7 @@ const crexService = require('../crexService');
 const prisma = require('../../db/prisma');
 const crypto = require('crypto');
 const { compactSessionPayload } = require('../../utils/sessionPayload');
+const { isWomensSpringT20, freezeSpringProviderTotals } = require('../../utils/womensSpringMatchPredictor.mjs');
 
 // In-memory caches for fast normalization & merging
 let _cricketMatches = [];
@@ -177,7 +178,16 @@ async function processIngestJob(job) {
 
   else if (type === 'cricket:snapshot' && matchId && data) {
     const mid = String(matchId);
-    _cricketSnapshots.set(mid, data);
+    const matchInfo = _cricketMatches.find(match => String(match.matchId || match.id) === mid);
+    const competitionName = data.competitionName || matchInfo?.competitionName;
+    const snapshot = isWomensSpringT20(competitionName) ? freezeSpringProviderTotals({
+      ...data, competitionName,
+      startTime: data.startTime ?? matchInfo?.startTime,
+      status: data.status || matchInfo?.status,
+      inPlay: Boolean(data.inPlay || matchInfo?.inPlay),
+      capturedAt: new Date().toISOString(),
+    }, _cricketSnapshots.get(mid)) : data;
+    _cricketSnapshots.set(mid, snapshot);
 
     // Save live odds key in Redis (Architecture: match:{id}:odds keys with short TTL)
     if (data.runners || data.teams) {
@@ -189,7 +199,7 @@ async function processIngestJob(job) {
     // Build unified match bundle
     const bundle = {
       matchId: mid,
-      cricket: data,
+      cricket: snapshot,
       toss: _tossSnapshots.get(mid) || null,
       session: _sessionTrades.get(mid) || null,
       crex: _crexDetails.get(mid) || null,

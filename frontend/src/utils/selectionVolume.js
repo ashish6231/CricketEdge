@@ -19,7 +19,6 @@ export function getFrozenPreMatchProviderTotals(snapshot, stored = null) {
   return providerTotalPair(stored)
     || providerTotalPair(snapshot?.preMatchProviderTotals)
     || providerTotalPair(snapshot?.deepMetrics?.preMatchTotals)
-    || providerTotalPair(snapshot?.preMatchTotalBets)
 }
 
 /** Provider totals can only be refreshed before the scheduled start. */

@@ -23,6 +23,8 @@ let _lastTennisFp = null;
 let _lastSessionFp = null;
 const _lastCrexLiveFps = new Map();
 const _lastBundleFps = new Map();
+const _lastBundleBroadcastAt = new Map();
+const MATCH_BUNDLE_BROADCAST_INTERVAL_MS = Math.max(5000, parseInt(process.env.MATCH_BUNDLE_BROADCAST_INTERVAL_MS, 10) || 60 * 1000);
 
 function roundMoneyFp(val) {
   const n = Number(val) || 0;
@@ -121,6 +123,7 @@ function init(io) {
         }
 
         const room = `match:${matchId}`;
+        const roomAlreadyActive = (_io.sockets.adapter?.rooms?.get(room)?.size || 0) > 0;
         socket.join(room);
 
         if (sport === 'session') {
@@ -132,6 +135,12 @@ function init(io) {
 
         if (bundle) {
           socket.emit('match:bundle', bundle);
+          // Start the room cadence only for its first subscriber. A later viewer
+          // must not postpone the minute update for viewers already in the room.
+          if (!roomAlreadyActive) {
+            _lastBundleFps.set(String(matchId), fingerprintMatchBundle(bundle));
+            _lastBundleBroadcastAt.set(String(matchId), Date.now());
+          }
         }
       } catch (err) {
         socket.emit(`match:error:${matchId}`, { error: err.message });
@@ -193,13 +202,18 @@ function init(io) {
  * All ingestion paths use this function so overlapping Redis events cannot
  * broadcast the same large payload more than once.
  */
-async function broadcastMatchBundle(matchId) {
+async function broadcastMatchBundle(matchId, options = {}) {
   if (!_io || !matchId) return false;
 
   const mid = String(matchId);
   const roomName = `match:${mid}`;
   const room = _io.sockets.adapter?.rooms?.get(roomName);
   if (!room || room.size === 0) return false;
+
+  const now = Date.now();
+  if (!options.force && now - (_lastBundleBroadcastAt.get(mid) || 0) < MATCH_BUNDLE_BROADCAST_INTERVAL_MS) {
+    return false;
+  }
 
   const bundle = await matchPayloadService.getMatchBundlePayload(
     mid,
@@ -209,6 +223,8 @@ async function broadcastMatchBundle(matchId) {
   if (!bundle || bundle.error) return false;
 
   const fingerprint = fingerprintMatchBundle(bundle);
+  // Whether changed or not, do the expensive full-bundle comparison at most once per minute.
+  _lastBundleBroadcastAt.set(mid, now);
   if (fingerprint === _lastBundleFps.get(mid)) return false;
 
   _lastBundleFps.set(mid, fingerprint);
@@ -338,8 +354,13 @@ async function broadcastCrexUpdates() {
         _io.to('feed:cricket').emit('crex:live', payload);
       }
 
-      // The room receives one deduplicated bundle containing this CREX update.
-      await broadcastMatchBundle(mid).catch(() => {});
+      const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
+      if (room?.size > 0) {
+        _io.to(`match:${mid}`).emit(`match:crex:${mid}`, {
+          ...detail,
+          scorecard,
+        });
+      }
     }
   } catch (err) {
     console.error('❌ Error broadcasting CREX updates over WebSocket:', err.message);
@@ -388,7 +409,10 @@ function getActiveSubscribedMatchIds() {
 function broadcastCrexForMatch(matchId, detail) {
   if (!_io || !matchId || !detail) return;
   const mid = String(matchId);
-  broadcastMatchBundle(mid).catch(() => {});
+  const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
+  if (room?.size > 0) {
+    _io.to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
+  }
 }
 
 module.exports = {
@@ -402,4 +426,5 @@ module.exports = {
   broadcastCrexUpdates,
   broadcastCrexForMatch,
   notifySessionReplaced,
+  MATCH_BUNDLE_BROADCAST_INTERVAL_MS,
 };

@@ -186,7 +186,11 @@ export function predictMatchStart(snap, { mode = 'rules' } = {}) {
     timing: 'match_start', lockedAt: 'match_open',
     moreBetted: publicTeam, apiMoreBetted: m.moreBetted,
     publicOverridden, msDisagreesPublic, extremeDogFade, algorithmDisagreesMarket,
-    signals: [...(prediction.trapOverrideEvidence ? [{
+    signals: prediction.reportedActivityEvidence ? [{
+      label: 'Pre-match reported activity', sublabel: `${prediction.reportedActivityEvidence.selection === 'higher' ? 'Higher' : 'Lower'} activity selects the winner`, active: true,
+      v1: prediction.reportedActivityEvidence.team1.toFixed(2),
+      v2: prediction.reportedActivityEvidence.team2.toFixed(2),
+    }] : [...(prediction.trapOverrideEvidence ? [{
       label: 'Pre-match trap + support', sublabel: `Both favor ${winner}; synthetic ratio ${prediction.trapOverrideEvidence.supportRatio.toFixed(2)}x`, active: true,
       v1: winner === t1 ? 'Pick' : '—', v2: winner === t2 ? 'Pick' : '—',
     }] : []), ...evidenceSignals, {

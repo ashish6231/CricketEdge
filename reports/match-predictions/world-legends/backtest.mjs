@@ -41,6 +41,7 @@ export function runWorldLegendsBacktest(dataset, outcomes) {
       throw new Error(`Invalid verified winner for World Legends match ${record.matchId}`);
     }
     const evidence = prediction.marketEvidence;
+    const activityEvidence = prediction.reportedActivityEvidence;
     return {
       matchId: String(record.matchId),
       startTime: record.startTime,
@@ -50,7 +51,12 @@ export function runWorldLegendsBacktest(dataset, outcomes) {
       actualWinner: scored ? result.actualWinner : null,
       verdict: !scored ? 'Unscored' : prediction.winner === result.actualWinner ? 'Correct' : 'Wrong',
       exclusionReason: scored ? null : result?.exclusionReason || 'No independently verified completed result',
-      evidence: evidence ? {
+      evidence: activityEvidence ? {
+        method: 'higher-prematch-reported-activity',
+        preMatchActivity: [activityEvidence.team1, activityEvidence.team2],
+        preMatchActivityPct: [round(activityEvidence.pct1), round(activityEvidence.pct2)],
+        agreeingSignals: '1/1',
+      } : evidence ? {
         correctedSupportPct: [round(evidence.support.pct1), round(evidence.support.pct2)],
         preMatchActivityPct: [round(evidence.activity.pct1), round(evidence.activity.pct2)],
         bookmakerPressureTeam: Number.isInteger(evidence.bookmakerPressureIdx)

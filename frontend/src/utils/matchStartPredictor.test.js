@@ -125,7 +125,7 @@ test('does not warn for ordinary live movement that stays with the locked pick',
   assert.equal(advice, null)
 })
 
-test('India vs England audit attributes India lay money to England support', async () => {
+test('India vs England uses higher frozen reported activity only', async () => {
   const { readFileSync } = await import('node:fs')
   const records = JSON.parse(readFileSync(new URL('../../../server/data/match_dataset.json', import.meta.url))).records
   const record = records.find(row => String(row.matchId) === '36147996')
@@ -134,10 +134,10 @@ test('India vs England audit attributes India lay money to England support', asy
   assert.equal(prediction.winnerName, 'England Legends')
   assert.equal(record.snapshot.marketSignals.prediction.prediction, 'England Legends')
   assert.equal(prediction.algorithmDisagreesMarket, false)
-  assert.equal(prediction.marketEvidence.method, 'back-plus-opponent-lay')
-  assert.equal(Math.round(prediction.marketEvidence.support.pct2), 63)
-  assert.equal(Math.round(prediction.marketEvidence.activity.pct2), 75)
-  assert.equal(prediction.marketEvidence.agreeingSignals, 3)
+  assert.equal(prediction.reportedActivityEvidence.selection, 'higher')
+  assert.equal(Math.round(prediction.reportedActivityEvidence.pct2), 75)
+  assert.equal(prediction.reportedActivityEvidence.signalCount, 1)
+  assert.equal(prediction.signals.length, 1)
   assert.equal(prediction.risk.tier, 'medium')
   assert.equal(prediction.risk.avoidEntry, undefined)
   assert.equal(prediction.preOdds.t1, null, 'in-play India trades must not be used as pre-match odds')

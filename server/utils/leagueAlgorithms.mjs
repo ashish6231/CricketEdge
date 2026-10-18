@@ -1,5 +1,5 @@
-import { getPreMatchMarketConsensus } from './preMatchMarketConsensus.mjs';
 import { isWomensSpringT20, getWomensSpringMatchPrediction } from './womensSpringMatchPredictor.mjs';
+import { isWorldLegendsLeague, getWorldLegendsActivityPrediction } from './worldLegendsActivity.mjs';
 
 /**
  * League-Specific Algorithms for Match Winner Prediction
@@ -766,22 +766,12 @@ function isWomenMatch(compName, team1, team2) {
 }
 
 function isWorldLegendsT20(compName) {
-  return /world\s+championship\s+of\s+legends/i.test(compName || '');
+  return isWorldLegendsLeague(compName);
 }
 
-/**
- * This feed stores a back on a runner as support for that runner, while a lay
- * on a runner is support for the opposing runner. The generic total-flow rule
- * historically added a runner's own back + own lay and therefore reversed the
- * strongest signal in fixtures such as India Legends v England Legends.
- *
- * Legends matches use a small, transparent pre-match consensus instead:
- *   runner support = own back + opponent lay
- *   activity        = provider's frozen pre-match total-bet ledger
- *   pressure        = the side on which the bookmaker has the lower P/L
- */
+/** World Legends uses only the higher frozen pre-match reported activity. */
 function getWorldLegendsPrediction(snap, b1, b2, l1, l2, pnl1, pnl2, team1, team2) {
-  return getPreMatchMarketConsensus(snap, b1, b2, l1, l2, pnl1, pnl2, team1, team2, 'WORLD_LEGENDS_PREMATCH_CONSENSUS');
+  return getWorldLegendsActivityPrediction(snap);
 }
 
 function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team1, team2, snap = null, rules = {}) {
@@ -793,15 +783,14 @@ function getLeagueAlgorithmPrediction(compName, b1, b2, l1, l2, pnl1, pnl2, team
 
   const isWomen = isWomenMatch(compName, team1, team2);
 
-  // Spring Challenge has an independent profile using the Legends consensus.
+  // Spring Challenge uses only the lower pre-match reported activity.
   if (isWomensSpringT20(compName)) {
     return getWomensSpringMatchPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
   }
 
-  // 🏆 World Championship of Legends: treat a lay as opposition support.
+  // World Championship of Legends: higher pre-match reported activity.
   if (isWorldLegendsT20(compName)) {
-    const legendsPred = getWorldLegendsPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
-    if (legendsPred) return legendsPred;
+    return getWorldLegendsPrediction(snap, b1, b2, l1, l2, epnl1, epnl2, team1, team2);
   }
 
   // 🏆 LEAGUE SPECIFIC RULE: Women's Asia Cup

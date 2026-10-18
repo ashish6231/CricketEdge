@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-16T16:33:03.539Z",
+  "updatedAt": "2026-10-17T16:10:00.000Z",
   "records": [
     {
       "matchId": "35901908",
@@ -903776,15 +903776,28 @@
       "algorithmStrategy": "tree-depth-4",
       "ruleFamily": "independent-league-tree",
       "inputTiming": "provider-frozen-fields-captured-after-start",
-      "actualWinner": null,
-      "reportedWinner": null,
-      "resultText": null,
-      "resultVerification": null,
+      "actualWinner": "India",
+      "reportedWinner": "India",
+      "resultText": "India won by 14 runs",
+      "resultVerification": {
+        "verification": "verified",
+        "status": "verified",
+        "outcome": "winner",
+        "publishedWinner": "India",
+        "resultText": "India won by 14 runs",
+        "source": "ICC",
+        "sourceUrl": "https://www.icc-cricket.com/news/abhishek-arshdeep-shine-in-india-s-indore-triumph",
+        "sourceMatchId": null,
+        "sourceStartTime": 1791725400000,
+        "checkedAt": "2026-10-17T16:10:00.000Z",
+        "matchingRule": "Both participants, T20I format and scheduled start matched; the result was independently confirmed by ICC and Cricket West Indies."
+      },
       "lastCaptureError": null,
-      "status": "pending",
-      "confirmedAt": null,
-      "confirmedByEmail": null,
-      "confirmedById": null
+      "status": "verified",
+      "confirmedAt": "2026-10-17T16:10:00.000Z",
+      "confirmedByEmail": "result-verification",
+      "confirmedById": "system",
+      "predictionCorrect": true
     },
     {
       "matchId": "36175445",
