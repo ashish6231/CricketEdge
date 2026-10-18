@@ -4,7 +4,7 @@ import { TossSnapshotDetails } from './TossDetail'
 
 import { useEffect, useState, useMemo, useRef } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, BarChart3, BookOpen, Coins, Radio, Sparkles, AlertTriangle, Trophy, ChevronDown, LockKeyhole } from 'lucide-react'
+import { ArrowLeft, BarChart3, BookOpen, Coins, Radio, ChevronDown } from 'lucide-react'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
@@ -13,7 +13,7 @@ import { getBookiePl, splitMatchOutcomes, finiteNumber, timestamp, tradeSide, ge
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
-import { RiskBadge } from '../components/PredictionMeta'
+import MatchPredictionCard, { MatchReversalNotice } from '../components/MatchPredictionCard'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
 import { getCricketMatchBundle, getCricketOdds } from '../api'
 import { isCompleteMatchBundle } from '../utils/matchBundle'
@@ -888,25 +888,8 @@ export default function MatchDetail({ sport }) {
         <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
       ) : (
         <div className="match-v2-shell">
-          {exitAdvice && <div className={`match-exit-advice is-${exitAdvice.level}`} role="alert"><AlertTriangle size={16} /><div><strong>{exitAdvice.title}</strong><p>{exitAdvice.message}</p></div></div>}
-          {matchStartPred?.winnerName && <section className="match-v2-prediction" aria-label="Match winner prediction">
-              <div className="match-v2-prediction-title"><span><Sparkles size={14} />League prediction</span><div><span className="match-rule-tag">Rule based</span><RiskBadge risk={matchStartPred.risk} compact /></div></div>
-              <div className="match-v2-pick"><span className="match-v2-pick-icon"><Trophy size={18} /></span><div><small>{matchStartPred.risk?.avoidEntry || matchStartPred.risk?.tier === 'high' ? 'Market lean · no bet' : 'Predicted winner'}</small><h2>{matchStartPred.winnerName}</h2></div></div>
-              <div className="match-v2-prediction-copy">
-                {matchStartPred.confidence?.calibrated && <strong>{matchStartPred.confidence.pct}% calibrated confidence</strong>}
-                {(matchStartPred.risk?.avoidEntry || matchStartPred.risk?.tier === 'high') && <span className="match-risk-notice" role="alert"><AlertTriangle size={13} />High risk: entry avoid karein</span>}
-                <p>{matchStartPred.reason}</p>
-                <div><span><LockKeyhole size={10} />Start pick locked</span>{!matchStartPred.confidence?.calibrated && <span>Accuracy unvalidated</span>}</div>
-              </div>
-              {evidence && <details className="match-v2-evidence"><summary><span>Market evidence</span><span>{evidence.agreeingSignals}/{evidence.signalCount} signals</span></summary>
-                <table className="match-data-table" aria-label="Prediction market evidence"><thead><tr><th scope="col">Signal</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead><tbody>
-                  {evidence.support && <tr><th scope="row">Corrected support</th><td>{percentage(evidence.support.pct1)}</td><td>{percentage(evidence.support.pct2)}</td></tr>}
-                  {providerEvidence ? <tr><th scope="row">Pre-match provider total</th><td>€{fmt(providerEvidence.team1)}</td><td>€{fmt(providerEvidence.team2)}</td></tr>
-                    : <tr><th scope="row">Pre-match activity</th><td>{activityEvidence ? fmt(activityEvidence.team1) : percentage(evidence.activity?.pct1)}</td><td>{activityEvidence ? fmt(activityEvidence.team2) : percentage(evidence.activity?.pct2)}</td></tr>}
-                  {evidence.bookmakerPressureIdx != null && <tr><th scope="row">Bookie liability</th><td>{evidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</td><td>{evidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</td></tr>}
-                </tbody></table>
-              </details>}
-            </section>}
+          <MatchReversalNotice advice={exitAdvice} />
+          <MatchPredictionCard prediction={matchStartPred} evidence={evidence} providerEvidence={providerEvidence} activityEvidence={activityEvidence} teamNames={[t1, t2]} formatAmount={fmt} formatPercentage={percentage} />
 
           <section className="match-v2-card" aria-labelledby="match-market-heading">
             <header className="match-v2-section-head"><div><h2 id="match-market-heading">Market overview</h2><p>Latest recorded odds and settlement</p></div><span><strong>€{fmt(marketMoneyTotal)}</strong> matched · {formatTotalBets(marketBetActivity.total)} total bets</span></header>

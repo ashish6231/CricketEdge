@@ -6119,6 +6119,27 @@
     "runners": [],
     "totalMatched": 495013
   },
+  "36192456": {
+    "matchLoad": {
+      "team1": {
+        "name": "Australia W",
+        "money": 22161286,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "New Zealand W",
+        "money": 231517,
+        "percent": 0,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 22392803
+    },
+    "runners": [],
+    "totalMatched": 22392803
+  },
   "36192734": {
     "matchLoad": {
       "team1": {

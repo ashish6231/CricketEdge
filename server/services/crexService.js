@@ -122,30 +122,25 @@ function fetchHttps(url, redirectCount = 0) {
 }
 
 function parseState(html) {
-  if (!html) return null;
-  const marker = '<script id="app-root-state"';
-  const start = html.indexOf(marker);
-  if (start === -1) return null;
-  const tagEnd = html.indexOf('>', start + marker.length);
-  if (tagEnd === -1) return null;
-  const close = html.indexOf('</script>', tagEnd);
-  if (close === -1) return null;
-  const raw = html.slice(tagEnd + 1, close)
-    .replace(/&q;/g, '"')
-    .replace(/&a;/g, '&')
-    .replace(/&s;/g, "'")
-    .replace(/&l;/g, '<')
-    .replace(/&g;/g, '>')
-    .replace(/&quot;|&#34;/g, '"')
-    .replace(/&#39;|&apos;/g, "'")
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&');
-  try {
-    return JSON.parse(raw);
-  } catch (e) {
-    return null;
+  if (typeof html !== 'string') return null;
+  const match = html.match(/<script\b(?=[^>]*\bid\s*=\s*["']app-root-state["'])[^>]*>([\s\S]*?)<\/script\s*>/i);
+  if (!match) return null;
+  const raw = match[1];
+  // Decode the outer transport once. Recursively decoding entities in JSON
+  // string values turns e.g. an article's &quot; into unescaped JSON quotes.
+  const angularEntities = { q:'"', a:'&', s:"'", l:'<', g:'>' };
+  const htmlEntities = { quot:'"', amp:'&', apos:"'", lt:'<', gt:'>' };
+  const candidates = [raw,
+    raw.replace(/&(q|a|s|l|g);/g, (_, name) => angularEntities[name]),
+    raw.replace(/&(quot|amp|apos|lt|gt|#34|#39);/g, (_, name) => name === '#34' ? '"' : name === '#39' ? "'" : htmlEntities[name]),
+  ];
+  for (const candidate of candidates) {
+    try {
+      const state = JSON.parse(candidate);
+      if (state && typeof state === 'object' && !Array.isArray(state)) return state;
+    } catch {}
   }
+  return null;
 }
 
 /** CREX occasionally adds query strings or version suffixes to state keys. */
@@ -322,6 +317,187 @@ function teamTokensMatch(nameA, nameB, shortB) {
   return false;
 }
 
+function parseCrexOverview(homeHtml, schedState = null) {
+  const homeState = parseState(homeHtml);
+  const matchesList = [];
+  const scheduleRows = new Map();
+
+  // 1. Process fixtures from schedule (has pre-resolved team names, scores, odds)
+  const fixtures = getStateValue(schedState, 'https://stats.crickapi.com/fixture/getFixture', '/fixture/getFixture') || [];
+  for (const f of fixtures) {
+    const slug = f.link ? f.link.replace('/cricket-live-score/', '') : null;
+
+    let oddsObj = null;
+    try {
+      if (f.odds && typeof f.odds === 'string') oddsObj = JSON.parse(f.odds);
+      else if (f.odds) oddsObj = f.odds;
+    } catch {}
+
+    const isLive = f.status === 1 || f.statusText?.toLowerCase() === 'live';
+    const isCompleted = f.status === 2 || f.statusText?.toLowerCase() === 'completed';
+
+    let calcRate = (oddsObj?.rate !== null && oddsObj?.rate !== undefined) ? oddsObj.rate : null;
+    let calcRate2 = (oddsObj?.rate2 !== null && oddsObj?.rate2 !== undefined) ? oddsObj.rate2 : null;
+    if (calcRate === null && f.global_num) {
+      if (f.global_num.b !== null && f.global_num.b !== undefined) {
+        const bVal = Number(f.global_num.b);
+        calcRate = bVal < 2 && bVal > 1 ? Math.round((bVal - 1) * 100) : (bVal === 0 ? 0 : bVal);
+      }
+      if (f.global_num.l !== null && f.global_num.l !== undefined) {
+        const lVal = Number(f.global_num.l);
+        calcRate2 = lVal < 2 && lVal > 1 ? Math.round((lVal - 1) * 100) : lVal;
+      }
+    }
+
+    matchesList.push({
+      crexMatchId: f.matchFkey || f.mf || f.nf || String(f.id || ''),
+      slug: slug,
+      url: f.link || (slug ? `/cricket-live-score/${slug}` : null),
+      seriesName: f.n || f.seriesShortName || '',
+      team1Name: f.team1 || '',
+      team1Short: f.t1SName || '',
+      team1Flag: f.flag1 || '',
+      team2Name: f.team2 || '',
+      team2Short: f.t2SName || '',
+      team2Flag: f.flag2 || '',
+      score1: f.team1Score1 ? `${f.team1Score1} (${f.team1Over1 || '0.0'})` : (f.s1 ? `${f.s1} (${f.o1 || ''})` : null),
+      score2: f.team2Score1 ? `${f.team2Score1} (${f.team2Over1 || '0.0'})` : (f.s2 ? `${f.s2} (${f.o2 || ''})` : null),
+      status: isLive ? 'live' : (isCompleted ? 'completed' : 'upcoming'),
+      statusText: f.statusText || (isLive ? 'Live' : ''),
+      venue: f.venue || '',
+      format: f.fo || f.formats || '',
+      startTime: f.t || null,
+      odds: {
+        rate: calcRate,
+        rate2: calcRate2 != null ? calcRate2 : calcRate,
+        rateTeam: f.global_num?.fr || f.team1 || null,
+        back: f.global_num?.b ?? null,
+        lay: f.global_num?.l ?? null,
+      },
+    });
+  }
+
+  matchesList.forEach((match, index) => {
+    if (match.crexMatchId) scheduleRows.set(String(match.crexMatchId), index);
+    if (match.slug) scheduleRows.set(match.slug, index);
+  });
+
+  // 2. Process home state live matches
+  const liveMatches = getStateValue(homeState, 'https://api.goscorer.com/api/v3/getLiveMatches', '/api/v3/getLiveMatches') || {};
+  const mapData = getStateValue(homeState, 'https://oc.crickapi.com/mapping/getHomeMapDatahome', '/mapping/getHomeMapDatahome') || {};
+
+  const teamsMap = {};
+  if (mapData.t) {
+    for (const item of Object.values(mapData.t)) {
+      if (item.f_key) teamsMap[item.f_key] = item;
+    }
+  }
+  const seriesMap = {};
+  if (mapData.s) {
+    for (const item of Object.values(mapData.s)) {
+      if (item.f_key) seriesMap[item.f_key] = item;
+    }
+  }
+
+  const homeLinks = {};
+  if (homeHtml) {
+    const links = [...homeHtml.matchAll(/\/cricket-live-score\/([a-zA-Z0-9\-_]+)-([a-zA-Z0-9]+)/g)];
+    for (const m of links) {
+      homeLinks[m[2]] = { slug: m[1] + '-' + m[2], url: m[0] };
+    }
+  }
+
+  for (const [mId, m] of Object.entries(liveMatches)) {
+    const fixtureId = String(m.f_key || mId);
+    const link = homeLinks[fixtureId] || homeLinks[mId];
+    const slug = link?.slug;
+    const scheduleIndex = scheduleRows.get(fixtureId) ?? (slug ? scheduleRows.get(slug) : undefined);
+    const scheduled = scheduleIndex == null ? null : matchesList[scheduleIndex];
+
+    const t1 = teamsMap[m.b] || { n: scheduled?.team1Name || m.team1_f_n || m.b, sn: scheduled?.team1Short || m.t1Sname || m.b };
+    const t2 = teamsMap[m.c] || { n: scheduled?.team2Name || m.team2_f_n || m.c, sn: scheduled?.team2Short || m.t2Sname || m.c };
+    const ser = seriesMap[m.e] || { n: scheduled?.seriesName || m.sfullname || m.e };
+
+    // s is the fixture lifecycle (0 upcoming, 1 live, 2 completed).
+    // d is the innings number: Pakistan–Sri Lanka has d=2 while still live.
+    const lifecycle = Number(m.s ?? m.status);
+    const isCompleted = lifecycle === 2 || /won by|won the|match drawn|match tied|no result/i.test(m.res || '');
+    const isLive = !isCompleted && (lifecycle === 1 || (!Number.isFinite(lifecycle) && (m.isLive || m.inPlay || scheduled?.status === 'live')));
+
+    // Extract rate from flb e.g. "^SN|4.1|1.35" or "^15R|1.01|0"
+    let favoriteRate = null;
+    let favoriteRate2 = null;
+    let favoriteTeam = null;
+    let backVal = null;
+    let layVal = null;
+
+    if (m.flb && typeof m.flb === 'string') {
+      const parts = m.flb.split('|');
+      const favKey = parts[0]?.replace('^', '')?.trim()?.toLowerCase();
+      if (favKey) {
+        const t1Key = String(m.b || '').toLowerCase();
+        const t2Key = String(m.c || '').toLowerCase();
+        const s1 = String(t1.sn || '').toLowerCase();
+        const s2 = String(t2.sn || '').toLowerCase();
+        if (t1Key === favKey || s1 === favKey) favoriteTeam = t1.n;
+        else if (t2Key === favKey || s2 === favKey) favoriteTeam = t2.n;
+      }
+      if (parts[2] && parseFloat(parts[2]) > 0) {
+        backVal = parseFloat(parts[2]);
+        favoriteRate = backVal < 2 && backVal > 1 ? Math.round((backVal - 1) * 100) : (backVal === 0 ? 0 : backVal);
+      } else if (parts[1] && parseFloat(parts[1]) > 0) {
+        backVal = parseFloat(parts[1]);
+        favoriteRate = backVal < 2 && backVal > 1 ? Math.round((backVal - 1) * 100) : (backVal === 0 ? 0 : backVal);
+      }
+      if (parts[1] && parseFloat(parts[1]) > 0) {
+        layVal = parseFloat(parts[1]);
+        favoriteRate2 = layVal < 2 && layVal > 1 ? Math.round((layVal - 1) * 100) : layVal;
+      }
+    }
+
+    const current = {
+      crexMatchId: fixtureId,
+      slug: slug || null,
+      url: link?.url || (slug ? `/cricket-live-score/${slug}` : null),
+      seriesName: ser.n || '',
+      team1Name: t1.n || '',
+      team1Short: t1.sn || '',
+      team2Name: t2.n || '',
+      team2Short: t2.sn || '',
+      score1: m.j ? (m.j.includes('(') ? m.j + ')' : m.j) : null,
+      score2: m.k ? (m.k.includes('(') ? m.k + ')' : m.k) : null,
+      status: isLive ? 'live' : (isCompleted ? 'completed' : 'upcoming'),
+      statusText: m.res || (isLive ? 'Live' : ''),
+      format: m.fo || '',
+      startTime: parseMatchTimestamp(m.tiMs) || scheduled?.startTime || parseMatchTimestamp(m.ti),
+      odds: {
+        rate: favoriteRate,
+        rate2: favoriteRate2 != null ? favoriteRate2 : favoriteRate,
+        rateTeam: favoriteTeam || t1.n || null,
+        back: backVal,
+        lay: layVal,
+      },
+    };
+    if (scheduled) {
+      // Retain schedule metadata when the live row omits it, while live status
+      // and scores always supersede a cached schedule version.
+      const merged = { ...scheduled, ...current,
+        slug: current.slug || scheduled.slug, url: current.url || scheduled.url,
+        score1: current.score1 ?? scheduled.score1, score2: current.score2 ?? scheduled.score2,
+        team1Flag: scheduled.team1Flag || m.team1flag || '',
+        team2Flag: scheduled.team2Flag || m.team2flag || '',
+        venue: scheduled.venue || m.vname || '',
+        odds: current.odds?.back != null || current.odds?.lay != null ? current.odds : scheduled.odds,
+      };
+      matchesList[scheduleIndex] = merged;
+    } else {
+      matchesList.push(current);
+    }
+  }
+
+  return matchesList;
+}
+
 /**
  * Fetches all live & scheduled matches from crex.com and crex.com/schedule
  */
@@ -357,169 +533,15 @@ async function refreshCrexOverview(forceRefresh = false) {
     }
     const schedState = schedStateCache;
 
-    const matchesList = [];
-    const seenSlugs = new Set();
-
-    // 1. Process fixtures from schedule (has pre-resolved team names, scores, odds)
-    const fixtures = getStateValue(schedState, 'https://stats.crickapi.com/fixture/getFixture', '/fixture/getFixture') || [];
-    for (const f of fixtures) {
-      const slug = f.link ? f.link.replace('/cricket-live-score/', '') : null;
-      if (slug) seenSlugs.add(slug);
-
-      let oddsObj = null;
-      try {
-        if (f.odds && typeof f.odds === 'string') oddsObj = JSON.parse(f.odds);
-        else if (f.odds) oddsObj = f.odds;
-      } catch {}
-
-      const isLive = f.status === 1 || f.statusText?.toLowerCase() === 'live';
-      const isCompleted = f.status === 2 || f.statusText?.toLowerCase() === 'completed';
-
-      let calcRate = (oddsObj?.rate !== null && oddsObj?.rate !== undefined) ? oddsObj.rate : null;
-      let calcRate2 = (oddsObj?.rate2 !== null && oddsObj?.rate2 !== undefined) ? oddsObj.rate2 : null;
-      if (calcRate === null && f.global_num) {
-        if (f.global_num.b !== null && f.global_num.b !== undefined) {
-          const bVal = Number(f.global_num.b);
-          calcRate = bVal < 2 && bVal > 1 ? Math.round((bVal - 1) * 100) : (bVal === 0 ? 0 : bVal);
-        }
-        if (f.global_num.l !== null && f.global_num.l !== undefined) {
-          const lVal = Number(f.global_num.l);
-          calcRate2 = lVal < 2 && lVal > 1 ? Math.round((lVal - 1) * 100) : lVal;
-        }
+    const matchesList = parseCrexOverview(homeHtml, schedState);
+    // A transient missing/invalid home response must not drop its live fixtures
+    // simply because the schedule page only contains upcoming matches.
+    if (!homeState && overviewCache) {
+      const ids = new Set(matchesList.map(match => String(match.crexMatchId)));
+      const slugs = new Set(matchesList.map(match => match.slug).filter(Boolean));
+      for (const previous of overviewCache) {
+        if (!ids.has(String(previous.crexMatchId)) && !(previous.slug && slugs.has(previous.slug))) matchesList.push(previous);
       }
-
-      matchesList.push({
-        crexMatchId: f.matchFkey || f.mf || String(f.id || ''),
-        slug: slug,
-        url: f.link || (slug ? `/cricket-live-score/${slug}` : null),
-        seriesName: f.n || f.seriesShortName || '',
-        team1Name: f.team1 || '',
-        team1Short: f.t1SName || '',
-        team1Flag: f.flag1 || '',
-        team2Name: f.team2 || '',
-        team2Short: f.t2SName || '',
-        team2Flag: f.flag2 || '',
-        score1: f.team1Score1 ? `${f.team1Score1} (${f.team1Over1 || '0.0'})` : (f.s1 ? `${f.s1} (${f.o1 || ''})` : null),
-        score2: f.team2Score1 ? `${f.team2Score1} (${f.team2Over1 || '0.0'})` : (f.s2 ? `${f.s2} (${f.o2 || ''})` : null),
-        status: isLive ? 'live' : (isCompleted ? 'completed' : 'upcoming'),
-        statusText: f.statusText || (isLive ? 'Live' : ''),
-        venue: f.venue || '',
-        format: f.fo || f.formats || '',
-        startTime: f.t || null,
-        odds: {
-          rate: calcRate,
-          rate2: calcRate2 != null ? calcRate2 : calcRate,
-          rateTeam: f.global_num?.fr || f.team1 || null,
-          back: f.global_num?.b ?? null,
-          lay: f.global_num?.l ?? null,
-        },
-      });
-    }
-
-    // 2. Process home state live matches
-    const liveMatches = getStateValue(homeState, 'https://api.goscorer.com/api/v3/getLiveMatches', '/api/v3/getLiveMatches') || {};
-    const mapData = getStateValue(homeState, 'https://oc.crickapi.com/mapping/getHomeMapDatahome', '/mapping/getHomeMapDatahome') || {};
-
-    const teamsMap = {};
-    if (mapData.t) {
-      for (const item of Object.values(mapData.t)) {
-        if (item.f_key) teamsMap[item.f_key] = item;
-      }
-    }
-    const seriesMap = {};
-    if (mapData.s) {
-      for (const item of Object.values(mapData.s)) {
-        if (item.f_key) seriesMap[item.f_key] = item;
-      }
-    }
-
-    const homeLinks = {};
-    if (homeHtml) {
-      const links = [...homeHtml.matchAll(/\/cricket-live-score\/([a-zA-Z0-9\-_]+)-([a-zA-Z0-9]+)/g)];
-      for (const m of links) {
-        homeLinks[m[2]] = { slug: m[1] + '-' + m[2], url: m[0] };
-      }
-    }
-
-    for (const [mId, m] of Object.entries(liveMatches)) {
-      const link = homeLinks[mId];
-      const slug = link?.slug;
-      if (slug && seenSlugs.has(slug)) continue; // already added from schedule
-
-      const t1 = teamsMap[m.b] || { n: m.b, sn: m.b };
-      const t2 = teamsMap[m.c] || { n: m.c, sn: m.c };
-      const ser = seriesMap[m.e] || { n: m.e };
-
-      const isLive = m.d === 1;
-      const isCompleted = m.d === 2;
-
-      // Extract rate from flb e.g. "^SN|4.1|1.35" or "^15R|1.01|0"
-      let favoriteRate = null;
-      let favoriteRate2 = null;
-      let favoriteTeam = null;
-      let backVal = null;
-      let layVal = null;
-
-      if (m.flb && typeof m.flb === 'string') {
-        const parts = m.flb.split('|');
-        const favKey = parts[0]?.replace('^', '')?.trim()?.toLowerCase();
-        if (favKey) {
-          const t1Key = String(m.b || '').toLowerCase();
-          const t2Key = String(m.c || '').toLowerCase();
-          const s1 = String(t1.sn || '').toLowerCase();
-          const s2 = String(t2.sn || '').toLowerCase();
-          if (t1Key === favKey || s1 === favKey) favoriteTeam = t1.n;
-          else if (t2Key === favKey || s2 === favKey) favoriteTeam = t2.n;
-        }
-        if (parts[2] && parseFloat(parts[2]) > 0) {
-          backVal = parseFloat(parts[2]);
-          favoriteRate = backVal < 2 && backVal > 1 ? Math.round((backVal - 1) * 100) : (backVal === 0 ? 0 : backVal);
-        } else if (parts[1] && parseFloat(parts[1]) > 0) {
-          backVal = parseFloat(parts[1]);
-          favoriteRate = backVal < 2 && backVal > 1 ? Math.round((backVal - 1) * 100) : (backVal === 0 ? 0 : backVal);
-        }
-        if (parts[1] && parseFloat(parts[1]) > 0) {
-          layVal = parseFloat(parts[1]);
-          favoriteRate2 = layVal < 2 && layVal > 1 ? Math.round((layVal - 1) * 100) : layVal;
-        }
-      }
-
-      matchesList.push({
-        crexMatchId: mId,
-        slug: slug || null,
-        url: link?.url || (slug ? `/cricket-live-score/${slug}` : null),
-        seriesName: ser.n || '',
-        team1Name: t1.n || '',
-        team1Short: t1.sn || '',
-        team2Name: t2.n || '',
-        team2Short: t2.sn || '',
-        score1: m.j ? (m.j.includes('(') ? m.j + ')' : m.j) : null,
-        score2: m.k ? (m.k.includes('(') ? m.k + ')' : m.k) : null,
-        status: isLive ? 'live' : (isCompleted ? 'completed' : 'upcoming'),
-        statusText: m.res || (isLive ? 'Live' : ''),
-        format: m.fo || '',
-        startTime: (() => {
-          if (typeof m.ti === 'number' && !isNaN(m.ti)) return m.ti < 10000000000 ? m.ti * 1000 : m.ti;
-          if (typeof m.ti === 'string') {
-            const trimmed = m.ti.trim();
-            if (/^\d{10,13}$/.test(trimmed)) {
-              const num = Number(trimmed);
-              return num < 10000000000 ? num * 1000 : num;
-            }
-            const parsed = Date.parse(trimmed);
-            if (!isNaN(parsed)) return parsed;
-            if (/m\s*:\s*\d+s/i.test(trimmed) || isLive || isCompleted) return Date.now();
-          }
-          return m.ti || null;
-        })(),
-        odds: {
-          rate: favoriteRate,
-          rate2: favoriteRate2 != null ? favoriteRate2 : favoriteRate,
-          rateTeam: favoriteTeam || t1.n || null,
-          back: backVal,
-          lay: layVal,
-        },
-      });
     }
 
     overviewCache = matchesList;
@@ -1011,9 +1033,14 @@ async function getCrexMatchDetail(slugOrUrl) {
     const aStr = (sv3.A || '').trim();
 
     // Check if bStr is a match completion or outcome statement rather than a live delivery outcome
-    const isMatchResultStr = /(won by|won the|match drawn|match tied|no result|innings break|concluded|match over|rain delay|stumps)/i.test(bStr) || bStr.length > 25;
-    const isCompletedMatch = sv3.status === 2 || isMatchResultStr || /(won by|won the|match drawn|match tied|no result)/i.test(sv3.comment1 || sv3.res || '');
-    const matchStatus = isCompletedMatch ? 'completed' : (sv3.status === 1 ? 'live' : (sv3.status === 3 ? 'abandoned' : 'upcoming'));
+    const terminalResult = /(won by|won the|match drawn|match tied|no result|concluded|match (?:over|ended))/i;
+    const isMatchResultStr = terminalResult.test(bStr);
+    // Pauses and long equations are not final results. In particular, innings
+    // break, stumps and rain delay must not hide an ongoing match from Live.
+    const isStatusMessage = isMatchResultStr || /innings break|rain delay|stumps|lunch|tea break|drinks|bad light/i.test(bStr) || bStr.length > 25;
+    const sv3Status = Number(sv3.status);
+    const isCompletedMatch = sv3Status === 2 || isMatchResultStr || terminalResult.test(sv3.comment1 || sv3.res || '');
+    const matchStatus = isCompletedMatch ? 'completed' : (sv3Status === 1 ? 'live' : (sv3Status === 3 ? 'abandoned' : 'upcoming'));
 
     // Active over balls extraction: prioritize aStr, fallback to lastovers
     let currentOverBalls = [];
@@ -1067,12 +1094,12 @@ async function getCrexMatchDetail(slugOrUrl) {
       ballOutcomeText = last === 'W' || last === 'w' ? 'Wicket' : last;
     }
 
-    const isRunning = !isMatchResultStr && (/^ball/i.test(bStr) || /^ball/i.test(aStr));
+    const isRunning = !isStatusMessage && (/^ball/i.test(bStr) || /^ball/i.test(aStr));
 
     const runningBall = {
       runs: runningBallRuns || (isRunning ? 'Ball' : (isCompletedMatch ? 'Match Ended' : '0')),
-      status: isMatchResultStr ? 'Match Ended' : (ballOutcomeText || (isRunning ? 'Ball' : '0')),
-      outcomeText: isMatchResultStr ? (ballOutcomeText || 'Wicket') : (ballOutcomeText || runningBallRuns || (isRunning ? 'Ball' : '0')),
+      status: isMatchResultStr ? 'Match Ended' : isStatusMessage ? cleanText(bStr) : (ballOutcomeText || (isRunning ? 'Ball' : '0')),
+      outcomeText: isMatchResultStr ? 'Match Ended' : isStatusMessage ? cleanText(bStr) : (ballOutcomeText || runningBallRuns || (isRunning ? 'Ball' : '0')),
       isRunning,
       isCompleted: isCompletedMatch,
       matchResult: isMatchResultStr ? bStr : null,
@@ -1216,6 +1243,7 @@ module.exports = {
   getCrexSeriesMatches,
   parseCrexSeriesMatches,
   getCrexOverview,
+  parseCrexOverview,
   findCrexMatch,
   getCrexMatchDetail,
   teamTokensMatch,
