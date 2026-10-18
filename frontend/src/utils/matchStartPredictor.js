@@ -4,13 +4,8 @@ import { predictLeagueMatch } from '../../../server/utils/matchLeagueModel.js'
 import { computeMatchStartRisk } from './predictionRisk.js'
 import { splitMatchOutcomes, timestamp, tradeTimestamp } from './bookiePl.js'
 
-/**
- * Match START Predictor — shared normal league rules.
- *
- * 1. Raw Volume / Matched Money Dominance (Team with more money / Back accumulation)
- * 2. Bookmaker Exposure Safe Side (Negative Net Exposure / P/L Green profit)
- * 3. Smart Money Trap & Stability Protection
- * 4. Fallback chain: MS AI → Pre-Match Odds Favorite → Back Vol
+/** Match-start rules use frozen provider totals: higher for men, lower for women.
+ * Odds and market context below provide entry-risk metadata, not winner overrides.
  */
 
 function medianPrices(trades) {
@@ -186,7 +181,11 @@ export function predictMatchStart(snap, { mode = 'rules' } = {}) {
     timing: 'match_start', lockedAt: 'match_open',
     moreBetted: publicTeam, apiMoreBetted: m.moreBetted,
     publicOverridden, msDisagreesPublic, extremeDogFade, algorithmDisagreesMarket,
-    signals: prediction.reportedActivityEvidence ? [{
+    signals: prediction.providerTotalEvidence ? [{
+      label: 'Pre-match provider total', sublabel: `${prediction.providerTotalEvidence.selection === 'lower' ? 'Lower' : 'Higher'} provider total selects the winner`, active: true,
+      v1: prediction.providerTotalEvidence.team1.toFixed(2),
+      v2: prediction.providerTotalEvidence.team2.toFixed(2),
+    }] : prediction.reportedActivityEvidence ? [{
       label: 'Pre-match reported activity', sublabel: `${prediction.reportedActivityEvidence.selection === 'higher' ? 'Higher' : 'Lower'} activity selects the winner`, active: true,
       v1: prediction.reportedActivityEvidence.team1.toFixed(2),
       v2: prediction.reportedActivityEvidence.team2.toFixed(2),

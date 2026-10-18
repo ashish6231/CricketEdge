@@ -1,21 +1,18 @@
 import { isWomensSpringT20, WOMENS_SPRING_LEAGUE } from './womensSpringMatchPredictor.mjs';
-import { LEAGUE_PREMATCH_ADJUSTMENTS } from './leaguePreMatchAdjustments.mjs';
-import { extractRuleAdjustmentFeatures, applyRuleAdjustments, describeAdjustment } from './preMatchRuleAdjustments.mjs';
-import { getLeagueAlgorithmPrediction, getDefaultAlgorithmPrediction } from './leagueAlgorithms.mjs';
-import { EMIRATES_D10_ALGORITHM, isEmiratesD10League, predictEmiratesD10Match } from './emiratesD10MatchPredictor.mjs';
+import { EMIRATES_D10_ALGORITHM, isEmiratesD10League } from './emiratesD10MatchPredictor.mjs';
 import { checkPreMatchDataQuality } from './preMatchDataQuality.mjs';
-import { WNCL_ALGORITHM, isWNCLLeague, predictWNCLMatch } from './wnclMatchPredictor.mjs';
+import { WNCL_ALGORITHM, isWNCLLeague } from './wnclMatchPredictor.mjs';
 import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
 import { isWorldLegendsLeague, WORLD_LEGENDS_LEAGUE } from './worldLegendsActivity.mjs';
+import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
 
-export const PREDICTOR_VERSION = 'match-v9-cross-market-support';
+export const PREDICTOR_VERSION = 'match-v10-prematch-provider-total';
 export const DEFAULT_MATCH_MODE = 'rules';
 const normalize = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league), profile]));
+const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league),profile]));
 
 // Separate league entries and parameter objects permit independent changes.
-// Existing specialist rules are preserved; leagues without a specialist start
-// with their own copy of the common market-rule profile, not a fitted tree.
+// Every profile selects from frozen provider totals: higher for men, lower for women.
 export const LEAGUE_MATCH_ALGORITHMS = Object.freeze([
   EMIRATES_D10_ALGORITHM,
   WNCL_ALGORITHM,
@@ -74,14 +71,46 @@ const aliases = {
   tnpl: 'Tamil Nadu Premier League', upt20: 'Uttar Pradesh Premier League',
   dpl: 'Delhi Premier League',
 };
-export function getLeagueMatchAlgorithm(name) {
-  if (isWorldLegendsLeague(name)) return registry.get(normalize(WORLD_LEGENDS_LEAGUE));
-  if (isWomensSpringT20(name)) return registry.get(normalize(WOMENS_SPRING_LEAGUE));
-  if (isWNCLLeague(name)) return registry.get(normalize(WNCL_ALGORITHM.league));
-  if (isEmiratesD10League(name)) return registry.get(normalize(EMIRATES_D10_ALGORITHM.league));
-  const key = normalize(name);
-  return registry.get(key) || registry.get(normalize(aliases[key])) || null;
+const womensAlgorithms = new Map();
+function womensAlgorithm(name, base = null) {
+  if (base?.profile.strategy === 'lower-prematch-provider-total') return base;
+  const league = base && !isWomensCompetition(base.league) ? `Womens ${base.league}` : String(name || 'Womens Matches').trim();
+  const key = normalize(league);
+  if (!womensAlgorithms.has(key)) {
+    const profile = createWomensProviderTotalProfile(league,`match-${league.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-independent-v1`);
+    womensAlgorithms.set(key,Object.freeze({league,algorithmId:profile.algorithmId,
+      parameters:profile.parameters,profile,predict:profile.predict}));
+  }
+  return womensAlgorithms.get(key);
 }
+
+export function getLeagueMatchAlgorithm(name) {
+  const international = resolveInternationalMatchLeague(name);
+  let algorithm = international ? registry.get(normalize(international)) : null;
+  if (!algorithm && isWorldLegendsLeague(name)) algorithm = registry.get(normalize(WORLD_LEGENDS_LEAGUE));
+  if (!algorithm && isWomensSpringT20(name)) algorithm = registry.get(normalize(WOMENS_SPRING_LEAGUE));
+  if (!algorithm && isWNCLLeague(name)) algorithm = registry.get(normalize(WNCL_ALGORITHM.league));
+  if (!algorithm && isEmiratesD10League(name)) algorithm = registry.get(normalize(EMIRATES_D10_ALGORITHM.league));
+  const key = normalize(name);
+  algorithm ||= registry.get(key) || registry.get(normalize(aliases[key])) || null;
+  return isWomensCompetition(name) ? womensAlgorithm(name,algorithm) : algorithm;
+}
+
+const unregisteredMensAlgorithms = new Map();
+function getInputMatchAlgorithm(input) {
+  const algorithm = getLeagueMatchAlgorithm(input?.competitionName);
+  if (isWomensMatch(input)) return womensAlgorithm(input?.competitionName,algorithm);
+  if (algorithm) return algorithm;
+  const league = String(input?.competitionName || 'Mens Matches').trim();
+  const key = normalize(league);
+  if (!unregisteredMensAlgorithms.has(key)) {
+    const profile = createMensProviderTotalProfile(league,'match-unregistered-league-fallback');
+    unregisteredMensAlgorithms.set(key,Object.freeze({league,algorithmId:profile.algorithmId,
+      profile,predict:profile.predict,leagueRegistered:false}));
+  }
+  return unregisteredMensAlgorithms.get(key);
+}
+
 const nonnegative = value => typeof value === 'number' && Number.isFinite(value) ? Math.max(0, value) : 0;
 const finite = value => typeof value === 'number' && Number.isFinite(value) ? value : null;
 
@@ -104,82 +133,26 @@ export function normalizeFrozenMatchInput(snap) {
   };
 }
 
-// Kept separately so chronological tuning can evaluate the unfitted base rules.
+// All active entry points use the same single provider-total rule. Retained
+// offline callers cannot reintroduce a volume, P/L or fitted-tree override.
 export function predictFrozenLeagueBase(input) {
-  if (isWorldLegendsLeague(input?.competitionName)) return predictActivityLeague(input);
-  if (isWomensSpringT20(input?.competitionName)) return predictActivityLeague(input);
-  if ((isEmiratesD10League(input?.competitionName) || isWNCLLeague(input?.competitionName)) && !checkPreMatchDataQuality(input).valid) return null;
-  const snap = normalizeFrozenMatchInput(input);
-  if (!snap) return null;
-  if (!Array.isArray(snap?.teamNames) || snap.teamNames.length < 2) return null;
-  const [team1, team2] = snap.teamNames;
-  const v1 = snap.preMatchVolume?.team1 || {}, v2 = snap.preMatchVolume?.team2 || {};
-  const b1 = nonnegative(v1.back), b2 = nonnegative(v2.back);
-  const l1 = nonnegative(v1.lay), l2 = nonnegative(v2.lay);
-  if (b1 + b2 + l1 + l2 === 0) return null;
-  const pnl1 = finite(snap.preMatchPnl?.team1) ?? l1 - b1 + b2 - l2;
-  const pnl2 = finite(snap.preMatchPnl?.team2) ?? l2 - b2 + b1 - l1;
-  const algorithm = getLeagueMatchAlgorithm(snap.competitionName);
-  const leagueName = algorithm?.league || snap.competitionName || '';
-  const rules = { ...algorithm?.parameters, explicitLeagueOnly: true };
-  const specialist = isWNCLLeague(leagueName) ? predictWNCLMatch(snap, algorithm.parameters) : isEmiratesD10League(leagueName)
-    ? predictEmiratesD10Match(snap, algorithm.parameters)
-    : getLeagueAlgorithmPrediction(leagueName, b1, b2, l1, l2, pnl1, pnl2, team1, team2, snap, rules);
-  const prediction = specialist || getDefaultAlgorithmPrediction(b1, b2, l1, l2, pnl1, pnl2, team1, team2, rules);
-  if (!prediction || ![team1, team2].includes(prediction.winner)) return null;
-  return {
-    ...prediction, winnerIdx: prediction.winner === team1 ? 0 : 1,
-    reason: (prediction.reason || prediction.confidence || 'League market rule').replace(/^\d+(?:\.\d+)?%\s*(?:Sure\s*)?/, ''),
-    predictorVersion: PREDICTOR_VERSION,
-    algorithmId: algorithm?.algorithmId || 'match-unregistered-league-fallback',
-    algorithmLeague: algorithm?.league || null,
-    leagueRegistered: !!algorithm, ruleFamily: specialist ? 'league-specialist' : 'market-flow',
-    confidence: /%/.test(prediction.confidence || '') ? 'Rule support; live accuracy uncalibrated' : prediction.confidence || 'Uncalibrated rule support',
-    confidenceCalibrated: false, validation: 'unvalidated', modelScope: 'rules', mode: DEFAULT_MATCH_MODE,
-  };
+  return predictProviderTotalMatch(input);
 }
 
-
-export function predictFrozenLeagueRules(input, independentRules) {
-  if (isWorldLegendsLeague(input?.competitionName)) return predictActivityLeague(input);
-  if (isWomensSpringT20(input?.competitionName)) return predictActivityLeague(input);
-  if ((isEmiratesD10League(input?.competitionName) || isWNCLLeague(input?.competitionName)) && !checkPreMatchDataQuality(input).valid) return null;
-  const frozen = normalizeFrozenMatchInput(input);
-  if (!frozen) return null;
-  const base = predictFrozenLeagueBase(frozen);
-  if (!base) return null;
-  const settings = independentRules || LEAGUE_PREMATCH_ADJUSTMENTS[base.algorithmLeague];
-  const result = applyRuleAdjustments(extractRuleAdjustmentFeatures(frozen, base.winnerIdx), settings?.rules || []);
-  const changed = result.index !== base.winnerIdx;
-  return {
-    ...base, winnerIdx: result.index, winner: frozen.teamNames[result.index],
-    ruleFamily: changed ? 'league-prematch-adjustment' : base.ruleFamily,
-    reason: changed ? describeAdjustment(result.rule) : base.reason,
-    confidence: changed ? 'Pre-match league rule; live accuracy uncalibrated' : base.confidence,
-    inputTiming: 'frozen-pre-match-fields',
-    validation: isWNCLLeague(base.algorithmLeague) ? 'unvalidated-wncl-baseline' : isEmiratesD10League(base.algorithmLeague) ? 'unvalidated-d10-baseline' : 'retrospective-rule-tuning',
-    ruleAdjusted: changed,
-    adjustmentTrainingSamples: settings?.samples || 0,
-    adjustmentRuleSupport: result.rule?.support || null,
-  };
+export function predictFrozenLeagueRules(input) {
+  return predictProviderTotalMatch(input);
 }
 
-// Filled with independent, versioned profiles after offline league training.
 export function predictNormalLeagueMatch(input) {
-  if (isWorldLegendsLeague(input?.competitionName)) return predictActivityLeague(input);
-  if (isWomensSpringT20(input?.competitionName)) return predictActivityLeague(input);
-  const algorithm = getLeagueMatchAlgorithm(input?.competitionName);
-  const baseline = predictFrozenLeagueRules(input, algorithm ? { rules: algorithm.profile.baselineAdjustments, samples: algorithm.profile.trainingSamples } : undefined);
-  if (!baseline) return null;
-  if (!algorithm) return baseline;
-  const frozen = normalizeFrozenMatchInput(input);
-  return algorithm.predict(frozen, baseline);
+  return predictProviderTotalMatch(input);
 }
 
-function predictActivityLeague(input) {
-  const prediction = getLeagueMatchAlgorithm(input?.competitionName)?.predict(input);
+function predictProviderTotalMatch(input) {
+  const algorithm = getInputMatchAlgorithm(input);
+  const prediction = algorithm?.predict(input);
   return prediction ? { ...prediction, predictorVersion: PREDICTOR_VERSION,
-    leagueRegistered: true, modelScope: 'rules', mode: DEFAULT_MATCH_MODE } : null;
+    leagueRegistered: algorithm.leagueRegistered !== false,
+    modelScope: 'rules', mode: DEFAULT_MATCH_MODE } : null;
 }
 
 export function predictLeagueTrainingFit(input) {

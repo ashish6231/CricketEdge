@@ -32,6 +32,7 @@ export function runWorldLegendsBacktest(dataset, outcomes) {
       preMatchVolume: snapshot.preMatchVolume,
       preMatchPnl: snapshot.preMatchPnl,
       preMatchTotalBets: snapshot.preMatchTotalBets,
+      preMatchProviderTotals: snapshot.preMatchProviderTotals,
     };
     const prediction = predictNormalLeagueMatch(frozenInput);
     if (!prediction?.winner) throw new Error(`No prediction for World Legends match ${record.matchId}`);
@@ -42,6 +43,7 @@ export function runWorldLegendsBacktest(dataset, outcomes) {
     }
     const evidence = prediction.marketEvidence;
     const activityEvidence = prediction.reportedActivityEvidence;
+    const providerEvidence = prediction.providerTotalEvidence;
     return {
       matchId: String(record.matchId),
       startTime: record.startTime,
@@ -51,7 +53,11 @@ export function runWorldLegendsBacktest(dataset, outcomes) {
       actualWinner: scored ? result.actualWinner : null,
       verdict: !scored ? 'Unscored' : prediction.winner === result.actualWinner ? 'Correct' : 'Wrong',
       exclusionReason: scored ? null : result?.exclusionReason || 'No independently verified completed result',
-      evidence: activityEvidence ? {
+      evidence: providerEvidence ? {
+        method: 'higher-prematch-provider-total',
+        preMatchProviderTotals: [providerEvidence.team1, providerEvidence.team2],
+        agreeingSignals: '1/1',
+      } : activityEvidence ? {
         method: 'higher-prematch-reported-activity',
         preMatchActivity: [activityEvidence.team1, activityEvidence.team2],
         preMatchActivityPct: [round(activityEvidence.pct1), round(activityEvidence.pct2)],

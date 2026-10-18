@@ -7,7 +7,7 @@ test('pre-match provider total stays on the frozen value after live totals chang
     startTime: '2026-10-17T10:00:00Z',
     inPlay: false,
     deepMetrics: { totals: { team1: 406000, team2: 181000 } },
-    preMatchTotalBets: { team1: 120, team2: 80 },
+    preMatchTotalBets: { team1: 406000, team2: 181000 },
   }
   const frozen = getLiveProviderTotals(beforeStart)
   const liveUpdate = {
@@ -30,11 +30,11 @@ test('direct live load uses explicit provider frozen pre-match totals', () => {
   assert.deepEqual(getFrozenPreMatchProviderTotals(snapshot), [433.65, 2220])
 })
 
-test('missing provider totals never duplicate the reported activity ledger', () => {
-  assert.equal(getFrozenPreMatchProviderTotals({ inPlay: true,
+test('live load uses the provider frozen pre-match activity instead of changing live totals', () => {
+  assert.deepEqual(getFrozenPreMatchProviderTotals({ inPlay: true,
     preMatchTotalBets: { team1: 33577.6517, team2: 183175.629 },
     deepMetrics: { totals: { totalBetTeam1: 900000, totalBetTeam2: 700000 } },
-  }), null)
+  }), [33577.6517, 183175.629])
 })
 
 test('market Total bets uses the provider activity ledger, not exposure-based provider totals', () => {
@@ -142,4 +142,30 @@ test('top-of-book sizes are supported and recorded fallback uses latest per-pric
     { price: 1.8, back: 42, lay: 0, traded: 0 },
     { price: 1.81, back: 0, lay: 17, traded: 0 },
   ])
+})
+
+test('server provider capture takes precedence over old browser state and merges partial values', () => {
+  assert.deepEqual(getFrozenPreMatchProviderTotals({preMatchProviderTotals:{team1:0,team2:null}},[900,800]),[0,800])
+  assert.deepEqual(getLiveProviderTotals({deepMetrics:{totals:{team1:'',team2:0}}}),[null,0])
+})
+
+test('unknown kickoff or completed CREX status cannot be frozen as pre-match', () => {
+  assert.equal(canCapturePreMatchProviderTotals({deepMetrics:{totals:{team1:10,team2:20}}}),false)
+  assert.equal(canCapturePreMatchProviderTotals({startTime:'2026-10-19T10:00:00Z',crex:{scorecard:{status:'completed'}}},Date.parse('2026-10-18T10:00:00Z')),false)
+})
+
+
+test('provider pre-match ledger wins over an older capture and browser state, preserving zero', () => {
+  const input = { status: 'live',
+    preMatchTotalBets: {team1:0,team2:183175.629},
+    preMatchProviderTotals: {team1:5,team2:180000},
+    deepMetrics: {totals:{team1:900000,team2:700000}},
+  }
+  assert.deepEqual(getFrozenPreMatchProviderTotals(input,[3,170000]),[0,183175.629])
+  assert.deepEqual(getFrozenPreMatchProviderTotals({...input,deepMetrics:{totals:{team1:1000000,team2:800000}}}),[0,183175.629])
+})
+
+test('missing pre-match fields never fall back to current or in-play totals', () => {
+  assert.equal(getFrozenPreMatchProviderTotals({inPlay:true,inPlayTotalBets:{team1:1,team2:2},
+    deepMetrics:{totals:{team1:3,team2:4}}}),null)
 })

@@ -5,13 +5,12 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
-import { isWorldLegendsTossLeague } from '../../../server/utils/worldLegendsTossAlgorithm'
-import { getBookiePlFromMatchedTrades, getMarketExposureFromTrades, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
+import { getMarketExposureFromTrades, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../socket'
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
 import { hasTossSnapshot, isCompleteMatchBundle } from '../utils/matchBundle'
-import LegendsTossMarketEvidence from '../components/LegendsTossMarketEvidence'
-import { getFrozenPreMatchProviderTotals, getLiveProviderTotals } from '../utils/selectionVolume'
+import TossRuleEvidence from '../components/TossRuleEvidence'
+import { getTossRuleInputs } from '../../../server/utils/universalTossAlgorithm.mjs'
 
 const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
 const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : '−'}€${fmt(Math.abs(n))}`
@@ -220,13 +219,13 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   const ns = snap.netSupport || {}, sent = snap.sentimentScore || {}
   const t1Trades = snap.teams?.[t1]?.trades || []
   const t2Trades = snap.teams?.[t2]?.trades || []
-  const { pl1, pl2 } = getBookiePlFromMatchedTrades(snap, t1, t2)
-  const providerTotals = getLiveProviderTotals(snap) || getFrozenPreMatchProviderTotals(snap) || [null, null]
+  const ruleInputs = getTossRuleInputs(snap)
+  const [pl1, pl2] = ruleInputs.pl
+  const providerTotals = ruleInputs.providerTotals || [null, null]
   const totVol = am1.totalBet != null && am2.totalBet != null ? am1.totalBet + am2.totalBet : null
   const pct1 = totVol > 0 ? Math.round(am1.totalBet / totVol * 100) : null
   const pct2 = pct1 == null ? null : 100 - pct1
   const competition = snap.competitionName || snap.seriesName || ''
-  const isLegends = isWorldLegendsTossLeague(competition)
   const prediction = predictTossWinner(snap, competition)
   const teams = [
     { name: t1, volume: am1.totalBet, percentage: pct1, odds: latestMatchedPrice(t1Trades), providerTotal: providerTotals[0], pl: pl1 },
@@ -243,15 +242,7 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   ]
   const hasExposure = [exp1.netExposure, exp2.netExposure].some(value => value != null)
   const hasLedger = pl1 != null || pl2 != null || t1Trades.length > 0 || t2Trades.length > 0
-  const signals = prediction?.signals?.filter(signal => signal.label !== 'Bookie Pre-P/L') || []
   const teamHeader = <thead><tr><th scope="col">Metric</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead>
-  const signalTable = signals.length > 0 && <table className="toss-data-table" aria-label="Additional market signals by team">
-    <thead><tr><th scope="col">Signal</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead>
-    <tbody>{signals.map(signal => <tr key={signal.label}>
-      <th scope="row" title={signal.label === 'Pre-Match Lay' ? 'Matched lay stakes' : signal.sublabel}>{signal.label}</th>
-      {signal.v2 ? <><td>{signal.v1}</td><td>{signal.v2}</td></> : <td colSpan={2}>{signal.v1 || '—'}</td>}
-    </tr>)}</tbody>
-  </table>
 
   return (
     <div className={`toss-detail-page toss-v2 w-full${isEmbedded ? '' : ' detail-page'}`}>
@@ -307,10 +298,7 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
         </section>
       </div>
 
-      <LegendsTossMarketEvidence snap={snap} prediction={prediction} />
-
-      {signalTable && (isLegends ? <details className="toss-signal-details"><summary>Additional market signals <span>Context only</span></summary>{signalTable}</details>
-        : <section className="toss-panel"><header className="toss-panel-heading"><h2>Market signals</h2></header>{signalTable}</section>)}
+      <TossRuleEvidence snap={snap} prediction={prediction} inputs={ruleInputs} />
 
       <div className="toss-analytics-grid">
         {(hasExposure || hasLedger) && <section className="toss-panel">

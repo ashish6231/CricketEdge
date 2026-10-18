@@ -11,7 +11,7 @@ const crexService = require('../crexService');
 const prisma = require('../../db/prisma');
 const crypto = require('crypto');
 const { compactSessionPayload } = require('../../utils/sessionPayload');
-const { isWomensSpringT20, freezeSpringProviderTotals } = require('../../utils/womensSpringMatchPredictor.mjs');
+const { getDefaultProviderTotalStore } = require('../providerTotalStore');
 
 // In-memory caches for fast normalization & merging
 let _cricketMatches = [];
@@ -149,8 +149,11 @@ async function processIngestJob(job) {
 
   else if (type === 'toss:snapshot' && matchId && data) {
     const mid = String(matchId);
-    _tossSnapshots.set(mid, data);
-    await redis.set(`match:${mid}:toss`, JSON.stringify(data), 'EX', 120);
+    const matchInfo = _tossMatches.find(match => String(match.matchId || match.id) === mid)
+      || _cricketMatches.find(match => String(match.matchId || match.id) === mid);
+    const snapshot = await getDefaultProviderTotalStore().attach(data, {matchId:mid,market:'toss',matchInfo});
+    _tossSnapshots.set(mid, snapshot);
+    await redis.set(`match:${mid}:toss`, JSON.stringify(snapshot), 'EX', 120);
 
     const bundle = getMatchBundle(mid);
     await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
@@ -179,14 +182,7 @@ async function processIngestJob(job) {
   else if (type === 'cricket:snapshot' && matchId && data) {
     const mid = String(matchId);
     const matchInfo = _cricketMatches.find(match => String(match.matchId || match.id) === mid);
-    const competitionName = data.competitionName || matchInfo?.competitionName;
-    const snapshot = isWomensSpringT20(competitionName) ? freezeSpringProviderTotals({
-      ...data, competitionName,
-      startTime: data.startTime ?? matchInfo?.startTime,
-      status: data.status || matchInfo?.status,
-      inPlay: Boolean(data.inPlay || matchInfo?.inPlay),
-      capturedAt: new Date().toISOString(),
-    }, _cricketSnapshots.get(mid)) : data;
+    const snapshot = await getDefaultProviderTotalStore().attach(data, {matchId:mid,market:'cricket',matchInfo});
     _cricketSnapshots.set(mid, snapshot);
 
     // Save live odds key in Redis (Architecture: match:{id}:odds keys with short TTL)

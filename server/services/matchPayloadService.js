@@ -7,6 +7,8 @@
 const fs = require('fs');
 const path = require('path');
 const dataCache = require('./dataCache');
+const { getDefaultProviderTotalStore } = require('./providerTotalStore');
+const { providerSnapshotFromRecord } = require('../utils/providerTotals.mjs');
 const crexService = require('./crexService');
 const { getDefaultStore: getDefaultTossStore } = require('./tossDatasetStore');
 const { isEndedMatch, guestMayViewMatch, guestMayViewFromInfos } = require('../lib/guestMatchAccess');
@@ -799,7 +801,7 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
       const md = await getCachedMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === mid);
       if (rec && rec.snapshot) {
-        cricket = attachMatchMeta(JSON.parse(JSON.stringify(rec.snapshot)), matchInfo);
+        cricket = attachMatchMeta(providerSnapshotFromRecord(rec), matchInfo);
         if (rec.actualWinner && !cricket.actualWinner) cricket.actualWinner = rec.actualWinner;
       }
     } catch {}
@@ -814,7 +816,7 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
       const ds = await getCachedTossDataset();
       const rec = (ds.records || []).find(x => String(x.matchId) === mid);
       if (rec && rec.snapshot) {
-        const tossData = JSON.parse(JSON.stringify(rec.snapshot));
+        const tossData = providerSnapshotFromRecord(rec);
         if (!tossData.competitionName) tossData.competitionName = rec.competitionName;
         if (!tossData.startTime) tossData.startTime = rec.startTime;
         toss = attachMatchMeta(tossData, tossInfo || matchInfo, true);
@@ -823,6 +825,11 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
       }
     } catch {}
   }
+
+  [cricket, toss] = await Promise.all([
+    getDefaultProviderTotalStore().attach(cricket, {matchId:mid,market:'cricket',matchInfo}),
+    getDefaultProviderTotalStore().attach(toss, {matchId:mid,market:'toss',matchInfo:tossInfo || matchInfo}),
+  ]);
 
   const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
   let crex = cachedCrex || matchInfo?.crex || null;

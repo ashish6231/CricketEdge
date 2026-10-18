@@ -1,5 +1,3 @@
-const { checkPreMatchDataQuality } = require('../utils/preMatchDataQuality.mjs');
-const { isWorldLegendsTossLeague } = require('../utils/worldLegendsTossAlgorithm.js');
 const fs = require('fs');
 const path = require('path');
 const { pathToFileURL } = require('url');
@@ -7,7 +5,9 @@ const { getDefaultStore } = require('./tossDatasetStore');
 const dataCache = require('./dataCache');
 const { getCrexOverview, findCrexMatch, getCrexMatchDetail } = require('./crexService');
 
-let cachedPredictorVersion = 'toss-v10-league-rules-retrospective';
+const { getTossRuleInputs, UNIVERSAL_TOSS_VERSION } = require('../utils/universalTossAlgorithm.mjs');
+
+let cachedPredictorVersion = UNIVERSAL_TOSS_VERSION;
 let cachedPredictorModule = null;
 
 function sanitizeError(message) {
@@ -97,8 +97,8 @@ async function defaultPredictTossWinner(snapshot, competitionName) {
 }
 
 function checkTossCaptureQuality(snapshot, competitionName) {
-  return checkPreMatchDataQuality(snapshot, isWorldLegendsTossLeague(competitionName)
-    ? { requirePnl: false, requireActivity: true } : undefined);
+  const valid = getTossRuleInputs(snapshot,competitionName).available;
+  return {valid,reason:valid ? null : 'missing-or-invalid-current-toss-rule-input'};
 }
 
 function shouldSkipExisting(existing) {
@@ -106,9 +106,8 @@ function shouldSkipExisting(existing) {
   if (['verified', 'abandoned'].includes(existing.status)) return true;
   if (
     existing.status === 'pending'
-    // Keep older complete captures, including pre-v3 Legends snapshots.
-    && (checkPreMatchDataQuality(existing.snapshot).valid
-      || checkTossCaptureQuality(existing.snapshot, existing.competitionName).valid)
+    // Preserve complete captures; retry older snapshots missing the rule inputs.
+    && checkTossCaptureQuality(existing.snapshot,existing.competitionName).valid
     && !existing.lastCaptureError
   ) {
     return true;
@@ -227,12 +226,13 @@ async function captureEndedTosses({
       startTime: match.startTime ?? null,
       endedAt: isoNow,
       capturedAt: isoNow,
+      inputTiming: prediction?.inputTiming || 'current-displayed-toss-values',
       snapshot,
       predictedWinner: prediction?.winnerName ?? null,
       predictionReason: prediction?.reason ?? null,
       predictionRisk: prediction?.risk ?? {},
       matchedRules: prediction?.matchedRules ?? [],
-      predictorVersion: prediction?.predictorVersion || cachedPredictorVersion,
+      predictorVersion: prediction?.predictorVersion || getTossRuleInputs(snapshot,match.competitionName).rule.predictorVersion,
       actualWinner,
       lastCaptureError: null,
     });

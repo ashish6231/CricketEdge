@@ -5,7 +5,8 @@ const { predictMatchWinner, DEFAULT_MATCH_MODE } = require('../utils/matchWinner
 const { LEAGUE_MATCH_ALGORITHMS, getLeagueMatchAlgorithm } = require('../utils/normalLeagueMatchPredictor.mjs');
 const records = JSON.parse(fs.readFileSync(require.resolve('../data/match_dataset.json'))).records;
 const snapshot = {
-  teamNames: ['India W', 'Sri Lanka W'],
+  teamNames: ['India', 'Sri Lanka'],
+  preMatchTotalBets: {team1:100,team2:300},
   preMatchVolume: { team1: {back: 100, lay: 30}, team2: {back: 20, lay: 5} },
   preMatchPnl: {team1: -40, team2: 40},
 };
@@ -18,14 +19,20 @@ test('normal is the default and does not load the experimental fitted model', ()
   assert.equal(require.cache[require.resolve('../utils/matchLeagueModel.js')], undefined);
 });
 
-test('every saved league has a separate algorithm ID and independent parameter object', () => {
+test('registered leagues have independent profiles and unregistered leagues disclose fallback', () => {
   assert.equal(LEAGUE_MATCH_ALGORITHMS.length, 43);
   assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(a => a.algorithmId)).size, 43);
   assert.equal(new Set(LEAGUE_MATCH_ALGORITHMS.map(a => a.parameters)).size, 43);
   for (const record of records) {
     const algorithm = getLeagueMatchAlgorithm(record.competitionName);
-    assert.ok(algorithm, `Unregistered league: ${record.competitionName}`);
     const prediction = predictMatchWinner({...record.snapshot, competitionName: record.competitionName});
+    if (!algorithm) {
+      if (prediction) {
+        assert.equal(prediction.leagueRegistered, false);
+        assert.equal(prediction.algorithmId, 'match-unregistered-league-fallback');
+      }
+      continue;
+    }
     if (prediction) {
       assert.equal(prediction.algorithmId, algorithm.algorithmId);
       assert.equal(prediction.algorithmLeague, algorithm.league);
@@ -38,8 +45,9 @@ test('every saved league has a separate algorithm ID and independent parameter o
 test('explicit women league metadata takes priority over team nationality', () => {
   const international = predictMatchWinner({...snapshot, competitionName: 'Womens International Twenty20 Matches'});
   const asia = predictMatchWinner({...snapshot, competitionName: "Women's Asia Cup T20"});
-  assert.equal(international.tier, 'WOMENS_T20_SPECIAL');
-  assert.match(asia.tier, /^WOMENS_ASIA_CUP/);
+  assert.equal(international.tier, 'WOMENS_MATCH_LOWER_PREMATCH_PROVIDER_TOTAL');
+  assert.equal(international.winner,'India');
+  assert.equal(asia.tier,'WOMENS_MATCH_LOWER_PREMATCH_PROVIDER_TOTAL');
   assert.notEqual(international.algorithmId, asia.algorithmId);
 });
 

@@ -24,6 +24,8 @@
  * @property {Object} [snapshot] - Deep analytics (PNL, volume, sentiment, AI prediction)
  */
 
+const { providerStartTime } = require('../utils/providerTotals.mjs');
+
 function createNormalizedMatch(raw = {}) {
   const matchId = String(raw.id || raw.matchId || raw.match_id || '').trim();
   const rawName = String(raw.name || raw.matchName || raw.eventName || raw.title || '').trim();
@@ -59,7 +61,7 @@ function createNormalizedMatch(raw = {}) {
     team2: team2 || 'Team 2',
     competitionName: String(raw.competitionName || raw.competition || raw.seriesName || 'Other').trim(),
     format: String(raw.format || raw.matchFormat || 'T20').toUpperCase(),
-    startTime: raw.startTime ? Number(raw.startTime) : Date.now(),
+    startTime: providerStartTime(raw),
     status: normalizedStatus,
     inPlay: inPlay,
     totalMatched: Number(raw.totalMatched || raw.volume || 0),

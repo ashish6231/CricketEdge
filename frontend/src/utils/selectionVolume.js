@@ -1,29 +1,24 @@
 import { finiteNumber, timestamp, tradeSide, tradeTimestamp } from './bookiePl.js'
-import { isMatchEnded, isMatchLiveByStart } from './matchTiming.js'
-
-const providerTotalPair = source => {
-  const values = Array.isArray(source)
-    ? source
-    : [source?.team1 ?? source?.totalBetTeam1, source?.team2 ?? source?.totalBetTeam2]
-  const pair = values.slice(0, 2).map(finiteNumber)
-  return pair.length === 2 && pair.some(value => value != null) ? pair : null
-}
+import { isMatchEnded } from './matchTiming.js'
+import {
+  providerTotalPair, getCurrentProviderTotals, getExplicitPreMatchProviderTotals,
+  canObservePreMatchProviderTotals,
+} from '../../../server/utils/providerTotals.mjs'
 
 /** Current provider totals. These may continue changing after the market goes live. */
-export function getLiveProviderTotals(snapshot) {
-  return providerTotalPair(snapshot?.deepMetrics?.totals)
-}
+export const getLiveProviderTotals = getCurrentProviderTotals
 
-/** Stable pre-match provider totals, including persisted values captured before start. */
+/** Prefer durable server captures, preserving a valid zero and partial team values. */
 export function getFrozenPreMatchProviderTotals(snapshot, stored = null) {
-  return providerTotalPair(stored)
-    || providerTotalPair(snapshot?.preMatchProviderTotals)
-    || providerTotalPair(snapshot?.deepMetrics?.preMatchTotals)
+  const server = getExplicitPreMatchProviderTotals(snapshot)
+  const local = providerTotalPair(stored)
+  const pair = [0, 1].map(index => server?.[index] ?? local?.[index] ?? null)
+  return pair.some(value => value != null) ? pair : null
 }
 
-/** Provider totals can only be refreshed before the scheduled start. */
+/** Unknown kickoff times cannot safely be treated as pre-match. */
 export function canCapturePreMatchProviderTotals(snapshot, now = Date.now()) {
-  return Boolean(snapshot) && !isMatchEnded(snapshot) && !isMatchLiveByStart(snapshot, now)
+  return canObservePreMatchProviderTotals(snapshot, now)
 }
 
 const reportedActivityPair = source => {
@@ -32,9 +27,9 @@ const reportedActivityPair = source => {
   return values.some(value => value != null) ? values : null
 }
 
-/** Provider-reported total-bet/activity ledger for the current period.
- * This is distinct from deepMetrics.totals, whose values are exposure-based
- * selection support (own back exposure + the opposing runner's lay stake). */
+/** Provider-reported activity for the selected period. The pre-match ledger
+ * also supplies pre-match provider totals; deepMetrics.totals is the current
+ * all-market value and can keep changing after kickoff. */
 export function getMarketBetActivity(snapshot, { live = false, frozenPreMatchBets = null } = {}) {
   const useInPlay = live || isMatchEnded(snapshot)
   const liveValues = reportedActivityPair(snapshot?.inPlayTotalBets)

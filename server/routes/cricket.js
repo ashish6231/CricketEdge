@@ -3,6 +3,8 @@ const path = require('path');
 const express = require('express');
 const router = express.Router();
 const dataCache = require('../services/dataCache');
+const { getDefaultProviderTotalStore } = require('../services/providerTotalStore');
+const { providerSnapshotFromRecord } = require('../utils/providerTotals.mjs');
 const { optionalAuth, requireProSubscription, assertProAccess, assertTelegramMembership } = require('../middleware/auth');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
@@ -320,7 +322,7 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
       const md = await getMatchDataset();
       const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
       if (rec?.snapshot) {
-        data = rec.snapshot;
+        data = providerSnapshotFromRecord(rec);
       }
     } catch {}
   }
@@ -330,7 +332,8 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
   if (data?.error) {
     return upstreamUnavailable(res, data);
   }
-  const responseData = attachMatchMeta(data, matchInfo);
+  const responseData = await getDefaultProviderTotalStore().attach(attachMatchMeta({...data}, matchInfo),
+    {matchId,market:'cricket',matchInfo});
   try {
     const crex = await getCrexForMatch(matchInfo, matchId);
     if (crex) responseData.crex = crex;
@@ -505,7 +508,7 @@ router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async
       const ds = await store.load();
       const rec = (ds.records || []).find(r => String(r.matchId) === matchId);
       if (rec && rec.snapshot) {
-        data = JSON.parse(JSON.stringify(rec.snapshot));
+        data = providerSnapshotFromRecord(rec);
         if (!data.competitionName) data.competitionName = rec.competitionName;
         if (!data.startTime) data.startTime = rec.startTime;
         if (rec.actualWinner && !data.actualWinner) data.actualWinner = rec.actualWinner;
@@ -522,7 +525,8 @@ router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async
   }
 
   const matchInfo = tossInfo || cricketInfo || { matchId, matchName: data.matchName || (data.teamNames ? data.teamNames.join(' v ') : null) };
-  const meta = attachMatchMeta(data, matchInfo, true);
+  const meta = await getDefaultProviderTotalStore().attach(attachMatchMeta({...data}, matchInfo, true),
+    {matchId,market:'toss',matchInfo});
   try {
     const crex = await getCrexForMatch(matchInfo, matchId);
     if (crex) {

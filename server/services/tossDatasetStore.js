@@ -130,7 +130,8 @@ function createStore({ filePath = DEFAULT_DATASET_PATH, persistence } = {}) {
         return { record: existing, created: false, updated: false };
       }
 
-      if (hasUsableSnapshot(existing.snapshot) && !existing.lastCaptureError && !isVerified) {
+      const changedAlgorithm = record.predictorVersion && record.predictorVersion !== existing.predictorVersion;
+      if (hasUsableSnapshot(existing.snapshot) && !existing.lastCaptureError && !isVerified && !changedAlgorithm) {
         return { record: existing, created: false, updated: false };
       }
 

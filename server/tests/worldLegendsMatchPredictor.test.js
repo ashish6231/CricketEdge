@@ -6,13 +6,13 @@ const { predictNormalLeagueMatch, predictFrozenLeagueBase, predictFrozenLeagueRu
 const league='World Championship of Legends T20';
 const input={competitionName:league,teamNames:['India Legends','England Legends'],preMatchTotalBets:{team1:100,team2:300}};
 
-test('Legends match picks higher reported activity without requiring back/lay or P/L',()=>{
+test('Legends match picks higher pre-match provider total without requiring back/lay or P/L',()=>{
   for(const predict of [predictNormalLeagueMatch,predictFrozenLeagueBase,predictFrozenLeagueRules]) {
     const result=predict(input);
     assert.equal(result.winner,'England Legends');
-    assert.equal(result.reportedActivityEvidence.selection,'higher');
-    assert.equal(result.reportedActivityEvidence.signalCount,1);
-    assert.equal(result.tier,'WORLD_LEGENDS_MATCH_HIGHER_ACTIVITY');
+    assert.equal(result.providerTotalEvidence.selection,'higher');
+    assert.equal(result.providerTotalEvidence.signalCount,1);
+    assert.equal(result.tier,'MENS_MATCH_HIGHER_PREMATCH_PROVIDER_TOTAL');
     assert.equal(result.confidenceCalibrated,false);
   }
   assert.equal(predictNormalLeagueMatch({...input,preMatchTotalBets:{team1:300,team2:0}}).winner,'India Legends');
@@ -46,12 +46,12 @@ test('historical Legends match replay scores the requested rule without claiming
   assert.equal(report.rows.find(r=>r.matchId==='36128071').verdict,'Unscored');
 });
 
-test('frontend uses one higher-activity signal and discards previous profile locks',async()=>{
+test('frontend uses one higher-provider-total signal and discards previous profile locks',async()=>{
   const {predictMatchStart,lockMatchStartPrediction}=await import('../../frontend/src/utils/matchStartPredictor.js');
   const result=predictMatchStart(input);
   assert.equal(result.winnerName,'England Legends');
   assert.equal(result.signals.length,1);
-  assert.match(result.signals[0].sublabel,/Higher activity/);
+  assert.match(result.signals[0].sublabel,/Higher provider total/);
   const old={...result,profileVersion:'league-v1-0cae91a464f8',winnerName:'India Legends'};
   assert.equal(lockMatchStartPrediction(result,old).winnerName,result.winnerName);
 });

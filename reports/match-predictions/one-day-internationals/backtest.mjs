@@ -58,6 +58,8 @@ export function runOdiBacktest(dataset) {
       preMatchVolume: snapshot.preMatchVolume,
       preMatchPnl: snapshot.preMatchPnl,
       preMatchTotalBets: snapshot.preMatchTotalBets,
+      preMatchProviderTotals: snapshot.preMatchProviderTotals,
+      deepMetrics: snapshot.deepMetrics?.preMatchTotals ? {preMatchTotals:snapshot.deepMetrics.preMatchTotals} : undefined,
     };
     const prediction = predictNormalLeagueMatch(input);
     if (!prediction?.winner) throw new Error(`No ODI prediction for match ${record.matchId}`);
@@ -75,6 +77,7 @@ export function runOdiBacktest(dataset) {
       reason: prediction.reason,
       ruleFamily: prediction.ruleFamily,
       inputTiming: prediction.inputTiming,
+      providerTotalEvidence: prediction.providerTotalEvidence,
       evidence: {
         ...evidence,
         signalsSupportingCurrentPick: `${supportingSignals}/${evidence.leaders.filter(Boolean).length}`,
@@ -107,7 +110,7 @@ export function runOdiBacktest(dataset) {
       verdict: rows.length > 0 && correct === rows.length ? 'PASS' : 'FAIL',
     },
     indiaWestIndiesAudit: indiaWestIndies || null,
-    conclusion: 'Keep the ODI-specific extreme-flow guard. A blanket World Legends consensus would regress England v Sri Lanka.',
+    conclusion: 'The active ODI rule selects the higher frozen pre-match provider total. Cross-market evidence is retained as a separate historical benchmark.',
     limitations: [
       'Five verified matches are a small retrospective sample and do not guarantee the next ODI result.',
       'No in-play trades, final odds, match result, or post-match field is passed into the predictor.',

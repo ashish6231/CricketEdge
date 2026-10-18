@@ -6,17 +6,17 @@ const { isWomensSpringT20, WOMENS_SPRING_LEAGUE, freezeSpringProviderTotals, get
 const snapshot = { competitionName: WOMENS_SPRING_LEAGUE, teamNames: ['Hobart Hurricanes W', 'ACT Meteors W'],
   preMatchTotalBets: { team1: 100, team2: 400 } };
 
-test('Spring aliases select the single reported-activity rule without volume or provider-total requirements', () => {
+test('Spring aliases select the single lower-provider-total rule without volume requirements', () => {
   const spring = getLeagueMatchAlgorithm(WOMENS_SPRING_LEAGUE);
   assert.ok(Object.isFrozen(spring.profile));
-  assert.equal(spring.profile.profileVersion, 'spring-t20-lower-reported-activity-v4');
+  assert.match(spring.profile.profileVersion, /lower-prematch-provider-total-v3$/);
   for (const name of [WOMENS_SPRING_LEAGUE, 'Women’s T20 Spring Challenge 2026', 'Womens Spring T20', 'Women Spring Twenty20 Challenge']) {
     const result = predictMatchWinner({ ...snapshot, competitionName: name });
     assert.equal(result.winner, snapshot.teamNames[0]);
     assert.equal(result.algorithmId, spring.algorithmId);
-    assert.equal(result.tier, 'WOMENS_SPRING_T20_LOWER_REPORTED_ACTIVITY');
+    assert.equal(result.tier, 'WOMENS_MATCH_LOWER_PREMATCH_PROVIDER_TOTAL');
     assert.equal(result.confidenceCalibrated, false);
-    assert.equal(result.reportedActivityEvidence.signalCount, 1);
+    assert.equal(result.providerTotalEvidence.signalCount, 1);
   }
   for (const name of ['WBBL', 'WNCL', "Women's Asia Cup T20", 'Spring T20 Men', '']) assert.equal(isWomensSpringT20(name), false);
   assert.equal(predictLeagueTrainingFit(snapshot), null);
@@ -31,9 +31,9 @@ test('lower pre-match activity alone decides both sides, including zero; ties an
     {team1:null,team2:100},{team1:'',team2:100},{team1:-1,team2:100},{team1:NaN,team2:100},{team1:Infinity,team2:100}]) assert.equal(predict(totals), null);
 });
 
-test('missing pre-match activity cannot fall back to provider totals, live activity or other signals', () => {
+test('missing pre-match totals cannot fall back to current totals, live activity or other signals', () => {
   const input = { ...snapshot, preMatchTotalBets: undefined, status: 'live',
-    preMatchProviderTotals: { team1: 10, team2: 500 }, inPlayTotalBets: {team1:10,team2:500}, deepMetrics: { totals: {totalBetTeam1:10,totalBetTeam2:500} },
+    inPlayTotalBets: {team1:10,team2:500}, deepMetrics: { totals: {totalBetTeam1:10,totalBetTeam2:500} },
     preMatchVolume: { team1: {back:10,lay:10},team2:{back:50,lay:100} }, preMatchPnl:{team1:10,team2:-50} };
   for (const predict of [predictMatchWinner,predictFrozenLeagueBase,predictFrozenLeagueRules]) assert.equal(predict(input), null);
 });
@@ -53,7 +53,7 @@ test('trap, P/L, support, provider totals and outcomes never override pre-match 
 });
 
 test('timed pre-start provider totals freeze and stay stable through the chase, including reversed team order', () => {
-  const pre = { ...snapshot, preMatchProviderTotals:undefined,startTime:'2026-10-18T10:00:00Z',
+  const pre = { ...snapshot, preMatchTotalBets:undefined,preMatchProviderTotals:undefined,startTime:'2026-10-18T10:00:00Z',
     capturedAt:'2026-10-18T09:59:00Z',deepMetrics:{totals:{totalBetTeam1:100,totalBetTeam2:400}},status:'upcoming' };
   const frozen = freezeSpringProviderTotals(pre);
   assert.deepEqual(frozen.preMatchProviderTotals,{team1:100,team2:400});
@@ -73,7 +73,7 @@ test('frontend uses the same rule and invalidates old profile locks', async () =
   const current = predictMatchStart(snapshot);
   assert.equal(current.winnerName,predictMatchWinner(snapshot).winner);
   assert.equal(current.signals.length,1);
-  assert.equal(current.signals[0].label,'Pre-match reported activity');
+  assert.equal(current.signals[0].label,'Pre-match provider total');
   const old = {...current,profileVersion:'spring-t20-trap-support-v2',winnerName:snapshot.teamNames[1]};
   assert.equal(lockMatchStartPrediction(current,old).winnerName,current.winnerName);
 });

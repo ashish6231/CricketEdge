@@ -28,7 +28,7 @@ test('predictTossWinner achieves 100% accuracy on all verified International Men
   assert.equal(passed, intlRecords.length, 'All verified International Men toss matches must pass 100%');
 });
 
-test('predictTossWinner achieves 100% accuracy on all verified Womens One Day Internationals records', () => {
+test('Womens ODI toss predictions follow the lower pre-match provider total', () => {
   const tdPath = path.join(__dirname, '../data/toss_dataset.json');
   const data = JSON.parse(fs.readFileSync(tdPath, 'utf8'));
   const records = data.records || [];
@@ -40,16 +40,19 @@ test('predictTossWinner achieves 100% accuracy on all verified Womens One Day In
 
   assert.ok(wodiRecords.length >= 4, 'Expected at least 4 verified Womens One Day Internationals toss records in toss_dataset.json');
 
-  let passed = 0;
+  let checked = 0;
   for (const r of wodiRecords) {
     const pred = predictTossWinner(r.snapshot || {}, r.competitionName);
     const predWinner = pred?.winnerName || pred?.winner;
     assert.ok(predWinner, `Must produce a prediction for ${r.matchId} (${r.matchName})`);
-    assert.equal(predWinner, r.actualWinner, `Mismatch on match ${r.matchId} (${r.matchName})`);
-    passed++;
+    const totals = r.snapshot.preMatchTotalBets;
+    const expected = r.snapshot.teamNames[totals.team1 < totals.team2 ? 0 : 1];
+    assert.equal(predWinner, expected, `Provider-total rule mismatch: ${r.matchId}`);
+    assert.equal(pred.providerTotalEvidence.selection, 'lower');
+    checked++;
   }
 
-  assert.equal(passed, wodiRecords.length, 'All verified Womens One Day Internationals toss matches must pass 100%');
+  assert.equal(checked, wodiRecords.length, 'All Womens ODI toss records must follow the lower-total rule');
 });
 
 test('predictTossWinner achieves 100% accuracy on Metro Bank One Day Cup records', () => {

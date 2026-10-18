@@ -59,8 +59,8 @@ test('pre-start activity prediction stays immutable when provider totals and liv
   let saved = (await store.load()).records[0];
   const first = structuredClone(saved.markets.match);
   assert.equal(first.prediction.winner, fixture.team1);
-  assert.equal(first.prediction.tier, 'WOMENS_SPRING_T20_LOWER_REPORTED_ACTIVITY');
-  assert.deepEqual(first.snapshot.preMatchProviderTotals, { team1: 100, team2: 500 });
+  assert.equal(first.prediction.tier, 'WOMENS_MATCH_LOWER_PREMATCH_PROVIDER_TOTAL');
+  assert.deepEqual(first.snapshot.preMatchProviderTotals, { team1: 398, team2: 745 });
   assert.ok(Date.parse(first.prediction.capturedAt) < START);
   result = await captureWomensSpring({ ...options(store), now: () => new Date(START + 60000),
     scraper: { getCricketMatches: () => [{ ...match, status: 'completed' }], getCricketSnapshot: async () => ({ ...raw(), preMatchPnl: { team1: -9000, team2: 9000 }, inPlayTotalBets: {team1:9000,team2:10}, deepMetrics: {totals:{totalBetTeam1:9000,totalBetTeam2:10}} }) },

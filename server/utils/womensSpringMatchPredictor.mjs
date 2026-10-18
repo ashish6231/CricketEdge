@@ -28,9 +28,12 @@ function pair(source) {
   return totals.every(v => Number.isFinite(v) && v >= 0) ? totals : null;
 }
 
-// Activity, stakes, and live totals are never substitutes for frozen provider totals.
+// The provider's pre-match activity ledger is already frozen to that period.
+// Current/live totals still require an observation made before kickoff.
 export function getSpringPreMatchProviderTotals(input) {
   if (!input || input.error) return null;
+  const reported = pair(input.preMatchTotalBets);
+  if (reported) return reported;
   if (input.preMatchProviderTotals != null) return pair(input.preMatchProviderTotals);
   if (input.deepMetrics?.preMatchTotals != null) return pair(input.deepMetrics.preMatchTotals);
   const start = timestamp(input.startTime ?? input.openDate ?? input.marketStartTime);

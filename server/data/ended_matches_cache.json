@@ -5678,6 +5678,27 @@
     "runners": [],
     "totalMatched": 329236
   },
+  "36182923": {
+    "matchLoad": {
+      "team1": {
+        "name": "Bangladesh",
+        "money": 41834847,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Zimbabwe",
+        "money": 41834847,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 83669694
+    },
+    "runners": [],
+    "totalMatched": 83669694
+  },
   "36182934": {
     "matchLoad": {
       "team1": {
@@ -5951,6 +5972,27 @@
     "runners": [],
     "totalMatched": 0.378048
   },
+  "36191575": {
+    "matchLoad": {
+      "team1": {
+        "name": "Boland",
+        "money": 4665657,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Mpumalanga Rhinos",
+        "money": 4665657,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 9331314
+    },
+    "runners": [],
+    "totalMatched": 9331314
+  },
   "36191577": {
     "matchLoad": {
       "team1": {
@@ -6076,6 +6118,27 @@
     },
     "runners": [],
     "totalMatched": 495013
+  },
+  "36192734": {
+    "matchLoad": {
+      "team1": {
+        "name": "India",
+        "money": 8056976,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "West Indies",
+        "money": 8056975,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 16113951
+    },
+    "runners": [],
+    "totalMatched": 16113951
   },
   "36193308": {
     "matchLoad": {
@@ -6412,5 +6475,320 @@
     },
     "runners": [],
     "totalMatched": 13903
+  },
+  "36199393": {
+    "matchLoad": {
+      "team1": {
+        "name": "Hurricanes",
+        "money": 328855,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Seattle Thunders",
+        "money": 328856,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 657711
+    },
+    "runners": [],
+    "totalMatched": 657711
+  },
+  "36199397": {
+    "matchLoad": {
+      "team1": {
+        "name": "Atlanta Fire W",
+        "money": 13725,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Southern Strikers W",
+        "money": 13725,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 27450
+    },
+    "runners": [],
+    "totalMatched": 27450
+  },
+  "36202136": {
+    "matchLoad": {
+      "team1": {
+        "name": "Prime Raider Gladiators",
+        "money": 16081,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "East Bay Blazers",
+        "money": 16081,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 32162
+    },
+    "runners": [],
+    "totalMatched": 32162
+  },
+  "36202463": {
+    "matchLoad": {
+      "team1": {
+        "name": "Atlanta Fire",
+        "money": 6462,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Atlanta Lightning",
+        "money": 6462,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 12924
+    },
+    "runners": [],
+    "totalMatched": 12924
+  },
+  "36203781": {
+    "matchLoad": {
+      "team1": {
+        "name": "Brisbane Heat W",
+        "money": 933792,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Adelaide Strikers W",
+        "money": 933791,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 1867583
+    },
+    "runners": [],
+    "totalMatched": 1867583
+  },
+  "36203806": {
+    "matchLoad": {
+      "team1": {
+        "name": "Hayleys Group A",
+        "money": 159,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "BBK Partnership",
+        "money": 158,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 317
+    },
+    "runners": [],
+    "totalMatched": 317
+  },
+  "36203877": {
+    "matchLoad": {
+      "team1": {
+        "name": "Lions W",
+        "money": 11301,
+        "percent": 1,
+        "odds": 150,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Western Province W",
+        "money": 84245,
+        "percent": 99,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "totalMatched": 95546
+    },
+    "runners": [],
+    "totalMatched": 95546
+  },
+  "36203878": {
+    "matchLoad": {
+      "team1": {
+        "name": "Colombo Aces",
+        "money": 86418,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Fairfirst Insurance",
+        "money": 86417,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 172835
+    },
+    "runners": [],
+    "totalMatched": 172835
+  },
+  "36203889": {
+    "matchLoad": {
+      "team1": {
+        "name": "Sydney Sixers W",
+        "money": 4001888,
+        "percent": 0,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Melbourne Stars W",
+        "money": 847096,
+        "percent": 100,
+        "odds": 1.57,
+        "trend": "up"
+      },
+      "totalMatched": 4848985
+    },
+    "runners": [],
+    "totalMatched": 4848985
+  },
+  "36204052": {
+    "matchLoad": {
+      "team1": {
+        "name": "Hnb A",
+        "money": 137864,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Slc Emerging",
+        "money": 137863,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 275727
+    },
+    "runners": [],
+    "totalMatched": 275727
+  },
+  "36204421": {
+    "matchLoad": {
+      "team1": {
+        "name": "Sydney Thunder W",
+        "money": 345171,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Perth Scorchers W",
+        "money": 345171,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 690342
+    },
+    "runners": [],
+    "totalMatched": 690342
+  },
+  "36204474": {
+    "matchLoad": {
+      "team1": {
+        "name": "Melbourne Renegades W",
+        "money": 1784741,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Hobart Hurricanes W",
+        "money": 1784741,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 3569482
+    },
+    "runners": [],
+    "totalMatched": 3569482
+  },
+  "36204523": {
+    "matchLoad": {
+      "team1": {
+        "name": "Dolphins W",
+        "money": 5725,
+        "percent": 97,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Warriors W",
+        "money": 12,
+        "percent": 3,
+        "odds": 36,
+        "trend": "up"
+      },
+      "totalMatched": 5737
+    },
+    "runners": [],
+    "totalMatched": 5737
+  },
+  "36205039": {
+    "matchLoad": {
+      "team1": {
+        "name": "Austria W",
+        "money": 46,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Bulgaria W",
+        "money": 46,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 92
+    },
+    "runners": [],
+    "totalMatched": 92
+  },
+  "36206791": {
+    "matchLoad": {
+      "team1": {
+        "name": "Sweden W",
+        "money": 33903,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Austria W",
+        "money": 33903,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 67806
+    },
+    "runners": [],
+    "totalMatched": 67806
   }
 }

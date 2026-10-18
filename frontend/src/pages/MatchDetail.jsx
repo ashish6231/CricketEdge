@@ -18,8 +18,6 @@ import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBu
 import { getCricketMatchBundle, getCricketOdds } from '../api'
 import { isCompleteMatchBundle } from '../utils/matchBundle'
 import { getMatchStartTimestamp, isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
-import { isWomensSpringT20 } from '../../../server/utils/womensSpringMatchPredictor.mjs'
-import { isWorldLegendsLeague } from '../../../server/utils/worldLegendsActivity.mjs'
 
 const fmt = (n) => {
   if (n === null || n === undefined) return '—'
@@ -169,7 +167,7 @@ export default function MatchDetail({ sport }) {
   })
   const [frozenPreMatchProviderTotals, setFrozenPreMatchProviderTotals] = useState(() => {
     try {
-      const saved = sessionStorage.getItem(`pre_match_provider_totals_v2_${matchId}`)
+      const saved = sessionStorage.getItem(`pre_match_provider_totals_v3_${matchId}`)
       return saved ? JSON.parse(saved) : null
     } catch {
       return null
@@ -386,7 +384,7 @@ export default function MatchDetail({ sport }) {
   }, [snapshot?.startTime, snapshot?.openDate, snapshot?.marketStartTime, timingNow])
 
   useEffect(() => {
-    if (!liveStartPred && (isWomensSpringT20(snapshot?.competitionName) || isWorldLegendsLeague(snapshot?.competitionName))) {
+    if (!liveStartPred) {
       setLockedStartPred(null)
       try { sessionStorage.removeItem(`match_start_${PREDICTOR_VERSION}_${matchId}`) } catch { }
       return
@@ -406,7 +404,7 @@ export default function MatchDetail({ sport }) {
 
   useEffect(() => {
     if (!snapshot || !matchId) return
-    const storageKey = `pre_match_provider_totals_v2_${matchId}`
+    const storageKey = `pre_match_provider_totals_v3_${matchId}`
     let stored = null
     try {
       const raw = sessionStorage.getItem(storageKey)
@@ -414,7 +412,8 @@ export default function MatchDetail({ sport }) {
     } catch { }
 
     if (canCapturePreMatchProviderTotals(snapshot)) {
-      const current = getLiveProviderTotals(snapshot)
+      const current = getFrozenPreMatchProviderTotals(snapshot,
+        getFrozenPreMatchProviderTotals({ preMatchProviderTotals: getLiveProviderTotals(snapshot) }, stored))
       if (!current) {
         setFrozenPreMatchProviderTotals(getFrozenPreMatchProviderTotals(snapshot, stored))
         return
@@ -760,8 +759,9 @@ export default function MatchDetail({ sport }) {
     { key: '3min', label: 'Last 3 min', pnl: finalTmp, bets: finalTmb, vol: finalTmv },
   ]
   const period = periods.find(item => item.key === metricsPeriod) || periods[0]
-  const liveProviderTotals = getLiveProviderTotals(snapshot) || getFrozenPreMatchProviderTotals(snapshot) || [null, null]
-  const preMatchProviderTotals = frozenPreMatchProviderTotals || getFrozenPreMatchProviderTotals(snapshot) || [null, null]
+  const liveProviderTotals = getLiveProviderTotals(snapshot) || [null, null]
+  const preMatchProviderTotals = getFrozenPreMatchProviderTotals(
+    { ...snapshot, preMatchTotalBets: pb }, frozenPreMatchProviderTotals) || [null, null]
   const flowRows = [
     { label: 'Back stake', values: [am1.back, am2.back], format: 'currency', tone: 'back' },
     { label: 'Lay stake', values: [am1.lay, am2.lay], format: 'currency', tone: 'lay' },
@@ -770,13 +770,13 @@ export default function MatchDetail({ sport }) {
     { label: 'Net exposure', values: [exp1.netExposure, exp2.netExposure], format: 'signed' },
     { label: 'Back risk', values: [exp1.backExposure, exp2.backExposure], format: 'currency', tone: 'back' },
     { label: 'Lay risk', values: [exp1.layExposure, exp2.layExposure], format: 'currency', tone: 'lay' },
-    ...(liveProviderTotals.some(value => value != null) ? [{ label: 'Provider total', values: liveProviderTotals, format: 'currency', emphasis: true }] : []),
+    { label: 'Provider total', values: liveProviderTotals, format: 'currency', emphasis: true, missingLabel: 'Unavailable' },
     ...(ns.teamA && sent.teamA ? [{ label: 'Market sentiment', values: [ns.percentageA, ns.percentageB], format: 'percent' }] : []),
   ]
   const periodRows = [
     { label: 'Bookie P/L', values: [period.pnl?.team1, period.pnl?.team2], format: 'signed' },
     { label: 'Reported activity', values: [period.bets?.team1, period.bets?.team2], format: 'number' },
-    ...(metricsPeriod === 'pre' ? [{ label: 'Provider total', values: preMatchProviderTotals, format: 'currency', emphasis: true }] : []),
+    ...(metricsPeriod !== '3min' ? [{ label: 'Provider total', values: metricsPeriod === 'pre' ? preMatchProviderTotals : liveProviderTotals, format: 'currency', emphasis: true, missingLabel: metricsPeriod === 'pre' ? 'Not captured' : 'Unavailable' }] : []),
     ...(metricsPeriod === 'pre' ? [{
       label: 'Recorded trades',
       values: [t1, t2].map(name => preMatchActivity.available ? {
@@ -789,12 +789,14 @@ export default function MatchDetail({ sport }) {
     { label: 'Lay volume', values: [period.vol?.team1?.lay, period.vol?.team2?.lay], format: 'currency', tone: 'lay' },
   ]
   const insightRows = metricsPeriod === 'exposure' ? flowRows : periodRows
+  const providerEvidence = matchStartPred?.providerTotalEvidence
   const activityEvidence = matchStartPred?.reportedActivityEvidence
-  const evidence = matchStartPred?.marketEvidence || (activityEvidence ? {
-    activity: activityEvidence, agreeingSignals: 1, signalCount: 1,
+  const evidence = matchStartPred?.marketEvidence || (activityEvidence || providerEvidence ? {
+    activity: activityEvidence, provider: providerEvidence, agreeingSignals: 1, signalCount: 1,
   } : null)
   const percentage = value => Number.isFinite(value) ? `${value.toFixed(0)}%` : '—'
   const formatInsightValue = (row, value) => {
+    if (value == null && row.missingLabel) return <small>{row.missingLabel}</small>
     if (row.format === 'activity') return value == null ? '—' : <>{value.count.toLocaleString('en-IN')} <small>{value.pct == null ? '(—)' : `(${percentage(value.pct)})`}</small></>
     if (row.format === 'signed') return fmtRs(value)
     if (row.format === 'currency') return value == null ? '—' : `€${fmt(value)}`
@@ -899,7 +901,8 @@ export default function MatchDetail({ sport }) {
               {evidence && <details className="match-v2-evidence"><summary><span>Market evidence</span><span>{evidence.agreeingSignals}/{evidence.signalCount} signals</span></summary>
                 <table className="match-data-table" aria-label="Prediction market evidence"><thead><tr><th scope="col">Signal</th><th scope="col">{t1}</th><th scope="col">{t2}</th></tr></thead><tbody>
                   {evidence.support && <tr><th scope="row">Corrected support</th><td>{percentage(evidence.support.pct1)}</td><td>{percentage(evidence.support.pct2)}</td></tr>}
-                  <tr><th scope="row">Pre-match activity</th><td>{activityEvidence ? fmt(activityEvidence.team1) : percentage(evidence.activity?.pct1)}</td><td>{activityEvidence ? fmt(activityEvidence.team2) : percentage(evidence.activity?.pct2)}</td></tr>
+                  {providerEvidence ? <tr><th scope="row">Pre-match provider total</th><td>€{fmt(providerEvidence.team1)}</td><td>€{fmt(providerEvidence.team2)}</td></tr>
+                    : <tr><th scope="row">Pre-match activity</th><td>{activityEvidence ? fmt(activityEvidence.team1) : percentage(evidence.activity?.pct1)}</td><td>{activityEvidence ? fmt(activityEvidence.team2) : percentage(evidence.activity?.pct2)}</td></tr>}
                   {evidence.bookmakerPressureIdx != null && <tr><th scope="row">Bookie liability</th><td>{evidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</td><td>{evidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</td></tr>}
                 </tbody></table>
               </details>}
