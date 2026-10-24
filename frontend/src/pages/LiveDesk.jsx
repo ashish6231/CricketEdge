@@ -87,8 +87,7 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
 
     socket.on('cricket:matches', onCricket)
     socket.on('tennis:matches', onTennis)
-    if (socket.connected) requestTennisFeed()
-    else socket.once('connect', requestTennisFeed)
+    requestTennisFeed()
 
     const loadingTimeout = setTimeout(() => setLoading(false), 10000)
 
@@ -96,7 +95,6 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
       clearTimeout(loadingTimeout)
       socket.off('cricket:matches', onCricket)
       socket.off('tennis:matches', onTennis)
-      socket.off('connect', requestTennisFeed)
       releaseFeed('tennis')
     }
   }, [isLoggedIn, authReady])

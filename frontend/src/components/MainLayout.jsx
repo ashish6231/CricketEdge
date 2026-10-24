@@ -127,7 +127,7 @@ export default function MainLayout() {
       setLoginOpen(true)
     }
     const err = new URLSearchParams(location.search).get('error')
-    if (err === 'signups_disabled' || err === 'google_auth_failed') {
+    if (err === 'signups_disabled' || err === 'google_auth_failed' || err === 'gmail_required') {
       setLoginOpen(true)
     }
     return () => window.removeEventListener('open-login-modal', open)

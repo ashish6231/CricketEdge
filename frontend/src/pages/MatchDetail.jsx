@@ -293,18 +293,12 @@ export default function MatchDetail({ sport }) {
     socket.on('match:bundle', onSpecificBundle)
     socket.on(`match:crex:${matchId}`, onSpecificCrex)
 
-    if (socket.connected) {
-      subscribeMatch(matchId, sport)
-    } else {
-      socket.once('connect', () => {
-        if (!cancelled) subscribeMatch(matchId, sport)
-      })
-    }
+    subscribeMatch(matchId, sport)
 
     // Socket normally supplies the initial bundle. Use HTTP only as a delayed
     // fallback so opening MatchDetail does not download the same large payload twice.
     const bundleFallbackTimer = setTimeout(() => {
-      if (cancelled || receivedBundle) return
+      if (cancelled || receivedBundle || document.hidden) return
       getCricketMatchBundle(matchId)
         .then(data => {
           if (!cancelled && !receivedBundle && data) handleBundle(data)

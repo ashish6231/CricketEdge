@@ -1,0 +1,281 @@
+{
+  "user": {
+    "table": "User",
+    "columns": {
+      "id": "number",
+      "email": "string",
+      "password": "string",
+      "name": "string",
+      "avatar": "string",
+      "phone": "string",
+      "googleId": "string",
+      "authProvider": "string",
+      "isVerified": "boolean",
+      "role": "string",
+      "status": "string",
+      "activeToken": "string",
+      "resetToken": "string",
+      "resetTokenExpires": "date",
+      "lastLoginAt": "date",
+      "lastLoginIp": "string",
+      "subPlanId": "number",
+      "subPlanSlug": "string",
+      "subStatus": "string",
+      "subStartedAt": "date",
+      "subExpiresAt": "date",
+      "subAutoRenew": "boolean",
+      "queuedPlanId": "number",
+      "queuedPlanSlug": "string",
+      "queuedBillingCycle": "string",
+      "queuedAmount": "number",
+      "queuedStatus": "string",
+      "queuedPurchasedAt": "date",
+      "otpCode": "string",
+      "otpExpiresAt": "date",
+      "otpPurpose": "string",
+      "oddsFormat": "string",
+      "language": "string",
+      "notifEmail": "boolean",
+      "telegramId": "string",
+      "telegramUsername": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ],
+      [
+        "email"
+      ],
+      [
+        "googleId"
+      ]
+    ]
+  },
+  "subscriptionPlan": {
+    "table": "SubscriptionPlan",
+    "columns": {
+      "id": "number",
+      "slug": "string",
+      "name": "string",
+      "description": "string",
+      "price": "number",
+      "yearlyPrice": "number",
+      "currency": "string",
+      "features": "json",
+      "maxMarketsTracked": "number",
+      "apiCallsPerMin": "number",
+      "advancedAnalytics": "boolean",
+      "bookieBookAccess": "boolean",
+      "predictionEngine": "boolean",
+      "oddsAlerts": "boolean",
+      "telegramNotifications": "boolean",
+      "isActive": "boolean",
+      "displayOrder": "number",
+      "createdBy": "number",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ],
+      [
+        "slug"
+      ]
+    ]
+  },
+  "userSubscription": {
+    "table": "UserSubscription",
+    "columns": {
+      "id": "number",
+      "userId": "number",
+      "planId": "number",
+      "planSlug": "string",
+      "amount": "number",
+      "currency": "string",
+      "discountAmount": "number",
+      "couponCode": "string",
+      "startedAt": "date",
+      "expiresAt": "date",
+      "billingCycle": "string",
+      "paymentStatus": "string",
+      "paymentMethod": "string",
+      "gatewayOrderId": "string",
+      "gatewayPaymentId": "string",
+      "paidAt": "date",
+      "status": "string",
+      "cancelledAt": "date",
+      "cancelReason": "string",
+      "ipAddress": "string",
+      "userAgent": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ]
+    ]
+  },
+  "match": {
+    "table": "Match",
+    "columns": {
+      "id": "number",
+      "matchId": "string",
+      "eventId": "string",
+      "marketId": "string",
+      "eventTypeId": "number",
+      "competition": "string",
+      "eventName": "string",
+      "teamAName": "string",
+      "teamASelectionId": "number",
+      "teamBName": "string",
+      "teamBSelectionId": "number",
+      "drawSelectionId": "number",
+      "matchType": "string",
+      "venue": "string",
+      "startTime": "date",
+      "status": "string",
+      "inplay": "boolean",
+      "totalMatched": "number",
+      "scoreTeamARuns": "number",
+      "scoreTeamAWickets": "number",
+      "scoreTeamAOvers": "number",
+      "scoreTeamBRuns": "number",
+      "scoreTeamBWickets": "number",
+      "scoreTeamBOvers": "number",
+      "currentInnings": "number",
+      "tossWinner": "string",
+      "battingFirst": "string",
+      "resultWinner": "string",
+      "settledAt": "date",
+      "resultVerified": "boolean",
+      "source": "string",
+      "betfairEventId": "string",
+      "betfairMarketId": "string",
+      "runners": "json",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ],
+      [
+        "matchId"
+      ]
+    ]
+  },
+  "adminAuditLog": {
+    "table": "AdminAuditLog",
+    "columns": {
+      "id": "number",
+      "adminId": "number",
+      "adminEmail": "string",
+      "action": "string",
+      "targetType": "string",
+      "targetId": "number",
+      "targetIdentifier": "string",
+      "changesBefore": "json",
+      "changesAfter": "json",
+      "reason": "string",
+      "ipAddress": "string",
+      "userAgent": "string",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ]
+    ]
+  },
+  "promoCode": {
+    "table": "PromoCode",
+    "columns": {
+      "id": "number",
+      "code": "string",
+      "description": "string",
+      "discountType": "string",
+      "discountValue": "number",
+      "maxDiscount": "number",
+      "applicablePlans": "json",
+      "usageLimit": "number",
+      "usageCount": "number",
+      "perUserLimit": "number",
+      "validFrom": "date",
+      "validUntil": "date",
+      "isActive": "boolean",
+      "createdBy": "number",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ],
+      [
+        "code"
+      ]
+    ]
+  },
+  "siteSettings": {
+    "table": "SiteSettings",
+    "columns": {
+      "id": "number",
+      "key": "string",
+      "value": "json",
+      "category": "string",
+      "description": "string",
+      "isPublic": "boolean",
+      "updatedBy": "number",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ],
+      [
+        "key"
+      ]
+    ]
+  },
+  "predictionDataset": {
+    "table": "PredictionDataset",
+    "columns": {
+      "id": "string",
+      "metadata": "string",
+      "initialized": "boolean",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ]
+    ]
+  },
+  "predictionRecord": {
+    "table": "PredictionRecord",
+    "columns": {
+      "id": "string",
+      "datasetKey": "string",
+      "recordKey": "string",
+      "payload": "string",
+      "position": "number",
+      "createdAt": "date",
+      "updatedAt": "date"
+    },
+    "unique": [
+      [
+        "id"
+      ],
+      [
+        "datasetKey",
+        "recordKey"
+      ]
+    ]
+  }
+}

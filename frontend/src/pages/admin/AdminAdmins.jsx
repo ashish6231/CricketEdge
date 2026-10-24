@@ -1,3 +1,4 @@
+import { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } from '../../../../server/shared/accountEmail.mjs'
 import { useEffect, useState, useCallback } from 'react'
 import {
   LoaderCircle, Shield, ShieldCheck, UserPlus, ArrowDownCircle,
@@ -121,6 +122,7 @@ export default function AdminAdmins() {
 
   const createAdmin = async (e) => {
     e.preventDefault()
+    if (!normalizeGmailEmail(form.email)) { toast.error(GMAIL_REQUIRED_MESSAGE); return }
     setCreating(true)
     try {
       await adminCreateAdmin(form)
@@ -298,7 +300,7 @@ export default function AdminAdmins() {
             <form onSubmit={createAdmin} className="space-y-4 max-w-md">
               <Field icon={User} label="Full Name" required placeholder="Rahul Sharma"
                 value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-              <Field icon={Mail} label="Email Address" required type="email" placeholder="admin@example.com"
+              <Field icon={Mail} label="Gmail Address" required type="email" placeholder="admin@gmail.com"
                 value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
               <Field icon={Lock} label="Password" required type="password" minLength={6} placeholder="Minimum 6 characters"
                 value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />

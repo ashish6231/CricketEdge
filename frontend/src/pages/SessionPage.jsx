@@ -80,15 +80,18 @@ export default function SessionPage() {
       setLoading(false)
     }
 
-    getSessionMatches()
-      .then(payload => {
-        if (!receivedFeed) applySessionMatches(payload)
-      })
-      .catch(error => {
-        if (cancelled || receivedFeed) return
-        setLoadError(error?.detail || 'Session data is temporarily unavailable. Please try again.')
-        setLoading(false)
-      })
+    const fallbackTimer = setTimeout(() => {
+      if (cancelled || receivedFeed || document.hidden) return
+      getSessionMatches()
+        .then(payload => {
+          if (!receivedFeed) applySessionMatches(payload)
+        })
+        .catch(error => {
+          if (cancelled || receivedFeed) return
+          setLoadError(error?.detail || 'Session data is temporarily unavailable. Please try again.')
+          setLoading(false)
+        })
+    }, 6000)
 
     const onSessionUpdate = (payload) => {
       receivedFeed = true
@@ -97,16 +100,12 @@ export default function SessionPage() {
 
     socket.on('session:matches', onSessionUpdate)
 
-    if (socket.connected) {
-      requestSessionFeed()
-    } else {
-      socket.once('connect', requestSessionFeed)
-    }
+    requestSessionFeed()
 
     return () => {
       cancelled = true
+      clearTimeout(fallbackTimer)
       socket.off('session:matches', onSessionUpdate)
-      socket.off('connect', requestSessionFeed)
       releaseFeed('session')
     }
   }, [])

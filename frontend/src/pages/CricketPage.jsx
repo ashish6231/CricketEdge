@@ -376,15 +376,24 @@ export default function CricketPage() {
       })
   }
 
-  // Initial HTTP fetch — don't wait for socket on first load
-  useEffect(() => {
-    fetchMatches()
-  }, [])
-
   useEffect(() => {
     const socket = getSocket()
+    let cancelled = false
+    let receivedFeed = false
+    const fallbackTimer = setTimeout(() => {
+      if (cancelled || receivedFeed || document.hidden) return
+      getCricketMatches().then(data => {
+        if (!cancelled && !receivedFeed) processMatches(data)
+      }).catch(error => {
+        if (!cancelled && !receivedFeed) {
+          setLoadError(error?.detail || 'Live match data is temporarily unavailable. Please try again.')
+          setLoading(false)
+        }
+      })
+    }, 6000)
 
     const onMatchesUpdate = (payload) => {
+      receivedFeed = true
       processMatches(payload)
     }
 
@@ -411,13 +420,13 @@ export default function CricketPage() {
     socket.on('cricket:matches', onMatchesUpdate)
     socket.on('crex:live', onCrexLive)
 
-    if (socket.connected) requestCricketFeed()
-    else socket.once('connect', requestCricketFeed)
+    requestCricketFeed()
 
     return () => {
+      cancelled = true
+      clearTimeout(fallbackTimer)
       socket.off('cricket:matches', onMatchesUpdate)
       socket.off('crex:live', onCrexLive)
-      socket.off('connect', requestCricketFeed)
       releaseFeed('cricket')
     }
   }, [matchId])

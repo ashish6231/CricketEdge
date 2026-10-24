@@ -9,6 +9,7 @@ const dataCache = require('./dataCache');
 const matchPayloadService = require('./matchPayloadService');
 const prisma = require('../db/prisma');
 const { fingerprintMatchBundle } = require('../utils/matchBundleFingerprint');
+const { snapshotFeed, diffFeed } = require('../utils/feedDelta');
 
 let _io = null;
 
@@ -16,26 +17,57 @@ let _io = null;
 const _activeTokenCache = new Map();
 let _tokenCacheUpdatedAt = 0;
 
-// Bandwidth optimization: Fingerprint caches to avoid broadcasting identical data
-let _lastCricketFp = null;
-let _lastTossFp = null;
-let _lastTennisFp = null;
-let _lastSessionFp = null;
 const _lastCrexLiveFps = new Map();
 const _lastBundleFps = new Map();
 const _lastBundleBroadcastAt = new Map();
+const _bundleInFlight = new Map();
 const MATCH_BUNDLE_BROADCAST_INTERVAL_MS = Math.max(5000, parseInt(process.env.MATCH_BUNDLE_BROADCAST_INTERVAL_MS, 10) || 60 * 1000);
+const FEED_BUILDERS = {
+  cricket: () => matchPayloadService.getCricketMatchesPayload(),
+  toss: () => matchPayloadService.getTossMatchesPayload(),
+  tennis: () => matchPayloadService.getTennisMatchesPayload(),
+  session: () => matchPayloadService.getSessionMatchesPayload(),
+};
+const _feedInFlight = new Map();
 
-function roundMoneyFp(val) {
-  const n = Number(val) || 0;
-  if (n < 1000) return Math.round(n / 100) * 100;
-  if (n < 50000) return Math.round(n / 500) * 500;
-  return Math.round(n / 2000) * 2000;
+function deliverFeed(socket, feed, next, force = false) {
+  socket.feedStates ||= new Map();
+  const previous = socket.feedStates.get(feed);
+  const version = (previous?.version || 0) + 1;
+  const delta = previous && !force ? diffFeed(previous.snapshot, next) : null;
+  if (previous && !force && !delta) return;
+  const full = { ...next.payload, version };
+  const update = delta && { ...delta, feed, baseVersion: previous.version, version };
+  if (socket.handshake.auth?.feedDeltas === true && update &&
+      Buffer.byteLength(JSON.stringify(update)) < Buffer.byteLength(JSON.stringify(full))) {
+    socket.emit('feed:delta', update);
+  } else {
+    socket.emit(`${feed}:matches`, full);
+  }
+  socket.feedStates.set(feed, { snapshot: next, version });
 }
 
-function fingerprintMatches(matches) {
-  if (!Array.isArray(matches)) return '';
-  return matches.map(m => `${m.matchId}_${m.status}_${m.inPlay}_${m.matchLoad?.team1?.odds}_${m.matchLoad?.team2?.odds}_${roundMoneyFp(m.matchLoad?.team1?.money)}_${roundMoneyFp(m.matchLoad?.team2?.money)}_${Math.round(m.matchLoad?.team1?.percent || 0)}_${Math.round(m.matchLoad?.team2?.percent || 0)}`).join('|');
+async function publishFeed(feed, onlySocket = null, force = false) {
+  // Coalesce overlapping ingestion events and subscription requests.
+  let pending = _feedInFlight.get(feed);
+  if (!pending) {
+    pending = Promise.resolve().then(FEED_BUILDERS[feed]).then(snapshotFeed);
+    _feedInFlight.set(feed, pending);
+  }
+  try {
+    const snapshot = await pending;
+    if (onlySocket) {
+      if (onlySocket.connected && onlySocket.rooms.has(`feed:${feed}`)) deliverFeed(onlySocket, feed, snapshot, force);
+    } else {
+      const room = _io.sockets.adapter?.rooms?.get(`feed:${feed}`);
+      for (const id of room || []) {
+        const socket = _io.sockets.sockets.get(id);
+        if (socket) deliverFeed(socket, feed, snapshot);
+      }
+    }
+  } finally {
+    if (_feedInFlight.get(feed) === pending) _feedInFlight.delete(feed);
+  }
 }
 
 async function _refreshActiveTokenCache() {
@@ -112,10 +144,16 @@ function init(io) {
       const matchId = typeof data === 'object' ? data?.matchId : data;
       const sport = typeof data === 'object' ? (data?.sport || 'cricket') : 'cricket';
       if (!matchId) return;
+      socket.matchRequests ||= new Map();
+      const requestKey = String(matchId);
+      if (socket.matchRequests.has(requestKey) || socket.rooms.has(`match:${matchId}`)) return;
+      const request = {};
+      socket.matchRequests.set(requestKey, request);
 
       // Instantly deliver the latest cached bundle to this subscriber
       try {
         const bundle = await matchPayloadService.getMatchBundlePayload(matchId, socket.user, sport);
+        if (!socket.connected || socket.matchRequests.get(requestKey) !== request) return;
         if (bundle?.error) {
           // If login or subscription is required, emit error directly and do not join room
           socket.emit('match:bundle', bundle);
@@ -144,54 +182,35 @@ function init(io) {
         }
       } catch (err) {
         socket.emit(`match:error:${matchId}`, { error: err.message });
+      } finally {
+        if (socket.matchRequests.get(requestKey) === request) socket.matchRequests.delete(requestKey);
       }
     });
 
     socket.on('match:unsubscribe', (data) => {
       const matchId = typeof data === 'object' ? data?.matchId : data;
       if (matchId) {
+        socket.matchRequests?.delete(String(matchId));
         socket.leave(`match:${matchId}`);
       }
     });
 
-    // Request specific list on tab switch
-    socket.on('feed:cricket', async () => {
-      try {
-        socket.join('feed:cricket');
-        const cricket = await matchPayloadService.getCricketMatchesPayload().catch(() => null);
-        if (cricket) socket.emit('cricket:matches', cricket);
-      } catch {}
-    });
-
-    socket.on('feed:toss', async () => {
-      try {
-        socket.join('feed:toss');
-        const toss = await matchPayloadService.getTossMatchesPayload();
-        socket.emit('toss:matches', toss);
-      } catch {}
-    });
-
-    socket.on('feed:tennis', async () => {
-      try {
-        socket.join('feed:tennis');
-        const tennis = await matchPayloadService.getTennisMatchesPayload();
-        socket.emit('tennis:matches', tennis);
-      } catch {}
-    });
-
-    socket.on('feed:session', async () => {
-      try {
-        socket.join('feed:session');
-        const session = await matchPayloadService.getSessionMatchesPayload();
-        socket.emit('session:matches', session);
-      } catch {}
-    });
+    for (const feed of Object.keys(FEED_BUILDERS)) {
+      socket.on(`feed:${feed}`, async (options) => {
+        const room = `feed:${feed}`;
+        if (socket.rooms.has(room) && !options?.force) return;
+        socket.join(room);
+        try { await publishFeed(feed, socket, true); } catch {}
+      });
+    }
 
     socket.on('feed:unsubscribe', (feed) => {
-      if (['cricket', 'toss', 'tennis', 'session'].includes(feed)) {
+      if (Object.hasOwn(FEED_BUILDERS, feed)) {
         socket.leave(`feed:${feed}`);
+        socket.feedStates?.delete(feed);
       }
     });
+
   });
 
   console.log('⚡ SocketService initialized with real-time broadcasting channels');
@@ -202,7 +221,17 @@ function init(io) {
  * All ingestion paths use this function so overlapping Redis events cannot
  * broadcast the same large payload more than once.
  */
-async function broadcastMatchBundle(matchId, options = {}) {
+function broadcastMatchBundle(matchId, options = {}) {
+  const mid = String(matchId || '');
+  if (_bundleInFlight.has(mid)) return _bundleInFlight.get(mid);
+  const pending = _broadcastMatchBundle(matchId, options).finally(() => {
+    if (_bundleInFlight.get(mid) === pending) _bundleInFlight.delete(mid);
+  });
+  _bundleInFlight.set(mid, pending);
+  return pending;
+}
+
+async function _broadcastMatchBundle(matchId, options = {}) {
   if (!_io || !matchId) return false;
 
   const mid = String(matchId);
@@ -260,44 +289,12 @@ async function broadcastAllMatches() {
   if (!hasCricket && !hasToss && !hasTennis && !hasSession && activeRooms.length === 0) return;
 
   try {
-    const [cricketPayload, tossPayload, tennisPayload, sessionPayload] = await Promise.all([
-      hasCricket ? matchPayloadService.getCricketMatchesPayload().catch(() => null) : null,
-      hasToss ? matchPayloadService.getTossMatchesPayload().catch(() => null) : null,
-      hasTennis ? matchPayloadService.getTennisMatchesPayload().catch(() => null) : null,
-      hasSession ? matchPayloadService.getSessionMatchesPayload().catch(() => null) : null,
+    await Promise.all([
+      hasCricket ? publishFeed('cricket') : null,
+      hasToss ? publishFeed('toss') : null,
+      hasTennis ? publishFeed('tennis') : null,
+      hasSession ? publishFeed('session') : null,
     ]);
-
-    // Broadcast list feeds ONLY if data actually changed (avoids 100s of identical emits per minute)
-    if (cricketPayload) {
-      const fp = fingerprintMatches(cricketPayload.matches);
-      if (fp !== _lastCricketFp) {
-        _lastCricketFp = fp;
-        _io.to('feed:cricket').emit('cricket:matches', cricketPayload);
-      }
-    }
-    if (tossPayload) {
-      const fp = fingerprintMatches(tossPayload.matches);
-      if (fp !== _lastTossFp) {
-        _lastTossFp = fp;
-        _io.to('feed:toss').emit('toss:matches', tossPayload);
-      }
-    }
-    if (tennisPayload) {
-      const fp = JSON.stringify(tennisPayload.matches?.map(m => `${m.matchId}_${m.status}`) || []);
-      if (fp !== _lastTennisFp) {
-        _lastTennisFp = fp;
-        _io.to('feed:tennis').emit('tennis:matches', tennisPayload);
-      }
-    }
-    if (sessionPayload) {
-      const fp = JSON.stringify(sessionPayload.matches?.map(m => (
-        `${m.matchId}_${m.status}_${m.inPlay}_${m.sessionCount}_${m.totalMatched}_${m.sessionDataReady}`
-      )) || []);
-      if (fp !== _lastSessionFp) {
-        _lastSessionFp = fp;
-        _io.to('feed:session').emit('session:matches', sessionPayload);
-      }
-    }
 
     // Active Match Rooms Broadcast
     // Only compute bundles for rooms that have actual connected subscribers!

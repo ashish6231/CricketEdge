@@ -1,3 +1,4 @@
+const { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } = require('../shared/accountEmail.mjs');
 const passport = require('passport');
 const prisma = require('../db/prisma');
 const { getApiPublicUrl } = require('../lib/publicUrl');
@@ -23,9 +24,10 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
     callbackURL: `${getApiPublicUrl()}/api/auth/google/callback`,
   }, async (accessToken, refreshToken, profile, done) => {
     try {
+      const email = typeof profile.emails?.[0]?.value === 'string' ? profile.emails[0].value.trim().toLowerCase() : '';
       let user = await prisma.user.findUnique({ where: { googleId: profile.id } });
       if (!user) {
-        user = await prisma.user.findUnique({ where: { email: profile.emails[0].value } });
+        user = await prisma.user.findUnique({ where: { email } });
         if (user) {
           user = await prisma.user.update({
             where: { id: user.id },
@@ -35,10 +37,13 @@ if (GOOGLE_CLIENT_ID && GOOGLE_CLIENT_SECRET) {
           if (!(await areSignupsAllowed(prisma))) {
             return done(null, false, { message: 'New signups are currently disabled' });
           }
+          if (!normalizeGmailEmail(email)) {
+            return done(null, false, { message: GMAIL_REQUIRED_MESSAGE, code: 'GMAIL_REQUIRED' });
+          }
           const now = new Date();
           user = await prisma.user.create({
             data: {
-              googleId: profile.id, email: profile.emails[0].value,
+              googleId: profile.id, email,
               name: profile.displayName, avatar: profile.photos[0]?.value || '',
               authProvider: 'google', isVerified: true,
               role: 'user', subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false

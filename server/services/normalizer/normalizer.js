@@ -84,8 +84,9 @@ async function processIngestJob(job) {
     // Cache in Redis (60s TTL)
     await redis.set('matches:cricket', JSON.stringify({ matches: normalized }), 'EX', 60);
 
-    // Publish to Pub/Sub channel for O(1) broadcast
-    await redis.publish('cricket:matches', JSON.stringify({ matches: normalized }));
+    // Pub/Sub carries invalidation signals; the bridge reads the local cache.
+    // Sending another full copy here wastes egress to external Redis services.
+    await redis.publish('cricket:matches', '{}');
   }
 
   else if (type === 'crex:overview' && Array.isArray(data)) {
@@ -96,7 +97,7 @@ async function processIngestJob(job) {
     _crexOverviewFingerprint = nextOverviewFingerprint;
 
     await redis.set('crex:overview', JSON.stringify(data), 'EX', 30);
-    await redis.publish('crex:overview', JSON.stringify(data));
+    await redis.publish('crex:overview', '{}');
 
     // Re-correlate cricket matches with fresh CREX data
     if (_cricketMatches.length > 0) {
@@ -117,7 +118,7 @@ async function processIngestJob(job) {
       }
       if (updated) {
         await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
-        await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
+        await redis.publish('cricket:matches', '{}');
       }
     }
   }
@@ -125,7 +126,7 @@ async function processIngestJob(job) {
   else if (type === 'toss:matches' && Array.isArray(data)) {
     _tossMatches = data;
     await redis.set('matches:toss', JSON.stringify(data), 'EX', 60);
-    await redis.publish('toss:matches', JSON.stringify(data));
+    await redis.publish('toss:matches', '{}');
   }
 
   else if (type === 'session:matches') {
@@ -138,13 +139,13 @@ async function processIngestJob(job) {
     _sessionMatchesFingerprint = nextFingerprint;
     _sessionMatches = list;
     await redis.set('matches:session', JSON.stringify(data), 'EX', 60);
-    await redis.publish('session:matches', JSON.stringify(data));
+    await redis.publish('session:matches', '{}');
   }
 
   else if (type === 'tennis:matches' && Array.isArray(data)) {
     _tennisMatches = data;
     await redis.set('matches:tennis', JSON.stringify(data), 'EX', 60);
-    await redis.publish('tennis:matches', JSON.stringify(data));
+    await redis.publish('tennis:matches', '{}');
   }
 
   else if (type === 'toss:snapshot' && matchId && data) {
@@ -157,7 +158,7 @@ async function processIngestJob(job) {
 
     const bundle = getMatchBundle(mid);
     await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
-    await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+    await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
     await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
   }
 
@@ -173,10 +174,10 @@ async function processIngestJob(job) {
     if (notifySubscribers) {
       const bundle = getMatchBundle(mid);
       await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
-      await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+      await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
       await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
     }
-    await redis.publish('session:matches', JSON.stringify({ matches: _sessionMatches }));
+    await redis.publish('session:matches', '{}');
   }
 
   else if (type === 'cricket:snapshot' && matchId && data) {
@@ -206,9 +207,9 @@ async function processIngestJob(job) {
     await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
 
     // Publish to specific match channel & bundle channel
-    await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+    await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
     await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
-    await redis.publish('cricket:matches', JSON.stringify({ matchId: mid }));
+    await redis.publish('cricket:matches', '{}');
   }
 
   else if (type === 'crex:detail' && data) {
@@ -258,7 +259,7 @@ async function processIngestJob(job) {
 
         const bundle = getMatchBundle(mid);
         await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
-        await redis.publish(`match:bundle:${mid}`, JSON.stringify(bundle));
+        await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
         await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
       }
     }
@@ -266,7 +267,7 @@ async function processIngestJob(job) {
     // Re-broadcast updated cricket matches list so home screen cards get fresh scores
     if (matchedDetailChanged && _cricketMatches.length > 0) {
       await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
-      await redis.publish('cricket:matches', JSON.stringify({ matches: _cricketMatches }));
+      await redis.publish('cricket:matches', '{}');
     }
   }
 }

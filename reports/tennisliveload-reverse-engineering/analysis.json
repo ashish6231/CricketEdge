@@ -1,0 +1,257 @@
+{
+  "source": "reports/match-predictions/backups/pre-match-quality-20261002T151528Z/server/data/match_dataset.json",
+  "sha256": "30686eb4c9d90bb728c5ce3d02e687fe48fb94d9a14e4875248b8d81e035bf0d",
+  "scope": "Historical cricket snapshots retained by the local application. Not a capture of the live site or its source code.",
+  "record_count": 275,
+  "snapshot_time_range": [
+    "2026-08-15T03:01:48.906Z",
+    "2026-09-27T07:35:36.939Z"
+  ],
+  "tolerance": "absolute 0.02 or relative 1e-8; money fields retain source units",
+  "coverage": {
+    "two_team_snapshots": 275,
+    "valid_trade_ledgers": 275,
+    "empty_trade_ledgers": 1
+  },
+  "formulas": [
+    {
+      "name": "raw back exposure A",
+      "field": "deepMetrics.raw.A_back_expo",
+      "candidate": "EBA",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 5.587935447692871e-09,
+      "mismatch_examples": []
+    },
+    {
+      "name": "raw lay stake A",
+      "field": "deepMetrics.raw.A_lay_stake",
+      "candidate": "L_A",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 2.2351741790771484e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "back exposure A",
+      "field": "bookmakerExposure.team1.backExposure",
+      "candidate": "EBA",
+      "eligible": 275,
+      "matching": 51,
+      "max_absolute_error": 6173605.9497,
+      "mismatch_examples": [
+        {
+          "matchId": "35933934",
+          "actual": 1204.6527999999998,
+          "expected": 1204.9352
+        },
+        {
+          "matchId": "35954424",
+          "actual": 487.0838,
+          "expected": 530.6526000000001
+        },
+        {
+          "matchId": "35970079",
+          "actual": 1244710.2966999991,
+          "expected": 1244710.687799999
+        }
+      ]
+    },
+    {
+      "name": "lay exposure A",
+      "field": "bookmakerExposure.team1.layExposure",
+      "candidate": "ELA",
+      "eligible": 275,
+      "matching": 51,
+      "max_absolute_error": 6348514.605400004,
+      "mismatch_examples": [
+        {
+          "matchId": "35938017",
+          "actual": 1192.9586000000002,
+          "expected": 1235.1312000000003
+        },
+        {
+          "matchId": "35954424",
+          "actual": 4325.234100000001,
+          "expected": 4941.944900000001
+        },
+        {
+          "matchId": "35962894",
+          "actual": 254.95150000000004,
+          "expected": 259.15960000000007
+        }
+      ]
+    },
+    {
+      "name": "net exposure A",
+      "field": "bookmakerExposure.team1.netExposure",
+      "candidate": "EBA - ELA",
+      "eligible": 275,
+      "matching": 45,
+      "max_absolute_error": 1667483.7050000029,
+      "mismatch_examples": [
+        {
+          "matchId": "35933934",
+          "actual": 793.2880999999999,
+          "expected": 793.5704999999998
+        },
+        {
+          "matchId": "35938017",
+          "actual": -834.2165000000002,
+          "expected": -876.3891000000003
+        },
+        {
+          "matchId": "35954424",
+          "actual": -3838.1503000000007,
+          "expected": -4411.292300000001
+        }
+      ]
+    },
+    {
+      "name": "exposure summary identity A",
+      "field": "bookmakerExposure.team1.netExposure",
+      "candidate": "summary backExposure - summary layExposure",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 0.0,
+      "mismatch_examples": []
+    },
+    {
+      "name": "total bets A",
+      "field": "deepMetrics.totals.totalBetTeam1",
+      "candidate": "raw A_back_expo + raw B_lay_stake",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 0.0,
+      "mismatch_examples": []
+    },
+    {
+      "name": "total bets B",
+      "field": "deepMetrics.totals.totalBetTeam2",
+      "candidate": "raw B_back_expo + raw A_lay_stake",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 0.0,
+      "mismatch_examples": []
+    },
+    {
+      "name": "simple P/L A",
+      "field": "deepMetrics.simplePL.team1_win",
+      "candidate": "raw A_lay_stake - raw A_back_expo",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 0.0,
+      "mismatch_examples": []
+    },
+    {
+      "name": "simple P/L B",
+      "field": "deepMetrics.simplePL.team2_win",
+      "candidate": "raw B_lay_stake - raw B_back_expo",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 0.0,
+      "mismatch_examples": []
+    },
+    {
+      "name": "derived P/L A",
+      "field": "deepMetrics.derivedPL.team1_win",
+      "candidate": "(raw A_lay_stake - raw A_back_expo) - (raw B_lay_stake - raw B_back_expo)",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 7.450580596923828e-09,
+      "mismatch_examples": []
+    },
+    {
+      "name": "derived P/L B",
+      "field": "deepMetrics.derivedPL.team2_win",
+      "candidate": "negative derived P/L A",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 3.725290298461914e-09,
+      "mismatch_examples": []
+    },
+    {
+      "name": "support money A",
+      "field": "supportMetrics.team1.supportMoney",
+      "candidate": "B_A + L_B",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 1.4901161193847656e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "support percentage A",
+      "field": "supportMetrics.team1.support",
+      "candidate": "100 * (B_A + L_B) / (B_A + L_A + B_B + L_B)",
+      "eligible": 274,
+      "matching": 274,
+      "max_absolute_error": 3.552713678800501e-14,
+      "mismatch_examples": []
+    },
+    {
+      "name": "net support A",
+      "field": "netSupport.teamA.netSupportValue",
+      "candidate": "B_A + L_B - ELA",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 2.2351741790771484e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "sentiment A",
+      "field": "sentimentScore.teamA.sentimentScore",
+      "candidate": "B_A - L_A + L_B - ELB",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 5.21540641784668e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "net volume support A",
+      "field": "marketAnalysis.totalNetVolume.team1.totalBet",
+      "candidate": "EBA + ELB",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 3.725290298461914e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "normal total bet P/L A",
+      "field": "marketAnalysis.normalTotalBet.team1.profitLoss",
+      "candidate": "-EBA + ELA + B_B - L_B",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 2.9802322387695312e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "normal total bet P/L B",
+      "field": "marketAnalysis.normalTotalBet.team2.profitLoss",
+      "candidate": "-EBB + ELB + B_A - L_A",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 3.3527612686157227e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "team P/L A",
+      "field": "teams.{A}.pnlIfWins",
+      "candidate": "-EBA + ELA + B_B - L_B",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 1.6298145055770874e-08,
+      "mismatch_examples": []
+    },
+    {
+      "name": "team P/L B",
+      "field": "teams.{B}.pnlIfWins",
+      "candidate": "-EBB + ELB + B_A - L_A",
+      "eligible": 275,
+      "matching": 275,
+      "max_absolute_error": 1.5366822481155396e-08,
+      "mismatch_examples": []
+    }
+  ],
+  "fully_matching_candidates": 18,
+  "partially_matching_candidates": 3
+}

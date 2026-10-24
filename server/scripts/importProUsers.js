@@ -8,7 +8,7 @@
  *
  * Edit server/data/pro_users_import.json — one entry per user:
  * {
- *   "email": "user@example.com",
+ *   "email": "user@gmail.com",
  *   "name": "Optional Name",
  *   "proStartDate": "2026-01-15",
  *   "expiresAt": "2026-02-15"
@@ -23,6 +23,7 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const prisma = require('../db/prisma');
+const { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } = require('../shared/accountEmail.mjs');
 
 const DEFAULT_PASSWORD = process.env.IMPORT_DEFAULT_PASSWORD || '123456';
 const DATA_FILE = process.argv[2] || path.join(__dirname, '../data/pro_users_import.json');
@@ -69,6 +70,7 @@ async function upsertProUser(entry) {
   let user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
+    if (!normalizeGmailEmail(email)) throw new Error(GMAIL_REQUIRED_MESSAGE);
     const hashed = await bcrypt.hash(entry.password || DEFAULT_PASSWORD, 12);
     user = await prisma.user.create({
       data: {

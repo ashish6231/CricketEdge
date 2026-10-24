@@ -54,13 +54,12 @@ export default function SessionDetail() {
 
     socket.on(`match:bundle:${matchId}`, handleBundle)
     socket.on('match:bundle', onGenericBundle)
-    if (socket.connected) subscribeMatch(matchId, 'session')
-    else socket.once('connect', () => subscribeMatch(matchId, 'session'))
+    subscribeMatch(matchId, 'session')
 
     // Socket is primary. A single cache-backed fallback prevents blank pages;
     // there is no extra polling loop.
     const fallbackTimer = setTimeout(async () => {
-      if (cancelled || receivedSession) return
+      if (cancelled || receivedSession || document.hidden) return
       try {
         applySession(await getSessionTrades(matchId))
       } catch (error) {

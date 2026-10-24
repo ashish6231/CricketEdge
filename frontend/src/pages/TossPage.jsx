@@ -176,7 +176,10 @@ export default function TossPage() {
     const socket = getSocket()
     let cancelled = false
     let receivedFeed = false
-    getTossMatches().then(data => { if (!cancelled && !receivedFeed) processMatches(data) }).catch(error => { if (!cancelled && !receivedFeed) { setLoadError(error?.detail || 'Toss data is temporarily unavailable. Please try again.'); setLoading(false) } })
+    const fallbackTimer = setTimeout(() => {
+      if (cancelled || receivedFeed || document.hidden) return
+      getTossMatches().then(data => { if (!cancelled && !receivedFeed) processMatches(data) }).catch(error => { if (!cancelled && !receivedFeed) { setLoadError(error?.detail || 'Toss data is temporarily unavailable. Please try again.'); setLoading(false) } })
+    }, 6000)
 
     const onTossUpdate = (payload) => {
       receivedFeed = true
@@ -185,16 +188,12 @@ export default function TossPage() {
 
     socket.on('toss:matches', onTossUpdate)
 
-    if (socket.connected) {
-      requestTossFeed()
-    } else {
-      socket.once('connect', requestTossFeed)
-    }
+    requestTossFeed()
 
     return () => {
       cancelled = true
+      clearTimeout(fallbackTimer)
       socket.off('toss:matches', onTossUpdate)
-      socket.off('connect', requestTossFeed)
       releaseFeed('toss')
     }
   }, [matchId])

@@ -1,13 +1,19 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { fileURLToPath } from 'node:url'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { createServer } from 'vite'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 
-test('standalone and embedded toss views show risk-first predictions and confirmed zero-risk fallback', async () => {
+test('standalone and embedded toss views show risk-first predictions and confirmed zero-risk fallback', async (t) => {
   const root = fileURLToPath(new URL('../../', import.meta.url))
-  const vite = await createServer({ root, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' })
+  // SSR tests must not replace the running development server's dependency cache.
+  const cacheDir = await mkdtemp(join(tmpdir(), 'cricedge-vite-toss-'))
+  t.after(() => rm(cacheDir, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 }))
+  const vite = await createServer({ root, cacheDir, server: { middlewareMode: true, hmr: false, ws: false }, appType: 'custom' })
   try {
     const { TossSnapshotDetails } = await vite.ssrLoadModule('/src/pages/TossDetail.jsx')
     const snap = {

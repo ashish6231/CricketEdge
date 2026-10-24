@@ -1,14 +1,20 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { fileURLToPath } from 'node:url'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { createServer } from 'vite'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { computeSessionMetrics } from '../utils/sessionMetrics.js'
 
-test('session workspace shows complete outcome ranges, per-line settlement and neutral break-even', async () => {
+test('session workspace shows complete outcome ranges, per-line settlement and neutral break-even', async (t) => {
   const root=fileURLToPath(new URL('../../',import.meta.url))
-  const vite=await createServer({root,server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'})
+  // Keep parallel SSR tests and the active dev server on independent caches.
+  const cacheDir=await mkdtemp(join(tmpdir(),'cricedge-vite-session-'))
+  t.after(()=>rm(cacheDir,{recursive:true,force:true,maxRetries:10,retryDelay:100}))
+  const vite=await createServer({root,cacheDir,server:{middlewareMode:true,hmr:false,ws:false},appType:'custom'})
   try {
     const {SessionWorkspace}=await vite.ssrLoadModule('/src/components/SessionWorkspace.jsx')
     const marketName='1st Innings 10 Overs Line'

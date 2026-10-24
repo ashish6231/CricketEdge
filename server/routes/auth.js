@@ -1,3 +1,4 @@
+const { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } = require('../shared/accountEmail.mjs');
 const express = require('express');
 const { getFrontendUrl } = require('../lib/publicUrl');
 const bcrypt = require('bcryptjs');
@@ -143,13 +144,16 @@ router.post('/register', async (req, res) => {
       return res.status(403).json({ success: false, message: 'New signups are currently disabled', code: 'SIGNUPS_DISABLED' });
     }
 
-    const { name, email, password } = req.body;
-    if (!name || !email || !password)
+    const { name, email: rawEmail, password } = req.body;
+    const email = normalizeGmailEmail(rawEmail);
+    if (!name || !rawEmail || !password)
       return res.status(400).json({ success: false, message: 'Name, email and password required' });
+    if (!email)
+      return res.status(400).json({ success: false, message: GMAIL_REQUIRED_MESSAGE, code: 'GMAIL_REQUIRED' });
     if (password.length < 6)
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
 
-    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ success: false, message: 'Account already exists with this email' });
 
     const hashed = await bcrypt.hash(password, 10);
@@ -157,7 +161,7 @@ router.post('/register', async (req, res) => {
 
     const user = await prisma.user.create({
       data: {
-        name, email: email.toLowerCase(), password: hashed,
+        name, email, password: hashed,
         authProvider: 'local', isVerified: true, role: 'user',
         subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false
       }
@@ -440,6 +444,7 @@ router.post('/google/verify', async (req, res) => {
       const ticket = await client.verifyIdToken({ idToken: credential, audience: process.env.GOOGLE_CLIENT_ID });
       const payload = ticket.getPayload();
       ({ sub: googleId, email, name, picture: avatar } = payload);
+      email = typeof email === 'string' ? email.trim().toLowerCase() : '';
     }
 
     let user = await prisma.user.findUnique({ where: { googleId } });
@@ -453,6 +458,9 @@ router.post('/google/verify', async (req, res) => {
       } else {
         if (!(await areSignupsAllowed(prisma))) {
           return res.status(403).json({ success: false, message: 'New signups are currently disabled', code: 'SIGNUPS_DISABLED' });
+        }
+        if (!normalizeGmailEmail(email)) {
+          return res.status(400).json({ success: false, message: GMAIL_REQUIRED_MESSAGE, code: 'GMAIL_REQUIRED' });
         }
         const now = new Date();
         user = await prisma.user.create({
@@ -502,7 +510,8 @@ router.get('/google/callback',
       if (err) return res.redirect(`${frontend}/cricket?error=google_auth_failed`);
       if (!user) {
         const message = (info && info.message) || '';
-        const code = /signups are currently disabled/i.test(message) ? 'signups_disabled' : 'google_auth_failed';
+        const code = info?.code === 'GMAIL_REQUIRED' ? 'gmail_required'
+          : /signups are currently disabled/i.test(message) ? 'signups_disabled' : 'google_auth_failed';
         return res.redirect(`${frontend}/cricket?error=${code}`);
       }
       req.user = user;

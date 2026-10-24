@@ -1,5 +1,6 @@
+import { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } from '../../../server/shared/accountEmail.mjs'
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Lock, Mail, Eye, EyeOff, User, LoaderCircle, AlertTriangle, X } from 'lucide-react'
 import { login, register, getSignupStatus } from '../api'
 import { resolveAllowSignups, shouldNavigateAfterAuth, resolveSiteName, splitSiteName } from '../utils/publicAuth'
@@ -8,6 +9,7 @@ const TELEGRAM_URL = 'https://t.me/cricedgeonline'
 
 export default function LoginPage({ onLoginSuccess, isModal = false, onClose, siteName: siteNameProp }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const [tab, setTab] = useState('login')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -79,6 +81,10 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
       .catch(() => setAllowSignups(false))
   }, [siteNameProp])
 
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get('error') === 'gmail_required') setError(GMAIL_REQUIRED_MESSAGE)
+  }, [location.search])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError(''); setLoading(true)
@@ -93,7 +99,9 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
           return
         }
         if (!name.trim()) { setError('Name required'); setLoading(false); return }
-        res = await register(name.trim(), email, password)
+        const gmailEmail = normalizeGmailEmail(email)
+        if (!gmailEmail) { setError(GMAIL_REQUIRED_MESSAGE); setLoading(false); return }
+        res = await register(name.trim(), gmailEmail, password)
       }
       if (onLoginSuccess) onLoginSuccess(res.user?.email, res.user)
       if (shouldNavigateAfterAuth(isModal)) {
@@ -228,15 +236,17 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
 
             {/* Email */}
             <div>
-              <label htmlFor="auth-email" className="text-[11px] text-[#8e8e93] block mb-1 font-medium">Email Address</label>
+              <label htmlFor="auth-email" className="text-[11px] text-[#8e8e93] block mb-1 font-medium">{tab === 'signup' ? 'Gmail Address' : 'Email Address'}</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#636366]" />
                 <input id="auth-email" name="email" autoComplete="email" type="email" value={email} onChange={e => setEmail(e.target.value)}
-                  placeholder="your@email.com" required disabled={loading}
+                  placeholder={tab === 'signup' ? 'yourname@gmail.com' : 'your@email.com'} required disabled={loading}
                   className="w-full rounded-lg pl-9 pr-3 py-2 text-[13px] outline-none text-white placeholder-[#636366] bg-[#0a0a0a] focus:border-[#10b981]"
                   style={{ border: '1px solid #2c2c2e' }} />
               </div>
             </div>
+
+            {tab === 'signup' && <p className="text-[11px] text-[#8e8e93]">Only @gmail.com email addresses are allowed.</p>}
 
             {/* Password */}
             <div>

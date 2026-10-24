@@ -7,6 +7,10 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  // Include dependencies used by lazy routes in the initial prebundle.
+  optimizeDeps: {
+    include: ['react', 'react-dom/client', 'react-router-dom', 'lucide-react', 'recharts', 'socket.io-client'],
+  },
   server: {
     port: 3000,
     fs: {

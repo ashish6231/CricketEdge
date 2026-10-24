@@ -1,3 +1,4 @@
+const { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } = require('./shared/accountEmail.mjs');
 const bcrypt = require('bcryptjs');
 const prisma = require('./db/prisma');
 
@@ -61,7 +62,7 @@ async function seedDatabase() {
     }
     console.log('✅ Settings seeded');
 
-    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminEmail = process.env.ADMIN_EMAIL?.trim().toLowerCase();
     const adminPassword = process.env.ADMIN_PASSWORD;
     if (!adminEmail || !adminPassword) {
       console.warn('⚠️  ADMIN_EMAIL and ADMIN_PASSWORD env vars not set — skipping superadmin seed');
@@ -70,6 +71,10 @@ async function seedDatabase() {
     const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
 
     if (!existingAdmin) {
+      if (!normalizeGmailEmail(adminEmail)) {
+        console.warn(`⚠️  Superadmin seed skipped: ${GMAIL_REQUIRED_MESSAGE}`);
+        return;
+      }
       const hashed = await bcrypt.hash(adminPassword, 10);
       const now = new Date();
       const proPlan = await prisma.subscriptionPlan.findUnique({ where: { slug: 'pro' } });

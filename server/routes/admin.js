@@ -1,3 +1,4 @@
+const { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } = require('../shared/accountEmail.mjs');
 const express = require('express');
 const router = express.Router();
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
@@ -164,13 +165,16 @@ router.get('/users', requireAdmin, async (req, res) => {
 router.post('/users', requireSuperAdmin, async (req, res) => {
   try {
     const bcrypt = require('bcryptjs');
-    const { name, email, password } = req.body;
-    if (!name || !email || !password)
+    const { name, email: rawEmail, password } = req.body;
+    const email = normalizeGmailEmail(rawEmail);
+    if (!name || !rawEmail || !password)
       return res.status(400).json({ success: false, message: 'name, email and password required' });
+    if (!email)
+      return res.status(400).json({ success: false, message: GMAIL_REQUIRED_MESSAGE, code: 'GMAIL_REQUIRED' });
     if (password.length < 6)
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
 
-    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ success: false, message: 'Email already registered' });
 
     const now = new Date();
@@ -178,7 +182,7 @@ router.post('/users', requireSuperAdmin, async (req, res) => {
 
     const user = await prisma.user.create({
       data: {
-        name, email: email.toLowerCase(), password: hashed,
+        name, email, password: hashed,
         authProvider: 'local', isVerified: true, role: 'user', status: 'active',
         subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false,
       },
@@ -337,13 +341,16 @@ router.get('/admins', requireSuperAdmin, async (req, res) => {
 router.post('/admins', requireSuperAdmin, async (req, res) => {
   try {
     const bcrypt = require('bcryptjs');
-    const { name, email, password } = req.body;
-    if (!name || !email || !password)
+    const { name, email: rawEmail, password } = req.body;
+    const email = normalizeGmailEmail(rawEmail);
+    if (!name || !rawEmail || !password)
       return res.status(400).json({ success: false, message: 'name, email and password required' });
+    if (!email)
+      return res.status(400).json({ success: false, message: GMAIL_REQUIRED_MESSAGE, code: 'GMAIL_REQUIRED' });
     if (password.length < 6)
       return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
 
-    const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+    const existing = await prisma.user.findUnique({ where: { email } });
     if (existing) return res.status(409).json({ success: false, message: 'Email already registered' });
 
     const now = new Date();
@@ -351,7 +358,7 @@ router.post('/admins', requireSuperAdmin, async (req, res) => {
 
     const admin = await prisma.user.create({
       data: {
-        name, email: email.toLowerCase(), password: hashed,
+        name, email, password: hashed,
         authProvider: 'local', isVerified: true, role: 'admin', status: 'active',
         subPlanSlug: 'free', subStatus: 'active', subStartedAt: now, subAutoRenew: false,
       },

@@ -1,7 +1,11 @@
 import { io } from 'socket.io-client';
 import { isCompleteMatchBundle } from './utils/matchBundle.js';
+import { applyFeedDelta } from './utils/feedDelta.js';
 
 let socket = null;
+const activeFeeds = new Set();
+const requestedFeeds = new Set();
+const feedCache = new Map();
 
 // Global prefetch cache — stores match bundles pushed by server on connect
 // MatchDetail reads from this for instant zero-wait rendering
@@ -59,10 +63,11 @@ export function getSocket() {
   const token = localStorage.getItem('auth_token') || null;
 
   socket = io(serverUrl, {
-    // polling first — works on ALL networks including slow/restricted ones.
-    // Socket.IO auto-upgrades to websocket once polling handshake succeeds.
-    transports: ['polling', 'websocket'],
-    auth: { token },
+    // Avoid the polling handshake on normal networks; retain fallback for restricted ones.
+    transports: ['websocket', 'polling'],
+    tryAllTransports: true,
+    autoConnect: typeof document === 'undefined' || !document.hidden,
+    auth: { token, feedDeltas: true },
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,
@@ -79,13 +84,32 @@ export function getSocket() {
     if (import.meta.env.DEV) {
       console.log('🟢 Socket connected:', socket.id, '| transport:', socket.io.engine.transport.name);
     }
+    requestedFeeds.clear();
+    for (const feed of activeFeeds) requestFeed(feed);
     // Re-subscribe to any active match rooms (e.g. after tab resume)
     for (const [mid, sport] of activeSubscriptions.entries()) {
       socket.emit('match:subscribe', { matchId: mid, sport });
     }
   });
 
-  socket.io.engine.on('upgrade', () => {
+  socket.on('disconnect', () => requestedFeeds.clear());
+
+  for (const feed of ['cricket', 'toss', 'tennis', 'session']) {
+    socket.on(`${feed}:matches`, payload => feedCache.set(feed, payload));
+  }
+  socket.on('feed:delta', delta => {
+    if (!activeFeeds.has(delta?.feed)) return;
+    const payload = applyFeedDelta(feedCache.get(delta.feed), delta);
+    if (!payload) {
+      socket.emit(`feed:${delta.feed}`, { force: true });
+      return;
+    }
+    // Deliver the reconstructed snapshot locally through the same listeners as
+    // a full feed. Calling emit() here would send it back across the network.
+    for (const listener of socket.listeners(`${delta.feed}:matches`).slice()) listener(payload);
+  });
+
+  socket.io.engine?.on('upgrade', () => {
     if (import.meta.env.DEV) {
       console.log('⬆️ Transport upgraded to websocket');
     }
@@ -148,7 +172,7 @@ const activeSubscriptions = new Map();
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      if (socket?.connected) {
+      if (socket) {
         if (import.meta.env?.DEV) console.log('⏸️ [Socket] tab hidden -> disconnecting socket to save bandwidth');
         socket.disconnect();
       }
@@ -163,7 +187,8 @@ if (typeof document !== 'undefined') {
 
 export function updateSocketAuth(token) {
   if (!socket) return;
-  socket.auth = { token };
+  socket.auth = { token, feedDeltas: true };
+  if (document.hidden) return;
   // Only reconnect if currently connected — avoids double-connect on slow networks
   if (socket.connected) {
     socket.disconnect().connect();
@@ -175,7 +200,9 @@ export function updateSocketAuth(token) {
 export function subscribeMatch(matchId, sport = 'cricket') {
   const s = getSocket();
   if (s && matchId) {
-    activeSubscriptions.set(String(matchId), sport);
+    const mid = String(matchId);
+    if (activeSubscriptions.get(mid) === sport) return;
+    activeSubscriptions.set(mid, sport);
     if (s.connected) {
       s.emit('match:subscribe', { matchId: String(matchId), sport });
     }
@@ -183,36 +210,33 @@ export function subscribeMatch(matchId, sport = 'cricket') {
 }
 
 export function unsubscribeMatch(matchId) {
-  const s = getSocket();
+  activeSubscriptions.delete(String(matchId));
+  const s = socket;
   if (s && matchId) {
-    activeSubscriptions.delete(String(matchId));
     if (s.connected) {
       s.emit('match:unsubscribe', { matchId: String(matchId) });
     }
   }
 }
 
-export function requestCricketFeed() {
+function requestFeed(feed) {
+  activeFeeds.add(feed);
   const s = getSocket();
-  if (s && s.connected) s.emit('feed:cricket');
+  if (s.connected && !requestedFeeds.has(feed)) {
+    requestedFeeds.add(feed);
+    s.emit(`feed:${feed}`);
+  }
 }
 
-export function requestTossFeed() {
-  const s = getSocket();
-  if (s && s.connected) s.emit('feed:toss');
-}
-
-export function requestTennisFeed() {
-  const s = getSocket();
-  if (s && s.connected) s.emit('feed:tennis');
-}
-
-export function requestSessionFeed() {
-  const s = getSocket();
-  if (s && s.connected) s.emit('feed:session');
-}
+export function requestCricketFeed() { requestFeed('cricket'); }
+export function requestTossFeed() { requestFeed('toss'); }
+export function requestTennisFeed() { requestFeed('tennis'); }
+export function requestSessionFeed() { requestFeed('session'); }
 
 export function releaseFeed(feed) {
   if (!['cricket', 'toss', 'tennis', 'session'].includes(feed)) return;
+  activeFeeds.delete(feed);
+  requestedFeeds.delete(feed);
+  feedCache.delete(feed);
   if (socket?.connected) socket.emit('feed:unsubscribe', feed);
 }

@@ -8,7 +8,7 @@ import { MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMet
 import { getMarketExposureFromTrades, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../socket'
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
-import { hasTossSnapshot, isCompleteMatchBundle } from '../utils/matchBundle'
+import { hasTossSnapshot } from '../utils/matchBundle'
 import TossRuleEvidence from '../components/TossRuleEvidence'
 import { getTossRuleInputs } from '../../../server/utils/universalTossAlgorithm.mjs'
 
@@ -48,6 +48,7 @@ export default function TossDetail({ isEmbedded = false }) {
     const socket = getSocket()
     let cancelled = false
     let resolved = false
+    let receivedBundle = false
 
     setLoading(true)
     setSnap(null)
@@ -106,12 +107,12 @@ export default function TossDetail({ isEmbedded = false }) {
     }
 
     const onBundle = bundle => {
-      if (isCompleteMatchBundle(bundle)) handleBundle(bundle)
+      receivedBundle = true
+      handleBundle(bundle)
     }
     const onGenericBundle = bundle => {
-      if (String(bundle?.matchId) === String(matchId) && isCompleteMatchBundle(bundle)) onBundle(bundle)
+      if (String(bundle?.matchId) === String(matchId)) onBundle(bundle)
     }
-    const onConnect = () => subscribeMatch(matchId, 'toss')
     const cached = getMatchBundle(matchId)
     if (hasTossSnapshot(cached)) handleBundle(cached)
 
@@ -131,15 +132,13 @@ export default function TossDetail({ isEmbedded = false }) {
       }
       if (!cancelled) setLoading(false)
     }
-    loadFromHttp()
+    const fallbackTimer = setTimeout(() => {
+      if (!cancelled && (!receivedBundle || !resolved) && !document.hidden) loadFromHttp()
+    }, 6000)
     socket.on(`match:bundle:${matchId}`, onBundle)
     socket.on('match:bundle', onGenericBundle)
 
-    if (socket.connected) {
-      subscribeMatch(matchId, 'toss')
-    } else {
-      socket.once('connect', onConnect)
-    }
+    subscribeMatch(matchId, 'toss')
 
     const loadingTimeout = setTimeout(() => {
       if (!cancelled && !resolved) {
@@ -151,10 +150,10 @@ export default function TossDetail({ isEmbedded = false }) {
     return () => {
       cancelled = true
       clearTimeout(loadingTimeout)
+      clearTimeout(fallbackTimer)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, onBundle)
       socket.off('match:bundle', onGenericBundle)
-      socket.off('connect', onConnect)
     }
   }, [matchId, isLoggedIn])
 

@@ -54,7 +54,10 @@ export default function TennisPage() {
     const socket = getSocket()
     let cancelled = false
     let receivedFeed = false
-    getTennisMatches().then(data => { if (!cancelled && !receivedFeed) processMatches(data) }).catch(error => { if (!cancelled && !receivedFeed) { setLoadError(error?.detail || 'Tennis data is temporarily unavailable. Please try again.'); setLoading(false) } })
+    const fallbackTimer = setTimeout(() => {
+      if (cancelled || receivedFeed || document.hidden) return
+      getTennisMatches().then(data => { if (!cancelled && !receivedFeed) processMatches(data) }).catch(error => { if (!cancelled && !receivedFeed) { setLoadError(error?.detail || 'Tennis data is temporarily unavailable. Please try again.'); setLoading(false) } })
+    }, 6000)
 
     const onTennisUpdate = (payload) => {
       receivedFeed = true
@@ -63,16 +66,12 @@ export default function TennisPage() {
 
     socket.on('tennis:matches', onTennisUpdate)
 
-    if (socket.connected) {
-      requestTennisFeed()
-    } else {
-      socket.once('connect', requestTennisFeed)
-    }
+    requestTennisFeed()
 
     return () => {
       cancelled = true
+      clearTimeout(fallbackTimer)
       socket.off('tennis:matches', onTennisUpdate)
-      socket.off('connect', requestTennisFeed)
       releaseFeed('tennis')
     }
   }, [isLoggedIn, authReady])

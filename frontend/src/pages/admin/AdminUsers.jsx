@@ -1,3 +1,4 @@
+import { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } from '../../../../server/shared/accountEmail.mjs'
 import { useEffect, useState, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, Shield, User, Crown, Ban, CheckCircle, PauseCircle, MoreVertical, X, Gift, UserPlus, Mail, Lock, Eye, EyeOff, KeyRound } from 'lucide-react'
@@ -120,6 +121,7 @@ export default function AdminUsers({ isSuperAdmin }) {
 
   const createUser = async (e) => {
     e.preventDefault()
+    if (!normalizeGmailEmail(createForm.email)) { toast.error(GMAIL_REQUIRED_MESSAGE); return }
     setCreating(true)
     try {
       await adminCreateUser(createForm)
@@ -246,7 +248,7 @@ export default function AdminUsers({ isSuperAdmin }) {
             <form onSubmit={createUser} className="space-y-3">
               <CreateField icon={User} label="Full Name" required placeholder="Rahul Sharma"
                 value={createForm.name} onChange={e => setCreateForm(f => ({ ...f, name: e.target.value }))} />
-              <CreateField icon={Mail} label="Email Address" required type="email" placeholder="user@example.com"
+              <CreateField icon={Mail} label="Gmail Address" required type="email" placeholder="user@gmail.com"
                 value={createForm.email} onChange={e => setCreateForm(f => ({ ...f, email: e.target.value }))} />
               <CreateField icon={Lock} label="Password" required type="password" minLength={6} placeholder="Minimum 6 characters"
                 value={createForm.password} onChange={e => setCreateForm(f => ({ ...f, password: e.target.value }))} />
