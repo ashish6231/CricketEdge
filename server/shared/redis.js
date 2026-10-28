@@ -6,6 +6,7 @@
 
 const Redis = require('ioredis');
 const { EventEmitter } = require('events');
+const {installCacheCompression}=require('./redisCacheCodec');
 
 const REDIS_URL = process.env.REDIS_URL || null;
 
@@ -97,6 +98,7 @@ function getRedisClient() {
           return Math.min(times * 100, 3000);
         },
       });
+      installCacheCompression(_client);
       _client.on('error', (err) => {
         console.warn('⚠️  Redis Client Error:', err.message);
       });

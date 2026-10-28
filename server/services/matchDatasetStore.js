@@ -20,6 +20,9 @@ function httpError(status, message) {
 function createStore({ filePath = DEFAULT_DATASET_PATH, persistence } = {}) {
   const database = persistence === undefined ? createPredictionDatasetPersistence({ filePath }) : persistence;
   let chain = Promise.resolve();
+  let _cachedData = null;
+  let _cachedAt = 0;
+  const CACHE_TTL_MS = 10 * 60 * 1000;
 
   function enqueue(fn) {
     const result = chain.then(() => database ? database.runExclusive(fn) : fn());
@@ -46,6 +49,8 @@ function createStore({ filePath = DEFAULT_DATASET_PATH, persistence } = {}) {
 
   async function writeDatasetToDisk(data) {
     data.updatedAt = new Date().toISOString();
+    _cachedData = data;
+    _cachedAt = Date.now();
     if (database) return database.write(data);
     const dir = path.dirname(filePath);
     await fsp.mkdir(dir, { recursive: true });
@@ -54,8 +59,21 @@ function createStore({ filePath = DEFAULT_DATASET_PATH, persistence } = {}) {
     await fsp.rename(tmpPath, filePath);
   }
 
-  async function load() {
-    return enqueue(() => readDatasetFromDisk());
+  async function load(force = false) {
+    const now = Date.now();
+    if (!force && _cachedData && (now - _cachedAt < CACHE_TTL_MS)) {
+      return _cachedData;
+    }
+    return enqueue(async () => {
+      const currentNow = Date.now();
+      if (!force && _cachedData && (currentNow - _cachedAt < CACHE_TTL_MS)) {
+        return _cachedData;
+      }
+      const data = await readDatasetFromDisk();
+      _cachedData = data;
+      _cachedAt = Date.now();
+      return data;
+    });
   }
 
   async function listRecords({ status = 'all', search, page = 1, limit = 20 } = {}) {

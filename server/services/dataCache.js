@@ -34,6 +34,22 @@ function getTennisMatches() {
   return normalizer.getTennisMatches();
 }
 
+function getCricketMatchesUpdatedAt() {
+  return normalizer.getCricketMatchesUpdatedAt ? normalizer.getCricketMatchesUpdatedAt() : new Date().toISOString();
+}
+
+function getTossMatchesUpdatedAt() {
+  return normalizer.getTossMatchesUpdatedAt ? normalizer.getTossMatchesUpdatedAt() : new Date().toISOString();
+}
+
+function getSessionMatchesUpdatedAt() {
+  return normalizer.getSessionMatchesUpdatedAt ? normalizer.getSessionMatchesUpdatedAt() : new Date().toISOString();
+}
+
+function getTennisMatchesUpdatedAt() {
+  return normalizer.getTennisMatchesUpdatedAt ? normalizer.getTennisMatchesUpdatedAt() : new Date().toISOString();
+}
+
 async function getCricketSnapshot(matchId) {
   const bundle = normalizer.getMatchBundle(matchId);
   return bundle?.cricket || null;
@@ -138,4 +154,8 @@ module.exports = {
   getCricketFullData,
   getLastUpdatedAt,
   isWarmedUp,
+  getCricketMatchesUpdatedAt,
+  getTossMatchesUpdatedAt,
+  getSessionMatchesUpdatedAt,
+  getTennisMatchesUpdatedAt,
 };

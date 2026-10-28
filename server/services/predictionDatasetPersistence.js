@@ -53,6 +53,12 @@ function createPredictionDatasetPersistence({ filePath, prisma, datasetKey, enab
     state.records = next;
     state.metadata = metadata;
     state.initialized = true;
+    _cachedDatasetStates.set(key, {
+      updatedAtMs: Date.now(),
+      records: next,
+      metadata,
+      initialized: true,
+    });
   }
   async function read() {
     const state = context.getStore();
@@ -74,13 +80,31 @@ function createPredictionDatasetPersistence({ filePath, prisma, datasetKey, enab
       // concurrent deploys; a process-local promise queue alone cannot do that.
       await tx.$executeRaw`INSERT INTO PredictionDataset (id, metadata, initialized, updatedAt)
         VALUES (${key}, '{}', FALSE, NOW(3)) ON DUPLICATE KEY UPDATE id = VALUES(id)`;
-      const [header] = await tx.$queryRaw`SELECT metadata, initialized FROM PredictionDataset WHERE id = ${key} FOR UPDATE`;
-      const rows = await tx.$queryRaw`SELECT recordKey, payload, position FROM PredictionRecord WHERE datasetKey = ${key} ORDER BY position`;
+      const [header] = await tx.$queryRaw`SELECT metadata, initialized, updatedAt FROM PredictionDataset WHERE id = ${key} FOR UPDATE`;
+      const headerUpdatedAtMs = header?.updatedAt ? new Date(header.updatedAt).getTime() : 0;
+      const cached = _cachedDatasetStates.get(key);
+
+      let recordsMap;
+      if (cached && cached.initialized && cached.updatedAtMs === headerUpdatedAtMs && cached.records) {
+        recordsMap = new Map(cached.records);
+      } else {
+        const rows = await tx.$queryRaw`SELECT recordKey, payload, position FROM PredictionRecord WHERE datasetKey = ${key} ORDER BY position`;
+        recordsMap = new Map(rows.map(row => [row.recordKey, { payload: row.payload, position: row.position }]));
+        _cachedDatasetStates.set(key, {
+          updatedAtMs: headerUpdatedAtMs,
+          records: recordsMap,
+          metadata: JSON.parse(header.metadata),
+          initialized: !!header.initialized,
+        });
+      }
+
       const state = { tx, initialized: !!header.initialized, metadata: JSON.parse(header.metadata),
-        records: new Map(rows.map(row => [row.recordKey, { payload: row.payload, position: row.position }])) };
+        records: recordsMap };
       return context.run(state, fn);
     }, { maxWait: 15000, timeout: 120000 });
   }
   return { read, write, runExclusive, datasetKey: key };
 }
+
+const _cachedDatasetStates = new Map();
 module.exports = { createPredictionDatasetPersistence, DATASET_FILES };

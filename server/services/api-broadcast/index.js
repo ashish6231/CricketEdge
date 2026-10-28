@@ -43,8 +43,9 @@ function init() {
   const LIST_CHANNELS = ['cricket:matches', 'toss:matches', 'session:matches', 'tennis:matches'];
   const CREX_CHANNEL = 'crex:overview';
   const BUNDLE_CHANNEL = 'match:bundle';
+  const ODDS_CHANNEL = 'match:odds';
 
-  const allChannels = [...LIST_CHANNELS, CREX_CHANNEL, BUNDLE_CHANNEL];
+  const allChannels = [...LIST_CHANNELS, CREX_CHANNEL, BUNDLE_CHANNEL, ODDS_CHANNEL];
   allChannels.forEach(ch => { try { sub.subscribe(ch); } catch {} });
 
   const onMessage = (channel, message) => {
@@ -55,6 +56,14 @@ function init() {
 
       } else if (channel === CREX_CHANNEL) {
         _debounced('crex', () => socketService.broadcastCrexUpdates().catch(() => {}));
+
+      } else if (channel === ODDS_CHANNEL) {
+        try {
+          const data = typeof message === 'string' ? JSON.parse(message) : message;
+          if (data?.matchId && data?.odds) {
+            socketService.broadcastMatchOdds(data.matchId, data.odds);
+          }
+        } catch {}
 
       } else if (channel === BUNDLE_CHANNEL) {
         // Individual match bundle update → broadcast only if room has active subscribers!

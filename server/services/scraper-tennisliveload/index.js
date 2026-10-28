@@ -11,6 +11,7 @@ const TennisLiveLoadAdapter = require('./adapter');
 const session = require('./session');
 const { getIngestQueue } = require('../normalizer/queue');
 const { compactSessionPayload } = require('../../utils/sessionPayload');
+const {snapshotPollingPolicy}=require('../../utils/snapshotPolling');
 
 const adapter = new TennisLiveLoadAdapter();
 let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 10000;
@@ -19,6 +20,7 @@ let _isRunning = false;
 const _sessionDetailLastAttempt = new Map();
 const _upcomingSnapshotLastAttempt = new Map();
 const UPCOMING_SNAPSHOT_REFRESH_MS = parseInt(process.env.TLL_UPCOMING_SNAPSHOT_REFRESH_MS, 10) || 3 * 60 * 1000;
+const LIVE_IDLE_SNAPSHOT_REFRESH_MS = Math.max(10000,parseInt(process.env.TLL_LIVE_IDLE_SNAPSHOT_REFRESH_MS,10)||60000);
 const SESSION_SUBSCRIBED_REFRESH_MS = parseInt(process.env.TLL_SESSION_SUBSCRIBED_REFRESH_MS, 10) || 30 * 1000;
 const SESSION_LIVE_IDLE_REFRESH_MS = parseInt(process.env.TLL_SESSION_LIVE_IDLE_REFRESH_MS, 10) || 5 * 60 * 1000;
 const SESSION_UPCOMING_REFRESH_MS = parseInt(process.env.TLL_SESSION_UPCOMING_REFRESH_MS, 10) || 30 * 60 * 1000;
@@ -138,13 +140,20 @@ async function runPollCycle() {
       await queue.add('ingest', { source: 'tll', type: 'session:matches', data: sessionMatches });
     }
     // 2. Fetch snapshots for active matches (both live and upcoming) + subscribed matches
-    let subscribedMatchIds = new Set();
+    let clientsCount = 0;
     try {
       const socketService = require('../socketService');
       if (typeof socketService.getActiveSubscribedMatchIds === 'function') {
         subscribedMatchIds = new Set(socketService.getActiveSubscribedMatchIds());
       }
+      clientsCount = socketService.getConnectedClientsCount?.() || 0;
     } catch {}
+
+    // When 0 users are connected and no match rooms are subscribed, skip individual snapshot/odds fetching to save bandwidth
+    if (clientsCount === 0 && subscribedMatchIds.size === 0) {
+      await refreshSessionDetails(sessionMatches, subscribedMatchIds, queue);
+      return;
+    }
 
     const activeCricket = (Array.isArray(cricket) ? cricket : [])
       .filter(m => !isEndedMatch(m) || subscribedMatchIds.has(String(m.id || m.matchId)));
@@ -162,10 +171,11 @@ async function runPollCycle() {
       await Promise.all(batch.map(async (m) => {
         const mid = m.id || m.matchId;
         const isLiveOrSub = m.inPlay || m.status === 'live' || m.status === 'in-play' || subscribedMatchIds.has(String(mid));
+        const policy=snapshotPollingPolicy(m,{subscribed:subscribedMatchIds.has(String(mid)),liveIdleMs:LIVE_IDLE_SNAPSHOT_REFRESH_MS,upcomingMs:UPCOMING_SNAPSHOT_REFRESH_MS});
 
         const now = Date.now();
         const lastSnapshotFetch = _upcomingSnapshotLastAttempt.get(String(mid)) || 0;
-        if (!isLiveOrSub && (now - lastSnapshotFetch < UPCOMING_SNAPSHOT_REFRESH_MS)) {
+        if (now - lastSnapshotFetch < policy.refreshMs) {
           return;
         }
         _upcomingSnapshotLastAttempt.set(String(mid), now);
@@ -186,7 +196,7 @@ async function runPollCycle() {
           }
         } catch {}
 
-        if (isLiveOrSub) {
+        if (policy.fetchToss) {
           adapter.getTossSnapshot(mid)
             .then(tossSnap => {
               if (tossSnap && !tossSnap.error) {
@@ -216,8 +226,8 @@ function getEffectivePollInterval() {
     const socketService = require('../socketService');
     const clientsCount = socketService.getConnectedClientsCount?.() || 0;
     if (clientsCount === 0) {
-      // Idle sleep mode: Nobody is looking at the site! (save 80% bandwidth)
-      return 60000;
+      // Idle sleep mode: Nobody is looking at the site! (save 90% bandwidth)
+      return 120000;
     }
     const subscribedMatchIds = socketService.getActiveSubscribedMatchIds?.() || [];
     if (subscribedMatchIds.length > 0) {

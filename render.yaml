@@ -73,7 +73,7 @@ services:
       - key: MATCH_CAPTURE_INTERVAL_MS
         value: 300000
       - key: SPRING_T20_CAPTURE_INTERVAL_MS
-        value: 60000
+        value: 900000
       - key: TLL_SESSION_SUBSCRIBED_REFRESH_MS
         value: 30000
       - key: TLL_SESSION_LIVE_IDLE_REFRESH_MS

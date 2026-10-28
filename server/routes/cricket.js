@@ -281,7 +281,7 @@ function attachMatchMeta(data, matchInfo, isToss = false) {
 
 router.get('/cricket/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getCricketMatchesPayload(req.user);
-  res.set('Cache-Control', 'public, max-age=3, stale-while-revalidate=8');
+  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
   res.json(payload);
 });
 
@@ -477,7 +477,7 @@ function computeTossLoad(snap, matchInfo) {
 router.get('/toss/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getTossMatchesPayload();
   const filtered = filterMatchesForViewer(payload.matches, req.user);
-  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
+  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
   res.json({
     total: filtered.length,
     matches: filtered,
@@ -541,7 +541,7 @@ router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async
 router.get('/session/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getSessionMatchesPayload();
   const filtered = filterMatchesForViewer(payload.matches, req.user);
-  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
+  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
   res.json({ ...payload, total: filtered.length, matches: filtered });
 });
 
@@ -671,7 +671,7 @@ router.get(['/cricket/all-data', '/cricket/full'], requireProSubscription, async
 router.get('/tennis/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getTennisMatchesPayload();
   const filtered = filterMatchesForViewer(payload.matches, req.user);
-  res.set('Cache-Control', 'public, max-age=4, stale-while-revalidate=10');
+  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
   res.json({
     total: filtered.length,
     matches: filtered,

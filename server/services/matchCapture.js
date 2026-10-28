@@ -91,6 +91,9 @@ async function captureEndedMatches({
       && (match.totalMatched || 0) > 0,
   );
   summary.scanned = eligible.length;
+  if (!eligible.length) {
+    return summary;
+  }
 
   const data = await store.load();
   const byMatchId = new Map(data.records.map((record) => [String(record.matchId), record]));

@@ -508,7 +508,7 @@ async function getCricketMatchesPayload() {
     matches: allMatches,
     tossMatchIds,
     competitions: Array.from(compsSet).sort(),
-    updatedAt: new Date().toISOString(),
+    updatedAt: dataCache.getCricketMatchesUpdatedAt ? dataCache.getCricketMatchesUpdatedAt() : new Date().toISOString(),
   };
 }
 
@@ -589,7 +589,7 @@ async function getTossMatchesPayload() {
     total: matches.length,
     matches,
     competitions: Array.from(compsSet).sort(),
-    updatedAt: new Date().toISOString(),
+    updatedAt: dataCache.getTossMatchesUpdatedAt ? dataCache.getTossMatchesUpdatedAt() : new Date().toISOString(),
   };
 }
 
@@ -690,7 +690,7 @@ async function getSessionMatchesPayload() {
   return {
     total: matches.length,
     matches,
-    updatedAt: new Date().toISOString(),
+    updatedAt: dataCache.getSessionMatchesUpdatedAt ? dataCache.getSessionMatchesUpdatedAt() : new Date().toISOString(),
   };
 }
 
@@ -704,7 +704,7 @@ async function getTennisMatchesPayload() {
   return {
     total: matches.length,
     matches,
-    updatedAt: new Date().toISOString(),
+    updatedAt: dataCache.getTennisMatchesUpdatedAt ? dataCache.getTennisMatchesUpdatedAt() : new Date().toISOString(),
   };
 }
 

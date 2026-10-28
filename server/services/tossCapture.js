@@ -141,6 +141,9 @@ async function captureEndedTosses({
     && (match.totalMatched || 0) > 0 && (match.matchId || match.id))
     .map(match => ({ ...match, matchId: String(match.matchId || match.id) }));
   summary.scanned = eligible.length;
+  if (!eligible.length) {
+    return summary;
+  }
 
   const data = await store.load();
   const byMatchId = new Map(data.records.map((record) => [String(record.matchId), record]));

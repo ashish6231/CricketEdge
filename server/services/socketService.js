@@ -38,7 +38,7 @@ function deliverFeed(socket, feed, next, force = false) {
   if (previous && !force && !delta) return;
   const full = { ...next.payload, version };
   const update = delta && { ...delta, feed, baseVersion: previous.version, version };
-  if (socket.handshake.auth?.feedDeltas === true && update &&
+  if (socket.handshake.auth?.feedDeltas !== false && update &&
       Buffer.byteLength(JSON.stringify(update)) < Buffer.byteLength(JSON.stringify(full))) {
     socket.emit('feed:delta', update);
   } else {
@@ -261,6 +261,14 @@ async function _broadcastMatchBundle(matchId, options = {}) {
   return true;
 }
 
+function broadcastMatchOdds(matchId, odds) {
+  if (!_io || !matchId || !odds) return;
+  const mid = String(matchId);
+  const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
+  if (!room || room.size === 0) return;
+  _io.to(`match:${mid}`).emit('match:odds', { matchId: mid, odds });
+}
+
 function getConnectedClientsCount() {
   return _io?.engine?.clientsCount || 0;
 }
@@ -422,6 +430,7 @@ module.exports = {
   broadcastAllMatches,
   broadcastCrexUpdates,
   broadcastCrexForMatch,
+  broadcastMatchOdds,
   notifySessionReplaced,
   MATCH_BUNDLE_BROADCAST_INTERVAL_MS,
 };

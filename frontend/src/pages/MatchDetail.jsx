@@ -282,6 +282,7 @@ export default function MatchDetail({ sport }) {
 
     const onSpecificBundle = (bundle) => {
       if (String(bundle?.matchId) === String(matchId) && isCompleteMatchBundle(bundle)) {
+        receivedBundle = true
         handleBundle(bundle)
       }
     }
@@ -330,8 +331,22 @@ export default function MatchDetail({ sport }) {
     let cancelled = false
     let requestInFlight = false
 
+    const socket = getSocket()
+
+    const onOddsUpdate = (data) => {
+      if (cancelled) return
+      if (String(data?.matchId) === String(matchId) && data?.odds) {
+        setLiveOdds(data)
+      }
+    }
+
+    socket.on('match:odds', onOddsUpdate)
+    socket.on(`match:odds:${matchId}`, onOddsUpdate)
+
     const refreshOdds = async () => {
       if (cancelled || requestInFlight || document.hidden) return
+      // When socket is connected and already delivering live updates, skip redundant HTTP polling
+      if (socket.connected && liveOdds) return
       requestInFlight = true
       try {
         const data = await getCricketOdds(matchId)
@@ -348,12 +363,14 @@ export default function MatchDetail({ sport }) {
     }
 
     refreshOdds()
-    const oddsTimer = setInterval(refreshOdds, 5000)
+    const oddsTimer = setInterval(refreshOdds, 20000)
     document.addEventListener('visibilitychange', onVisibilityChange)
     return () => {
       cancelled = true
       clearInterval(oddsTimer)
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      socket.off('match:odds', onOddsUpdate)
+      socket.off(`match:odds:${matchId}`, onOddsUpdate)
     }
   }, [matchId, sport, authReady, isLoggedIn, requiresLogin, requiresPro, matchEnded])
 

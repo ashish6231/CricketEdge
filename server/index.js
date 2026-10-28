@@ -43,7 +43,7 @@ const io = new (require('socket.io').Server)(server, {
     methods: ['GET', 'POST'],
     credentials: true,
   },
-  transports: ['polling', 'websocket'],
+  transports: ['websocket', 'polling'],
   // Express compression does not cover WebSocket frames. Match bundles can be
   // hundreds of KB, so compress Socket.IO payloads larger than 1 KB as well.
   perMessageDeflate: {

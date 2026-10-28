@@ -20,6 +20,11 @@ let _sessionMatches = [];
 let _tennisMatches = [];
 let _crexOverview = [];
 
+let _cricketMatchesUpdatedAt = new Date().toISOString();
+let _tossMatchesUpdatedAt = new Date().toISOString();
+let _sessionMatchesUpdatedAt = new Date().toISOString();
+let _tennisMatchesUpdatedAt = new Date().toISOString();
+
 const _cricketSnapshots = new Map();
 const _crexDetails = new Map();
 const _tossSnapshots = new Map();
@@ -80,6 +85,7 @@ async function processIngestJob(job) {
     });
 
     _cricketMatches = normalized;
+    _cricketMatchesUpdatedAt = new Date().toISOString();
 
     // Cache in Redis (60s TTL)
     await redis.set('matches:cricket', JSON.stringify({ matches: normalized }), 'EX', 60);
@@ -117,6 +123,7 @@ async function processIngestJob(job) {
         }
       }
       if (updated) {
+        _cricketMatchesUpdatedAt = new Date().toISOString();
         await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
         await redis.publish('cricket:matches', '{}');
       }
@@ -125,6 +132,7 @@ async function processIngestJob(job) {
 
   else if (type === 'toss:matches' && Array.isArray(data)) {
     _tossMatches = data;
+    _tossMatchesUpdatedAt = new Date().toISOString();
     await redis.set('matches:toss', JSON.stringify(data), 'EX', 60);
     await redis.publish('toss:matches', '{}');
   }
@@ -138,12 +146,14 @@ async function processIngestJob(job) {
     }
     _sessionMatchesFingerprint = nextFingerprint;
     _sessionMatches = list;
+    _sessionMatchesUpdatedAt = new Date().toISOString();
     await redis.set('matches:session', JSON.stringify(data), 'EX', 60);
     await redis.publish('session:matches', '{}');
   }
 
   else if (type === 'tennis:matches' && Array.isArray(data)) {
     _tennisMatches = data;
+    _tennisMatchesUpdatedAt = new Date().toISOString();
     await redis.set('matches:tennis', JSON.stringify(data), 'EX', 60);
     await redis.publish('tennis:matches', '{}');
   }
@@ -177,7 +187,6 @@ async function processIngestJob(job) {
       await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
       await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
     }
-    await redis.publish('session:matches', '{}');
   }
 
   else if (type === 'cricket:snapshot' && matchId && data) {
@@ -191,6 +200,7 @@ async function processIngestJob(job) {
       const odds = createNormalizedOdds(mid, data);
       await redis.set(`match:${mid}:odds`, JSON.stringify(odds), 'EX', 30);
       await redis.publish(`match:odds:${mid}`, JSON.stringify(odds));
+      await redis.publish('match:odds', JSON.stringify({ matchId: mid, odds }));
     }
 
     // Build unified match bundle
@@ -209,7 +219,6 @@ async function processIngestJob(job) {
     // Publish to specific match channel & bundle channel
     await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
     await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
-    await redis.publish('cricket:matches', '{}');
   }
 
   else if (type === 'crex:detail' && data) {
@@ -266,6 +275,7 @@ async function processIngestJob(job) {
 
     // Re-broadcast updated cricket matches list so home screen cards get fresh scores
     if (matchedDetailChanged && _cricketMatches.length > 0) {
+      _cricketMatchesUpdatedAt = new Date().toISOString();
       await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
       await redis.publish('cricket:matches', '{}');
     }
@@ -291,6 +301,22 @@ function getTennisMatches() {
 
 function getCrexOverview() {
   return _crexOverview;
+}
+
+function getCricketMatchesUpdatedAt() {
+  return _cricketMatchesUpdatedAt;
+}
+
+function getTossMatchesUpdatedAt() {
+  return _tossMatchesUpdatedAt;
+}
+
+function getSessionMatchesUpdatedAt() {
+  return _sessionMatchesUpdatedAt;
+}
+
+function getTennisMatchesUpdatedAt() {
+  return _tennisMatchesUpdatedAt;
 }
 
 function getMatchBundle(matchId) {
@@ -341,4 +367,8 @@ module.exports = {
   getCrexOverview,
   getMatchBundle,
   setCrexDetail,
+  getCricketMatchesUpdatedAt,
+  getTossMatchesUpdatedAt,
+  getSessionMatchesUpdatedAt,
+  getTennisMatchesUpdatedAt,
 };
