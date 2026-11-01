@@ -1,12 +1,20 @@
 import { getCurrentProviderTotals, getExplicitPreMatchProviderTotals } from './providerTotals.mjs';
 import { getBookiePlFromMatchedTrades, getMarketExposureFromTrades } from './bookiePl.mjs';
+import { resolveInternationalMatchLeague } from './providerTotalMatchPredictor.mjs';
 
-export const UNIVERSAL_TOSS_VERSION = 'toss-v13-current-lower-combined-risk-first';
-export const SOUTH_AFRICA_T20_TOSS_VERSION = 'toss-south-africa-t20-risk-first-higher-provider-fallback-v2';
+export const UNIVERSAL_TOSS_VERSION = 'toss-v16-complete-league-net-exposure';
 
-export function isSouthAfricaT20TossLeague(name = '') {
-  const key = String(name).toLowerCase().replace(/[^a-z0-9]/g,'').replace(/20\d{2}$/, '');
-  return ['southafricat20challenge','southafricat20','southafricant20challenge'].includes(key);
+export const INCOMPLETE_TOSS_DATA_MESSAGE = "Prediction data is incomplete, can't predict.";
+
+/** Competition metadata determines the exception; domestic women's leagues stay lower. */
+export function usesHigherTossExposure(snapshot, competition = '') {
+  const explicit = typeof competition === 'object' && competition !== null
+    ? competition.competitionName || competition.seriesName || '' : competition;
+  const name = String(explicit || snapshot?.competitionName || snapshot?.seriesName || '');
+  const key = name.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/20\d{2}$/, '');
+  return /^(?:wbbl|womens?bigbash(?:league)?)$/.test(key)
+    || !!resolveInternationalMatchLeague(name)
+    || (/\binternationals?\b/i.test(name) && !/\bleague\b/i.test(name));
 }
 
 const finite = value => value == null || !['number','string'].includes(typeof value) || String(value).trim() === ''
@@ -16,29 +24,16 @@ const validNames = names => Array.isArray(names) && names.length === 2
   && names[0].trim().toLowerCase() !== names[1].trim().toLowerCase();
 const validPair = values => Array.isArray(values) && values.length === 2 && values.every(value => value != null && value >= 0 && Number.isFinite(value));
 
-function fallbackRule(snapshot, competition = '') {
-  const explicit = typeof competition === 'object' && competition !== null
-    ? competition.competitionName || competition.seriesName || '' : competition;
-  const higher = isSouthAfricaT20TossLeague(explicit || snapshot?.competitionName || snapshot?.seriesName || '');
-  return {mode:'fallback',selection:higher ? 'higher' : 'lower',requirePositivePl:!higher,signalCount:higher ? 1 : 2,
-    predictorVersion:higher ? SOUTH_AFRICA_T20_TOSS_VERSION : UNIVERSAL_TOSS_VERSION};
-}
+const positivePair = values => validPair(values) && values.every(value => value > 0);
 
-/** Select from the active rule. A missing value must never be treated as zero. */
-export function selectTossWinner({teamNames, providerTotals, pl, riskTotals, mode = 'fallback', selection = 'lower', requirePositivePl = true} = {}) {
-  if (!validNames(teamNames)) return null;
-  if (mode === 'risk') {
-    if (!validPair(riskTotals) || riskTotals.some(value => value === 0) || riskTotals[0] === riskTotals[1]) return null;
-    const winnerIdx = riskTotals[0] < riskTotals[1] ? 0 : 1;
-    return {winner:teamNames[winnerIdx],winnerIdx,riskTotals};
-  }
-  if (!Array.isArray(providerTotals) || providerTotals.length !== 2) return null;
-  const totals = providerTotals.map(finite);
-  if (!validPair(totals) || totals[0] === totals[1]) return null;
-  const winnerIdx = selection === 'higher' ? (totals[0] > totals[1] ? 0 : 1) : (totals[0] < totals[1] ? 0 : 1);
-  const pnl = [finite(pl?.[0]),finite(pl?.[1])];
-  if (requirePositivePl && !(pnl[winnerIdx] > 0)) return null;
-  return {winner:teamNames[winnerIdx],winnerIdx,providerTotals:totals,pl:pnl};
+/** All four back/lay exposure values must be positive before selecting a winner. */
+export function selectTossWinner({teamNames, risk, selection = 'lower'} = {}) {
+  if (!validNames(teamNames) || !positivePair(risk?.back) || !positivePair(risk?.lay)) return null;
+  const netExposure = risk.back.map((back,index) => finite(back - risk.lay[index]));
+  if (netExposure.some(value => value == null) || netExposure[0] === netExposure[1]) return null;
+  // Compare signed values: negative net exposure and a balanced net of zero are valid.
+  const winnerIdx = selection === 'higher' ? (netExposure[0] > netExposure[1] ? 0 : 1) : (netExposure[0] < netExposure[1] ? 0 : 1);
+  return {winner:teamNames[winnerIdx],winnerIdx,netExposure};
 }
 
 export function getTossRuleInputs(snapshot, competition = '') {
@@ -46,70 +41,55 @@ export function getTossRuleInputs(snapshot, competition = '') {
   const providerTotals = getCurrentProviderTotals(snapshot) || getExplicitPreMatchProviderTotals(snapshot);
   const displayedPl = getBookiePlFromMatchedTrades(snapshot,teamNames?.[0],teamNames?.[1]);
   const pl = [finite(displayedPl.pl1),finite(displayedPl.pl2)];
-  // These are exactly the Back risk / Lay risk values displayed on TossDetail.
+  // Net exposure is the same Back risk − Lay risk displayed on TossDetail.
   const exposure = getMarketExposureFromTrades(snapshot,teamNames?.[0],teamNames?.[1]);
   const risk = {
     back:[finite(exposure.team1.backExposure),finite(exposure.team2.backExposure)],
     lay:[finite(exposure.team1.layExposure),finite(exposure.team2.layExposure)],
   };
-  risk.total = [0,1].map(index => risk.back[index] != null && risk.lay[index] != null
-    ? finite(risk.back[index] + risk.lay[index]) : null);
-  risk.zeroTeams = [0,1].filter(index => risk.back[index] === 0 && risk.lay[index] === 0);
-  risk.available = validPair(risk.back) && validPair(risk.lay) && validPair(risk.total);
-  const fallback = fallbackRule(snapshot,competition);
-  const rule = risk.zeroTeams.length ? fallback : {
-    mode:'risk',selection:'lower-risk',requirePositivePl:false,signalCount:1,predictorVersion:UNIVERSAL_TOSS_VERSION,
+  risk.net = [0,1].map(index => risk.back[index] != null && risk.lay[index] != null
+    ? finite(risk.back[index] - risk.lay[index]) : null);
+  risk.available = positivePair(risk.back) && positivePair(risk.lay) && risk.net.every(value => value != null);
+  const rule = {
+    mode:'risk',selection:usesHigherTossExposure(snapshot,competition) ? 'higher' : 'lower',
+    requirePositivePl:false,signalCount:1,predictorVersion:UNIVERSAL_TOSS_VERSION,
   };
-  const available = !snapshot?.error && validNames(teamNames) && (rule.mode === 'risk' ? risk.available
-    : validPair(providerTotals) && (!rule.requirePositivePl || pl.some(value => value != null)));
-  return {teamNames,providerTotals,pl,risk,riskTotals:risk.total,period:'current',rule,fallbackRule:fallback,
-    mode:rule.mode,selection:rule.selection,requirePositivePl:rule.requirePositivePl,available};
+  const available = !snapshot?.error && validNames(teamNames) && risk.available;
+  return {teamNames,providerTotals,pl,risk,netExposure:risk.net,period:'current',rule,
+    mode:rule.mode,selection:rule.selection,requirePositivePl:false,available,unavailableReason:available ? null : INCOMPLETE_TOSS_DATA_MESSAGE};
 }
 
-/** Risk has first priority for every league. Only a confirmed all-zero side enables the prior rule. */
+/** WBBL and internationals select higher net exposure; every other league selects lower. */
 export function getUniversalTossPrediction(snapshot, competition = '') {
   const inputs = getTossRuleInputs(snapshot,competition);
-  const primary = inputs.mode === 'risk';
-  const higher = !primary && inputs.rule.selection === 'higher';
-  const zeroNames = inputs.risk.zeroTeams.map(index => inputs.teamNames?.[index]).filter(Boolean).join(' and ');
-  const fallbackNote = primary ? '' : `Fallback: ${zeroNames} has zero back risk and lay risk. `;
+  const direction = inputs.selection;
+  const upper = direction.toUpperCase();
   const metadata = {
-    predictorVersion:inputs.rule.predictorVersion,
-    tier:primary ? 'UNIVERSAL_TOSS_LOWER_COMBINED_RISK' : higher ? 'SOUTH_AFRICA_T20_TOSS_HIGHER_PROVIDER_TOTAL' : 'UNIVERSAL_TOSS_POSITIVE_PL_LOWER_PROVIDER_TOTAL',
-    algoName:primary ? 'Lower Back + Lay Risk Toss Algorithm' : higher ? 'South Africa T20 Higher Provider Total Toss Algorithm' : 'Positive P/L & Lower Provider Total Toss Algorithm',
-    ruleFamily:primary ? 'lower-combined-back-lay-risk' : higher ? 'south-africa-t20-higher-provider-total' : 'positive-pl-and-lower-provider-total',
-    validation:'unvalidated-risk-first-rule',trainingSamples:0,
-    validationNote:'Lower combined back and lay risk has priority. A side with both risks zero enables the prior league rule. Future accuracy is unvalidated.',
-    inputTiming:primary ? 'current-displayed-back-and-lay-risk' : higher ? 'current-displayed-provider-total' : 'current-displayed-pl-and-provider-total',
-    usedFallback:!primary,
+    predictorVersion:UNIVERSAL_TOSS_VERSION,
+    tier:`UNIVERSAL_TOSS_${upper}_NET_EXPOSURE`,
+    algoName:`${direction === 'higher' ? 'Higher' : 'Lower'} Net Exposure Toss Algorithm`,
+    ruleFamily:`${direction}-net-back-minus-lay-exposure`,
+    validation:'unvalidated-league-exposure-rule',trainingSamples:0,
+    validationNote:'WBBL and international matches select higher net exposure (back minus lay). All other leagues select lower net exposure. Future accuracy is unvalidated.',
+    inputTiming:'current-displayed-back-and-lay-risk',usedFallback:false,
   };
   const pick = inputs.available ? selectTossWinner(inputs) : null;
   if (!pick) return {...metadata,winner:null,winnerName:null,abstain:true,
-    reason:fallbackNote + (primary ? 'No pick: valid, unequal combined back and lay risk is required for both teams.'
-      : higher ? 'No pick: unequal current provider totals are required for both teams.'
-      : 'No pick: one team must have both positive current P/L and a strictly lower current provider total.')};
+    reason:inputs.unavailableReason || 'No pick: net exposure is equal for both teams.'};
   const {winner,winnerIdx} = pick;
   const {providerTotals,pl,risk} = inputs;
-  const reason = primary
-    ? `${winner} has the lower combined risk (${risk.back[winnerIdx].toFixed(2)} back + ${risk.lay[winnerIdx].toFixed(2)} lay = ${risk.total[winnerIdx].toFixed(2)} vs ${risk.total[1-winnerIdx].toFixed(2)}).`
-    : fallbackNote + (higher ? `${winner} has the higher current provider total (${providerTotals[winnerIdx].toFixed(2)} vs ${providerTotals[1-winnerIdx].toFixed(2)}).`
-      : `${winner} has positive current P/L (+${pl[winnerIdx].toFixed(2)}) and the lower current provider total (${providerTotals[winnerIdx].toFixed(2)} vs ${providerTotals[1-winnerIdx].toFixed(2)}).`);
-  const signed = value => value == null ? '—' : `${value >= 0 ? '+' : ''}${value.toFixed(2)}`;
-  const signals = primary ? [{label:'Combined back + lay risk',sublabel:'Lower combined risk selects the winner',active:true,
-    v1:risk.total[0].toFixed(2),v2:risk.total[1].toFixed(2),winnerWins:true}]
-    : [{label:'Current provider total',sublabel:`Predicted team must have the ${inputs.rule.selection} total`,active:true,
-      v1:providerTotals[0].toFixed(2),v2:providerTotals[1].toFixed(2),winnerWins:true},
-      ...(!higher ? [{label:'Current P/L',sublabel:'The same team must have P/L greater than zero',active:true,v1:signed(pl[0]),v2:signed(pl[1]),winnerWins:true}] : [])];
+  const reason = `${winner} has the ${direction} net exposure (${risk.back[winnerIdx].toFixed(2)} back − ${risk.lay[winnerIdx].toFixed(2)} lay = ${risk.net[winnerIdx].toFixed(2)} vs ${risk.net[1-winnerIdx].toFixed(2)}).`;
+  const signals = [{label:'Net exposure (Back − Lay)',sublabel:`${direction === 'higher' ? 'Higher' : 'Lower'} net exposure selects the winner`,active:true,
+    v1:risk.net[0].toFixed(2),v2:risk.net[1].toFixed(2),winnerWins:true}];
   return {...metadata,winner,winnerName:winner,winnerIdx,reason,
-    pattern:primary ? 'LOWER_COMBINED_BACK_LAY_RISK' : higher ? 'SOUTH_AFRICA_T20_HIGHER_PROVIDER_TOTAL' : 'POSITIVE_PL_LOWER_PROVIDER_TOTAL',
-    verdictTag:primary ? 'LOWER COMBINED RISK' : higher ? 'HIGHER PROVIDER TOTAL' : 'POSITIVE P/L + LOWER PROVIDER TOTAL',
+    pattern:`${upper}_NET_BACK_MINUS_LAY_EXPOSURE`,verdictTag:`${upper} NET EXPOSURE`,
     confidence:{label:'Rule support; future accuracy unvalidated',color:'text-yellow-500',pct:'Uncalibrated',calibrated:false},
     confidenceCalibrated:false,
     risk:{tier:'unvalidated',label:'Risk unvalidated',shortLabel:'Unvalidated',wrongPct:'Uncalibrated',calibrated:false,note:metadata.validationNote},
     algorithmEvidence:{risk,providerTotal:{team1:providerTotals?.[0] ?? null,team2:providerTotals?.[1] ?? null},
-      pl:{team1:pl[0],team2:pl[1]},winnerIdx,signalCount:inputs.rule.signalCount,mode:inputs.mode,
-      selection:inputs.rule.selection,requirePositivePl:inputs.rule.requirePositivePl,inputSource:'toss-current-display'},
-    signals,activeSignals:signals.length,metrics:{t1:inputs.teamNames[0],t2:inputs.teamNames[1]},
+      pl:{team1:pl[0],team2:pl[1]},winnerIdx,signalCount:1,mode:inputs.mode,
+      selection:direction,requirePositivePl:false,inputSource:'toss-current-display'},
+    signals,activeSignals:1,metrics:{t1:inputs.teamNames[0],t2:inputs.teamNames[1]},
     matchedRules:[{reason,winner,priority:100,selected:true}],
   };
 }

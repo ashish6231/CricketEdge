@@ -29,3 +29,13 @@ test('Redis invalidations stay tiny while complete cricket, toss and session dat
   assert.ok(notifications.length > 0);
   assert.ok(notifications.every(({ value }) => Buffer.byteLength(value) < 64));
 });
+
+test('toss snapshot changes invalidate the list feed without requiring a match detail room',async()=>{
+  const snapshot={teamNames:['A','B'],teams:{A:{trades:[]},B:{trades:[]}}};
+  const count=()=>publications.filter(item=>item.channel==='toss:matches').length;
+  const before=count();
+  await ingest('toss:snapshot',snapshot,'list-only');assert.equal(count(),before+1);
+  await ingest('toss:snapshot',structuredClone(snapshot),'list-only');assert.equal(count(),before+1);
+  snapshot.teams.A.trades.push({type:'back',price:1.98,size:10});
+  await ingest('toss:snapshot',snapshot,'list-only');assert.equal(count(),before+2);
+});

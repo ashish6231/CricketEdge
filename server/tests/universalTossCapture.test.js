@@ -8,9 +8,9 @@ for (const [name,exports] of [['../services/dataCache',{}],['../services/crexSer
 }
 const {captureEndedTosses} = require('../services/tossCapture');
 const {createStore} = require('../services/tossDatasetStore');
-const {UNIVERSAL_TOSS_VERSION,SOUTH_AFRICA_T20_TOSS_VERSION} = require('../utils/universalTossAlgorithm.mjs');
+const {UNIVERSAL_TOSS_VERSION} = require('../utils/universalTossAlgorithm.mjs');
 const fixture = () => ({teamNames:['Alpha','Beta'],deepMetrics:{totals:{team1:100,team2:300}},
-  teams:{Alpha:{trades:[{type:'lay',price:2,size:10}]},Beta:{trades:[{type:'back',price:2,size:20}]}}});
+  teams:{Alpha:{trades:[{type:'back',price:2,size:1},{type:'lay',price:2,size:11}]},Beta:{trades:[{type:'back',price:2,size:21},{type:'lay',price:2,size:1}]}}});
 const match = {matchId:'new-rule',matchName:'Alpha v Beta',competitionName:'World Championship of Legends T20',status:'ended',totalMatched:100};
 
 async function setup(t) {
@@ -30,11 +30,11 @@ test('captures current rule inputs without frozen P/L or back/lay summaries', as
   assert.equal(record.inputTiming,'current-displayed-back-and-lay-risk');
 });
 
-test('zero-risk fallback conflicts stay unpredicted; missing risk is skipped', async t => {
+test('zero or missing exposure is skipped despite available provider totals', async t => {
   const store=await setup(t);
   const snapshot=fixture();snapshot.teams.Alpha.trades=[];snapshot.deepMetrics.totals={team1:300,team2:100};
-  await capture(store,snapshot);
-  assert.equal((await store.load()).records[0].predictedWinner,null);
+  assert.equal((await capture(store,snapshot)).skipped,1);
+  assert.equal((await store.load()).records.length,0);
   const missing=await captureEndedTosses({store:{load:async()=>({records:[]})},
     scraper:{getAllTossMatches:async()=>[match],getTossSnapshot:async()=>({...fixture(),teams:undefined,preMatchPnl:{team1:100,team2:-100}})}});
   assert.equal(missing.skipped,1);
@@ -55,18 +55,15 @@ test('real store refreshes incomplete pending input from a previous algorithm bu
   assert.equal(record.status,'verified');
 });
 
-test('South Africa T20 captures its higher-total fallback when a team has zero risk', async t => {
+test('South Africa T20 skips capture when a team has zero risk', async t => {
   const store=await setup(t);
   const snapshot=fixture();snapshot.teams.Alpha.trades=[];
   const result=await captureEndedTosses({store,scraper:{
     getAllTossMatches:async()=>[{...match,competitionName:'South Africa T20 Challenge'}],
     getTossSnapshot:async()=>snapshot,
   }});
-  assert.equal(result.captured,1);
-  const record=(await store.load()).records[0];
-  assert.equal(record.predictedWinner,'Beta');
-  assert.equal(record.predictorVersion,SOUTH_AFRICA_T20_TOSS_VERSION);
-  assert.equal(record.inputTiming,'current-displayed-provider-total');
+  assert.equal(result.skipped,1);
+  assert.equal((await store.load()).records.length,0);
 });
 
  test('risk-first capture needs neither provider totals nor pre-match data', async t => {
@@ -76,4 +73,17 @@ test('South Africa T20 captures its higher-total fallback when a team has zero r
   const record=(await store.load()).records[0];
   assert.equal(record.predictedWinner,'Alpha');
   assert.equal(record.inputTiming,'current-displayed-back-and-lay-risk');
+});
+
+test('WBBL and international captures select higher exposure with the new version', async t => {
+  for (const competitionName of ['WBBL','International Twenty20 Matches','WODI']) {
+    const store=await setup(t);
+    const result=await captureEndedTosses({store,scraper:{
+      getAllTossMatches:async()=>[{...match,competitionName}],getTossSnapshot:async()=>fixture(),
+    }});
+    assert.equal(result.captured,1);
+    const record=(await store.load()).records[0];
+    assert.equal(record.predictedWinner,'Beta');
+    assert.equal(record.predictorVersion,UNIVERSAL_TOSS_VERSION);
+  }
 });

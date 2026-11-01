@@ -1,10 +1,11 @@
 import { lazy, useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
-import { LoaderCircle, ChevronRight, Coins, X, Trophy } from 'lucide-react'
+import { LoaderCircle, Coins, X, Trophy } from 'lucide-react'
 import { getSocket, releaseFeed, requestTossFeed } from '../socket'
 import { getTossMatches } from '../api'
 import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
+import TossMarketCard from '../components/TossMarketCard'
 import { isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
 
 const TossDetail = lazy(() => import('./TossDetail'))
@@ -39,44 +40,6 @@ function formatCountdown(startTimeMs, now) {
     return `${days}d ${pad(remHours)}:${pad(minutes)}:${pad(seconds)}`
   }
   return `${hours}:${pad(minutes)}:${pad(seconds)}`
-}
-
-const formatVolStr = (val) => {
-  if (val === null || val === undefined) return '—'
-  if (val === 0 || val === '0') return '0.00'
-  const num = Number(val)
-  if (isNaN(num)) return val.toString()
-  const abs = Math.abs(num)
-  if (abs >= 10000000) return `${num < 0 ? '-' : ''}${(abs / 10000000).toFixed(2)}Cr`
-  if (abs >= 100000) return `${num < 0 ? '-' : ''}${(abs / 100000).toFixed(2)}L`
-  if (abs >= 1000) return `${num < 0 ? '-' : ''}${(abs / 1000).toFixed(2)}k`
-  return num.toFixed(2)
-}
-
-const formatOdds = (val) => {
-  if (val === null || val === undefined || val === 0 || isNaN(Number(val))) return '—'
-  return Number(val).toFixed(2)
-}
-
-function extractTossOdds(trades, fallback = null) {
-  if (!Array.isArray(trades) || trades.length === 0) return fallback
-  const tossTrades = trades.filter((t) => {
-    const p = parseFloat(t.price)
-    return !isNaN(p) && p >= 1.70 && p <= 2.30
-  })
-  if (tossTrades.length > 0) {
-    const sorted = [...tossTrades].sort((a, b) => b.updatedAt - a.updatedAt)
-    return parseFloat(sorted[0].price)
-  }
-  const broader = trades.filter((t) => {
-    const p = parseFloat(t.price)
-    return !isNaN(p) && p >= 1.60 && p <= 2.40
-  })
-  if (broader.length > 0) {
-    const sorted = [...broader].sort((a, b) => b.updatedAt - a.updatedAt)
-    return parseFloat(sorted[0].price)
-  }
-  return fallback
 }
 
 function isEndedMatch(m) {
@@ -315,91 +278,12 @@ export default function TossPage() {
     )
   }
 
-  // Helper to render a single toss match row in the Smart Money table
-  const renderMatchRow = (match) => {
-    const tLoad = match.tossLoad || match.matchLoad
-    const t1Name = match.matchName?.split(' v ')?.[0] || 'Team 1'
-    const t2Name = match.matchName?.split(' v ')?.[1] || 'Team 2'
-
-    const snap = match.snapshot
-    const tr1 = snap?.teams?.[t1Name]?.trades || snap?.teams?.[snap?.teamNames?.[0]]?.trades || []
-    const tr2 = snap?.teams?.[t2Name]?.trades || snap?.teams?.[snap?.teamNames?.[1]]?.trades || []
-    const tradeVol1 = tr1.length > 0 ? tr1.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
-    const tradeVol2 = tr2.length > 0 ? tr2.reduce((s, t) => s + (parseFloat(t.size) || 0), 0) : 0
-
-    const vol1 = tradeVol1 || tLoad?.team1?.money || snap?.teams?.[t1Name]?.totalBet || snap?.teams?.[snap?.teamNames?.[0]]?.totalBet || snap?.preMatchTotalBets?.team1 || match.preMatchVolume?.team1?.total || 0
-    const vol2 = tradeVol2 || tLoad?.team2?.money || snap?.teams?.[t2Name]?.totalBet || snap?.teams?.[snap?.teamNames?.[1]]?.totalBet || snap?.preMatchTotalBets?.team2 || match.preMatchVolume?.team2?.total || 0
-
-    const tossOdds1 = extractTossOdds(tr1) || (snap?.syntheticSupport?.teamA?.averageOdds ? parseFloat(snap.syntheticSupport.teamA.averageOdds.toFixed(2)) : null)
-    const tossOdds2 = extractTossOdds(tr2) || (snap?.syntheticSupport?.teamB?.averageOdds ? parseFloat(snap.syntheticSupport.teamB.averageOdds.toFixed(2)) : null)
-
-    const runnerOdds1 = match.runners?.[0]?.price ?? match.runners?.[0]?.back ?? match.runners?.[0]?.backPrice ?? match.runners?.[0]?.ex?.availableToBack?.[0]?.price
-    const runnerOdds2 = match.runners?.[1]?.price ?? match.runners?.[1]?.back ?? match.runners?.[1]?.backPrice ?? match.runners?.[1]?.ex?.availableToBack?.[0]?.price
-    const odds1 = (tLoad?.team1?.odds && tLoad.team1.odds >= 1.60 && tLoad.team1.odds <= 2.40 ? tLoad.team1.odds : null) || tossOdds1 || (runnerOdds1 >= 1.60 && runnerOdds1 <= 2.40 ? runnerOdds1 : null) || null
-    const odds2 = (tLoad?.team2?.odds && tLoad.team2.odds >= 1.60 && tLoad.team2.odds <= 2.40 ? tLoad.team2.odds : null) || tossOdds2 || (runnerOdds2 >= 1.60 && runnerOdds2 <= 2.40 ? runnerOdds2 : null) || null
-
-    const tot = vol1 + vol2
-    const pct1 = (tLoad?.team1?.percent && tLoad?.team1?.money > 0) ? tLoad.team1.percent : (tot > 0 ? Math.round((vol1 / tot) * 100) : 50)
-    const pct2 = (tLoad?.team2?.percent && tLoad?.team2?.money > 0) ? tLoad.team2.percent : (tot > 0 ? (100 - pct1) : 50)
-
-    const team1 = {
-      name: tLoad?.team1?.name || t1Name,
-      money: vol1,
-      percent: pct1,
-      odds: odds1,
-    }
-    const team2 = {
-      name: tLoad?.team2?.name || t2Name,
-      money: vol2,
-      percent: pct2,
-      odds: odds2,
-    }
-
-    const dt = formatTimeAndDate(match.startTime)
-    const countdown = formatCountdown(match.startTime, now)
-    const isEnded = isEndedMatch(match)
-    const isLive = isLiveMatch(match)
-
-    return (
-      <div
-        key={match.matchId}
-        role="link" tabIndex={0} aria-label={`Open ${t1Name} versus ${t2Name} toss market`}
-        onKeyDown={event => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } }) } }}
-        className="toss-market-row cursor-pointer group"
-        onClick={() => navigate(`/toss/match/${match.matchId}`, { state: { matchData: match } })}
-      >
-        <div className="toss-card-summary">
-          <div className="toss-card-meta">
-            <span className={`toss-status-pill ${isLive ? 'is-live' : isEnded ? 'is-completed' : 'is-upcoming'}`}>
-              {isLive && <span className="status-dot animate-pulse" />}
-              {isLive ? 'LIVE' : isEnded ? 'COMPLETED' : 'UPCOMING'}
-            </span>
-            {dt && <span className="toss-card-time">{dt}</span>}
-            {!isLive && countdown && <span className="toss-card-countdown">Starts in {countdown}</span>}
-          </div>
-          <span className="toss-card-league">{match.competitionName || 'T20 Cricket League'}</span>
-          <div className="toss-card-title-row">
-            <strong className="toss-card-title">{match.matchName}</strong>
-            <span className="toss-open-cue">View toss <ChevronRight size={16} aria-hidden="true" /></span>
-          </div>
-        </div>
-
-        <div className="toss-card-teams" aria-label="Team toss activity">
-          {[team1, team2].map((team, index) => (
-            <div key={`${match.matchId}-${team.name}-${index}`} className={`market-team-column ${index === 0 ? 'market-team-green' : 'market-team-red'}`}>
-              <span className="market-team-name" title={team.name}>{team.name}</span>
-              <span className="market-team-label">Matched money</span>
-              <strong className="market-team-value">€{formatVolStr(team.money)}</strong>
-              <div className="market-team-footer">
-                <span className="market-team-percent">{team.percent}% support</span>
-                <span className="market-team-odds" title="Last price matched">Odds {formatOdds(team.odds)}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
+  const renderMatchRow = match => (
+    <TossMarketCard key={match.matchId} match={match}
+      isLive={isLiveMatch(match)} isEnded={isEndedMatch(match)}
+      startLabel={formatTimeAndDate(match.startTime)} countdown={formatCountdown(match.startTime,now)}
+      onOpen={() => navigate(`/toss/match/${match.matchId}`,{state:{matchData:match}})} />
+  )
 
   if (!matchId && loading && !allMatches.length) {
     return (
@@ -525,7 +409,7 @@ export default function TossPage() {
                           {liveMatches.length}
                         </span>
                       </div>
-                      <div className="toss-market-list rounded-xl border border-red-500/30 bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
+                      <div className="toss-exchange-list">
                         {liveMatches.map(renderMatchRow)}
                       </div>
                     </div>
@@ -541,7 +425,7 @@ export default function TossPage() {
                           {upcomingMatches.length}
                         </span>
                       </div>
-                      <div className="toss-market-list rounded-xl border border-[#1e2536] bg-[#0c1018] shadow-2xl overflow-hidden divide-y divide-[#1e2536]/80">
+                      <div className="toss-exchange-list">
                         {upcomingMatches.map(renderMatchRow)}
                       </div>
                     </div>
@@ -557,7 +441,7 @@ export default function TossPage() {
                           {endedMatches.length}
                         </span>
                       </div>
-                      <div className="toss-market-list rounded-xl border border-[#1e2536]/60 bg-[#0a0d14] opacity-80 hover:opacity-100 transition-opacity shadow-lg overflow-hidden divide-y divide-[#1e2536]/60">
+                      <div className="toss-exchange-list">
                         {endedMatches.map(renderMatchRow)}
                       </div>
                     </div>

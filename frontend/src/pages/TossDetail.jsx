@@ -5,28 +5,18 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
-import { getMarketExposureFromTrades, getSelectionStakes, latestMatchedPrice, timestamp } from '../utils/bookiePl'
+import { getMarketExposureFromTrades, timestamp } from '../utils/bookiePl'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../socket'
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
 import { hasTossSnapshot } from '../utils/matchBundle'
 import TossRuleEvidence from '../components/TossRuleEvidence'
+import { getTossMarketSummary } from '../../../server/utils/tossMarketSummary.mjs'
+import { formatTossAmount as formatVolStr, formatSignedTossMoney as fmtRs, formatTossMoney } from '../utils/tossMarketDisplay'
+import { createTossSnapshotSync } from '../utils/tossSnapshotSync'
 import { getTossRuleInputs } from '../../../server/utils/universalTossAlgorithm.mjs'
 
-const fmt = (n) => n == null ? '—' : Math.round(n).toLocaleString('en-IN')
-const fmtRs = (n) => n == null ? '—' : `${n >= 0 ? '+' : '−'}€${fmt(Math.abs(n))}`
-const pnlCls = (n) => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
-
-const formatVolStr = (val) => {
-  if (val === null || val === undefined) return '—'
-  if (val === 0 || val === '0') return '0.00'
-  const num = Number(val)
-  if (isNaN(num)) return val.toString()
-  const abs = Math.abs(num)
-  if (abs >= 10000000) return `${num < 0 ? '-' : ''}${(abs / 10000000).toFixed(2)}Cr`
-  if (abs >= 100000) return `${num < 0 ? '-' : ''}${(abs / 100000).toFixed(2)}L`
-  if (abs >= 1000) return `${num < 0 ? '-' : ''}${(abs / 1000).toFixed(2)}k`
-  return num.toFixed(2)
-}
+const fmt = n => n == null ? '—' : Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})
+const pnlCls = n => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
 
 const formatOdds = (val) => {
   if (val === null || val === undefined || val === 0 || isNaN(Number(val))) return '—'
@@ -39,6 +29,7 @@ export default function TossDetail({ isEmbedded = false }) {
   const location = useLocation()
   const { isLoggedIn } = useOutletContext()
   const [snap, setSnap] = useState(null)
+  const [marketInfo, setMarketInfo] = useState(location.state?.matchData)
   const [loading, setLoading] = useState(true)
   const [requiresLogin, setRequiresLogin] = useState(false)
   const [requiresPro, setRequiresPro] = useState(false)
@@ -49,9 +40,11 @@ export default function TossDetail({ isEmbedded = false }) {
     let cancelled = false
     let resolved = false
     let receivedBundle = false
+    let sync
 
     setLoading(true)
     setSnap(null)
+    setMarketInfo(location.state?.matchData)
     setLoadError('')
     setRequiresLogin(false)
     setRequiresPro(false)
@@ -72,23 +65,12 @@ export default function TossDetail({ isEmbedded = false }) {
       }
       const tossData = bundle?.toss
       if (tossData && !tossData.error) {
-        setSnap(tossData)
-        setLoadError('')
-        setLoading(false)
-        resolved = true
-        return true
+        return handleSnapshot(tossData)
       }
       return false
     }
 
-    const handleSnapshot = snapshot => {
-      if (cancelled || !snapshot || snapshot.error) return false
-      setSnap(snapshot)
-      setLoadError('')
-      setLoading(false)
-      resolved = true
-      return true
-    }
+    const handleSnapshot = snapshot => cancelled ? false : sync.apply(snapshot)
     const handleRequestError = error => {
       if (cancelled) return true
       if (isLoginRequiredError(error)) {
@@ -106,6 +88,14 @@ export default function TossDetail({ isEmbedded = false }) {
       return false
     }
 
+    sync=createTossSnapshotSync({matchId,fetchSnapshot:getTossSnapshot,onSummary:setMarketInfo,
+      onSnapshot:snapshot=>{
+        setSnap(snapshot)
+        setLoadError('')
+        setLoading(false)
+        resolved=true
+      },onError:handleRequestError})
+    const onTossFeed=payload=>{sync.refreshFromFeed(payload)}
     const onBundle = bundle => {
       receivedBundle = true
       handleBundle(bundle)
@@ -115,6 +105,7 @@ export default function TossDetail({ isEmbedded = false }) {
     }
     const cached = getMatchBundle(matchId)
     if (hasTossSnapshot(cached)) handleBundle(cached)
+    sync.refresh(location.state?.matchData?.tossLoad)
 
     const loadFromHttp = async () => {
       try {
@@ -137,6 +128,7 @@ export default function TossDetail({ isEmbedded = false }) {
     }, 6000)
     socket.on(`match:bundle:${matchId}`, onBundle)
     socket.on('match:bundle', onGenericBundle)
+    socket.on('toss:matches', onTossFeed)
 
     subscribeMatch(matchId, 'toss')
 
@@ -149,13 +141,15 @@ export default function TossDetail({ isEmbedded = false }) {
 
     return () => {
       cancelled = true
+      sync.cancel()
       clearTimeout(loadingTimeout)
       clearTimeout(fallbackTimer)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, onBundle)
       socket.off('match:bundle', onGenericBundle)
+      socket.off('toss:matches', onTossFeed)
     }
-  }, [matchId, isLoggedIn])
+  }, [matchId, isLoggedIn, location.state?.matchData])
 
   if (loading) return (
     <div className="flex h-[80vh] items-center justify-center">
@@ -203,16 +197,15 @@ export default function TossDetail({ isEmbedded = false }) {
     </div>
   )
 
-  return <TossSnapshotDetails snap={snap} isEmbedded={isEmbedded} onBack={() => navigate(-1)} />
+  return <TossSnapshotDetails snap={snap} matchInfo={marketInfo} isEmbedded={isEmbedded} onBack={() => navigate(-1)} />
 }
 
 // Shared by the dedicated toss page and Match Detail's toss section.
-export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
+export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBack }) {
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
   const raw = snap.deepMetrics?.raw || {}
-  const am1 = getSelectionStakes(snap, t1)
-  const am2 = getSelectionStakes(snap, t2)
+  const market = getTossMarketSummary(snap,matchInfo)
   const exp = getMarketExposureFromTrades(snap, t1, t2)
   const exp1 = exp.team1 || {}, exp2 = exp.team2 || {}
   const ns = snap.netSupport || {}, sent = snap.sentimentScore || {}
@@ -221,14 +214,15 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
   const ruleInputs = getTossRuleInputs(snap)
   const [pl1, pl2] = ruleInputs.pl
   const providerTotals = ruleInputs.providerTotals || [null, null]
-  const totVol = am1.totalBet != null && am2.totalBet != null ? am1.totalBet + am2.totalBet : null
-  const pct1 = totVol > 0 ? Math.round(am1.totalBet / totVol * 100) : null
+  const totVol = market.totalMatched
+  const teamVolume = market.team1.money != null && market.team2.money != null ? market.team1.money + market.team2.money : null
+  const pct1 = teamVolume > 0 ? Math.round(market.team1.money / teamVolume * 100) : null
   const pct2 = pct1 == null ? null : 100 - pct1
   const competition = snap.competitionName || snap.seriesName || ''
   const prediction = predictTossWinner(snap, competition)
   const teams = [
-    { name: t1, volume: am1.totalBet, percentage: pct1, odds: latestMatchedPrice(t1Trades), providerTotal: providerTotals[0], pl: pl1 },
-    { name: t2, volume: am2.totalBet, percentage: pct2, odds: latestMatchedPrice(t2Trades), providerTotal: providerTotals[1], pl: pl2 },
+    { name: t1, volume: market.team1.money, netExposure: market.team1.netExposure, percentage: pct1, odds: market.team1.odds, providerTotal: providerTotals[0], pl: pl1 },
+    { name: t2, volume: market.team2.money, netExposure: market.team2.netExposure, percentage: pct2, odds: market.team2.odds, providerTotal: providerTotals[1], pl: pl2 },
   ]
   const metricRows = [
     { label: 'Back exposure', values: [raw.A_back_expo, raw.B_back_expo] },
@@ -274,21 +268,27 @@ export function TossSnapshotDetails({ snap, isEmbedded = false, onBack }) {
           <AvoidEntryBanner risk={prediction.risk} />
         </section>}
 
+        {!prediction && ruleInputs.unavailableReason && <section className="toss-prediction-card" aria-label="Toss prediction unavailable" role="status">
+          <div className="toss-prediction-header"><span><Trophy size={15} />Toss Winner Prediction</span></div>
+          <p className="toss-prediction-reason">{ruleInputs.unavailableReason}</p>
+        </section>}
+
         <section className="toss-comparison-card" aria-labelledby="market-activity-heading">
           <div className="toss-comparison-heading"><h2 id="market-activity-heading">Market activity</h2><span>Total matched <strong>€{formatVolStr(totVol)}</strong></span></div>
           <div className="match-market-cards toss-market-cards" aria-label="Toss market activity by team">
             {teams.map((team, index) => <article className={`match-market-team team-${index}`} key={team.name}>
               <header className="match-market-team-name"><span>{team.name.split(/\s+/).map(word => word[0]).join('').slice(0, 3)}</span><h3>{team.name}</h3></header>
               <div className="toss-market-team-quote">
-                <div><small>Latest odds</small><strong>{formatOdds(team.odds)}</strong></div>
+                <div><small>Toss odds</small><strong aria-label={`${team.name} odds`}>{formatOdds(team.odds)}</strong></div>
                 <div><small>Support</small><strong>{team.percentage == null ? '—' : `${team.percentage}%`}</strong></div>
               </div>
               <div className="match-market-team-stats">
-                <div><small>Provider total</small><strong>{team.providerTotal == null ? '—' : `€${formatVolStr(team.providerTotal)}`}</strong></div>
+                <div><small>Net exposure (Back − Lay)</small><strong aria-label={`${team.name} net exposure`} className={pnlCls(team.netExposure)}>{fmtRs(team.netExposure)}</strong></div>
                 <div><small>P/L if wins</small><strong className={pnlCls(team.pl)}>{fmtRs(team.pl)}</strong></div>
+                <div title="Provider activity total; separate from net exposure and settlement P/L"><small>Provider total</small><strong>{formatTossMoney(team.providerTotal)}</strong></div>
               </div>
               <div className="match-market-team-matched">
-                <div><small>Total matched</small><strong>€{formatVolStr(team.volume)}</strong><span>of €{formatVolStr(totVol)}</span></div>
+                <div><small>Total matched</small><strong aria-label={`${team.name} matched money`} title={formatTossMoney(team.volume)}>€{formatVolStr(team.volume)}</strong><span>of €{formatVolStr(totVol)}</span></div>
                 <b>{team.percentage == null ? '—' : `${team.percentage}%`}</b>
               </div>
               <div className="match-market-team-bar" aria-label={`${team.name} ${team.percentage ?? 0}% support`}><span style={{ width: `${team.percentage ?? 0}%` }} /></div>

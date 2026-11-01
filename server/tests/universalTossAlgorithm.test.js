@@ -1,24 +1,25 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const {predictTossWinner,getLeagueTossPrediction,PREDICTOR_VERSION} = require('../utils/tossPredictor');
+const {predictTossWinner,getLeagueTossPrediction} = require('../utils/tossPredictor');
 const {getLeagueTossPrediction:dispatch} = require('../utils/tossLeagueAlgorithms');
 const {getTossRuleInputs,selectTossWinner} = require('../utils/universalTossAlgorithm.mjs');
 const {getBookiePlFromMatchedTrades} = require('../utils/bookiePl.mjs');
 const fixture = () => ({teamNames:['Alpha','Beta'],deepMetrics:{totals:{team1:100,team2:300}},
-  teams:{Alpha:{trades:[{type:'lay',price:2,size:10}]},Beta:{trades:[{type:'back',price:2,size:20}]}}});
+  teams:{Alpha:{trades:[{type:'back',price:2,size:1},{type:'lay',price:2,size:11}]},Beta:{trades:[{type:'back',price:2,size:21},{type:'lay',price:2,size:1}]}}});
 
-test('positive P/L and lower provider total must belong to the same team', () => {
-  const names = ['Alpha','Beta'];
-  assert.equal(selectTossWinner({teamNames:names,providerTotals:[100,300],pl:[30,-30]}).winner,'Alpha');
-  assert.equal(selectTossWinner({teamNames:names,providerTotals:[300,100],pl:[-30,30]}).winner,'Beta');
-  assert.equal(selectTossWinner({teamNames:names,providerTotals:[100,300],pl:[30,40]}).winner,'Alpha');
-  for (const values of [[100,300,-30,30],[100,300,0,30],[100,300,-10,-20],[100,100,30,-30]]) {
-    assert.equal(selectTossWinner({teamNames:names,providerTotals:values.slice(0,2),pl:values.slice(2)}),null);
+test('signed net exposure selects higher or lower only with complete positive back and lay values', () => {
+  const teamNames = ['Alpha','Beta'];
+  for (const risk of [{back:[5,10],lay:[5,20]},{back:[5,10],lay:[20,20]}]) {
+    assert.equal(selectTossWinner({teamNames,risk}).winner,risk.lay[0]===5 ? 'Beta' : 'Alpha');
+    assert.equal(selectTossWinner({teamNames,risk,selection:'higher'}).winner,risk.lay[0]===5 ? 'Alpha' : 'Beta');
   }
-  assert.equal(selectTossWinner({teamNames:names,providerTotals:[0,100],pl:[1,-1]}).winner,'Alpha');
+  for (const risk of [undefined,{back:[10,20],lay:[5,15]},{back:[0,10],lay:[5,20]},
+    {back:[5,10],lay:[null,20]},{back:[Infinity,10],lay:[5,20]}]) {
+    assert.equal(selectTossWinner({teamNames,risk}),null);
+  }
 });
 
-test('all leagues prioritize combined risk ahead of provider and P/L rules', () => {
+test('all league entry points use net exposure ahead of provider and P/L rules', () => {
   const {LEAGUE_MATCH_ALGORITHMS} = require('../utils/normalLeagueMatchPredictor.mjs');
   for (const name of [...LEAGUE_MATCH_ALGORITHMS.map(profile => profile.league),'Unknown League','']) {
     const snapshot = {...fixture(),competitionName:name};
@@ -60,10 +61,10 @@ test('missing, equal, invalid values or unavailable trades never trigger an old 
   }
 });
 
-test('zero-risk provider fallback matches the toss screen when current totals are absent', () => {
+test('zero exposure blocks predictions even when provider totals are available', () => {
   const snapshot = {...fixture(),deepMetrics:undefined,preMatchTotalBets:{team1:100,team2:300}};
   snapshot.teams.Alpha.trades=[];
-  assert.equal(predictTossWinner(snapshot).winnerName,'Alpha');
+  assert.equal(predictTossWinner(snapshot),null);
   assert.deepEqual(getTossRuleInputs(snapshot).providerTotals,[100,300]);
 });
 

@@ -14,6 +14,11 @@ const { compactSessionPayload } = require('../../utils/sessionPayload');
 const {snapshotPollingPolicy}=require('../../utils/snapshotPolling');
 
 const adapter = new TennisLiveLoadAdapter();
+const { createTossSnapshotRefresher } = require('../tossSnapshotRefresher');
+const tossSnapshotRefresher = createTossSnapshotRefresher({
+  fetchSnapshot: id => adapter.getTossSnapshot(id),
+  ingestSnapshot: (matchId,data) => getIngestQueue().add('ingest',{source:'tll',type:'toss:snapshot',matchId,data}),
+});
 let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 10000;
 let _timer = null;
 let _isRunning = false;
@@ -141,12 +146,15 @@ async function runPollCycle() {
     }
     // 2. Fetch snapshots for active matches (both live and upcoming) + subscribed matches
     let clientsCount = 0;
+    let subscribedMatchIds = new Set();
+    let watchingTossFeed = false;
     try {
       const socketService = require('../socketService');
       if (typeof socketService.getActiveSubscribedMatchIds === 'function') {
         subscribedMatchIds = new Set(socketService.getActiveSubscribedMatchIds());
       }
       clientsCount = socketService.getConnectedClientsCount?.() || 0;
+      watchingTossFeed = socketService.hasActiveFeedSubscribers?.('toss') || false;
     } catch {}
 
     // When 0 users are connected and no match rooms are subscribed, skip individual snapshot/odds fetching to save bandwidth
@@ -195,24 +203,10 @@ async function runPollCycle() {
             }).catch(() => {});
           }
         } catch {}
-
-        if (policy.fetchToss) {
-          adapter.getTossSnapshot(mid)
-            .then(tossSnap => {
-              if (tossSnap && !tossSnap.error) {
-                queue.add('ingest', {
-                  source: 'tll',
-                  type: 'toss:snapshot',
-                  matchId: mid,
-                  data: tossSnap,
-                }).catch(() => {});
-              }
-            })
-            .catch(() => {});
-        }
       }));
     }
 
+    await tossSnapshotRefresher.refresh(toss,{subscribedIds:subscribedMatchIds,watchingFeed:watchingTossFeed});
     await refreshSessionDetails(sessionMatches, subscribedMatchIds, queue);
   } catch (err) {
     console.error('❌ [TLL-Worker] poll cycle error:', err.message);

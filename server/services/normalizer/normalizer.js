@@ -163,6 +163,7 @@ async function processIngestJob(job) {
     const matchInfo = _tossMatches.find(match => String(match.matchId || match.id) === mid)
       || _cricketMatches.find(match => String(match.matchId || match.id) === mid);
     const snapshot = await getDefaultProviderTotalStore().attach(data, {matchId:mid,market:'toss',matchInfo});
+    const changed = fingerprint(_tossSnapshots.get(mid) || null) !== fingerprint(snapshot);
     _tossSnapshots.set(mid, snapshot);
     await redis.set(`match:${mid}:toss`, JSON.stringify(snapshot), 'EX', 120);
 
@@ -170,6 +171,10 @@ async function processIngestJob(job) {
     await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
     await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
     await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
+    if (changed) {
+      _tossMatchesUpdatedAt = new Date().toISOString();
+      await redis.publish('toss:matches', '{}');
+    }
   }
 
   else if (type === 'session:trades' && matchId && data) {

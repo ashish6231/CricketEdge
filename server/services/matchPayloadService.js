@@ -14,6 +14,7 @@ const { getDefaultStore: getDefaultTossStore } = require('./tossDatasetStore');
 const { isEndedMatch, guestMayViewMatch, guestMayViewFromInfos } = require('../lib/guestMatchAccess');
 const { hasProAccess } = require('../lib/subscriptionAccess');
 const { getSiteModeSync } = require('../lib/siteSettings');
+const { getTossMarketSummary } = require('../utils/tossMarketSummary.mjs');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 
 // In-memory cache for toss dataset (prevents reading 1.4MB JSON from disk on every call)
@@ -250,25 +251,7 @@ function computeMatchLoad(snap, matchInfo) {
 }
 
 function computeTossLoad(snap, matchInfo) {
-  if (!snap && !matchInfo) return null;
-  const t1 = snap?.teamNames?.[0] || matchInfo?.team1 || matchInfo?.matchName?.split(' v ')?.[0] || 'Team 1';
-  const t2 = snap?.teamNames?.[1] || matchInfo?.team2 || matchInfo?.matchName?.split(' v ')?.[1] || 'Team 2';
-
-  const m1 = snap?.advancedMetricsV2?.team1 || snap?.supportMetrics?.team1 || null;
-  const m2 = snap?.advancedMetricsV2?.team2 || snap?.supportMetrics?.team2 || null;
-
-  const vol1 = m1?.totalBet || m1?.back || m1?.lay || 0;
-  const vol2 = m2?.totalBet || m2?.back || m2?.lay || 0;
-  const total = vol1 + vol2;
-
-  const pct1 = total > 0 ? Math.round((vol1 / total) * 100) : 50;
-  const pct2 = total > 0 ? (100 - pct1) : 50;
-
-  return {
-    team1: { name: t1, money: Math.round(vol1), percent: pct1 },
-    team2: { name: t2, money: Math.round(vol2), percent: pct2 },
-    totalMatched: Math.round(total),
-  };
+  return getTossMarketSummary(snap,matchInfo);
 }
 
 function findMatchInfo(matches, matchId) {
@@ -549,7 +532,7 @@ async function getTossMatchesPayload() {
         status: matchStatus,
         inPlay: !isEnded && Boolean(m.inPlay || m.status === 'in-play'),
         startTime: m.startTime || m.openDate || snap?.startTime || dsRec?.startTime || null,
-        totalMatched: load?.totalMatched || m.totalMatched || 0,
+        totalMatched: load?.totalMatched ?? null,
         runners: m.runners || [],
         matchLoad: load,
         tossLoad: load,
