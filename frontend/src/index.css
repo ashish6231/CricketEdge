@@ -23,7 +23,7 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
 }
 
 body {
@@ -35,11 +35,11 @@ body {
 
 /* ── Transitions ── */
 a, button {
-  transition: opacity 0.15s ease, transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition: opacity 0.12s ease, color 0.12s ease, background-color 0.12s ease, border-color 0.12s ease;
 }
 
 button:active {
-  transform: scale(0.97);
+  opacity: 0.88;
 }
 
 .glass-card {
@@ -122,7 +122,6 @@ button:active {
   padding: 12px 14px;
   border-radius: 14px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(16px);
   animation: toastSlideIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -149,9 +148,7 @@ button:active {
 }
 
 .live-desk-filters {
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: rgba(0, 0, 0, 0.94);
   border-bottom: 1px solid rgba(44, 44, 46, 0.85);
 }
 

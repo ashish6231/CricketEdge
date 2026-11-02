@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const prisma = require('../db/prisma');
-const { hasProAccess } = require('../lib/subscriptionAccess');
+const { hasProAccess, hasFeatureAccess } = require('../lib/subscriptionAccess');
 const { getSiteModeSync } = require('../lib/siteSettings');
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -187,6 +187,19 @@ function requireProSubscription(req, res, next) {
   });
 }
 
+function requireFeatureSubscription(feature) {
+  return (req, res, next) => verifyToken(req, res, () => {
+    const role = req.user?.role;
+    if (role === 'admin' || role === 'superadmin' || getSiteModeSync() === 'free') return next();
+    if (hasFeatureAccess(req.user, feature)) return next();
+    return res.status(403).json({
+      success: false,
+      message: `${feature[0].toUpperCase()}${feature.slice(1)} subscription required`,
+      code: 'SUBSCRIPTION_REQUIRED', requiredFeature: feature, upgradeUrl: '/subscription'
+    });
+  });
+}
+
 /** Use after optionalAuth — no second DB hit when req.user already has sub fields. */
 function assertProAccess(req, res) {
   const role = req.user?.role;
@@ -198,6 +211,22 @@ function assertProAccess(req, res) {
   if (getSiteModeSync() === 'free') return true;
   if (hasProAccess(req.user)) return true;
   res.status(403).json({ success: false, message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED' });
+  return false;
+}
+
+function assertFeatureAccess(req, res, feature) {
+  const role = req.user?.role;
+  if (role === 'admin' || role === 'superadmin') return true;
+  if (!req.user) {
+    res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.' });
+    return false;
+  }
+  if (getSiteModeSync() === 'free' || hasFeatureAccess(req.user, feature)) return true;
+  res.status(403).json({
+    success: false,
+    message: `${feature[0].toUpperCase()}${feature.slice(1)} subscription required`,
+    code: 'SUBSCRIPTION_REQUIRED', requiredFeature: feature,
+  });
   return false;
 }
 
@@ -265,10 +294,13 @@ module.exports = {
   verifyToken,
   optionalAuth,
   requireProSubscription,
+  requireFeatureSubscription,
   assertProAccess,
+  assertFeatureAccess,
   assertTelegramMembership,
   sanitizeUserRecord,
   invalidateAuthCache,
   clearAuthCache,
+  resolveBearerUser,
   JWT_SECRET,
 };

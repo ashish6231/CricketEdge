@@ -8,6 +8,28 @@ const {
 const TRIAL_MINUTES = TRIAL_DEFAULTS.value;
 const TRIAL_LABEL = '30-minute';
 
+const PAID_PLAN_SLUGS = Object.freeze(['lite', 'pro']);
+const PLAN_FEATURES = Object.freeze({
+  free: [],
+  lite: ['cricket', 'session', 'toss'],
+  pro: ['cricket', 'session', 'toss', 'tennis'],
+  trial: ['cricket', 'session', 'toss', 'tennis'],
+});
+
+function hasActiveSubscription(user, now = new Date()) {
+  if (!user) return false;
+  if (user.role === 'admin' || user.role === 'superadmin') return true;
+  const expiresAt = user.subExpiresAt ? new Date(user.subExpiresAt) : null;
+  if (expiresAt && expiresAt <= now) return false;
+  return user.subStatus === 'active' && (PAID_PLAN_SLUGS.includes(user.subPlanSlug) || user.subPlanSlug === 'trial');
+}
+
+function hasFeatureAccess(user, feature, now = new Date()) {
+  if (!hasActiveSubscription(user, now)) return false;
+  if (user?.role === 'admin' || user?.role === 'superadmin') return true;
+  return (PLAN_FEATURES[user.subPlanSlug] || []).includes(feature);
+}
+
 async function getTrialConfig(prisma) {
   const rows = await prisma.siteSettings.findMany({
     where: { key: { in: Object.values(TRIAL_SETTING_KEYS) } },
@@ -16,12 +38,7 @@ async function getTrialConfig(prisma) {
 }
 
 function hasProAccess(user, now = new Date()) {
-  if (!user) return false;
-  if (user.role === 'admin' || user.role === 'superadmin') return true;
-  const expiresAt = user.subExpiresAt ? new Date(user.subExpiresAt) : null;
-  if (expiresAt && expiresAt <= now) return false;
-  if (user.subStatus !== 'active') return false;
-  return user.subPlanSlug === 'pro' || user.subPlanSlug === 'trial';
+  return hasActiveSubscription(user, now);
 }
 
 function isActiveTrial(user, now = new Date()) {
@@ -33,7 +50,7 @@ function isPaidPro(user, now = new Date()) {
   if (user.role === 'admin' || user.role === 'superadmin') return true;
   const expiresAt = user.subExpiresAt ? new Date(user.subExpiresAt) : null;
   if (!expiresAt || expiresAt <= now) return false;
-  return user.subPlanSlug === 'pro' && user.subStatus === 'active';
+  return PAID_PLAN_SLUGS.includes(user.subPlanSlug) && user.subStatus === 'active';
 }
 
 function getTrialMinutesLeft(user, now = new Date()) {
@@ -115,7 +132,7 @@ async function grantTrialIfEligible(prisma, userId, { force = false, now = new D
   if (!user) return { granted: false, user: null, reason: 'not_found' };
   if (user.role !== 'user') return { granted: false, user, reason: 'not_user' };
   if (user.status !== 'active') return { granted: false, user, reason: 'inactive' };
-  if (user.subPlanSlug === 'pro') return { granted: false, user, reason: 'already_pro' };
+  if (PAID_PLAN_SLUGS.includes(user.subPlanSlug)) return { granted: false, user, reason: 'already_pro' };
   if (user.subPlanSlug === 'trial' && user.subExpiresAt && new Date(user.subExpiresAt) > now) {
     return { granted: false, user, reason: 'trial_active' };
   }
@@ -172,7 +189,7 @@ async function expireTrialIfNeeded(prisma, userId, now = new Date()) {
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (!user) return user;
 
-  const isPaidOrTrial = user.subPlanSlug === 'trial' || user.subPlanSlug === 'pro';
+  const isPaidOrTrial = user.subPlanSlug === 'trial' || PAID_PLAN_SLUGS.includes(user.subPlanSlug);
   if (!isPaidOrTrial || user.subStatus !== 'active') return user;
   if (!user.subExpiresAt || new Date(user.subExpiresAt) > now) return user;
 
@@ -200,7 +217,7 @@ async function expireAllTrials(prisma) {
   const now = new Date();
   const expired = await prisma.user.findMany({
     where: {
-      subPlanSlug: { in: ['trial', 'pro'] },
+      subPlanSlug: { in: ['trial', ...PAID_PLAN_SLUGS] },
       subStatus: 'active',
       subExpiresAt: { lte: now },
     },
@@ -214,7 +231,7 @@ async function expireAllTrials(prisma) {
     data: { subPlanSlug: 'free', subStatus: 'active', subPlanId: null, subExpiresAt: null, subAutoRenew: false },
   });
 
-  for (const planSlug of ['trial', 'pro']) {
+  for (const planSlug of ['trial', ...PAID_PLAN_SLUGS]) {
     const ids = expired.filter(u => u.subPlanSlug === planSlug).map(u => u.id);
     if (!ids.length) continue;
     await prisma.userSubscription.updateMany({
@@ -262,6 +279,10 @@ module.exports = {
   getTrialExpiresAt,
   getTrialConfig,
   hasProAccess,
+  hasActiveSubscription,
+  hasFeatureAccess,
+  PAID_PLAN_SLUGS,
+  PLAN_FEATURES,
   isActiveTrial,
   isPaidPro,
   getTrialMinutesLeft,

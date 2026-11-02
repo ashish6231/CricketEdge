@@ -1,8 +1,8 @@
 import PageLoading from '../components/PageLoading'
 import { lazy, useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
-import { Activity, LoaderCircle, ChevronRight, Lock, BarChart3 } from 'lucide-react'
-import { hasProAccess } from '../lib/subscriptionAccess'
+import { Activity, ChevronRight, Lock, BarChart3 } from 'lucide-react'
+import { hasFeatureAccess } from '../lib/subscriptionAccess'
 const SessionDetail = lazy(() => import('./SessionDetail'))
 import { getSocket, releaseFeed, requestSessionFeed } from '../socket'
 import { getSessionMatches } from '../api'
@@ -48,7 +48,7 @@ export default function SessionPage() {
   const navigate = useNavigate()
   const { matchId } = useParams()
   const { user, mobileMenu, setMobileMenu } = useOutletContext()
-  const isPro = hasProAccess(user)
+  const isPro = hasFeatureAccess(user, 'session')
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [competitions, setCompetitions] = useState({})
@@ -336,7 +336,7 @@ export default function SessionPage() {
                           {accessType === 'free'
                             ? <span className="text-xs font-semibold text-[#22c55e]">Free access</span>
                             : accessType === 'pro'
-                              ? <span className="text-xs font-semibold text-[#f59e0b]">Pro access</span>
+                              ? <span className="text-xs font-semibold text-[#f59e0b]">Plan access</span>
                               : <span className="text-xs font-semibold flex items-center gap-1 text-[#ef4444]"><Lock size={11} /> Pro Required</span>
                           }
                           <ChevronRight className="h-4 w-4 text-[#8e8e93] group-hover:text-[#f59e0b] transition-colors" />

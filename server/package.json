@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "node scripts/fix-agent-base.js",
     "prestart": "node scripts/fix-agent-base.js",
-    "start": "node scripts/fix-agent-base.js && node scripts/migrate_prediction_datasets.js && node index.js",
+    "start": "node scripts/fix-agent-base.js && prisma generate && node scripts/migrate_prediction_datasets.js && node scripts/migrate_subscription_payments.js && node index.js",
     "dev": "nodemon index.js",
     "dev:test": "NODE_ENV=test nodemon index.js",
     "start:test": "NODE_ENV=test node index.js",
@@ -16,6 +16,7 @@
     "sync:wncl": "node scripts/sync_wncl.js",
     "sync:spring-t20": "node scripts/sync_womens_spring.js",
     "migrate:predictions": "node scripts/migrate_prediction_datasets.js",
+    "migrate:payments": "node scripts/migrate_subscription_payments.js",
     "revoke:all-trials": "node scripts/revoke_all_trials.js",
     "worker:captures": "node scripts/admin-job-worker.js"
   },

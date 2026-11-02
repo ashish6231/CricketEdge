@@ -36,7 +36,7 @@ export default function AdminSubscriptionLogs() {
     <div className="space-y-4">
 
       <div className="rounded-xl px-3 py-2 text-xs text-[#888]" style={{ background: 'rgba(16,185,129,0.06)', border: '1px solid rgba(16,185,129,0.15)' }}>
-        Complete subscription history — every Pro purchase, renewal, admin grant, failed attempt, and cancellation.
+        Complete subscription history — every plan purchase, renewal, admin grant, failed attempt, and cancellation.
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -54,7 +54,8 @@ export default function AdminSubscriptionLogs() {
         </select>
         <select value={planSlug} onChange={e => { setPlanSlug(e.target.value); setPage(1) }} className={filterSelect} style={filterStyle}>
           <option value="">All Plans</option>
-          <option value="pro">Pro</option>
+          <option value="lite">CricEdge Lite</option>
+          <option value="pro">CricEdge Pro</option>
           <option value="free">Free</option>
         </select>
         <select value={subStatus} onChange={e => { setSubStatus(e.target.value); setPage(1) }} className={filterSelect} style={filterStyle}>

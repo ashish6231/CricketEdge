@@ -20,10 +20,13 @@ const STATUS_CFG = {
   suspended: { label: 'Suspended', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
 }
 const PLAN_CFG = {
-  pro: { label: '⭐ Pro', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  pro: { label: 'CricEdge Pro', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  lite: { label: 'CricEdge Lite', color: '#0f766e', bg: 'rgba(15,118,110,0.12)' },
   trial: { label: 'Trial', color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
   free: { label: 'Free', color: '#8e8e93', bg: 'rgba(142,142,147,0.10)' },
 }
+const PAID_PLANS = ['lite', 'pro']
+const PLAN_OPTIONS = PAID_PLANS.map(value => ({ value, label: PLAN_CFG[value].label.replace('⭐ ', '') }))
 
 const Chip = ({ cfg }) => (
   <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold" style={{ color: cfg.color, background: cfg.bg }}>
@@ -84,6 +87,7 @@ export default function AdminUsers({ isSuperAdmin }) {
   const [acting, setActing] = useState(null)
   const [expanded, setExpanded] = useState(null)
   const [proMonths, setProMonths] = useState({})
+  const [planGrants, setPlanGrants] = useState({})
   const [bulkGranting, setBulkGranting] = useState(false)
   const [trialEnabled, setTrialEnabled] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
@@ -334,7 +338,7 @@ export default function AdminUsers({ isSuperAdmin }) {
             const isOpen = expanded === u.id
             const isActing = acting === u.id
             const isExpired = u.subExpiresAt && new Date(u.subExpiresAt) <= new Date()
-            const effectivePlan = (u.subPlanSlug === 'pro' || u.subPlanSlug === 'trial') && isExpired ? 'free' : u.subPlanSlug
+            const effectivePlan = (PAID_PLANS.includes(u.subPlanSlug) || u.subPlanSlug === 'trial') && isExpired ? 'free' : u.subPlanSlug
             const planCfg = PLAN_CFG[effectivePlan] || PLAN_CFG.free
 
             return (
@@ -372,7 +376,7 @@ export default function AdminUsers({ isSuperAdmin }) {
                 {/* ── Joined date strip ── */}
                 <div className="px-4 pb-3 flex items-center gap-4 text-[11px] text-[#555]">
                   <span>Joined {fmtDate(u.createdAt)}</span>
-                  {u.subExpiresAt && <span>· {u.subPlanSlug === 'trial' ? 'Trial until' : 'Pro until'} {fmtDate(u.subExpiresAt)}</span>}
+                  {u.subExpiresAt && <span>· {u.subPlanSlug === 'trial' ? 'Trial until' : 'Plan until'} {fmtDate(u.subExpiresAt)}</span>}
                 </div>
 
                 {/* ── Floating Popover Menu ── */}
@@ -410,25 +414,29 @@ export default function AdminUsers({ isSuperAdmin }) {
                       {/* Plan actions */}
                       {u.role === 'user' && (<>
                         <div className="h-px bg-[#2c2c2e] my-1"></div>
-                        {trialEnabled && effectivePlan !== 'pro' && (
+                        {trialEnabled && !PAID_PLANS.includes(effectivePlan) && (
                           <ActionMenuItem disabled={isActing} loading={isActing} color="#10b981" icon={<Gift size={14} />} label="Grant Free Trial"
                             onClick={() => grantTrial(u.id, true)} />
                         )}
-                        {effectivePlan !== 'pro' ? (
-                          <div className="px-2 py-1">
+                        <div className="px-2 py-1">
                             <div className="flex items-center justify-between gap-2 mb-1.5 px-1">
-                              <span className="text-[11px] text-[#888] font-semibold">Grant Duration</span>
+                              <span className="text-[11px] text-[#888] font-semibold">Plan & duration</span>
+                              <select value={planGrants[u.id] || (PAID_PLANS.includes(effectivePlan) ? effectivePlan : 'lite')}
+                                onChange={e => setPlanGrants(p => ({ ...p, [u.id]: e.target.value }))}
+                                className="bg-[#1a1a1a] border border-[#333] rounded-lg px-1.5 py-0.5 text-[11px] outline-none text-[#ebebf5]">
+                                {PLAN_OPTIONS.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
+                              </select>
                               <select value={proMonths[u.id] || 1}
                                 onChange={e => setProMonths(p => ({ ...p, [u.id]: +e.target.value }))}
                                 className="bg-[#1a1a1a] border border-[#333] rounded-lg px-1.5 py-0.5 text-[11px] outline-none text-[#ebebf5]">
                                 {[1, 2, 3, 6, 12].map(m => <option key={m} value={m}>{m}mo</option>)}
                               </select>
                             </div>
-                            <ActionMenuItem disabled={isActing} loading={isActing} color="#f59e0b" icon={<Crown size={14} />} label="Grant Pro"
-                              onClick={() => act(u.id, adminUpdateUserPlan, u.id, 'pro', 'Admin grant', proMonths[u.id] || 1)} />
+                            <ActionMenuItem disabled={isActing} loading={isActing} color="#f59e0b" icon={<Crown size={14} />} label={PAID_PLANS.includes(effectivePlan) ? 'Change / extend plan' : 'Grant selected plan'}
+                              onClick={() => act(u.id, adminUpdateUserPlan, u.id, planGrants[u.id] || (PAID_PLANS.includes(effectivePlan) ? effectivePlan : 'lite'), 'Admin grant', proMonths[u.id] || 1)} />
                           </div>
-                        ) : (
-                          <ActionMenuItem disabled={isActing} loading={isActing} color="#8e8e93" icon={<X size={14} />} label="Revoke Pro"
+                        {PAID_PLANS.includes(effectivePlan) && (
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#8e8e93" icon={<X size={14} />} label="Revoke paid plan"
                             onClick={() => act(u.id, adminUpdateUserPlan, u.id, 'free', 'Admin revoke')} />
                         )}
                       </>)}

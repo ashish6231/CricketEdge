@@ -1,224 +1,146 @@
-import { useEffect, useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { LoaderCircle, CheckCircle, Crown, Calendar } from 'lucide-react'
-import { getPlans, getMySubscription, createOrder, verifyPayment, paymentFailed } from '../api'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useOutletContext } from 'react-router-dom'
+import { Calendar, CheckCircle, Crown, LoaderCircle } from 'lucide-react'
+import { getPlans, getMySubscription, getUpiPaymentSettings } from '../api'
 import { useToast } from '../components/ToastProvider'
-import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
-import { loadScript } from '../lib/loadScript'
+import { isActiveTrial, getTrialMinutesLeft, formatTrialTimeLeft, getPlanPurchaseState, hasProAccess, PLAN_NAMES } from '../lib/subscriptionAccess'
+import SubscriptionCheckout from '../components/SubscriptionCheckout'
+import MyPaymentRequests from '../components/MyPaymentRequests'
 
-const fmt = (n) => Number(n).toLocaleString('en-IN')
-const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
+const fmt = value => Number(value || 0).toLocaleString('en-IN')
+const fmtDate = value => value ? new Date(value).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
+const PAID_SLUGS = new Set(['lite', 'pro'])
+const CHECKOUT_KEY = 'cricedge:pending-checkout'
 
 export default function SubscriptionPage() {
-  const navigate = useNavigate()
   const toast = useToast()
   const { isLoggedIn, user, isFreeMode } = useOutletContext() || {}
-  const [plan, setPlan] = useState(null)
+  const [plans, setPlans] = useState([])
   const [mySub, setMySub] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [paying, setPaying] = useState(false)
   const [cycle, setCycle] = useState('monthly')
+  const [checkout, setCheckout] = useState(null)
+  const [paymentSettings, setPaymentSettings] = useState(null)
+  const [paymentSettingsLoading, setPaymentSettingsLoading] = useState(false)
+  const [requestsRefresh, setRequestsRefresh] = useState(0)
+  const restoredCheckout = useRef(false)
+
+  const refreshSubscription = useCallback(async () => {
+    if (!isLoggedIn) return
+    try { setMySub(await getMySubscription()) } catch {}
+  }, [isLoggedIn])
+
+  const openCheckout = useCallback(async (plan, selectedCycle) => {
+    setCheckout({ plan, cycle: selectedCycle })
+    setPaymentSettingsLoading(true)
+    try { setPaymentSettings((await getUpiPaymentSettings()).data) }
+    catch (error) { setPaymentSettings({ enabled: false }); toast.error(error.detail || 'Payment details are unavailable') }
+    finally { setPaymentSettingsLoading(false) }
+  }, [toast])
+
+  const choosePlan = (plan, selectedCycle) => {
+    if (!isLoggedIn || !user?.email) {
+      sessionStorage.setItem(CHECKOUT_KEY, JSON.stringify({ planSlug: plan.slug, cycle: selectedCycle }))
+      window.dispatchEvent(new CustomEvent('open-login-modal'))
+      return
+    }
+    const activeSubscription = mySub?.subscription || user?.subscription
+    const activeSlug = activeSubscription?.planSlug || 'free'
+    const purchaseState = getPlanPurchaseState({ currentSlug: activeSlug, planSlug: plan.slug, active: PAID_SLUGS.has(activeSlug) && hasProAccess({ role: user?.role, subscription: activeSubscription }) })
+    if (purchaseState.disabled) {
+      toast.info(purchaseState.isCurrent ? `${plan.name} is already active.` : 'CricEdge Lite is already included in your Pro plan.', 3000)
+      return
+    }
+    openCheckout(plan, selectedCycle)
+  }
 
   useEffect(() => {
-    if (!isLoggedIn) { navigate('/'); return }
-    Promise.all([getPlans(), getMySubscription()])
+    Promise.all([getPlans(), isLoggedIn ? getMySubscription() : Promise.resolve(null)])
       .then(([plansRes, subRes]) => {
-        setPlan(plansRes.data?.[0])
+        setPlans((plansRes.data || []).filter(plan => PAID_SLUGS.has(plan.slug)))
         setMySub(subRes)
       })
-      .catch(() => toast.error('Failed to load subscription data'))
+      .catch(() => toast.error('Failed to load subscription plans'))
       .finally(() => setLoading(false))
-  }, [isLoggedIn, navigate, toast])
+  }, [isLoggedIn, toast])
 
-  const handleBuy = async () => {
-    setPaying(true)
-    try {
-      const [order] = await Promise.all([createOrder(cycle), loadScript('https://checkout.razorpay.com/v1/checkout.js', () => Boolean(window.Razorpay))])
-      const options = {
-        key: order.keyId,
-        amount: order.amount,
-        currency: order.currency,
-        name: 'CricEdge Pro',
-        description: `Pro Plan - ${cycle}`,
-        order_id: order.orderId,
-        handler: async (response) => {
-          try {
-            const res = await verifyPayment({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            })
-            toast.success(res.message || 'Pro activated!')
-            const subRes = await getMySubscription()
-            setMySub(subRes)
-          } catch (e) {
-            toast.error(e.detail || 'Payment verification failed')
-          } finally {
-            setPaying(false)
-          }
-        },
-        modal: {
-          ondismiss: async () => {
-            await paymentFailed(order.orderId).catch(() => {})
-            setPaying(false)
-          }
-        },
-        prefill: { email: user?.email || '' },
-        theme: { color: '#167d73' }
-      }
-      const rzp = new window.Razorpay(options)
-      rzp.open()
-    } catch (e) {
-      toast.error(e.detail || 'Could not create order')
-      setPaying(false)
-    }
-  }
+  useEffect(() => {
+    if (!isLoggedIn || !user?.email || loading || restoredCheckout.current) return
+    restoredCheckout.current = true
+    let pending
+    try { pending = JSON.parse(sessionStorage.getItem(CHECKOUT_KEY) || 'null') } catch {}
+    sessionStorage.removeItem(CHECKOUT_KEY)
+    const plan = plans.find(item => item.slug === pending?.planSlug)
+    const activeSubscription = mySub?.subscription || user?.subscription
+    const activeSlug = activeSubscription?.planSlug || 'free'
+    const purchaseState = getPlanPurchaseState({ currentSlug: activeSlug, planSlug: plan?.slug, active: PAID_SLUGS.has(activeSlug) && hasProAccess({ role: user?.role, subscription: activeSubscription }) })
+    if (plan && !purchaseState.disabled) openCheckout(plan, pending.cycle === 'yearly' ? 'yearly' : 'monthly')
+  }, [isLoggedIn, user, mySub, loading, plans, openCheckout])
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 
-  const isPro = isPaidPro({ subscription: mySub?.subscription, role: user?.role })
-  const onTrial = mySub?.subscription?.isTrial || isActiveTrial({ subscription: mySub?.subscription, role: user?.role })
-  const trialMinutesLeft = mySub?.subscription?.trialMinutesLeft ?? getTrialMinutesLeft({ subscription: mySub?.subscription, role: user?.role })
-  const expiresAt = mySub?.subscription?.expiresAt
-  const hasQueued = mySub?.queuedSubscription?.status === 'pending'
-  const price = cycle === 'yearly' ? plan?.yearlyPrice : plan?.price
-  const planLabel = onTrial ? `Trial · ${formatTrialTimeLeft(trialMinutesLeft)} left` : isPro ? '⭐ Pro' : 'Free'
+  const subscription = mySub?.subscription
+  const currentSlug = subscription?.planSlug || user?.subscription?.planSlug || 'free'
+  const onTrial = subscription?.isTrial || isActiveTrial({ subscription, role: user?.role })
+  const trialMinutesLeft = subscription?.trialMinutesLeft ?? getTrialMinutesLeft({ subscription, role: user?.role })
+  const expiresAt = subscription?.expiresAt
+  const currentName = onTrial ? `Trial · ${formatTrialTimeLeft(trialMinutesLeft)} left` : PLAN_NAMES[currentSlug] || 'Free'
+  const activePaidPlan = PAID_SLUGS.has(currentSlug) && hasProAccess({ role: user?.role, subscription: subscription || user?.subscription })
 
   return (
     <div className="subscription-page ui-page mx-auto space-y-5 fade-in">
-      <div className="ui-page-heading"><p className="ui-eyebrow">MEMBERSHIP</p><h1>Subscription</h1><p>Choose your access plan and manage your membership.</p></div>
-
-      {/* Free Mode Announcement */}
-      {isFreeMode && (
-        <div
-          className="rounded-2xl p-5 text-center mb-6"
-          style={{
-            background: 'linear-gradient(135deg, rgba(16,185,129,0.12), rgba(5,150,105,0.04))',
-            border: '1px solid rgba(16,185,129,0.3)',
-          }}
-        >
-          <div className="text-3xl mb-2">🎉</div>
-          <h2 className="text-base font-bold text-white mb-1">CricEdge is Currently in Free Mode!</h2>
-          <p className="text-xs text-emerald-400 max-w-md mx-auto leading-relaxed">
-            All live matches, upcoming fixtures, real-time Betfair odds, and predictions are completely free for all logged-in users. No subscription required!
-          </p>
-        </div>
-      )}
-
-      {onTrial && !isFreeMode && (
-        <div className="rounded-2xl px-4 py-3 text-sm font-semibold"
-          style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', color: '#34d399' }}>
-          🎁 Your free trial is active. You have full live match access for {formatTrialTimeLeft(trialMinutesLeft)} more.
-          After that you'll move to the Free plan — upgrade to Pro to keep access.
-        </div>
-      )}
-
-      {/* Current Status */}
-      <div className="glass-card rounded-2xl p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <Crown size={18} className={isPro || onTrial ? 'text-yellow-500' : 'text-text-muted'} />
-          <span className="font-bold text-text-primary">Current Plan</span>
-        </div>
-        <div className="flex items-center justify-between">
-          <div>
-            <div className={`text-xl font-black ${isPro ? 'text-yellow-500' : onTrial ? 'text-emerald-400' : 'text-text-muted'}`}>
-              {planLabel}
-            </div>
-            {(isPro || onTrial) && expiresAt && (
-              <div className="text-xs text-text-muted mt-1 flex items-center gap-1">
-                <Calendar size={12} /> {onTrial ? 'Trial ends' : 'Expires'}: {fmtDate(expiresAt)}
-              </div>
-            )}
-            {hasQueued && (
-              <div className="text-xs text-profit mt-1">✅ Next renewal queued</div>
-            )}
-          </div>
-          <div className={`px-3 py-1 rounded-full text-xs font-bold ${
-            onTrial ? 'bg-emerald-100 text-emerald-700' : isPro ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500'
-          }`}>
-            {onTrial ? 'trial' : mySub?.subscription?.status || 'active'}
-          </div>
+      <div className="subscription-heading">
+        <div><p className="ui-eyebrow">CRICEDGE MEMBERSHIP</p><h1>Choose your plan</h1><p>Lite for Cricket, Toss & Session. Pro adds complete Tennis access.</p></div>
+        <div className="subscription-cycle" role="group" aria-label="Billing period">
+          {['monthly', 'yearly'].map(value => <button key={value} type="button" aria-pressed={cycle === value} onClick={() => setCycle(value)}>{value === 'monthly' ? 'Monthly' : 'Yearly'}</button>)}
         </div>
       </div>
 
-      {/* Subscription History */}
-      {mySub?.history?.length > 0 && (
-        <div className="glass-card rounded-2xl p-5">
-          <div className="font-bold text-text-primary mb-3">Payment History</div>
-          <div className="space-y-2">
-            {mySub.history.map((h, i) => (
-              <div key={i} className="flex justify-between items-center text-sm py-2 border-b border-border/40 last:border-0">
-                <div>
-                  <div className="font-medium capitalize">{h.planSlug} — {h.billingCycle}</div>
-                  <div className="text-xs text-text-muted">{fmtDate(h.startedAt)} → {fmtDate(h.expiresAt)}</div>
-                </div>
-                <div className="text-right">
-                  <div className="font-bold">₹{fmt(h.amount)}</div>
-                  <div className={`text-xs ${h.payment?.status === 'completed' ? 'text-profit' : 'text-loss'}`}>{h.payment?.status}</div>
-                </div>
+      {isFreeMode && <div className="subscription-free-note">Plans are visible now. Paid access starts on 4 November at 8 PM IST.</div>}
+
+      <section className="subscription-current" aria-label="Current subscription">
+        <span className="subscription-current-icon"><Crown size={19} /></span>
+        <div><small>CURRENT PLAN</small><strong>{currentName}</strong></div>
+        {expiresAt && <span className="subscription-expiry"><Calendar size={13} /> {onTrial ? 'Trial ends' : 'Expires'} {fmtDate(expiresAt)}</span>}
+      </section>
+
+      <div className="subscription-plan-grid">
+        {plans.map(plan => {
+          const { isCurrent, includedInPro, disabled } = getPlanPurchaseState({ currentSlug, planSlug: plan.slug, active: activePaidPlan })
+          const price = cycle === 'yearly' ? plan.yearlyPrice : plan.price
+          return (
+            <article key={plan.slug} className={`subscription-plan-card ${plan.slug === 'pro' ? 'is-featured' : ''} ${isCurrent ? 'is-current' : ''} ${includedInPro ? 'is-included' : ''}`}>
+              <div className="subscription-plan-top">
+                <span className="subscription-plan-icon"><Crown size={19} /></span>
+                <div><h2>{plan.name}</h2><p>{plan.description}</p></div>
+                <span className="subscription-plan-badges">{plan.slug === 'pro' && !isCurrent && <span className="subscription-best">BEST VALUE</span>}{isCurrent && <span className="subscription-current-badge">ACTIVE</span>}{includedInPro && <span className="subscription-included-badge">INCLUDED IN PRO</span>}</span>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Pro Plan Card */}
-      {plan && !isPro && (
-        <div className="rounded-2xl p-5" style={{ background: '#132b2c', border: '1px solid #29645e' }}>
-          <div className="flex items-center gap-2 mb-1">
-            <Crown size={20} className="text-yellow-500" />
-            <span className="text-lg font-black text-text-primary">{plan.name}</span>
-          </div>
-          <p className="text-xs text-text-muted mb-4">{plan.description}</p>
-
-          {/* Billing toggle */}
-          <div className="flex gap-2 mb-4">
-            {['monthly', 'yearly'].map(c => (
-              <button key={c} type="button" aria-pressed={cycle === c} onClick={() => setCycle(c)}
-                className={`flex-1 py-2 rounded-xl text-sm font-semibold transition-all ${cycle === c ? 'text-white' : 'text-text-secondary'}`}
-                style={cycle === c ? { background: '#167d73' } : { background: '#172230', border: '1px solid #33465a' }}
-              >
-                {c === 'monthly' ? `Monthly ₹${fmt(plan.price)}` : `Yearly ₹${fmt(plan.yearlyPrice)}`}
-                {c === 'yearly' && <span className="ml-1 text-xs opacity-80">(Save 2mo)</span>}
+              <div className="subscription-price"><strong>₹{fmt(price)}</strong><span>/{cycle === 'yearly' ? 'year' : 'month'}</span></div>
+              <div className="subscription-plan-features">
+                {(plan.features || []).map((feature, index) => <div key={index}><CheckCircle size={15} /><span>{feature}</span></div>)}
+              </div>
+              <button type="button" className="subscription-buy" disabled={disabled} onClick={() => choosePlan(plan, cycle)}>
+                <span>{isCurrent ? '✓ Active plan' : includedInPro ? 'Included with Pro' : `Choose ${plan.name}`}</span>
               </button>
-            ))}
-          </div>
+              <small className="subscription-admin-note">{isCurrent ? `Active until ${fmtDate(expiresAt)}` : includedInPro ? 'Already available with your Pro plan' : 'Pay by UPI · Activates after verification'}</small>
+            </article>
+          )
+        })}
+      </div>
+      <p className="subscription-free-note">Without an active plan, you can open completed match details for free. Live and upcoming details require a plan that includes that market.</p>
 
-          {/* Features */}
-          <div className="space-y-1.5 mb-4">
-            {plan.features?.map((f, i) => (
-              <div key={i} className="flex items-center gap-2 text-sm">
-                <CheckCircle size={14} className="text-profit flex-shrink-0" />
-                <span className="text-text-secondary">{f}</span>
-              </div>
-            ))}
-          </div>
+      {!plans.length && <div className="subscription-empty">Plans are being updated. Please contact @cricedgeonline on Telegram.</div>}
 
-          <button onClick={handleBuy} disabled={paying}
-            className="w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2 disabled:opacity-50"
-            style={{ background: '#167d73' }}
-          >
-            {paying ? <LoaderCircle size={16} className="animate-spin" /> : <Crown size={16} />}
-            {paying ? 'Processing...' : `Buy Pro — ₹${fmt(price)}`}
-          </button>
-        </div>
-      )}
+      {isLoggedIn && <MyPaymentRequests refreshKey={requestsRefresh} onApproved={refreshSubscription} />}
 
-      {isPro && (
-        <div className="rounded-2xl p-5 text-center" style={{ background: 'rgba(22,163,74,0.07)', border: '1px solid rgba(22,163,74,0.25)' }}>
-          <Crown size={32} className="text-yellow-500 mx-auto mb-2" />
-          <div className="text-lg font-black text-profit">You're on Pro! 🎉</div>
-          <div className="text-xs text-text-muted mt-1">Full access to all features</div>
-          {!hasQueued && plan && (
-            <button onClick={handleBuy} disabled={paying}
-              className="mt-4 px-6 py-2 rounded-xl text-sm font-semibold text-white"
-              style={{ background: '#167d73' }}
-            >
-              Renew Early
-            </button>
-          )}
-        </div>
-      )}
+      {mySub?.history?.length > 0 && <details className="subscription-history">
+        <summary>Payment history</summary>
+        {mySub.history.map((entry, index) => <div key={index}>
+          <span><strong>{PLAN_NAMES[entry.planSlug] || entry.planSlug}</strong><small>{fmtDate(entry.startedAt)} → {fmtDate(entry.expiresAt)}</small></span>
+          <strong>₹{fmt(entry.amount)}</strong>
+        </div>)}
+      </details>}
+      {checkout && <SubscriptionCheckout plan={checkout.plan} cycle={checkout.cycle} settings={paymentSettings} loadingSettings={paymentSettingsLoading} user={user} onClose={() => setCheckout(null)} onSubmitted={() => setRequestsRefresh(value => value + 1)} />}
     </div>
   )
 }

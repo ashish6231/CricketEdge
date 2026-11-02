@@ -6,7 +6,7 @@ const router = express.Router();
 const dataCache = require('../services/dataCache');
 const { getDefaultProviderTotalStore } = require('../services/providerTotalStore');
 const { providerSnapshotFromRecord } = require('../utils/providerTotals.mjs');
-const { optionalAuth, requireProSubscription, assertProAccess, assertTelegramMembership } = require('../middleware/auth');
+const { optionalAuth, requireFeatureSubscription, assertFeatureAccess, assertTelegramMembership } = require('../middleware/auth');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const { getDefaultStore } = require('../services/tossDatasetStore');
@@ -329,8 +329,8 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
       }
     } catch {}
   }
-  const isEnded = matchInfo?.status === 'ended';
-  if (!isEnded && !assertProAccess(req, res)) return;
+  const isEnded = isEndedMatch(matchInfo);
+  if (!isEnded && !assertFeatureAccess(req, res, 'cricket')) return;
   if (!data) return upstreamUnavailable(res, { error: 'No data returned from upstream' });
   if (data?.error) {
     return upstreamUnavailable(res, data);
@@ -364,9 +364,6 @@ router.get('/cricket/match/:matchId/bundle', optionalAuth, assertTelegramMembers
 router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
   const cachedCrex = dataCache.getCrexDetail(matchId);
-  if (cachedCrex) {
-    return res.json({ matchId, crex: cachedCrex });
-  }
   const matches = dataCache.getCricketMatches();
   let matchInfo = findMatchInfo(matches, matchId);
   if (!matchInfo) {
@@ -386,6 +383,8 @@ router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
       }
     } catch {}
   }
+  if (!isEndedMatch(matchInfo) && !assertFeatureAccess(req, res, 'cricket')) return;
+  if (cachedCrex) return res.json({ matchId, crex: cachedCrex });
   const crex = await getCrexForMatch(matchInfo, matchId);
   res.json({ matchId, crex: crex || null });
 });
@@ -497,6 +496,11 @@ router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async
   const cricketMatches = dataCache.getCricketMatches();
   const tossInfo = findMatchInfo(tossMatches, matchId);
   const cricketInfo = findMatchInfo(cricketMatches, matchId);
+  const isEnded = isEndedMatch(tossInfo) || isEndedMatch(cricketInfo);
+  if (!guestMayViewFromInfos(req.user, [tossInfo, cricketInfo])) {
+    return res.status(401).json({ error: 'login_required', message: 'Live/upcoming toss data requires login.', matchId });
+  }
+  if (!isEnded && !assertFeatureAccess(req, res, 'toss')) return;
 
   // 1. Try scraper snapshot
   let data = null;
@@ -565,7 +569,7 @@ router.get('/session/trades/:matchId', optionalAuth, assertTelegramMembership, a
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
   const isEnded = isEndedMatch(sessionInfo) || isEndedMatch(cricketInfo);
-  if (!isEnded && !assertProAccess(req, res)) return;
+  if (!isEnded && !assertFeatureAccess(req, res, 'session')) return;
   const data = await dataCache.getSessionTrades(matchId);
   if (!data || data.error) {
     const status = (data?.upstreamStatus === 404 || data?.notFound || !data) ? 404 : 502;
@@ -574,7 +578,7 @@ router.get('/session/trades/:matchId', optionalAuth, assertTelegramMembership, a
   res.json(data);
 });
 
-router.get('/cricket/odds/:matchId', requireProSubscription, async (req, res) => {
+router.get('/cricket/odds/:matchId', requireFeatureSubscription('cricket'), async (req, res) => {
   // This is an in-memory snapshot read. Keep it fresh on every 5-second client
   // request while returning only the tiny odds projection over the network.
   const data = await dataCache.getCricketSnapshot(req.params.matchId);
@@ -653,7 +657,7 @@ async function _getOrFetchOdds(id) {
   return parsed;
 }
 
-router.get('/cricket/odds-bulk', requireProSubscription, async (req, res) => {
+router.get('/cricket/odds-bulk', requireFeatureSubscription('cricket'), async (req, res) => {
   const matchIds = req.query.ids ? req.query.ids.split(',').filter(Boolean) : [];
   if (!matchIds.length) return res.status(400).json({ error: 'No match IDs provided' });
   
@@ -668,7 +672,7 @@ router.get('/cricket/odds-bulk', requireProSubscription, async (req, res) => {
 
 // ──── Full Data Dump (Debug / Admin) ────
 
-router.get(['/cricket/all-data', '/cricket/full'], requireProSubscription, async (req, res) => {
+router.get(['/cricket/all-data', '/cricket/full'], requireFeatureSubscription('cricket'), async (req, res) => {
   const includeSnapshots = req.query.snapshots !== 'false' && req.query.include_snapshots !== 'false';
   res.json(await dataCache.getCricketFullData(includeSnapshots));
 });
@@ -697,7 +701,7 @@ router.get('/tennis/match/:matchId', optionalAuth, assertTelegramMembership, asy
   }
   const data = await dataCache.getTennisSnapshot(matchId);
   const isEnded = isEndedMatch(matchInfo);
-  if (!isEnded && !assertProAccess(req, res)) return;
+  if (!isEnded && !assertFeatureAccess(req, res, 'tennis')) return;
   if (!data) return upstreamUnavailable(res, { error: 'No data returned from upstream' });
   if (data?.error) return upstreamUnavailable(res, data);
 
@@ -706,7 +710,7 @@ router.get('/tennis/match/:matchId', optionalAuth, assertTelegramMembership, asy
 
 // ──── Live Odds ────
 
-router.get('/live-odds/:matchId', requireProSubscription, async (req, res) => {
+router.get('/live-odds/:matchId', requireFeatureSubscription('cricket'), async (req, res) => {
   res.json(await dataCache.getLiveOdds(req.params.matchId));
 });
 

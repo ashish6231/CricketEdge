@@ -11,6 +11,8 @@ import { ArrowLeft, BarChart3, BookOpen, Coins, Radio, ChevronDown } from 'lucid
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
+import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
+import { requiresPaidMatchAccess, isSubscriptionRequiredError } from '../utils/matchAccess'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
 import { getSimpleBookiePl, splitMatchOutcomes, finiteNumber, timestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
@@ -18,7 +20,7 @@ import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetr
 import SessionPanel from '../components/SessionPanel'
 import MatchPredictionCard, { MatchReversalNotice } from '../components/MatchPredictionCard'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
-import { getCricketMatchBundle, getCricketOdds } from '../api'
+import { getCricketMatchBundle, getCricketOdds, getTennisSnapshot } from '../api'
 import { isCompleteMatchBundle } from '../utils/matchBundle'
 import { getMatchStartTimestamp, isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
 
@@ -85,7 +87,7 @@ export default function MatchDetail({ sport }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn, isFreeMode, authReady } = useOutletContext() || {}
+  const { isLoggedIn, isFreeMode, authReady, user } = useOutletContext() || {}
 
   // Try to get prefetched bundle from socket cache (server pushes all active bundles on connect)
   const prefetched = getMatchBundle(matchId)
@@ -147,6 +149,8 @@ export default function MatchDetail({ sport }) {
   const [fetchError, setFetchError] = useState(null)
   const [requiresLogin, setRequiresLogin] = useState(() => authReady && !isLoggedIn)
   const [requiresPro, setRequiresPro] = useState(false)
+  const requiredFeature = sport === 'tennis' ? 'tennis' : 'cricket'
+  const subscriptionBlocked = requiresPaidMatchAccess({ authReady, isLoggedIn, isFreeMode, user, match: snapshot || seedData, feature: requiredFeature })
   const [, setLastUpdated] = useState(null)
   const [crexData, setCrexData] = useState(seedCrex)
   const [liveOdds, setLiveOdds] = useState(null)
@@ -196,6 +200,7 @@ export default function MatchDetail({ sport }) {
   const selectedSessionTrades = isSessionMarket ? sessionTrades.filter(t => tradeMatchesMarket(t, selectedSessionName)) : []
 
   useEffect(() => {
+    if (subscriptionBlocked) return
     let cancelled = false
     let receivedBundle = false
     // A cached snapshot is only the initial view; always refresh this route.
@@ -233,7 +238,7 @@ export default function MatchDetail({ sport }) {
         setLoading(false)
         return
       }
-      if ((bundle?.code === 'SUBSCRIPTION_REQUIRED' || bundle?.status === 403 || bundle?.error === 'subscription_required') && !isFreeMode) {
+      if (isSubscriptionRequiredError(bundle) && !isFreeMode) {
         setRequiresPro(true)
         setLoading(false)
         return
@@ -243,6 +248,8 @@ export default function MatchDetail({ sport }) {
       if (isLoginRequiredError(data)) {
         setRequiresLogin(true)
       } else if (data && !data.error) {
+        setRequiresPro(false)
+        setRequiresLogin(false)
         setSnapshot(data)
         setFetchError(null)
         const now = new Date()
@@ -304,11 +311,16 @@ export default function MatchDetail({ sport }) {
     // fallback so opening MatchDetail does not download the same large payload twice.
     const bundleFallbackTimer = setTimeout(() => {
       if (cancelled || receivedBundle || document.hidden) return
-      getCricketMatchBundle(matchId)
+      const requestBundle = sport === 'tennis'
+        ? getTennisSnapshot(matchId).then(cricket => ({ matchId, sport: 'tennis', cricket }))
+        : getCricketMatchBundle(matchId)
+      requestBundle
         .then(data => {
           if (!cancelled && !receivedBundle && data) handleBundle(data)
         })
-        .catch(() => { })
+        .catch(error => {
+          if (!cancelled && !receivedBundle) handleBundle(error)
+        })
     }, 6000)
 
     // Safety timeout — agar 8s mein data nahi aaya toh loading hatao
@@ -325,13 +337,13 @@ export default function MatchDetail({ sport }) {
       socket.off('match:bundle', onSpecificBundle)
       socket.off(`match:crex:${matchId}`, onSpecificCrex)
     }
-  }, [matchId, sport, isLoggedIn])
+  }, [matchId, sport, isLoggedIn, isFreeMode, subscriptionBlocked])
 
   const matchEnded = isMatchEnded(snapshot)
 
   useEffect(() => {
     setLiveOdds(null)
-    if (sport !== 'cricket' || !matchId || !authReady || !isLoggedIn || requiresLogin || requiresPro || matchEnded) return
+    if (sport !== 'cricket' || !matchId || !authReady || !isLoggedIn || requiresLogin || requiresPro || subscriptionBlocked || matchEnded) return
     let cancelled = false
     let requestInFlight = false
 
@@ -376,7 +388,7 @@ export default function MatchDetail({ sport }) {
       socket.off('match:odds', onOddsUpdate)
       socket.off(`match:odds:${matchId}`, onOddsUpdate)
     }
-  }, [matchId, sport, authReady, isLoggedIn, requiresLogin, requiresPro, matchEnded])
+  }, [matchId, sport, authReady, isLoggedIn, requiresLogin, requiresPro, subscriptionBlocked, matchEnded])
 
   const liveStartPred = useMemo(() => {
     if (!snapshot) return null
@@ -518,28 +530,8 @@ export default function MatchDetail({ sport }) {
   // authReady false only blocks when no token at all (truly logged out)
   if (!authReady && !localStorage.getItem('auth_token')) return null
 
-  if (requiresPro && !isFreeMode) {
-    return (
-      <div className="flex h-[80vh] items-center justify-center p-4">
-        <div className="rounded-2xl p-8 max-w-sm w-full text-center" style={{ background: '#fff', border: '2px solid #fbbf24', boxShadow: '0 4px 32px rgba(251,191,36,0.15)' }}>
-          <div className="text-5xl mb-4">⭐</div>
-          <h2 className="text-xl font-black text-text-primary mb-2">Pro Plan Needed</h2>
-          <p className="text-text-secondary text-sm mb-2">Yeh match sirf <b>Pro subscribers</b> ke liye available hai.</p>
-          <p className="text-text-muted text-xs mb-6">Live predictions, bookie fingerprint, aur deep metrics dekhne ke liye Pro plan lo.</p>
-          <a
-            href="https://t.me/cricket_edgeonline"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block w-full py-3 rounded-xl font-bold text-white text-sm mb-3"
-            style={{ background: 'linear-gradient(135deg,#1d4ed8,#2563eb)' }}
-          >
-            🚀 Buy Pro — Telegram pe Contact Karo
-          </a>
-          <p className="text-xs text-text-muted mb-4">Telegram: <span className="font-bold text-[#229ED9]">@cricket_edgeonline</span></p>
-          <button onClick={() => navigate(-1)} className="text-sm text-text-muted hover:text-primary">← Back</button>
-        </div>
-      </div>
-    )
+  if ((requiresPro || subscriptionBlocked) && !isFreeMode) {
+    return <SubscriptionRequiredGate featureLabel={sport === 'tennis' ? 'Tennis' : 'Cricket'} onBack={() => navigate(sport === 'tennis' ? '/tennis' : '/cricket')} />
   }
 
   if (requiresLogin) {

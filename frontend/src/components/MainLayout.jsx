@@ -1,21 +1,27 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { Activity, Menu, X, Shield, LogOut, User, ChevronDown, BarChart3, Coins, Crown } from 'lucide-react'
+import { Activity, Menu, X, Shield, LogOut, User, ChevronDown, BarChart3, Coins, Crown, CircleDot } from 'lucide-react'
 import { lazy, Suspense, useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout, getSignupStatus, getTelegramSettings, checkTelegramStatus } from '../api'
-import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
+import { getPlanLabel, hasProAccess, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft, getExpiryReminder } from '../lib/subscriptionAccess'
 import { guestPathAfterLogout, resolveSiteName, splitSiteName, resolveSiteMode, isFreeMode } from '../utils/publicAuth'
 const LoginPage = lazy(() => import('../pages/LoginPage'))
 const TelegramGateModal = lazy(() => import('./TelegramGateModal'))
 import PageLoading from './PageLoading'
+import PaidAccessAnnouncement from './PaidAccessAnnouncement'
+import TelegramLink, { TelegramIcon } from './TelegramLink'
+import { shouldShowAnnouncement, markAnnouncementShown } from '../utils/announcementSession'
 import { getSocket, updateSocketAuth } from '../socket'
+import { useToast } from './ToastProvider'
 
 const NAV_ITEMS = [
   { path: '/cricket', label: 'Cricket', icon: Activity },
   { path: '/toss', label: 'Toss', icon: Coins },
+  { path: '/tennis', label: 'Tennis', icon: CircleDot },
   { path: '/session', label: 'Session', icon: BarChart3 },
 ]
 
 export default function MainLayout() {
+  const toast = useToast()
   const location = useLocation()
   const navigate  = useNavigate()
   const [mobileMenu, setMobileMenu] = useState(false)
@@ -23,6 +29,9 @@ export default function MainLayout() {
   const [authUser, setAuthUser]     = useState(null)
   const [authReady, setAuthReady]   = useState(() => !localStorage.getItem('auth_token'))
   const [loginOpen, setLoginOpen]   = useState(false)
+  const [announcementOpen, setAnnouncementOpen] = useState(() => shouldShowAnnouncement(window.sessionStorage))
+  const [accessNoticeOpen, setAccessNoticeOpen] = useState(() => shouldShowAnnouncement(window.sessionStorage, 'access'))
+  const [siteModeReady, setSiteModeReady] = useState(false)
   const [lastUpdated, setLastUpdated] = useState(null)
   const [dropdown, setDropdown]     = useState(false)
   const [trialBannerHeight, setTrialBannerHeight] = useState(44)
@@ -33,6 +42,7 @@ export default function MainLayout() {
   const [telegramGateEnabled, setTelegramGateEnabled]   = useState(true)
   const dropRef = useRef(null)
   const trialBannerRef = useRef(null)
+  const expiryReminderKey = useRef('')
 
   useEffect(() => {
     try { localStorage.removeItem('live_desk_mode') } catch { /* ignore */ }
@@ -114,6 +124,7 @@ export default function MainLayout() {
         try { sessionStorage.setItem('_site_meta', JSON.stringify({ name, mode })) } catch { /* ignore */ }
       })
       .catch(() => {})
+      .finally(() => setSiteModeReady(true))
   }, [])
 
   useEffect(() => {
@@ -226,6 +237,18 @@ export default function MainLayout() {
   const paidPro = isPaidPro(authUser)
   const planLabel = getPlanLabel(authUser)
   const initials = authUser?.name?.[0]?.toUpperCase() || '?'
+
+  useEffect(() => {
+    const reminder = getExpiryReminder(authUser)
+    if (!reminder) {
+      expiryReminderKey.current = ''
+      return
+    }
+    const key = `${authUser?.id || authUser?.email}:${reminder.planSlug}:${reminder.expiresAt}`
+    if (expiryReminderKey.current === key) return
+    expiryReminderKey.current = key
+    toast.warning(reminder.message, 5000)
+  }, [authUser, toast])
 
   // Clear Telegram Gate immediately if visitor is NOT logged in, or if Admin
   useEffect(() => {
@@ -344,7 +367,7 @@ export default function MainLayout() {
       setTelegramLockReason('Website use karne ke liye please hamara official Telegram channel @cricedge_online join karein.')
     }
     setLoginOpen(false)
-    navigate('/cricket', { replace: true })
+    navigate(sessionStorage.getItem('cricedge:pending-checkout') ? '/subscription' : '/cricket', { replace: true })
   }
 
   const handleLogout = () => {
@@ -359,10 +382,39 @@ export default function MainLayout() {
     navigate(guestPathAfterLogout(location.pathname), { replace: true })
   }
 
+  useEffect(() => {
+    const socket = getSocket()
+    let cancelled = false
+    const refreshPlan = async () => {
+      const data = await getAuthStatus()
+      if (cancelled || data.softFail) return
+      setAuthUser(data.user || null)
+      setIsLoggedIn(Boolean(data.isLoggedIn))
+      updateSocketAuth(localStorage.getItem('auth_token'))
+    }
+    socket.on('planUpdate', refreshPlan)
+    return () => { cancelled = true; socket.off('planUpdate', refreshPlan) }
+  }, [])
+
   const isSportsPage =
     location.pathname.startsWith('/cricket') ||
     location.pathname.startsWith('/session') ||
+    location.pathname.startsWith('/tennis') ||
     location.pathname.startsWith('/toss')
+
+  const telegramGateOpen = telegramGateRequired && telegramGateEnabled && isLoggedIn && !isAdmin
+  const showAccessNotice = accessNoticeOpen && authReady && siteModeReady && !isFree && !hasProAccess(authUser) && (!isLoggedIn || Boolean(authUser)) && !loginOpen && !telegramGateOpen
+  const showAnnouncement = announcementOpen && authReady && siteModeReady && isFree && !loginOpen && !telegramGateOpen
+  useEffect(() => {
+    // Mark on display so refreshing even an undismissed announcement will not reopen it.
+    if (showAnnouncement) markAnnouncementShown(window.sessionStorage)
+  }, [showAnnouncement])
+  useEffect(() => {
+    if (showAccessNotice) markAnnouncementShown(window.sessionStorage, 'access')
+  }, [showAccessNotice])
+  const dismissAnnouncement = () => {
+    setAnnouncementOpen(false)
+  }
 
   useEffect(() => {
     if (!onTrial || isFree || !trialBannerRef.current) return
@@ -425,6 +477,12 @@ export default function MainLayout() {
 
           {/* Right side */}
           <div className="ml-auto flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+
+            <TelegramLink className="site-telegram-link" aria-label="Join our official Telegram channel (opens in a new tab)">
+              <TelegramIcon size={17} />
+              <span className="site-telegram-desktop-label">Join Telegram</span>
+              <span className="site-telegram-mobile-label">Join</span>
+            </TelegramLink>
 
             {/* Admin button — navbar me */}
             {isAdmin && (
@@ -495,7 +553,7 @@ export default function MainLayout() {
                     <Link to="/subscription" onClick={() => setDropdown(false)}
                       className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary hover:bg-[#1a1a1a] transition-colors">
                       <Crown size={14} className="text-primary" />
-                      {isFree ? 'Free Access Active' : paidPro ? 'Manage Subscription' : onTrial ? 'Upgrade Before Trial Ends' : 'Upgrade to Pro'}
+                      {paidPro ? 'Manage Subscription' : onTrial ? 'Choose a plan before trial ends' : 'Explore Lite & Pro'}
                     </Link>
 
                     {isAdmin && <Link to="/admin" onClick={() => setDropdown(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-secondary"><Shield size={14} /> Admin workspace</Link>}
@@ -526,7 +584,7 @@ export default function MainLayout() {
       {onTrial && !isFree && (
         <div ref={trialBannerRef} className="site-trial-banner">
           🎁 Free trial active — {formatTrialTimeLeft(getTrialMinutesLeft(authUser))} left with full live match access.
-          {' '}<Link to="/subscription" className="underline text-white">Upgrade to Pro</Link> before trial ends.
+          {' '}<Link to="/subscription" className="underline text-white">Choose a plan</Link> before trial ends.
         </div>
       )}
 
@@ -538,7 +596,12 @@ export default function MainLayout() {
       </main>
 
       {/* Compulsory Telegram Gate Modal: ONLY for logged-in non-admin users */}
-      {telegramGateRequired && telegramGateEnabled && isLoggedIn && !isAdmin && (
+      {showAnnouncement && (
+        <PaidAccessAnnouncement siteName={siteName} onClose={dismissAnnouncement} />
+      )}
+      {showAccessNotice && <PaidAccessAnnouncement completedOnly onClose={() => setAccessNoticeOpen(false)} onViewPlans={() => { setAccessNoticeOpen(false); navigate('/subscription') }} onBrowseCompleted={() => { setAccessNoticeOpen(false); navigate('/cricket?status=completed') }} />}
+
+      {telegramGateOpen && (
         <Suspense fallback={<PageLoading label="Loading verification" cards={2} />}><TelegramGateModal
           authUser={authUser}
           onVerified={handleTelegramVerified}

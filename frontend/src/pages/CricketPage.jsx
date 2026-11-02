@@ -1,11 +1,12 @@
 import { savedBackOdds, validBackOdds } from '../../../server/utils/endedMatchOdds.mjs'
 import PageLoading from '../components/PageLoading'
 import useDebouncedValue from '../lib/useDebouncedValue'
+import useVisibilityClock from '../lib/useVisibilityClock'
 import { lazy, useEffect, useRef, useState, useMemo, memo, useCallback } from 'react'
-import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
+import { useNavigate, useOutletContext, useParams, useSearchParams } from 'react-router-dom'
 import { LoaderCircle, ChevronRight, Trophy, Lock, X } from 'lucide-react'
 import { getCricketMatches } from '../api'
-import { hasProAccess } from '../lib/subscriptionAccess'
+import { hasFeatureAccess } from '../lib/subscriptionAccess'
 import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
 import { getSocket, releaseFeed, requestCricketFeed } from '../socket'
@@ -103,10 +104,10 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
 
   const diff = Number(match.startTime) - now
   const countdown = (!isLive && !isEnded && diff > 0) ? (() => {
-    const totalSec = Math.floor(diff / 1000)
-    const h = Math.floor(totalSec / 3600), m = Math.floor((totalSec % 3600) / 60), sec = totalSec % 60
+    const totalMinutes = Math.max(1, Math.ceil(diff / 60_000))
+    const h = Math.floor(totalMinutes / 60), m = totalMinutes % 60
     const pad = n => String(n).padStart(2, '0')
-    return h > 24 ? `${Math.floor(h/24)}d ${pad(h%24)}:${pad(m)}:${pad(sec)}` : `${h}:${pad(m)}:${pad(sec)}`
+    return h >= 24 ? `${Math.floor(h/24)}d ${pad(h%24)}h ${pad(m)}m` : h > 0 ? `${h}h ${pad(m)}m` : `${m}m`
   })() : null
 
   const dt = !countdown && !isLive && !isEnded && match.startTime ? (() => {
@@ -142,7 +143,7 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
       {pct1 != null && <div className="match-flow" aria-label={`${team1.name} ${team1.percent} percent market flow, ${team2.name} ${team2.percent} percent`}><span className="match-flow-team-1" style={{ width: `${Math.max(0, Math.min(100, team1.percent))}%` }} /><span className="match-flow-team-2" style={{ width: `${Math.max(0, Math.min(100, team2.percent))}%` }} /></div>}
       <div className="match-card-bottom">
         <span>{((isLive || isEnded) && crex?.statusText) || (total == null ? 'Matched stakes unavailable' : `€${formatVolStr(total)} matched stakes`)}</span>
-        <span className="match-access">{accessType === 'locked' && <Lock size={12} />}{accessType === 'free' ? 'Free access' : accessType === 'locked' ? 'Pro required' : 'Pro access'}</span>
+        <span className="match-access">{accessType === 'locked' && <Lock size={12} />}{accessType === 'free' ? 'Free access' : accessType === 'locked' ? 'Plan required' : 'Plan access'}</span>
         <ChevronRight size={17} />
       </div>
     </button>
@@ -152,8 +153,9 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
 export default function CricketPage() {
   const navigate = useNavigate()
   const { user, mobileMenu, setMobileMenu } = useOutletContext() || {}
-  const isPro = hasProAccess(user)
+  const isPro = hasFeatureAccess(user, 'cricket')
   const { matchId } = useParams()
+  const [searchParams] = useSearchParams()
 
   const [loading, setLoading] = useState(() => {
     // If we have cached matches, don't show full-page loader
@@ -167,7 +169,8 @@ export default function CricketPage() {
     return true
   })
   const [loadError, setLoadError] = useState('')
-  const [matchStatus, setMatchStatus] = useState('all')
+  const [matchStatus, setMatchStatus] = useState(() => searchParams.get('status') === 'completed' ? 'completed' : 'all')
+  useEffect(() => { if (searchParams.get('status') === 'completed') setMatchStatus('completed') }, [searchParams])
   const [leagueQuery, setLeagueQuery] = useState('')
   const debouncedLeague = useDebouncedValue(leagueQuery)
   const [allMatches, setAllMatches] = useState(() => {
@@ -184,7 +187,7 @@ export default function CricketPage() {
   const allMatchesRef = useRef(allMatches)
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
-  const [now, setNow] = useState(() => Date.now())
+  const now = useVisibilityClock()
   const [tossMatchIds, setTossMatchIds] = useState(new Set())
   const [searchQuery, setSearchQuery] = useState('')
   const debouncedSearch = useDebouncedValue(searchQuery)
@@ -209,14 +212,6 @@ export default function CricketPage() {
       setMobileMenu(false)
     }
   }
-
-  // Real-time 1s ticker for countdown clocks
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(Date.now())
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
 
   const processMatches = (data) => {
     if (!data) return

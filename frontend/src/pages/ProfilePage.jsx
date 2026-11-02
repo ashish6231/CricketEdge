@@ -1,6 +1,6 @@
 import { useOutletContext, Link } from 'react-router-dom'
 import { LoaderCircle, Crown, LogOut, Shield } from 'lucide-react'
-import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
+import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft, getPlanLabel } from '../lib/subscriptionAccess'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
@@ -13,7 +13,7 @@ export default function ProfilePage() {
 
   const isPro = isPaidPro(user)
   const onTrial = isActiveTrial(user)
-  const planName = onTrial ? `Trial (${formatTrialTimeLeft(getTrialMinutesLeft(user))} left)` : isPro ? '⭐ Pro' : 'Free'
+  const planName = getPlanLabel(user)
 
   return (
     <div className="account-page ui-page mx-auto space-y-5 fade-in">
@@ -34,7 +34,7 @@ export default function ProfilePage() {
               {user.role === 'admin' && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">Admin</span>}
               {onTrial && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Trial · {formatTrialTimeLeft(getTrialMinutesLeft(user))} left</span>}
               {isPro
-                ? <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700">⭐ Pro</span>
+                ? <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700">{planName}</span>
                 : !onTrial && <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-500">Free</span>
               }
             </div>
@@ -55,7 +55,7 @@ export default function ProfilePage() {
           {onTrial && (
             <div className="flex justify-between py-2 border-b border-border/40">
               <span className="text-text-muted">Live access</span>
-              <span className="font-semibold text-profit">Full Pro access</span>
+              <span className="font-semibold text-profit">All sports & markets</span>
             </div>
           )}
           <div className="flex justify-between py-2 border-b border-border/40">
@@ -77,7 +77,7 @@ export default function ProfilePage() {
           >
             <div className="flex items-center gap-3">
               <Crown size={18} className="text-yellow-500" />
-              <span className="font-semibold text-text-primary">{onTrial ? 'Upgrade to Pro Before Trial Ends' : 'Upgrade to Pro'}</span>
+              <span className="font-semibold text-text-primary">{onTrial ? 'Choose a plan before trial ends' : 'Explore CricEdge Lite & Pro'}</span>
             </div>
             <span className="text-xs text-primary font-bold">Upgrade →</span>
           </Link>

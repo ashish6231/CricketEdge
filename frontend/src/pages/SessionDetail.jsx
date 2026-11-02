@@ -3,15 +3,17 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { Activity, AlertCircle, ArrowLeft, ChevronDown, Info, LoaderCircle, RefreshCw, TrendingUp } from 'lucide-react'
 import { getSessionTrades } from '../api'
 import LoginRequiredGate from '../components/LoginRequiredGate'
+import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
 import { SessionSelector, SessionWorkspace } from '../components/SessionWorkspace'
 import { getMatchBundle, getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
 import { isLoginRequiredError } from '../utils/publicAuth'
+import { requiresPaidMatchAccess } from '../utils/matchAccess'
 import { buildAllSessions, formatVolStr, sessionDataFingerprint } from '../utils/sessionMetrics'
 
 export default function SessionDetail() {
   const { matchId } = useParams()
   const navigate = useNavigate()
-  const { isLoggedIn } = useOutletContext()
+  const { isLoggedIn, authReady, isFreeMode, user } = useOutletContext()
   const initialBundle = getMatchBundle(matchId)
   const cached = initialBundle?.session || null
   const [data, setData] = useState(cached)
@@ -120,18 +122,11 @@ export default function SessionDetail() {
   const isEnded = /ended|complete|finished|result/.test(statusText)
   const matchName = data?.matchName || matchMeta?.matchName || (matchMeta?.teamNames || []).join(' v ') || 'Session Markets'
 
+  if (requiresPaidMatchAccess({ authReady, isLoggedIn, isFreeMode, user, match: matchMeta || data, feature: 'session' })) return <SubscriptionRequiredGate featureLabel="Cricket session" onBack={() => navigate('/session')} />
+
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 
-  if (requiresPro) return (
-    <div className="flex h-[80vh] items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-xl border border-amber-200 bg-white p-8 text-center shadow-sm">
-        <div className="mb-4 text-5xl">⭐</div><h2 className="mb-2 text-xl font-bold text-text-primary">Pro Plan Needed</h2>
-        <p className="mb-6 text-sm text-text-muted">Live session data dekhne ke liye Pro plan lo.</p>
-        <a href="https://t.me/cricket_edgeonline" target="_blank" rel="noopener noreferrer" className="mb-3 block w-full rounded-lg bg-primary py-3 text-sm font-bold text-white">Buy Pro — Telegram</a>
-        <button onClick={() => navigate(-1)} className="text-sm text-text-muted hover:text-text-primary">← Back</button>
-      </div>
-    </div>
-  )
+  if (requiresPro) return <SubscriptionRequiredGate featureLabel="Cricket session" onBack={() => navigate('/session')} />
   if (requiresLogin) return <LoginRequiredGate description="Sign in to view live session data." />
 
   if (!data) return (

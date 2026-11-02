@@ -61,6 +61,8 @@ model User {
   createdPlans      SubscriptionPlan[] @relation("PlanCreatedBy")
   createdCoupons    PromoCode[]        @relation("CouponCreatedBy")
   updatedSettings   SiteSettings[]     @relation("SettingsUpdatedBy")
+  paymentRequests   SubscriptionPaymentRequest[] @relation("PaymentRequestOwner")
+  reviewedPayments  SubscriptionPaymentRequest[] @relation("PaymentRequestReviewer")
 
   @@index([role, status])
   @@index([subPlanSlug])
@@ -97,6 +99,7 @@ model SubscriptionPlan {
   updatedAt     DateTime @updatedAt
 
   subscriptions UserSubscription[]
+  paymentRequests SubscriptionPaymentRequest[]
 
   @@index([isActive, displayOrder])
 }
@@ -130,12 +133,41 @@ model UserSubscription {
 
   user User             @relation(fields: [userId], references: [id])
   plan SubscriptionPlan @relation(fields: [planId], references: [id])
+  paymentRequest SubscriptionPaymentRequest?
 
   @@index([userId, status])
   @@index([expiresAt])
   @@index([gatewayOrderId])
   @@index([userId, createdAt])
   @@index([planSlug, paymentStatus, userId])
+}
+
+model SubscriptionPaymentRequest {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  email          String
+  planId         Int
+  planSlug       String
+  planName       String
+  billingCycle   String
+  amount         Int
+  currency       String   @default("INR")
+  utr            String   @unique @db.VarChar(40)
+  status         String   @default("pending")
+  reviewedById   Int?
+  reviewReason   String   @default("") @db.VarChar(500)
+  reviewedAt     DateTime?
+  subscriptionId Int?     @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user         User              @relation("PaymentRequestOwner", fields: [userId], references: [id])
+  reviewedBy   User?             @relation("PaymentRequestReviewer", fields: [reviewedById], references: [id])
+  plan         SubscriptionPlan  @relation(fields: [planId], references: [id])
+  subscription UserSubscription? @relation(fields: [subscriptionId], references: [id])
+
+  @@index([status, createdAt])
+  @@index([userId, createdAt])
 }
 
 model Match {

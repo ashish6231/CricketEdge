@@ -18,6 +18,12 @@ const TONE = {
     icon: '#f87171',
     Icon: AlertTriangle,
   },
+  warning: {
+    border: 'rgba(217,154,27,0.5)',
+    bg: 'rgba(120,78,10,0.92)',
+    icon: '#fbbf24',
+    Icon: AlertTriangle,
+  },
   info: {
     border: 'rgba(59,130,246,0.45)',
     bg: 'rgba(59,130,246,0.12)',
@@ -46,6 +52,7 @@ export function ToastProvider({ children }) {
   const api = useMemo(() => ({
     success: (message, duration) => push('success', message, duration),
     error: (message, duration) => push('error', message, duration),
+    warning: (message, duration) => push('warning', message, duration),
     info: (message, duration) => push('info', message, duration),
     dismiss,
   }), [push, dismiss])

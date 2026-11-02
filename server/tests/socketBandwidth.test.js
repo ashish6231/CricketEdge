@@ -11,7 +11,8 @@ const builders = {
   getMatchBundlePayload: (...args) => bundleBuilder(...args),
   ...Object.fromEntries(['Cricket', 'Toss', 'Tennis', 'Session'].map(feed => [`get${feed}MatchesPayload`, async () => structuredClone(current)])),
 };
-stub('../middleware/auth', { JWT_SECRET: 'offline-test' });
+let currentSocketUser = null;
+stub('../middleware/auth', { resolveBearerUser: async () => ({ user: currentSocketUser }) });
 stub('../db/prisma', {});
 stub('../services/dataCache', {});
 stub('../services/matchPayloadService', builders);
@@ -93,6 +94,27 @@ test('overlapping ingestion events share a single full-bundle broadcast', async 
   await Promise.all(Array.from({ length: 5 }, () => service.broadcastMatchBundle('coalesced', { force: true })));
   assert.equal(calls, 1);
   assert.equal(socket.sent.length, 1);
+});
+
+test('Tennis broadcasts recheck the current plan and remove a downgraded viewer', async () => {
+  const { connect } = setup();
+  const socket = connect('tennis-subscriber');
+  socket.token = 'test-session';
+  currentSocketUser = { role: 'user', subPlanSlug: 'pro' };
+  const seen = [];
+  bundleBuilder = async (id, viewer, sport) => {
+    seen.push([viewer?.subPlanSlug, sport]);
+    return viewer?.subPlanSlug === 'pro' ? { matchId: id, cricket: { odds: 2 } }
+      : { matchId: id, error: 'subscription_required', code: 'SUBSCRIPTION_REQUIRED' };
+  };
+  await socket.receive('match:subscribe', { matchId: 'tennis-access', sport: 'tennis' });
+  assert.equal(socket.rooms.has('match:tennis-access'), true);
+  currentSocketUser = { role: 'user', subPlanSlug: 'lite' };
+  await service.broadcastMatchBundle('tennis-access', { force: true });
+  assert.deepEqual(seen, [['pro', 'tennis'], ['lite', 'tennis']]);
+  assert.equal(socket.sent.at(-1).data.code, 'SUBSCRIPTION_REQUIRED');
+  assert.equal(socket.rooms.has('match:tennis-access'), false);
+  currentSocketUser = null;
 });
 
 test('ingestion sees remote viewers while cluster demand replies contain only local viewers',async()=>{

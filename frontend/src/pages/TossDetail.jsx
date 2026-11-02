@@ -3,6 +3,8 @@ import { useParams, useNavigate, useOutletContext, useLocation } from 'react-rou
 import { ArrowLeft, LoaderCircle, BarChart3, Trophy } from 'lucide-react'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
+import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
+import { isSubscriptionRequiredError, requiresPaidMatchAccess } from '../utils/matchAccess'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
 import { getMarketExposureFromTrades } from '../utils/bookiePl'
@@ -28,7 +30,7 @@ export default function TossDetail({ isEmbedded = false }) {
   const { matchId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn } = useOutletContext()
+  const { isLoggedIn, isFreeMode, authReady, user } = useOutletContext()
   const [snap, setSnap] = useState(null)
   const [marketInfo, setMarketInfo] = useState(location.state?.matchData)
   const [loading, setLoading] = useState(true)
@@ -58,7 +60,7 @@ export default function TossDetail({ isEmbedded = false }) {
         resolved = true
         return true
       }
-      if (bundle?.code === 'SUBSCRIPTION_REQUIRED' || bundle?.status === 403) {
+      if (isSubscriptionRequiredError(bundle)) {
         setRequiresPro(true)
         setLoading(false)
         resolved = true
@@ -80,7 +82,7 @@ export default function TossDetail({ isEmbedded = false }) {
         resolved = true
         return true
       }
-      if (error?.status === 403 || error?.code === 'SUBSCRIPTION_REQUIRED') {
+      if (isSubscriptionRequiredError(error)) {
         setRequiresPro(true)
         setLoading(false)
         resolved = true
@@ -157,7 +159,9 @@ export default function TossDetail({ isEmbedded = false }) {
       socket.off('match:bundle', onGenericBundle)
       socket.off('toss:matches', onTossFeed)
     }
-  }, [matchId, isLoggedIn, location.state?.matchData])
+  }, [matchId, isLoggedIn, isFreeMode, location.state?.matchData])
+
+  if (requiresPaidMatchAccess({ authReady, isLoggedIn, isFreeMode, user, match: snap || marketInfo, feature: 'toss' })) return <SubscriptionRequiredGate featureLabel="Toss" onBack={() => navigate('/toss')} />
 
   if (loading) return (
     <div className="flex h-[80vh] items-center justify-center">
@@ -165,23 +169,7 @@ export default function TossDetail({ isEmbedded = false }) {
     </div>
   )
 
-  if (requiresPro) return (
-    <div className="flex h-[80vh] items-center justify-center p-4">
-      <div className="rounded-2xl p-8 max-w-sm w-full text-center" style={{ background: '#fff', border: '2px solid #fbbf24', boxShadow: '0 4px 32px rgba(251,191,36,0.15)' }}>
-        <div className="text-5xl mb-4">⭐</div>
-        <h2 className="text-xl font-black text-text-primary mb-2">Pro Plan Needed</h2>
-        <p className="text-text-secondary text-sm mb-2">Yeh match sirf <b>Pro subscribers</b> ke liye available hai.</p>
-        <p className="text-text-muted text-xs mb-6">Live predictions aur deep metrics dekhne ke liye Pro plan lo.</p>
-        <a href="https://t.me/cricket_edgeonline" target="_blank" rel="noopener noreferrer"
-          className="block w-full py-3 rounded-xl font-bold text-white text-sm mb-3"
-          style={{ background: 'linear-gradient(135deg,#dc2626,#10b981)' }}>
-          🚀 Buy Pro — Telegram pe Contact Karo
-        </a>
-        <p className="text-xs text-text-muted mb-4">Telegram: <span className="font-bold text-[#229ED9]">@cricket_edgeonline</span></p>
-        <button onClick={() => navigate(-1)} className="text-sm text-text-muted hover:text-primary">← Back</button>
-      </div>
-    </div>
-  )
+  if (requiresPro && !isFreeMode) return <SubscriptionRequiredGate featureLabel="Toss" onBack={() => navigate('/toss')} />
 
   if (requiresLogin) {
     return (

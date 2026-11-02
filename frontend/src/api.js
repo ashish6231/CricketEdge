@@ -203,6 +203,20 @@ export async function getMySubscription() {
   return fetchAPI('/subscription/my')
 }
 
+export const getUpiPaymentSettings = () => fetchAPI('/subscription/payment-settings')
+export const getMyPaymentRequests = (page = 1) => fetchAPI(`/subscription/payment-requests?page=${page}&limit=10`)
+export const submitUpiPaymentRequest = data => fetchAPI('/subscription/payment-requests', {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), retries: 0,
+})
+export const adminGetPaymentSettings = () => fetchAPI('/admin/payment-settings')
+export const adminSavePaymentSettings = data => fetchAPI('/admin/payment-settings', {
+  method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), retries: 0,
+})
+export const adminGetPaymentRequests = params => fetchAPI(`/admin/payment-requests?${new URLSearchParams(params)}`)
+export const adminReviewPaymentRequest = (id, action, reason = '') => fetchAPI(`/admin/payment-requests/${id}/review`, {
+  method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, reason }), retries: 0,
+})
+
 export async function checkExpiry() {
   return fetchAPI('/subscription/check-expiry')
 }

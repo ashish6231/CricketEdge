@@ -62,6 +62,7 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
   const [historyLogs, setHistoryLogs] = useState({})
   const [historyLoading, setHistoryLoading] = useState(null)
   const [proMonths, setProMonths] = useState({})
+  const [planGrants, setPlanGrants] = useState({})
 
   const load = useCallback(() => {
     const version = ++loadVersion.current
@@ -107,14 +108,14 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
     <div className="space-y-4">
 
       <div className="rounded-xl px-3 py-2 text-xs text-[#888]" style={{ background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.15)' }}>
-        Users who purchased or were granted Pro at least once, but no longer have an active subscription.
+        Former Lite and Pro subscribers who no longer have an active subscription.
       </div>
 
       <div className="flex flex-wrap gap-2">
         <div className="flex items-center gap-2 flex-1 min-w-48 rounded-xl px-3 py-2" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
           <Search size={13} className="text-text-muted flex-shrink-0" />
           <input value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}
-            placeholder="Search former pro users…"
+            placeholder="Search former subscribers…"
             className="bg-transparent text-sm outline-none w-full text-text-primary placeholder:text-[#555]" />
         </div>
         <select value={status} onChange={e => { setStatus(e.target.value); setPage(1) }} className={filterSelect} style={filterStyle}>
@@ -127,7 +128,7 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
 
       {!loading && pagination.total > 0 && (
         <div className="flex items-center gap-3 text-xs text-text-muted px-1">
-          <span className="font-bold text-[#a855f7] text-sm">{pagination.total}</span> former pro users
+          <span className="font-bold text-[#a855f7] text-sm">{pagination.total}</span> former subscribers
           <span className="text-[#2c2c2e]">·</span>
           page <span className="font-semibold text-text-primary">{pagination.page}</span> of <span className="font-semibold text-text-primary">{pagination.pages}</span>
         </div>
@@ -138,7 +139,7 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
       ) : users.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-[#555] gap-2">
           <UserMinus size={32} className="opacity-20" />
-          <p className="text-sm">No former pro users found.</p>
+          <p className="text-sm">No former subscribers found.</p>
         </div>
       ) : (
         <div className="space-y-2 relative">
@@ -243,6 +244,9 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
                         <>
                           <div className="h-px bg-[#2c2c2e] my-1"></div>
                           <div className="px-2 py-1">
+                            <select aria-label="Subscription plan" value={planGrants[u.id] || 'lite'} onChange={e => setPlanGrants(previous => ({ ...previous, [u.id]: e.target.value }))} className="mb-2 w-full bg-[#1a1a1a] border border-[#333] rounded-lg p-1.5 text-[11px] text-[#ebebf5]">
+                              <option value="lite">CricEdge Lite</option><option value="pro">CricEdge Pro</option>
+                            </select>
                             <div className="flex items-center justify-between gap-2 mb-1.5 px-1">
                               <span className="text-[11px] text-[#888] font-semibold">Grant Duration</span>
                               <select value={proMonths[u.id] || 1}
@@ -251,8 +255,8 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
                                 {[1, 2, 3, 6, 12].map(m => <option key={m} value={m}>{m}mo</option>)}
                               </select>
                             </div>
-                            <ActionMenuItem disabled={isActing} loading={isActing} color="#f59e0b" icon={<Crown size={14} />} label="Re-activate Pro"
-                              onClick={() => act(u.id, adminUpdateUserPlan, u.id, 'pro', 'Admin re-activation', proMonths[u.id] || 1)} />
+                            <ActionMenuItem disabled={isActing} loading={isActing} color="#f59e0b" icon={<Crown size={14} />} label="Activate selected plan"
+                              onClick={() => act(u.id, adminUpdateUserPlan, u.id, planGrants[u.id] || 'lite', 'Admin re-activation', proMonths[u.id] || 1)} />
                           </div>
                         </>
                       )}
@@ -268,7 +272,7 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
 
       {pagination.pages > 1 && (
         <div className="flex items-center justify-between pt-1">
-          <span className="text-xs text-text-muted">{pagination.total} former pro users</span>
+          <span className="text-xs text-text-muted">{pagination.total} former subscribers</span>
           <div className="flex items-center gap-1">
             <button disabled={page <= 1} onClick={() => setPage(p => p - 1)}
               className="p-2 rounded-xl disabled:opacity-30 transition-opacity"

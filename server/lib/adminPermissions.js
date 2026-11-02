@@ -7,6 +7,7 @@ const PERMISSION_MATRIX = [
   { feature: 'View coupons', admin: true, superadmin: true },
   { feature: 'Create / edit coupons', admin: false, superadmin: true },
   { feature: 'Plans & pricing', admin: false, superadmin: true },
+  { feature: 'UPI payment requests & QR settings', admin: false, superadmin: true },
   { feature: 'Site settings', admin: false, superadmin: true },
   { feature: 'Create / manage admins', admin: false, superadmin: true },
   { feature: 'Set user password', admin: false, superadmin: true },

@@ -7,6 +7,7 @@ import PageLoading from './components/PageLoading'
 const CricketPage = lazy(() => import('./pages/CricketPage'))
 const SessionPage = lazy(() => import('./pages/SessionPage'))
 const TossPage = lazy(() => import('./pages/TossPage'))
+const TennisPage = lazy(() => import('./pages/TennisPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
 const SubscriptionPage = lazy(() => import('./pages/SubscriptionPage'))
@@ -18,11 +19,6 @@ function AppShell() {
 function RedirectToCricket() {
   const location = useLocation()
   return <Navigate to={`/cricket${location.search}${location.hash}`} replace />
-}
-
-function RedirectToSession() {
-  const location = useLocation()
-  return <Navigate to={`/session${location.search}${location.hash}`} replace />
 }
 
 function LoginRedirect() {
@@ -65,12 +61,13 @@ function App() {
             <Route path="/cricket/match/:matchId" element={<CricketPage />} />
             <Route path="/session" element={<SessionPage />} />
             <Route path="/session/match/:matchId" element={<SessionPage />} />
-            <Route path="/tennis/*" element={<RedirectToSession />} />
+            <Route path="/tennis" element={<TennisPage />} />
+            <Route path="/tennis/match/:matchId" element={<TennisPage />} />
             <Route path="/toss" element={<TossPage />} />
             <Route path="/toss/match/:matchId" element={<TossPage />} />
             <Route path="/admin" element={<RequireAuth><AdminRoute><AdminPage /></AdminRoute></RequireAuth>} />
             <Route path="/profile" element={<RequireAuth><ProfilePage /></RequireAuth>} />
-            <Route path="/subscription" element={<RequireAuth><SubscriptionPage /></RequireAuth>} />
+            <Route path="/subscription" element={<SubscriptionPage />} />
             <Route path="*" element={<RedirectToCricket />} />
           </Route>
         </Routes>

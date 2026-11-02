@@ -1,5 +1,6 @@
 import PageLoading from '../components/PageLoading'
 import useDebouncedValue from '../lib/useDebouncedValue'
+import useVisibilityClock from '../lib/useVisibilityClock'
 import { lazy, useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Coins, X, Trophy } from 'lucide-react'
@@ -30,18 +31,17 @@ function formatCountdown(startTimeMs, now) {
   const diff = Number(startTimeMs) - now
   if (diff <= 0) return null
 
-  const totalSec = Math.floor(diff / 1000)
-  const hours = Math.floor(totalSec / 3600)
-  const minutes = Math.floor((totalSec % 3600) / 60)
-  const seconds = totalSec % 60
+  const totalMinutes = Math.max(1, Math.ceil(diff / 60_000))
+  const hours = Math.floor(totalMinutes / 60)
+  const minutes = totalMinutes % 60
 
   const pad = (n) => String(n).padStart(2, '0')
-  if (hours > 24) {
+  if (hours >= 24) {
     const days = Math.floor(hours / 24)
     const remHours = hours % 24
-    return `${days}d ${pad(remHours)}:${pad(minutes)}:${pad(seconds)}`
+    return `${days}d ${pad(remHours)}h ${pad(minutes)}m`
   }
-  return `${hours}:${pad(minutes)}:${pad(seconds)}`
+  return hours > 0 ? `${hours}h ${pad(minutes)}m` : `${minutes}m`
 }
 
 function isEndedMatch(m) {
@@ -73,16 +73,8 @@ export default function TossPage() {
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
   const [searchQuery, setSearchQuery] = useState('')
   const debouncedSearch = useDebouncedValue(searchQuery)
-  const [now, setNow] = useState(() => Date.now())
+  const now = useVisibilityClock()
   const scrollRef = useRef(null)
-
-  // Real-time 1s ticker for countdown clocks
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(Date.now())
-    }, 1000)
-    return () => clearInterval(timer)
-  }, [])
 
   const processMatches = (data) => {
     if (!data) return

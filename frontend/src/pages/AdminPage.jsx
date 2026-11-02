@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
-import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown, UserMinus, Receipt, ShieldCheck, Database } from 'lucide-react'
+import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown, UserMinus, Receipt, ShieldCheck, Database, QrCode } from 'lucide-react'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminUsers from './admin/AdminUsers'
 import AdminProUsers from './admin/AdminProUsers'
@@ -13,15 +13,17 @@ import AdminSettings from './admin/AdminSettings'
 import AdminAuditLogs from './admin/AdminAuditLogs'
 import AdminTossDataset from './admin/AdminTossDataset'
 import AdminMatchDataset from './admin/AdminMatchDataset'
+import AdminPaymentRequests from './admin/AdminPaymentRequests'
 
 const ALL_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'users',     label: 'Users',     icon: Users },
-  { id: 'pro_users',   label: 'Pro Users',    icon: Crown },
-  { id: 'lapsed_users', label: 'Former Pro', icon: UserMinus },
+  { id: 'pro_users',   label: 'Subscribers',    icon: Crown },
+  { id: 'lapsed_users', label: 'Expired Plans', icon: UserMinus },
   { id: 'sub_logs',    label: 'Sub Logs',   icon: Receipt },
   { id: 'admins',    label: 'Admins',    icon: ShieldCheck, superadminOnly: true },
   { id: 'plans',     label: 'Plans',     icon: CreditCard, superadminOnly: true },
+  { id: 'payments',  label: 'UPI Payments', icon: QrCode, superadminOnly: true },
   { id: 'coupons',   label: 'Coupons',   icon: Tag, superadminOnly: true },
   { id: 'settings',  label: 'Settings',  icon: Settings, superadminOnly: true },
   { id: 'toss_dataset', label: 'Toss Dataset', icon: Database, superadminOnly: true },
@@ -33,7 +35,7 @@ const TAB_GROUPS = [
   { label: 'Overview', ids: ['dashboard'] },
   { label: 'Match intelligence', ids: ['match_dataset', 'toss_dataset'] },
   { label: 'People & access', ids: ['users', 'pro_users', 'lapsed_users', 'admins'] },
-  { label: 'Billing', ids: ['sub_logs', 'plans', 'coupons'] },
+  { label: 'Billing', ids: ['payments', 'sub_logs', 'plans', 'coupons'] },
   { label: 'System', ids: ['settings', 'audit'] },
 ]
 
@@ -54,7 +56,7 @@ export default function AdminPage() {
   }, [isLoggedIn, user, navigate])
 
   useEffect(() => {
-    if (!isSuperAdmin && ['admins', 'plans', 'coupons', 'settings', 'toss_dataset', 'match_dataset'].includes(tab)) {
+    if (!isSuperAdmin && ['admins', 'plans', 'payments', 'coupons', 'settings', 'toss_dataset', 'match_dataset'].includes(tab)) {
       setTab('dashboard')
     }
   }, [tab, isSuperAdmin, setTab])
@@ -116,6 +118,7 @@ export default function AdminPage() {
       {tab === 'sub_logs'    && <AdminSubscriptionLogs />}
       {tab === 'admins'      && isSuperAdmin && <AdminAdmins />}
       {tab === 'plans'     && <AdminPlans isSuperAdmin={isSuperAdmin} />}
+      {tab === 'payments'  && isSuperAdmin && <AdminPaymentRequests />}
       {tab === 'coupons'   && <AdminCoupons />}
       {tab === 'settings'  && <AdminSettings isSuperAdmin={isSuperAdmin} />}
       {tab === 'toss_dataset' && isSuperAdmin && <AdminTossDataset />}

@@ -11,8 +11,8 @@ const { getDefaultProviderTotalStore } = require('./providerTotalStore');
 const { providerSnapshotFromRecord } = require('../utils/providerTotals.mjs');
 const crexService = require('./crexService');
 const { getDefaultStore: getDefaultTossStore } = require('./tossDatasetStore');
-const { isEndedMatch, guestMayViewMatch, guestMayViewFromInfos } = require('../lib/guestMatchAccess');
-const { hasProAccess } = require('../lib/subscriptionAccess');
+const { isEndedMatch, guestMayViewMatch } = require('../lib/guestMatchAccess');
+const { hasFeatureAccess } = require('../lib/subscriptionAccess');
 const { getSiteModeSync } = require('../lib/siteSettings');
 const { getTossMarketSummary } = require('../utils/tossMarketSummary.mjs');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
@@ -687,8 +687,8 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
       }
       const isEnded = isEndedMatch(tInfo);
       const isFree = getSiteModeSync() === 'free';
-      if (!isEnded && !isFree && !hasProAccess(user)) {
-        return { error: 'subscription_required', message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED', matchId: mid };
+      if (!isEnded && !isFree && !hasFeatureAccess(user, 'tennis')) {
+        return { error: 'subscription_required', message: 'Tennis subscription required', code: 'SUBSCRIPTION_REQUIRED', requiredFeature: 'tennis', matchId: mid };
       }
     }
     const snap = await dataCache.getTennisSnapshot(mid);
@@ -728,14 +728,16 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
 
   // Access check
   if (!isBroadcaster) {
-    if (!guestMayViewMatch(matchInfo, user) && !guestMayViewFromInfos(user, [tossInfo, matchInfo])) {
+    const detailInfo = sport === 'toss' ? tossInfo || matchInfo : matchInfo;
+    if (!guestMayViewMatch(detailInfo, user)) {
       return { error: 'login_required', message: 'Live/upcoming match data requires login.', matchId: mid };
     }
 
-    const isEnded = isEndedMatch(matchInfo) || isEndedMatch(tossInfo);
+    const isEnded = isEndedMatch(detailInfo);
     const isFree = getSiteModeSync() === 'free';
-    if (!isEnded && !isFree && !hasProAccess(user)) {
-      return { error: 'subscription_required', message: 'Pro subscription required', code: 'SUBSCRIPTION_REQUIRED', matchId: mid };
+    const feature = sport === 'toss' ? 'toss' : sport === 'session' ? 'session' : 'cricket';
+    if (!isEnded && !isFree && !hasFeatureAccess(user, feature)) {
+      return { error: 'subscription_required', message: 'A subscription including this market is required', code: 'SUBSCRIPTION_REQUIRED', requiredFeature: feature, matchId: mid };
     }
   }
 
@@ -793,11 +795,15 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
     getDefaultProviderTotalStore().attach(toss, {matchId:mid,market:'toss',matchInfo:tossInfo || matchInfo}),
   ]);
 
-  const session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
+  const mayViewToss = isBroadcaster || getSiteModeSync() === 'free' || isEndedMatch(matchInfo) || isEndedMatch(tossInfo) || hasFeatureAccess(user, 'toss');
+  if (!mayViewToss) toss = null;
+  let session = !sessionRaw || sessionRaw.error ? null : sessionRaw;
   let crex = cachedCrex || matchInfo?.crex || null;
+  const mayViewCricket = isBroadcaster || (user && getSiteModeSync() === 'free') || isEndedMatch(matchInfo) || hasFeatureAccess(user, 'cricket');
+  if (!mayViewCricket) { cricket = null; session = null; crex = null; }
 
   // Non-blocking: If detailed Crex scorecard is missing, fetch in background without delaying cricket odds/trades response
-  if ((!crex || !crex.scorecard) && matchInfo) {
+  if (mayViewCricket && (!crex || !crex.scorecard) && matchInfo) {
     triggerBackgroundCrexFetch(matchInfo, mid);
   }
 

@@ -3,11 +3,13 @@
  * Manages WebSocket connections, room subscriptions, and real-time broadcasts.
  */
 
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../middleware/auth');
+const { resolveBearerUser } = require('../middleware/auth');
 const dataCache = require('./dataCache');
 const matchPayloadService = require('./matchPayloadService');
 const prisma = require('../db/prisma');
+const { hasFeatureAccess } = require('../lib/subscriptionAccess');
+const { isEndedMatch } = require('../lib/guestMatchAccess');
+const { getSiteModeSync } = require('../lib/siteSettings');
 const { fingerprintMatchBundle } = require('../utils/matchBundleFingerprint');
 const { snapshotFeed, diffFeed } = require('../utils/feedDelta');
 
@@ -135,15 +137,17 @@ function init(io) {
   });
 
   // 1. Auth middleware — allow authenticated users AND guests
-  io.use((socket, next) => {
+  io.use(async (socket, next) => {
     const token = socket.handshake.auth?.token || socket.handshake.query?.token;
     if (token) {
       try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        socket.userId = decoded.userId;
+        const result = await resolveBearerUser(token);
+        if (!result.user) throw new Error('Invalid session');
+        socket.userId = result.user.id || result.user.userId;
         socket.token = token;
-        socket.user = decoded;
-        socket.join(`user:${decoded.userId}`);
+        socket.user = result.user;
+        socket.join(`user:${socket.userId}`);
+        if (socket.user.role === 'superadmin') socket.join('superadmins');
       } catch (err) {
         socket.user = null;
         socket.isGuest = true;
@@ -179,6 +183,7 @@ function init(io) {
 
       // Instantly deliver the latest cached bundle to this subscriber
       try {
+        if (socket.token) socket.user = (await resolveBearerUser(socket.token)).user || null;
         const bundle = await matchPayloadService.getMatchBundlePayload(matchId, socket.user, sport);
         if (!socket.connected || socket.matchRequests.get(requestKey) !== request) return;
         if (bundle?.error) {
@@ -188,6 +193,8 @@ function init(io) {
         }
 
         const room = `match:${matchId}`;
+        socket.matchSports ||= new Map();
+        socket.matchSports.set(String(matchId), sport);
         const roomAlreadyActive = (_io.sockets.adapter?.rooms?.get(room)?.size || 0) > 0;
         socket.join(room);
 
@@ -200,6 +207,7 @@ function init(io) {
 
         if (bundle) {
           socket.emit('match:bundle', bundle);
+          socket.lastBundleFingerprint = fingerprintMatchBundle(bundle);
           // Start the room cadence only for its first subscriber. A later viewer
           // must not postpone the minute update for viewers already in the room.
           if (!roomAlreadyActive) {
@@ -218,6 +226,7 @@ function init(io) {
       const matchId = typeof data === 'object' ? data?.matchId : data;
       if (matchId) {
         socket.matchRequests?.delete(String(matchId));
+        socket.matchSports?.delete(String(matchId));
         socket.leave(`match:${matchId}`);
       }
     });
@@ -271,29 +280,56 @@ async function _broadcastMatchBundle(matchId, options = {}) {
     return false;
   }
 
-  const bundle = await matchPayloadService.getMatchBundlePayload(
-    mid,
-    { isBroadcaster: true, role: 'admin' },
-    'cricket',
-  );
-  if (!bundle || bundle.error) return false;
-
-  const fingerprint = fingerprintMatchBundle(bundle);
-  // Whether changed or not, do the expensive full-bundle comparison at most once per minute.
   _lastBundleBroadcastAt.set(mid, now);
-  if (fingerprint === _lastBundleFps.get(mid)) return false;
-
-  _lastBundleFps.set(mid, fingerprint);
-  (_io.local || _io).to(roomName).emit('match:bundle', bundle);
-  return true;
+  const groups = new Map();
+  let sent = false;
+  await Promise.all([...room].map(async id => {
+    const socket = _io.sockets.sockets.get(id);
+    if (!socket) return;
+    try {
+      if (socket.token) socket.user = (await resolveBearerUser(socket.token)).user || null;
+      const user = socket.user;
+      const sport = socket.matchSports?.get(mid) || 'cricket';
+      const key = JSON.stringify([sport, user?.role, user?.subPlanSlug, user?.subStatus, user?.subExpiresAt, Boolean(user)]);
+      if (!groups.has(key)) groups.set(key, matchPayloadService.getMatchBundlePayload(mid, user, sport));
+      const bundle = await groups.get(key);
+      if (!bundle || !socket.connected || !socket.rooms.has(roomName)) return;
+      if (bundle.error) {
+        socket.emit('match:bundle', bundle);
+        socket.leave(roomName);
+        return;
+      }
+      const fingerprint = fingerprintMatchBundle(bundle);
+      if (fingerprint === socket.lastBundleFingerprint) return;
+      socket.lastBundleFingerprint = fingerprint;
+      socket.emit('match:bundle', bundle);
+      sent = true;
+    } catch { /* Retry authorization on the next update; do not send protected data. */ }
+  }));
+  return sent;
 }
 
-function broadcastMatchOdds(matchId, odds) {
+async function mayReceiveDetailUpdate(socket, mid, feature) {
+  if (socket.token) socket.user = (await resolveBearerUser(socket.token)).user || null;
+  const matches = feature === 'tennis' ? dataCache.getTennisMatches() : dataCache.getCricketMatches();
+  const info = (matches || []).find(match => String(match.matchId) === mid);
+  return isEndedMatch(info) || Boolean(socket.user && (getSiteModeSync() === 'free' || hasFeatureAccess(socket.user, feature)));
+}
+
+async function broadcastMatchOdds(matchId, odds) {
   if (!_io || !matchId || !odds) return;
   const mid = String(matchId);
   const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
   if (!room || room.size === 0) return;
-  (_io.local || _io).to(`match:${mid}`).emit('match:odds', { matchId: mid, odds });
+  await Promise.all([...room].map(async id => {
+    const socket = _io.sockets.sockets.get(id);
+    if (!socket) return;
+    try {
+      const sport = socket.matchSports?.get(mid) || 'cricket';
+      const allowed = await mayReceiveDetailUpdate(socket, mid, sport === 'tennis' ? 'tennis' : 'cricket');
+      if (allowed && socket.connected && socket.rooms.has(`match:${mid}`)) socket.emit('match:odds', { matchId: mid, odds });
+    } catch { /* No protected updates while authorization is unavailable. */ }
+  }));
 }
 
 function getConnectedClientsCount() {
@@ -388,7 +424,7 @@ async function broadcastCrexUpdates() {
 
       const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
       if (room?.size > 0) {
-        (_io.local || _io).to(`match:${mid}`).emit(`match:crex:${mid}`, {
+        await broadcastCrexForMatch(mid, {
           ...detail,
           scorecard,
         });
@@ -438,12 +474,18 @@ function getActiveSubscribedMatchIds() {
   return Array.from(ids);
 }
 
-function broadcastCrexForMatch(matchId, detail) {
+async function broadcastCrexForMatch(matchId, detail) {
   if (!_io || !matchId || !detail) return;
   const mid = String(matchId);
   const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
   if (room?.size > 0) {
-    (_io.local || _io).to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
+    await Promise.all([...room].map(async id => {
+      const socket = _io.sockets.sockets.get(id);
+      if (!socket) return;
+      try {
+        if (await mayReceiveDetailUpdate(socket, mid, 'cricket') && socket.connected && socket.rooms.has(`match:${mid}`)) socket.emit(`match:crex:${mid}`, detail);
+      } catch { /* Do not deliver private details when authorization fails. */ }
+    }));
   }
 }
 

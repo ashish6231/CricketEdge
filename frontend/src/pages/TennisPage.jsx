@@ -1,7 +1,7 @@
 import { lazy, useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Activity, ChevronRight, Lock, X } from 'lucide-react'
-import { hasProAccess } from '../lib/subscriptionAccess'
+import { hasFeatureAccess } from '../lib/subscriptionAccess'
 import { getTennisMatches } from '../api'
 import { getSocket, releaseFeed, requestTennisFeed } from '../socket'
 import SportHubHeader from '../components/SportHubHeader'
@@ -22,7 +22,7 @@ const fmtDateTime = (ts) => {
 export default function TennisPage() {
   const navigate = useNavigate()
   const { isLoggedIn, authReady, user, mobileMenu, setMobileMenu } = useOutletContext()
-  const isPro = hasProAccess(user)
+  const isPro = hasFeatureAccess(user, 'tennis')
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -202,7 +202,7 @@ export default function TennisPage() {
                       <div className="match-card-top"><span className="match-league">{match.competitionName}</span><span className={`match-status ${isLive(match) ? 'is-live' : isEnded(match) ? 'is-completed' : 'is-upcoming'}`}>{isLive(match) ? 'Live' : isEnded(match) ? 'Completed' : 'Upcoming'}</span></div>
                       <div className="match-schedule">{fmtDateTime(match.startTime) || 'Schedule pending'}</div>
                       <div className="match-teams">{(match.matchName || 'Players to be confirmed').split(' v ').map((name, index) => <div className="match-team" key={index}><span className={`team-monogram team-monogram-${index % 2}`}>{name.split(' ').map(word => word[0]).join('').slice(0, 3)}</span><div className="match-team-name"><strong>{name}</strong></div></div>)}</div>
-                      <div className="match-card-bottom"><span>€{Number(match.totalMatched || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })} volume</span><span className="match-access">{!isEnded(match) && !isPro && <Lock size={12} />}{isEnded(match) ? 'Free access' : isPro ? 'Pro access' : 'Pro required'}</span><ChevronRight size={17} /></div>
+                      <div className="match-card-bottom"><span>€{Number(match.totalMatched || 0).toLocaleString('en-IN', { maximumFractionDigits: 0 })} volume</span><span className="match-access">{!isEnded(match) && !isPro && <Lock size={12} />}{isEnded(match) ? 'Free access' : isPro ? 'Plan access' : 'Plan required'}</span><ChevronRight size={17} /></div>
                     </button>
                   ))}
                 </div>

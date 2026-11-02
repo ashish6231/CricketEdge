@@ -5,7 +5,7 @@ const prisma = require('./db/prisma');
 const DEFAULT_PLANS = [
   {
     slug: 'free', name: 'Free Plan',
-    description: 'Basic access. Upgrade to Pro for live odds, predictions, and all premium features.',
+    description: 'Free access to completed match details. Subscribe for live and upcoming markets.',
     price: 0, yearlyPrice: 0, currency: 'INR',
     features: ['Browse landing page', 'View plan details', 'Limited preview'],
     maxMarketsTracked: 0, apiCallsPerMin: 5,
@@ -13,17 +13,25 @@ const DEFAULT_PLANS = [
     oddsAlerts: false, telegramNotifications: false, displayOrder: 0
   },
   {
-    slug: 'pro', name: 'Pro Plan',
-    description: 'Full access to live odds, AI predictions, volume analysis, bookie P&L, and all premium features.',
-    price: 999, yearlyPrice: 9999, currency: 'INR',
-    features: [
-      'Real-time Betfair odds & volume', 'AI match predictions & confidence scores',
-      'Bookie P&L analysis', 'Market load & money flow', 'Back/Lay ratio tracking',
-      'Price history charts', 'Odds alerts & notifications', 'Unlimited markets tracked'
-    ],
+    slug: 'lite', name: 'CricEdge Lite',
+    description: 'Your complete cricket companion — Cricket, Toss and Session markets.',
+    price: 699, yearlyPrice: 6999, currency: 'INR',
+    features: ['Live & upcoming Cricket matches', 'Toss markets & predictions', 'Session markets', 'Bookie P&L and volume analysis', 'Back/Lay ratios & price history'],
     maxMarketsTracked: 9999, apiCallsPerMin: 100,
     advancedAnalytics: true, bookieBookAccess: true, predictionEngine: true,
     oddsAlerts: true, telegramNotifications: true, displayOrder: 1
+  },
+  {
+    slug: 'pro', name: 'CricEdge Pro',
+    description: 'Cricket, Toss and Tennis with every premium feature included.',
+    price: 999, yearlyPrice: 9999, currency: 'INR',
+    features: [
+      'Everything in CricEdge Lite', 'Live & upcoming Tennis matches',
+      'Tennis odds & market flow', 'All predictions and analytics', 'Unlimited markets tracked'
+    ],
+    maxMarketsTracked: 9999, apiCallsPerMin: 100,
+    advancedAnalytics: true, bookieBookAccess: true, predictionEngine: true,
+    oddsAlerts: true, telegramNotifications: true, displayOrder: 2
   }
 ];
 
@@ -50,11 +58,24 @@ function settingsUpsertArgs(setting) {
   };
 }
 
+async function seedSubscriptionPlans() {
+  const versionKey = 'membershipTiersVersion';
+  const configured = await prisma.siteSettings.findUnique({ where: { key: versionKey } });
+  for (const plan of DEFAULT_PLANS) {
+    const { price, yearlyPrice, ...metadata } = plan;
+    await prisma.subscriptionPlan.upsert({
+      where: { slug: plan.slug },
+      update: { ...metadata, ...(!configured ? { price, yearlyPrice } : {}) },
+      create: plan,
+    });
+  }
+  await prisma.subscriptionPlan.updateMany({ where: { slug: { in: ['cricket', 'cricket_tennis', 'cricket_toss'] } }, data: { isActive: false } });
+  await prisma.siteSettings.upsert({ where: { key: versionKey }, create: { key: versionKey, value: 1, category: 'general', description: 'Lite and Pro plans initialized', isPublic: false }, update: {} });
+}
+
 async function seedDatabase() {
   try {
-    for (const plan of DEFAULT_PLANS) {
-      await prisma.subscriptionPlan.upsert({ where: { slug: plan.slug }, update: plan, create: plan });
-    }
+    await seedSubscriptionPlans();
     console.log('✅ Plans seeded');
 
     for (const setting of DEFAULT_SETTINGS) {
@@ -113,4 +134,4 @@ if (require.main === module) {
   seedDatabase().then(() => process.exit(0));
 }
 
-module.exports = { seedDatabase, DEFAULT_PLANS, DEFAULT_SETTINGS, settingsUpsertArgs };
+module.exports = { seedDatabase, seedSubscriptionPlans, DEFAULT_PLANS, DEFAULT_SETTINGS, settingsUpsertArgs };

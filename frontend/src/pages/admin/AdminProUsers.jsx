@@ -22,7 +22,8 @@ const STATUS_CFG = {
   suspended: { label: 'Suspended', color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
 }
 const PLAN_CFG = {
-  pro:   { label: '⭐ Pro',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  pro:   { label: 'CricEdge Pro',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' },
+  lite:  { label: 'CricEdge Lite', color: '#0f766e', bg: 'rgba(15,118,110,0.12)' },
   trial: { label: 'Trial',   color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
   free:  { label: 'Free',    color: '#8e8e93', bg: 'rgba(142,142,147,0.10)' },
 }
@@ -58,9 +59,10 @@ export default function AdminProUsers({ isSuperAdmin }) {
   const [expanded, setExpanded]   = useState(null)
 
   const load = useCallback(() => {
+    const version = ++loadVersion.current
     setLoading(true)
-    // Always filter by plan='pro'
-    adminGetUsers({ page, limit: 20, search: debouncedSearch, status, plan: 'pro' })
+    // Include both Lite and Pro subscribers.
+    adminGetUsers({ page, limit: 20, search: debouncedSearch, status, plan: 'paid' })
       .then(res => { if (version !== loadVersion.current) return; setUsers(res.data); setPagination(res.pagination) })
       .catch(e => version === loadVersion.current && toast.error(e.detail || 'Failed to load'))
       .finally(() => { if (version === loadVersion.current) setLoading(false) })
@@ -94,7 +96,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
         <div className="flex items-center gap-2 flex-1 min-w-48 rounded-xl px-3 py-2" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>
           <Search size={13} className="text-text-muted flex-shrink-0" />
           <input value={search} onChange={e => { setSearch(e.target.value); setPage(1) }}
-            placeholder="Search pro users…"
+            placeholder="Search subscribers…"
             className="bg-transparent text-sm outline-none w-full text-text-primary placeholder:text-[#555]" />
         </div>
         <select value={status} onChange={e => { setStatus(e.target.value); setPage(1) }} className={filterSelect} style={filterStyle}>
@@ -108,7 +110,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
       {/* ── Stats row ── */}
       {!loading && pagination.total > 0 && (
         <div className="flex items-center gap-3 text-xs text-text-muted px-1">
-          <span className="font-bold text-[#f59e0b] text-sm">{pagination.total}</span> pro users
+          <span className="font-bold text-[#f59e0b] text-sm">{pagination.total}</span> subscribers
           <span className="text-[#2c2c2e]">·</span>
           page <span className="font-semibold text-text-primary">{pagination.page}</span> of <span className="font-semibold text-text-primary">{pagination.pages}</span>
         </div>
@@ -120,7 +122,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
       ) : users.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-[#555] gap-2">
           <Crown size={32} className="opacity-20" />
-          <p className="text-sm">No pro users found.</p>
+          <p className="text-sm">No subscribers found.</p>
         </div>
       ) : (
         <div className="space-y-2 relative">
@@ -199,7 +201,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
                       {u.role === 'user' && (
                         <>
                           <div className="h-px bg-[#2c2c2e] my-1"></div>
-                          <ActionMenuItem disabled={isActing} loading={isActing} color="#8e8e93" icon={<X size={14} />} label="Revoke Pro"
+                          <ActionMenuItem disabled={isActing} loading={isActing} color="#8e8e93" icon={<X size={14} />} label="Revoke subscription"
                             onClick={() => act(u.id, adminUpdateUserPlan, u.id, 'free', 'Admin revoke')} />
                         </>
                       )}
@@ -216,7 +218,7 @@ export default function AdminProUsers({ isSuperAdmin }) {
       {/* ── Pagination ── */}
       {pagination.pages > 1 && (
         <div className="flex items-center justify-between pt-1">
-          <span className="text-xs text-text-muted">{pagination.total} pro users</span>
+          <span className="text-xs text-text-muted">{pagination.total} subscribers</span>
           <div className="flex items-center gap-1">
             <button disabled={page <= 1} onClick={() => setPage(p => p - 1)}
               className="p-2 rounded-xl disabled:opacity-30 transition-opacity"

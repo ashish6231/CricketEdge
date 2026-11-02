@@ -82,14 +82,14 @@ export default function AdminDashboard({ isSuperAdmin }) {
               <span key={c} className="text-[11px] font-semibold px-2.5 py-1 rounded-full text-[#888]" style={{ background: '#1a1a1a', border: '1px solid #2c2c2e' }}>{c}</span>
             ))}
           </div>
-          <p className="text-[11px] text-[#555] mt-2">Granting Pro to users does not make them admin. Admin management is superadmin only.</p>
+          <p className="text-[11px] text-[#555] mt-2">Granting a plan does not make a user an admin. Admin management is superadmin only.</p>
         </div>
       )}
 
       {/* ── Stat Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         <StatCard icon={Users}      label="Total Users"     value={stats.totalUsers}    color="#6366f1" />
-        <StatCard icon={Crown}      label="Pro Subscribers" value={stats.proSubscribers} color="#f59e0b" sub={`${proRatio}%`} />
+        <StatCard icon={Crown}      label="Paid Subscribers" value={stats.proSubscribers} color="#f59e0b" sub={`${proRatio}%`} />
         <StatCard
           icon={Clock}
           label="Cookie Expiry"
@@ -98,7 +98,7 @@ export default function AdminDashboard({ isSuperAdmin }) {
           sub={scraperStatus?.isConnected ? '● Live' : '● Expired'}
         />
         <StatCard icon={Gift}       label="Trial Users"     value={stats.trialUsers}    color="#7c3aed" />
-        <StatCard icon={UserMinus}  label="Former Pro"      value={stats.lapsedProUsers} color="#a855f7" />
+        <StatCard icon={UserMinus}  label="Expired Plans"      value={stats.lapsedProUsers} color="#a855f7" />
         <StatCard icon={UserCheck}  label="Free Users"      value={stats.freeUsers}     color="#8e8e93" />
         <StatCard icon={TrendingUp} label="Active"          value={stats.activeUsers}   color="#0ea5e9" />
         <StatCard icon={Ban}        label="Banned"          value={stats.bannedUsers}   color="#ef4444" />
@@ -107,7 +107,7 @@ export default function AdminDashboard({ isSuperAdmin }) {
       {/* ── Pro conversion bar ── */}
       <div className="rounded-2xl p-4" style={{ background: '#111', border: '1px solid #1e1e1e' }}>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-text-muted">Pro Conversion</span>
+          <span className="text-xs font-semibold text-text-muted">Paid Conversion</span>
           <span className="text-xs font-black" style={{ color: '#f59e0b' }}>{proRatio}%</span>
         </div>
         <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#1e1e1e' }}>
@@ -115,7 +115,7 @@ export default function AdminDashboard({ isSuperAdmin }) {
             style={{ width: `${proRatio}%`, background: 'linear-gradient(90deg,#f59e0b,#dc2626)' }} />
         </div>
         <div className="flex justify-between mt-1.5 text-[11px] text-[#444]">
-          <span>{stats.proSubscribers} pro</span>
+          <span>{stats.proSubscribers} paid</span>
           <span>{stats.trialUsers} trial</span>
           <span>{stats.freeUsers} free</span>
         </div>

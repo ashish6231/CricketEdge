@@ -94,6 +94,7 @@ app.use(cors({
   credentials: true,
   exposedHeaders: ['Server-Timing', 'X-Request-ID'],
 }));
+app.use('/api/admin/payment-settings', express.json({ limit: '800kb' }));
 app.use(express.json({ limit: '50kb' }));
 
 // Render sits behind a reverse proxy — extract real client IP from leftmost x-forwarded-for

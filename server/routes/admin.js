@@ -1,13 +1,15 @@
 const { pagination } = require('../lib/pagination');
+const { userSearchFilters } = require('../lib/prismaSearch');
 const { publicCache } = require('../lib/readCache');
 const { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } = require('../shared/accountEmail.mjs');
 const express = require('express');
 const router = express.Router();
+router.use(require('./subscriptionPayments').adminRouter);
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
 const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissions');
 const prisma = require('../db/prisma');
 const {getAdminJobs}=require('../services/adminJobs');
-const { grantTrialIfEligible, grantTrialToAllEligible, grantTrialToNewUser, getTrialConfig } = require('../lib/subscriptionAccess');
+const { grantTrialIfEligible, grantTrialToAllEligible, grantTrialToNewUser, getTrialConfig, PAID_PLAN_SLUGS } = require('../lib/subscriptionAccess');
 const { validateTrialSetting, validateTrialDuration, TRIAL_SETTING_KEYS } = require('../lib/trialConfig');
 const { sanitizeUserRecord } = require('../middleware/auth');
 const { validateAdminPasswordChange } = require('../lib/adminUserPassword');
@@ -37,11 +39,11 @@ function lapsedProWhere(extra = {}) {
   return {
     role: 'user',
     subscriptions: {
-      some: { planSlug: 'pro', paymentStatus: 'completed' },
+      some: { planSlug: { in: [...PAID_PLAN_SLUGS] }, paymentStatus: 'completed' },
     },
     NOT: {
       AND: [
-        { subPlanSlug: 'pro' },
+        { subPlanSlug: { in: [...PAID_PLAN_SLUGS] } },
         { subStatus: 'active' },
         { subExpiresAt: { gt: now } },
       ],
@@ -53,7 +55,7 @@ function lapsedProWhere(extra = {}) {
 async function fetchLapsedUsers({ page = 1, limit = 20, search = '', status = '' }) {
   const {page:safePage,limit:safeLimit,skip} = pagination({page,limit});
   const extra = {};
-  if (search) extra.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
+  if (search) extra.OR = userSearchFilters(search);
   if (status) extra.status = status;
   const where = lapsedProWhere(extra);
 
@@ -67,7 +69,7 @@ async function fetchLapsedUsers({ page = 1, limit = 20, search = '', status = ''
         id: true, name: true, email: true, role: true, status: true,
         subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true,
         subscriptions: {
-          where: { planSlug: 'pro', paymentStatus: 'completed' },
+          where: { planSlug: { in: [...PAID_PLAN_SLUGS] }, paymentStatus: 'completed' },
           orderBy: { expiresAt: 'desc' },
           take: 1,
           select: { expiresAt: true, paidAt: true, amount: true, billingCycle: true, paymentMethod: true },
@@ -81,7 +83,7 @@ async function fetchLapsedUsers({ page = 1, limit = 20, search = '', status = ''
   const purchaseCounts = userIds.length
     ? await prisma.userSubscription.groupBy({
         by: ['userId'],
-        where: { userId: { in: userIds }, planSlug: 'pro', paymentStatus: 'completed' },
+        where: { userId: { in: userIds }, planSlug: { in: [...PAID_PLAN_SLUGS] }, paymentStatus: 'completed' },
         _count: { id: true },
       })
     : [];
@@ -116,7 +118,7 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
   try {
     const [totalUsers, proSubscribers, lapsedProUsers, trialUsers, freeUsers, activeUsers, bannedUsers, recentUsers] = await Promise.all([
       prisma.user.count(),
-      prisma.user.count({ where: { subPlanSlug: 'pro', subStatus: 'active', subExpiresAt: { gt: new Date() } } }),
+      prisma.user.count({ where: { subPlanSlug: { in: [...PAID_PLAN_SLUGS] }, subStatus: 'active', subExpiresAt: { gt: new Date() } } }),
       prisma.user.count({ where: lapsedProWhere() }),
       prisma.user.count({ where: { subPlanSlug: 'trial', subStatus: 'active', subExpiresAt: { gt: new Date() } } }),
       prisma.user.count({ where: { subPlanSlug: 'free' } }),
@@ -129,7 +131,8 @@ router.get('/dashboard', requireAdmin, async (req, res) => {
     ]);
     res.json({ success: true, data: { stats: { totalUsers, proSubscribers, lapsedProUsers, trialUsers, freeUsers, activeUsers, bannedUsers }, recent: { users: recentUsers } } });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('Admin dashboard query failed:', err.code || err.name);
+    res.status(500).json({ success: false, message: 'Unable to load the admin dashboard. Please try again.' });
   }
 });
 
@@ -144,12 +147,13 @@ router.get('/users', requireAdmin, async (req, res) => {
     const { page = 1, limit = 20, search = '', role = '', status = '', plan = '' } = req.query;
     const {page:safePage,limit:safeLimit,skip} = pagination({page,limit});
     const where = {};
-    if (search) where.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
+    if (search) where.OR = userSearchFilters(search);
     if (role) where.role = role;
     if (status) where.status = status;
-    if (plan) where.subPlanSlug = plan;
+    if (plan === 'paid') where.subPlanSlug = { in: [...PAID_PLAN_SLUGS] };
+    else if (plan) where.subPlanSlug = plan;
 
-    const orderBy = plan === 'pro' ? { subExpiresAt: 'asc' } : { createdAt: 'desc' };
+    const orderBy = plan === 'paid' || plan === 'pro' ? { subExpiresAt: 'asc' } : { createdAt: 'desc' };
 
     const [users, total] = await Promise.all([
       prisma.user.findMany({
@@ -161,7 +165,8 @@ router.get('/users', requireAdmin, async (req, res) => {
     ]);
     res.json({ success: true, data: users, pagination: { page: safePage, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('Admin users query failed:', err.code || err.name);
+    res.status(500).json({ success: false, message: 'Unable to load users. Please try again.' });
   }
 });
 
@@ -207,7 +212,8 @@ router.get('/lapsed-users', requireAdmin, async (req, res) => {
     const result = await fetchLapsedUsers(req.query);
     res.json({ success: true, ...result });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('Lapsed users query failed:', err.code || err.name);
+    res.status(500).json({ success: false, message: 'Unable to load expired subscriptions. Please try again.' });
   }
 });
 
@@ -477,42 +483,45 @@ router.patch('/users/:id/plan', requireAdmin, async (req, res) => {
     const userId = parseUserId(req.params.id);
     if (!userId) return res.status(400).json({ success: false, message: 'Invalid user id' });
     const { planSlug, reason, durationMonths } = req.body;
-    if (!['free', 'pro'].includes(planSlug))
-      return res.status(400).json({ success: false, message: 'planSlug must be free or pro' });
+    const allowedPlanSlugs = ['free', ...PAID_PLAN_SLUGS];
+    if (!allowedPlanSlugs.includes(planSlug))
+      return res.status(400).json({ success: false, message: `planSlug must be one of: ${allowedPlanSlugs.join(', ')}` });
 
     const before = await prisma.user.findUnique({ where: { id: userId }, select: { subPlanSlug: true, subExpiresAt: true, role: true } });
     if (!before) return res.status(404).json({ success: false, message: 'User not found' });
     if (before.role !== 'user') return res.status(403).json({ success: false, message: 'Cannot modify an admin or superadmin' });
 
     const now = new Date();
-    const months = parseInt(durationMonths) || 1;
+    const months = durationMonths == null ? 1 : Number(durationMonths);
+    if (!Number.isInteger(months) || months < 1 || months > 120) return res.status(400).json({ success: false, message: 'Duration must be 1 to 120 months' });
     let expiresAt = null;
-    if (planSlug === 'pro') {
-      const base = before.subExpiresAt && new Date(before.subExpiresAt) > now ? new Date(before.subExpiresAt) : now;
+    if (planSlug !== 'free') {
+      const base = before.subPlanSlug === planSlug && before.subExpiresAt && new Date(before.subExpiresAt) > now ? new Date(before.subExpiresAt) : now;
       expiresAt = new Date(base);
       expiresAt.setMonth(expiresAt.getMonth() + months);
     }
 
     const plan = await prisma.subscriptionPlan.findFirst({ where: { slug: planSlug } });
+    if (!plan) return res.status(400).json({ success: false, message: 'Plan is not available yet. Run the plan seed first.' });
 
-    const existingSub = await prisma.userSubscription.findFirst({ where: { userId, status: 'active' } });
     const subData = {
-      planId: plan?.id, planSlug, amount: 0,
-      startedAt: now, expiresAt: planSlug === 'pro' ? expiresAt : new Date('2099-12-31'),
-      billingCycle: 'yearly', paymentStatus: 'completed',
+      planId: plan.id, planSlug, amount: 0,
+      startedAt: now, expiresAt: planSlug !== 'free' ? expiresAt : new Date('2099-12-31'),
+      billingCycle: months === 12 ? 'yearly' : 'monthly', paymentStatus: 'completed',
       paymentMethod: 'wallet', paidAt: now, status: 'active', cancelReason: ''
     };
 
-    if (existingSub) {
-      await prisma.userSubscription.update({ where: { id: existingSub.id }, data: subData });
-    } else {
-      await prisma.userSubscription.create({ data: { userId, ...subData } });
-    }
-
-    const user = await prisma.user.update({
-      where: { id: userId },
-      data: { subPlanId: plan?.id, subPlanSlug: planSlug, subStatus: 'active', subStartedAt: now, subExpiresAt: expiresAt }
+    const user = await prisma.$transaction(async tx => {
+      await tx.userSubscription.updateMany({ where: { userId, status: 'active' }, data: { status: 'expired', cancelledAt: now, cancelReason: 'Plan changed by admin' } });
+      if (planSlug !== 'free') await tx.userSubscription.create({ data: { userId, ...subData } });
+      return tx.user.update({
+        where: { id: userId },
+        data: { subPlanId: plan.id, subPlanSlug: planSlug, subStatus: 'active', subStartedAt: now, subExpiresAt: expiresAt, subAutoRenew: false,
+          queuedPlanId: null, queuedPlanSlug: null, queuedBillingCycle: null, queuedAmount: null, queuedStatus: null, queuedPurchasedAt: null }
+      });
     });
+    require('../middleware/auth').clearAuthCache();
+    require('./auth').clearMeCache();
 
     await auditLog(req.user, 'plan_change', 'user', user.id, user.email, { before: { planSlug: before.subPlanSlug }, after: { planSlug } }, reason || `Plan changed to ${planSlug} by admin`, req);
 
@@ -529,7 +538,7 @@ router.patch('/users/:id/plan', requireAdmin, async (req, res) => {
 // ==================== PLANS ====================
 router.get('/plans', requireAdmin, async (req, res) => {
   try {
-    const plans = await prisma.subscriptionPlan.findMany({ orderBy: { displayOrder: 'asc' } });
+    const plans = await prisma.subscriptionPlan.findMany({ where: { slug: { in: [...PAID_PLAN_SLUGS] } }, orderBy: { displayOrder: 'asc' } });
     res.json({ success: true, data: plans });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -552,6 +561,7 @@ router.post('/plans', requireSuperAdmin, async (req, res) => {
       update: data,
       create: data
     });
+    await publicCache.invalidate('active-plans');
     await auditLog(req.user, 'plan_create', 'plan', plan.id, plan.slug, { after: plan }, '', req);
     res.json({ success: true, data: plan });
   } catch (err) {
@@ -571,7 +581,7 @@ router.patch('/plans/:id', requireSuperAdmin, async (req, res) => {
     const before = await prisma.subscriptionPlan.findUnique({ where: { id: +req.params.id } });
     const plan = await prisma.subscriptionPlan.update({ where: { id: +req.params.id }, data });
     await auditLog(req.user, 'plan_update', 'plan', plan.id, plan.slug, { before, after: plan }, '', req);
-    await publicCache.invalidate('pro-plan');
+    await publicCache.invalidate('active-plans');
     res.json({ success: true, data: plan });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -696,12 +706,7 @@ router.get('/subscription-logs', requireAdmin, async (req, res) => {
     if (planSlug) where.planSlug = planSlug;
     if (status) where.status = status;
     if (search) {
-      where.user = {
-        OR: [
-          { name: { contains: search, mode: 'insensitive' } },
-          { email: { contains: search, mode: 'insensitive' } },
-        ],
-      };
+      where.user = { OR: userSearchFilters(search) };
     }
 
     const [logs, total] = await Promise.all([
@@ -722,7 +727,8 @@ router.get('/subscription-logs', requireAdmin, async (req, res) => {
     ]);
     res.json({ success: true, data: logs, pagination: { page: safePage, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    console.error('Subscription logs query failed:', err.code || err.name);
+    res.status(500).json({ success: false, message: 'Unable to load subscription logs. Please try again.' });
   }
 });
 

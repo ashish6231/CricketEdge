@@ -2,6 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const Razorpay = require('razorpay');
 const router = express.Router();
+router.use(require('./subscriptionPayments').userRouter);
 const { verifyToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
 const { publicCache } = require('../lib/readCache');
@@ -11,6 +12,7 @@ const {
   getTrialMinutesLeft,
   isActiveTrial,
   refreshUserSubscriptionState,
+  PAID_PLAN_SLUGS,
 } = require('../lib/subscriptionAccess');
 
 function getRazorpay() {
@@ -22,9 +24,12 @@ function getRazorpay() {
 // GET /api/subscription/plans
 router.get('/plans', async (req, res) => {
   try {
-    const plan = await publicCache.remember('pro-plan',()=>prisma.subscriptionPlan.findFirst({ where: { slug: 'pro', isActive: true } }));
-    if (!plan) return res.status(404).json({ success: false, message: 'Plan not available' });
-    res.json({ success: true, data: [plan] });
+    const plans = await publicCache.remember('active-plans',()=>prisma.subscriptionPlan.findMany({
+      where: { isActive: true, slug: { in: [...PAID_PLAN_SLUGS] } },
+      orderBy: { displayOrder: 'asc' },
+    }));
+    if (!plans.length) return res.status(404).json({ success: false, message: 'Plans not available' });
+    res.json({ success: true, data: plans });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -87,7 +92,7 @@ router.get('/check-expiry', verifyToken, async (req, res) => {
       });
     }
 
-    if (!expiresAt || user.subPlanSlug !== 'pro')
+    if (!expiresAt || !PAID_PLAN_SLUGS.includes(user.subPlanSlug))
       return res.json({ success: true, expiresSoon: false, daysLeft: null, queued: false, isTrial: false });
 
     const daysLeft = Math.ceil((expiresAt - now) / (1000 * 60 * 60 * 24));

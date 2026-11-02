@@ -1,4 +1,5 @@
 import { LoaderCircle } from 'lucide-react'
+import { PLAN_NAMES } from '../../lib/subscriptionAccess'
 
 export const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
 
@@ -39,7 +40,7 @@ export function SubscriptionLogEntry({ log, showUser = false, compact = false })
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-bold text-text-primary capitalize">{log.planSlug} · {log.billingCycle}</span>
+            <span className="text-sm font-bold text-text-primary capitalize">{PLAN_NAMES[log.planSlug] || log.planSlug} · {log.billingCycle}</span>
             <Chip cfg={payCfg} />
             <Chip cfg={subCfg} />
             {log.paymentMethod === 'wallet' && (
