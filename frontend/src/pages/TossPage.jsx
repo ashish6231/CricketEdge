@@ -1,3 +1,5 @@
+import PageLoading from '../components/PageLoading'
+import useDebouncedValue from '../lib/useDebouncedValue'
 import { lazy, useEffect, useRef, useState, useMemo } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, Coins, X, Trophy } from 'lucide-react'
@@ -65,10 +67,12 @@ export default function TossPage() {
   const [loadError, setLoadError] = useState('')
   const [matchStatus, setMatchStatus] = useState('all')
   const [leagueQuery, setLeagueQuery] = useState('')
+  const debouncedLeague = useDebouncedValue(leagueQuery)
   const [allMatches, setAllMatches] = useState([])
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
   const [searchQuery, setSearchQuery] = useState('')
+  const debouncedSearch = useDebouncedValue(searchQuery)
   const [now, setNow] = useState(() => Date.now())
   const scrollRef = useRef(null)
 
@@ -142,7 +146,7 @@ export default function TossPage() {
     const fallbackTimer = setTimeout(() => {
       if (cancelled || receivedFeed || document.hidden) return
       getTossMatches().then(data => { if (!cancelled && !receivedFeed) processMatches(data) }).catch(error => { if (!cancelled && !receivedFeed) { setLoadError(error?.detail || 'Toss data is temporarily unavailable. Please try again.'); setLoading(false) } })
-    }, 6000)
+    }, 200)
 
     const onTossUpdate = (payload) => {
       receivedFeed = true
@@ -169,13 +173,13 @@ export default function TossPage() {
     }
   }
 
-  const hasSearch = searchQuery.trim().length > 0
+  const hasSearch = debouncedSearch.trim().length > 0
 
   // Filter matches based on selected competition and search query
   const displayedMatches = useMemo(() => {
-    let list = selectedComp === 'ALL' || searchQuery.trim() ? allMatches : (competitions[selectedComp] || [])
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim()
+    let list = selectedComp === 'ALL' || debouncedSearch.trim() ? allMatches : (competitions[selectedComp] || [])
+    if (debouncedSearch.trim()) {
+      const q = debouncedSearch.toLowerCase().trim()
       list = list.filter((m) => {
         const name = (m.matchName || '').toLowerCase()
         const comp = (m.competitionName || '').toLowerCase()
@@ -183,7 +187,7 @@ export default function TossPage() {
       })
     }
     return list
-  }, [selectedComp, allMatches, competitions, searchQuery])
+  }, [selectedComp, allMatches, competitions, debouncedSearch])
 
   // Count active live matches (strictly non-ended)
   const liveCount = useMemo(() => {
@@ -236,7 +240,7 @@ export default function TossPage() {
         </button>
 
         {/* Categorized League List */}
-        {Object.entries(competitions).filter(([comp]) => comp.toLowerCase().includes(leagueQuery.toLowerCase())).map(([comp, compMatches]) => {
+        {Object.entries(competitions).filter(([comp]) => comp.toLowerCase().includes(debouncedLeague.toLowerCase())).map(([comp, compMatches]) => {
           const compLiveCount = compMatches.filter(isLiveMatch).length
           const isSelected = selectedComp === comp && !hasSearch
 
@@ -285,16 +289,7 @@ export default function TossPage() {
       onOpen={() => navigate(`/toss/match/${match.matchId}`,{state:{matchData:match}})} />
   )
 
-  if (!matchId && loading && !allMatches.length) {
-    return (
-      <div className="flex h-[80vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <LoaderCircle className="h-9 w-9 animate-spin text-amber-500" />
-          <span className="text-sm font-semibold text-text-muted">Loading toss markets...</span>
-        </div>
-      </div>
-    )
-  }
+  if (!matchId && loading && !allMatches.length) return <PageLoading label="Loading toss markets" />
 
   if (!matchId && loadError && !allMatches.length) {
     return (

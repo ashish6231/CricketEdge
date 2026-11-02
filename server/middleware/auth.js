@@ -12,6 +12,7 @@ if (!JWT_SECRET) {
 /** In-memory auth cache — cuts Neon hits from 3s frontend polls. */
 const AUTH_CACHE_TTL_MS = 45 * 1000;
 const authCache = new Map(); // token -> { expiresAt, result }
+const pendingAuth = new Map();
 
 function getCachedAuth(token) {
   const entry = authCache.get(token);
@@ -54,6 +55,13 @@ function generateToken(user) {
 async function resolveBearerUser(token) {
   const cached = getCachedAuth(token);
   if (cached) return cached;
+  if(pendingAuth.has(token))return pendingAuth.get(token);
+  const pending=resolveUncachedBearerUser(token).finally(()=>pendingAuth.delete(token));
+  pendingAuth.set(token,pending);
+  return pending;
+}
+
+async function resolveUncachedBearerUser(token) {
 
   let decoded;
   try {

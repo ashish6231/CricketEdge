@@ -1,8 +1,8 @@
 import { getCurrentProviderTotals, getExplicitPreMatchProviderTotals } from './providerTotals.mjs';
-import { getBookiePlFromMatchedTrades, getMarketExposureFromTrades } from './bookiePl.mjs';
+import { getSimpleBookiePl, getMarketExposureFromTrades } from './bookiePl.mjs';
 import { resolveInternationalMatchLeague } from './providerTotalMatchPredictor.mjs';
 
-export const UNIVERSAL_TOSS_VERSION = 'toss-v16-complete-league-net-exposure';
+export const UNIVERSAL_TOSS_VERSION = 'toss-v18-league-net-exposure-simple-pl';
 
 export const INCOMPLETE_TOSS_DATA_MESSAGE = "Prediction data is incomplete, can't predict.";
 
@@ -39,7 +39,7 @@ export function selectTossWinner({teamNames, risk, selection = 'lower'} = {}) {
 export function getTossRuleInputs(snapshot, competition = '') {
   const teamNames = snapshot?.teamNames;
   const providerTotals = getCurrentProviderTotals(snapshot) || getExplicitPreMatchProviderTotals(snapshot);
-  const displayedPl = getBookiePlFromMatchedTrades(snapshot,teamNames?.[0],teamNames?.[1]);
+  const displayedPl = getSimpleBookiePl(snapshot,teamNames?.[0],teamNames?.[1]);
   const pl = [finite(displayedPl.pl1),finite(displayedPl.pl2)];
   // Net exposure is the same Back risk − Lay risk displayed on TossDetail.
   const exposure = getMarketExposureFromTrades(snapshot,teamNames?.[0],teamNames?.[1]);
@@ -59,7 +59,7 @@ export function getTossRuleInputs(snapshot, competition = '') {
     mode:rule.mode,selection:rule.selection,requirePositivePl:false,available,unavailableReason:available ? null : INCOMPLETE_TOSS_DATA_MESSAGE};
 }
 
-/** WBBL and internationals select higher net exposure; every other league selects lower. */
+/** WBBL and internationals select higher net exposure; other leagues select lower. */
 export function getUniversalTossPrediction(snapshot, competition = '') {
   const inputs = getTossRuleInputs(snapshot,competition);
   const direction = inputs.selection;
@@ -88,7 +88,7 @@ export function getUniversalTossPrediction(snapshot, competition = '') {
     risk:{tier:'unvalidated',label:'Risk unvalidated',shortLabel:'Unvalidated',wrongPct:'Uncalibrated',calibrated:false,note:metadata.validationNote},
     algorithmEvidence:{risk,providerTotal:{team1:providerTotals?.[0] ?? null,team2:providerTotals?.[1] ?? null},
       pl:{team1:pl[0],team2:pl[1]},winnerIdx,signalCount:1,mode:inputs.mode,
-      selection:direction,requirePositivePl:false,inputSource:'toss-current-display'},
+      selection:direction,plFormula:'lay-stake-minus-back-exposure',requirePositivePl:false,inputSource:'toss-current-display'},
     signals,activeSignals:1,metrics:{t1:inputs.teamNames[0],t2:inputs.teamNames[1]},
     matchedRules:[{reason,winner,priority:100,selected:true}],
   };

@@ -19,7 +19,7 @@ export default function TossRuleEvidence({ snap, prediction, inputs }) {
           {rows.map((row,rowIndex) => <tr key={row.label}><th scope="row">{row.label}{rowIndex === 2 && <small>{direction} net exposure wins</small>}</th>{row.values.map((value,index) => <td key={index} className={row.net && prediction?.winnerIdx === index ? 'is-selected' : undefined}>{row.net ? signed(value) : amount(value)}</td>)}</tr>)}
         </tbody>
       </table>
-      <footer className="toss-evidence-footer"><p>{direction} net exposure (Back risk − Lay risk) selects the winner. WBBL and international matches use higher net exposure; all other leagues use lower net exposure. Both teams must have Back risk and Lay risk greater than zero. Zero or missing values mean incomplete data; equal net exposure produces no pick.</p></footer>
+      <footer className="toss-evidence-footer"><p>WBBL and international matches use higher net exposure; all other leagues use lower net exposure. Both teams must have Back risk and Lay risk greater than zero. Zero or missing values mean incomplete data; equal net exposure produces no pick.</p></footer>
     </section>
   )
 }

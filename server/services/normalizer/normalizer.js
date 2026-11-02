@@ -6,6 +6,7 @@
  */
 
 const { getRedisClient } = require('../../shared/redis');
+const { getCacheRedisClient, REDIS_URL } = require('../../shared/redis');
 const { createNormalizedMatch, createNormalizedOdds, mergeMatches } = require('../../shared/schema');
 const crexService = require('../crexService');
 const prisma = require('../../db/prisma');
@@ -30,6 +31,64 @@ const _crexDetails = new Map();
 const _tossSnapshots = new Map();
 const _sessionTrades = new Map();
 const _sessionTradeFingerprints = new Map();
+const _bundleReads = new Map();
+const _bundleReadTimes = new Map();
+function applyCachedBundle(mid,bundle) {
+  if(bundle?.cricket)_cricketSnapshots.set(mid,bundle.cricket);
+  if(bundle?.toss)_tossSnapshots.set(mid,bundle.toss);
+  if(bundle?.session)_sessionTrades.set(mid,bundle.session);
+  if(bundle?.crex)_crexDetails.set(mid,bundle.crex);
+}
+async function syncCachedBundles(ids) {
+  if(!REDIS_URL)return;
+  const now=Date.now(),missing=[...new Set(ids.map(String))].filter(id=>now-(_bundleReadTimes.get(id)||0)>2000);
+  const {decodeCacheValue}=require('../../shared/redisCacheCodec');
+  for(let offset=0;offset<missing.length;offset+=100) {
+    const batch=missing.slice(offset,offset+100);
+    try {
+      const values=await getCacheRedisClient().mget(...batch.map(id=>`match:${id}:bundle`));
+      values.forEach((raw,index)=>{if(raw)applyCachedBundle(batch[index],JSON.parse(decodeCacheValue(raw)))});
+      batch.forEach(id=>_bundleReadTimes.set(id,now));
+    }catch{}
+  }
+  if(_bundleReadTimes.size>2000)for(const [id,time] of _bundleReadTimes)if(now-time>120000)_bundleReadTimes.delete(id);
+}
+
+// API-only replicas mirror the ingest worker's Redis state without scraping or
+// publishing it again. Local getters stay synchronous for card rendering.
+async function syncCachedState() {
+  if(!REDIS_URL)return;
+  const keys=['matches:cricket','matches:toss','matches:session','matches:tennis','crex:overview'];
+  const values=await Promise.all(keys.map(async key=>{
+    try {const raw=await getCacheRedisClient().get(key);return raw?JSON.parse(raw):null}catch{return null}
+  }));
+  const list=value=>Array.isArray(value)?value:Array.isArray(value?.matches)?value.matches:null;
+  if(list(values[0]))_cricketMatches=list(values[0]);
+  if(values[0]?.updatedAt)_cricketMatchesUpdatedAt=values[0].updatedAt;
+  if(list(values[1]))_tossMatches=list(values[1]);
+  if(values[1]?.updatedAt)_tossMatchesUpdatedAt=values[1].updatedAt;
+  if(list(values[2]))_sessionMatches=list(values[2]);
+  if(values[2]?.updatedAt)_sessionMatchesUpdatedAt=values[2].updatedAt;
+  if(list(values[3]))_tennisMatches=list(values[3]);
+  if(values[3]?.updatedAt)_tennisMatchesUpdatedAt=values[3].updatedAt;
+  if(list(values[4]))_crexOverview=list(values[4]);
+}
+
+async function syncCachedBundle(matchId,{force=false}={}) {
+  if(!REDIS_URL)return;
+  const mid=String(matchId);
+  if(!force && Date.now()-(_bundleReadTimes.get(mid)||0)<2000)return;
+  if(_bundleReads.has(mid))return _bundleReads.get(mid);
+  const pending=(async()=>{
+    try {
+      const raw=await getCacheRedisClient().get(`match:${mid}:bundle`);
+      if(!raw)return;
+      applyCachedBundle(mid,JSON.parse(raw));
+      _bundleReadTimes.set(mid,Date.now());
+    }catch{}
+  })().finally(()=>_bundleReads.delete(mid));
+  _bundleReads.set(mid,pending);return pending;
+}
 let _crexOverviewFingerprint = '';
 let _sessionMatchesFingerprint = '';
 
@@ -88,7 +147,7 @@ async function processIngestJob(job) {
     _cricketMatchesUpdatedAt = new Date().toISOString();
 
     // Cache in Redis (60s TTL)
-    await redis.set('matches:cricket', JSON.stringify({ matches: normalized }), 'EX', 60);
+    await redis.set('matches:cricket', JSON.stringify({ matches: normalized,updatedAt:_cricketMatchesUpdatedAt }), 'EX', 60);
 
     // Pub/Sub carries invalidation signals; the bridge reads the local cache.
     // Sending another full copy here wastes egress to external Redis services.
@@ -124,7 +183,7 @@ async function processIngestJob(job) {
       }
       if (updated) {
         _cricketMatchesUpdatedAt = new Date().toISOString();
-        await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
+        await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches,updatedAt:_cricketMatchesUpdatedAt }), 'EX', 60);
         await redis.publish('cricket:matches', '{}');
       }
     }
@@ -133,7 +192,7 @@ async function processIngestJob(job) {
   else if (type === 'toss:matches' && Array.isArray(data)) {
     _tossMatches = data;
     _tossMatchesUpdatedAt = new Date().toISOString();
-    await redis.set('matches:toss', JSON.stringify(data), 'EX', 60);
+    await redis.set('matches:toss', JSON.stringify({matches:data,updatedAt:_tossMatchesUpdatedAt}), 'EX', 60);
     await redis.publish('toss:matches', '{}');
   }
 
@@ -147,14 +206,14 @@ async function processIngestJob(job) {
     _sessionMatchesFingerprint = nextFingerprint;
     _sessionMatches = list;
     _sessionMatchesUpdatedAt = new Date().toISOString();
-    await redis.set('matches:session', JSON.stringify(data), 'EX', 60);
+    await redis.set('matches:session', JSON.stringify({matches:list,updatedAt:_sessionMatchesUpdatedAt}), 'EX', 60);
     await redis.publish('session:matches', '{}');
   }
 
   else if (type === 'tennis:matches' && Array.isArray(data)) {
     _tennisMatches = data;
     _tennisMatchesUpdatedAt = new Date().toISOString();
-    await redis.set('matches:tennis', JSON.stringify(data), 'EX', 60);
+    await redis.set('matches:tennis', JSON.stringify({matches:data,updatedAt:_tennisMatchesUpdatedAt}), 'EX', 60);
     await redis.publish('tennis:matches', '{}');
   }
 
@@ -281,7 +340,7 @@ async function processIngestJob(job) {
     // Re-broadcast updated cricket matches list so home screen cards get fresh scores
     if (matchedDetailChanged && _cricketMatches.length > 0) {
       _cricketMatchesUpdatedAt = new Date().toISOString();
-      await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches }), 'EX', 60);
+      await redis.set('matches:cricket', JSON.stringify({ matches: _cricketMatches,updatedAt:_cricketMatchesUpdatedAt }), 'EX', 60);
       await redis.publish('cricket:matches', '{}');
     }
   }
@@ -364,6 +423,9 @@ function setCrexDetail(key, detail) {
 }
 
 module.exports = {
+  syncCachedState,
+  syncCachedBundle,
+  syncCachedBundles,
   processIngestJob,
   getCricketMatches,
   getTossMatches,

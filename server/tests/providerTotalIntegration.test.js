@@ -62,3 +62,26 @@ test('ingestion, Redis broadcast and API restore independent cricket/toss captur
   assert.deepEqual(bundle.cricket.deepMetrics.totals,{team1:999,team2:888});
   assert.deepEqual(bundle.toss.deepMetrics.totals,{team1:777,team2:666});
 });
+
+test('captured pre-match exposure reaches Redis and the detail bundle after its source rows disappear',async t=>{
+  const dir=await fs.mkdtemp(path.join(os.tmpdir(),'exposure-integration-'));
+  t.after(()=>fs.rm(dir,{recursive:true,force:true}));
+  const options={filePath:path.join(dir,'captures.json'),database:false};
+  store=createProviderTotalStore(options);
+  const id='exposure-history-integration',start=Date.now()+3600000;
+  const info={matchId:id,matchName:'A v B',startTime:start,status:'upcoming'};
+  await ingest('cricket:matches',[info]);
+  const raw={teamNames:['A','B'],serverTime:Date.now(),
+    preMatchVolume:{team1:{back:100,lay:10},team2:{back:20,lay:50}},
+    teams:{A:{trades:[{type:'back',size:100,price:3,updatedAt:Date.now()-1000},{type:'lay',size:10,price:2,updatedAt:Date.now()-1000}]},
+      B:{trades:[{type:'lay',size:50,price:2,updatedAt:Date.now()-1000},{type:'back',size:20,price:2,updatedAt:Date.now()-1000}]}}};
+  await ingest('cricket:snapshot',raw,id);
+  assert.equal(redisRows.get(`match:${id}:bundle`).cricket.preMatchExposure.team1.netExposure,190);
+  store=createProviderTotalStore(options);
+  await ingest('cricket:matches',[{...info,inPlay:true,status:'live'}]);
+  await ingest('cricket:snapshot',{...raw,serverTime:start+60000,teams:{A:{trades:[]},B:{trades:[]}}},id);
+  const bundle=await getMatchBundlePayload(id,{isBroadcaster:true});
+  assert.equal(bundle.cricket.preMatchExposure.team1.backExposure,200);
+  assert.equal(bundle.cricket.preMatchExposure.team2.layExposure,50);
+  assert.equal(bundle.cricket.preMatchExposure.team2.recordedTrades,2);
+});

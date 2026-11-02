@@ -54,6 +54,67 @@ export function getTradeStats(trades = []) {
   return { tBack, tLay, tBackLiab, tLayLiab, invalid }
 }
 
+/** Original overview simplePL: own Lay stake minus own Back liability.
+ * Lay exposure and the other outcome's stakes are different metrics. */
+export function calcSimpleBookiePl(backExposure, layStake) {
+  const back=finiteNumber(backExposure),lay=finiteNumber(layStake)
+  return back==null || lay==null || back<0 || lay<0 ? null : lay-back
+}
+
+/** The same overview formula applied to a named, explicitly scoped ledger. */
+export function getSimpleBookiePl(snap,t1,t2,drawName=null,{period='all',startTime,now}={}) {
+  const names=[t1,t2,...(drawName?[drawName]:[])]
+  const byName={},sources={}
+  const start=timestamp(snap?.startTime ?? startTime)
+  const asOf=timestamp(snap?.serverTime ?? snap?.updatedAt) ?? timestamp(now)
+  const capture=snap?.preMatchCapture
+  for(const [index,name] of names.entries()) {
+    byName[name]=null;sources[name]='unavailable'
+    if(!snap || snap.error || snap._seeded)continue
+    if(period==='all') {
+      const field=index===2?'draw_win':`team${index+1}_win`
+      const provider=finiteNumber(snap.deepMetrics?.simplePL?.[field]
+        ?? (index===2?snap.deepMetrics?.simplePL?.team3_win:null))
+      if(provider!=null){byName[name]=provider;sources[name]='provider';continue}
+      if(index<2) {
+        const prefix=index===0?'A':'B'
+        const raw=calcSimpleBookiePl(snap.deepMetrics?.raw?.[`${prefix}_back_expo`],snap.deepMetrics?.raw?.[`${prefix}_lay_stake`])
+        if(raw!=null){byName[name]=raw;sources[name]='provider';continue}
+      }
+    }
+    if(period==='pre' && [1,2,3].includes(capture?.version) && capture.mode==='pre-match' && ['waiting','locked'].includes(capture.state)
+      && timestamp(capture.startTime)===start && capture.teamNames?.includes(name)) {
+      const value=capture.exposure?.[`team${capture.teamNames.indexOf(name)+1}`]
+      const capturedVolume=capture.volume?.[`team${capture.teamNames.indexOf(name)+1}`]
+      if(!(finiteNumber(value?.backExposure)>0) || value?.backComplete===false)continue
+      byName[name]=calcSimpleBookiePl(value?.backExposure,finiteNumber(capturedVolume?.lay) ?? value?.layStake)
+      sources[name]=byName[name]!=null?'recorded':'unavailable'
+      continue
+    }
+    const rows=snap.teams?.[name]?.trades
+    if(!Array.isArray(rows) || !['all','pre','live','3min'].includes(period))continue
+    if(period!=='all' && (start==null || (period!=='pre' && asOf==null)
+      || rows.some(row=>tradeTimestamp(row)==null)))continue
+    const filtered=period==='all'?rows:rows.filter(row=>{
+      const time=tradeTimestamp(row)
+      if(asOf!=null && time>asOf)return false
+      return period==='pre'?time<start:period==='live'?time>=start:time>=Math.max(start,asOf-180000)
+    })
+    const volumeField={pre:'preMatchVolume',live:'inPlayVolume','3min':'threeMinVolume'}[period]
+    const selectionIndex=snap.teamNames?.indexOf(name) ?? -1
+    const periodVolume=selectionIndex>=0 ? snap[volumeField]?.[`team${selectionIndex+1}`] : null
+    if(!filtered.length && (snap.tradesComplete!==true || Number(periodVolume?.back)>0 || Number(periodVolume?.lay)>0))continue
+    const stats=getTradeStats(filtered)
+    if(stats.invalid)continue
+    if(period==='pre' && !(stats.tBackLiab>0))continue
+    if(period!=='all' && finiteNumber(periodVolume?.back)!=null
+      && Math.abs(stats.tBack-Number(periodVolume.back))>Math.max(.02,Math.abs(Number(periodVolume.back))*1e-8))continue
+    byName[name]=calcSimpleBookiePl(stats.tBackLiab,finiteNumber(periodVolume?.lay) ?? stats.tLay)
+    sources[name]='recorded'
+  }
+  return {byName,pl1:byName[t1],pl2:byName[t2],plDraw:drawName?byName[drawName]:null,sources}
+}
+
 /**
  * Calculate one selection's exposure exclusively from its matched per-odds
  * trade ledger. Provider exposure summaries are intentionally not consulted.

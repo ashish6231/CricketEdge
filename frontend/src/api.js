@@ -1,10 +1,9 @@
+import { createRequestClient } from './lib/requestClient.js'
 import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
-const API_TIMEOUT_MS = 12000
 const AUTH_TIMEOUT_MS = 8000
 const LOGIN_TIMEOUT_MS = 20000
-const AUTH_HARD_FAIL_CODES = new Set(['SESSION_REPLACED', 'ACCOUNT_BANNED', 'ACCOUNT_SUSPENDED'])
 
 const getAuthHeader = () => {
   const token = localStorage.getItem('auth_token')
@@ -31,43 +30,11 @@ async function getAPIError(res) {
   }
 }
 
-async function fetchAPI(endpoint, options = {}) {
-  const { timeoutMs = API_TIMEOUT_MS, retries = 1, ...fetchOptions } = options
-
-  const attempt = async () => {
-    const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), timeoutMs)
-    try {
-      const res = await fetch(`${API_BASE}${endpoint}`, {
-        ...fetchOptions,
-        signal: controller.signal,
-        headers: { 'Accept-Encoding': 'gzip, deflate', ...getAuthHeader(), ...getTelegramHeader(), ...fetchOptions.headers }
-      })
-      if (!res.ok) throw await getAPIError(res)
-      return await res.json()
-    } catch (err) {
-      if (err.name === 'AbortError') throw { detail: 'Request timeout — server slow hai, dubara try karo' }
-      if (err.detail) throw err
-      throw { detail: 'Network error' }
-    } finally {
-      clearTimeout(timer)
-    }
-  }
-
-  let lastErr
-  for (let i = 0; i <= retries; i++) {
-    try {
-      return await attempt()
-    } catch (err) {
-      lastErr = err
-      // Only retry on network/timeout errors, not on API errors (4xx/5xx)
-      if (err.status || i === retries) throw err
-      // Brief pause before retry — 800ms
-      await new Promise(r => setTimeout(r, 800))
-    }
-  }
-  throw lastErr
-}
+const fetchAPI = createRequestClient({
+  base: API_BASE,
+  getHeaders: () => ({ ...getAuthHeader(), ...getTelegramHeader() }),
+  parseError: getAPIError,
+})
 
 // ──── Cricket ────
 
@@ -75,8 +42,9 @@ export async function getSummary() {
   return fetchAPI('/summary')
 }
 
-export async function getCricketMatches() {
-  return fetchAPI('/cricket/matches')
+export async function getCricketMatches(params) {
+  const query = params ? `?${new URLSearchParams(params)}` : ''
+  return fetchAPI(`/cricket/matches${query}`)
 }
 
 export async function getCricketSnapshot(matchId) {
@@ -115,8 +83,9 @@ export async function getTennisSnapshot(matchId) {
 
 // ──── Session ────
 
-export async function getSessionMatches() {
-  return fetchAPI('/session/matches')
+export async function getSessionMatches(params) {
+  const query = params ? `?${new URLSearchParams(params)}` : ''
+  return fetchAPI(`/session/matches${query}`)
 }
 
 export async function getSessionTrades(matchId) {
@@ -125,8 +94,9 @@ export async function getSessionTrades(matchId) {
 
 // ──── Toss ────
 
-export async function getTossMatches() {
-  return fetchAPI('/toss/matches')
+export async function getTossMatches(params) {
+  const query = params ? `?${new URLSearchParams(params)}` : ''
+  return fetchAPI(`/toss/matches${query}`)
 }
 
 export async function getTossSnapshot(matchId) {
@@ -214,10 +184,12 @@ export async function getAuthStatus() {
 }
 
 export async function logout() {
-  try {
-    await fetchAPI('/auth/logout', { method: 'POST' }).catch(() => {})
-  } catch {}
+  // Capture auth headers before clearing local state; close the UI immediately.
+  const pendingLogout = fetchAPI('/auth/logout', { method: 'POST', retries: 0 })
   localStorage.removeItem('auth_token')
+  try {
+    await pendingLogout
+  } catch {}
   return { success: true }
 }
 
@@ -303,25 +275,17 @@ export function adminConfirmTossWinner(matchId, actualWinner) {
 }
 
 export async function adminCaptureTossDataset() {
-  const CAPTURE_TIMEOUT_MS = 120000
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), CAPTURE_TIMEOUT_MS)
-  try {
-    const res = await fetch(`${API_BASE}/admin/toss-dataset/capture`, {
-      method: 'POST',
-      signal: controller.signal,
-      headers: getAuthHeader(),
-    })
-    if (!res.ok) throw await getAPIError(res)
-    return await res.json()
-  } catch (err) {
-    if (err.name === 'AbortError') throw { detail: 'Request timeout — server slow hai, dubara try karo' }
-    if (err.detail) throw err
-    console.error('API Error: /admin/toss-dataset/capture', err)
-    throw { detail: 'Network error' }
-  } finally {
-    clearTimeout(timer)
+  const submitted = await fetchAPI('/admin/toss-dataset/capture', { method: 'POST', retries: 0 })
+  // Compatible with the previous backend during rolling deployments.
+  if (!submitted.jobId) return submitted
+  const deadline = Date.now() + 180000
+  while (Date.now() < deadline) {
+    await new Promise(resolve => setTimeout(resolve, 1500))
+    const job = await fetchAPI(`/admin/jobs/${encodeURIComponent(submitted.jobId)}`, { retries: 0 })
+    if (job.state === 'completed') return { success: true, data: job.data }
+    if (job.state === 'failed') throw { detail: job.message || 'Capture failed' }
   }
+  throw { detail: 'Capture is still running. Refresh the dataset shortly.' }
 }
 
 export async function adminGetTossDatasetExport() {

@@ -41,7 +41,7 @@ function setup() {
     io.connection(socket);
     return socket;
   }
-  return { connect };
+  return { connect, io };
 }
 
 test('mixed clients get lossless feeds; duplicate requests and unchanged polls send nothing', async () => {
@@ -93,4 +93,22 @@ test('overlapping ingestion events share a single full-bundle broadcast', async 
   await Promise.all(Array.from({ length: 5 }, () => service.broadcastMatchBundle('coalesced', { force: true })));
   assert.equal(calls, 1);
   assert.equal(socket.sent.length, 1);
+});
+
+test('ingestion sees remote viewers while cluster demand replies contain only local viewers',async()=>{
+  const previous=process.env.REDIS_URL;
+  process.env.REDIS_URL='redis://unused-offline-test';
+  try {
+    const {io}=setup();
+    io.serverSideEmitWithAck=async()=>[{ids:['remote-match'],clients:2,feeds:['toss']}];
+    await service.refreshClusterDemand();
+    assert.deepEqual(service.getActiveSubscribedMatchIds(),['remote-match']);
+    assert.equal(service.getConnectedClientsCount(),2);
+    assert.equal(service.hasActiveFeedSubscribers('toss'),true);
+    let reply;
+    io['worker:demand'](value=>{reply=value});
+    assert.deepEqual(reply,{ids:[],clients:0,feeds:[]});
+  }finally{
+    if(previous===undefined)delete process.env.REDIS_URL;else process.env.REDIS_URL=previous;
+  }
 });

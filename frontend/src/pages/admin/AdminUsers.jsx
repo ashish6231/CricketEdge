@@ -1,5 +1,6 @@
+import useDebouncedValue from '../../lib/useDebouncedValue'
 import { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } from '../../../../server/shared/accountEmail.mjs'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, Shield, User, Crown, Ban, CheckCircle, PauseCircle, MoreVertical, X, Gift, UserPlus, Mail, Lock, Eye, EyeOff, KeyRound } from 'lucide-react'
 import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan, adminGrantTrial, adminGrantTrialAll, adminGetSettings, adminCreateUser, adminUpdateUserPassword } from '../../api'
@@ -75,6 +76,8 @@ export default function AdminUsers({ isSuperAdmin }) {
   const [pagination, setPagination] = useState({})
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
+  const loadVersion = useRef(0)
   const [role, setRole] = useState('')
   const [status, setStatus] = useState('')
   const [page, setPage] = useState(1)
@@ -91,14 +94,15 @@ export default function AdminUsers({ isSuperAdmin }) {
   const [savingPassword, setSavingPassword] = useState(false)
 
   const load = useCallback(() => {
+    const version = ++loadVersion.current
     setLoading(true)
-    adminGetUsers({ page, limit: 20, search, role, status })
-      .then(res => { setUsers(res.data); setPagination(res.pagination) })
-      .catch(e => toast.error(e.detail || 'Failed to load'))
-      .finally(() => setLoading(false))
-  }, [page, search, role, status])
+    adminGetUsers({ page, limit: 20, search: debouncedSearch, role, status })
+      .then(res => { if (version !== loadVersion.current) return; setUsers(res.data); setPagination(res.pagination) })
+      .catch(e => version === loadVersion.current && toast.error(e.detail || 'Failed to load'))
+      .finally(() => { if (version === loadVersion.current) setLoading(false) })
+  }, [page, debouncedSearch, role, status, toast])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load(); return () => { loadVersion.current++ } }, [load])
 
   useEffect(() => {
     adminGetSettings()

@@ -2,6 +2,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { freezePreMatchProviderTotals, getExplicitPreMatchProviderTotals, providerStartTime } = require('../utils/providerTotals.mjs');
+const { capturePreMatchExposure } = require('../utils/preMatchExposure.mjs');
 
 const DATASET_KEY = 'prematch_provider_totals';
 function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../data/pre_match_provider_totals.json'),
@@ -12,7 +13,10 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
   const client = () => prisma || require('../db/prisma');
   const read = async key => {
     if (database) {
-      const row = await client().predictionRecord.findUnique({where:{datasetKey_recordKey:{datasetKey:DATASET_KEY,recordKey:key}},select:{payload:true}});
+      const db = client();
+      const row = db.predictionRecord
+        ? await db.predictionRecord.findUnique({where:{datasetKey_recordKey:{datasetKey:DATASET_KEY,recordKey:key}},select:{payload:true}})
+        : (await db.$queryRaw`SELECT payload FROM PredictionRecord WHERE datasetKey = ${DATASET_KEY} AND recordKey = ${key} LIMIT 1`)[0];
       return row ? JSON.parse(row.payload) : null;
     }
     if (!fileRows) {
@@ -25,8 +29,12 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
     if (database) {
       const id = createHash('sha256').update(`${DATASET_KEY}\0${key}`).digest('hex');
       const payload = JSON.stringify(value);
-      await client().predictionRecord.upsert({where:{datasetKey_recordKey:{datasetKey:DATASET_KEY,recordKey:key}},
+      const db = client();
+      if (db.predictionRecord) await db.predictionRecord.upsert({where:{datasetKey_recordKey:{datasetKey:DATASET_KEY,recordKey:key}},
         create:{id,datasetKey:DATASET_KEY,recordKey:key,payload,position:0},update:{payload}});
+      else await db.$executeRaw`INSERT INTO PredictionRecord (id,datasetKey,recordKey,payload,position,createdAt,updatedAt)
+        VALUES (${id},${DATASET_KEY},${key},${payload},0,NOW(3),NOW(3))
+        ON DUPLICATE KEY UPDATE payload = VALUES(payload), updatedAt = NOW(3)`;
       return;
     }
     const work = writeChain.catch(() => {}).then(async () => {
@@ -58,12 +66,14 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
         inPlay:Boolean(snapshot.inPlay || matchInfo?.inPlay),
         status:/^(live|in-play|ended|completed|closed|verified|pending|cancelled|abandoned)$/i.test(matchInfo?.status || '')
           ? matchInfo.status : snapshot.status || matchInfo?.status };
-      const next = freezePreMatchProviderTotals(input, state.value, {now});
+      const next = capturePreMatchExposure(freezePreMatchProviderTotals(input, state.value, {now}), state.value, {now});
       const totals = getExplicitPreMatchProviderTotals(next);
-      if (!totals) return next;
+      const lockedCapture = next.preMatchCapture?.state==='locked' ? next.preMatchCapture : null;
+      if (!totals && !lockedCapture) return next;
       const value = {matchId:String(matchId),market,teamNames:next.teamNames,startTime:next.startTime,
-        preMatchProviderTotals:next.preMatchProviderTotals,preMatchProviderTotalsCapturedAt:next.preMatchProviderTotalsCapturedAt};
-      const unchanged = state.value && ['matchId','market','teamNames','startTime','preMatchProviderTotals']
+        preMatchProviderTotals:next.preMatchProviderTotals,preMatchProviderTotalsCapturedAt:next.preMatchProviderTotalsCapturedAt,
+        preMatchExposure:lockedCapture?.exposure,preMatchCapture:lockedCapture};
+      const unchanged = state.value && ['matchId','market','teamNames','startTime','preMatchProviderTotals','preMatchExposure','preMatchCapture']
         .every(field => JSON.stringify(state.value[field]) === JSON.stringify(value[field]));
       if (unchanged) value.preMatchProviderTotalsCapturedAt = state.value.preMatchProviderTotalsCapturedAt;
       if (!unchanged || state.dirty) {

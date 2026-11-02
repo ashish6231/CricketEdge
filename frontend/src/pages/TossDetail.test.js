@@ -32,10 +32,23 @@ test('standalone and embedded toss views require all four exposure values before
       assert.match(html,/€120\.00/)
       assert.match(html,/€100\.00/)
     }
+    const resulted=renderToStaticMarkup(createElement(TossSnapshotDetails,{snap:{...comparison,
+      serverTime:Date.now(),tossText:'Toss Winner: Alpha (opt to Bowl)'},isEmbedded:true}))
+    assert.match(resulted,/Reported toss winner: Alpha/)
+    assert.match(resulted,/Rule-selected team \(not the result\)/)
+    assert.match(resulted,/<h2 class="toss-winner-name">Beta<\/h2>/)
+    assert.doesNotMatch(resulted,/Predicted toss winner/)
+    assert.match(resulted,/Latest recorded trade/)
+    const highVolume=renderToStaticMarkup(createElement(TossSnapshotDetails,{snap:{...comparison,totalMatched:5000000},isEmbedded:true}))
+    assert.match(highVolume,/<h2 class="toss-winner-name">Beta<\/h2>/)
+    assert.doesNotMatch(highVolume,/Volume [Rr]eversal|reversal applied|Final rule pick/)
+    assert.match(highVolume,/Bookie P\/L/)
+    assert.match(highVolume,/−€80\.00/)
+    assert.match(highVolume,/−€20\.00/)
     const snap = {
       teamNames:['Alpha','Beta'], competitionName:'World Championship of Legends T20',
       preMatchPnl:{team1:999,team2:-999},preMatchTotalBets:{team1:100,team2:300},
-      deepMetrics:{simplePL:{team1_win:999,team2_win:-888},totals:{team1:5678,team2:1234}},
+      deepMetrics:{totals:{team1:5678,team2:1234}},
       teams:{
         Alpha:{trades:[{type:'back',size:100,price:2},{type:'lay',size:20,price:3}]},
         Beta:{trades:[{type:'back',size:50,price:2.2},{type:'lay',size:10,price:2}]},
@@ -48,8 +61,9 @@ test('standalone and embedded toss views require all four exposure values before
       assert.match(html, /Lower Net Exposure Toss Algorithm/)
       assert.match(html, /Net exposure \(Back − Lay\)/)
       assert.match(html, /1\/1 condition favors Beta/)
-      assert.match(html, /text-profit[^>]*>(?:<strong>)?\+€30(?:\.00)?/)
-      assert.match(html, /text-loss[^>]*>(?:<strong>)?−€20(?:\.00)?/)
+      assert.match(html, /text-loss[^>]*>(?:<strong>)?−€80(?:\.00)?/)
+      assert.match(html, /text-loss[^>]*>(?:<strong>)?−€50(?:\.00)?/)
+      assert.match(html, /P\/L = Lay stake − Back exposure/)
       assert.match(html, /€1,234\.00/)
       assert.match(html, /€5,678\.00/)
       assert.doesNotMatch(html, /World Legends Higher Activity|\+€999|−€888/)

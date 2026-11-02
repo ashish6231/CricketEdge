@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react'
+import useDebouncedValue from '../../lib/useDebouncedValue'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, Receipt } from 'lucide-react'
 import { adminGetSubscriptionLogs } from '../../api'
 import { useToast } from '../../components/ToastProvider'
@@ -10,20 +11,23 @@ export default function AdminSubscriptionLogs() {
   const [pagination, setPagination] = useState({})
   const [loading, setLoading]     = useState(true)
   const [search, setSearch]       = useState('')
+  const debouncedSearch = useDebouncedValue(search)
+  const loadVersion = useRef(0)
   const [paymentStatus, setPaymentStatus] = useState('')
   const [planSlug, setPlanSlug]   = useState('')
   const [subStatus, setSubStatus] = useState('')
   const [page, setPage]           = useState(1)
 
   const load = useCallback(() => {
+    const version = ++loadVersion.current
     setLoading(true)
-    adminGetSubscriptionLogs({ page, limit: 50, search, paymentStatus, planSlug, status: subStatus })
-      .then(res => { setLogs(res.data); setPagination(res.pagination) })
-      .catch(e => toast.error(e.detail || 'Failed to load'))
-      .finally(() => setLoading(false))
-  }, [page, search, paymentStatus, planSlug, subStatus])
+    adminGetSubscriptionLogs({ page, limit: 50, search: debouncedSearch, paymentStatus, planSlug, status: subStatus })
+      .then(res => { if (version !== loadVersion.current) return; setLogs(res.data); setPagination(res.pagination) })
+      .catch(e => version === loadVersion.current && toast.error(e.detail || 'Failed to load'))
+      .finally(() => { if (version === loadVersion.current) setLoading(false) })
+  }, [page, debouncedSearch, paymentStatus, planSlug, subStatus, toast])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load(); return () => { loadVersion.current++ } }, [load])
 
   const filterSelect = "px-3 py-2 rounded-xl text-xs font-semibold outline-none text-text-secondary"
   const filterStyle  = { background: '#1a1a1a', border: '1px solid #2c2c2e', color: '#ebebf5' }

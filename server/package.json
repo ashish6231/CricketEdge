@@ -16,12 +16,17 @@
     "sync:wncl": "node scripts/sync_wncl.js",
     "sync:spring-t20": "node scripts/sync_womens_spring.js",
     "migrate:predictions": "node scripts/migrate_prediction_datasets.js",
-    "revoke:all-trials": "node scripts/revoke_all_trials.js"
+    "revoke:all-trials": "node scripts/revoke_all_trials.js",
+    "worker:captures": "node scripts/admin-job-worker.js"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.10.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.82.0",
+    "@opentelemetry/exporter-trace-otlp-proto": "^0.300.0",
+    "@opentelemetry/sdk-node": "^0.300.0",
     "@prisma/adapter-mariadb": "^7.10.0",
     "@prisma/client": "^7.9.0",
-    "@react-oauth/google": "^0.13.5",
+    "@socket.io/redis-adapter": "^8.3.0",
     "axios": "^1.18.1",
     "axios-cookiejar-support": "^7.0.0",
     "bcryptjs": "^2.4.3",
@@ -37,7 +42,6 @@
     "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
     "mariadb": "^3.5.4",
-    "mysql2": "^3.24.5",
     "nodemailer": "^6.9.7",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",

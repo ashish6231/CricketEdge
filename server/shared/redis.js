@@ -85,6 +85,18 @@ class InMemoryRedisMock extends EventEmitter {
 
 let _client = null;
 let _subClient = null;
+let _cacheClient = null;
+
+function getCacheRedisClient() {
+  if (_cacheClient) return _cacheClient;
+  const client=getRedisClient();
+  // BullMQ needs unlimited retries, HTTP cache reads must fail open quickly.
+  _cacheClient=client.isMock ? client : client.duplicate({ maxRetriesPerRequest:1,
+    commandTimeout:500,connectTimeout:1000,enableOfflineQueue:false });
+  if(!_cacheClient.isMock)installCacheCompression(_cacheClient);
+  _cacheClient.on('error',()=>{});
+  return _cacheClient;
+}
 
 function getRedisClient() {
   if (_client) return _client;
@@ -186,6 +198,7 @@ async function releaseLock(lockKey, ownerId = String(process.pid)) {
 
 module.exports = {
   getRedisClient,
+  getCacheRedisClient,
   getSubClient,
   acquireLock,
   refreshLock,

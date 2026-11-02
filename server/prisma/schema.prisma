@@ -67,6 +67,8 @@ model User {
   @@index([subExpiresAt])
   @@index([status])
   @@index([resetToken])
+  @@index([role, createdAt])
+  @@index([subPlanSlug, subStatus, subExpiresAt])
 }
 
 model SubscriptionPlan {
@@ -132,6 +134,8 @@ model UserSubscription {
   @@index([userId, status])
   @@index([expiresAt])
   @@index([gatewayOrderId])
+  @@index([userId, createdAt])
+  @@index([planSlug, paymentStatus, userId])
 }
 
 model Match {
@@ -203,6 +207,7 @@ model AdminAuditLog {
   @@index([action])
   @@index([targetType, targetId])
   @@index([createdAt])
+  @@index([action, createdAt])
 }
 
 model PromoCode {

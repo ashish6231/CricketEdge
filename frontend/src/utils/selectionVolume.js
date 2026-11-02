@@ -1,5 +1,6 @@
 import { finiteNumber, timestamp, tradeSide, tradeTimestamp } from './bookiePl.js'
 import { isMatchEnded } from './matchTiming.js'
+import {isPreMatchCapture} from '../../../server/utils/preMatchExposure.mjs'
 import {
   providerTotalPair, getCurrentProviderTotals, getExplicitPreMatchProviderTotals,
   canObservePreMatchProviderTotals,
@@ -50,20 +51,34 @@ export function getPreMatchTradeActivity(snapshot, { startTime } = {}) {
   const unavailable = reason => ({ available: false, counts: {}, total: null, reason })
   if (start == null) return unavailable('Match start time unavailable.')
   if (!Array.isArray(names) || names.length < 2) return unavailable('Selection trade history unavailable.')
+  const capture=snapshot?.preMatchCapture
+  if(isPreMatchCapture(capture,start) && capture.exposure) {
+    const counts=Object.fromEntries(names.map((name,index)=>{
+      const count=capture.exposure[`team${index+1}`]?.recordedTrades
+      return [name,Number.isInteger(count)?count:null]
+    }))
+    const known=Object.values(counts).filter(count=>count!=null)
+    const total=known.length===names.length?known.reduce((sum,count)=>sum+count,0):null
+    return known.length>0 ? {available:true,counts,total} : unavailable('Trade counts were not captured with the provider period ledger.')
+  }
 
   const counts = {}
   for (const name of names) {
     const trades = snapshot?.teams?.[name]?.trades
-    if (!Array.isArray(trades)) return unavailable('Selection trade history unavailable.')
+    const captured = capture && !isPreMatchCapture(capture,start) ? null : snapshot?.preMatchExposure?.[`team${names.indexOf(name)+1}`]
+    if (!Array.isArray(trades) && !Number.isInteger(captured?.recordedTrades)) return unavailable('Selection trade history unavailable.')
     let count = 0
-    for (const trade of trades) {
+    for (const trade of trades || []) {
       if (!(finiteNumber(trade?.size) > 0 && finiteNumber(trade?.price) > 1 && tradeSide(trade))) continue
       const time = tradeTimestamp(trade)
       if (time == null) return unavailable('One or more recorded trades have no valid timestamp.')
       if (time < start) count++
     }
-    counts[name] = count
+    counts[name] = Math.max(count,Number.isInteger(captured?.recordedTrades) ? captured.recordedTrades : 0)
   }
+  if (Object.values(counts).every(count=>count===0) && Object.values(snapshot?.preMatchVolume || {})
+    .some(volume=>finiteNumber(volume?.back)>0 || finiteNumber(volume?.lay)>0))
+    return unavailable('Pre-match trade entries are no longer present in the live feed.')
   return { available: true, counts, total: Object.values(counts).reduce((sum, count) => sum + count, 0) }
 }
 

@@ -16,6 +16,7 @@ const { hasProAccess } = require('../lib/subscriptionAccess');
 const { getSiteModeSync } = require('../lib/siteSettings');
 const { getTossMarketSummary } = require('../utils/tossMarketSummary.mjs');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
+const {hasCompleteCardOdds,repairCompletedCardOdds,savedBackOdds}=require('../utils/endedMatchOdds.mjs');
 
 // In-memory cache for toss dataset (prevents reading 1.4MB JSON from disk on every call)
 let _tossDatasetCache = null;
@@ -58,6 +59,7 @@ async function getCachedMatchDataset() {
 // Persistent cache for ended matches
 const ENDED_MATCHES_CACHE_FILE = path.join(__dirname, '../data/ended_matches_cache.json');
 const endedMatchesCache = new Map();
+const endedOddsRepairAttempts = new Map();
 
 function loadEndedMatchesCache() {
   try {
@@ -133,48 +135,8 @@ function computeMatchLoad(snap, matchInfo) {
   const sortedTrades1 = [...tr1].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
   const sortedTrades2 = [...tr2].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
 
-  // Extract latest BACK trade specifically (always prefer BACK odds)
-  const backTrade1 = sortedTrades1.find(t => {
-    const s = String(t.type || t.side || '').toLowerCase();
-    return s === 'back' || s === 'b';
-  });
-  const backTrade2 = sortedTrades2.find(t => {
-    const s = String(t.type || t.side || '').toLowerCase();
-    return s === 'back' || s === 'b';
-  });
-
-  const getRunnerBack = (runnersList, teamName, idx) => {
-    if (!Array.isArray(runnersList) || !runnersList.length) return null;
-    if (teamName) {
-      const tNorm = teamName.toLowerCase().replace(/[^a-z0-9]/g, '');
-      const matched = runnersList.find(r => {
-        const rNorm = String(r.runnerName || r.name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        return rNorm && (tNorm.includes(rNorm) || rNorm.includes(tNorm));
-      });
-      if (matched) {
-        return matched.back || matched.backPrice || matched.ex?.availableToBack?.[0]?.price || matched.price || null;
-      }
-    }
-    const r = runnersList[idx];
-    return r?.back || r?.backPrice || r?.ex?.availableToBack?.[0]?.price || r?.price || null;
-  };
-
-  const runnerBack1 = getRunnerBack(snap?.runners, t1, 0) || getRunnerBack(matchInfo?.runners, t1, 0);
-  const runnerBack2 = getRunnerBack(snap?.runners, t2, 1) || getRunnerBack(matchInfo?.runners, t2, 1);
-
-  const lastPrice1 = (backTrade1?.price && !isNaN(Number(backTrade1.price))) ? parseFloat(backTrade1.price) :
-    (runnerBack1 && !isNaN(Number(runnerBack1))) ? parseFloat(runnerBack1) :
-    (sortedTrades1[0]?.price && !isNaN(Number(sortedTrades1[0].price))) ? parseFloat(sortedTrades1[0].price) :
-    (tr1[tr1.length - 1]?.price && !isNaN(Number(tr1[tr1.length - 1].price))) ? parseFloat(tr1[tr1.length - 1].price) :
-    snap?.syntheticSupport?.teamA?.averageOdds ||
-    null;
-
-  const lastPrice2 = (backTrade2?.price && !isNaN(Number(backTrade2.price))) ? parseFloat(backTrade2.price) :
-    (runnerBack2 && !isNaN(Number(runnerBack2))) ? parseFloat(runnerBack2) :
-    (sortedTrades2[0]?.price && !isNaN(Number(sortedTrades2[0].price))) ? parseFloat(sortedTrades2[0].price) :
-    (tr2[tr2.length - 1]?.price && !isNaN(Number(tr2[tr2.length - 1].price))) ? parseFloat(tr2[tr2.length - 1].price) :
-    snap?.syntheticSupport?.teamB?.averageOdds ||
-    null;
+  const lastPrice1 = savedBackOdds(snap,t1) ?? savedBackOdds(matchInfo,t1);
+  const lastPrice2 = savedBackOdds(snap,t2) ?? savedBackOdds(matchInfo,t2);
 
   // Support percentage from trueMarketLoad, volume ratio, or odds-implied probability
   let pct1 = null;
@@ -326,6 +288,8 @@ async function getCricketMatchesPayload() {
 
     const activeLive = liveData.filter(m => !isMatchEnded(m));
     const endedLive = liveData.filter(m => isMatchEnded(m));
+    // One batched cache read on a cold replica, rather than one round trip per card.
+    await dataCache.warmCricketSnapshots?.(liveData.map(match=>match.matchId));
 
     // Active matches: get snapshot from in-memory cache instantly
     for (const m of activeLive) {
@@ -346,7 +310,7 @@ async function getCricketMatchesPayload() {
       if (!snap) {
         try {
           const tllWorker = require('./scraper-tennisliveload');
-          if (typeof tllWorker.triggerImmediateMatchFetch === 'function') {
+          if (process.env.INGESTION_ENABLED !== 'false' && typeof tllWorker.triggerImmediateMatchFetch === 'function') {
             tllWorker.triggerImmediateMatchFetch(m.matchId, { notifySubscribers: false });
           }
         } catch {}
@@ -368,19 +332,33 @@ async function getCricketMatchesPayload() {
     }
 
     // Ended matches
-    const uncachedEnded = endedLive.filter(m => !endedMatchesCache.has(String(m.matchId)));
-    if (uncachedEnded.length > 0) {
+    const needsEndedRepair = endedLive.filter(m => {
+      const id=String(m.matchId),cached=endedMatchesCache.get(id);
+      return (!cached || !hasCompleteCardOdds(cached))
+        && Date.now()-(endedOddsRepairAttempts.get(id)||0)>=30000;
+    });
+    if (needsEndedRepair.length > 0) {
       let hasNew = false;
-      for (const m of uncachedEnded) {
+      // Load the archive once for the whole batch, and only if memory lacks odds.
+      let archivePromise;
+      const archive=()=>archivePromise ||= getCachedMatchDataset().then(dataset=>new Map((dataset?.records||[]).map(record=>[String(record.matchId),record])));
+      for (const m of needsEndedRepair) {
+        const id=String(m.matchId);
+        endedOddsRepairAttempts.set(id,Date.now());
         try {
-          const snap = await dataCache.getCricketSnapshot(m.matchId);
-          const load = computeMatchLoad(snap, m);
-          endedMatchesCache.set(String(m.matchId), {
-            matchLoad: load,
-            runners: compactRunners(snap?.runners || m.runners || []),
-            totalMatched: load?.totalMatched || m.totalMatched || 0,
-          });
-          hasNew = true;
+          const snap = await dataCache.getCricketSnapshot(id).catch(()=>null);
+          const previous=endedMatchesCache.get(id);
+          const load=previous?.matchLoad || computeMatchLoad(snap,m);
+          const base=previous || {matchLoad:load,runners:compactRunners(snap?.runners||m.runners||[]),totalMatched:load?.totalMatched||m.totalMatched||0};
+          let repaired=repairCompletedCardOdds(base,snap,m);
+          if(!hasCompleteCardOdds(repaired)) {
+            const record=(await archive()).get(id);
+            repaired=repairCompletedCardOdds(repaired,record?.snapshot,m);
+          }
+          if(!previous || repaired!==previous) {
+            endedMatchesCache.set(id,repaired);
+            hasNew=true;
+          }
         } catch (e) {}
       }
       if (hasNew) saveEndedMatchesCache();
@@ -762,9 +740,10 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
   }
 
   // Read all snapshots synchronously from memory (0ms)
-  const cricketRaw = await dataCache.getCricketSnapshot(mid);
-  const tossRaw = await dataCache.getTossSnapshot(mid).catch(() => null);
-  const sessionRaw = await dataCache.getSessionTrades(mid).catch(() => null);
+  const [cricketRaw,tossRaw,sessionRaw] = await Promise.all([
+    dataCache.getCricketSnapshot(mid),dataCache.getTossSnapshot(mid).catch(()=>null),
+    dataCache.getSessionTrades(mid).catch(()=>null),
+  ]);
   const cachedCrex = dataCache.getCrexDetail(mid);
 
   let cricket = (!cricketRaw || cricketRaw.error)
@@ -775,7 +754,7 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
     if (matchInfo && matchInfo.status !== 'ended') {
       try {
         const tllWorker = require('./scraper-tennisliveload');
-        if (typeof tllWorker.triggerImmediateMatchFetch === 'function') {
+        if (process.env.INGESTION_ENABLED !== 'false' && typeof tllWorker.triggerImmediateMatchFetch === 'function') {
           tllWorker.triggerImmediateMatchFetch(mid, { notifySubscribers: true });
         }
       } catch {}

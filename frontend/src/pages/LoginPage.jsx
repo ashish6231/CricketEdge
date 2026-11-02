@@ -141,7 +141,7 @@ export default function LoginPage({ onLoginSuccess, isModal = false, onClose, si
 
         {/* Logo */}
         <div className="flex flex-col items-center mb-6">
-          <img src="/favicon-96x96.png" alt="CricEdge" className="w-16 h-16 rounded-2xl object-contain mb-2 border border-white/10 shadow-lg" />
+          <picture><source type="image/avif" srcSet="/brand-96.avif" /><img src="/brand-96.webp" width="64" height="64" decoding="async" alt="CricEdge" className="w-16 h-16 rounded-2xl object-contain mb-2 border border-white/10 shadow-lg" /></picture>
           <h1 className="text-xl font-bold text-white tracking-tight">
             {(() => {
               const { prefix, suffix } = splitSiteName(siteName)

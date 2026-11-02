@@ -14,10 +14,11 @@ if (connectionUrl.startsWith('mysql://')) {
     user: decodeURIComponent(url.username),
     password: decodeURIComponent(url.password),
     database: url.pathname.replace(/^\//, ''),
-    connectionLimit: 4,
+    connectionLimit: Math.max(1,Math.min(50,parseInt(process.env.DB_POOL_SIZE,10)||4)),
     connectTimeout: 15000,
     acquireTimeout: 15000,
-    idleTimeout: 300000,
+    // MariaDB expresses idleTimeout in seconds, unlike connect/acquireTimeout.
+    idleTimeout: 300,
     minDelayValidation: 10000,
   });
 } else {
@@ -33,9 +34,21 @@ if (connectionUrl.startsWith('mysql://')) {
 
 const adapter = new PrismaMariaDb(pool);
 
-const prisma = new PrismaClient({
+let prisma = new PrismaClient({
   adapter,
   log: process.env.NODE_ENV === 'development' ? ['warn', 'error'] : ['error'],
 });
+
+if(process.env.OTEL_EXPORTER_OTLP_ENDPOINT && process.env.OTEL_SDK_DISABLED!=='true') {
+  const {trace,SpanStatusCode}=require('@opentelemetry/api');
+  const tracer=trace.getTracer('cricedge-database');
+  prisma=prisma.$extends({query:{$allOperations:async({model,operation,args,query})=>
+    tracer.startActiveSpan(`db.${model||'raw'}.${operation}`,async span=>{
+      span.setAttributes({'db.system':'mariadb','db.operation.name':operation,...(model?{'db.collection.name':model}:{})});
+      try{return await query(args)}
+      catch(error){span.setStatus({code:SpanStatusCode.ERROR});throw error}
+      finally{span.end()}
+    })}});
+}
 
 module.exports = prisma;

@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import useDebouncedValue from '../../lib/useDebouncedValue'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CheckCircle2, ChevronLeft, ChevronRight, Download, LoaderCircle, Pencil, Search, X, XCircle } from 'lucide-react'
 import {
   adminCaptureTossDataset,
@@ -90,6 +91,8 @@ export default function AdminTossDataset() {
   const [pagination, setPagination] = useState({})
   const [status, setStatus] = useState('pending')
   const [search, setSearch] = useState('')
+  const debouncedSearch = useDebouncedValue(search)
+  const loadVersion = useRef(0)
   const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
   const [capturing, setCapturing] = useState(false)
@@ -98,18 +101,20 @@ export default function AdminTossDataset() {
   const [editingId, setEditingId] = useState(null)
 
   const load = useCallback(() => {
+    const version = ++loadVersion.current
     setLoading(true)
-    adminGetTossDataset({ status, page, limit: 20, search })
+    adminGetTossDataset({ status, page, limit: 20, search: debouncedSearch })
       .then((res) => {
+        if (version !== loadVersion.current) return
         const parsed = parseTossDatasetList(res)
         setRecords(parsed.records)
         setPagination(parsed.pagination)
       })
-      .catch((e) => toast.error(e.detail || 'Failed to load'))
-      .finally(() => setLoading(false))
-  }, [status, page, search, toast])
+      .catch((e) => version === loadVersion.current && toast.error(e.detail || 'Failed to load'))
+      .finally(() => { if (version === loadVersion.current) setLoading(false) })
+  }, [status, page, debouncedSearch, toast])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load(); return () => { loadVersion.current++ } }, [load])
 
   const verifiedStats = useMemo(() => {
     if (status !== 'verified') return null

@@ -48,9 +48,10 @@ function init() {
   const allChannels = [...LIST_CHANNELS, CREX_CHANNEL, BUNDLE_CHANNEL, ODDS_CHANNEL];
   allChannels.forEach(ch => { try { sub.subscribe(ch); } catch {} });
 
-  const onMessage = (channel, message) => {
+  const onMessage = async (channel, message) => {
     try {
       if (LIST_CHANNELS.includes(channel)) {
+        await require('../normalizer/normalizer').syncCachedState();
         // Any match list update → coalesced broadcast (max 1 per 1000ms)
         _debounced('lists', () => socketService.broadcastAllMatches().catch(() => {}));
 
@@ -71,6 +72,7 @@ function init() {
           const data = typeof message === 'string' ? JSON.parse(message) : message;
           const matchId = String(data?.matchId || '');
           if (!matchId) return;
+          await require('../normalizer/normalizer').syncCachedBundle(matchId,{force:true});
 
           const io = socketService.getIo();
           if (!io) return;

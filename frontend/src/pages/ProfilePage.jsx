@@ -1,6 +1,5 @@
 import { useOutletContext, Link } from 'react-router-dom'
 import { LoaderCircle, Crown, LogOut, Shield } from 'lucide-react'
-import { logout } from '../api'
 import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -8,10 +7,7 @@ const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-dig
 export default function ProfilePage() {
   const { user, onLogout } = useOutletContext()
 
-  const handleLogout = async () => {
-    await logout()
-    if (onLogout) onLogout()
-  }
+  const handleLogout = () => onLogout?.()
 
   if (!user) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 

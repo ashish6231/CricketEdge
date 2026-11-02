@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react'
+import useDebouncedValue from '../../lib/useDebouncedValue'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, Crown, Ban, CheckCircle, PauseCircle, Clock, MoreVertical, X } from 'lucide-react'
 import { adminGetUsers, adminUpdateUserStatus, adminUpdateUserPlan } from '../../api'
 import { useToast } from '../../components/ToastProvider'
@@ -49,6 +50,8 @@ export default function AdminProUsers({ isSuperAdmin }) {
   const [pagination, setPagination] = useState({})
   const [loading, setLoading]     = useState(true)
   const [search, setSearch]       = useState('')
+  const debouncedSearch = useDebouncedValue(search)
+  const loadVersion = useRef(0)
   const [status, setStatus]       = useState('')
   const [page, setPage]           = useState(1)
   const [acting, setActing]       = useState(null)
@@ -57,13 +60,13 @@ export default function AdminProUsers({ isSuperAdmin }) {
   const load = useCallback(() => {
     setLoading(true)
     // Always filter by plan='pro'
-    adminGetUsers({ page, limit: 20, search, status, plan: 'pro' })
-      .then(res => { setUsers(res.data); setPagination(res.pagination) })
-      .catch(e => toast.error(e.detail || 'Failed to load'))
-      .finally(() => setLoading(false))
-  }, [page, search, status])
+    adminGetUsers({ page, limit: 20, search: debouncedSearch, status, plan: 'pro' })
+      .then(res => { if (version !== loadVersion.current) return; setUsers(res.data); setPagination(res.pagination) })
+      .catch(e => version === loadVersion.current && toast.error(e.detail || 'Failed to load'))
+      .finally(() => { if (version === loadVersion.current) setLoading(false) })
+  }, [page, debouncedSearch, status, toast])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load(); return () => { loadVersion.current++ } }, [load])
 
   // Automatically refresh every minute to update countdowns
   useEffect(() => {

@@ -311,7 +311,7 @@ export function CrexScorecardBanner({ crexData, t1, t2, matchInPlay = false }) {
           const scoreParts = score.match(/^(.*?)\s+\(?([0-9]+\.[0-9]+)\)?(?:\s*(?:ov|overs))?$/i)
           return <div key={index} className={`crex-team-score team-${index}`}>
             <div className="crex-team-name">
-              {team.flag ? <img src={team.flag} alt="" /> : <span className="crex-team-initials">{(team.shortName || team.name).slice(0, 2)}</span>}
+              {team.flag ? <img src={team.flag} alt="" width="28" height="20" loading="lazy" decoding="async" /> : <span className="crex-team-initials">{(team.shortName || team.name).slice(0, 2)}</span>}
               <h2>{team.name}</h2>
             </div>
             <div className="crex-score-value"><strong className={/yet to bat/i.test(score) ? 'is-waiting' : ''}>{scoreParts ? scoreParts[1] : score}</strong>

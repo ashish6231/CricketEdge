@@ -11,7 +11,11 @@ const TennisLiveLoadAdapter = require('./adapter');
 const session = require('./session');
 const { getIngestQueue } = require('../normalizer/queue');
 const { compactSessionPayload } = require('../../utils/sessionPayload');
-const {snapshotPollingPolicy}=require('../../utils/snapshotPolling');
+const {snapshotPollingPolicy,shouldCapturePreMatch}=require('../../utils/snapshotPolling');
+const {capturePreMatchExposure}=require('../../utils/preMatchExposure.mjs');
+const {providerStartTime}=require('../../utils/providerTotals.mjs');
+const _completePreMatchCaptures=new Map();
+const preMatchCaptureFeed = require('../cachedMarketFeed').createCachedMarketFeed({getCookie:()=>session.getCookies()});
 
 const adapter = new TennisLiveLoadAdapter();
 const { createTossSnapshotRefresher } = require('../tossSnapshotRefresher');
@@ -150,6 +154,7 @@ async function runPollCycle() {
     let watchingTossFeed = false;
     try {
       const socketService = require('../socketService');
+      await socketService.refreshClusterDemand?.();
       if (typeof socketService.getActiveSubscribedMatchIds === 'function') {
         subscribedMatchIds = new Set(socketService.getActiveSubscribedMatchIds());
       }
@@ -157,14 +162,14 @@ async function runPollCycle() {
       watchingTossFeed = socketService.hasActiveFeedSubscribers?.('toss') || false;
     } catch {}
 
-    // When 0 users are connected and no match rooms are subscribed, skip individual snapshot/odds fetching to save bandwidth
-    if (clientsCount === 0 && subscribedMatchIds.size === 0) {
-      await refreshSessionDetails(sessionMatches, subscribedMatchIds, queue);
-      return;
-    }
+    // Pre-kickoff observations must survive even when nobody has opened the
+    // match page. Use the existing session only for these background captures.
+    const idle = clientsCount === 0 && subscribedMatchIds.size === 0;
 
     const activeCricket = (Array.isArray(cricket) ? cricket : [])
-      .filter(m => !isEndedMatch(m) || subscribedMatchIds.has(String(m.id || m.matchId)));
+      .filter(m => (!isEndedMatch(m) || subscribedMatchIds.has(String(m.id || m.matchId)))
+        && (!idle || (_completePreMatchCaptures.get(String(m.id||m.matchId))!==providerStartTime(m)
+          && shouldCapturePreMatch(m,{includeStarted:true}))));
 
     for (const subMid of subscribedMatchIds) {
       if (!activeCricket.some(m => String(m.id || m.matchId) === String(subMid))) {
@@ -179,7 +184,9 @@ async function runPollCycle() {
       await Promise.all(batch.map(async (m) => {
         const mid = m.id || m.matchId;
         const isLiveOrSub = m.inPlay || m.status === 'live' || m.status === 'in-play' || subscribedMatchIds.has(String(mid));
-        const policy=snapshotPollingPolicy(m,{subscribed:subscribedMatchIds.has(String(mid)),liveIdleMs:LIVE_IDLE_SNAPSHOT_REFRESH_MS,upcomingMs:UPCOMING_SNAPSHOT_REFRESH_MS});
+        const capturePending=_completePreMatchCaptures.get(String(mid))!==providerStartTime(m)
+          && shouldCapturePreMatch(m,{includeStarted:true});
+        const policy=snapshotPollingPolicy(m,{subscribed:subscribedMatchIds.has(String(mid)),liveIdleMs:LIVE_IDLE_SNAPSHOT_REFRESH_MS,upcomingMs:UPCOMING_SNAPSHOT_REFRESH_MS,capturePending});
 
         const now = Date.now();
         const lastSnapshotFetch = _upcomingSnapshotLastAttempt.get(String(mid)) || 0;
@@ -190,17 +197,19 @@ async function runPollCycle() {
 
         try {
           const [rawSnapshot, liveOdds] = await Promise.all([
-            adapter.getSnapshot(mid),
-            isLiveOrSub ? adapter.getOdds(mid).catch(() => null) : Promise.resolve(null),
+            idle ? preMatchCaptureFeed.getCricketSnapshot(mid) : adapter.getSnapshot(mid),
+            !idle && isLiveOrSub ? adapter.getOdds(mid).catch(() => null) : Promise.resolve(null),
           ]);
           const snapshot = mergeLiveOdds(rawSnapshot, liveOdds);
           if (snapshot && !snapshot.error) {
+            const capture=capturePreMatchExposure({...snapshot,startTime:providerStartTime(snapshot)??providerStartTime(m)},null,{now:Date.now()});
             await queue.add('ingest', {
               source: 'tll',
               type: 'cricket:snapshot',
               matchId: mid,
               data: snapshot,
-            }).catch(() => {});
+            });
+            if(capture.preMatchCapture?.state==='locked')_completePreMatchCaptures.set(String(mid),providerStartTime(capture));
           }
         } catch {}
       }));

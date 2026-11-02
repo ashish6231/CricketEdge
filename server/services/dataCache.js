@@ -51,11 +51,13 @@ function getTennisMatchesUpdatedAt() {
 }
 
 async function getCricketSnapshot(matchId) {
+  if(!normalizer.getMatchBundle(matchId)?.cricket)await normalizer.syncCachedBundle(matchId);
   const bundle = normalizer.getMatchBundle(matchId);
   return bundle?.cricket || null;
 }
 
 async function getTossSnapshot(matchId) {
+  if(!normalizer.getMatchBundle(matchId)?.toss)await normalizer.syncCachedBundle(matchId);
   const bundle = normalizer.getMatchBundle(matchId);
   return bundle?.toss || null;
 }
@@ -78,6 +80,7 @@ async function getTossCaptureSnapshot(matchId) {
 }
 
 async function getSessionTrades(matchId) {
+  if(!normalizer.getMatchBundle(matchId)?.session)await normalizer.syncCachedBundle(matchId);
   const bundle = normalizer.getMatchBundle(matchId);
   return bundle?.session || null;
 }
@@ -121,7 +124,7 @@ async function getCricketFullData(includeSnapshots = true) {
     matches: [],
   };
   if (!Array.isArray(matches)) return result;
-  for (const match of matches) {
+  result.matches = await Promise.all(matches.map(async match => {
     const matchData = { match_info: match };
     if (includeSnapshots) {
       const mid = match.id || match.matchId;
@@ -129,12 +132,13 @@ async function getCricketFullData(includeSnapshots = true) {
       if (snapshot && !snapshot.error) matchData.snapshot = snapshot;
       else if (snapshot?.error) matchData.snapshot_error = snapshot.error;
     }
-    result.matches.push(matchData);
-  }
+    return matchData;
+  }));
   return result;
 }
 
 module.exports = {
+  warmCricketSnapshots: ids => normalizer.syncCachedBundles(ids),
   start,
   stop,
   getCricketMatches,

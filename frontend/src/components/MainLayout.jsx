@@ -1,11 +1,11 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { Activity, Menu, X, Shield, LogOut, User, ChevronDown, BarChart3, Coins, Crown } from 'lucide-react'
-import { Suspense, useState, useEffect, useRef } from 'react'
+import { lazy, Suspense, useState, useEffect, useRef } from 'react'
 import { getAuthStatus, logout, getSignupStatus, getTelegramSettings, checkTelegramStatus } from '../api'
 import { getPlanLabel, isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
 import { guestPathAfterLogout, resolveSiteName, splitSiteName, resolveSiteMode, isFreeMode } from '../utils/publicAuth'
-import LoginPage from '../pages/LoginPage'
-import TelegramGateModal from './TelegramGateModal'
+const LoginPage = lazy(() => import('../pages/LoginPage'))
+const TelegramGateModal = lazy(() => import('./TelegramGateModal'))
 import PageLoading from './PageLoading'
 import { getSocket, updateSocketAuth } from '../socket'
 
@@ -349,7 +349,7 @@ export default function MainLayout() {
 
   const handleLogout = () => {
     // Update UI instantly, fire API in background
-    localStorage.removeItem('auth_token')
+    logout().catch(() => {})
     updateSocketAuth(null)
     setIsLoggedIn(false)
     setAuthUser(null)
@@ -357,7 +357,6 @@ export default function MainLayout() {
     setDropdown(false)
     setLoginOpen(false)
     navigate(guestPathAfterLogout(location.pathname), { replace: true })
-    logout().catch(() => {})
   }
 
   const isSportsPage =
@@ -396,7 +395,7 @@ export default function MainLayout() {
 
           {/* Logo */}
           <Link to="/" className="site-brand">
-            <img src="/favicon-48x48.png" alt="CricEdge" className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-contain border border-white/10 shadow-sm" />
+            <picture><source type="image/avif" srcSet="/brand-48.avif" /><img src="/brand-48.webp" width="32" height="32" decoding="async" alt="CricEdge" className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg object-contain border border-white/10 shadow-sm" /></picture>
             <span className="site-brand-name">
               {(() => {
                 const { prefix, suffix } = splitSiteName(siteName)
@@ -540,14 +539,14 @@ export default function MainLayout() {
 
       {/* Compulsory Telegram Gate Modal: ONLY for logged-in non-admin users */}
       {telegramGateRequired && telegramGateEnabled && isLoggedIn && !isAdmin && (
-        <TelegramGateModal
+        <Suspense fallback={<PageLoading label="Loading verification" cards={2} />}><TelegramGateModal
           authUser={authUser}
           onVerified={handleTelegramVerified}
           onLogout={handleLogout}
           onOpenLogin={() => setLoginOpen(true)}
           isLocked={telegramGateRequired}
           lockReason={telegramLockReason}
-        />
+        /></Suspense>
       )}
 
       {loginOpen && (
@@ -561,12 +560,12 @@ export default function MainLayout() {
           aria-label="Login"
         >
           <div className="relative w-full max-w-[440px] max-h-[90dvh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <LoginPage
+            <Suspense fallback={<PageLoading label="Loading sign in" cards={2} />}><LoginPage
               isModal
               siteName={siteName}
               onLoginSuccess={handleLoginSuccess}
               onClose={() => setLoginOpen(false)}
-            />
+            /></Suspense>
           </div>
         </div>
       )}

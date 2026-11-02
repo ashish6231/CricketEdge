@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from 'react'
+import useDebouncedValue from '../../lib/useDebouncedValue'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { LoaderCircle, Search, ChevronLeft, ChevronRight, UserMinus, Ban, CheckCircle, PauseCircle, MoreVertical, Crown, History, ChevronDown, ChevronUp } from 'lucide-react'
 import { adminGetLapsedUsers, adminGetUserSubscriptions, adminUpdateUserStatus, adminUpdateUserPlan } from '../../api'
 import { useToast } from '../../components/ToastProvider'
@@ -51,6 +52,8 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
   const [pagination, setPagination] = useState({})
   const [loading, setLoading]     = useState(true)
   const [search, setSearch]       = useState('')
+  const debouncedSearch = useDebouncedValue(search)
+  const loadVersion = useRef(0)
   const [status, setStatus]       = useState('')
   const [page, setPage]           = useState(1)
   const [acting, setActing]       = useState(null)
@@ -61,14 +64,15 @@ export default function AdminLapsedUsers({ isSuperAdmin }) {
   const [proMonths, setProMonths] = useState({})
 
   const load = useCallback(() => {
+    const version = ++loadVersion.current
     setLoading(true)
-    adminGetLapsedUsers({ page, limit: 20, search, status })
-      .then(res => { setUsers(res.data); setPagination(res.pagination) })
-      .catch(e => toast.error(e.detail || 'Failed to load'))
-      .finally(() => setLoading(false))
-  }, [page, search, status])
+    adminGetLapsedUsers({ page, limit: 20, search: debouncedSearch, status })
+      .then(res => { if (version !== loadVersion.current) return; setUsers(res.data); setPagination(res.pagination) })
+      .catch(e => version === loadVersion.current && toast.error(e.detail || 'Failed to load'))
+      .finally(() => { if (version === loadVersion.current) setLoading(false) })
+  }, [page, debouncedSearch, status, toast])
 
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load(); return () => { loadVersion.current++ } }, [load])
 
   const act = async (userId, fn, ...args) => {
     setActing(userId)

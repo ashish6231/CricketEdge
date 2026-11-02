@@ -55,3 +55,28 @@ test('runner quote metadata follows the same list feed even when trade totals ar
   await sync.refreshFromFeed(feed(time+10000))
   assert.equal(metadata.length,1)
 })
+
+test('periodic recovery refreshes unchanged source timestamps and receives a separately reported result',async()=>{
+  let calls=0;const applied=[]
+  const sync=createTossSnapshotSync({matchId:'one',onSnapshot:s=>applied.push(s),fetchSnapshot:async()=>{
+    calls++;return {serverTime:time,tossText:'Toss Winner: Afghanistan (opt to Bowl)'}
+  }})
+  sync.apply({serverTime:time})
+  await sync.refreshNow()
+  assert.equal(calls,1);assert.match(applied.at(-1).tossText,/Afghanistan/)
+  await sync.refreshNow();assert.equal(calls,2)
+  sync.cancel();await sync.refreshNow();assert.equal(calls,2)
+})
+
+test('simultaneous periodic refreshes share one request and failures remain retryable',async()=>{
+  let calls=0,resolve;const errors=[]
+  const sync=createTossSnapshotSync({matchId:'one',onSnapshot:()=>{},onError:error=>errors.push(error),
+    fetchSnapshot:()=>{calls++;return new Promise(done=>{resolve=done})}})
+  const a=sync.refreshNow(),b=sync.refreshNow();assert.equal(a,b);assert.equal(calls,1)
+  resolve({serverTime:time});await a
+  let attempts=0
+  const retry=createTossSnapshotSync({matchId:'one',onSnapshot:()=>{},onError:error=>errors.push(error),
+    fetchSnapshot:async()=>{attempts++;throw new Error('offline')}})
+  await retry.refreshNow();await retry.refreshNow()
+  assert.equal(attempts,2);assert.equal(errors.length,2)
+})

@@ -1,9 +1,12 @@
+const { pagination } = require('../lib/pagination');
+const { publicCache } = require('../lib/readCache');
 const { normalizeGmailEmail, GMAIL_REQUIRED_MESSAGE } = require('../shared/accountEmail.mjs');
 const express = require('express');
 const router = express.Router();
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
 const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissions');
 const prisma = require('../db/prisma');
+const {getAdminJobs}=require('../services/adminJobs');
 const { grantTrialIfEligible, grantTrialToAllEligible, grantTrialToNewUser, getTrialConfig } = require('../lib/subscriptionAccess');
 const { validateTrialSetting, validateTrialDuration, TRIAL_SETTING_KEYS } = require('../lib/trialConfig');
 const { sanitizeUserRecord } = require('../middleware/auth');
@@ -48,7 +51,7 @@ function lapsedProWhere(extra = {}) {
 }
 
 async function fetchLapsedUsers({ page = 1, limit = 20, search = '', status = '' }) {
-  const safeLimit = Math.min(+limit || 20, 100);
+  const {page:safePage,limit:safeLimit,skip} = pagination({page,limit});
   const extra = {};
   if (search) extra.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
   if (status) extra.status = status;
@@ -58,7 +61,7 @@ async function fetchLapsedUsers({ page = 1, limit = 20, search = '', status = ''
     prisma.user.findMany({
       where,
       orderBy: { subExpiresAt: 'desc' },
-      skip: (+page - 1) * safeLimit,
+      skip,
       take: safeLimit,
       select: {
         id: true, name: true, email: true, role: true, status: true,
@@ -90,7 +93,7 @@ async function fetchLapsedUsers({ page = 1, limit = 20, search = '', status = ''
     proPurchaseCount: countMap[u.id] || 0,
   }));
 
-  return { data, pagination: { page: +page, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } };
+  return { data, pagination: { page: safePage, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } };
 }
 
 async function auditLog(admin, action, targetType, targetId, targetIdentifier, changes, reason, req) {
@@ -139,7 +142,7 @@ router.get('/users', requireAdmin, async (req, res) => {
     }
 
     const { page = 1, limit = 20, search = '', role = '', status = '', plan = '' } = req.query;
-    const safeLimit = Math.min(+limit || 20, 100);
+    const {page:safePage,limit:safeLimit,skip} = pagination({page,limit});
     const where = {};
     if (search) where.OR = [{ name: { contains: search, mode: 'insensitive' } }, { email: { contains: search, mode: 'insensitive' } }];
     if (role) where.role = role;
@@ -151,12 +154,12 @@ router.get('/users', requireAdmin, async (req, res) => {
     const [users, total] = await Promise.all([
       prisma.user.findMany({
         where, orderBy,
-        skip: (+page - 1) * safeLimit, take: safeLimit,
+        skip, take: safeLimit,
         select: { id: true, name: true, email: true, role: true, status: true, authProvider: true, subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true }
       }),
       prisma.user.count({ where })
     ]);
-    res.json({ success: true, data: users, pagination: { page: +page, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
+    res.json({ success: true, data: users, pagination: { page: safePage, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -239,7 +242,7 @@ router.get('/users/:id', requireAdmin, async (req, res) => {
       select: { id: true, name: true, email: true, role: true, status: true, subPlanSlug: true, subStatus: true, subExpiresAt: true, createdAt: true, avatar: true, phone: true, isVerified: true, lastLoginAt: true }
     });
     if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    const subscriptions = await prisma.userSubscription.findMany({ where: { userId }, orderBy: { createdAt: 'desc' } });
+    const subscriptions = await prisma.userSubscription.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, take: 100 });
     res.json({ success: true, data: { user, subscriptions } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -568,6 +571,7 @@ router.patch('/plans/:id', requireSuperAdmin, async (req, res) => {
     const before = await prisma.subscriptionPlan.findUnique({ where: { id: +req.params.id } });
     const plan = await prisma.subscriptionPlan.update({ where: { id: +req.params.id }, data });
     await auditLog(req.user, 'plan_update', 'plan', plan.id, plan.slug, { before, after: plan }, '', req);
+    await publicCache.invalidate('pro-plan');
     res.json({ success: true, data: plan });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -686,7 +690,7 @@ router.patch('/settings/:key', requireSuperAdmin, async (req, res) => {
 router.get('/subscription-logs', requireAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 50, search = '', paymentStatus = '', planSlug = '', status = '' } = req.query;
-    const safeLimit = Math.min(+limit || 50, 100);
+    const {page:safePage,limit:safeLimit,skip} = pagination({page,limit},50);
     const where = {};
     if (paymentStatus) where.paymentStatus = paymentStatus;
     if (planSlug) where.planSlug = planSlug;
@@ -704,7 +708,7 @@ router.get('/subscription-logs', requireAdmin, async (req, res) => {
       prisma.userSubscription.findMany({
         where,
         orderBy: { createdAt: 'desc' },
-        skip: (+page - 1) * safeLimit,
+        skip,
         take: safeLimit,
         select: {
           id: true, planSlug: true, amount: true, currency: true, discountAmount: true, couponCode: true,
@@ -716,7 +720,7 @@ router.get('/subscription-logs', requireAdmin, async (req, res) => {
       }),
       prisma.userSubscription.count({ where }),
     ]);
-    res.json({ success: true, data: logs, pagination: { page: +page, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
+    res.json({ success: true, data: logs, pagination: { page: safePage, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -726,7 +730,7 @@ router.get('/subscription-logs', requireAdmin, async (req, res) => {
 router.get('/audit-logs', requireAdmin, async (req, res) => {
   try {
     const { page = 1, limit = 50, action = '', adminId = '' } = req.query;
-    const safeLimit = Math.min(+limit || 50, 100);
+    const {page:safePage,limit:safeLimit,skip} = pagination({page,limit},50);
     const where = {};
     if (action) where.action = action;
     if (adminId) where.adminId = +adminId;
@@ -734,12 +738,12 @@ router.get('/audit-logs', requireAdmin, async (req, res) => {
     const [logs, total] = await Promise.all([
       prisma.adminAuditLog.findMany({
         where, orderBy: { createdAt: 'desc' },
-        skip: (+page - 1) * safeLimit, take: safeLimit,
+        skip, take: safeLimit,
         include: { admin: { select: { name: true, email: true } } }
       }),
       prisma.adminAuditLog.count({ where })
     ]);
-    res.json({ success: true, data: logs, pagination: { page: +page, limit: safeLimit, total } });
+    res.json({ success: true, data: logs, pagination: { page: safePage, limit: safeLimit, total } });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -749,6 +753,22 @@ function sendStoreError(res, err) {
   const status = err.status || 500;
   return res.status(status).json({ success: false, message: err.message });
 }
+
+async function enqueueCapture(_req,res,type) {
+  try {
+    const job=await getAdminJobs().add(type);
+    res.status(202).json({success:true,jobId:job.id,statusUrl:`/admin/jobs/${encodeURIComponent(job.id)}`});
+  } catch(error){sendStoreError(res,error)}
+}
+
+router.get('/jobs/:jobId',requireSuperAdmin,async(req,res)=>{
+  try {
+    const job=await getAdminJobs().get(req.params.jobId);
+    res.set('Cache-Control','no-store');
+    if(!job)return res.status(404).json({success:false,message:'Job expired or unavailable'});
+    res.json({success:true,...job});
+  }catch(error){sendStoreError(res,error)}
+});
 
 async function getTossDataset(req, res, deps = {}) {
   const store = deps.store || getDefaultStore();
@@ -872,12 +892,12 @@ async function getMatchDatasetExport(req, res, deps = {}) {
 
 router.get('/toss-dataset', requireSuperAdmin, (req, res) => getTossDataset(req, res));
 router.patch('/toss-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchTossActualWinner(req, res));
-router.post('/toss-dataset/capture', requireSuperAdmin, (req, res) => postTossDatasetCapture(req, res));
+router.post('/toss-dataset/capture', requireSuperAdmin, (req,res)=>enqueueCapture(req,res,'toss'));
 router.get('/toss-dataset/export', requireSuperAdmin, (req, res) => getTossDatasetExport(req, res));
 
 router.get('/match-dataset', requireSuperAdmin, (req, res) => getMatchDataset(req, res));
 router.patch('/match-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchMatchActualWinner(req, res));
-router.post('/match-dataset/capture', requireSuperAdmin, (req, res) => postMatchDatasetCapture(req, res));
+router.post('/match-dataset/capture', requireSuperAdmin, (req,res)=>enqueueCapture(req,res,'match'));
 router.get('/match-dataset/export', requireSuperAdmin, (req, res) => getMatchDatasetExport(req, res));
 
 // ──── Scraper Session Management (Database SSOT + Auto-Login) ────

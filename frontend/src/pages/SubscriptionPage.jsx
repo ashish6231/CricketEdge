@@ -4,6 +4,7 @@ import { LoaderCircle, CheckCircle, Crown, Calendar } from 'lucide-react'
 import { getPlans, getMySubscription, createOrder, verifyPayment, paymentFailed } from '../api'
 import { useToast } from '../components/ToastProvider'
 import { isActiveTrial, isPaidPro, getTrialMinutesLeft, formatTrialTimeLeft } from '../lib/subscriptionAccess'
+import { loadScript } from '../lib/loadScript'
 
 const fmt = (n) => Number(n).toLocaleString('en-IN')
 const fmtDate = (d) => d ? new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'
@@ -27,12 +28,12 @@ export default function SubscriptionPage() {
       })
       .catch(() => toast.error('Failed to load subscription data'))
       .finally(() => setLoading(false))
-  }, [isLoggedIn])
+  }, [isLoggedIn, navigate, toast])
 
   const handleBuy = async () => {
     setPaying(true)
     try {
-      const order = await createOrder(cycle)
+      const [order] = await Promise.all([createOrder(cycle), loadScript('https://checkout.razorpay.com/v1/checkout.js', () => Boolean(window.Razorpay))])
       const options = {
         key: order.keyId,
         amount: order.amount,

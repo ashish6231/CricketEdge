@@ -13,13 +13,15 @@ export function createTossSnapshotSync({matchId,fetchSnapshot,onSnapshot,onError
     onSnapshot(snapshot)
     return true
   }
-  function refresh(summary) {
+  function refresh(summary,{force=false}={}) {
     const time=timestamp(summary?.updatedAt)
-    if (cancelled || time==null || time<=(snapshotTime(current) ?? -Infinity)) return pending
-    targetTime=Math.max(targetTime,time)
+    if (cancelled || (!force && (time==null || time<=(snapshotTime(current) ?? -Infinity)))) return pending
+    if(time!=null)targetTime=Math.max(targetTime,time)
     if (pending) return pending
     pending=(async()=>{
-      while (!cancelled && targetTime>(snapshotTime(current) ?? -Infinity) && targetTime>attemptedTime) {
+      let forced=force
+      while (!cancelled && (forced || targetTime>(snapshotTime(current) ?? -Infinity) && targetTime>attemptedTime)) {
+        forced=false
         attemptedTime=targetTime
         try {apply(await fetchSnapshot(matchId))}
         catch(error) {if(!cancelled) onError(error)}
@@ -34,5 +36,5 @@ export function createTossSnapshotSync({matchId,fetchSnapshot,onSnapshot,onError
     if (match) onSummary(match)
     return refresh(match?.tossLoad)
   }
-  return {apply,refresh,refreshFromFeed,cancel(){cancelled=true}}
+  return {apply,refresh,refreshFromFeed,refreshNow:()=>refresh(null,{force:true}),cancel(){cancelled=true}}
 }

@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import PageLoading from '../components/PageLoading'
+import { lazy, useEffect, useRef, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { Activity, LoaderCircle, ChevronRight, Lock, BarChart3 } from 'lucide-react'
 import { hasProAccess } from '../lib/subscriptionAccess'
-import SessionDetail from './SessionDetail'
+const SessionDetail = lazy(() => import('./SessionDetail'))
 import { getSocket, releaseFeed, requestSessionFeed } from '../socket'
 import { getSessionMatches } from '../api'
 
@@ -91,7 +92,7 @@ export default function SessionPage() {
           setLoadError(error?.detail || 'Session data is temporarily unavailable. Please try again.')
           setLoading(false)
         })
-    }, 6000)
+    }, 200)
 
     const onSessionUpdate = (payload) => {
       receivedFeed = true
@@ -137,11 +138,7 @@ export default function SessionPage() {
     return 'locked'
   }
 
-  if (loading) return (
-    <div className="flex h-[80vh] items-center justify-center">
-      <LoaderCircle className="h-8 w-8 animate-spin text-primary" />
-    </div>
-  )
+  if (loading) return <PageLoading label="Loading session markets" />
 
   const allMatches = Object.values(competitions).flat().sort(sortSessionMatches)
   const currentMatches = selectedComp === ALL_COMPETITIONS

@@ -5,7 +5,7 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import { predictTossWinner } from '../utils/tossPredictor'
 import { MatchedRulesPanel, AvoidEntryBanner } from '../components/PredictionMeta'
-import { getMarketExposureFromTrades, timestamp } from '../utils/bookiePl'
+import { getMarketExposureFromTrades } from '../utils/bookiePl'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../socket'
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
 import { hasTossSnapshot } from '../utils/matchBundle'
@@ -14,6 +14,7 @@ import { getTossMarketSummary } from '../../../server/utils/tossMarketSummary.mj
 import { formatTossAmount as formatVolStr, formatSignedTossMoney as fmtRs, formatTossMoney } from '../utils/tossMarketDisplay'
 import { createTossSnapshotSync } from '../utils/tossSnapshotSync'
 import { getTossRuleInputs } from '../../../server/utils/universalTossAlgorithm.mjs'
+import {getTossMarketStatus,formatTossTime} from '../utils/tossMarketStatus'
 
 const fmt = n => n == null ? '—' : Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})
 const pnlCls = n => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
@@ -126,6 +127,11 @@ export default function TossDetail({ isEmbedded = false }) {
     const fallbackTimer = setTimeout(() => {
       if (!cancelled && (!receivedBundle || !resolved) && !document.hidden) loadFromHttp()
     }, 6000)
+    // Keep checking this open detail even when list/socket notifications stop
+    // or the amount stays unchanged while a toss result arrives separately.
+    const refreshOpenMarket=()=>{if(!cancelled && !document.hidden)sync.refreshNow()}
+    const refreshTimer=setInterval(refreshOpenMarket,15000)
+    document.addEventListener('visibilitychange',refreshOpenMarket)
     socket.on(`match:bundle:${matchId}`, onBundle)
     socket.on('match:bundle', onGenericBundle)
     socket.on('toss:matches', onTossFeed)
@@ -144,6 +150,8 @@ export default function TossDetail({ isEmbedded = false }) {
       sync.cancel()
       clearTimeout(loadingTimeout)
       clearTimeout(fallbackTimer)
+      clearInterval(refreshTimer)
+      document.removeEventListener('visibilitychange',refreshOpenMarket)
       unsubscribeMatch(matchId)
       socket.off(`match:bundle:${matchId}`, onBundle)
       socket.off('match:bundle', onGenericBundle)
@@ -202,6 +210,9 @@ export default function TossDetail({ isEmbedded = false }) {
 
 // Shared by the dedicated toss page and Match Detail's toss section.
 export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBack }) {
+  const [statusNow,setStatusNow]=useState(Date.now)
+  useEffect(()=>{const timer=setInterval(()=>setStatusNow(Date.now()),30000);return()=>clearInterval(timer)},[])
+  const marketStatus=getTossMarketStatus(snap,matchInfo,statusNow)
   const t1 = snap.teamNames?.[0] || 'Team 1'
   const t2 = snap.teamNames?.[1] || 'Team 2'
   const raw = snap.deepMetrics?.raw || {}
@@ -211,15 +222,16 @@ export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBac
   const ns = snap.netSupport || {}, sent = snap.sentimentScore || {}
   const t1Trades = snap.teams?.[t1]?.trades || []
   const t2Trades = snap.teams?.[t2]?.trades || []
-  const ruleInputs = getTossRuleInputs(snap)
+  const competition = snap.competitionName || snap.seriesName || matchInfo?.competitionName || ''
+  const ruleContext={...matchInfo,competitionName:competition}
+  const ruleInputs = getTossRuleInputs(snap,ruleContext)
   const [pl1, pl2] = ruleInputs.pl
   const providerTotals = ruleInputs.providerTotals || [null, null]
   const totVol = market.totalMatched
   const teamVolume = market.team1.money != null && market.team2.money != null ? market.team1.money + market.team2.money : null
   const pct1 = teamVolume > 0 ? Math.round(market.team1.money / teamVolume * 100) : null
   const pct2 = pct1 == null ? null : 100 - pct1
-  const competition = snap.competitionName || snap.seriesName || ''
-  const prediction = predictTossWinner(snap, competition)
+  const prediction = predictTossWinner(snap, ruleContext)
   const teams = [
     { name: t1, volume: market.team1.money, netExposure: market.team1.netExposure, percentage: pct1, odds: market.team1.odds, providerTotal: providerTotals[0], pl: pl1 },
     { name: t2, volume: market.team2.money, netExposure: market.team2.netExposure, percentage: pct2, odds: market.team2.odds, providerTotal: providerTotals[1], pl: pl2 },
@@ -246,19 +258,25 @@ export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBac
           <h1 id="toss-detail-title">{t1} <span>vs</span> {t2}</h1>
         </div>
         <div className="toss-detail-meta">
-          {snap.inPlay && <span className="toss-detail-live"><span className="pulse-dot" /> LIVE</span>}
-          <span className="toss-detail-date">Updated {timestamp(snap.serverTime) == null ? 'time unavailable' : new Date(timestamp(snap.serverTime)).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' })}</span>
+          {marketStatus.resultReported ? <span className="toss-risk-pill">Toss result reported</span>
+            : snap.inPlay && <span className="toss-detail-live"><span className="pulse-dot" /> LIVE</span>}
+          <span className="toss-detail-date">Snapshot: {formatTossTime(marketStatus.sourceTime)}</span>
         </div>
       </header>
 
       <div className="toss-v2-stack">
-        {prediction && <section className="toss-prediction-card" aria-label="Toss winner prediction">
-          <div className="toss-prediction-header"><span><Trophy size={15} />Toss Winner Prediction</span>
-            <div><span className="toss-prediction-note">Rule-based · future accuracy unvalidated</span>{prediction.risk && <span className={`toss-risk-pill ${prediction.risk.avoidEntry || prediction.risk.tier === 'high' ? 'is-high' : ''}`}>{prediction.risk.shortLabel || prediction.risk.label}</span>}</div>
+        <section className="toss-comparison-card" aria-label="Toss data status">
+          {marketStatus.resultReported && <div className="toss-comparison-heading"><h2>Reported toss winner: {marketStatus.winner}</h2><span>{marketStatus.resultText || 'Reported result'}</span></div>}
+          <p className="match-panel-note">Latest recorded trade: {formatTossTime(marketStatus.lastTradeTime)}.{marketStatus.resultReported?' Toss has been reported; these amounts are recorded market values, not a live winner forecast.':''}</p>
+          {marketStatus.stale && <p className="match-panel-note" role="status">Snapshot source time is more than 2 minutes old or unavailable. The displayed market amounts are not confirmed current.</p>}
+        </section>
+        {prediction && <section className="toss-prediction-card" aria-label={marketStatus.closed?'Toss rule calculation':'Toss winner prediction'}>
+          <div className="toss-prediction-header"><span><Trophy size={15} />{marketStatus.closed?'Toss Rule Calculation':'Toss Winner Prediction'}</span>
+            <div><span className="toss-prediction-note">{marketStatus.closed?'Rule calculation · not the reported result':'Rule-based · future accuracy unvalidated'}</span>{prediction.risk && <span className={`toss-risk-pill ${prediction.risk.avoidEntry || prediction.risk.tier === 'high' ? 'is-high' : ''}`}>{prediction.risk.shortLabel || prediction.risk.label}</span>}</div>
           </div>
           <div className="toss-prediction-main">
             <div className="toss-prediction-winner">
-              <div className="toss-winner-label">Predicted toss winner</div>
+              <div className="toss-winner-label">{marketStatus.closed?'Rule-selected team (not the result)':'Predicted toss winner'}</div>
               <h2 className="toss-winner-name">{prediction.winnerName}</h2>
               {prediction.algoName && <p className="toss-prediction-algorithm">{prediction.algoName}</p>}
             </div>
@@ -284,8 +302,8 @@ export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBac
               </div>
               <div className="match-market-team-stats">
                 <div><small>Net exposure (Back − Lay)</small><strong aria-label={`${team.name} net exposure`} className={pnlCls(team.netExposure)}>{fmtRs(team.netExposure)}</strong></div>
-                <div><small>P/L if wins</small><strong className={pnlCls(team.pl)}>{fmtRs(team.pl)}</strong></div>
-                <div title="Provider activity total; separate from net exposure and settlement P/L"><small>Provider total</small><strong>{formatTossMoney(team.providerTotal)}</strong></div>
+                <div><small>Bookie P/L</small><strong className={pnlCls(team.pl)}>{fmtRs(team.pl)}</strong></div>
+                <div title="Provider activity total; separate from net exposure and Bookie P/L"><small>Provider total</small><strong>{formatTossMoney(team.providerTotal)}</strong></div>
               </div>
               <div className="match-market-team-matched">
                 <div><small>Total matched</small><strong aria-label={`${team.name} matched money`} title={formatTossMoney(team.volume)}>€{formatVolStr(team.volume)}</strong><span>of €{formatVolStr(totVol)}</span></div>
@@ -303,10 +321,10 @@ export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBac
         {(hasExposure || hasLedger) && <section className="toss-panel">
           <header className="toss-panel-heading"><h2>Bookmaker exposure &amp; P/L</h2><span>Per-odds Trades</span></header>
           <table className="toss-data-table" aria-label="Bookmaker risk and profit by team">{teamHeader}<tbody>
-            {hasLedger && <tr className="toss-pl-row"><th scope="row">P/L if team wins</th>{[pl1, pl2].map((pl, index) => <td key={index} className={pnlCls(pl)}><strong>{fmtRs(pl)}</strong><small>{pl == null ? 'Unavailable' : pl >= 0 ? 'Profit' : 'Loss'}</small></td>)}</tr>}
+            {hasLedger && <tr className="toss-pl-row"><th scope="row">Bookie P/L</th>{[pl1, pl2].map((pl, index) => <td key={index} className={pnlCls(pl)}><strong>{fmtRs(pl)}</strong><small>{pl == null ? 'Unavailable' : pl >= 0 ? 'Profit' : 'Loss'}</small></td>)}</tr>}
             {hasExposure && exposureRows.map(row => <tr key={row.label}><th scope="row">{row.label}</th>{row.values.map((value, index) => <td key={index} className={row.signed ? pnlCls(value) : ''}>{row.signed ? fmtRs(value) : value == null ? '—' : `€${fmt(value)}`}</td>)}</tr>)}
           </tbody></table>
-          <p className="toss-panel-caption">Exposure and settlement P/L are calculated from matched toss trades.</p>
+          <p className="toss-panel-caption">P/L = Lay stake − Back exposure, the same formula used on the match page.</p>
         </section>}
 
         {metricRows.length > 0 && <section className="toss-panel">

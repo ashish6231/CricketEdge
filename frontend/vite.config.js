@@ -5,8 +5,12 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig(({ mode }) => {
   const envDir = fileURLToPath(new URL('.', import.meta.url))
-  const apiTarget = loadEnv(mode, envDir, 'VITE_API_URL').VITE_API_URL || 'http://localhost:5000'
+  const env = loadEnv(mode, envDir, 'VITE_')
+  const apiTarget = env.VITE_API_URL || 'http://localhost:5000'
   return {
+    // Keep the running dev optimizer separate from the build-time SSR loader.
+    cacheDir: 'node_modules/.vite-dev',
+    base: env.VITE_ASSET_BASE || '/',
     plugins: [
       react(),
       tailwindcss(),

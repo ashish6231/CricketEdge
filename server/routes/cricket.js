@@ -1,3 +1,4 @@
+const { paginateMatches } = require('../lib/pagination');
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
@@ -281,8 +282,10 @@ function attachMatchMeta(data, matchInfo, isToss = false) {
 
 router.get('/cricket/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getCricketMatchesPayload(req.user);
-  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
-  res.json(payload);
+  res.set('Cache-Control', 'private, max-age=5');
+  res.vary('Authorization');
+  res.vary('x-telegram-token');
+  res.json(paginateMatches(payload,req.query));
 });
 
 router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
@@ -477,13 +480,15 @@ function computeTossLoad(snap, matchInfo) {
 router.get('/toss/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getTossMatchesPayload();
   const filtered = filterMatchesForViewer(payload.matches, req.user);
-  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
-  res.json({
+  res.set('Cache-Control', 'private, max-age=5');
+  res.vary('Authorization');
+  res.vary('x-telegram-token');
+  res.json(paginateMatches({
     total: filtered.length,
     matches: filtered,
     competitions: payload.competitions,
     updatedAt: payload.updatedAt,
-  });
+  },req.query));
 });
 
 router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
@@ -541,8 +546,10 @@ router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async
 router.get('/session/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getSessionMatchesPayload();
   const filtered = filterMatchesForViewer(payload.matches, req.user);
-  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
-  res.json({ ...payload, total: filtered.length, matches: filtered });
+  res.set('Cache-Control', 'private, max-age=5');
+  res.vary('Authorization');
+  res.vary('x-telegram-token');
+  res.json(paginateMatches({ ...payload, total: filtered.length, matches: filtered },req.query));
 });
 
 router.get('/session/trades/:matchId', optionalAuth, assertTelegramMembership, async (req, res) => {
@@ -671,7 +678,9 @@ router.get(['/cricket/all-data', '/cricket/full'], requireProSubscription, async
 router.get('/tennis/matches', optionalAuth, assertTelegramMembership, async (req, res) => {
   const payload = await matchPayloadService.getTennisMatchesPayload();
   const filtered = filterMatchesForViewer(payload.matches, req.user);
-  res.set('Cache-Control', 'public, max-age=10, stale-while-revalidate=30');
+  res.set('Cache-Control', 'private, max-age=5');
+  res.vary('Authorization');
+  res.vary('x-telegram-token');
   res.json({
     total: filtered.length,
     matches: filtered,

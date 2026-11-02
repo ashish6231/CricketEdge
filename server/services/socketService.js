@@ -12,6 +12,23 @@ const { fingerprintMatchBundle } = require('../utils/matchBundleFingerprint');
 const { snapshotFeed, diffFeed } = require('../utils/feedDelta');
 
 let _io = null;
+let remoteDemand={ids:[],clients:0,feeds:[],at:0};
+let demandPending=null;
+function localDemand() {
+  const rooms=_io?.sockets?.adapter?.rooms;
+  return {ids:[...(rooms||[])].filter(([room,sockets])=>room.startsWith('match:') && sockets.size).map(([room])=>room.slice(6)),
+    clients:_io?.engine?.clientsCount||0,
+    feeds:Object.keys(FEED_BUILDERS).filter(feed=>rooms?.get(`feed:${feed}`)?.size>0)};
+}
+async function refreshClusterDemand() {
+  if(!process.env.REDIS_URL || !_io?.serverSideEmitWithAck)return;
+  if(demandPending)return demandPending;
+  demandPending=_io.serverSideEmitWithAck('worker:demand').then(replies=>{
+    remoteDemand={ids:[...new Set(replies.flatMap(value=>value.ids||[]))],clients:replies.reduce((sum,value)=>sum+(value.clients||0),0),
+      feeds:[...new Set(replies.flatMap(value=>value.feeds||[]))],at:Date.now()};
+  }).catch(()=>{if(Date.now()-remoteDemand.at>30000)remoteDemand={ids:[],clients:0,feeds:[],at:0}}).finally(()=>{demandPending=null});
+  return demandPending;
+}
 
 // userId -> activeToken cache (updated on login/logout events)
 const _activeTokenCache = new Map();
@@ -107,6 +124,15 @@ function _checkSessionsAndKickStale() {
 
 function init(io) {
   _io = io;
+  remoteDemand={ids:[],clients:0,feeds:[],at:0};
+  io.on('worker:demand',done=>{if(typeof done==='function')done(localDemand())});
+  io.on('worker:wake',()=>{
+    refreshClusterDemand().then(()=>{
+      if(process.env.INGESTION_ENABLED==='false')return;
+      require('./scraper-crex').wakeUp?.();
+      require('./scraper-tennisliveload').wakeUp?.();
+    });
+  });
 
   // 1. Auth middleware — allow authenticated users AND guests
   io.use((socket, next) => {
@@ -131,6 +157,7 @@ function init(io) {
 
   // 2. Client connection & subscriptions
   io.on('connection', async (socket) => {
+    if(process.env.REDIS_URL)io.serverSideEmit('worker:wake');
     // Wake up background workers if they were in idle sleep mode
     try {
       const crexWorker = require('./scraper-crex');
@@ -257,7 +284,7 @@ async function _broadcastMatchBundle(matchId, options = {}) {
   if (fingerprint === _lastBundleFps.get(mid)) return false;
 
   _lastBundleFps.set(mid, fingerprint);
-  _io.to(roomName).emit('match:bundle', bundle);
+  (_io.local || _io).to(roomName).emit('match:bundle', bundle);
   return true;
 }
 
@@ -266,18 +293,18 @@ function broadcastMatchOdds(matchId, odds) {
   const mid = String(matchId);
   const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
   if (!room || room.size === 0) return;
-  _io.to(`match:${mid}`).emit('match:odds', { matchId: mid, odds });
+  (_io.local || _io).to(`match:${mid}`).emit('match:odds', { matchId: mid, odds });
 }
 
 function getConnectedClientsCount() {
-  return _io?.engine?.clientsCount || 0;
+  return (_io?.engine?.clientsCount || 0)+remoteDemand.clients;
 }
 
 function hasActiveFeedSubscribers(feed) {
   if (!_io) return false;
   if (!feed) return getConnectedClientsCount() > 0;
   const room = _io.sockets.adapter?.rooms?.get(`feed:${feed}`);
-  return Boolean(room && room.size > 0);
+  return Boolean(room && room.size > 0) || remoteDemand.feeds.includes(feed);
 }
 
 /**
@@ -356,12 +383,12 @@ async function broadcastCrexUpdates() {
         team2Short: scorecard?.team2?.shortName || detail.team2Short || null,
       };
       if (hasCricket) {
-        _io.to('feed:cricket').emit('crex:live', payload);
+        (_io.local || _io).to('feed:cricket').emit('crex:live', payload);
       }
 
       const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
       if (room?.size > 0) {
-        _io.to(`match:${mid}`).emit(`match:crex:${mid}`, {
+        (_io.local || _io).to(`match:${mid}`).emit(`match:crex:${mid}`, {
           ...detail,
           scorecard,
         });
@@ -399,7 +426,7 @@ function getIo() {
 }
 
 function getActiveSubscribedMatchIds() {
-  const ids = new Set();
+  const ids = new Set(remoteDemand.ids);
   const rooms = _io?.sockets?.adapter?.rooms;
   if (rooms) {
     for (const [roomName, socketSet] of rooms.entries()) {
@@ -416,7 +443,7 @@ function broadcastCrexForMatch(matchId, detail) {
   const mid = String(matchId);
   const room = _io.sockets.adapter?.rooms?.get(`match:${mid}`);
   if (room?.size > 0) {
-    _io.to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
+    (_io.local || _io).to(`match:${mid}`).emit(`match:crex:${mid}`, detail);
   }
 }
 
@@ -426,6 +453,7 @@ module.exports = {
   getConnectedClientsCount,
   hasActiveFeedSubscribers,
   getActiveSubscribedMatchIds,
+  refreshClusterDemand,
   broadcastMatchBundle,
   broadcastAllMatches,
   broadcastCrexUpdates,

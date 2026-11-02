@@ -1,5 +1,6 @@
 require('./scripts/fix-agent-base');
 require('dotenv').config();
+const tracing = require('./lib/tracing');
 
 const fs = require('fs');
 const express = require('express');
@@ -8,6 +9,8 @@ const cors = require('cors');
 const compression = require('compression');
 const path = require('path');
 const session = require('express-session');
+const { requestTiming, recordVital } = require('./middleware/performance');
+const { setStaticCacheHeaders } = require('./lib/staticCaching');
 
 const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
@@ -29,6 +32,9 @@ const telegramRoutes = require('./routes/telegram');
 const telegramService = require('./services/telegramService');
 
 const allowedOrigins = getAllowedOrigins();
+const ingestionEnabled = process.env.INGESTION_ENABLED !== 'false';
+const {REDIS_URL,getRedisClient,getCacheRedisClient}=require('./shared/redis');
+const {RedisSessionStore}=require('./lib/redisSessionStore');
 
 const app = express();
 // Railway/Vercel sit behind a reverse proxy — required for rate-limit + sessions
@@ -58,6 +64,14 @@ const io = new (require('socket.io').Server)(server, {
   pingInterval: 25000,
 });
 const socketService = require('./services/socketService');
+let socketRedisClients=[];
+if(REDIS_URL) {
+  const {createAdapter}=require('@socket.io/redis-adapter');
+  const pub=getRedisClient().duplicate(),sub=pub.duplicate();
+  pub.on('error',()=>{});sub.on('error',()=>{});
+  socketRedisClients=[pub,sub];
+  io.adapter(createAdapter(pub,sub));
+}
 const apiBroadcast = require('./services/api-broadcast');
 const tllWorker = require('./services/scraper-tennisliveload');
 const crexWorker = require('./services/scraper-crex');
@@ -70,13 +84,15 @@ apiBroadcast.init(); // Redis pub/sub bridge — no io arg needed, delegates to 
 // ─── MIDDLEWARE ───
 // Gzip all responses — biggest win for 3G/4G clients
 app.use(compression({ threshold: 1024 }));
+app.use(requestTiming);
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
     // Do not throw — Express would turn this into HTTP 500
     return cb(null, false);
   },
-  credentials: true
+  credentials: true,
+  exposedHeaders: ['Server-Timing', 'X-Request-ID'],
 }));
 app.use(express.json({ limit: '50kb' }));
 
@@ -103,6 +119,7 @@ const otpLimiter = rateLimit({
 })
 const adminLimiter = rateLimit({ windowMs: 60 * 1000, max: 120, keyGenerator: clientIp, validate: { keyGeneratorIpFallback: false }, message: { success: false, message: 'Too many admin requests' } })
 app.use(session({
+  ...(REDIS_URL ? {store:new RedisSessionStore(getCacheRedisClient())} : {}),
   secret: process.env.SESSION_SECRET || (() => { throw new Error('SESSION_SECRET env var not set!'); })(),
   resave: false,
   saveUninitialized: false,
@@ -123,6 +140,7 @@ try {
 }
 
 // ─── ROUTES ───
+app.post('/api/performance', rateLimit({ windowMs:60000, max:60 }), recordVital);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/auth/forgot-password', otpLimiter);
@@ -144,7 +162,7 @@ app.get('/api/user/subscription', verifyToken, (req, res) => {
 });
 
 // ─── SUBSCRIPTION AUTO-ACTIVATION (every 1 hour) ───
-setInterval(async () => {
+if(ingestionEnabled)setInterval(async () => {
   try {
     const now = new Date();
 
@@ -152,7 +170,8 @@ setInterval(async () => {
       where: {
         subPlanSlug: 'pro', subStatus: 'active',
         subExpiresAt: { lte: now }, queuedStatus: 'pending'
-      }
+      },
+      select:{id:true,email:true,queuedBillingCycle:true,queuedPlanId:true},
     });
 
     for (const user of expiredWithQueued) {
@@ -198,11 +217,12 @@ const distCandidates = [
 ];
 const staticDir = distCandidates.find(d => fs.existsSync(path.join(d, 'index.html')));
 if (staticDir) {
-  app.use(express.static(staticDir));
+  app.use(express.static(staticDir, { setHeaders: setStaticCacheHeaders }));
   app.get('*', (req, res) => {
     if (req.path.startsWith('/api/')) {
       return res.status(404).json({ success: false, detail: 'Not found' });
     }
+    res.set('Cache-Control', 'no-cache');
     res.sendFile(path.join(staticDir, 'index.html'), (err) => {
       if (err) res.status(404).json({ error: 'Not found' });
     });
@@ -240,6 +260,9 @@ function shutdown(signal) {
       console.error('HTTP server shutdown failed:', closeError.message);
     }
     try {
+      await require('./services/adminJobs').closeAdminJobs();
+      await tracing.shutdown();
+      await Promise.all(socketRedisClients.map(client=>client.quit()));
       await prisma.$disconnect();
     } catch (error) {
       console.error('Prisma shutdown failed:', error.message);
@@ -253,6 +276,7 @@ process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
 
 (async () => {
+  await require('./services/normalizer/normalizer').syncCachedState();
   try {
     await prisma.$connect();
     // Warm up MariaDB connection pool — prevents first-query cold start delay
@@ -281,11 +305,13 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     console.log(`   API: ${getApiPublicUrl()}`);
     console.log(`   Frontend: ${getFrontendUrl()}`);
     console.log(`   CORS: ${allowedOrigins.join(', ')}`);
-    tossCaptureWorker = startTossCaptureWorker({});
-    matchCaptureWorker = startMatchCaptureWorker({});
-    emiratesD10Worker = startEmiratesD10Worker({});
-    wnclWorker = startWNCLWorker({});
-    womensSpringWorker = startWomensSpringWorker({});
+    if(ingestionEnabled) {
+      tossCaptureWorker = startTossCaptureWorker({});
+      matchCaptureWorker = startMatchCaptureWorker({});
+      emiratesD10Worker = startEmiratesD10Worker({});
+      wnclWorker = startWNCLWorker({});
+      womensSpringWorker = startWomensSpringWorker({});
+    }
   });
 
   server.on('error', (err) => {
@@ -296,10 +322,12 @@ process.on('SIGINT', () => shutdown('SIGINT'));
   });
 
   // Start Platform Architecture Pipeline (Ingestion -> Normalizer -> Broadcast)
-  normalizer.start();
-  tllWorker.start().catch((err) => console.warn('⚠️  [TLL-Worker] start error:', err.message));
-  crexWorker.start();
+  if(ingestionEnabled) {
+    normalizer.start();
+    tllWorker.start().catch((err) => console.warn('⚠️  [TLL-Worker] start error:', err.message));
+    crexWorker.start();
 
-  // Start Telegram bot updates poller
-  telegramService.startBotPoller();
+    // Start Telegram bot updates poller
+    telegramService.startBotPoller();
+  }
 })();

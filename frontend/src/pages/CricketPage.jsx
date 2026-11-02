@@ -1,3 +1,6 @@
+import { savedBackOdds, validBackOdds } from '../../../server/utils/endedMatchOdds.mjs'
+import PageLoading from '../components/PageLoading'
+import useDebouncedValue from '../lib/useDebouncedValue'
 import { lazy, useEffect, useRef, useState, useMemo, memo, useCallback } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import { LoaderCircle, ChevronRight, Trophy, Lock, X } from 'lucide-react'
@@ -35,8 +38,8 @@ const formatOdds = (val) => {
 // ── Isolated match card — only re-renders when its own props change ──
 const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavigate }) {
   const mLoad = match.matchLoad
-  const t1Name = match.matchName?.split(' v ')?.[0] || 'Team 1'
-  const t2Name = match.matchName?.split(' v ')?.[1] || 'Team 2'
+  const t1Name = mLoad?.team1?.name || match.matchName?.split(' v ')?.[0] || 'Team 1'
+  const t2Name = mLoad?.team2?.name || match.matchName?.split(' v ')?.[1] || 'Team 2'
   const snap = match.snapshot
   const tr1 = snap?.teams?.[t1Name]?.trades || snap?.teams?.[snap?.teamNames?.[0]]?.trades || []
   const tr2 = snap?.teams?.[t2Name]?.trades || snap?.teams?.[snap?.teamNames?.[1]]?.trades || []
@@ -45,50 +48,8 @@ const MatchCard = memo(function MatchCard({ match, crexScore, now, isPro, onNavi
   const vol1 = mLoad?.team1?.money ?? (tradeVol1 || snap?.teams?.[t1Name]?.totalBet || snap?.preMatchTotalBets?.team1 || 0)
   const vol2 = mLoad?.team2?.money ?? (tradeVol2 || snap?.teams?.[t2Name]?.totalBet || snap?.preMatchTotalBets?.team2 || 0)
 
-  const sorted1 = [...tr1].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
-  const sorted2 = [...tr2].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
-
-  // Find latest BACK trade specifically (always prefer BACK odds)
-  const backTrade1 = sorted1.find(t => {
-    const s = String(t.type || t.side || '').toLowerCase()
-    return s === 'back' || s === 'b'
-  })
-  const backTrade2 = sorted2.find(t => {
-    const s = String(t.type || t.side || '').toLowerCase()
-    return s === 'back' || s === 'b'
-  })
-
-  const getRunnerBackPrice = (runnersList, teamName, idx) => {
-    if (!Array.isArray(runnersList) || !runnersList.length) return null
-    if (teamName) {
-      const tNorm = teamName.toLowerCase().replace(/[^a-z0-9]/g, '')
-      const matchR = runnersList.find(r => {
-        const rNorm = String(r.runnerName || r.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')
-        return rNorm && (tNorm.includes(rNorm) || rNorm.includes(tNorm))
-      })
-      if (matchR) {
-        return matchR.back || matchR.backPrice || matchR.ex?.availableToBack?.[0]?.price || matchR.price || null
-      }
-    }
-    const r = runnersList[idx]
-    return r?.back || r?.backPrice || r?.ex?.availableToBack?.[0]?.price || r?.price || null
-  }
-
-  const rBack1 = getRunnerBackPrice(snap?.runners, t1Name, 0) || getRunnerBackPrice(match.runners, t1Name, 0)
-  const rBack2 = getRunnerBackPrice(snap?.runners, t2Name, 1) || getRunnerBackPrice(match.runners, t2Name, 1)
-
-  // Always show BACK odds for both teams
-  const odds1 = (backTrade1?.price && !isNaN(Number(backTrade1.price))) ? parseFloat(backTrade1.price) :
-    (rBack1 && !isNaN(Number(rBack1))) ? parseFloat(rBack1) :
-    (mLoad?.team1?.odds && !isNaN(Number(mLoad.team1.odds))) ? parseFloat(mLoad.team1.odds) :
-    (sorted1[0]?.price && !isNaN(Number(sorted1[0].price))) ? parseFloat(sorted1[0].price) :
-    null
-
-  const odds2 = (backTrade2?.price && !isNaN(Number(backTrade2.price))) ? parseFloat(backTrade2.price) :
-    (rBack2 && !isNaN(Number(rBack2))) ? parseFloat(rBack2) :
-    (mLoad?.team2?.odds && !isNaN(Number(mLoad.team2.odds))) ? parseFloat(mLoad.team2.odds) :
-    (sorted2[0]?.price && !isNaN(Number(sorted2[0].price))) ? parseFloat(sorted2[0].price) :
-    null
+  const odds1 = savedBackOdds(snap,t1Name) ?? savedBackOdds(match,t1Name) ?? validBackOdds(mLoad?.team1?.odds)
+  const odds2 = savedBackOdds(snap,t2Name) ?? savedBackOdds(match,t2Name) ?? validBackOdds(mLoad?.team2?.odds)
 
   let impliedP1 = null
   let impliedP2 = null
@@ -208,6 +169,7 @@ export default function CricketPage() {
   const [loadError, setLoadError] = useState('')
   const [matchStatus, setMatchStatus] = useState('all')
   const [leagueQuery, setLeagueQuery] = useState('')
+  const debouncedLeague = useDebouncedValue(leagueQuery)
   const [allMatches, setAllMatches] = useState(() => {
     // Restore cached matches list from sessionStorage for instant render
     try {
@@ -225,6 +187,7 @@ export default function CricketPage() {
   const [now, setNow] = useState(() => Date.now())
   const [tossMatchIds, setTossMatchIds] = useState(new Set())
   const [searchQuery, setSearchQuery] = useState('')
+  const debouncedSearch = useDebouncedValue(searchQuery)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const scrollRef = useRef(null)
   const prevMatchIdRef = useRef(matchId)
@@ -390,7 +353,7 @@ export default function CricketPage() {
           setLoading(false)
         }
       })
-    }, 6000)
+    }, 200)
 
     const onMatchesUpdate = (payload) => {
       receivedFeed = true
@@ -527,7 +490,7 @@ export default function CricketPage() {
   const isEndedMatch = isMatchEnded
   const isLiveMatch = useCallback((match) => isMatchLiveByStart(match, now), [now])
 
-  const hasSearch = Boolean(searchQuery.trim())
+  const hasSearch = Boolean(debouncedSearch.trim())
 
   // Filter matches:
   // When search is active, search ALL matches across ALL leagues (not league-wise)
@@ -535,7 +498,7 @@ export default function CricketPage() {
   const displayedMatches = useMemo(() => {
     let list = []
     if (hasSearch) {
-      const q = searchQuery.toLowerCase().trim()
+      const q = debouncedSearch.toLowerCase().trim()
       list = allMatches.filter((m) =>
         (m.matchName || '').toLowerCase().includes(q) ||
         (m.competitionName || '').toLowerCase().includes(q) ||
@@ -557,22 +520,13 @@ export default function CricketPage() {
       if (aEnded && !bEnded) return 1
       return (a.startTime || 0) - (b.startTime || 0)
     })
-  }, [selectedComp, allMatches, competitions, searchQuery, hasSearch, isLiveMatch, isEndedMatch])
+  }, [selectedComp, allMatches, competitions, debouncedSearch, hasSearch, isLiveMatch, isEndedMatch])
 
   const liveCount = useMemo(() => {
     return allMatches.filter(isLiveMatch).length
   }, [allMatches, isLiveMatch])
 
-  if (!matchId && loading && !allMatches.length) {
-    return (
-      <div className="flex h-[80vh] items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <LoaderCircle className="h-9 w-9 animate-spin text-amber-500" />
-          <span className="text-sm font-semibold text-text-muted">Loading matches...</span>
-        </div>
-      </div>
-    )
-  }
+  if (!matchId && loading && !allMatches.length) return <PageLoading label="Loading matches" />
 
   if (!matchId && loadError && !allMatches.length) {
     return (
@@ -634,7 +588,7 @@ export default function CricketPage() {
         </button>
 
         {/* Tournament items */}
-        {Object.entries(competitions).filter(([comp]) => comp.toLowerCase().includes(leagueQuery.toLowerCase())).map(([comp, compMatches]) => {
+        {Object.entries(competitions).filter(([comp]) => comp.toLowerCase().includes(debouncedLeague.toLowerCase())).map(([comp, compMatches]) => {
           const compLiveCount = compMatches.filter((m) => isLiveMatch(m)).length
           const isSelected = selectedComp === comp && !hasSearch
           const hasToss = compMatches.some((m) => tossMatchIds.has(m.matchId) || m.hasToss)

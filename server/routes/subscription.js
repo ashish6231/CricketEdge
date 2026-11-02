@@ -4,6 +4,7 @@ const Razorpay = require('razorpay');
 const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const prisma = require('../db/prisma');
+const { publicCache } = require('../lib/readCache');
 const {
   expireTrialIfNeeded,
   expireTrialForProUpgrade,
@@ -21,7 +22,7 @@ function getRazorpay() {
 // GET /api/subscription/plans
 router.get('/plans', async (req, res) => {
   try {
-    const plan = await prisma.subscriptionPlan.findFirst({ where: { slug: 'pro', isActive: true } });
+    const plan = await publicCache.remember('pro-plan',()=>prisma.subscriptionPlan.findFirst({ where: { slug: 'pro', isActive: true } }));
     if (!plan) return res.status(404).json({ success: false, message: 'Plan not available' });
     res.json({ success: true, data: [plan] });
   } catch (err) {

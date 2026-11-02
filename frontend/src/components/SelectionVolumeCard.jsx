@@ -1,11 +1,15 @@
 import { useState } from 'react'
-import { BarChart, Bar, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+import { lazy, Suspense } from 'react'
+import VirtualPriceRows from './VirtualPriceRows'
+import LazyLoadBoundary from './LazyLoadBoundary'
+const SelectionVolumeChart = lazy(() => import('./SelectionVolumeChart'))
 import './SelectionVolumeCard.css'
 
 const money = value => value == null ? '—' : `€${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 const odds = value => value == null ? '—' : value.toFixed(2)
 
 export default function SelectionVolumeCard({ teamData, isSession = false }) {
+  const [scrollTop, setScrollTop] = useState(0)
   const [view, setView] = useState('ladder')
   if (!teamData) return null
   const d = teamData
@@ -33,28 +37,20 @@ export default function SelectionVolumeCard({ teamData, isSession = false }) {
       </div>
     </div>
     {view !== 'time' && !priceBook.length ? <p className="selection-volume__empty">{priceBookAvailable ? 'No To Back / To Lay liquidity at the moment.' : 'Current To Back / To Lay values are unavailable from the market feed.'}</p> : view === 'time' && !d.timeSeries.length ? <p className="selection-volume__empty">No recorded price history in this period.</p> : view === 'ladder' ?
-      <div className="selection-volume__scroll" tabIndex={0} role="region" aria-label={`${d.name} price ladder`}>
+      <div className="selection-volume__scroll" onScroll={event=>setScrollTop(event.currentTarget.scrollTop)} tabIndex={0} role="region" aria-label={`${d.name} price ladder`}>
         <table className="selection-volume__table">
           <thead><tr><th scope="col">{isSession ? 'Run line' : 'Price'}</th><th scope="col">To Back</th><th scope="col">To Lay</th><th scope="col">Traded</th>{isSession && <th scope="col">P/L @ next run</th>}</tr></thead>
-          <tbody>{priceBook.map(row => <tr key={row.price}>
+          <VirtualPriceRows rows={priceBook} scrollTop={scrollTop} columns={isSession?5:4}>{row => <tr key={row.price}>
             <th scope="row" className={row.back > 0 && row.lay === 0 ? 'selection-volume__back-cell' : row.lay > 0 && row.back === 0 ? 'selection-volume__lay-cell' : ''}>{odds(row.price)}</th>
             <td className={row.back > 0 ? 'selection-volume__back-cell' : ''}>{row.back > 0 ? money(row.back) : '—'}</td>
             <td className={row.lay > 0 ? 'selection-volume__lay-cell' : ''}>{row.lay > 0 ? money(row.lay) : '—'}</td>
             <td>{money(row.traded)}</td>{isSession && <td>{money(sessionPl(row))}</td>}
-          </tr>)}</tbody>
+          </tr>}</VirtualPriceRows>
         </table>
       </div> : <div className="selection-volume__chart">
-        <ResponsiveContainer width="100%" height="100%">
-          {view === 'volume' ? <BarChart data={priceBook} margin={{ top: 12, right: 8, left: 0, bottom: 8 }}>
-            <CartesianGrid stroke="#e2e8f0" vertical={false} /><XAxis dataKey="price" tickFormatter={odds} tick={{ fontSize: 11 }} minTickGap={20} /><YAxis width={58} tick={{ fontSize: 10 }} tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v} />
-            <Tooltip formatter={money} labelFormatter={v => `Price: ${odds(v)}`} contentStyle={{ background: '#fff', border: '1px solid #d9deec', borderRadius: 8 }} />
-            <Legend verticalAlign="top" height={30} />
-            <Bar dataKey="back" name="To Back" fill="#38bdf8" radius={[4, 4, 0, 0]} /><Bar dataKey="lay" name="To Lay" fill="#fb7185" radius={[4, 4, 0, 0]} />
-          </BarChart> : <LineChart data={d.timeSeries} margin={{ top: 12, right: 8, left: 0, bottom: 8 }}>
-            <CartesianGrid stroke="#e2e8f0" vertical={false} /><XAxis dataKey="time" tick={{ fontSize: 11 }} minTickGap={30} /><YAxis domain={['auto', 'auto']} width={58} tick={{ fontSize: 10 }} />
-            <Tooltip formatter={odds} contentStyle={{ background: '#fff', border: '1px solid #d9deec', borderRadius: 8 }} /><Line dataKey="price" name="Price" stroke="#2563eb" dot={false} strokeWidth={2} />
-          </LineChart>}
-        </ResponsiveContainer>
+        <LazyLoadBoundary><Suspense fallback={<div className="skeleton-block" style={{ height: '100%' }} role="status" aria-label="Loading chart" />}>
+          <SelectionVolumeChart view={view} priceBook={priceBook} timeSeries={d.timeSeries} />
+        </Suspense></LazyLoadBoundary>
       </div>}
   </section>
 }

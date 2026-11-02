@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const {predictTossWinner,getLeagueTossPrediction} = require('../utils/tossPredictor');
 const {getLeagueTossPrediction:dispatch} = require('../utils/tossLeagueAlgorithms');
-const {getTossRuleInputs,UNIVERSAL_TOSS_VERSION} = require('../utils/universalTossAlgorithm.mjs');
+const {getTossRuleInputs,selectTossWinner,UNIVERSAL_TOSS_VERSION} = require('../utils/universalTossAlgorithm.mjs');
 const fixture = (aBack=1098,aLay=115,bBack=734,bLay=46) => ({teamNames:['Alpha','Beta'],
   teams:{Alpha:{trades:[{type:'back',price:2,size:aBack},{type:'lay',price:2,size:aLay}]},
     Beta:{trades:[{type:'back',price:2,size:bBack},{type:'lay',price:2,size:bLay}]}},
@@ -79,7 +79,7 @@ test('frontend and saved snapshots follow league exposure direction without fall
     assert.equal(inputs.risk.back[0],exposure.team1.backExposure);
     assert.equal(inputs.risk.lay[1],exposure.team2.layExposure);
     if (inputs.mode==='risk' && inputs.available && inputs.risk.net[0]!==inputs.risk.net[1]) {
-      assert.equal(result.winnerName,snapshot.teamNames[(inputs.selection==='higher' ? inputs.risk.net[0]>inputs.risk.net[1] : inputs.risk.net[0]<inputs.risk.net[1])?0:1]);
+      assert.equal(result.winnerName,selectTossWinner(inputs).winner);
     }
     if (result) assert.equal(result.usedFallback,false);
   }

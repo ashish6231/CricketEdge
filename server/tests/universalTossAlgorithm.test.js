@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const {predictTossWinner,getLeagueTossPrediction} = require('../utils/tossPredictor');
 const {getLeagueTossPrediction:dispatch} = require('../utils/tossLeagueAlgorithms');
 const {getTossRuleInputs,selectTossWinner} = require('../utils/universalTossAlgorithm.mjs');
-const {getBookiePlFromMatchedTrades} = require('../utils/bookiePl.mjs');
+const {getSimpleBookiePl} = require('../utils/bookiePl.mjs');
 const fixture = () => ({teamNames:['Alpha','Beta'],deepMetrics:{totals:{team1:100,team2:300}},
   teams:{Alpha:{trades:[{type:'back',price:2,size:1},{type:'lay',price:2,size:11}]},Beta:{trades:[{type:'back',price:2,size:21},{type:'lay',price:2,size:1}]}}});
 
@@ -34,14 +34,16 @@ test('all league entry points use net exposure ahead of provider and P/L rules',
   }
 });
 
-test('uses displayed current settlement and totals, ignoring conflicting pre-match and provider P/L summaries', () => {
+test('P/L matches the match-page formula while pre-match values and result labels cannot affect the toss selection', () => {
   const original = fixture();
   const changed = {...original,preMatchPnl:{team1:-999,team2:999},preMatchTotalBets:{team1:999,team2:1},
     actualWinner:'Beta',marketSignals:{prediction:{prediction:'Beta'}},
     deepMetrics:{...original.deepMetrics,simplePL:{team1_win:-999,team2_win:999}},
     cricket:{preMatchTotalBets:{team1:999,team2:1}}};
-  assert.deepEqual(predictTossWinner(changed),predictTossWinner(original));
-  assert.deepEqual(getTossRuleInputs(changed).pl,[30,-30]);
+  assert.equal(predictTossWinner(changed).winnerName,predictTossWinner(original).winnerName);
+  assert.deepEqual(predictTossWinner(changed).algorithmEvidence.risk,predictTossWinner(original).algorithmEvidence.risk);
+  assert.deepEqual(getTossRuleInputs(changed).pl,[-999,999]);
+  assert.deepEqual(getTossRuleInputs(original).pl,[10,-20]);
   const flipped = fixture();
   flipped.deepMetrics.totals = {team1:300,team2:100};
   [flipped.teams.Alpha.trades,flipped.teams.Beta.trades] = [flipped.teams.Beta.trades,flipped.teams.Alpha.trades];
@@ -71,11 +73,11 @@ test('zero exposure blocks predictions even when provider totals are available',
 test('frontend and backend share both the exact P/L calculation and toss prediction', async () => {
   const frontend = await import('../../frontend/src/utils/tossPredictor.js');
   const bookie = await import('../../frontend/src/utils/bookiePl.js');
-  assert.equal(bookie.getBookiePlFromMatchedTrades,getBookiePlFromMatchedTrades);
+  assert.equal(bookie.getSimpleBookiePl,getSimpleBookiePl);
   assert.deepEqual(frontend.predictTossWinner(fixture()),predictTossWinner(fixture()));
   for (const record of require('../data/toss_dataset.json').records) {
     const inputs = getTossRuleInputs(record.snapshot,record.competitionName);
-    const pl = bookie.getBookiePlFromMatchedTrades(record.snapshot,...record.snapshot.teamNames);
+    const pl = bookie.getSimpleBookiePl(record.snapshot,...record.snapshot.teamNames);
     assert.deepEqual(inputs.pl,[pl.pl1,pl.pl2]);
     const pick = inputs.available ? selectTossWinner(inputs) : null;
     assert.equal(predictTossWinner(record.snapshot,record.competitionName)?.winnerName ?? null,pick?.winner ?? null,record.matchId);

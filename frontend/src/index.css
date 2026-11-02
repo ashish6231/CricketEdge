@@ -30,7 +30,7 @@ body {
   background: var(--color-bg-dark);
   min-height: 100vh;
   color: var(--color-text-primary);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 /* ── Transitions ── */
