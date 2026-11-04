@@ -14,7 +14,7 @@ import LoginRequiredGate from '../components/LoginRequiredGate'
 import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
 import { requiresPaidMatchAccess, isSubscriptionRequiredError } from '../utils/matchAccess'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
-import { getSimpleBookiePl, splitMatchOutcomes, finiteNumber, timestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
+import { getSimpleBookiePl, splitMatchOutcomes, finiteNumber, tradeTimestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
@@ -611,18 +611,28 @@ export default function MatchDetail({ sport }) {
 
   const getLatestOdds = (trades, teamKey) => {
     const liveQuote = Object.entries(liveOdds?.odds || {}).find(([name]) => teamEq(name, teamKey))?.[1]
-    const sorted = [...trades].sort((a, b) => (timestamp(b.updatedAt) || 0) - (timestamp(a.updatedAt) || 0))
+    const sorted = [...trades].sort((a, b) => (tradeTimestamp(b) || 0) - (tradeTimestamp(a) || 0))
     let back = liveQuote?.back ?? sorted.find(t => tradeSide(t) === 'back')?.price
     let lay = liveQuote?.lay ?? sorted.find(t => tradeSide(t) === 'lay')?.price
 
-    // Fallback to runners from seed snapshot / matchLoad
+    // Fallback to runners from seed snapshot / matchLoad. Prefer exact names;
+    // substring matching can select the other player when names overlap.
     if (back == null || lay == null) {
-      const runner = (snapshot?.runners || []).find(r =>
-        (r.runnerName && teamKey && r.runnerName.toLowerCase().includes(teamKey.toLowerCase())) ||
-        (teamKey && r.runnerName && teamKey.toLowerCase().includes(r.runnerName.toLowerCase()))
-      )
+      const runners = Array.isArray(snapshot?.runners) ? snapshot.runners : []
+      const normalizeName = (name) => String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase()
+      const targetName = normalizeName(teamKey)
+      const runnerName = (runner) => runner?.runnerName || runner?.name || ''
+      let runner = runners.find(r => normalizeName(runnerName(r)) === targetName)
+      if (!runner && runners.length === snapshot?.teamNames?.length) {
+        const teamIndex = snapshot.teamNames.findIndex(name => normalizeName(name) === targetName)
+        if (teamIndex >= 0) runner = runners[teamIndex]
+      }
+      if (!runner) {
+        const possible = runners.filter(r => teamEq(runnerName(r), teamKey))
+        if (possible.length === 1) runner = possible[0]
+      }
       if (runner) {
-        if (back == null) back = runner.back || runner.backPrice || runner.ex?.availableToBack?.[0]?.price || null
+        if (back == null) back = runner.back ?? runner.backPrice ?? runner.ex?.availableToBack?.[0]?.price ?? runner.price ?? null
         if (lay == null) lay = runner.lay || runner.layPrice || runner.ex?.availableToLay?.[0]?.price || null
       }
     }
@@ -711,18 +721,25 @@ export default function MatchDetail({ sport }) {
   const tmv = snapshot.threeMinVolume || {}
 
   const get3mMetrics = (teamName) => {
-    const trades = snapshot?.teams?.[teamName]?.trades || []
+    const trades = snapshot?.teams?.[teamName]?.trades
+    if (!Array.isArray(trades)) return { back: null, lay: null, total: null }
     if (!trades.length) return { back: 0, lay: 0, total: 0 }
-    const cutoff = Date.now() - 3 * 60 * 1000
+    const now = Date.now()
+    const cutoff = now - 3 * 60 * 1000
     let back = 0
     let lay = 0
+    let hasTimestamp = false
     for (const trade of trades) {
-      if (new Date(trade.updatedAt).getTime() < cutoff) continue
+      const tradeTime = tradeTimestamp(trade)
+      if (tradeTime == null) continue
+      hasTimestamp = true
+      if (tradeTime < cutoff || tradeTime > now) continue
       const size = parseFloat(trade.size) || 0
       const side = tradeSide(trade)
       if (side === 'back') back += size
       else if (side === 'lay') lay += size
     }
+    if (!hasTimestamp) return { back: null, lay: null, total: null }
     return { back, lay, total: back + lay }
   }
 
@@ -730,9 +747,19 @@ export default function MatchDetail({ sport }) {
     team1: (tmv.team1 && (tmv.team1.total > 0 || tmv.team1.back > 0 || tmv.team1.lay > 0)) ? tmv.team1 : get3mMetrics(t1),
     team2: (tmv.team2 && (tmv.team2.total > 0 || tmv.team2.back > 0 || tmv.team2.lay > 0)) ? tmv.team2 : get3mMetrics(t2),
   }
+  const get3mBetCount = (teamName) => {
+    const trades = snapshot.teams?.[teamName]?.trades
+    if (!Array.isArray(trades)) return null
+    if (!trades.length) return 0
+    const now = Date.now()
+    const cutoff = now - 180000
+    const validTimes = trades.map(tradeTimestamp).filter(time => time != null)
+    if (!validTimes.length) return null
+    return validTimes.filter(time => time >= cutoff && time <= now).length
+  }
   const finalTmb = {
-    team1: tmb.team1 ?? (snapshot.teams?.[t1]?.trades?.filter(t => (Date.now() - new Date(t.updatedAt).getTime()) <= 180000).length || 0),
-    team2: tmb.team2 ?? (snapshot.teams?.[t2]?.trades?.filter(t => (Date.now() - new Date(t.updatedAt).getTime()) <= 180000).length || 0),
+    team1: tmb.team1 ?? get3mBetCount(t1),
+    team2: tmb.team2 ?? get3mBetCount(t2),
   }
 
   const exp = snapshot.bookmakerExposure || {}

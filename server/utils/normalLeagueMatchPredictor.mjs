@@ -4,9 +4,9 @@ import { checkPreMatchDataQuality } from './preMatchDataQuality.mjs';
 import { WNCL_ALGORITHM, isWNCLLeague } from './wnclMatchPredictor.mjs';
 import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
 import { isWorldLegendsLeague, WORLD_LEGENDS_LEAGUE } from './worldLegendsActivity.mjs';
-import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
+import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createProviderTotalMatchProfile, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
 
-export const PREDICTOR_VERSION = 'match-v10-prematch-provider-total';
+export const PREDICTOR_VERSION = 'match-v11-emirates-d20-inverted';
 export const DEFAULT_MATCH_MODE = 'rules';
 const normalize = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league),profile]));
@@ -64,6 +64,16 @@ export const LEAGUE_MATCH_ALGORITHMS = Object.freeze([
     parameters: profile.parameters, profile, predict: profile.predict });
 }));
 const registry = new Map(LEAGUE_MATCH_ALGORITHMS.map(entry => [normalize(entry.league), entry]));
+const emiratesD20Profile = createProviderTotalMatchProfile(
+  'Emirates D20 League',
+  'match-emirates-d20-league-inverse-v1',
+  { selection: 'lower', scope: 'emirates-d20-inverted' },
+);
+const EMIRATES_D20_ALGORITHM = Object.freeze({ ...emiratesD20Profile, profile: emiratesD20Profile });
+function isEmiratesD20League(name) {
+  const key = normalize(name).replace(/20\d{2}$/, '');
+  return key === 'emiratesd20' || key === 'emiratesd20league';
+}
 const aliases = {
   t20i: 'International Twenty20 Matches',
   'internationalt20matches': 'International Twenty20 Matches',
@@ -85,6 +95,7 @@ function womensAlgorithm(name, base = null) {
 }
 
 export function getLeagueMatchAlgorithm(name) {
+  if (isEmiratesD20League(name)) return EMIRATES_D20_ALGORITHM;
   const international = resolveInternationalMatchLeague(name);
   let algorithm = international ? registry.get(normalize(international)) : null;
   if (!algorithm && isWorldLegendsLeague(name)) algorithm = registry.get(normalize(WORLD_LEGENDS_LEAGUE));
