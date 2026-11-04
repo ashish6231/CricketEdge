@@ -8156,6 +8156,69 @@
     "runners": [],
     "totalMatched": 59636
   },
+  "36264203": {
+    "matchLoad": {
+      "team1": {
+        "name": "Wellington Firebirds",
+        "money": 206051,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Northern Districts",
+        "money": 206050,
+        "percent": 50,
+        "odds": 50,
+        "trend": "up"
+      },
+      "totalMatched": 412101
+    },
+    "runners": [],
+    "totalMatched": 412101
+  },
+  "36266935": {
+    "matchLoad": {
+      "team1": {
+        "name": "Central Stags",
+        "money": 388507,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Auckland Aces",
+        "money": 388507,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "totalMatched": 777014
+    },
+    "runners": [],
+    "totalMatched": 777014
+  },
+  "36266944": {
+    "matchLoad": {
+      "team1": {
+        "name": "Hobart Hurricanes W",
+        "money": 25938007,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Melbourne Renegades W",
+        "money": 25938008,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "totalMatched": 51876015
+    },
+    "runners": [],
+    "totalMatched": 51876015
+  },
   "36266977": {
     "matchLoad": {
       "team1": {
@@ -8197,5 +8260,236 @@
     },
     "runners": [],
     "totalMatched": 271646
+  },
+  "36266991": {
+    "matchLoad": {
+      "team1": {
+        "name": "Otago Volts",
+        "money": 445422,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Canterbury Kings",
+        "money": 445423,
+        "percent": 50,
+        "odds": 55,
+        "trend": "up"
+      },
+      "totalMatched": 890845
+    },
+    "runners": [],
+    "totalMatched": 890845
+  },
+  "36267082": {
+    "matchLoad": {
+      "team1": {
+        "name": "Dolphins",
+        "money": 8048,
+        "percent": 50,
+        "odds": 1.66,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Western Province",
+        "money": 8048,
+        "percent": 50,
+        "odds": 2.26,
+        "trend": "up"
+      },
+      "totalMatched": 16096
+    },
+    "runners": [],
+    "totalMatched": 16096
+  },
+  "36267578": {
+    "matchLoad": {
+      "team1": {
+        "name": "Biratnagar Kings",
+        "money": 1653472,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Janakpur Bolts",
+        "money": 1653471,
+        "percent": 50,
+        "odds": 200,
+        "trend": "up"
+      },
+      "totalMatched": 3306943
+    },
+    "runners": [],
+    "totalMatched": 3306943
+  },
+  "36267634": {
+    "matchLoad": {
+      "team1": {
+        "name": "Lumbini Lions",
+        "money": 1109168,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Pokhara Avengers",
+        "money": 1109168,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 2218336
+    },
+    "runners": [],
+    "totalMatched": 2218336
+  },
+  "36269512": {
+    "matchLoad": {
+      "team1": {
+        "name": "West Indies A",
+        "money": 624286,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "England Lions",
+        "money": 624287,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "totalMatched": 1248573
+    },
+    "runners": [],
+    "totalMatched": 1248573
+  },
+  "36271322": {
+    "matchLoad": {
+      "team1": {
+        "name": "New Zealand",
+        "money": 20719251,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "India",
+        "money": 20719251,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "totalMatched": 41438502
+    },
+    "runners": [],
+    "totalMatched": 41438502
+  },
+  "36271345": {
+    "matchLoad": {
+      "team1": {
+        "name": "United Arab Emirates",
+        "money": 229765,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Oman",
+        "money": 229766,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 459531
+    },
+    "runners": [],
+    "totalMatched": 459531
+  },
+  "36271963": {
+    "matchLoad": {
+      "team1": {
+        "name": "Emirates Blues",
+        "money": 61172,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Emirates Red",
+        "money": 61171,
+        "percent": 50,
+        "odds": 100,
+        "trend": "up"
+      },
+      "totalMatched": 122343
+    },
+    "runners": [],
+    "totalMatched": 122343
+  },
+  "36271968": {
+    "matchLoad": {
+      "team1": {
+        "name": "Dubai",
+        "money": 87620,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Ajman",
+        "money": 87619,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "totalMatched": 175239
+    },
+    "runners": [],
+    "totalMatched": 175239
+  },
+  "36272001": {
+    "matchLoad": {
+      "team1": {
+        "name": "BBK Partnership",
+        "money": 214756,
+        "percent": 50,
+        "odds": 3.35,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Amzet Lanka",
+        "money": 214757,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "totalMatched": 429513
+    },
+    "runners": [],
+    "totalMatched": 429513
+  },
+  "36272166": {
+    "matchLoad": {
+      "team1": {
+        "name": "Hnb A",
+        "money": 290160,
+        "percent": 50,
+        "odds": 1.07,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Hayleys Group A",
+        "money": 290160,
+        "percent": 50,
+        "odds": 1.33,
+        "trend": "up"
+      },
+      "totalMatched": 580320
+    },
+    "runners": [],
+    "totalMatched": 580320
   }
 }

@@ -132,10 +132,11 @@ async function runPollCycle() {
     const queue = getIngestQueue();
 
     // 1. Fetch raw matches lists in parallel
-    const [cricket, toss, sessionMatches] = await Promise.all([
+    const [cricket, toss, sessionMatches, tennisMatches] = await Promise.all([
       adapter.getMatches().catch(err => ({ error: err.message })),
       adapter.getTossMatches().catch(err => ({ error: err.message })),
       adapter.getSessionMatches().catch(err => ({ error: err.message })),
+      adapter.getTennisMatches().catch(err => ({ error: err.message })),
     ]);
 
     // Push raw list ingest jobs to Normalizer
@@ -147,6 +148,10 @@ async function runPollCycle() {
     }
     if (sessionMatches && !sessionMatches.error) {
       await queue.add('ingest', { source: 'tll', type: 'session:matches', data: sessionMatches });
+    }
+    if (Array.isArray(tennisMatches)) {
+      // Publish empty lists too so leagues that have finished disappear from the UI.
+      await queue.add('ingest', { source: 'tll', type: 'tennis:matches', data: tennisMatches });
     }
     // 2. Fetch snapshots for active matches (both live and upcoming) + subscribed matches
     let clientsCount = 0;

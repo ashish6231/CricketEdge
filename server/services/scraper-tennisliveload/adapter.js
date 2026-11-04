@@ -155,7 +155,14 @@ class TennisLiveLoadAdapter extends SourceAdapter {
   }
 
   async getTennisMatches() {
-    return this._request(ENDPOINTS.TENNIS_MATCHES);
+    const data = await this._request(ENDPOINTS.TENNIS_MATCHES);
+    if (Array.isArray(data)) {
+      return data.map(match => createNormalizedMatch({ ...match, source: 'tennisliveload' }));
+    }
+    if (Array.isArray(data?.matches)) {
+      return data.matches.map(match => createNormalizedMatch({ ...match, source: 'tennisliveload' }));
+    }
+    return data?.error ? data : [];
   }
 
   async getTennisSnapshot(matchId) {
