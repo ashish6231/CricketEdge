@@ -95,9 +95,26 @@ export default function TennisPage() {
 
   const leagueMatches = selectedComp === 'ALL' || searchQuery.trim() ? Object.values(competitions).flat() : competitions[selectedComp] || []
   const currentMatches = leagueMatches.filter(match => `${match.matchName} ${match.competitionName}`.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-  const isEnded = match => ['ended', 'completed', 'closed'].includes((match.status || '').toLowerCase())
+  const isEnded = match => ['ended', 'completed', 'closed', 'verified', 'pending', 'finished', 'result', 'cancelled', 'canceled', 'abandoned'].includes((match.status || '').toLowerCase())
   const isLive = match => !isEnded(match) && (match.inPlay || ['in-play', 'live'].includes((match.status || '').toLowerCase()))
-  const visibleMatches = currentMatches.filter(match => matchStatus === 'all' || matchStatus === 'live' && isLive(match) || matchStatus === 'completed' && isEnded(match) || matchStatus === 'upcoming' && !isLive(match) && !isEnded(match))
+  const getMatchTier = match => isLive(match) ? 0 : isEnded(match) ? 2 : 1
+  const getStartTime = match => {
+    const value = match.startTime
+    const parsed = typeof value === 'number' || /^\d+$/.test(String(value || ''))
+      ? Number(value)
+      : new Date(value || 0).getTime()
+    return Number.isFinite(parsed) ? parsed : 0
+  }
+  const visibleMatches = currentMatches
+    .filter(match => matchStatus === 'all' || matchStatus === 'live' && isLive(match) || matchStatus === 'completed' && isEnded(match) || matchStatus === 'upcoming' && !isLive(match) && !isEnded(match))
+    .sort((a, b) => {
+      const tierA = getMatchTier(a)
+      const tierB = getMatchTier(b)
+      if (tierA !== tierB) return tierA - tierB
+      if (tierA === 1) return getStartTime(a) - getStartTime(b)
+      if (tierA === 2) return getStartTime(b) - getStartTime(a)
+      return 0
+    })
 
   return (
     <div className="sports-workspace flex overflow-hidden">

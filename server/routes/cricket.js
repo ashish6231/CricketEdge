@@ -568,8 +568,7 @@ router.get('/session/trades/:matchId', optionalAuth, assertTelegramMembership, a
   if (!guestMayViewFromInfos(req.user, [sessionInfo, cricketInfo])) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
-  const isEnded = isEndedMatch(sessionInfo) || isEndedMatch(cricketInfo);
-  if (!isEnded && !assertFeatureAccess(req, res, 'session')) return;
+  if (!assertFeatureAccess(req, res, 'session')) return;
   const data = await dataCache.getSessionTrades(matchId);
   if (!data || data.error) {
     const status = (data?.upstreamStatus === 404 || data?.notFound || !data) ? 404 : 502;

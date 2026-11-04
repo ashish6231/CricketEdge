@@ -253,6 +253,26 @@ async function processIngestJob(job) {
     }
   }
 
+  else if (type === 'tennis:snapshot' && matchId && data) {
+    const mid = String(matchId);
+    const matchInfo = _tennisMatches.find(match => String(match.matchId || match.id) === mid);
+    const snapshot = await getDefaultProviderTotalStore().attach(data, {matchId:mid,market:'tennis',matchInfo});
+    _cricketSnapshots.set(mid, snapshot);
+
+    // MatchDetail consumes the shared `cricket` snapshot field for all sports.
+    const bundle = {
+      matchId: mid,
+      cricket: snapshot,
+      toss: null,
+      session: null,
+      crex: null,
+      updatedAt: Date.now(),
+    };
+    await redis.set(`match:${mid}:bundle`, JSON.stringify(bundle), 'EX', 120);
+    await redis.publish(`match:bundle:${mid}`, JSON.stringify({ matchId: mid }));
+    await redis.publish('match:bundle', JSON.stringify({ matchId: mid }));
+  }
+
   else if (type === 'cricket:snapshot' && matchId && data) {
     const mid = String(matchId);
     const matchInfo = _cricketMatches.find(match => String(match.matchId || match.id) === mid);

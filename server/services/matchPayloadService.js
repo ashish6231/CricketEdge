@@ -692,6 +692,11 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
       }
     }
     const snap = await dataCache.getTennisSnapshot(mid);
+    if (!snap && process.env.INGESTION_ENABLED !== 'false') {
+      try {
+        require('./scraper-tennisliveload').triggerImmediateTennisFetch?.(mid);
+      } catch {}
+    }
     return {
       matchId: mid,
       sport: 'tennis',
@@ -736,7 +741,7 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
     const isEnded = isEndedMatch(detailInfo);
     const isFree = getSiteModeSync() === 'free';
     const feature = sport === 'toss' ? 'toss' : sport === 'session' ? 'session' : 'cricket';
-    if (!isEnded && !isFree && !hasFeatureAccess(user, feature)) {
+    if ((sport === 'session' || (!isEnded && !isFree)) && !hasFeatureAccess(user, feature)) {
       return { error: 'subscription_required', message: 'A subscription including this market is required', code: 'SUBSCRIPTION_REQUIRED', requiredFeature: feature, matchId: mid };
     }
   }

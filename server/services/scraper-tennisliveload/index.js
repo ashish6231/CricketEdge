@@ -28,6 +28,7 @@ let _timer = null;
 let _isRunning = false;
 const _sessionDetailLastAttempt = new Map();
 const _upcomingSnapshotLastAttempt = new Map();
+const _tennisSnapshotLastAttempt = new Map();
 const UPCOMING_SNAPSHOT_REFRESH_MS = parseInt(process.env.TLL_UPCOMING_SNAPSHOT_REFRESH_MS, 10) || 3 * 60 * 1000;
 const LIVE_IDLE_SNAPSHOT_REFRESH_MS = Math.max(10000,parseInt(process.env.TLL_LIVE_IDLE_SNAPSHOT_REFRESH_MS,10)||60000);
 const SESSION_SUBSCRIBED_REFRESH_MS = parseInt(process.env.TLL_SESSION_SUBSCRIBED_REFRESH_MS, 10) || 30 * 1000;
@@ -156,12 +157,14 @@ async function runPollCycle() {
     // 2. Fetch snapshots for active matches (both live and upcoming) + subscribed matches
     let clientsCount = 0;
     let subscribedMatchIds = new Set();
+    let subscribedTennisMatchIds = new Set();
     let watchingTossFeed = false;
     try {
       const socketService = require('../socketService');
       await socketService.refreshClusterDemand?.();
       if (typeof socketService.getActiveSubscribedMatchIds === 'function') {
         subscribedMatchIds = new Set(socketService.getActiveSubscribedMatchIds());
+        subscribedTennisMatchIds = new Set(socketService.getActiveSubscribedMatchIds('tennis'));
       }
       clientsCount = socketService.getConnectedClientsCount?.() || 0;
       watchingTossFeed = socketService.hasActiveFeedSubscribers?.('toss') || false;
@@ -220,6 +223,49 @@ async function runPollCycle() {
       }));
     }
 
+    // Tennis detail snapshots are polled like cricket: fast while subscribed,
+    // slower for live matches in the background, and less often before start.
+    const activeTennis = (Array.isArray(tennisMatches) ? tennisMatches : [])
+      .filter(match => subscribedTennisMatchIds.has(String(match.id || match.matchId))
+        || (!idle && !isEndedMatch(match)));
+    for (const matchId of subscribedTennisMatchIds) {
+      if (!activeTennis.some(match => String(match.id || match.matchId) === String(matchId))) {
+        activeTennis.push({ id: matchId, matchId });
+      }
+    }
+
+    for (let i = 0; i < activeTennis.length; i += BATCH_SIZE) {
+      const batch = activeTennis.slice(i, i + BATCH_SIZE);
+      await Promise.all(batch.map(async match => {
+        const mid = String(match.id || match.matchId || '');
+        if (!mid) return;
+        const subscribed = subscribedTennisMatchIds.has(mid);
+        const policy = snapshotPollingPolicy(match, {
+          subscribed,
+          liveIdleMs: LIVE_IDLE_SNAPSHOT_REFRESH_MS,
+          upcomingMs: UPCOMING_SNAPSHOT_REFRESH_MS,
+        });
+        const now = Date.now();
+        if (now - (_tennisSnapshotLastAttempt.get(mid) || 0) < policy.refreshMs) return;
+        if (_pendingTennisFetches.has(mid)) return;
+        _tennisSnapshotLastAttempt.set(mid, now);
+        _pendingTennisFetches.add(mid);
+        try {
+          const snapshot = await adapter.getTennisSnapshot(mid);
+          if (snapshot && !snapshot.error) {
+            await queue.add('ingest', {
+              source: 'tll',
+              type: 'tennis:snapshot',
+              matchId: mid,
+              data: snapshot,
+            });
+          }
+        } catch {} finally {
+          setTimeout(() => _pendingTennisFetches.delete(mid), 3000);
+        }
+      }));
+    }
+
     await tossSnapshotRefresher.refresh(toss,{subscribedIds:subscribedMatchIds,watchingFeed:watchingTossFeed});
     await refreshSessionDetails(sessionMatches, subscribedMatchIds, queue);
   } catch (err) {
@@ -243,7 +289,9 @@ function getEffectivePollInterval() {
     }
     const dataCache = require('../dataCache');
     const cricket = dataCache.getCricketMatches();
-    const hasLive = Array.isArray(cricket) && cricket.some(m => m.inPlay || m.status === 'live' || m.status === 'in-play');
+    const tennis = dataCache.getTennisMatches();
+    const hasLive = [cricket, tennis].some(matches => Array.isArray(matches)
+      && matches.some(m => m.inPlay || m.status === 'live' || m.status === 'in-play'));
     if (!hasLive) {
       // Quiet period: Visitors online, but all matches are upcoming/ended
       return 30000;
@@ -301,6 +349,31 @@ if (require.main === module) {
 
 const _pendingDirectFetches = new Set();
 const _pendingDirectSessionFetches = new Set();
+const _pendingTennisFetches = new Set();
+
+function triggerImmediateTennisFetch(matchId) {
+  if (!matchId) return;
+  const mid = String(matchId);
+  if (_pendingTennisFetches.has(mid)) return;
+  _pendingTennisFetches.add(mid);
+
+  adapter.getTennisSnapshot(mid)
+    .then(snapshot => {
+      if (snapshot && !snapshot.error) {
+        return getIngestQueue().add('ingest', {
+          source: 'tll',
+          type: 'tennis:snapshot',
+          matchId: mid,
+          data: snapshot,
+        });
+      }
+      return null;
+    })
+    .catch(() => {})
+    .finally(() => {
+      setTimeout(() => _pendingTennisFetches.delete(mid), 3000);
+    });
+}
 
 function triggerImmediateSessionFetch(matchId, options = {}) {
   if (!matchId) return;
@@ -377,5 +450,6 @@ module.exports = {
   stop,
   wakeUp,
   triggerImmediateMatchFetch,
+  triggerImmediateTennisFetch,
   triggerImmediateSessionFetch,
 };

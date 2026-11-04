@@ -14,11 +14,16 @@ const { fingerprintMatchBundle } = require('../utils/matchBundleFingerprint');
 const { snapshotFeed, diffFeed } = require('../utils/feedDelta');
 
 let _io = null;
-let remoteDemand={ids:[],clients:0,feeds:[],at:0};
+let remoteDemand={ids:[],tennisIds:[],clients:0,feeds:[],at:0};
 let demandPending=null;
 function localDemand() {
   const rooms=_io?.sockets?.adapter?.rooms;
-  return {ids:[...(rooms||[])].filter(([room,sockets])=>room.startsWith('match:') && sockets.size).map(([room])=>room.slice(6)),
+  const matches=[...(rooms||[])].filter(([room,sockets])=>room.startsWith('match:') && sockets.size).map(([room,sockets])=>{
+    const matchId=room.slice(6);
+    const sport=[...sockets].map(id=>_io.sockets.sockets.get(id)?.matchSports?.get(matchId)).find(Boolean)||'cricket';
+    return {matchId,sport};
+  });
+  return {ids:matches.map(match=>match.matchId),tennisIds:matches.filter(match=>match.sport==='tennis').map(match=>match.matchId),
     clients:_io?.engine?.clientsCount||0,
     feeds:Object.keys(FEED_BUILDERS).filter(feed=>rooms?.get(`feed:${feed}`)?.size>0)};
 }
@@ -26,9 +31,9 @@ async function refreshClusterDemand() {
   if(!process.env.REDIS_URL || !_io?.serverSideEmitWithAck)return;
   if(demandPending)return demandPending;
   demandPending=_io.serverSideEmitWithAck('worker:demand').then(replies=>{
-    remoteDemand={ids:[...new Set(replies.flatMap(value=>value.ids||[]))],clients:replies.reduce((sum,value)=>sum+(value.clients||0),0),
+    remoteDemand={ids:[...new Set(replies.flatMap(value=>value.ids||[]))],tennisIds:[...new Set(replies.flatMap(value=>value.tennisIds||[]))],clients:replies.reduce((sum,value)=>sum+(value.clients||0),0),
       feeds:[...new Set(replies.flatMap(value=>value.feeds||[]))],at:Date.now()};
-  }).catch(()=>{if(Date.now()-remoteDemand.at>30000)remoteDemand={ids:[],clients:0,feeds:[],at:0}}).finally(()=>{demandPending=null});
+  }).catch(()=>{if(Date.now()-remoteDemand.at>30000)remoteDemand={ids:[],tennisIds:[],clients:0,feeds:[],at:0}}).finally(()=>{demandPending=null});
   return demandPending;
 }
 
@@ -126,7 +131,7 @@ function _checkSessionsAndKickStale() {
 
 function init(io) {
   _io = io;
-  remoteDemand={ids:[],clients:0,feeds:[],at:0};
+  remoteDemand={ids:[],tennisIds:[],clients:0,feeds:[],at:0};
   io.on('worker:demand',done=>{if(typeof done==='function')done(localDemand())});
   io.on('worker:wake',()=>{
     refreshClusterDemand().then(()=>{
@@ -461,14 +466,15 @@ function getIo() {
   return _io;
 }
 
-function getActiveSubscribedMatchIds() {
-  const ids = new Set(remoteDemand.ids);
+function getActiveSubscribedMatchIds(sport = null) {
+  const ids = new Set(sport === 'tennis' ? remoteDemand.tennisIds : remoteDemand.ids);
   const rooms = _io?.sockets?.adapter?.rooms;
   if (rooms) {
     for (const [roomName, socketSet] of rooms.entries()) {
-      if (roomName.startsWith('match:') && socketSet.size > 0) {
-        ids.add(roomName.replace('match:', ''));
-      }
+      if (!roomName.startsWith('match:') || socketSet.size === 0) continue;
+      const matchId=roomName.slice(6);
+      const roomSport=[...socketSet].map(id=>_io.sockets.sockets.get(id)?.matchSports?.get(matchId)).find(Boolean)||'cricket';
+      if (!sport || roomSport===sport) ids.add(matchId);
     }
   }
   return Array.from(ids);

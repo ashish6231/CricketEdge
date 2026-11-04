@@ -21,3 +21,6 @@ __pycache__/
 
 # Persisted provider captures (local runtime fallback)
 server/data/pre_match_provider_totals.json
+
+# Local Claude Code credentials
+.claude/settings.local.json

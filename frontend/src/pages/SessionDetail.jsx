@@ -7,13 +7,13 @@ import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
 import { SessionSelector, SessionWorkspace } from '../components/SessionWorkspace'
 import { getMatchBundle, getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
 import { isLoginRequiredError } from '../utils/publicAuth'
-import { requiresPaidMatchAccess } from '../utils/matchAccess'
+import { hasFeatureAccess } from '../lib/subscriptionAccess'
 import { buildAllSessions, formatVolStr, sessionDataFingerprint } from '../utils/sessionMetrics'
 
 export default function SessionDetail() {
   const { matchId } = useParams()
   const navigate = useNavigate()
-  const { isLoggedIn, authReady, isFreeMode, user } = useOutletContext()
+  const { isLoggedIn, authReady, user } = useOutletContext()
   const initialBundle = getMatchBundle(matchId)
   const cached = initialBundle?.session || null
   const [data, setData] = useState(cached)
@@ -122,7 +122,8 @@ export default function SessionDetail() {
   const isEnded = /ended|complete|finished|result/.test(statusText)
   const matchName = data?.matchName || matchMeta?.matchName || (matchMeta?.teamNames || []).join(' v ') || 'Session Markets'
 
-  if (requiresPaidMatchAccess({ authReady, isLoggedIn, isFreeMode, user, match: matchMeta || data, feature: 'session' })) return <SubscriptionRequiredGate featureLabel="Cricket session" onBack={() => navigate('/session')} />
+  if (authReady && !isLoggedIn) return <LoginRequiredGate description="Sign in and subscribe to view session markets." />
+  if (authReady && !hasFeatureAccess(user, 'session')) return <SubscriptionRequiredGate featureLabel="Cricket session" onBack={() => navigate('/session')} />
 
   if (loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
 

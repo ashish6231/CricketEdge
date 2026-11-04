@@ -49,7 +49,7 @@ export function resolveInternationalMatchLeague(name) {
 export function isWomensCompetition(name) {
   const label = String(name || '').toLowerCase().replace(/[’']/g,'');
   const alias = label.trim().replace(/[\s-]*20\d{2}$/, '');
-  return /women/.test(label) || /^(?:wncl|wbbl|wcpl|wpl|wt20i|wodi)$/.test(alias);
+  return /women/.test(label) || /\bwta\b/.test(label) || /^(?:wncl|wbbl|wcpl|wpl|wt20i|wodi)$/.test(alias);
 }
 
 export function isWomensMatch(snapshot) {

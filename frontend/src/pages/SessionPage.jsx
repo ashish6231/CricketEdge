@@ -132,8 +132,7 @@ export default function SessionPage() {
     return <span className="text-xs font-semibold px-2 py-0.5 rounded-full" style={{ background: 'rgba(59,130,246,0.15)', color: '#3b82f6' }}>UPCOMING</span>
   }
 
-  const getAccessType = (match) => {
-    if (getSessionStatus(match) === 'completed') return 'free'
+  const getAccessType = () => {
     if (isPro) return 'pro'
     return 'locked'
   }
@@ -291,7 +290,7 @@ export default function SessionPage() {
                 {visibleMatches.length > 0 ? (
                   <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
                   {visibleMatches.map(match => {
-                    const accessType = getAccessType(match)
+                    const accessType = getAccessType()
                     const dt = fmtDateTime(match.startTime)
                     const isLive = getSessionStatus(match) === 'live'
                     const sessionCount = Number(match.sessionCount)
@@ -337,7 +336,7 @@ export default function SessionPage() {
                             ? <span className="text-xs font-semibold text-[#22c55e]">Free access</span>
                             : accessType === 'pro'
                               ? <span className="text-xs font-semibold text-[#f59e0b]">Plan access</span>
-                              : <span className="text-xs font-semibold flex items-center gap-1 text-[#ef4444]"><Lock size={11} /> Pro Required</span>
+                              : <span className="text-xs font-semibold flex items-center gap-1 text-[#ef4444]"><Lock size={11} /> Subscription Required</span>
                           }
                           <ChevronRight className="h-4 w-4 text-[#8e8e93] group-hover:text-[#f59e0b] transition-colors" />
                         </div>
