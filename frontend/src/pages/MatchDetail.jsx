@@ -390,10 +390,34 @@ export default function MatchDetail({ sport }) {
     }
   }, [matchId, sport, authReady, isLoggedIn, requiresLogin, requiresPro, subscriptionBlocked, matchEnded])
 
-  const liveStartPred = useMemo(() => {
-    if (!snapshot) return null
-    return predictMatchStart(snapshot)
-  }, [snapshot])
+  const { matchStartTime, preMatchSnapshot, preMatchFields, predictionSnapshot } = useMemo(() => {
+    const cachedStart = location.state?.startTime ?? location.state?.matchData?.startTime ??
+      (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`match_start_${matchId}`) : null)
+    const startTime = snapshot?.startTime ?? snapshot?.openDate ?? snapshot?.marketStartTime ?? cachedStart
+    const periodSnapshot = snapshot
+      ? capturePreMatchExposure({ ...snapshot, startTime }, completePreMatchCapture, { now: Date.now() })
+      : null
+    const periodFields = periodSnapshot ? getPreMatchPeriod(periodSnapshot, {
+      startTime,
+      captured: frozenPreMatchFields,
+      capturedTotals: frozenPreMatchProviderTotals,
+    }) : null
+    const predictionInput = periodSnapshot && periodFields?.providerTotals?.some(value => value != null)
+      ? {
+        ...periodSnapshot,
+        preMatchProviderTotals: { team1: periodFields.providerTotals[0], team2: periodFields.providerTotals[1] },
+        deepMetrics: {
+          ...(periodSnapshot.deepMetrics || {}),
+          preMatchTotals: { team1: periodFields.providerTotals[0], team2: periodFields.providerTotals[1] },
+        },
+      }
+      : snapshot
+    return { matchStartTime: startTime, preMatchSnapshot: periodSnapshot, preMatchFields: periodFields,
+      predictionSnapshot: predictionInput }
+  }, [snapshot, completePreMatchCapture, frozenPreMatchFields, frozenPreMatchProviderTotals,
+    location.state?.startTime, location.state?.matchData?.startTime, matchId])
+
+  const liveStartPred = useMemo(() => predictionSnapshot ? predictMatchStart(predictionSnapshot) : null, [predictionSnapshot])
 
   const effectiveInPlay = isMatchLiveByStart(snapshot, timingNow)
 
@@ -595,12 +619,7 @@ export default function MatchDetail({ sport }) {
     </div>
   )
 
-  const cachedStart =
-    location.state?.startTime ?? location.state?.matchData?.startTime ??
-    (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`match_start_${matchId}`) : null)
-  const matchStartTime = snapshot.startTime ?? snapshot.openDate ?? snapshot.marketStartTime ?? cachedStart
   const matchSchedule = formatMatchSchedule(matchStartTime)
-  const preMatchSnapshot=capturePreMatchExposure({...snapshot,startTime:matchStartTime},completePreMatchCapture,{now:Date.now()})
   const captureState=preMatchSnapshot.preMatchCapture
   const preMatchActivity = getPreMatchTradeActivity(preMatchSnapshot, { startTime: matchStartTime })
   const { t1, t2, drawName } = splitMatchOutcomes(snapshot.teamNames)
@@ -709,11 +728,6 @@ export default function MatchDetail({ sport }) {
 
   // Activity and volume keep their provider scope; P/L shares the overview formula.
   const ib = snapshot.inPlayTotalBets || {}
-  const preMatchFields = getPreMatchPeriod(preMatchSnapshot, {
-    startTime: matchStartTime,
-    captured: frozenPreMatchFields,
-    capturedTotals: frozenPreMatchProviderTotals,
-  })
   const pb = preMatchFields.bets || {}
   const iv = snapshot.inPlayVolume || {}
   const pv = preMatchFields.volume || {}
@@ -841,7 +855,8 @@ export default function MatchDetail({ sport }) {
     ] : []),
     { label: 'Bookie P/L', values: periodValues(period.pnl), format: 'signed', missingLabel: 'Price history unavailable' },
     { label: 'Reported activity', values: periodValues(period.bets), format: 'number', missingLabel: 'Not captured' },
-    ...(metricsPeriod !== '3min' ? [{ label: 'Provider total', values: metricsPeriod === 'pre' ? preMatchProviderTotals : liveProviderTotals, format: 'currency', emphasis: true, missingLabel: metricsPeriod === 'pre' ? 'Not captured' : 'Unavailable' }] : []),
+    ...(metricsPeriod !== '3min' ? [{ label: 'Provider total', values: metricsPeriod === 'pre' ? preMatchProviderTotals : liveProviderTotals,
+      format: 'currency', emphasis: true, missingLabel: metricsPeriod === 'pre' ? 'Not captured' : 'Unavailable' }] : []),
     ...(metricsPeriod === 'pre' ? [{
       label: 'Recorded trades',
       values: [t1, t2].map(name => preMatchActivity.available && Number.isInteger(preMatchActivity.counts[name]) ? {

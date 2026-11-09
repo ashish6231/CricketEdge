@@ -25,8 +25,15 @@ export function getCurrentProviderTotals(snapshot) {
 export function getExplicitPreMatchProviderTotals(snapshot) {
   if (!snapshot || snapshot.error) return null;
   // The provider already supplies this metric frozen to the pre-match period.
-  // Prefer that period ledger over a capture from an earlier polling interval.
-  const sources = [snapshot.preMatchTotalBets, snapshot.preMatchProviderTotals, snapshot.deepMetrics?.preMatchTotals].map(providerTotalPair);
+  // Dedicated provider-total fields take precedence over the bet-activity count.
+  // Once present, keep partial pairs partial instead of filling them with a
+  // different metric from preMatchTotalBets.
+  const dedicated = [snapshot.preMatchProviderTotals, snapshot.deepMetrics?.preMatchTotals].map(providerTotalPair);
+  if (dedicated.some(Boolean)) {
+    const values = [0, 1].map(index => dedicated.find(source => source?.[index] != null)?.[index] ?? null);
+    return values.some(value => value != null) ? values : null;
+  }
+  const sources = [snapshot.preMatchTotalBets].map(providerTotalPair);
   const values = [0, 1].map(index => sources.find(source => source?.[index] != null)?.[index] ?? null);
   return values.some(value => value != null) ? values : null;
 }

@@ -6,7 +6,7 @@ import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
 import { isWorldLegendsLeague, WORLD_LEGENDS_LEAGUE } from './worldLegendsActivity.mjs';
 import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createProviderTotalMatchProfile, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
 
-export const PREDICTOR_VERSION = 'match-v11-emirates-d20-inverted';
+export const PREDICTOR_VERSION = 'match-v12-canonical-prematch-provider-total';
 export const DEFAULT_MATCH_MODE = 'rules';
 const normalize = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league),profile]));
