@@ -12,6 +12,7 @@ const { providerSnapshotFromRecord } = require('../utils/providerTotals.mjs');
 const crexService = require('./crexService');
 const { getDefaultStore: getDefaultTossStore } = require('./tossDatasetStore');
 const { isEndedMatch, guestMayViewMatch } = require('../lib/guestMatchAccess');
+const { isEndedStatus, isLiveStatus } = require('../shared/matchStatus');
 const { hasFeatureAccess } = require('../lib/subscriptionAccess');
 const { getSiteModeSync } = require('../lib/siteSettings');
 const { getTossMarketSummary } = require('../utils/tossMarketSummary.mjs');
@@ -401,12 +402,7 @@ async function getCricketMatchesPayload() {
   }
 
   const allMatches = Array.from(matchesMap.values()).map((m) => {
-    const isEnded =
-      m.status === 'ended' ||
-      m.status === 'verified' ||
-      m.status === 'pending' ||
-      m.status === 'completed' ||
-      m.status === 'closed';
+    const isEnded = isEndedMatch(m);
     if (isEnded) {
       m.status = 'ended';
       m.inPlay = false;
@@ -499,7 +495,7 @@ async function getTossMatchesPayload() {
       if (!snap && dsRec?.snapshot) snap = dsRec.snapshot;
 
       const load = computeTossLoad(snap, m);
-      const isEnded = m.status === 'ended' || m.status === 'verified' || m.status === 'closed' || dsRec?.status === 'ended' || dsRec?.status === 'verified';
+      const isEnded = isEndedMatch(m) || dsRec?.status === 'ended' || dsRec?.status === 'verified';
       const matchStatus = isEnded ? 'ended' : (m.status || (m.inPlay ? 'in-play' : 'upcoming'));
 
       matchesMap.set(id, {
@@ -524,8 +520,7 @@ async function getTossMatchesPayload() {
 
   const getTossTier = (m) => {
     const s = (m.status || '').toLowerCase();
-    const isEnded = s === 'ended' || s === 'verified' || s === 'pending' || s === 'completed' || s === 'closed';
-    if (isEnded) return 3;
+    if (isEndedMatch(m)) return 3;
     const isLive = m.inPlay || s === 'in-play' || s === 'live';
     if (isLive) return 1;
     return 2;
@@ -554,14 +549,11 @@ async function getTossMatchesPayload() {
   };
 }
 
-const SESSION_ENDED_STATUSES = new Set(['ended', 'verified', 'pending', 'completed', 'closed']);
-
 function normalizeSessionStatus(match = {}) {
-  const rawStatus = String(match.status || '').trim().toLowerCase();
-  if (SESSION_ENDED_STATUSES.has(rawStatus)) {
+  if (isEndedStatus(match.status)) {
     return { status: 'ended', inPlay: false };
   }
-  if (match.inPlay || rawStatus === 'in-play' || rawStatus === 'live') {
+  if (match.inPlay || isLiveStatus(match.status)) {
     return { status: 'in-play', inPlay: true };
   }
   return { status: 'upcoming', inPlay: false };

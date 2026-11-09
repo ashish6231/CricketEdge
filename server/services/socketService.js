@@ -352,8 +352,25 @@ function hasActiveFeedSubscribers(feed) {
  * Broadcasts all match lists & updates active match rooms
  * Called whenever dataCache completes a tennisliveload poll cycle
  */
+let _lastBroadcastPruneAt = 0;
+/** Forgets broadcast bookkeeping for match rooms that have been empty for an hour. */
+function pruneBroadcastState(now = Date.now()) {
+  if (now - _lastBroadcastPruneAt < 10 * 60 * 1000) return;
+  _lastBroadcastPruneAt = now;
+  const rooms = _io?.sockets?.adapter?.rooms;
+  for (const [mid, at] of _lastBundleBroadcastAt) {
+    if (rooms?.get(`match:${mid}`)?.size || now - at < 60 * 60 * 1000) continue;
+    _lastBundleBroadcastAt.delete(mid);
+    _lastBundleFps.delete(mid);
+  }
+  for (const mid of _lastBundleFps.keys()) if (!_lastBundleBroadcastAt.has(mid)) _lastBundleFps.delete(mid);
+  const listed = new Set((dataCache.getCricketMatches?.() || []).map(match => String(match.id || match.matchId)));
+  for (const mid of _lastCrexLiveFps.keys()) if (!listed.has(mid)) _lastCrexLiveFps.delete(mid);
+}
+
 async function broadcastAllMatches() {
   if (!_io) return;
+  try { pruneBroadcastState(); } catch { /* bookkeeping only */ }
   if (getConnectedClientsCount() === 0) return;
 
   const hasCricket = hasActiveFeedSubscribers('cricket');

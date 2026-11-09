@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Activity, ChevronRight, LoaderCircle, Lock, Radio, Search } from 'lucide-react'
 import { hasProAccess } from '../lib/subscriptionAccess'
 import { getSocket, releaseFeed, requestTennisFeed } from '../socket'
-import { getMatchStartTimestamp, isMatchLiveByStart } from '../utils/matchTiming'
+import { getMatchStartTimestamp, isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
 
 const SPORT_FILTERS = [
   { id: 'all', label: 'All' },
@@ -24,13 +24,12 @@ const fmtWhen = (ts) => {
 }
 
 const isLive = (m, now = Date.now()) => {
-  if (m.sport === 'tennis') return m.status === 'in-play' || (m.inPlay && m.status !== 'ended')
+  if (m.sport === 'tennis') return !isMatchEnded(m) && (m.inPlay || ['in-play', 'live'].includes(String(m.status || '').toLowerCase()))
   return isMatchLiveByStart(m, now)
 }
 
 const isUpcoming = (m, now = Date.now()) => {
-  if (isLive(m, now) || m.status === 'ended') return false
-  return m.status === 'upcoming' || !m.status || m.status !== 'ended'
+  return !isLive(m, now) && !isMatchEnded(m)
 }
 
 const tagMatch = (m, sport) => ({
@@ -333,7 +332,7 @@ export default function LiveDesk({ isLoggedIn, authReady, user, stickyTop = 56 }
 }
 
 function MatchRow({ match, live, odds, isPro, onOpen, style }) {
-  const locked = match.status !== 'ended' && !isPro
+  const locked = !isMatchEnded(match) && !isPro
   const when = fmtWhen(match.startTime)
   const sportLabel = match.sport === 'cricket' ? '🏏' : '🎾'
   const league = match.competitionName || 'Other'
@@ -399,7 +398,7 @@ function MatchRow({ match, live, odds, isPro, onOpen, style }) {
               </span>
             ) : (
               <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
-                {isPro && match.status !== 'ended' ? 'Pro Access' : 'Open'}
+                {isPro && !isMatchEnded(match) ? 'Pro Access' : 'Open'}
               </span>
             )}
           </div>

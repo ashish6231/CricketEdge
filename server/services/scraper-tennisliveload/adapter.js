@@ -120,7 +120,8 @@ class TennisLiveLoadAdapter extends SourceAdapter {
   async getMatches() {
     const data = await this._request(ENDPOINTS.CRICKET_MATCHES);
     if (!Array.isArray(data) && !Array.isArray(data?.matches)) {
-      return [];
+      // Surface upstream failures so feed health can tell "no matches" from "request failed".
+      return data?.error ? data : [];
     }
     const list = Array.isArray(data) ? data : data.matches;
     return list.map(m => createNormalizedMatch({ ...m, source: 'tennisliveload' }));

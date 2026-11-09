@@ -3,6 +3,7 @@ const path = require('node:path');
 const { createHash } = require('node:crypto');
 const { freezePreMatchProviderTotals, getExplicitPreMatchProviderTotals, providerStartTime } = require('../utils/providerTotals.mjs');
 const { capturePreMatchExposure } = require('../utils/preMatchExposure.mjs');
+const { isTerminalOrLiveStatus } = require('../shared/matchStatus');
 
 const DATASET_KEY = 'prematch_provider_totals';
 function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../data/pre_match_provider_totals.json'),
@@ -49,8 +50,19 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
     writeChain = work;
     return work;
   };
+  let lastPruneAt = 0;
+  // Active keys re-read storage every minute (moving retryAt forward), so an old
+  // retryAt means nothing has asked for that match in hours.
+  function prune(now) {
+    if (now - lastPruneAt < 10 * 60 * 1000) return;
+    lastPruneAt = now;
+    for (const [key, state] of cached) {
+      if (!state.dirty && !pending.has(key) && now - state.retryAt > 6 * 60 * 60 * 1000) cached.delete(key);
+    }
+  }
   async function attach(snapshot, { matchId, market = 'cricket', matchInfo = null, now = Date.now() } = {}) {
     if (!snapshot || snapshot.error || !matchId) return snapshot;
+    prune(now);
     const key = `${market}:${matchId}`;
     // Serialize capture and restore operations for each market independently.
     const work = (pending.get(key) || Promise.resolve()).catch(() => {}).then(async () => {
@@ -64,7 +76,7 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
         startTime:providerStartTime(snapshot) ?? providerStartTime(matchInfo),
         competitionName:snapshot.competitionName || matchInfo?.competitionName,
         inPlay:Boolean(snapshot.inPlay || matchInfo?.inPlay),
-        status:/^(live|in-play|ended|completed|closed|verified|pending|cancelled|abandoned)$/i.test(matchInfo?.status || '')
+        status:isTerminalOrLiveStatus(matchInfo?.status)
           ? matchInfo.status : snapshot.status || matchInfo?.status };
       const next = capturePreMatchExposure(freezePreMatchProviderTotals(input, state.value, {now}), state.value, {now});
       const totals = getExplicitPreMatchProviderTotals(next);
@@ -88,7 +100,7 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
     pending.set(key, work);
     try { return await work; } finally { if (pending.get(key) === work) pending.delete(key); }
   }
-  return {attach};
+  return {attach,cacheSize:()=>cached.size};
 }
 let defaultStore;
 function getDefaultProviderTotalStore() { return defaultStore ||= createProviderTotalStore(); }

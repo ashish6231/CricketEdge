@@ -25,6 +25,7 @@
  */
 
 const { providerStartTime } = require('../utils/providerTotals.mjs');
+const { isEndedStatus, isLiveStatus } = require('./matchStatus');
 
 function createNormalizedMatch(raw = {}) {
   const matchId = String(raw.id || raw.matchId || raw.match_id || '').trim();
@@ -43,11 +44,10 @@ function createNormalizedMatch(raw = {}) {
     team2 = parts[1]?.trim() || team2;
   }
 
-  const rawStatus = String(raw.status || '').toLowerCase();
-  const isEnded = ['ended', 'verified', 'pending', 'completed', 'closed'].includes(rawStatus) ||
+  const isEnded = isEndedStatus(raw.status) ||
     /won by|won the|match drawn|match tied|no result/i.test(raw.crex?.statusText || '');
 
-  const inPlay = Boolean(!isEnded && (raw.inPlay || rawStatus === 'in-play' || rawStatus === 'live'));
+  const inPlay = Boolean(!isEnded && (raw.inPlay || isLiveStatus(raw.status)));
 
   let normalizedStatus = 'upcoming';
   if (isEnded) normalizedStatus = 'completed';
@@ -71,7 +71,8 @@ function createNormalizedMatch(raw = {}) {
     toss: raw.toss || null,
     session: raw.session || null,
     snapshot: raw.snapshot || null,
-    updatedAt: Date.now(),
+    // No per-match wall-clock timestamp: it changed every poll and defeated
+    // feed deltas. Feed payloads carry their own top-level `updatedAt`.
   };
 }
 

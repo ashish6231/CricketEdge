@@ -26,13 +26,59 @@ let _tossMatchesUpdatedAt = new Date().toISOString();
 let _sessionMatchesUpdatedAt = new Date().toISOString();
 let _tennisMatchesUpdatedAt = new Date().toISOString();
 
-const _cricketSnapshots = new Map();
-const _crexDetails = new Map();
-const _tossSnapshots = new Map();
-const _sessionTrades = new Map();
-const _sessionTradeFingerprints = new Map();
+// Every per-match cache write records when the key was last refreshed so
+// entries for matches that left all provider lists can be evicted later.
+const _touchedAt = new Map();
+class TouchedMap extends Map {
+  set(key, value) {
+    _touchedAt.set(String(key), Date.now());
+    return super.set(key, value);
+  }
+}
+const _cricketSnapshots = new TouchedMap();
+const _crexDetails = new TouchedMap();
+const _tossSnapshots = new TouchedMap();
+const _sessionTrades = new TouchedMap();
+const _sessionTradeFingerprints = new TouchedMap();
 const _bundleReads = new Map();
 const _bundleReadTimes = new Map();
+const CACHE_RETENTION_MS = Math.max(10 * 60 * 1000, parseInt(process.env.MATCH_CACHE_RETENTION_MS, 10) || 6 * 60 * 60 * 1000);
+const CACHE_PRUNE_INTERVAL_MS = 10 * 60 * 1000;
+
+function activeCacheKeys() {
+  const keys = new Set();
+  for (const list of [_cricketMatches, _tossMatches, _sessionMatches, _tennisMatches]) {
+    for (const match of Array.isArray(list) ? list : []) {
+      for (const key of [match?.matchId, match?.id, match?.crex?.crexMatchId, match?.crex?.slug]) {
+        if (key != null && key !== '') keys.add(String(key));
+      }
+    }
+  }
+  return keys;
+}
+
+/**
+ * Drops cached snapshots for matches that are no longer listed by any provider
+ * feed and have not been refreshed within the retention window. Listed matches
+ * (including completed ones still on the cards) are always kept.
+ */
+function pruneCaches({ now = Date.now(), retentionMs = CACHE_RETENTION_MS } = {}) {
+  const active = activeCacheKeys();
+  const maps = [_cricketSnapshots, _crexDetails, _tossSnapshots, _sessionTrades, _sessionTradeFingerprints];
+  const keys = new Set(maps.flatMap(map => [...map.keys()].map(String)));
+  let removed = 0;
+  for (const key of keys) {
+    if (active.has(key) || _bundleReads.has(key)) continue;
+    if (now - (_touchedAt.get(key) || 0) <= retentionMs) continue;
+    for (const map of maps) map.delete(key);
+    _bundleReadTimes.delete(key);
+    _touchedAt.delete(key);
+    removed++;
+  }
+  for (const key of _touchedAt.keys()) if (!keys.has(key)) _touchedAt.delete(key);
+  return removed;
+}
+setInterval(() => { try { pruneCaches(); } catch { /* best effort */ } }, CACHE_PRUNE_INTERVAL_MS).unref?.();
 function applyCachedBundle(mid,bundle) {
   if(bundle?.cricket)_cricketSnapshots.set(mid,bundle.cricket);
   if(bundle?.toss)_tossSnapshots.set(mid,bundle.toss);
@@ -443,6 +489,7 @@ function setCrexDetail(key, detail) {
 }
 
 module.exports = {
+  pruneCaches,
   syncCachedState,
   syncCachedBundle,
   syncCachedBundles,

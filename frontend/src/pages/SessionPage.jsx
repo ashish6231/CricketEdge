@@ -6,15 +6,14 @@ import { hasFeatureAccess } from '../lib/subscriptionAccess'
 const SessionDetail = lazy(() => import('./SessionDetail'))
 import { getSocket, releaseFeed, requestSessionFeed } from '../socket'
 import { getSessionMatches } from '../api'
+import { isMatchEnded } from '../utils/matchTiming'
 
 const STORAGE_KEY = 'session_selected_comp_v2'
 const SCROLL_KEY = 'session_scroll_pos'
 const ALL_COMPETITIONS = '__all__'
-const ENDED_STATUSES = new Set(['ended', 'completed', 'closed', 'verified', 'pending'])
-
 const getSessionStatus = (match) => {
   const status = String(match?.status || '').toLowerCase()
-  if (ENDED_STATUSES.has(status)) return 'completed'
+  if (isMatchEnded(match)) return 'completed'
   if (match?.inPlay || status === 'live' || status === 'in-play') return 'live'
   return 'upcoming'
 }

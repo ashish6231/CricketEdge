@@ -8,6 +8,7 @@ const LoginPage = lazy(() => import('../pages/LoginPage'))
 const TelegramGateModal = lazy(() => import('./TelegramGateModal'))
 import PageLoading from './PageLoading'
 import PaidAccessAnnouncement from './PaidAccessAnnouncement'
+import DataDelayedBanner from './DataDelayedBanner'
 import TelegramLink, { TelegramIcon } from './TelegramLink'
 import { shouldShowAnnouncement, markAnnouncementShown } from '../utils/announcementSession'
 import { getSocket, updateSocketAuth } from '../socket'
@@ -594,6 +595,8 @@ export default function MainLayout() {
           <Outlet context={{ isLoggedIn, user: authUser, authReady, siteMode, isFreeMode: isFree, onLoginSuccess: handleLoginSuccess, onLogout: handleLogout, mobileMenu, setMobileMenu }} />
         </Suspense>
       </main>
+
+      <DataDelayedBanner />
 
       {/* Compulsory Telegram Gate Modal: ONLY for logged-in non-admin users */}
       {showAnnouncement && (

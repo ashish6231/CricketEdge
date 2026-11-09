@@ -4,6 +4,7 @@ import { LoaderCircle, Activity, ChevronRight, Lock, X } from 'lucide-react'
 import { hasFeatureAccess } from '../lib/subscriptionAccess'
 import { getTennisMatches } from '../api'
 import { getSocket, releaseFeed, requestTennisFeed } from '../socket'
+import { isMatchEnded } from '../utils/matchTiming'
 import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
 
@@ -95,7 +96,7 @@ export default function TennisPage() {
 
   const leagueMatches = selectedComp === 'ALL' || searchQuery.trim() ? Object.values(competitions).flat() : competitions[selectedComp] || []
   const currentMatches = leagueMatches.filter(match => `${match.matchName} ${match.competitionName}`.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-  const isEnded = match => ['ended', 'completed', 'closed', 'verified', 'pending', 'finished', 'result', 'cancelled', 'canceled', 'abandoned'].includes((match.status || '').toLowerCase())
+  const isEnded = isMatchEnded
   const isLive = match => !isEnded(match) && (match.inPlay || ['in-play', 'live'].includes((match.status || '').toLowerCase()))
   const getMatchTier = match => isLive(match) ? 0 : isEnded(match) ? 2 : 1
   const getStartTime = match => {

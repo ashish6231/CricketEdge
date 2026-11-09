@@ -11,6 +11,7 @@ const TennisLiveLoadAdapter = require('./adapter');
 const session = require('./session');
 const { getIngestQueue } = require('../normalizer/queue');
 const { compactSessionPayload } = require('../../utils/sessionPayload');
+const feedHealth = require('../feedHealth');
 const {snapshotPollingPolicy,shouldCapturePreMatch}=require('../../utils/snapshotPolling');
 const {capturePreMatchExposure}=require('../../utils/preMatchExposure.mjs');
 const {providerStartTime}=require('../../utils/providerTotals.mjs');
@@ -37,14 +38,24 @@ const SESSION_UPCOMING_REFRESH_MS = parseInt(process.env.TLL_SESSION_UPCOMING_RE
 const SESSION_ENDED_REFRESH_MS = parseInt(process.env.TLL_SESSION_ENDED_REFRESH_MS, 10) || 24 * 60 * 60 * 1000;
 const SESSION_BACKGROUND_PER_CYCLE = parseInt(process.env.TLL_SESSION_BACKGROUND_PER_CYCLE, 10) || 2;
 
-function isEndedMatch(match) {
-  const status = String(match?.status || '').toLowerCase();
-  return ['ended', 'completed', 'closed', 'verified', 'pending'].includes(status);
-}
+const { isEndedMatch, isLiveMatch } = require('../../shared/matchStatus');
 
-function isLiveMatch(match) {
-  const status = String(match?.status || '').toLowerCase();
-  return !isEndedMatch(match) && Boolean(match?.inPlay || status === 'live' || status === 'in-play');
+const ATTEMPT_RETENTION_MS = 24 * 60 * 60 * 1000;
+let _lastAttemptPruneAt = 0;
+/** Evicts per-match polling bookkeeping for matches no provider list mentions anymore. */
+function pruneAttemptMaps(lists, now = Date.now()) {
+  if (now - _lastAttemptPruneAt < 10 * 60 * 1000) return;
+  _lastAttemptPruneAt = now;
+  const active = new Set();
+  for (const list of lists) {
+    const items = Array.isArray(list) ? list : Array.isArray(list?.matches) ? list.matches : [];
+    for (const match of items) active.add(String(match?.matchId || match?.id || ''));
+  }
+  for (const map of [_sessionDetailLastAttempt, _upcomingSnapshotLastAttempt, _tennisSnapshotLastAttempt]) {
+    for (const [id, at] of map) if (!active.has(id) && now - at > ATTEMPT_RETENTION_MS) map.delete(id);
+  }
+  // Values here are kickoff times, not attempt times; drop only unlisted matches.
+  for (const id of _completePreMatchCaptures.keys()) if (!active.has(id)) _completePreMatchCaptures.delete(id);
 }
 
 function mergeLiveOdds(snapshot, liveOdds) {
@@ -139,6 +150,13 @@ async function runPollCycle() {
       adapter.getSessionMatches().catch(err => ({ error: err.message })),
       adapter.getTennisMatches().catch(err => ({ error: err.message })),
     ]);
+
+    // Record per-feed freshness before anything else can throw.
+    feedHealth.recordResult('cricket', cricket);
+    feedHealth.recordResult('toss', toss);
+    feedHealth.recordResult('session', sessionMatches);
+    feedHealth.recordResult('tennis', tennisMatches);
+    feedHealth.persist().catch(() => {});
 
     // Push raw list ingest jobs to Normalizer
     if (Array.isArray(cricket) && cricket.length) {
@@ -268,6 +286,10 @@ async function runPollCycle() {
 
     await tossSnapshotRefresher.refresh(toss,{subscribedIds:subscribedMatchIds,watchingFeed:watchingTossFeed});
     await refreshSessionDetails(sessionMatches, subscribedMatchIds, queue);
+    // Only prune with complete lists, otherwise a failed request would look like "no matches".
+    if ([cricket, toss, sessionMatches, tennisMatches].every(list => list && !list.error)) {
+      pruneAttemptMaps([cricket, toss, sessionMatches, tennisMatches]);
+    }
   } catch (err) {
     console.error('❌ [TLL-Worker] poll cycle error:', err.message);
   } finally {

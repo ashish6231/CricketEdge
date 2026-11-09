@@ -1,4 +1,4 @@
-const ended = match => ['ended','completed','closed','verified','pending'].includes(String(match?.status || '').toLowerCase());
+const { isEndedMatch: ended, isLiveStatus } = require('../shared/matchStatus');
 
 /** Refresh list cards independently of cricket IDs and open match detail rooms. */
 function createTossSnapshotRefresher({fetchSnapshot,ingestSnapshot,now=Date.now,activeRefreshMs=10000,
@@ -13,7 +13,7 @@ function createTossSnapshotRefresher({fetchSnapshot,ingestSnapshot,now=Date.now,
     let backgroundCount = 0;
     const due = [...targets].filter(([id,match]) => {
       if (!id || pending.has(id)) return false;
-      const interval = subscribed.has(id) || match.inPlay || ['live','in-play'].includes(String(match.status).toLowerCase())
+      const interval = subscribed.has(id) || match.inPlay || isLiveStatus(match.status)
         ? activeRefreshMs : ended(match) ? endedRefreshMs : upcomingRefreshMs;
       if (attempts.has(id) && now()-attempts.get(id) < interval) return false;
       if (ended(match) && !subscribed.has(id) && ++backgroundCount>2) return false;

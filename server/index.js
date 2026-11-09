@@ -154,8 +154,16 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/telegram', telegramRoutes);
 app.use('/api', cricketRoutes);
 
-app.get('/api/health', (req, res) => {
-  res.json({ success: true, status: 'OK' });
+app.get('/api/health', async (req, res) => {
+  // Always 200 so platform health checks only reflect the HTTP process; feed
+  // freshness is reported separately for the UI and monitoring.
+  let feeds = null;
+  try { feeds = await require('./services/feedHealth').getHealth(); } catch { /* report without feeds */ }
+  res.set('Cache-Control', 'no-store');
+  // Public endpoint: expose freshness only, never upstream error text/hostnames.
+  const publicFeeds = feeds && Object.fromEntries(Object.entries(feeds.feeds).map(([feed, item]) =>
+    [feed, { status: item.status, stale: item.stale, lastSuccessAt: item.lastSuccessAt, ageMs: item.ageMs }]));
+  res.json({ success: true, status: 'OK', dataStale: Boolean(feeds?.stale), feeds: publicFeeds || null, staleAfterMs: feeds?.staleAfterMs });
 });
 
 app.get('/api/user/subscription', verifyToken, (req, res) => {

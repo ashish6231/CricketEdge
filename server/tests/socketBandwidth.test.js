@@ -122,14 +122,15 @@ test('ingestion sees remote viewers while cluster demand replies contain only lo
   process.env.REDIS_URL='redis://unused-offline-test';
   try {
     const {io}=setup();
-    io.serverSideEmitWithAck=async()=>[{ids:['remote-match'],clients:2,feeds:['toss']}];
+    io.serverSideEmitWithAck=async()=>[{ids:['remote-match','remote-tennis'],tennisIds:['remote-tennis'],clients:2,feeds:['toss']}];
     await service.refreshClusterDemand();
-    assert.deepEqual(service.getActiveSubscribedMatchIds(),['remote-match']);
+    assert.deepEqual(service.getActiveSubscribedMatchIds(),['remote-match','remote-tennis']);
+    assert.deepEqual(service.getActiveSubscribedMatchIds('tennis'),['remote-tennis']);
     assert.equal(service.getConnectedClientsCount(),2);
     assert.equal(service.hasActiveFeedSubscribers('toss'),true);
     let reply;
     io['worker:demand'](value=>{reply=value});
-    assert.deepEqual(reply,{ids:[],clients:0,feeds:[]});
+    assert.deepEqual(reply,{ids:[],tennisIds:[],clients:0,feeds:[]});
   }finally{
     if(previous===undefined)delete process.env.REDIS_URL;else process.env.REDIS_URL=previous;
   }

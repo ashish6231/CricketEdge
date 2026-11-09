@@ -1,8 +1,4 @@
-function isEndedMatch(match) {
-  if (!match || !match.status) return false;
-  const s = String(match.status).trim().toLowerCase();
-  return ['ended', 'verified', 'pending', 'closed', 'completed', 'finished', 'result', 'cancelled', 'canceled', 'abandoned'].includes(s);
-}
+const { isEndedMatch } = require('../shared/matchStatus');
 
 /** Lists are public — guests see live/upcoming/ended. Detail is gated separately. */
 function filterMatchesForViewer(matches, _user) {
