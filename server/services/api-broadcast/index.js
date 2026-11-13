@@ -14,9 +14,10 @@ const { getSubClient } = require('../../shared/redis');
 
 let _isSubscribed = false;
 
-// Debounce timers to coalesce back-to-back scrape updates (e.g. 1 broadcast per 3.5s)
+// Coalesce list updates from the same poll cycle without adding several
+// seconds of avoidable delay before fresh values reach connected clients.
 const _debounceTimers = {};
-const DEBOUNCE_MS = 3500;
+const DEBOUNCE_MS = 500;
 
 function _debounced(key, fn, delay = DEBOUNCE_MS) {
   if (_debounceTimers[key]) clearTimeout(_debounceTimers[key]);
@@ -52,7 +53,7 @@ function init() {
     try {
       if (LIST_CHANNELS.includes(channel)) {
         await require('../normalizer/normalizer').syncCachedState();
-        // Any match list update → coalesced broadcast (max 1 per 1000ms)
+        // Any match list update → coalesced broadcast (max 1 per 500ms)
         _debounced('lists', () => socketService.broadcastAllMatches().catch(() => {}));
 
       } else if (channel === CREX_CHANNEL) {

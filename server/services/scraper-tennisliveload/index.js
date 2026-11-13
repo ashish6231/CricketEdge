@@ -2,7 +2,7 @@
  * services/scraper-tennisliveload/index.js
  * TennisLiveLoad Singleton Ingestion Worker
  *
- * Runs on a dedicated interval (~3000ms - 5000ms).
+ * Runs on a dedicated interval (10s by default, configurable with TLL_POLL_INTERVAL_MS).
  * Strictly guards execution with Redis singleton lock to prevent multi-device bans.
  * Emits raw ingestion payloads into the Normalizer Queue.
  */
@@ -32,7 +32,8 @@ const _upcomingSnapshotLastAttempt = new Map();
 const _tennisSnapshotLastAttempt = new Map();
 const UPCOMING_SNAPSHOT_REFRESH_MS = parseInt(process.env.TLL_UPCOMING_SNAPSHOT_REFRESH_MS, 10) || 3 * 60 * 1000;
 const LIVE_IDLE_SNAPSHOT_REFRESH_MS = Math.max(10000,parseInt(process.env.TLL_LIVE_IDLE_SNAPSHOT_REFRESH_MS,10)||60000);
-const SESSION_SUBSCRIBED_REFRESH_MS = parseInt(process.env.TLL_SESSION_SUBSCRIBED_REFRESH_MS, 10) || 30 * 1000;
+const LIVE_FEED_SNAPSHOT_REFRESH_MS = Math.max(10000,parseInt(process.env.TLL_LIVE_FEED_SNAPSHOT_REFRESH_MS,10)||15000);
+const SESSION_SUBSCRIBED_REFRESH_MS = parseInt(process.env.TLL_SESSION_SUBSCRIBED_REFRESH_MS, 10) || 10 * 1000;
 const SESSION_LIVE_IDLE_REFRESH_MS = parseInt(process.env.TLL_SESSION_LIVE_IDLE_REFRESH_MS, 10) || 5 * 60 * 1000;
 const SESSION_UPCOMING_REFRESH_MS = parseInt(process.env.TLL_SESSION_UPCOMING_REFRESH_MS, 10) || 30 * 60 * 1000;
 const SESSION_ENDED_REFRESH_MS = parseInt(process.env.TLL_SESSION_ENDED_REFRESH_MS, 10) || 24 * 60 * 60 * 1000;
@@ -176,6 +177,7 @@ async function runPollCycle() {
     let clientsCount = 0;
     let subscribedMatchIds = new Set();
     let subscribedTennisMatchIds = new Set();
+    let watchingCricketFeed = false;
     let watchingTossFeed = false;
     try {
       const socketService = require('../socketService');
@@ -185,6 +187,7 @@ async function runPollCycle() {
         subscribedTennisMatchIds = new Set(socketService.getActiveSubscribedMatchIds('tennis'));
       }
       clientsCount = socketService.getConnectedClientsCount?.() || 0;
+      watchingCricketFeed = socketService.hasActiveFeedSubscribers?.('cricket') || false;
       watchingTossFeed = socketService.hasActiveFeedSubscribers?.('toss') || false;
     } catch {}
 
@@ -212,7 +215,9 @@ async function runPollCycle() {
         const isLiveOrSub = m.inPlay || m.status === 'live' || m.status === 'in-play' || subscribedMatchIds.has(String(mid));
         const capturePending=_completePreMatchCaptures.get(String(mid))!==providerStartTime(m)
           && shouldCapturePreMatch(m,{includeStarted:true});
-        const policy=snapshotPollingPolicy(m,{subscribed:subscribedMatchIds.has(String(mid)),liveIdleMs:LIVE_IDLE_SNAPSHOT_REFRESH_MS,upcomingMs:UPCOMING_SNAPSHOT_REFRESH_MS,capturePending});
+        const policy=snapshotPollingPolicy(m,{subscribed:subscribedMatchIds.has(String(mid)),
+          liveIdleMs:watchingCricketFeed ? LIVE_FEED_SNAPSHOT_REFRESH_MS : LIVE_IDLE_SNAPSHOT_REFRESH_MS,
+          upcomingMs:UPCOMING_SNAPSHOT_REFRESH_MS,capturePending});
 
         const now = Date.now();
         const lastSnapshotFetch = _upcomingSnapshotLastAttempt.get(String(mid)) || 0;

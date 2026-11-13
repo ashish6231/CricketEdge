@@ -45,7 +45,9 @@ const _lastCrexLiveFps = new Map();
 const _lastBundleFps = new Map();
 const _lastBundleBroadcastAt = new Map();
 const _bundleInFlight = new Map();
-const MATCH_BUNDLE_BROADCAST_INTERVAL_MS = Math.max(5000, parseInt(process.env.MATCH_BUNDLE_BROADCAST_INTERVAL_MS, 10) || 60 * 1000);
+// Detail snapshots arrive on the worker's 10s cadence. A 60s send throttle
+// made open match pages appear frozen even when newer data was already cached.
+const MATCH_BUNDLE_BROADCAST_INTERVAL_MS = Math.max(5000, parseInt(process.env.MATCH_BUNDLE_BROADCAST_INTERVAL_MS, 10) || 5000);
 const FEED_BUILDERS = {
   cricket: () => matchPayloadService.getCricketMatchesPayload(),
   toss: () => matchPayloadService.getTossMatchesPayload(),
