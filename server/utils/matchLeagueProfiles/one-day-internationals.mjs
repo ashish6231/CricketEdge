@@ -1,7 +1,8 @@
-// International matches use one rule: higher pre-match provider total.
-import { createInternationalProviderTotalProfile } from '../providerTotalMatchPredictor.mjs';
+// ODI matches select the team with the lower frozen pre-match provider total.
+import { createProviderTotalMatchProfile } from '../providerTotalMatchPredictor.mjs';
 
-export default createInternationalProviderTotalProfile(
+export default createProviderTotalMatchProfile(
   'One Day Internationals',
-  'match-one-day-internationals-independent-v1',
+  'match-one-day-internationals-independent-lower-v2',
+  { selection: 'lower', scope: 'international' },
 );

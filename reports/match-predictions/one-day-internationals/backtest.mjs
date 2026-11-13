@@ -110,7 +110,7 @@ export function runOdiBacktest(dataset) {
       verdict: rows.length > 0 && correct === rows.length ? 'PASS' : 'FAIL',
     },
     indiaWestIndiesAudit: indiaWestIndies || null,
-    conclusion: 'The active ODI rule selects the higher frozen pre-match provider total. Cross-market evidence is retained as a separate historical benchmark.',
+    conclusion: 'The active ODI rule selects the lower frozen pre-match provider total. Cross-market evidence is retained as a separate historical benchmark.',
     limitations: [
       'Five verified matches are a small retrospective sample and do not guarantee the next ODI result.',
       'No in-play trades, final odds, match result, or post-match field is passed into the predictor.',

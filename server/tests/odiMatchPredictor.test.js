@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-test('current ODI rule follows the higher frozen provider total on every verified retained ODI match', async () => {
+test('current ODI rule follows the lower frozen provider total on every verified retained ODI match', async () => {
   const dataset = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/match_dataset.json'), 'utf8'));
   const { runOdiBacktest } = await import('../../reports/match-predictions/one-day-internationals/backtest.mjs');
   const report = runOdiBacktest(dataset);
@@ -12,26 +12,26 @@ test('current ODI rule follows the higher frozen provider total on every verifie
   assert.equal(report.summary.currentRuleCorrect + report.summary.currentRuleWrong, report.summary.verifiedMatches);
   for (const row of report.rows) {
     const record = dataset.records.find(record => String(record.matchId) === row.matchId);
-    const totals = record.snapshot.preMatchTotalBets;
-    assert.equal(row.currentPrediction, record.snapshot.teamNames[totals.team1 > totals.team2 ? 0 : 1]);
-    assert.equal(row.ruleFamily, 'international-higher-prematch-provider-total');
+    const totals = row.providerTotalEvidence;
+    assert.equal(row.currentPrediction, record.snapshot.teamNames[totals.team1 < totals.team2 ? 0 : 1]);
+    assert.equal(row.ruleFamily, 'international-lower-prematch-provider-total');
   }
   assert.ok(report.rows.every(row => row.inputTiming === 'provider-frozen-pre-match-total'));
 });
 
-test('India v West Indies 3rd ODI follows West Indies frozen market pressure', async () => {
+test('India v West Indies 3rd ODI follows the lower frozen provider total', async () => {
   const dataset = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/match_dataset.json'), 'utf8'));
   const { runOdiBacktest } = await import('../../reports/match-predictions/one-day-internationals/backtest.mjs');
   const report = runOdiBacktest(dataset);
   const row = report.indiaWestIndiesAudit;
 
   assert.equal(row.savedPrediction, 'India');
-  assert.equal(row.currentPrediction, 'West Indies');
+  assert.equal(row.currentPrediction, 'India');
   assert.equal(row.actualWinner, 'West Indies');
-  assert.equal(row.verdict, 'Correct');
+  assert.equal(row.verdict, 'Wrong');
   assert.equal(row.evidence.prediction, 'West Indies');
   assert.equal(row.evidence.bookmakerPressureTeam, 'West Indies');
-  assert.equal(row.evidence.signalsSupportingCurrentPick, '3/3');
+  assert.equal(row.evidence.signalsSupportingCurrentPick, '0/3');
   assert.deepEqual(row.evidence.correctedSupportPct, [47.5, 52.5]);
   assert.deepEqual(row.evidence.preMatchActivityPct, [13.3, 86.7]);
 });

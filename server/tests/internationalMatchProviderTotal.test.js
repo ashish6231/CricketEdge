@@ -39,13 +39,13 @@ test('explicit frozen totals work without activity; provider period ledger takes
   assert.equal(predictMatchWinner({...input,teamNames:['India',' India ']}),null);
 });
 
-test('international aliases use higher totals for men and lower totals for women', () => {
+test('ODI and womens international aliases use lower totals; other mens aliases use higher totals', () => {
   for (const name of [...categories,'T20I','International T20 Matches','ODI','WODI','WT20I',
     'Women’s Test Matches','ICC Cricket World Cup League 2',
     "ICC Men's T20 WC Asia Qualifier",'ICC Womens T20 World Cup 2026']) {
-    const women = /women|^wodi$|^wt20i$/i.test(name);
-    assert.equal(predictMatchWinner({...input,competitionName:name}).winner,women ? 'India' : 'West Indies');
-    assert.equal(getLeagueMatchAlgorithm(name).profile.strategy,`${women ? 'lower' : 'higher'}-prematch-provider-total`);
+    const lower = /women|^odi$|^one day internationals$|^wodi$|^wt20i$/i.test(name);
+    assert.equal(predictMatchWinner({...input,competitionName:name}).winner,lower ? 'India' : 'West Indies');
+    assert.equal(getLeagueMatchAlgorithm(name).profile.strategy,`${lower ? 'lower' : 'higher'}-prematch-provider-total`);
   }
   for (const name of ["Women's T20 Spring Challenge",'World Championship of Legends T20','Caribbean Premier League','One Day Matches']) {
     assert.equal(getLeagueMatchAlgorithm(name).profile.strategy,`${/women/i.test(name) ? 'lower' : 'higher'}-prematch-provider-total`);

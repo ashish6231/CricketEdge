@@ -6,13 +6,13 @@ import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
 import { isWorldLegendsLeague, WORLD_LEGENDS_LEAGUE } from './worldLegendsActivity.mjs';
 import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createProviderTotalMatchProfile, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
 
-export const PREDICTOR_VERSION = 'match-v12-canonical-prematch-provider-total';
+export const PREDICTOR_VERSION = 'match-v13-odi-lower-provider-total';
 export const DEFAULT_MATCH_MODE = 'rules';
 const normalize = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league),profile]));
 
 // Separate league entries and parameter objects permit independent changes.
-// Every profile selects from frozen provider totals: higher for men, lower for women.
+// Rule direction comes from each league's profile and may vary by competition.
 export const LEAGUE_MATCH_ALGORITHMS = Object.freeze([
   EMIRATES_D10_ALGORITHM,
   WNCL_ALGORITHM,
