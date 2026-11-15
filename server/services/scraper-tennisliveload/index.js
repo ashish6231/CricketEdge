@@ -21,7 +21,11 @@ const preMatchCaptureFeed = require('../cachedMarketFeed').createCachedMarketFee
 const adapter = new TennisLiveLoadAdapter();
 const { createTossSnapshotRefresher } = require('../tossSnapshotRefresher');
 const tossSnapshotRefresher = createTossSnapshotRefresher({
-  fetchSnapshot: id => adapter.getTossSnapshot(id),
+  fetchSnapshot: async id => {
+    const snapshot = await adapter.getTossSnapshot(id);
+    if (snapshot && !snapshot.error) feedHealth.recordResult('toss', snapshot);
+    return snapshot;
+  },
   ingestSnapshot: (matchId,data) => getIngestQueue().add('ingest',{source:'tll',type:'toss:snapshot',matchId,data}),
 });
 let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 10000;
@@ -233,6 +237,7 @@ async function runPollCycle() {
           ]);
           const snapshot = mergeLiveOdds(rawSnapshot, liveOdds);
           if (snapshot && !snapshot.error) {
+            feedHealth.recordResult('cricket', snapshot);
             const capture=capturePreMatchExposure({...snapshot,startTime:providerStartTime(snapshot)??providerStartTime(m)},null,{now:Date.now()});
             await queue.add('ingest', {
               source: 'tll',
@@ -276,6 +281,7 @@ async function runPollCycle() {
         try {
           const snapshot = await adapter.getTennisSnapshot(mid);
           if (snapshot && !snapshot.error) {
+            feedHealth.recordResult('tennis', snapshot);
             await queue.add('ingest', {
               source: 'tll',
               type: 'tennis:snapshot',
@@ -291,6 +297,8 @@ async function runPollCycle() {
 
     await tossSnapshotRefresher.refresh(toss,{subscribedIds:subscribedMatchIds,watchingFeed:watchingTossFeed});
     await refreshSessionDetails(sessionMatches, subscribedMatchIds, queue);
+    // Include detail snapshot polls in feed freshness, not just match-list calls.
+    feedHealth.persist().catch(() => {});
     // Only prune with complete lists, otherwise a failed request would look like "no matches".
     if ([cricket, toss, sessionMatches, tennisMatches].every(list => list && !list.error)) {
       pruneAttemptMaps([cricket, toss, sessionMatches, tennisMatches]);
@@ -444,6 +452,7 @@ function triggerImmediateMatchFetch(matchId, options = {}) {
     ]).then(([rawSnapshot, liveOdds]) => {
       const snapshot = mergeLiveOdds(rawSnapshot, liveOdds);
       if (snapshot && !snapshot.error) {
+        feedHealth.recordResult('cricket', snapshot);
         queue.add('ingest', {
           source: 'tll',
           type: 'cricket:snapshot',
@@ -455,6 +464,7 @@ function triggerImmediateMatchFetch(matchId, options = {}) {
 
     adapter.getTossSnapshot(mid).then(tossSnap => {
       if (tossSnap && !tossSnap.error) {
+        feedHealth.recordResult('toss', tossSnap);
         queue.add('ingest', {
           source: 'tll',
           type: 'toss:snapshot',
@@ -464,6 +474,7 @@ function triggerImmediateMatchFetch(matchId, options = {}) {
       }
     }).catch(() => {}),
   ]).finally(() => {
+    feedHealth.persist().catch(() => {});
     setTimeout(() => _pendingDirectFetches.delete(mid), 3000);
   });
 

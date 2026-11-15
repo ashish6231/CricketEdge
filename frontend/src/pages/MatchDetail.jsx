@@ -13,7 +13,7 @@ import LoginRequiredGate from '../components/LoginRequiredGate'
 import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
 import { requiresPaidMatchAccess, isSubscriptionRequiredError } from '../utils/matchAccess'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
-import { getSimpleBookiePl, getBookiePlFromPreMatchTrades, splitMatchOutcomes, finiteNumber, tradeTimestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
+import { getSimpleBookiePl, splitMatchOutcomes, finiteNumber, tradeTimestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
@@ -771,43 +771,25 @@ export default function MatchDetail({ sport }) {
   const liveProviderTotals = getLiveProviderTotals(snapshot) || [null, null]
   const selectionKeys = [t1,t2].map(name => `team${(snapshot.teamNames || []).indexOf(name) + 1}`)
   const periodValues = field => selectionKeys.map(key => field?.[key])
-  const preMatchTotalBetValues = periodValues(snapshot.preMatchTotalBets)
+  // Keep every pre-match metric on the same raw TennisLiveLoad snapshot
+  // fields. Do not substitute live totals, recorded trades, or prediction
+  // captures into the market-data table.
+  const tllPreMatchValues = {
+    volume: periodValues(snapshot.preMatchVolume),
+    pnl: periodValues(snapshot.preMatchPnl).map(value => finiteNumber(value)),
+    totalBets: periodValues(snapshot.preMatchTotalBets),
+  }
   const threeMinProviderTotals = selectionKeys.map(key => finiteNumber(snapshot.threeMinTotalBets?.[key]))
-  const periodProviderTotals = metricsPeriod === 'pre' ? preMatchTotalBetValues
+  const periodProviderTotals = metricsPeriod === 'pre' ? tllPreMatchValues.totalBets
     : metricsPeriod === '3min' ? threeMinProviderTotals : liveProviderTotals
-  // TLL's pre-match card volumes come from advancedMetricsV2. Its deepMetrics
-  // simplePL is the current/post-match P&L, so pre-match P&L comes from the
-  // frozen pre-match ledger and its own P/L formula instead.
-  const preMatchProviderMetrics = selectionKeys.map((key, index) => {
-    const metrics = snapshot.advancedMetricsV2?.[key] || snapshot.advancedMetrics?.[key] || {}
-    return {
-      back: finiteNumber(metrics.back),
-      lay: finiteNumber(metrics.lay),
-      total: finiteNumber(metrics.totalVolume),
-    }
-  })
-  const periodVolumeValues = metricsPeriod === 'pre'
-    ? preMatchProviderMetrics.map(metric => ({
-      back: metric.back,
-      lay: metric.lay,
-      total: metric.total,
-    }))
-    : periodValues(period.vol)
-  const expectedPreMatchVolumes = Object.fromEntries((snapshot.teamNames || []).map((name, index) => {
-    const key = `team${index + 1}`
-    const metrics = snapshot.advancedMetricsV2?.[key] || snapshot.advancedMetrics?.[key] || {}
-    return [name, { back: finiteNumber(metrics.back), lay: finiteNumber(metrics.lay) }]
-  }))
-  const preMatchOddsResult = metricsPeriod === 'pre'
-    ? getBookiePlFromPreMatchTrades(preMatchSnapshot || snapshot, t1, t2, drawName, {
-      startTime: matchStartTime, expectedVolumes: expectedPreMatchVolumes,
-    })
-    : null
+  const predictionProviderTotals = matchStartPred?.providerTotalEvidence
+    ? [matchStartPred.providerTotalEvidence.team1, matchStartPred.providerTotalEvidence.team2]
+    : preMatchFields?.providerTotals || [null, null]
+  // Display the period fields returned by TennisLiveLoad as-is. The local
+  // matched-trade ledger can be partial and must not replace provider totals/P&L.
+  const periodVolumeValues = metricsPeriod === 'pre' ? tllPreMatchValues.volume : periodValues(period.vol)
   const periodPnlValues = metricsPeriod === 'pre'
-    ? preMatchOddsResult?.verified
-      ? [preMatchOddsResult.byName?.[t1] ?? null, preMatchOddsResult.byName?.[t2] ?? null]
-      : [null, null]
-    : periodValues(period.pnl)
+    ? tllPreMatchValues.pnl : periodValues(period.pnl).map(value => finiteNumber(value))
   const flowRows = [
     { label: 'Bookie P/L', values: [pl1,pl2], format: 'signed', missingLabel: 'Price history unavailable' },
     { label: 'Back stake', values: [am1.back, am2.back], format: 'currency', tone: 'back' },
@@ -831,9 +813,13 @@ export default function MatchDetail({ sport }) {
         return Number.isFinite(ratio) ? ratio : null
       }), format: 'ratio', missingLabel: 'Unavailable' },
     ] : []),
-    { label: metricsPeriod === 'pre' ? 'P/L (matched odds formula)' : 'P/L', values: periodPnlValues, format: 'signed-exact', missingLabel: metricsPeriod === 'pre' ? preMatchOddsResult?.reason || 'Complete pre-match odds unavailable' : 'Price history unavailable' },
+    { label: 'P/L', values: periodPnlValues, format: 'signed-exact', missingLabel: 'Provider value unavailable' },
     { label: 'Total Bet', values: periodProviderTotals,
       format: 'total-bet', emphasis: true, missingLabel: metricsPeriod === 'pre' ? 'Not captured' : 'Unavailable' },
+    ...(metricsPeriod === 'pre' ? [{
+      label: 'Provider total (prediction input)', values: predictionProviderTotals,
+      format: 'currency', emphasis: true, missingLabel: 'Not captured',
+    }] : []),
     ...(metricsPeriod!=='pre' ? [
       { label: 'Back volume', values: periodValues(period.vol).map(value=>value?.back), format: 'currency', tone: 'back' },
       { label: 'Lay volume', values: periodValues(period.vol).map(value=>value?.lay), format: 'currency', tone: 'lay' },
