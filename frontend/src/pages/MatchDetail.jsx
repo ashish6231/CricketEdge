@@ -1,8 +1,7 @@
 import TeamCard from '../components/SelectionVolumeCard'
-import { getPeriodExposure } from '../utils/periodExposure'
 import { getPreMatchPeriod } from '../utils/preMatchPeriod'
 import { capturePreMatchExposure } from '../../../server/utils/preMatchExposure.mjs'
-import { processTeamData, getPreMatchTradeActivity, getLiveProviderTotals, getFrozenPreMatchProviderTotals, canCapturePreMatchProviderTotals, getMarketBetActivity } from '../utils/selectionVolume'
+import { processTeamData, getLiveProviderTotals, getFrozenPreMatchProviderTotals, canCapturePreMatchProviderTotals } from '../utils/selectionVolume'
 import { TossSnapshotDetails } from './TossDetail'
 
 import { useEffect, useState, useMemo, useRef } from 'react'
@@ -14,11 +13,12 @@ import LoginRequiredGate from '../components/LoginRequiredGate'
 import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
 import { requiresPaidMatchAccess, isSubscriptionRequiredError } from '../utils/matchAccess'
 import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
-import { getSimpleBookiePl, splitMatchOutcomes, finiteNumber, tradeTimestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
+import { getSimpleBookiePl, getBookiePlFromPreMatchTrades, splitMatchOutcomes, finiteNumber, tradeTimestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import MatchPredictionCard, { MatchReversalNotice } from '../components/MatchPredictionCard'
+import TotalBetLoadBars from '../components/TotalBetLoadBars'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
 import { getCricketMatchBundle, getCricketOdds, getTennisSnapshot } from '../api'
 import { isCompleteMatchBundle } from '../utils/matchBundle'
@@ -57,8 +57,7 @@ const formatOdds = (val) => {
 const formatTotalBets = (val) => {
   const number = finiteNumber(val)
   if (number == null) return '—'
-  if (Math.abs(number) >= 1000) return formatVolStr(number)
-  return number.toLocaleString('en-IN', { maximumFractionDigits: 2 })
+  return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 /** Match scheduled start — not live clock / serverTime */
@@ -621,7 +620,6 @@ export default function MatchDetail({ sport }) {
 
   const matchSchedule = formatMatchSchedule(matchStartTime)
   const captureState=preMatchSnapshot.preMatchCapture
-  const preMatchActivity = getPreMatchTradeActivity(preMatchSnapshot, { startTime: matchStartTime })
   const { t1, t2, drawName } = splitMatchOutcomes(snapshot.teamNames)
   const hasDraw = !!drawName
   const t1Trades = (snapshot.teams?.[t1] || {}).trades || []
@@ -664,7 +662,7 @@ export default function MatchDetail({ sport }) {
   const am1 = getSelectionStakes(snapshot, t1)
   const am2 = getSelectionStakes(snapshot, t2)
   const formatStakeVolume=value=>value==null?'Unavailable':`€${fmt(value)}`
-  const exactStakeVolume=value=>value==null?'Unavailable':`€${value.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}`
+  const exactStakeVolume=value=>value==null?'Unavailable':`€${value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
 
   const { pl1, pl2, plDraw } = getSimpleBookiePl(snapshot, t1, t2, drawName)
   const matchStartPred = lockedStartPred || liveStartPred
@@ -689,13 +687,12 @@ export default function MatchDetail({ sport }) {
   const t2ValidTrades = validMarketTrades(t2Trades)
   const drawValidTrades = hasDraw ? validMarketTrades(drawTrades) : []
 
-  // The provider exposes two different metrics: this total-bet/activity ledger,
-  // and an exposure-based provider total shown separately in Period data.
-  const marketBetActivity = getMarketBetActivity(snapshot, {
-    live: effectiveInPlay,
-    frozenPreMatchBets: frozenPreMatchFields?.bets,
-  })
-  const [marketBets1, marketBets2] = marketBetActivity.values
+  // TennisLiveLoad's Total Bet cards are deepMetrics.totals, not the separate
+  // pre-match/in-play activity ledger.
+  const marketProviderTotals = getLiveProviderTotals(snapshot) || [null, null]
+  const marketTotalBets = marketProviderTotals.every(value => value != null)
+    ? marketProviderTotals.reduce((sum, value) => sum + value, 0)
+    : null
 
   // Second bar is money matched per selection. The declared metric is a fallback
   // for older snapshots which do not contain the complete trade array.
@@ -726,55 +723,10 @@ export default function MatchDetail({ sport }) {
     ? (aRatio < bRatio ? t1 : t2)
     : null
 
-  // Activity and volume keep their provider scope; P/L shares the overview formula.
-  const ib = snapshot.inPlayTotalBets || {}
-  const pb = preMatchFields.bets || {}
-  const iv = snapshot.inPlayVolume || {}
-  const pv = preMatchFields.volume || {}
-  const tmb = snapshot.threeMinTotalBets || {}
-  const tmv = snapshot.threeMinVolume || {}
-
-  const get3mMetrics = (teamName) => {
-    const trades = snapshot?.teams?.[teamName]?.trades
-    if (!Array.isArray(trades)) return { back: null, lay: null, total: null }
-    if (!trades.length) return { back: 0, lay: 0, total: 0 }
-    const now = Date.now()
-    const cutoff = now - 3 * 60 * 1000
-    let back = 0
-    let lay = 0
-    let hasTimestamp = false
-    for (const trade of trades) {
-      const tradeTime = tradeTimestamp(trade)
-      if (tradeTime == null) continue
-      hasTimestamp = true
-      if (tradeTime < cutoff || tradeTime > now) continue
-      const size = parseFloat(trade.size) || 0
-      const side = tradeSide(trade)
-      if (side === 'back') back += size
-      else if (side === 'lay') lay += size
-    }
-    if (!hasTimestamp) return { back: null, lay: null, total: null }
-    return { back, lay, total: back + lay }
-  }
-
-  const finalTmv = {
-    team1: (tmv.team1 && (tmv.team1.total > 0 || tmv.team1.back > 0 || tmv.team1.lay > 0)) ? tmv.team1 : get3mMetrics(t1),
-    team2: (tmv.team2 && (tmv.team2.total > 0 || tmv.team2.back > 0 || tmv.team2.lay > 0)) ? tmv.team2 : get3mMetrics(t2),
-  }
-  const get3mBetCount = (teamName) => {
-    const trades = snapshot.teams?.[teamName]?.trades
-    if (!Array.isArray(trades)) return null
-    if (!trades.length) return 0
-    const now = Date.now()
-    const cutoff = now - 180000
-    const validTimes = trades.map(tradeTimestamp).filter(time => time != null)
-    if (!validTimes.length) return null
-    return validTimes.filter(time => time >= cutoff && time <= now).length
-  }
-  const finalTmb = {
-    team1: tmb.team1 ?? get3mBetCount(t1),
-    team2: tmb.team2 ?? get3mBetCount(t2),
-  }
+  // Keep period cards on TennisLiveLoad's raw snapshot fields. Captured trade
+  // ledgers can be incomplete and produce different volume/P&L values.
+  const finalTmv = snapshot.threeMinVolume || {}
+  const finalTmb = snapshot.threeMinTotalBets || {}
 
   const exp = snapshot.bookmakerExposure || {}
   const exp1 = exp.team1 || {}
@@ -806,31 +758,56 @@ export default function MatchDetail({ sport }) {
 
 
   const marketSelections = [
-    { name: t1, odds: t1Odds, pl: pl1, money: marketMoney1, moneyPct: marketMoneyPct1, bets: marketBets1, back:am1.back,lay:am1.lay },
-    { name: t2, odds: t2Odds, pl: pl2, money: marketMoney2, moneyPct: marketMoneyPct2, bets: marketBets2, back:am2.back,lay:am2.lay },
+    { name: t1, odds: t1Odds, pl: pl1, money: marketMoney1, moneyPct: marketMoneyPct1, bets: marketProviderTotals[0], back:am1.back,lay:am1.lay },
+    { name: t2, odds: t2Odds, pl: pl2, money: marketMoney2, moneyPct: marketMoneyPct2, bets: marketProviderTotals[1], back:am2.back,lay:am2.lay },
     ...(hasDraw ? [{ name: drawName, odds: drawOdds, pl: plDraw, money: marketMoneyDraw, moneyPct: marketMoneyPctDraw, bets: null,back:drawMetrics?.back,lay:drawMetrics?.lay }] : []),
   ]
-  const scopedPnl=key=>{
-    const result=getSimpleBookiePl(key==='pre'?preMatchSnapshot:snapshot,t1,t2,drawName,{period:key,startTime:matchStartTime})
-    return Object.fromEntries((snapshot.teamNames||[]).map((name,index)=>[`team${index+1}`,result.byName[name] ?? null]))
-  }
   const periods = [
-    { key: 'pre', label: 'Pre-match', pnl: scopedPnl('pre'), bets: pb, vol: pv },
-    { key: 'live', label: 'In-play', pnl: scopedPnl('live'), bets: ib, vol: iv },
-    { key: '3min', label: 'Last 3 min', pnl: scopedPnl('3min'), bets: finalTmb, vol: finalTmv },
+    { key: 'pre', label: 'Pre-match', pnl: snapshot.preMatchPnl || {}, bets: snapshot.preMatchTotalBets || {}, vol: snapshot.preMatchVolume || {} },
+    { key: 'live', label: 'In-play', pnl: snapshot.inPlayPnl || {}, bets: snapshot.inPlayTotalBets || {}, vol: snapshot.inPlayVolume || {} },
+    { key: '3min', label: 'Last 3 min', pnl: snapshot.threeMinPnl || {}, bets: finalTmb, vol: finalTmv },
   ]
   const period = periods.find(item => item.key === metricsPeriod) || periods[0]
-  const periodExposure = getPeriodExposure(period.key==='pre'?preMatchSnapshot:snapshot,t1,t2,{
-    period:period.key,startTime:matchStartTime,
-    volumes:period.key==='3min' ? snapshot.threeMinVolume
-      : period.key==='pre' && preMatchFields.usesRecorded ? snapshot.preMatchVolume : period.vol,
-  })
   const liveProviderTotals = getLiveProviderTotals(snapshot) || [null, null]
-  const preMatchProviderTotals = preMatchFields.providerTotals
   const selectionKeys = [t1,t2].map(name => `team${(snapshot.teamNames || []).indexOf(name) + 1}`)
   const periodValues = field => selectionKeys.map(key => field?.[key])
-  const recordedVolume = side => metricsPeriod === 'pre' && selectionKeys.some(key => preMatchFields.sources.volume[key]?.[side] === 'recorded')
-  const recordedExposure = [periodExposure.team1,periodExposure.team2]
+  const preMatchTotalBetValues = periodValues(snapshot.preMatchTotalBets)
+  const threeMinProviderTotals = selectionKeys.map(key => finiteNumber(snapshot.threeMinTotalBets?.[key]))
+  const periodProviderTotals = metricsPeriod === 'pre' ? preMatchTotalBetValues
+    : metricsPeriod === '3min' ? threeMinProviderTotals : liveProviderTotals
+  // TLL's pre-match card volumes come from advancedMetricsV2. Its deepMetrics
+  // simplePL is the current/post-match P&L, so pre-match P&L comes from the
+  // frozen pre-match ledger and its own P/L formula instead.
+  const preMatchProviderMetrics = selectionKeys.map((key, index) => {
+    const metrics = snapshot.advancedMetricsV2?.[key] || snapshot.advancedMetrics?.[key] || {}
+    return {
+      back: finiteNumber(metrics.back),
+      lay: finiteNumber(metrics.lay),
+      total: finiteNumber(metrics.totalVolume),
+    }
+  })
+  const periodVolumeValues = metricsPeriod === 'pre'
+    ? preMatchProviderMetrics.map(metric => ({
+      back: metric.back,
+      lay: metric.lay,
+      total: metric.total,
+    }))
+    : periodValues(period.vol)
+  const expectedPreMatchVolumes = Object.fromEntries((snapshot.teamNames || []).map((name, index) => {
+    const key = `team${index + 1}`
+    const metrics = snapshot.advancedMetricsV2?.[key] || snapshot.advancedMetrics?.[key] || {}
+    return [name, { back: finiteNumber(metrics.back), lay: finiteNumber(metrics.lay) }]
+  }))
+  const preMatchOddsResult = metricsPeriod === 'pre'
+    ? getBookiePlFromPreMatchTrades(preMatchSnapshot || snapshot, t1, t2, drawName, {
+      startTime: matchStartTime, expectedVolumes: expectedPreMatchVolumes,
+    })
+    : null
+  const periodPnlValues = metricsPeriod === 'pre'
+    ? preMatchOddsResult?.verified
+      ? [preMatchOddsResult.byName?.[t1] ?? null, preMatchOddsResult.byName?.[t2] ?? null]
+      : [null, null]
+    : periodValues(period.pnl)
   const flowRows = [
     { label: 'Bookie P/L', values: [pl1,pl2], format: 'signed', missingLabel: 'Price history unavailable' },
     { label: 'Back stake', values: [am1.back, am2.back], format: 'currency', tone: 'back' },
@@ -840,43 +817,36 @@ export default function MatchDetail({ sport }) {
     { label: 'Net exposure', values: [exp1.netExposure, exp2.netExposure], format: 'signed' },
     { label: 'Back risk', values: [exp1.backExposure, exp2.backExposure], format: 'currency', tone: 'back' },
     { label: 'Lay risk', values: [exp1.layExposure, exp2.layExposure], format: 'currency', tone: 'lay' },
-    { label: 'Provider total', values: liveProviderTotals, format: 'currency', emphasis: true, missingLabel: 'Unavailable' },
+    { label: 'Total Bet', values: liveProviderTotals, format: 'total-bet', emphasis: true, missingLabel: 'Unavailable' },
     ...(ns.teamA && sent.teamA ? [{ label: 'Market sentiment', values: [ns.percentageA, ns.percentageB], format: 'percent' }] : []),
   ]
   const periodRows = [
     ...(metricsPeriod==='pre' ? [
-      { label: 'Total Back Volume (all odds)', values: periodValues(period.vol).map(value=>value?.back), format: 'stake-total', tone: 'back', missingLabel: 'Not captured' },
-      { label: 'Total Lay Volume (all odds)', values: periodValues(period.vol).map(value=>value?.lay), format: 'stake-total', tone: 'lay', missingLabel: 'Not captured' },
-      { label: 'Back / Lay Volume Ratio', values: periodValues(period.vol).map(value=>{
+      { label: 'Total Back Volume (all odds)', values: periodVolumeValues.map(value=>value?.back), format: 'stake-total', tone: 'back', missingLabel: 'Provider value unavailable' },
+      { label: 'Total Lay Volume (all odds)', values: periodVolumeValues.map(value=>value?.lay), format: 'stake-total', tone: 'lay', missingLabel: 'Provider value unavailable' },
+      { label: 'Total Vol', values: periodVolumeValues.map(value=>finiteNumber(value?.total)), format: 'currency-exact', missingLabel: 'Provider value unavailable' },
+      { label: 'Back / Lay Volume Ratio', values: periodVolumeValues.map(value=>{
         const back=finiteNumber(value?.back),lay=finiteNumber(value?.lay)
         const ratio=back>0 && lay>0 ? back/lay : null
         return Number.isFinite(ratio) ? ratio : null
       }), format: 'ratio', missingLabel: 'Unavailable' },
     ] : []),
-    { label: 'Bookie P/L', values: periodValues(period.pnl), format: 'signed', missingLabel: 'Price history unavailable' },
-    { label: 'Reported activity', values: periodValues(period.bets), format: 'number', missingLabel: 'Not captured' },
-    ...(metricsPeriod !== '3min' ? [{ label: 'Provider total', values: metricsPeriod === 'pre' ? preMatchProviderTotals : liveProviderTotals,
-      format: 'currency', emphasis: true, missingLabel: metricsPeriod === 'pre' ? 'Not captured' : 'Unavailable' }] : []),
-    ...(metricsPeriod === 'pre' ? [{
-      label: 'Recorded trades',
-      values: [t1, t2].map(name => preMatchActivity.available && Number.isInteger(preMatchActivity.counts[name]) ? {
-        count: preMatchActivity.counts[name],
-        pct: preMatchActivity.total > 0 ? preMatchActivity.counts[name] / preMatchActivity.total * 100 : null,
-      } : null),
-      format: 'activity',
-      missingLabel: 'Not captured',
-    }] : []),
+    { label: metricsPeriod === 'pre' ? 'P/L (matched odds formula)' : 'P/L', values: periodPnlValues, format: 'signed-exact', missingLabel: metricsPeriod === 'pre' ? preMatchOddsResult?.reason || 'Complete pre-match odds unavailable' : 'Price history unavailable' },
+    { label: 'Total Bet', values: periodProviderTotals,
+      format: 'total-bet', emphasis: true, missingLabel: metricsPeriod === 'pre' ? 'Not captured' : 'Unavailable' },
     ...(metricsPeriod!=='pre' ? [
-      { label: recordedVolume('back')?'Back volume (recorded trades)':'Back volume', values: periodValues(period.vol).map(value=>value?.back), format: 'currency', tone: 'back' },
-      { label: recordedVolume('lay')?'Lay volume (recorded trades)':'Lay volume', values: periodValues(period.vol).map(value=>value?.lay), format: 'currency', tone: 'lay' },
+      { label: 'Back volume', values: periodValues(period.vol).map(value=>value?.back), format: 'currency', tone: 'back' },
+      { label: 'Lay volume', values: periodValues(period.vol).map(value=>value?.lay), format: 'currency', tone: 'lay' },
+      { label: 'Total Vol', values: periodValues(period.vol).map(value=>finiteNumber(value?.total)), format: 'currency-exact', missingLabel: 'Not captured' },
     ] : []),
-    { label: metricsPeriod==='pre' && captureState?.exposureSource==='provider-period-ledger'?'Back exposure':'Recorded back exposure', values: recordedExposure.map(team=>team.backExposure), format: 'currency', tone: 'back', missingLabel: 'History not captured' },
-    { label: metricsPeriod==='pre' && captureState?.exposureSource==='provider-period-ledger'?'Lay exposure':'Recorded lay exposure', values: recordedExposure.map(team=>team.layExposure), format: 'currency', tone: 'lay', missingLabel: 'History not captured' },
-    { label: metricsPeriod==='pre' && captureState?.exposureSource==='provider-period-ledger'?'Net exposure':'Recorded net exposure', values: recordedExposure.map(team=>team.netExposure), format: 'signed', missingLabel: metricsPeriod==='pre'?'Waiting for all four exposures':'History not captured' },
   ]
   const insightRows = metricsPeriod === 'exposure' ? flowRows : periodRows
   const providerEvidence = matchStartPred?.providerTotalEvidence
   const activityEvidence = matchStartPred?.reportedActivityEvidence
+  const totalBetEvidence = {
+    team1: snapshot.preMatchTotalBets?.[`team${(snapshot.teamNames || []).indexOf(t1) + 1}`] ?? null,
+    team2: snapshot.preMatchTotalBets?.[`team${(snapshot.teamNames || []).indexOf(t2) + 1}`] ?? null,
+  }
   const evidence = matchStartPred?.marketEvidence || (activityEvidence || providerEvidence ? {
     activity: activityEvidence, provider: providerEvidence, agreeingSignals: 1, signalCount: 1,
   } : null)
@@ -884,8 +854,11 @@ export default function MatchDetail({ sport }) {
   const formatInsightValue = (row, value) => {
     if (value == null && row.missingLabel) return <small>{row.missingLabel}</small>
     if (row.format === 'activity') return value == null ? '—' : <>{value.count.toLocaleString('en-IN')}{value.pct != null && <> <small>{`(${percentage(value.pct)})`}</small></>}</>
+    if (row.format === 'total-bet') return formatTotalBets(value)
     if (row.format === 'signed') return fmtRs(value)
+    if (row.format === 'signed-exact') return value == null ? '—' : `${value < 0 ? '−' : '+'}€${Math.abs(Number(value)).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
     if (row.format === 'stake-total') return exactStakeVolume(value)
+    if (row.format === 'currency-exact') return value == null ? '—' : `€${Number(value).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
     if (row.format === 'currency') return value == null ? '—' : value>0 && value<.005 ? '<€0.01' : `€${fmt(value)}`
     if (row.format === 'ratio') return value == null ? '—' : `${value.toFixed(2)}×`
     if (row.format === 'split') return value == null ? '—' : `${value.toFixed(0)}% / ${(100 - value).toFixed(0)}%`
@@ -976,10 +949,13 @@ export default function MatchDetail({ sport }) {
       ) : (
         <div className="match-v2-shell">
           <MatchReversalNotice advice={exitAdvice} />
-          <MatchPredictionCard prediction={matchStartPred} evidence={evidence} providerEvidence={providerEvidence} activityEvidence={activityEvidence} teamNames={[t1, t2]} formatAmount={fmt} formatPercentage={percentage} />
+          <MatchPredictionCard prediction={matchStartPred} evidence={evidence} totalBetEvidence={totalBetEvidence} teamNames={[t1, t2]} formatAmount={formatTotalBets} formatPercentage={percentage} />
+          <TotalBetLoadBars markets={[{ label: 'Match Load',
+            team1: { name: t1, amount: marketProviderTotals[0] },
+            team2: { name: t2, amount: marketProviderTotals[1] } }]} />
 
           <section className="match-v2-card" aria-labelledby="match-market-heading">
-            <header className="match-v2-section-head"><div><h2 id="match-market-heading">Market overview</h2><p>Latest recorded odds and settlement</p></div><span><strong>€{fmt(marketMoneyTotal)}</strong> matched · {formatTotalBets(marketBetActivity.total)} total bets</span></header>
+            <header className="match-v2-section-head"><div><h2 id="match-market-heading">Market overview</h2><p>Latest recorded odds and settlement</p></div><span><strong>€{fmt(marketMoneyTotal)}</strong> matched · {formatTotalBets(marketTotalBets)} total bets</span></header>
             <div className={`match-market-cards${hasDraw ? ' has-three' : ''}`} aria-label="Market activity, odds and bookmaker profit">
               {marketSelections.map((side, index) => <article className={`match-market-team team-${index}`} key={side.name}>
                 <header className="match-market-team-name"><span>{side.name.split(/\s+/).map(word=>word[0]).join('').slice(0,3)}</span><h3>{side.name}</h3></header>

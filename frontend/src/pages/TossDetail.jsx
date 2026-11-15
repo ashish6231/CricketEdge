@@ -12,13 +12,16 @@ import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle } from '../
 import { getCricketMatchBundle, getTossSnapshot } from '../api'
 import { hasTossSnapshot } from '../utils/matchBundle'
 import TossRuleEvidence from '../components/TossRuleEvidence'
+import TotalBetLoadBars from '../components/TotalBetLoadBars'
 import { getTossMarketSummary } from '../../../server/utils/tossMarketSummary.mjs'
 import { formatTossAmount as formatVolStr, formatSignedTossMoney as fmtRs, formatTossMoney } from '../utils/tossMarketDisplay'
 import { createTossSnapshotSync } from '../utils/tossSnapshotSync'
 import { getTossRuleInputs } from '../../../server/utils/universalTossAlgorithm.mjs'
 import {getTossMarketStatus,formatTossTime} from '../utils/tossMarketStatus'
+import { getLiveProviderTotals } from '../utils/selectionVolume'
 
 const fmt = n => n == null ? '—' : Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})
+const formatTotalBet = n => n == null || !Number.isFinite(Number(n)) ? '—' : Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})
 const pnlCls = n => n == null ? 'text-text-muted' : n >= 0 ? 'text-profit' : 'text-loss'
 
 const formatOdds = (val) => {
@@ -214,15 +217,18 @@ export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBac
   const ruleContext={...matchInfo,competitionName:competition}
   const ruleInputs = getTossRuleInputs(snap,ruleContext)
   const [pl1, pl2] = ruleInputs.pl
-  const providerTotals = ruleInputs.providerTotals || [null, null]
+  const totalBets = getLiveProviderTotals(snap) || [null, null]
+  const totalBetsCombined = totalBets.every(value => value != null)
+    ? totalBets.reduce((sum, value) => sum + value, 0)
+    : null
   const totVol = market.totalMatched
   const teamVolume = market.team1.money != null && market.team2.money != null ? market.team1.money + market.team2.money : null
   const pct1 = teamVolume > 0 ? Math.round(market.team1.money / teamVolume * 100) : null
   const pct2 = pct1 == null ? null : 100 - pct1
   const prediction = predictTossWinner(snap, ruleContext)
   const teams = [
-    { name: t1, volume: market.team1.money, netExposure: market.team1.netExposure, percentage: pct1, odds: market.team1.odds, providerTotal: providerTotals[0], pl: pl1 },
-    { name: t2, volume: market.team2.money, netExposure: market.team2.netExposure, percentage: pct2, odds: market.team2.odds, providerTotal: providerTotals[1], pl: pl2 },
+    { name: t1, volume: market.team1.money, netExposure: market.team1.netExposure, percentage: pct1, odds: market.team1.odds, totalBet: totalBets[0], pl: pl1 },
+    { name: t2, volume: market.team2.money, netExposure: market.team2.netExposure, percentage: pct2, odds: market.team2.odds, totalBet: totalBets[1], pl: pl2 },
   ]
   const metricRows = [
     { label: 'Back exposure', values: [raw.A_back_expo, raw.B_back_expo] },
@@ -278,9 +284,12 @@ export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBac
           <div className="toss-prediction-header"><span><Trophy size={15} />Toss Winner Prediction</span></div>
           <p className="toss-prediction-reason">{ruleInputs.unavailableReason}</p>
         </section>}
+        <TotalBetLoadBars markets={[{ label: 'Toss Load',
+          team1: { name: t1, amount: totalBets[0] },
+          team2: { name: t2, amount: totalBets[1] } }]} />
 
         <section className="toss-comparison-card" aria-labelledby="market-activity-heading">
-          <div className="toss-comparison-heading"><h2 id="market-activity-heading">Market activity</h2><span>Total matched <strong>€{formatVolStr(totVol)}</strong></span></div>
+          <div className="toss-comparison-heading"><h2 id="market-activity-heading">Market activity</h2><span>Total matched <strong>€{formatVolStr(totVol)}</strong> · Total bets <strong>{formatTotalBet(totalBetsCombined)}</strong></span></div>
           <div className="match-market-cards toss-market-cards" aria-label="Toss market activity by team">
             {teams.map((team, index) => <article className={`match-market-team team-${index}`} key={team.name}>
               <header className="match-market-team-name"><span>{team.name.split(/\s+/).map(word => word[0]).join('').slice(0, 3)}</span><h3>{team.name}</h3></header>
@@ -291,7 +300,7 @@ export function TossSnapshotDetails({ snap, matchInfo, isEmbedded = false, onBac
               <div className="match-market-team-stats">
                 <div><small>Net exposure (Back − Lay)</small><strong aria-label={`${team.name} net exposure`} className={pnlCls(team.netExposure)}>{fmtRs(team.netExposure)}</strong></div>
                 <div><small>Bookie P/L</small><strong className={pnlCls(team.pl)}>{fmtRs(team.pl)}</strong></div>
-                <div title="Provider activity total; separate from net exposure and Bookie P/L"><small>Provider total</small><strong>{formatTossMoney(team.providerTotal)}</strong></div>
+                <div title="Total Bet reported by TennisLiveLoad"><small>Total bet</small><strong>{formatTotalBet(team.totalBet)}</strong></div>
               </div>
               <div className="match-market-team-matched">
                 <div><small>Total matched</small><strong aria-label={`${team.name} matched money`} title={formatTossMoney(team.volume)}>€{formatVolStr(team.volume)}</strong><span>of €{formatVolStr(totVol)}</span></div>

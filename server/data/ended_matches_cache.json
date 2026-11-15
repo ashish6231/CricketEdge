@@ -9191,14 +9191,14 @@
         "name": "Karnali Yaks",
         "money": 1354595,
         "percent": 50,
-        "odds": null,
+        "odds": 150,
         "trend": "up"
       },
       "team2": {
         "name": "Lumbini Lions",
         "money": 1354594,
         "percent": 50,
-        "odds": null,
+        "odds": 1.01,
         "trend": "up"
       },
       "totalMatched": 2709189
@@ -9296,14 +9296,14 @@
         "name": "Namibia W",
         "money": 47040,
         "percent": 50,
-        "odds": null,
+        "odds": 34,
         "trend": "up"
       },
       "team2": {
         "name": "Rwanda W",
         "money": 47040,
         "percent": 50,
-        "odds": null,
+        "odds": 1.01,
         "trend": "up"
       },
       "totalMatched": 94080
@@ -9373,6 +9373,27 @@
     },
     "runners": [],
     "totalMatched": 284809
+  },
+  "36312292": {
+    "matchLoad": {
+      "team1": {
+        "name": "Royal Champs",
+        "money": 6030001,
+        "percent": 50,
+        "odds": 1.01,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Yas Lions",
+        "money": 6030001,
+        "percent": 50,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 12060002
+    },
+    "runners": [],
+    "totalMatched": 12060002
   },
   "36312309": {
     "matchLoad": {

@@ -258,6 +258,43 @@ export function getBookiePlFromMatchedTrades(snap, team1, team2) {
   }, selected, 'per-odds-trades', { verified: true, stats })
 }
 
+/** Exact pre-match settlement P/L, using odds-bearing trades only when they
+ * fully reconcile to the provider Back/Lay totals shown for every outcome. */
+export function getBookiePlFromPreMatchTrades(snap, team1, team2, drawName = null, {
+  startTime, expectedVolumes = {},
+} = {}) {
+  const selected = [team1, team2, ...(drawName ? [drawName] : [])]
+  const names = namesFor(snap, selected)
+  const start = timestamp(snap?.startTime ?? startTime)
+  const unavailable = reason => resultFor({}, selected, 'unavailable', { verified: false, reason })
+  if (!Array.isArray(snap?.teamNames) || names.length < 2 || start == null) {
+    return unavailable('Match start time or selections are unavailable.')
+  }
+
+  const trades = {}
+  const stats = {}
+  for (const name of names) {
+    const rows = snap?.teams?.[name]?.trades
+    if (!Array.isArray(rows) || rows.some(row => tradeTimestamp(row) == null)) {
+      return unavailable('Complete timestamped pre-match trades are unavailable.')
+    }
+    trades[name] = rows.filter(row => tradeTimestamp(row) < start)
+    stats[name] = getTradeStats(trades[name])
+    if (stats[name].invalid) return unavailable('A pre-match trade is missing valid odds or stake data.')
+    const expected = expectedVolumes[name]
+    if (!expected || !close(stats[name].tBack, finiteNumber(expected.back))
+      || !close(stats[name].tLay, finiteNumber(expected.lay))) {
+      return unavailable('Matched pre-match trades do not cover the displayed Back/Lay totals.')
+    }
+  }
+
+  const byName = calcBookiePlMulti(trades)
+  if (selected.some(name => byName[name] == null)) {
+    return unavailable('Pre-match P/L could not be calculated from matched odds.')
+  }
+  return resultFor(byName, selected, 'pre-match-priced-trades', { verified: true, stats })
+}
+
 function ledger(snap, names) {
   const trades = Object.fromEntries(names.map(name => [name, Array.isArray(snap?.teams?.[name]?.trades) ? snap.teams[name].trades : []]))
   const stats = Object.fromEntries(names.map(name => [name, getTradeStats(trades[name])]))

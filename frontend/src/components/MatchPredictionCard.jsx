@@ -13,7 +13,7 @@ export function MatchReversalNotice({ advice }) {
   )
 }
 
-export default function MatchPredictionCard({ prediction, evidence, providerEvidence, activityEvidence, teamNames, formatAmount, formatPercentage }) {
+export default function MatchPredictionCard({ prediction, evidence, totalBetEvidence, teamNames, formatAmount, formatPercentage }) {
   if (!prediction?.winnerName) return null
   const highRisk = prediction.risk?.avoidEntry || prediction.risk?.tier === 'high'
   return (
@@ -37,8 +37,7 @@ export default function MatchPredictionCard({ prediction, evidence, providerEvid
           {evidence && <div className="match-v2-evidence">
             <table className="match-data-table" aria-label="Prediction market evidence"><thead><tr><th scope="col">Market evidence</th>{teamNames.map(name => <th scope="col" key={name}>{name}</th>)}</tr></thead><tbody>
               {evidence.support && <tr><th scope="row">Corrected support</th><td>{formatPercentage(evidence.support.pct1)}</td><td>{formatPercentage(evidence.support.pct2)}</td></tr>}
-              {providerEvidence ? <tr><th scope="row">Pre-match provider total</th><td>€{formatAmount(providerEvidence.team1)}</td><td>€{formatAmount(providerEvidence.team2)}</td></tr>
-                : <tr><th scope="row">Pre-match activity</th><td>{activityEvidence ? formatAmount(activityEvidence.team1) : formatPercentage(evidence.activity?.pct1)}</td><td>{activityEvidence ? formatAmount(activityEvidence.team2) : formatPercentage(evidence.activity?.pct2)}</td></tr>}
+              <tr><th scope="row">Pre-match Total Bet</th><td>{totalBetEvidence?.team1 == null ? '—' : formatAmount(totalBetEvidence.team1)}</td><td>{totalBetEvidence?.team2 == null ? '—' : formatAmount(totalBetEvidence.team2)}</td></tr>
               {evidence.bookmakerPressureIdx != null && <tr><th scope="row">Bookie liability</th><td>{evidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</td><td>{evidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</td></tr>}
             </tbody></table>
           </div>}

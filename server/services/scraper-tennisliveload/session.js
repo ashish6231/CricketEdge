@@ -34,8 +34,18 @@ let _loginPromise = null;
 let _lastLoginAttemptAt = 0;
 let _lastLoginError = null;
 
+function normalizeSessionCookie(value) {
+  let cookie = String(value || '').trim().replace(/^"|"$/g, '')
+    .replace(/^Cookie:\s*/i, '').replace(/\\([*~])/g, '$1');
+  if (!cookie) return '';
+  const namedCookie = cookie.split(';').map(part => part.trim())
+    .find(part => /^cricket_live_load_session=/i.test(part));
+  if (namedCookie) return namedCookie;
+  return `cricket_live_load_session=${cookie}`;
+}
+
 function getCookies() {
-  return _sessionCookies;
+  return normalizeSessionCookie(_sessionCookies);
 }
 
 function getFixedUserAgent() {
@@ -75,7 +85,8 @@ function isConnected() {
  */
 async function saveSession(newCookie) {
   if (!newCookie || typeof newCookie !== 'string') return;
-  const trimmed = newCookie.trim().replace(/^"|"$/g, '');
+  const trimmed = normalizeSessionCookie(newCookie);
+  if (!trimmed) return;
   _sessionCookies = trimmed;
 
   const expiryMs = getCookieExpiryTimestamp(trimmed);
@@ -146,11 +157,12 @@ async function loadSavedSession() {
     } catch {}
   }
 
-  const candidate = dbCookie || fileCookie;
+  const candidate = normalizeSessionCookie(dbCookie || fileCookie);
   if (candidate) {
     const msLeft = getCookieExpiryMs(candidate);
     if (msLeft === -1 || msLeft > 0) {
       _sessionCookies = candidate;
+      if (dbCookie && dbCookie !== candidate) await saveSession(candidate);
       console.log(`✅ [TLL-Session] loaded valid session from Database (~${(msLeft > 0 ? (msLeft / 3600000).toFixed(1) : 'unknown')}h left)`);
       return true;
     }

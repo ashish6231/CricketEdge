@@ -871,6 +871,17 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
 .match-v2-shell { display: grid; gap: 10px; }
 .match-v2-card, .match-v2-prediction { min-width: 0; border: 1px solid #d7e0e9; border-radius: 10px; background: #fff; }
 .match-v2-prediction { border-left: 3px solid #148467; }
+.total-bet-load-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px; min-width: 0; }
+.total-bet-load { min-width: 0; padding: 5px 10px; border: 1px solid #e0e4e8; border-radius: 8px; background: #f7f8fa; }
+.total-bet-load h3 { margin: 0 0 5px; color: #71747b; font-size: 13px; font-weight: 700; text-align: center; }
+.total-bet-load-track { display: flex; width: 100%; height: 7px; overflow: hidden; border-radius: 999px; background: #e7e7e7; }
+.total-bet-load-track > span { display: block; height: 100%; transition: width 250ms ease; }
+.total-bet-load-track .is-lower-load { background: #83db96; }
+.total-bet-load-track .is-higher-load { background: #ef4848; }
+.total-bet-load-labels { display: flex; justify-content: space-between; gap: 12px; margin-top: 4px; color: #70737b; font-size: 11px; font-weight: 600; }
+.total-bet-load-labels > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.total-bet-load-labels > span:last-child { text-align: right; }
+.total-bet-load-empty { margin: 4px 0 0; color: #81858b; font-size: 11px; text-align: center; }
 .match-v2-prediction-summary { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; padding: 8px 12px; list-style: none; cursor: pointer; }
 .match-v2-prediction-summary::-webkit-details-marker { display: none; }
 .match-v2-pick { display: flex; align-items: center; gap: 9px; min-width: 0; }
