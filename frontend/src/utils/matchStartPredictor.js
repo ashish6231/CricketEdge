@@ -178,10 +178,14 @@ export function predictMatchStart(snap, { mode = 'rules' } = {}) {
       validation: prediction.validation,
       trainingSamples: prediction.trainingSamples,
     }),
-    timing: 'match_start', lockedAt: 'match_open',
+    timing: prediction.inputTiming === 'in-play-pnl' ? 'in_play' : 'match_start', lockedAt: 'match_open',
     moreBetted: publicTeam, apiMoreBetted: m.moreBetted,
     publicOverridden, msDisagreesPublic, extremeDogFade, algorithmDisagreesMarket,
-    signals: prediction.providerTotalEvidence ? [{
+    signals: prediction.inPlayPnlEvidence ? [{
+      label: 'In-play P/L', sublabel: 'Higher current P/L selects the live pick', active: true,
+      v1: prediction.inPlayPnlEvidence.team1.toFixed(2),
+      v2: prediction.inPlayPnlEvidence.team2.toFixed(2),
+    }] : prediction.providerTotalEvidence ? [{
       label: 'Pre-match provider total', sublabel: `${prediction.providerTotalEvidence.selection === 'lower' ? 'Lower' : 'Higher'} provider total selects the winner`, active: true,
       v1: prediction.providerTotalEvidence.team1.toFixed(2),
       v2: prediction.providerTotalEvidence.team2.toFixed(2),

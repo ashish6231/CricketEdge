@@ -665,7 +665,9 @@ export default function MatchDetail({ sport }) {
   const exactStakeVolume=value=>value==null?'Unavailable':`€${value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
 
   const { pl1, pl2, plDraw } = getSimpleBookiePl(snapshot, t1, t2, drawName)
-  const matchStartPred = lockedStartPred || liveStartPred
+  const matchStartPred = effectiveInPlay && liveStartPred?.inPlayPnlEvidence
+    ? liveStartPred
+    : lockedStartPred || liveStartPred
 
   const pickName = matchStartPred?.winnerName
   const isPickT1 = pickName ? teamEq(pickName, t1) : false
@@ -833,7 +835,9 @@ export default function MatchDetail({ sport }) {
     team1: snapshot.preMatchTotalBets?.[`team${(snapshot.teamNames || []).indexOf(t1) + 1}`] ?? null,
     team2: snapshot.preMatchTotalBets?.[`team${(snapshot.teamNames || []).indexOf(t2) + 1}`] ?? null,
   }
-  const evidence = matchStartPred?.marketEvidence || (activityEvidence || providerEvidence ? {
+  const evidence = matchStartPred?.marketEvidence || (matchStartPred?.inPlayPnlEvidence ? {
+    inPlayPnl: matchStartPred.inPlayPnlEvidence, agreeingSignals: 1, signalCount: 1,
+  } : activityEvidence || providerEvidence ? {
     activity: activityEvidence, provider: providerEvidence, agreeingSignals: 1, signalCount: 1,
   } : null)
   const percentage = value => Number.isFinite(value) ? `${value.toFixed(0)}%` : '—'

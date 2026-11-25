@@ -6,7 +6,7 @@ import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
 import { isWorldLegendsLeague, WORLD_LEGENDS_LEAGUE } from './worldLegendsActivity.mjs';
 import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createProviderTotalMatchProfile, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
 
-export const PREDICTOR_VERSION = 'match-v13-odi-lower-provider-total';
+export const PREDICTOR_VERSION = 'match-v14-inplay-pnl-priority';
 export const DEFAULT_MATCH_MODE = 'rules';
 const normalize = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league),profile]));
@@ -159,11 +159,40 @@ export function predictNormalLeagueMatch(input) {
 }
 
 function predictProviderTotalMatch(input) {
+  const livePick = predictInPlayPnl(input);
+  if (livePick) return { ...livePick, predictorVersion: PREDICTOR_VERSION,
+    leagueRegistered: getLeagueMatchAlgorithm(input?.competitionName)?.leagueRegistered !== false,
+    modelScope: 'rules', mode: DEFAULT_MATCH_MODE };
   const algorithm = getInputMatchAlgorithm(input);
   const prediction = algorithm?.predict(input);
   return prediction ? { ...prediction, predictorVersion: PREDICTOR_VERSION,
     leagueRegistered: algorithm.leagueRegistered !== false,
     modelScope: 'rules', mode: DEFAULT_MATCH_MODE } : null;
+}
+
+function predictInPlayPnl(input) {
+  const names = input?.teamNames;
+  const inPlay = input?.inPlay === true || /^(live|in-play|inplay)$/i.test(String(input?.status || '').trim());
+  const pnl = input?.inPlayPnl;
+  if (!inPlay || !Array.isArray(names) || names.length < 2
+    || names.slice(0, 2).some(name => typeof name !== 'string' || !name.trim()) || !pnl) return null;
+  const readPnl = value => value == null || String(value).trim() === '' ? null : Number(value);
+  const team1 = readPnl(pnl.team1);
+  const team2 = readPnl(pnl.team2);
+  if (!Number.isFinite(team1) || !Number.isFinite(team2) || team1 === team2) return null;
+  const winnerIdx = team1 > team2 ? 0 : 1;
+  return {
+    winner: names[winnerIdx], winnerIdx,
+    tier: 'IN_PLAY_HIGHER_PNL',
+    ruleFamily: 'in-play-higher-pnl',
+    reason: `${names[winnerIdx]} selected by higher in-play P/L (${team1.toFixed(2)} vs ${team2.toFixed(2)}).`,
+    inPlayPnlEvidence: { team1, team2, winnerIdx, signalCount: 1 },
+    confidence: 'In-play P/L rule; accuracy unvalidated',
+    confidenceCalibrated: false, inputTiming: 'in-play-pnl',
+    algorithmId: 'match-inplay-higher-pnl-v1',
+    algorithmLeague: input?.competitionName || 'All leagues',
+    profileVersion: 'in-play-higher-pnl-v1', algorithmStrategy: 'higher-in-play-pnl',
+  };
 }
 
 export function predictLeagueTrainingFit(input) {

@@ -16,12 +16,14 @@ export function MatchReversalNotice({ advice }) {
 export default function MatchPredictionCard({ prediction, evidence, totalBetEvidence, teamNames, formatAmount, formatPercentage }) {
   if (!prediction?.winnerName) return null
   const highRisk = prediction.risk?.avoidEntry || prediction.risk?.tier === 'high'
+  const livePnlPick = Boolean(prediction.inPlayPnlEvidence)
+  const formatPnl = value => `${value > 0 ? '+' : ''}${Number(value).toFixed(2)}`
   return (
     <section className="match-v2-prediction" aria-label="Match winner prediction">
       <details>
         <summary className="match-v2-prediction-summary">
           <div className="match-v2-pick"><Trophy size={18} /><div>
-            <small>{highRisk ? 'Market lean · no bet' : 'Predicted winner'}<span><LockKeyhole size={10} />Locked</span></small>
+            <small>{highRisk ? 'Market lean · no bet' : 'Predicted winner'}<span>{livePnlPick ? 'Live P/L priority' : <><LockKeyhole size={10} />Locked</>}</span></small>
             <h2>{prediction.winnerName}</h2>
           </div></div>
           <div className="match-v2-prediction-badges"><span className="match-rule-tag">Rule based</span><RiskBadge risk={prediction.risk} compact /></div>
@@ -32,10 +34,11 @@ export default function MatchPredictionCard({ prediction, evidence, totalBetEvid
             {prediction.confidence?.calibrated && <strong>{prediction.confidence.pct}% calibrated confidence</strong>}
             {highRisk && <span className="match-risk-notice" role="alert"><AlertTriangle size={13} />High risk: entry avoid karein</span>}
             <p>{prediction.reason}</p>
-            <div><span><LockKeyhole size={10} />Start pick locked</span>{!prediction.confidence?.calibrated && <span>Accuracy unvalidated</span>}</div>
+            <div>{livePnlPick ? <span>Live pick follows the higher in-play P/L</span> : <span><LockKeyhole size={10} />Start pick locked</span>}{!prediction.confidence?.calibrated && <span>Accuracy unvalidated</span>}</div>
           </div>
           {evidence && <div className="match-v2-evidence">
             <table className="match-data-table" aria-label="Prediction market evidence"><thead><tr><th scope="col">Market evidence</th>{teamNames.map(name => <th scope="col" key={name}>{name}</th>)}</tr></thead><tbody>
+              {evidence.inPlayPnl && <tr><th scope="row">In-play P/L</th><td>{formatPnl(evidence.inPlayPnl.team1)}</td><td>{formatPnl(evidence.inPlayPnl.team2)}</td></tr>}
               {evidence.support && <tr><th scope="row">Corrected support</th><td>{formatPercentage(evidence.support.pct1)}</td><td>{formatPercentage(evidence.support.pct2)}</td></tr>}
               <tr><th scope="row">Pre-match Total Bet</th><td>{totalBetEvidence?.team1 == null ? '—' : formatAmount(totalBetEvidence.team1)}</td><td>{totalBetEvidence?.team2 == null ? '—' : formatAmount(totalBetEvidence.team2)}</td></tr>
               {evidence.bookmakerPressureIdx != null && <tr><th scope="row">Bookie liability</th><td>{evidence.bookmakerPressureIdx === 0 ? 'Pressure' : '—'}</td><td>{evidence.bookmakerPressureIdx === 1 ? 'Pressure' : '—'}</td></tr>}
