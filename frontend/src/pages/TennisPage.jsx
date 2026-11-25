@@ -7,6 +7,10 @@ import { getSocket, releaseFeed, requestTennisFeed } from '../socket'
 import { isMatchEnded } from '../utils/matchTiming'
 import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
+import {
+  readHubStatus, writeHubStatus, readHubSearch, writeHubSearch,
+  saveHubScrollTarget, clearHubScrollTarget, useHubScrollRestore,
+} from '../lib/useHubRestore'
 
 const MatchDetail = lazy(() => import('./MatchDetail'))
 
@@ -26,14 +30,21 @@ export default function TennisPage() {
   const isPro = hasFeatureAccess(user, 'tennis')
   const { matchId } = useParams()
   const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() => readHubSearch('tennis'))
   const [leagueQuery, setLeagueQuery] = useState('')
-  const [matchStatus, setMatchStatus] = useState('all')
+  const [matchStatus, setMatchStatus] = useState(() => readHubStatus('tennis', { defaultStatus: 'all' }))
   const [loadError, setLoadError] = useState('')
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
   const scrollRef = useRef(null)
-  const SCROLL_KEY = 'tennis_scroll_pos'
+
+  useHubScrollRestore({
+    prefix: 'tennis',
+    matchId,
+    loading,
+    scrollRef,
+    cardIdPrefix: 'tennis-card-',
+  })
 
   const processMatches = (data) => {
     setLoadError('')
@@ -80,7 +91,21 @@ export default function TennisPage() {
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)
     localStorage.setItem(STORAGE_KEY, comp)
-    navigate('/tennis')
+    clearHubScrollTarget('tennis')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
+    if (matchId) navigate('/tennis')
+  }
+
+  const handleStatusChange = (nextStatus) => {
+    setMatchStatus(nextStatus)
+    writeHubStatus('tennis', nextStatus)
+    clearHubScrollTarget('tennis')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
+  }
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value)
+    writeHubSearch('tennis', value)
   }
 
   if (!matchId && loading) return <div className="flex h-[80vh] items-center justify-center"><LoaderCircle className="h-8 w-8 animate-spin text-primary" /></div>
@@ -189,11 +214,11 @@ export default function TennisPage() {
         {matchId ? (
           <MatchDetail sport="tennis" />
         ) : (
-          <div className="fade-in" ref={el => { if (el) { const s = sessionStorage.getItem(SCROLL_KEY); if (s && scrollRef.current) { scrollRef.current.scrollTop = Number(s); sessionStorage.removeItem(SCROLL_KEY) } }}}>
+          <div className="fade-in">
             <SportHubHeader title="Tennis matches" description="Follow tournaments, live markets and match activity."
               league={selectedComp} total={currentMatches.length} live={currentMatches.filter(isLive).length}
               upcoming={currentMatches.filter(match => !isLive(match) && !isEnded(match)).length} completed={currentMatches.filter(isEnded).length}
-              search={searchQuery} onSearch={setSearchQuery} status={matchStatus} onStatus={setMatchStatus}
+              search={searchQuery} onSearch={handleSearchChange} status={matchStatus} onStatus={handleStatusChange}
               onOpenLeagues={() => { if (window.innerWidth < 768) setMobileMenu(true); else document.querySelector('.league-sidebar input')?.focus() }} />
             <div className="hub-results">
             {visibleMatches.length > 0 ? (
@@ -206,8 +231,12 @@ export default function TennisPage() {
                   {visibleMatches.map(match => (
                     <button
                       key={match.matchId}
+                      id={`tennis-card-${match.matchId}`}
                       onClick={() => {
-                        sessionStorage.setItem(SCROLL_KEY, scrollRef.current?.scrollTop || 0)
+                        saveHubScrollTarget('tennis', {
+                          scrollTop: scrollRef.current?.scrollTop || 0,
+                          matchId: match.matchId,
+                        })
                         if (match.startTime != null) {
                           sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
                         }
@@ -228,7 +257,7 @@ export default function TennisPage() {
             ) : (
               <div className="ui-empty-state">
                 <Activity className="h-10 w-10 text-text-muted mx-auto mb-2" />
-                <h2 className="text-xl font-bold">No matches to show</h2><p>Try another league or clear the match filters.</p><button className="ui-button ui-button-secondary" onClick={() => { setSearchQuery(''); setMatchStatus('all'); handleCompSelect('ALL') }}>Reset filters</button>
+                <h2 className="text-xl font-bold">No matches to show</h2><p>Try another league or clear the match filters.</p><button className="ui-button ui-button-secondary" onClick={() => { handleSearchChange(''); handleStatusChange('all'); handleCompSelect('ALL') }}>Reset filters</button>
               </div>
             )}
             </div>

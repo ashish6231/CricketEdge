@@ -7,9 +7,12 @@ const SessionDetail = lazy(() => import('./SessionDetail'))
 import { getSocket, releaseFeed, requestSessionFeed } from '../socket'
 import { getSessionMatches } from '../api'
 import { isMatchEnded } from '../utils/matchTiming'
+import {
+  readHubStatus, writeHubStatus,
+  saveHubScrollTarget, clearHubScrollTarget, useHubScrollRestore,
+} from '../lib/useHubRestore'
 
 const STORAGE_KEY = 'session_selected_comp_v2'
-const SCROLL_KEY = 'session_scroll_pos'
 const ALL_COMPETITIONS = '__all__'
 const getSessionStatus = (match) => {
   const status = String(match?.status || '').toLowerCase()
@@ -52,8 +55,16 @@ export default function SessionPage() {
   const [loadError, setLoadError] = useState('')
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || ALL_COMPETITIONS)
-  const [statusFilter, setStatusFilter] = useState('live')
+  const [statusFilter, setStatusFilter] = useState(() => readHubStatus('session', { defaultStatus: 'live' }))
   const scrollRef = useRef(null)
+
+  useHubScrollRestore({
+    prefix: 'session',
+    matchId,
+    loading,
+    scrollRef,
+    cardIdPrefix: 'session-card-',
+  })
 
   useEffect(() => {
     const socket = getSocket()
@@ -113,7 +124,16 @@ export default function SessionPage() {
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)
     localStorage.setItem(STORAGE_KEY, comp)
-    navigate('/session')
+    clearHubScrollTarget('session')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
+    if (matchId) navigate('/session')
+  }
+
+  const handleStatusChange = (nextStatus) => {
+    setStatusFilter(nextStatus)
+    writeHubStatus('session', nextStatus)
+    clearHubScrollTarget('session')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
   }
 
   const getStatusBadge = (match) => {
@@ -247,15 +267,7 @@ export default function SessionPage() {
         {matchId ? (
           <SessionDetail />
         ) : (
-          <div className="p-4 fade-in" ref={el => {
-            if (el) {
-              const s = sessionStorage.getItem(SCROLL_KEY)
-              if (s && scrollRef.current) {
-                scrollRef.current.scrollTop = Number(s)
-                sessionStorage.removeItem(SCROLL_KEY)
-              }
-            }
-          }}>
+          <div className="p-4 fade-in">
             {selectedComp && currentMatches.length > 0 ? (
               <>
                 <div className="flex items-center justify-between mb-1">
@@ -274,7 +286,7 @@ export default function SessionPage() {
                         type="button"
                         role="tab"
                         aria-selected={active}
-                        onClick={() => setStatusFilter(key)}
+                        onClick={() => handleStatusChange(key)}
                         className="shrink-0 rounded-lg px-3 py-1.5 text-xs font-bold transition-all"
                         style={active
                           ? { background: '#f59e0b', color: '#111', border: '1px solid #f59e0b' }
@@ -297,8 +309,12 @@ export default function SessionPage() {
                     return (
                       <button
                         key={match.matchId}
+                        id={`session-card-${match.matchId}`}
                         onClick={() => {
-                          sessionStorage.setItem(SCROLL_KEY, scrollRef.current?.scrollTop || 0)
+                          saveHubScrollTarget('session', {
+                            scrollTop: scrollRef.current?.scrollTop || 0,
+                            matchId: match.matchId,
+                          })
                           navigate(`/session/match/${match.matchId}`)
                         }}
                         className="rounded-2xl p-4 transition-all text-left group hover:shadow-lg"

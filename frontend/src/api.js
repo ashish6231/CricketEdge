@@ -1,5 +1,4 @@
 import { createRequestClient } from './lib/requestClient.js'
-import { buildTossDatasetQuery } from './utils/tossDatasetAdmin.js'
 
 const API_BASE = (import.meta.env?.VITE_API_URL || '') + '/api'
 const AUTH_TIMEOUT_MS = 8000
@@ -249,73 +248,6 @@ export async function paymentFailed(razorpay_order_id) {
 
 export async function adminDashboard() {
   return fetchAPI('/admin/dashboard')
-}
-
-export function adminGetMatchDataset({ league = '', status = 'all', result = 'all', search = '', page = 1, limit = 20, predictionMode = 'active' } = {}) {
-  const query = new URLSearchParams({ league, status, result, search, page: String(page), limit: String(limit), predictionMode })
-  return fetchAPI(`/admin/match-dataset?${query}`)
-}
-
-export async function adminGetMatchDatasetExport() {
-  const res = await fetch(`${API_BASE}/admin/match-dataset/export`, { headers: getAuthHeader() })
-  if (!res.ok) throw await getAPIError(res)
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'match_dataset.json'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  URL.revokeObjectURL(url)
-}
-
-export function adminGetTossDataset({
-  status = 'pending',
-  page = 1,
-  limit = 20,
-  search = '',
-} = {}) {
-  const query = buildTossDatasetQuery({ status, page, limit, search })
-  return fetchAPI(`/admin/toss-dataset?${query}`)
-}
-
-export function adminConfirmTossWinner(matchId, actualWinner) {
-  return fetchAPI(`/admin/toss-dataset/${encodeURIComponent(matchId)}/actual-winner`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ actualWinner }),
-  })
-}
-
-export async function adminCaptureTossDataset() {
-  const submitted = await fetchAPI('/admin/toss-dataset/capture', { method: 'POST', retries: 0 })
-  // Compatible with the previous backend during rolling deployments.
-  if (!submitted.jobId) return submitted
-  const deadline = Date.now() + 180000
-  while (Date.now() < deadline) {
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    const job = await fetchAPI(`/admin/jobs/${encodeURIComponent(submitted.jobId)}`, { retries: 0 })
-    if (job.state === 'completed') return { success: true, data: job.data }
-    if (job.state === 'failed') throw { detail: job.message || 'Capture failed' }
-  }
-  throw { detail: 'Capture is still running. Refresh the dataset shortly.' }
-}
-
-export async function adminGetTossDatasetExport() {
-  const res = await fetch(`${API_BASE}/admin/toss-dataset/export`, {
-    headers: getAuthHeader(),
-  })
-  if (!res.ok) throw await getAPIError(res)
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'toss_dataset.json'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  URL.revokeObjectURL(url)
 }
 
 export async function adminGetUsers(params = {}) {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom'
-import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown, UserMinus, Receipt, ShieldCheck, Database, QrCode } from 'lucide-react'
+import { Shield, LayoutDashboard, Users, CreditCard, Tag, Settings, ScrollText, LoaderCircle, Crown, UserMinus, Receipt, ShieldCheck, QrCode } from 'lucide-react'
 import AdminDashboard from './admin/AdminDashboard'
 import AdminUsers from './admin/AdminUsers'
 import AdminProUsers from './admin/AdminProUsers'
@@ -11,8 +11,6 @@ import AdminPlans from './admin/AdminPlans'
 import AdminCoupons from './admin/AdminCoupons'
 import AdminSettings from './admin/AdminSettings'
 import AdminAuditLogs from './admin/AdminAuditLogs'
-import AdminTossDataset from './admin/AdminTossDataset'
-import AdminMatchDataset from './admin/AdminMatchDataset'
 import AdminPaymentRequests from './admin/AdminPaymentRequests'
 
 const ALL_TABS = [
@@ -26,14 +24,11 @@ const ALL_TABS = [
   { id: 'payments',  label: 'UPI Payments', icon: QrCode, superadminOnly: true },
   { id: 'coupons',   label: 'Coupons',   icon: Tag, superadminOnly: true },
   { id: 'settings',  label: 'Settings',  icon: Settings, superadminOnly: true },
-  { id: 'toss_dataset', label: 'Toss Dataset', icon: Database, superadminOnly: true },
-  { id: 'match_dataset', label: 'Match Dataset', icon: Database, superadminOnly: true },
   { id: 'audit',     label: 'Audit Logs',icon: ScrollText },
 ]
 
 const TAB_GROUPS = [
   { label: 'Overview', ids: ['dashboard'] },
-  { label: 'Match intelligence', ids: ['match_dataset', 'toss_dataset'] },
   { label: 'People & access', ids: ['users', 'pro_users', 'lapsed_users', 'admins'] },
   { label: 'Billing', ids: ['payments', 'sub_logs', 'plans', 'coupons'] },
   { label: 'System', ids: ['settings', 'audit'] },
@@ -56,7 +51,7 @@ export default function AdminPage() {
   }, [isLoggedIn, user, navigate])
 
   useEffect(() => {
-    if (!isSuperAdmin && ['admins', 'plans', 'payments', 'coupons', 'settings', 'toss_dataset', 'match_dataset'].includes(tab)) {
+    if (!isSuperAdmin && ['admins', 'plans', 'payments', 'coupons', 'settings'].includes(tab)) {
       setTab('dashboard')
     }
   }, [tab, isSuperAdmin, setTab])
@@ -121,8 +116,6 @@ export default function AdminPage() {
       {tab === 'payments'  && isSuperAdmin && <AdminPaymentRequests />}
       {tab === 'coupons'   && <AdminCoupons />}
       {tab === 'settings'  && <AdminSettings isSuperAdmin={isSuperAdmin} />}
-      {tab === 'toss_dataset' && isSuperAdmin && <AdminTossDataset />}
-      {tab === 'match_dataset' && isSuperAdmin && <AdminMatchDataset />}
       {tab === 'audit'     && <AdminAuditLogs />}
       </section>
       </div>

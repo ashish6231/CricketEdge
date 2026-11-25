@@ -5,28 +5,11 @@ const express = require('express');
 const router = express.Router();
 const dataCache = require('../services/dataCache');
 const { getDefaultProviderTotalStore } = require('../services/providerTotalStore');
-const { providerSnapshotFromRecord } = require('../utils/providerTotals.mjs');
 const { optionalAuth, requireFeatureSubscription, assertFeatureAccess, assertTelegramMembership } = require('../middleware/auth');
 const { filterMatchesForViewer, guestMayViewMatch, guestMayViewFromInfos, isEndedMatch } = require('../lib/guestMatchAccess');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
-const { getDefaultStore } = require('../services/tossDatasetStore');
 const crexService = require('../services/crexService');
 const matchPayloadService = require('../services/matchPayloadService');
-
-// In-memory cache for match_dataset.json — avoids disk read on every request
-let _matchDatasetCache = null;
-let _matchDatasetCacheTs = 0;
-const MATCH_DATASET_CACHE_MS = 60 * 1000; // 60s
-
-async function getMatchDataset() {
-  const now = Date.now();
-  if (_matchDatasetCache && (now - _matchDatasetCacheTs) < MATCH_DATASET_CACHE_MS) return _matchDatasetCache;
-  try {
-    _matchDatasetCache = await require('../services/matchDatasetStore').getDefaultStore().load();
-    _matchDatasetCacheTs = now;
-  } catch {}
-  return _matchDatasetCache;
-}
 
 // Persistent cache for completed/ended matches so their trades & amounts are served instantly (0ms)
 const ENDED_MATCHES_CACHE_FILE = path.join(__dirname, '../data/ended_matches_cache.json');
@@ -292,24 +275,7 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
   const matchId = req.params.matchId;
 
   const matches = await dataCache.getCricketMatches();
-  let matchInfo = findMatchInfo(matches, matchId);
-  if (!matchInfo) {
-    try {
-      const md = await getMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec) {
-        matchInfo = {
-          matchId: String(rec.matchId),
-          marketId: rec.marketId,
-          matchName: rec.matchName,
-          competitionName: rec.competitionName,
-          status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
-          startTime: rec.startTime,
-          inPlay: false,
-        };
-      }
-    } catch {}
-  }
+  const matchInfo = findMatchInfo(matches, matchId);
   if (!guestMayViewMatch(matchInfo, req.user)) {
     return res.status(401).json({ error: 'login_required', message: 'Live/upcoming match data requires login.', matchId });
   }
@@ -318,16 +284,6 @@ router.get('/cricket/match/:matchId', optionalAuth, assertTelegramMembership, as
     data = await dataCache.getCricketSnapshot(matchId);
   } catch (e) {
     data = null;
-  }
-  if (!data || data?.error) {
-    // Fallback to match_dataset.json snapshot
-    try {
-      const md = await getMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec?.snapshot) {
-        data = providerSnapshotFromRecord(rec);
-      }
-    } catch {}
   }
   const isEnded = isEndedMatch(matchInfo);
   if (!isEnded && !assertFeatureAccess(req, res, 'cricket')) return;
@@ -365,24 +321,7 @@ router.get('/cricket/match/:matchId/crex', optionalAuth, async (req, res) => {
   const matchId = req.params.matchId;
   const cachedCrex = dataCache.getCrexDetail(matchId);
   const matches = dataCache.getCricketMatches();
-  let matchInfo = findMatchInfo(matches, matchId);
-  if (!matchInfo) {
-    try {
-      const md = await getMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === String(matchId));
-      if (rec) {
-        matchInfo = {
-          matchId: String(rec.matchId),
-          marketId: rec.marketId,
-          matchName: rec.matchName,
-          competitionName: rec.competitionName,
-          status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
-          startTime: rec.startTime,
-          inPlay: false,
-        };
-      }
-    } catch {}
-  }
+  const matchInfo = findMatchInfo(matches, matchId);
   if (!isEndedMatch(matchInfo) && !assertFeatureAccess(req, res, 'cricket')) return;
   if (cachedCrex) return res.json({ matchId, crex: cachedCrex });
   const crex = await getCrexForMatch(matchInfo, matchId);
@@ -502,30 +441,12 @@ router.get('/toss/match/:matchId', optionalAuth, assertTelegramMembership, async
   }
   if (!isEnded && !assertFeatureAccess(req, res, 'toss')) return;
 
-  // 1. Try scraper snapshot
+  // Try scraper snapshot
   let data = null;
   try {
     data = await dataCache.getTossSnapshot(matchId);
   } catch (e) {
     data = null;
-  }
-
-  // 2. If scraper failed or returned error, check toss dataset
-  if (!data || data.error) {
-    try {
-      const store = getDefaultStore();
-      const ds = await store.load();
-      const rec = (ds.records || []).find(r => String(r.matchId) === matchId);
-      if (rec && rec.snapshot) {
-        data = providerSnapshotFromRecord(rec);
-        if (!data.competitionName) data.competitionName = rec.competitionName;
-        if (!data.startTime) data.startTime = rec.startTime;
-        if (rec.actualWinner && !data.actualWinner) data.actualWinner = rec.actualWinner;
-        if (rec.predictedWinner && !data.predictedWinner) data.predictedWinner = rec.predictedWinner;
-      }
-    } catch (e) {
-      // ignore
-    }
   }
 
   if (!data || data.error) {

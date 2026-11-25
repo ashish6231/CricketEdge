@@ -8,7 +8,6 @@ router.use(require('./subscriptionPayments').adminRouter);
 const { requireAdmin, requireSuperAdmin } = require('../middleware/admin');
 const { PERMISSION_MATRIX, ADMIN_CAPABILITIES } = require('../lib/adminPermissions');
 const prisma = require('../db/prisma');
-const {getAdminJobs}=require('../services/adminJobs');
 const { grantTrialIfEligible, grantTrialToAllEligible, grantTrialToNewUser, getTrialConfig, PAID_PLAN_SLUGS } = require('../lib/subscriptionAccess');
 const { validateTrialSetting, validateTrialDuration, TRIAL_SETTING_KEYS } = require('../lib/trialConfig');
 const { sanitizeUserRecord } = require('../middleware/auth');
@@ -22,11 +21,6 @@ const {
   validateSiteModeValue,
   invalidateSiteSettingsCache,
 } = require('../lib/siteSettings');
-const { getDefaultStore } = require('../services/tossDatasetStore');
-const { runTossCaptureNow } = require('../services/tossCaptureWorker');
-const { getDefaultStore: getDefaultMatchStore } = require('../services/matchDatasetStore');
-const { runMatchCaptureNow } = require('../services/matchCaptureWorker');
-const { listMatchDataset, loadMatchDataset } = require('../services/adminMatchDataset');
 
 
 function parseUserId(raw) {
@@ -755,157 +749,6 @@ router.get('/audit-logs', requireAdmin, async (req, res) => {
   }
 });
 
-function sendStoreError(res, err) {
-  const status = err.status || 500;
-  return res.status(status).json({ success: false, message: err.message });
-}
-
-async function enqueueCapture(_req,res,type) {
-  try {
-    const job=await getAdminJobs().add(type);
-    res.status(202).json({success:true,jobId:job.id,statusUrl:`/admin/jobs/${encodeURIComponent(job.id)}`});
-  } catch(error){sendStoreError(res,error)}
-}
-
-router.get('/jobs/:jobId',requireSuperAdmin,async(req,res)=>{
-  try {
-    const job=await getAdminJobs().get(req.params.jobId);
-    res.set('Cache-Control','no-store');
-    if(!job)return res.status(404).json({success:false,message:'Job expired or unavailable'});
-    res.json({success:true,...job});
-  }catch(error){sendStoreError(res,error)}
-});
-
-async function getTossDataset(req, res, deps = {}) {
-  const store = deps.store || getDefaultStore();
-  try {
-    const { status = 'all', page = '1', limit = '20', search = '' } = req.query || {};
-    const result = await store.listRecords({
-      status: status || 'all',
-      search: search || undefined,
-      page: Number(page) || 1,
-      limit: Number(limit) || 20,
-    });
-    res.json({ success: true, records: result.records, pagination: result.pagination });
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-async function patchTossActualWinner(req, res, deps = {}) {
-  const store = deps.store || getDefaultStore();
-  const writeAudit = deps.auditLog || auditLog;
-  try {
-    const matchId = String(req.params.matchId);
-    const actualWinner = req.body?.actualWinner;
-    const admin = req.user;
-    const dataset = await store.load();
-    const existing = dataset.records.find((r) => r.matchId === matchId);
-    const before = existing ? { ...existing } : null;
-    const { record, edited } = await store.confirmActualWinner({ matchId, actualWinner, admin });
-    await writeAudit(
-      admin,
-      edited ? 'toss_dataset_edit_winner' : 'toss_dataset_confirm_winner',
-      'toss_dataset',
-      Number(matchId) || 0,
-      matchId,
-      { before, after: record },
-      record.status === 'abandoned' ? 'Marked toss as abandoned / no result' : edited ? 'Corrected toss winner' : 'Confirmed toss winner',
-      req,
-    );
-    res.json({ success: true, data: record });
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-async function postTossDatasetCapture(req, res, deps = {}) {
-  const runNow = deps.runTossCaptureNow || runTossCaptureNow;
-  try {
-    const data = await runNow();
-    res.json({ success: true, data });
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-async function getTossDatasetExport(req, res, deps = {}) {
-  const store = deps.store || getDefaultStore();
-  try {
-    const payload = await store.buildExport();
-    res.set('Content-Disposition', 'attachment; filename="toss_dataset.json"');
-    res.json(payload);
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-async function getMatchDataset(req, res, deps = {}) {
-  try {
-    const result = await listMatchDataset(req.query || {}, deps);
-    res.json({ success: true, ...result });
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-async function patchMatchActualWinner(req, res, deps = {}) {
-  const store = deps.store || getDefaultMatchStore();
-  const writeAudit = deps.auditLog || auditLog;
-  try {
-    const matchId = String(req.params.matchId);
-    const actualWinner = req.body?.actualWinner;
-    const admin = req.user;
-    const dataset = await store.load();
-    const existing = dataset.records.find((r) => r.matchId === matchId);
-    const before = existing ? { ...existing } : null;
-    const { record, edited } = await store.confirmActualWinner({ matchId, actualWinner, admin });
-    await writeAudit(
-      admin,
-      edited ? 'match_dataset_edit_winner' : 'match_dataset_confirm_winner',
-      'match_dataset',
-      Number(matchId) || 0,
-      matchId,
-      { before, after: record },
-      edited ? 'Corrected match winner' : 'Confirmed match winner',
-      req,
-    );
-    res.json({ success: true, data: record });
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-async function postMatchDatasetCapture(req, res, deps = {}) {
-  const runNow = deps.runMatchCaptureNow || runMatchCaptureNow;
-  try {
-    const data = await runNow();
-    res.json({ success: true, data });
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-async function getMatchDatasetExport(req, res, deps = {}) {
-  try {
-    const payload = await loadMatchDataset(deps);
-    res.set('Content-Disposition', 'attachment; filename="match_dataset.json"');
-    res.json(payload);
-  } catch (err) {
-    sendStoreError(res, err);
-  }
-}
-
-router.get('/toss-dataset', requireSuperAdmin, (req, res) => getTossDataset(req, res));
-router.patch('/toss-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchTossActualWinner(req, res));
-router.post('/toss-dataset/capture', requireSuperAdmin, (req,res)=>enqueueCapture(req,res,'toss'));
-router.get('/toss-dataset/export', requireSuperAdmin, (req, res) => getTossDatasetExport(req, res));
-
-router.get('/match-dataset', requireSuperAdmin, (req, res) => getMatchDataset(req, res));
-router.patch('/match-dataset/:matchId/actual-winner', requireSuperAdmin, (req, res) => patchMatchActualWinner(req, res));
-router.post('/match-dataset/capture', requireSuperAdmin, (req,res)=>enqueueCapture(req,res,'match'));
-router.get('/match-dataset/export', requireSuperAdmin, (req, res) => getMatchDatasetExport(req, res));
-
 // ──── Scraper Session Management (Database SSOT + Auto-Login) ────
 router.get('/scraper/status', requireSuperAdmin, async (req, res) => {
   try {
@@ -945,11 +788,3 @@ router.post('/scraper/cookie', requireSuperAdmin, async (req, res) => {
 });
 
 module.exports = router;
-module.exports.getTossDataset = getTossDataset;
-module.exports.patchTossActualWinner = patchTossActualWinner;
-module.exports.postTossDatasetCapture = postTossDatasetCapture;
-module.exports.getTossDatasetExport = getTossDatasetExport;
-module.exports.getMatchDataset = getMatchDataset;
-module.exports.patchMatchActualWinner = patchMatchActualWinner;
-module.exports.postMatchDatasetCapture = postMatchDatasetCapture;
-module.exports.getMatchDatasetExport = getMatchDatasetExport;

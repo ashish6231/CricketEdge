@@ -1,25 +1,14 @@
 const fs = require('node:fs/promises');
 const path = require('node:path');
-const { createHash } = require('node:crypto');
 const { freezePreMatchProviderTotals, getExplicitPreMatchProviderTotals, providerStartTime } = require('../utils/providerTotals.mjs');
 const { capturePreMatchExposure } = require('../utils/preMatchExposure.mjs');
 const { isTerminalOrLiveStatus } = require('../shared/matchStatus');
 
-const DATASET_KEY = 'prematch_provider_totals';
-function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../data/pre_match_provider_totals.json'),
-  database = process.env.PREDICTION_STORAGE === 'database' || process.env.PREDICTION_STORAGE !== 'file'
-    && process.env.NODE_ENV !== 'test' && !!process.env.DATABASE_URL } = {}) {
+function createProviderTotalStore({ filePath = null } = {}) {
   const cached = new Map(), pending = new Map();
   let fileRows, writeChain = Promise.resolve();
-  const client = () => prisma || require('../db/prisma');
   const read = async key => {
-    if (database) {
-      const db = client();
-      const row = db.predictionRecord
-        ? await db.predictionRecord.findUnique({where:{datasetKey_recordKey:{datasetKey:DATASET_KEY,recordKey:key}},select:{payload:true}})
-        : (await db.$queryRaw`SELECT payload FROM PredictionRecord WHERE datasetKey = ${DATASET_KEY} AND recordKey = ${key} LIMIT 1`)[0];
-      return row ? JSON.parse(row.payload) : null;
-    }
+    if (!filePath) return null;
     if (!fileRows) {
       try { fileRows = JSON.parse(await fs.readFile(filePath, 'utf8')); }
       catch (error) { if (error.code !== 'ENOENT') throw error; fileRows = {}; }
@@ -27,17 +16,7 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
     return fileRows[key] || null;
   };
   const write = async (key, value) => {
-    if (database) {
-      const id = createHash('sha256').update(`${DATASET_KEY}\0${key}`).digest('hex');
-      const payload = JSON.stringify(value);
-      const db = client();
-      if (db.predictionRecord) await db.predictionRecord.upsert({where:{datasetKey_recordKey:{datasetKey:DATASET_KEY,recordKey:key}},
-        create:{id,datasetKey:DATASET_KEY,recordKey:key,payload,position:0},update:{payload}});
-      else await db.$executeRaw`INSERT INTO PredictionRecord (id,datasetKey,recordKey,payload,position,createdAt,updatedAt)
-        VALUES (${id},${DATASET_KEY},${key},${payload},0,NOW(3),NOW(3))
-        ON DUPLICATE KEY UPDATE payload = VALUES(payload), updatedAt = NOW(3)`;
-      return;
-    }
+    if (!filePath) return;
     const work = writeChain.catch(() => {}).then(async () => {
       await read(key);
       const next = {...fileRows, [key]:value};
@@ -67,8 +46,8 @@ function createProviderTotalStore({ prisma, filePath = path.join(__dirname, '../
     // Serialize capture and restore operations for each market independently.
     const work = (pending.get(key) || Promise.resolve()).catch(() => {}).then(async () => {
       let state = cached.get(key);
-      if (!state || (!state.dirty && now >= state.retryAt)) {
-        try { state = {value:await read(key),retryAt:now+60000,dirty:false}; }
+      if (!state || (filePath && !state.dirty && now >= state.retryAt)) {
+        try { state = {value:filePath ? await read(key) : state?.value || null,retryAt:now+60000,dirty:false}; }
         catch { state = {value:state?.value || null,retryAt:now+60000,dirty:false}; }
         cached.set(key, state);
       }

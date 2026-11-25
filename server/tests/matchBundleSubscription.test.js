@@ -19,8 +19,6 @@ stub('../services/dataCache', {
 });
 stub('../services/providerTotalStore', { getDefaultProviderTotalStore: () => ({ attach: async value => value }) });
 stub('../services/crexService', {});
-stub('../services/tossDatasetStore', { getDefaultStore: () => ({ load: async () => ({ records: [] }) }) });
-stub('../services/matchDatasetStore', { getDefaultStore: () => ({ load: async () => ({ records: [] }) }) });
 stub('../utils/matchWinnerPredictor', { predictMatchWinner: () => null });
 const { getMatchBundlePayload } = require('../services/matchPayloadService');
 const user = plan => ({ role: 'user', subPlanSlug: plan, subStatus: 'active', subExpiresAt: '2099-01-01' });

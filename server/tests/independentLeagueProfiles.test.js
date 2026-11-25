@@ -4,7 +4,6 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { LEAGUE_MATCH_ALGORITHMS, getLeagueMatchAlgorithm, predictLeagueTrainingFit } = require('../utils/normalLeagueMatchPredictor.mjs');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
-const { listMatchDataset } = require('../services/adminMatchDataset');
 const rows = require('../data/match_dataset.json').records;
 const winners = rows.filter(row => row.status === 'verified' && row.resultVerification?.verification === 'verified');
 
@@ -86,18 +85,6 @@ test('correction candidates learn baseline errors and abstain when their support
   assert.equal(evaluateLeagueModel(model, [0.85], 1).side, 1);
   const guarded = { ...model, minSupport: 3 };
   assert.equal(evaluateLeagueModel(guarded, [0.15], 0).side, 0);
-});
-
-test('prediction filters independently select active, training-fit and original saved results', async () => {
-  const deps = { store: { load: async () => ({ records: rows }) }, trackedStores: [] };
-  const active = await listMatchDataset({ result: 'miss', predictionMode: 'active', limit: 100 }, deps);
-  const training = await listMatchDataset({ result: 'miss', predictionMode: 'training', limit: 100 }, deps);
-  const saved = await listMatchDataset({ result: 'miss', predictionMode: 'saved', limit: 100 }, deps);
-  const report = require('../../reports/match-predictions/independent-leagues/results.json');
-  assert.equal(active.pagination.total, report.activeReplay.wrong);
-  assert.equal(training.pagination.total, 0);
-  assert.equal(saved.pagination.total, winners.filter(row => row.predictedWinner !== row.actualWinner).length);
-  assert.equal(active.summary.verified, winners.length);
 });
 
 test('model selection uses forward development folds and discloses limited or absent history', () => {

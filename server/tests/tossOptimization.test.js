@@ -65,19 +65,3 @@ test('uncalibrated rule support does not invent numerical future probabilities',
   assert.equal(p.confidence.calibrated,false);
   assert.equal(p.confidence.pct,'Uncalibrated');
 });
-
-const crex = require('../services/crexService');
-const originalOverview = crex.getCrexOverview;
-crex.getCrexOverview = async () => [];
-const {captureEndedTosses} = require('../services/tossCapture');
-crex.getCrexOverview = originalOverview;
-test('capture passes outer competition metadata when it is missing from the snapshot', async () => {
-  const snapshot={teamNames:['Alpha','Beta'],preMatchVolume:{team1:{back:100,lay:10},team2:{back:50,lay:20}},preMatchPnl:{team1:-50,team2:50}};
-  let called=false, stored;
-  const summary=await captureEndedTosses({
-    scraper:{getAllTossMatches:async()=>[{matchId:'test-metadata',matchName:'Alpha v Beta',competitionName:'European T20 Premier League',status:'ended',totalMatched:180}],getTossSnapshot:async()=>snapshot},
-    store:{load:async()=>({records:[]}),upsertPendingCapture:async value=>{stored=value;return {created:true};}},
-    predictTossWinner:(snap,comp)=>{called=true;assert.deepEqual(snap,snapshot);assert.equal(comp,'European T20 Premier League');return {winnerName:'Alpha',predictorVersion:PREDICTOR_VERSION};},
-  });
-  assert.ok(called);assert.equal(summary.captured,1);assert.equal(stored.predictorVersion,PREDICTOR_VERSION);
-});

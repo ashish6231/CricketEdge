@@ -10,6 +10,10 @@ import SportHubHeader from '../components/SportHubHeader'
 import LeagueSearch from '../components/LeagueSearch'
 import TossMarketCard from '../components/TossMarketCard'
 import { isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
+import {
+  readHubStatus, writeHubStatus, readHubSearch, writeHubSearch,
+  saveHubScrollTarget, clearHubScrollTarget, useHubScrollRestore,
+} from '../lib/useHubRestore'
 
 const TossDetail = lazy(() => import('./TossDetail'))
 
@@ -65,16 +69,24 @@ export default function TossPage() {
 
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
-  const [matchStatus, setMatchStatus] = useState('all')
+  const [matchStatus, setMatchStatus] = useState(() => readHubStatus('toss', { defaultStatus: 'all' }))
   const [leagueQuery, setLeagueQuery] = useState('')
   const debouncedLeague = useDebouncedValue(leagueQuery)
   const [allMatches, setAllMatches] = useState([])
   const [competitions, setCompetitions] = useState({})
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() => readHubSearch('toss'))
   const debouncedSearch = useDebouncedValue(searchQuery)
   const now = useVisibilityClock()
   const scrollRef = useRef(null)
+
+  useHubScrollRestore({
+    prefix: 'toss',
+    matchId,
+    loading: loading && !allMatches.length,
+    scrollRef,
+    cardIdPrefix: 'toss-card-',
+  })
 
   const processMatches = (data) => {
     if (!data) return
@@ -160,9 +172,23 @@ export default function TossPage() {
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)
     localStorage.setItem(STORAGE_KEY, comp)
+    clearHubScrollTarget('toss')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
     if (matchId) {
       navigate('/toss')
     }
+  }
+
+  const handleStatusChange = (nextStatus) => {
+    setMatchStatus(nextStatus)
+    writeHubStatus('toss', nextStatus)
+    clearHubScrollTarget('toss')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
+  }
+
+  const handleSearchChange = (value) => {
+    setSearchQuery(value)
+    writeHubSearch('toss', value)
   }
 
   const hasSearch = debouncedSearch.trim().length > 0
@@ -275,10 +301,16 @@ export default function TossPage() {
   }
 
   const renderMatchRow = match => (
-    <TossMarketCard key={match.matchId} match={match}
+    <TossMarketCard key={match.matchId} cardId={`toss-card-${match.matchId}`} match={match}
       isLive={isLiveMatch(match)} isEnded={isEndedMatch(match)}
       startLabel={formatTimeAndDate(match.startTime)} countdown={formatCountdown(match.startTime,now)}
-      onOpen={() => navigate(`/toss/match/${match.matchId}`,{state:{matchData:match}})} />
+      onOpen={() => {
+        saveHubScrollTarget('toss', {
+          scrollTop: scrollRef.current?.scrollTop || 0,
+          matchId: match.matchId,
+        })
+        navigate(`/toss/match/${match.matchId}`,{state:{matchData:match}})
+      }} />
   )
 
   if (!matchId && loading && !allMatches.length) return <PageLoading label="Loading toss markets" />
@@ -364,7 +396,7 @@ export default function TossPage() {
             <SportHubHeader title="Toss markets" description="Explore toss activity and pre-match signals by league."
               league={selectedComp} total={displayedMatches.length} live={displayedMatches.filter(isLiveMatch).length}
               upcoming={displayedMatches.filter(m => !isLiveMatch(m) && !isEndedMatch(m)).length} completed={displayedMatches.filter(isEndedMatch).length}
-              search={searchQuery} onSearch={setSearchQuery} status={matchStatus} onStatus={setMatchStatus}
+              search={searchQuery} onSearch={handleSearchChange} status={matchStatus} onStatus={handleStatusChange}
               onOpenLeagues={() => { if (window.innerWidth < 768) setMobileMenu?.(true); else document.querySelector('.league-sidebar input')?.focus() }} />
 
             {/* Search status banner */}
@@ -374,7 +406,7 @@ export default function TossPage() {
                   Searching toss markets for "<span className="text-amber-300 font-bold">{searchQuery}</span>" ({displayedMatches.length} found)
                 </span>
                 <button
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => handleSearchChange('')}
                   className="text-amber-400 hover:text-amber-300 font-bold ml-2 underline"
                 >
                   Clear
@@ -447,8 +479,8 @@ export default function TossPage() {
                   </p>
                   <button
                     onClick={() => {
-                      setSearchQuery('')
-                      setMatchStatus('all')
+                      handleSearchChange('')
+                      handleStatusChange('all')
                       handleCompSelect('ALL')
                     }}
                     className="px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold transition-colors border border-amber-500/30"

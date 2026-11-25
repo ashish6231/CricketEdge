@@ -12,12 +12,14 @@ import LeagueSearch from '../components/LeagueSearch'
 import { getSocket, releaseFeed, requestCricketFeed } from '../socket'
 import { crexScoreFingerprint, mergeCrexUpdate, resolveCrexScores } from '../utils/crexScore'
 import { isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
+import {
+  readHubStatus, writeHubStatus, readHubSearch, writeHubSearch,
+  saveHubScrollTarget, clearHubScrollTarget, useHubScrollRestore,
+} from '../lib/useHubRestore'
 
 const MatchDetail = lazy(() => import('./MatchDetail'))
 
 const STORAGE_KEY = 'cricket_selected_comp'
-const SCROLL_KEY = 'cricket_matches_scroll_top'
-const LAST_MATCH_KEY = 'cricket_last_clicked_match_id'
 
 const formatVolStr = (val) => {
   if (val === null || val === undefined) return '—'
@@ -169,8 +171,16 @@ export default function CricketPage() {
     return true
   })
   const [loadError, setLoadError] = useState('')
-  const [matchStatus, setMatchStatus] = useState(() => searchParams.get('status') === 'completed' ? 'completed' : 'all')
-  useEffect(() => { if (searchParams.get('status') === 'completed') setMatchStatus('completed') }, [searchParams])
+  const [matchStatus, setMatchStatus] = useState(() => readHubStatus('cricket', {
+    defaultStatus: 'all',
+    urlStatus: searchParams.get('status'),
+  }))
+  useEffect(() => {
+    if (searchParams.get('status') === 'completed') {
+      setMatchStatus('completed')
+      writeHubStatus('cricket', 'completed')
+    }
+  }, [searchParams])
   const [leagueQuery, setLeagueQuery] = useState('')
   const debouncedLeague = useDebouncedValue(leagueQuery)
   const [allMatches, setAllMatches] = useState(() => {
@@ -189,11 +199,10 @@ export default function CricketPage() {
   const [selectedComp, setSelectedComp] = useState(() => localStorage.getItem(STORAGE_KEY) || 'ALL')
   const now = useVisibilityClock()
   const [tossMatchIds, setTossMatchIds] = useState(new Set())
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() => readHubSearch('cricket'))
   const debouncedSearch = useDebouncedValue(searchQuery)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const scrollRef = useRef(null)
-  const prevMatchIdRef = useRef(matchId)
   // Stable crex scores map — matchId -> { score1, score2, statusText, runningBall, odds }
   // Updated only when values actually change, avoids full list re-render
   const [crexScores, setCrexScores] = useState({})
@@ -395,92 +404,42 @@ export default function CricketPage() {
   const handleCompSelect = (comp) => {
     setSelectedComp(comp)
     localStorage.setItem(STORAGE_KEY, comp)
-    sessionStorage.removeItem(SCROLL_KEY)
-    sessionStorage.removeItem(LAST_MATCH_KEY)
+    clearHubScrollTarget('cricket')
     if (scrollRef.current) scrollRef.current.scrollTop = 0
     closeSidebar()
     if (matchId) navigate('/cricket')
   }
 
+  const handleStatusChange = useCallback((nextStatus) => {
+    setMatchStatus(nextStatus)
+    writeHubStatus('cricket', nextStatus)
+    clearHubScrollTarget('cricket')
+    if (scrollRef.current) scrollRef.current.scrollTop = 0
+  }, [])
+
+  const handleSearchChange = useCallback((value) => {
+    setSearchQuery(value)
+    writeHubSearch('cricket', value)
+  }, [])
+
   const handleNavigate = useCallback((match) => {
-    if (scrollRef.current) {
-      sessionStorage.setItem(SCROLL_KEY, String(scrollRef.current.scrollTop || 0))
-    }
-    if (match?.matchId) {
-      sessionStorage.setItem(LAST_MATCH_KEY, String(match.matchId))
-      if (match.startTime != null) {
-        sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
-      }
+    saveHubScrollTarget('cricket', {
+      scrollTop: scrollRef.current?.scrollTop || 0,
+      matchId: match?.matchId,
+    })
+    if (match?.matchId && match.startTime != null) {
+      sessionStorage.setItem(`match_start_${match.matchId}`, String(match.startTime))
     }
     navigate(`/cricket/match/${match.matchId}`, { state: { startTime: match.startTime ?? null, matchData: match } })
   }, [navigate])
 
-  // Handle scroll reset when entering MatchDetail, and scroll restoration when returning to match list
-  useEffect(() => {
-    const prevId = prevMatchIdRef.current
-    prevMatchIdRef.current = matchId
-
-    // When entering MatchDetail: always reset container scroll to 0 so page starts at the top
-    if (matchId) {
-      if (scrollRef.current) {
-        scrollRef.current.scrollTop = 0
-      }
-      window.scrollTo(0, 0)
-      return
-    }
-
-    // When returning from MatchDetail (prevId was present, matchId is now falsy)
-    // or when mounting without matchId and a saved state exists
-    const savedMatchId = sessionStorage.getItem(LAST_MATCH_KEY)
-    const savedScroll = sessionStorage.getItem(SCROLL_KEY)
-
-    if (!prevId && !savedMatchId && savedScroll === null) return
-
-    let cancelled = false
-    let attempts = 0
-
-    const restoreScroll = () => {
-      if (cancelled) return
-
-      let restored = false
-      const targetId = savedMatchId || prevId
-
-      // 1. Try to locate the exact match card clicked previously
-      if (targetId) {
-        const el = document.getElementById(`match-card-${targetId}`)
-        if (el) {
-          if (savedScroll !== null && scrollRef.current) {
-            scrollRef.current.scrollTop = Number(savedScroll)
-          }
-          el.scrollIntoView({ block: 'nearest', behavior: 'auto' })
-          restored = true
-        }
-      }
-
-      // 2. If card element not yet found, restore the saved scrollTop offset directly
-      if (!restored && savedScroll !== null && scrollRef.current) {
-        scrollRef.current.scrollTop = Number(savedScroll)
-        restored = true
-      }
-
-      // 3. Fallback: if no saved scroll, ensure user is at the top rather than stuck at the bottom
-      if (!restored && scrollRef.current) {
-        scrollRef.current.scrollTop = 0
-      }
-
-      // Retry up to 10 animation frames in case cards are still mounting / rendering
-      if (!restored && attempts < 10) {
-        attempts++
-        requestAnimationFrame(restoreScroll)
-      }
-    }
-
-    const frameId = requestAnimationFrame(restoreScroll)
-    return () => {
-      cancelled = true
-      cancelAnimationFrame(frameId)
-    }
-  }, [matchId])
+  useHubScrollRestore({
+    prefix: 'cricket',
+    matchId,
+    loading: loading && !allMatches.length,
+    scrollRef,
+    cardIdPrefix: 'match-card-',
+  })
 
   const isEndedMatch = isMatchEnded
   const isLiveMatch = useCallback((match) => isMatchLiveByStart(match, now), [now])
@@ -719,7 +678,7 @@ export default function CricketPage() {
             <SportHubHeader title="Cricket matches" description="Live scores, market flow and league predictions in one place."
               league={selectedComp} total={displayedMatches.length} live={displayedMatches.filter(isLiveMatch).length}
               upcoming={displayedMatches.filter(m => !isLiveMatch(m) && !isEndedMatch(m)).length} completed={displayedMatches.filter(isEndedMatch).length}
-              search={searchQuery} onSearch={setSearchQuery} status={matchStatus} onStatus={setMatchStatus}
+              search={searchQuery} onSearch={handleSearchChange} status={matchStatus} onStatus={handleStatusChange}
               onOpenLeagues={() => { setLeagueQuery(''); if (window.innerWidth < 768) { setSidebarOpen(true); setMobileMenu?.(true) } else document.querySelector('.league-sidebar input')?.focus() }} />
 
         {/* Search status banner if query is typed */}
@@ -729,7 +688,7 @@ export default function CricketPage() {
               Searching all leagues for "<span className="text-amber-300 font-bold">{searchQuery}</span>" ({displayedMatches.length} found)
             </span>
             <button
-              onClick={() => setSearchQuery('')}
+              onClick={() => handleSearchChange('')}
               className="text-amber-400 hover:text-amber-300 font-bold ml-2 underline"
             >
               Clear
@@ -768,7 +727,7 @@ export default function CricketPage() {
 
             return (
               <div className="space-y-6">
-                {!visibleMatches.length && <div className="ui-empty-state"><Trophy size={28} /><h2>No {matchStatus} matches here</h2><p>Choose another status or explore all leagues.</p><button className="ui-button ui-button-secondary" onClick={() => setMatchStatus('all')}>Show all matches</button></div>}
+                {!visibleMatches.length && <div className="ui-empty-state"><Trophy size={28} /><h2>No {matchStatus} matches here</h2><p>Choose another status or explore all leagues.</p><button className="ui-button ui-button-secondary" onClick={() => handleStatusChange('all')}>Show all matches</button></div>}
                 {renderGroup(liveMatches, 'Live In-Play Matches', 'bg-red-500 animate-pulse', 'text-red-400', 'text-red-400 bg-red-950/50 border border-red-800/40')}
                 {renderGroup(upcomingMatches, 'Upcoming Fixtures', 'bg-sky-400', 'text-sky-400', 'text-slate-400 bg-[#161a28]')}
                 {renderGroup(endedMatches, 'Completed Matches', 'bg-emerald-400', 'text-emerald-400', 'text-emerald-400 bg-emerald-950/50 border border-emerald-800/40')}
@@ -784,7 +743,7 @@ export default function CricketPage() {
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => handleSearchChange('')}
                   className="mt-3 px-3.5 py-1.5 rounded-lg bg-[#1e2436] hover:bg-[#28314a] text-xs font-bold text-white transition-colors"
                 >
                   Clear Search

@@ -22,11 +22,6 @@ const dataCache = require('./services/dataCache');
 const prisma = require('./db/prisma');
 const { setIo } = require('./socketInstance');
 const { getAllowedOrigins } = require('./lib/publicUrl');
-const { startTossCaptureWorker } = require('./services/tossCaptureWorker');
-const { startMatchCaptureWorker } = require('./services/matchCaptureWorker');
-const { startEmiratesD10Worker } = require('./services/emiratesD10Worker');
-const { startWNCLWorker } = require('./services/wnclWorker');
-const { startWomensSpringWorker } = require('./services/womensSpringWorker');
 const { expireAllTrials } = require('./lib/subscriptionAccess');
 const telegramRoutes = require('./routes/telegram');
 const telegramService = require('./services/telegramService');
@@ -241,21 +236,11 @@ if (staticDir) {
 const PORT = process.env.PORT || 5000;
 let shuttingDown = false;
 let shutdownComplete = false;
-let tossCaptureWorker = null;
-let matchCaptureWorker = null;
-let emiratesD10Worker = null;
-let wnclWorker = null;
-let womensSpringWorker = null;
 
 function shutdown(signal) {
   if (shuttingDown) return;
   shuttingDown = true;
   console.log(`\n${signal} received, shutting down...`);
-  tossCaptureWorker?.stop();
-  matchCaptureWorker?.stop();
-  emiratesD10Worker?.stop();
-  wnclWorker?.stop();
-  womensSpringWorker?.stop();
   tllWorker?.stop();
   crexWorker?.stop();
   normalizer?.stop();
@@ -269,7 +254,6 @@ function shutdown(signal) {
       console.error('HTTP server shutdown failed:', closeError.message);
     }
     try {
-      await require('./services/adminJobs').closeAdminJobs();
       await tracing.shutdown();
       await Promise.all(socketRedisClients.map(client=>client.quit()));
       await prisma.$disconnect();
@@ -314,13 +298,6 @@ process.on('SIGINT', () => shutdown('SIGINT'));
     console.log(`   API: ${getApiPublicUrl()}`);
     console.log(`   Frontend: ${getFrontendUrl()}`);
     console.log(`   CORS: ${allowedOrigins.join(', ')}`);
-    if(ingestionEnabled) {
-      tossCaptureWorker = startTossCaptureWorker({});
-      matchCaptureWorker = startMatchCaptureWorker({});
-      emiratesD10Worker = startEmiratesD10Worker({});
-      wnclWorker = startWNCLWorker({});
-      womensSpringWorker = startWomensSpringWorker({});
-    }
   });
 
   server.on('error', (err) => {

@@ -2,7 +2,6 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const {pagination,paginateMatches}=require('../lib/pagination');
 const {createReadCache}=require('../lib/readCache');
-const {createLocalJobQueue}=require('../services/adminJobs');
 const {parseVital}=require('../middleware/performance');
 const {setStaticCacheHeaders}=require('../lib/staticCaching');
 const {RedisSessionStore}=require('../lib/redisSessionStore');
@@ -24,24 +23,6 @@ test('public cache deduplicates misses, tolerates a Redis outage, and invalidate
   await Promise.all([cache.remember('plan',load),cache.remember('plan',load)]);
   await cache.remember('plan',load);assert.equal(calls,1);
   await cache.invalidate('plan');await cache.remember('plan',load);assert.equal(calls,2);
-});
-
-test('capture requests return before slow work, coalesce active jobs, and record completion',async()=>{
-  let finish,calls=0;
-  const queue=createLocalJobQueue({toss:async()=>{calls++;return new Promise(resolve=>{finish=resolve})}});
-  const first=await queue.add('toss'),second=await queue.add('toss');
-  assert.equal(first.id,second.id);assert.equal(first.state,'waiting');assert.equal(calls,0);
-  await new Promise(setImmediate);assert.equal(calls,1);assert.equal((await queue.get(first.id)).state,'active');
-  finish({captured:3});await new Promise(setImmediate);
-  assert.deepEqual((await queue.get(first.id)).data,{captured:3});
-});
-
-test('failed jobs report failure while later work can continue',async()=>{
-  const queue=createLocalJobQueue({fail:async()=>{throw new Error('private error')},ok:async()=>1});
-  const failed=await queue.add('fail'),good=await queue.add('ok');
-  await new Promise(setImmediate);
-  assert.equal((await queue.get(failed.id)).state,'failed');
-  assert.equal((await queue.get(good.id)).data,1);
 });
 
 test('browser vitals accept only bounded metrics and discard identifiers and query strings',()=>{

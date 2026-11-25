@@ -143,7 +143,7 @@ export default function SessionDetail() {
 
   return (
     <div className="detail-page mx-auto max-w-5xl space-y-3 pb-8">
-      <button onClick={() => navigate('/session')} className="flex items-center gap-1.5 text-sm font-semibold text-text-muted hover:text-primary"><ArrowLeft size={15} /> Back to Sessions</button>
+      <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/session'))} className="flex items-center gap-1.5 text-sm font-semibold text-text-muted hover:text-primary"><ArrowLeft size={15} /> Back to Sessions</button>
 
       <header className="rounded-xl border border-border bg-white p-4 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-3">

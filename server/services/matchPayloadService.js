@@ -8,9 +8,7 @@ const fs = require('fs');
 const path = require('path');
 const dataCache = require('./dataCache');
 const { getDefaultProviderTotalStore } = require('./providerTotalStore');
-const { providerSnapshotFromRecord } = require('../utils/providerTotals.mjs');
 const crexService = require('./crexService');
-const { getDefaultStore: getDefaultTossStore } = require('./tossDatasetStore');
 const { isEndedMatch, guestMayViewMatch } = require('../lib/guestMatchAccess');
 const { isEndedStatus, isLiveStatus } = require('../shared/matchStatus');
 const { hasFeatureAccess } = require('../lib/subscriptionAccess');
@@ -18,44 +16,6 @@ const { getSiteModeSync } = require('../lib/siteSettings');
 const { getTossMarketSummary } = require('../utils/tossMarketSummary.mjs');
 const { predictMatchWinner } = require('../utils/matchWinnerPredictor');
 const {hasCompleteCardOdds,repairCompletedCardOdds,savedBackOdds}=require('../utils/endedMatchOdds.mjs');
-
-// In-memory cache for toss dataset (prevents reading 1.4MB JSON from disk on every call)
-let _tossDatasetCache = null;
-let _tossDatasetCacheTs = 0;
-const TOSS_DATASET_CACHE_TTL = 30 * 1000; // 30s
-
-async function getCachedTossDataset() {
-  const now = Date.now();
-  if (_tossDatasetCache && (now - _tossDatasetCacheTs < TOSS_DATASET_CACHE_TTL)) {
-    return _tossDatasetCache;
-  }
-  try {
-    const store = getDefaultTossStore();
-    const ds = await store.load();
-    _tossDatasetCache = ds;
-    _tossDatasetCacheTs = now;
-    return ds;
-  } catch (err) {
-    return _tossDatasetCache || { records: [] };
-  }
-}
-
-// In-memory cache for match dataset
-let _matchDatasetCache = null;
-let _matchDatasetCacheTs = 0;
-const MATCH_DATASET_CACHE_TTL = 60 * 1000;
-
-async function getCachedMatchDataset() {
-  const now = Date.now();
-  if (_matchDatasetCache && (now - _matchDatasetCacheTs < MATCH_DATASET_CACHE_TTL)) {
-    return _matchDatasetCache;
-  }
-  try {
-    _matchDatasetCache = await require('./matchDatasetStore').getDefaultStore().load();
-    _matchDatasetCacheTs = now;
-  } catch {}
-  return _matchDatasetCache || { records: [] };
-}
 
 // Persistent cache for ended matches
 const ENDED_MATCHES_CACHE_FILE = path.join(__dirname, '../data/ended_matches_cache.json');
@@ -302,14 +262,6 @@ async function getCricketMatchesPayload() {
 
       if (!snap) {
         try {
-          const md = await getCachedMatchDataset();
-          const rec = (md?.records || []).find(x => String(x.matchId) === String(m.matchId));
-          if (rec?.snapshot) snap = rec.snapshot;
-        } catch {}
-      }
-
-      if (!snap) {
-        try {
           const tllWorker = require('./scraper-tennisliveload');
           if (process.env.INGESTION_ENABLED !== 'false' && typeof tllWorker.triggerImmediateMatchFetch === 'function') {
             tllWorker.triggerImmediateMatchFetch(m.matchId, { notifySubscribers: false });
@@ -340,9 +292,6 @@ async function getCricketMatchesPayload() {
     });
     if (needsEndedRepair.length > 0) {
       let hasNew = false;
-      // Load the archive once for the whole batch, and only if memory lacks odds.
-      let archivePromise;
-      const archive=()=>archivePromise ||= getCachedMatchDataset().then(dataset=>new Map((dataset?.records||[]).map(record=>[String(record.matchId),record])));
       for (const m of needsEndedRepair) {
         const id=String(m.matchId);
         endedOddsRepairAttempts.set(id,Date.now());
@@ -351,11 +300,7 @@ async function getCricketMatchesPayload() {
           const previous=endedMatchesCache.get(id);
           const load=previous?.matchLoad || computeMatchLoad(snap,m);
           const base=previous || {matchLoad:load,runners:compactRunners(snap?.runners||m.runners||[]),totalMatched:load?.totalMatched||m.totalMatched||0};
-          let repaired=repairCompletedCardOdds(base,snap,m);
-          if(!hasCompleteCardOdds(repaired)) {
-            const record=(await archive()).get(id);
-            repaired=repairCompletedCardOdds(repaired,record?.snapshot,m);
-          }
+          const repaired=repairCompletedCardOdds(base,snap,m);
           if(!previous || repaired!==previous) {
             endedMatchesCache.set(id,repaired);
             hasNew=true;
@@ -474,12 +419,6 @@ async function getCricketMatchesPayload() {
  */
 async function getTossMatchesPayload() {
   const matchesMap = new Map();
-  const dataset = await getCachedTossDataset();
-  const datasetRecords = Array.isArray(dataset?.records) ? dataset.records : [];
-  const datasetMap = new Map();
-  datasetRecords.forEach(r => {
-    if (r.matchId) datasetMap.set(String(r.matchId), r);
-  });
 
   const liveData = dataCache.getTossMatches();
   if (Array.isArray(liveData)) {
@@ -491,27 +430,22 @@ async function getTossMatchesPayload() {
         if (snap?.error) snap = null;
       } catch (e) {}
 
-      const dsRec = datasetMap.get(id);
-      if (!snap && dsRec?.snapshot) snap = dsRec.snapshot;
-
       const load = computeTossLoad(snap, m);
-      const isEnded = isEndedMatch(m) || dsRec?.status === 'ended' || dsRec?.status === 'verified';
+      const isEnded = isEndedMatch(m);
       const matchStatus = isEnded ? 'ended' : (m.status || (m.inPlay ? 'in-play' : 'upcoming'));
 
       matchesMap.set(id, {
         matchId: id,
         marketId: m.marketId,
         matchName: m.matchName,
-        competitionName: m.competitionName || snap?.competitionName || dsRec?.competitionName || 'Other',
+        competitionName: m.competitionName || snap?.competitionName || 'Other',
         status: matchStatus,
         inPlay: !isEnded && Boolean(m.inPlay || m.status === 'in-play'),
-        startTime: m.startTime || m.openDate || snap?.startTime || dsRec?.startTime || null,
+        startTime: m.startTime || m.openDate || snap?.startTime || null,
         totalMatched: load?.totalMatched ?? null,
         runners: m.runners || [],
         matchLoad: load,
         tossLoad: load,
-        predictedWinner: dsRec?.predictedWinner,
-        actualWinner: dsRec?.actualWinner,
       });
     }
   }
@@ -702,26 +636,8 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
 
   const cricketMatches = dataCache.getCricketMatches();
   const tossMatches = dataCache.getTossMatches();
-  let matchInfo = findMatchInfo(cricketMatches, mid);
-  let tossInfo = findMatchInfo(tossMatches, mid);
-
-  if (!matchInfo) {
-    try {
-      const md = await getCachedMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === mid);
-      if (rec) {
-        matchInfo = {
-          matchId: mid,
-          marketId: rec.marketId,
-          matchName: rec.matchName,
-          competitionName: rec.competitionName,
-          status: (rec.status === 'verified' || rec.status === 'pending') ? 'ended' : rec.status,
-          startTime: rec.startTime,
-          inPlay: false,
-        };
-      }
-    } catch {}
-  }
+  const matchInfo = findMatchInfo(cricketMatches, mid);
+  const tossInfo = findMatchInfo(tossMatches, mid);
 
   // Access check
   if (!isBroadcaster) {
@@ -758,34 +674,11 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
         }
       } catch {}
     }
-    try {
-      const md = await getCachedMatchDataset();
-      const rec = (md?.records || []).find(x => String(x.matchId) === mid);
-      if (rec && rec.snapshot) {
-        cricket = attachMatchMeta(providerSnapshotFromRecord(rec), matchInfo);
-        if (rec.actualWinner && !cricket.actualWinner) cricket.actualWinner = rec.actualWinner;
-      }
-    } catch {}
   }
 
   let toss = (!tossRaw || tossRaw.error)
     ? null
     : attachMatchMeta(tossRaw, tossInfo || matchInfo, true);
-
-  if (!toss) {
-    try {
-      const ds = await getCachedTossDataset();
-      const rec = (ds.records || []).find(x => String(x.matchId) === mid);
-      if (rec && rec.snapshot) {
-        const tossData = providerSnapshotFromRecord(rec);
-        if (!tossData.competitionName) tossData.competitionName = rec.competitionName;
-        if (!tossData.startTime) tossData.startTime = rec.startTime;
-        toss = attachMatchMeta(tossData, tossInfo || matchInfo, true);
-        if (rec.actualWinner) toss.actualWinner = rec.actualWinner;
-        if (rec.predictedWinner) toss.predictedWinner = rec.predictedWinner;
-      }
-    } catch {}
-  }
 
   [cricket, toss] = await Promise.all([
     getDefaultProviderTotalStore().attach(cricket, {matchId:mid,market:'cricket',matchInfo}),
@@ -896,8 +789,6 @@ module.exports = {
   normalizeSessionStatus,
   summarizeSessionData,
   alignScorecardTeams,
-  getCachedTossDataset,
-  getCachedMatchDataset,
   findMatchInfo,
   attachMatchMeta,
 };

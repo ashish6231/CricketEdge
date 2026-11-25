@@ -2,11 +2,11 @@ import { ChevronRight, Info } from 'lucide-react'
 import { getTossMarketSummary } from '../../../server/utils/tossMarketSummary.mjs'
 import { formatTossAmount as marketAmount, formatTossMoney } from '../utils/tossMarketDisplay'
 
-export default function TossMarketCard({match,onOpen,isLive=false,isEnded=false,startLabel='',countdown}) {
+export default function TossMarketCard({match,onOpen,isLive=false,isEnded=false,startLabel='',countdown,cardId}) {
   const market=match.tossLoad || getTossMarketSummary(match.snapshot,match)
   const teams=[market.team1,market.team2]
   return (
-    <article className="toss-exchange-card" role="link" tabIndex={0}
+    <article id={cardId} className="toss-exchange-card" role="link" tabIndex={0}
       aria-label={`Open ${match.matchName} toss market`} onClick={onOpen}
       onKeyDown={event=>{if(event.target===event.currentTarget && (event.key==='Enter' || event.key===' ')){event.preventDefault();onOpen?.()}}}>
       <div className="toss-exchange-meta">

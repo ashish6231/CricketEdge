@@ -6,7 +6,6 @@ const matches=[{matchId:'live-toss',matchName:'New Zealand v India',competitionN
 stub('../db/prisma',{});
 stub('../services/dataCache',{getTossMatches:()=>matches,getTossSnapshot:async()=>snapshot,getTossMatchesUpdatedAt:()=>new Date().toISOString()});
 stub('../services/crexService',{});
-stub('../services/tossDatasetStore',{getDefaultStore:()=>({load:async()=>({records:[]})})});
 const {getTossMatchesPayload}=require('../services/matchPayloadService');
 const {snapshotFeed,diffFeed}=require('../utils/feedDelta');
 
