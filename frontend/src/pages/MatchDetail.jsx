@@ -145,7 +145,6 @@ export default function MatchDetail({ sport }) {
   const [sessionTrades, setSessionTrades] = useState([])
   const [sessionOdds, setSessionOdds] = useState([])
   const [sessionMarkets, setSessionMarkets] = useState([])
-  const [activeSessions, setActiveSessions] = useState([])
   const [timingNow, setTimingNow] = useState(() => Date.now())
 
   useEffect(() => {
@@ -166,15 +165,6 @@ export default function MatchDetail({ sport }) {
       if (sessionData.markets) {
         setSessionMarkets(Array.isArray(sessionData.markets) ? sessionData.markets : Object.values(sessionData.markets))
       }
-      let activeSessionNames = []
-      if (sessionData.odds?.length > 0) {
-        activeSessionNames = [...new Set(sessionData.odds.map(o => o.marketName))]
-      } else if (sessionData.markets?.length > 0) {
-        activeSessionNames = [...new Set(sessionData.markets.map(m => m.marketName))]
-      } else if (sessionData.trades) {
-        activeSessionNames = [...new Set(sessionData.trades.map(t => t.team))]
-      }
-      setActiveSessions(activeSessionNames)
     }
 
     const handleBundle = (bundle) => {
@@ -670,10 +660,8 @@ export default function MatchDetail({ sport }) {
           startTime={matchStartTime}
           preMatchCapture={completePreMatchCapture}
           preMatchFields={preMatchFields}
-          preMatchProviderTotals={frozenPreMatchProviderTotals}
+          frozenPreMatchProviderTotals={frozenPreMatchProviderTotals}
           predictionProviderTotals={predictionProviderTotals}
-          activeSessions={activeSessions}
-          sessionTrades={sessionTrades}
         />
       )}
     </div>

@@ -67,39 +67,21 @@ export default function SelectionVolumeChart({
           <YAxis
             yAxisId="price"
             domain={['auto', 'auto']}
-            width={48}
+            width={38}
             axisLine={{ stroke: '#94a3b8' }}
             tickLine={{ stroke: '#94a3b8' }}
             tick={{ fontSize: 10, fill: '#c8102e', fontWeight: 600 }}
             tickFormatter={v => (isProb ? `${Math.round(v)}%` : odds(v))}
-            label={{
-              value: isProb ? '% Chance' : 'Price',
-              angle: -90,
-              position: 'insideLeft',
-              offset: 6,
-              fill: '#c8102e',
-              fontSize: 10,
-              fontWeight: 700,
-            }}
           />
           <YAxis
             yAxisId="vol"
             orientation="right"
             domain={[0, max => Math.max(10, max * 2.8)]}
-            width={44}
+            width={36}
             axisLine={{ stroke: '#94a3b8' }}
             tickLine={{ stroke: '#94a3b8' }}
             tick={{ fontSize: 9.5, fill: '#1f2937', fontWeight: 600 }}
             tickFormatter={compactNum}
-            label={{
-              value: 'Volume',
-              angle: 90,
-              position: 'insideRight',
-              offset: 6,
-              fill: '#1f2937',
-              fontSize: 10,
-              fontWeight: 700,
-            }}
           />
           <Tooltip content={<BetfairChartTooltip metricMode={metricMode} />} />
           <Bar
@@ -138,10 +120,10 @@ export default function SelectionVolumeChart({
             minTickGap={16}
           />
           <YAxis
-            width={48}
+            width={38}
             tick={{ fontSize: 10, fill: '#334155' }}
             axisLine={{ stroke: '#94a3b8' }}
-            tickFormatter={v => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}
+            tickFormatter={compactNum}
           />
           <Tooltip
             formatter={money}

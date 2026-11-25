@@ -16,7 +16,6 @@ import {
   getSelectionStakes,
 } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
-import { tradeMatchesMarket } from '../utils/sessionMetrics'
 
 const formatVolStr = (val) => {
   if (val === null || val === undefined) return '—'
@@ -76,11 +75,7 @@ export default function MarketWorkbench({
   preMatchFields = null,
   preMatchProviderTotals = null,
   predictionProviderTotals = null,
-  activeSessions = [],
-  sessionTrades = [],
 }) {
-  const [timeFilter, setTimeFilter] = useState('all')
-  const [marketType, setMarketType] = useState('match_odds')
   const [metricsPeriod, setMetricsPeriod] = useState('pre')
 
   const effectiveSnapshot = useMemo(() => {
@@ -193,13 +188,8 @@ export default function MarketWorkbench({
   const sent = effectiveSnapshot.sentimentScore || {}
   const ns = effectiveSnapshot.netSupport || {}
 
-  const isSessionMarket = !isToss && marketType.startsWith('session_')
-  const selectedSessionName = isSessionMarket ? marketType.replace('session_', '') : ''
-  const selectedSessionTrades = isSessionMarket ? sessionTrades.filter(t => tradeMatchesMarket(t, selectedSessionName)) : []
-
-  const t1GraphData = processTeamData(t1, effectiveSnapshot?.teams?.[t1], timeFilter, findMarketRunner(effectiveSnapshot, t1))
-  const t2GraphData = processTeamData(t2, effectiveSnapshot?.teams?.[t2], timeFilter, findMarketRunner(effectiveSnapshot, t2))
-  const sessionGraphData = isSessionMarket ? processTeamData('Total Runs', { trades: selectedSessionTrades }, timeFilter) : null
+  const t1GraphData = processTeamData(t1, effectiveSnapshot?.teams?.[t1], findMarketRunner(effectiveSnapshot, t1))
+  const t2GraphData = processTeamData(t2, effectiveSnapshot?.teams?.[t2], findMarketRunner(effectiveSnapshot, t2))
 
   if (t1GraphData) t1GraphData.bookieProfitIfWins = pl1
   if (t2GraphData) t2GraphData.bookieProfitIfWins = pl2
@@ -401,31 +391,11 @@ export default function MarketWorkbench({
           </div>
           <header className="match-depth-toolbar">
             <div><h2>{isToss ? 'Toss Market Graphs' : 'Match Market Graphs'}</h2><p>Odds &amp; Volume, Price/Volume over time, and Exchange Available/Traded ladder</p></div>
-            <div className="match-depth-controls">
-              <div className="match-period-tabs" aria-label="Trade history range">
-                {[['all', 'All'], ['3h', '3H'], ['1h', '1H']].map(([key, label]) => (
-                  <button key={key} type="button" aria-pressed={timeFilter === key} onClick={() => setTimeFilter(key)}>{label}</button>
-                ))}
-              </div>
-              {!isToss && activeSessions?.length > 0 && (
-                <select aria-label="Recorded market" value={marketType} onChange={event => setMarketType(event.target.value)}>
-                  <option value="match_odds">Match odds</option>
-                  {activeSessions.map(session => <option key={session} value={`session_${session}`}>{session}</option>)}
-                </select>
-              )}
-            </div>
           </header>
-          {isSessionMarket ? (
-            <div>
-              <h3 className="match-session-title">{selectedSessionName} · €{formatVolStr(sessionGraphData?.totalBet || 0)}</h3>
-              <TeamCard teamData={sessionGraphData} isToss={false} isSession={true} marketVol={sessionGraphData?.totalBet || 0} />
-            </div>
-          ) : (
-            <div className="match-price-grid">
-              <TeamCard teamData={t1GraphData} isToss={isToss} marketVol={marketVol} />
-              <TeamCard teamData={t2GraphData} isToss={isToss} marketVol={marketVol} />
-            </div>
-          )}
+          <div className="match-price-grid">
+            <TeamCard teamData={t1GraphData} isToss={isToss} marketVol={marketVol} />
+            <TeamCard teamData={t2GraphData} isToss={isToss} marketVol={marketVol} />
+          </div>
         </div>
       </details>
     </div>

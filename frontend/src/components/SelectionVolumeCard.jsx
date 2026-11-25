@@ -63,7 +63,9 @@ export default function SelectionVolumeCard({ teamData, isToss = false, isSessio
 
     return (
       <section className="selection-volume selection-volume--bf-split" aria-label={`${d.name} Betfair market graph`}>
-        <div className={`bf-split-left${view === 'ladder' ? ' is-hidden-mobile' : ''}`}>
+
+        {/* ── Header: name + peak + view controls ── */}
+        <div className="bf-card-head">
           <div className="bf-sel-bar">
             <h3>{d.name}</h3>
             {peakRow && (
@@ -72,10 +74,34 @@ export default function SelectionVolumeCard({ teamData, isToss = false, isSessio
               </span>
             )}
           </div>
+          <div className="bf-header-controls">
+            <div className="bf-pill-switch" role="group" aria-label={`${d.name} graph view`}>
+              {viewButtons.map(([key, label, extraCls]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className={extraCls || ''}
+                  aria-pressed={view === key}
+                  onClick={() => setView(key)}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            {view === 'betfair' && (
+              <div className="bf-pill-switch bf-pill-switch--sub" role="group" aria-label={`${d.name} price scale`}>
+                <button type="button" aria-pressed={metricMode === 'odds'} onClick={() => setMetricMode('odds')}>Price</button>
+                <button type="button" aria-pressed={metricMode === 'probability'} onClick={() => setMetricMode('probability')}>% Chance</button>
+              </div>
+            )}
+          </div>
+        </div>
 
+        {/* ── Left column: stats + chart ── */}
+        <div className={`bf-split-left${view === 'ladder' ? ' is-hidden-mobile' : ''}`}>
           <div className="bf-matched-strip">
             <span>Matched</span>
-            <span>Low: <strong>{odds(d.low)}</strong> &nbsp;High: <strong>{odds(d.high)}</strong></span>
+            <span>Low: <strong>{odds(d.low)}</strong>&nbsp; High: <strong>{odds(d.high)}</strong></span>
           </div>
 
           <dl className="bf-kv-list">
@@ -89,10 +115,6 @@ export default function SelectionVolumeCard({ teamData, isToss = false, isSessio
               <dd><span className="bf-txt-back">{money(d.totalBack)}</span> / <span className="bf-txt-lay">{money(d.totalLay)}</span></dd>
             </div>
           </dl>
-
-          <h4 className="bf-chart-title">
-            {view === 'volume' ? 'Odds & Volume' : 'Price/Volume over time'}
-          </h4>
 
           {isChartEmpty ? (
             <p className="selection-volume__empty">
@@ -121,37 +143,16 @@ export default function SelectionVolumeCard({ teamData, isToss = false, isSessio
             </figure>
           )}
 
-          <div className="bf-bottom-controls">
-            <div className="bf-pill-switch" role="group" aria-label={`${d.name} graph view`}>
-              {viewButtons.map(([key, label, extraCls]) => (
-                <button
-                  key={key}
-                  type="button"
-                  className={extraCls || ''}
-                  aria-pressed={view === key}
-                  onClick={() => setView(key)}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-            {view === 'betfair' && (
-              <div className="bf-pill-switch bf-pill-switch--sub" role="group" aria-label={`${d.name} price scale`}>
-                <button type="button" aria-pressed={metricMode === 'odds'} onClick={() => setMetricMode('odds')}>Price</button>
-                <button type="button" aria-pressed={metricMode === 'probability'} onClick={() => setMetricMode('probability')}>% Chance</button>
-              </div>
-            )}
-          </div>
-
           {d.invalid > 0 && <p className="selection-volume__warning">Partial totals: {d.invalid} invalid trade rows excluded.</p>}
           {d.missingTimes > 0 && <p className="selection-volume__warning">{d.missingTimes} rows have no valid time; excluded from history and timed filters.</p>}
         </div>
 
+        {/* ── Right column: price ladder ── */}
         <div className={`bf-split-right${view === 'ladder' ? ' is-active-mobile' : ''}`}>
           <div className="bf-right-head">
             <span>Price, Exchange Available and Traded</span>
             <button type="button" className="bf-mobile-back" onClick={() => setView('volume')}>
-              ← Odds &amp; Volume
+              ← Back
             </button>
           </div>
           {renderLadder()}
@@ -160,7 +161,7 @@ export default function SelectionVolumeCard({ teamData, isToss = false, isSessio
         <p className="bf-footnote">
           {view === 'betfair'
             ? 'Crimson step-line shows matched price/chance; grey spikes show traded volume.'
-            : 'Blue highlights Back matched/available; pink highlights Lay matched/available.'} · {d.timeFilter === 'all' ? 'All recorded trades' : `Last ${d.timeFilter}`}.
+            : 'Blue highlights Back matched/available; pink highlights Lay matched/available.'} · All recorded trades.
         </p>
       </section>
     )
@@ -177,7 +178,7 @@ export default function SelectionVolumeCard({ teamData, isToss = false, isSessio
       <div className="selection-volume__back"><dt>Total Back:</dt><dd>{money(d.totalBack)}</dd></div>
       <div className="selection-volume__lay"><dt>Total Lay:</dt><dd>{money(d.totalLay)}</dd></div>
     </dl>
-    <p className="selection-volume__note">Recorded stake volume · {d.timeFilter === 'all' ? 'All available trades' : `Last ${d.timeFilter} from latest recorded trade`}.</p>
+    <p className="selection-volume__note">Recorded stake volume · All available trades.</p>
     {d.invalid > 0 && <p className="selection-volume__warning">Partial totals: {d.invalid} invalid trade rows excluded.</p>}
     {d.missingTimes > 0 && <p className="selection-volume__warning">{d.missingTimes} rows have no valid time; excluded from history and timed filters.</p>}
     <div className="selection-volume__toolbar">

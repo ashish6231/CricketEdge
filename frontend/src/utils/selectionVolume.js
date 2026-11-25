@@ -127,7 +127,7 @@ function buildLiquidityBook(teamData, runner, tradedByPrice) {
 }
 
 /** Recorded trades plus current executable exchange order-book liquidity when supplied. */
-export function processTeamData(name, teamData, timeFilter = 'all', runner = null) {
+export function processTeamData(name, teamData, runner = null) {
   const available = Array.isArray(teamData?.trades)
   let invalid = 0
   let trades = (available ? teamData.trades : []).flatMap((t, sequence) => {
@@ -139,10 +139,7 @@ export function processTeamData(name, teamData, timeFilter = 'all', runner = nul
   const times = trades.flatMap(t => t.timestamp == null ? [] : [t.timestamp])
   const latest = times.reduce((max, time) => Math.max(max, time), -Infinity)
   const missingTimes = trades.filter(t => t.timestamp == null).length
-  if (timeFilter !== 'all') {
-    const cutoff = latest - (timeFilter === '1h' ? 1 : 3) * 3600000
-    trades = trades.filter(t => t.timestamp != null && t.timestamp >= cutoff)
-  }
+
   const levels = new Map()
   const latestByPrice = new Map()
   let totalBack = 0, totalLay = 0
@@ -173,7 +170,7 @@ export function processTeamData(name, teamData, timeFilter = 'all', runner = nul
   const chronological = trades.filter(t => t.timestamp != null).sort((a, b) => a.timestamp - b.timestamp)
   const lastPrice = chronological.at(-1)?.price ?? null
   const previous = chronological.findLast(t => t.price !== lastPrice)?.price ?? lastPrice
-  const known = available && (timeFilter === 'all' || missingTimes === 0 || times.length > 0)
+  const known = available && (missingTimes === 0 || times.length > 0)
   const timeSeries = chronological.map((t, index, list) => {
     const windowStart = Math.max(0, index - 2)
     const slice = list.slice(windowStart, index + 1)
@@ -198,7 +195,7 @@ export function processTeamData(name, teamData, timeFilter = 'all', runner = nul
     }
   })
   return {
-    name, available: known, invalid, missingTimes, timeFilter,
+    name, available: known, invalid, missingTimes,
     totalBack: known ? totalBack : null, totalLay: known ? totalLay : null,
     totalBet: known ? totalBack + totalLay : null,
     low: orderBook[0]?.price ?? null, high: orderBook.at(-1)?.price ?? null,
