@@ -12,12 +12,12 @@ import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
 import { requiresPaidMatchAccess, isSubscriptionRequiredError } from '../utils/matchAccess'
-import { predictMatchStart, lockMatchStartPrediction, getMatchStartExitAdvice, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
+import { predictMatchStart, lockMatchStartPrediction, PREDICTOR_VERSION } from '../utils/matchStartPredictor'
 import { getSimpleBookiePl, splitMatchOutcomes, finiteNumber, tradeTimestamp, tradeSide, getSelectionStakes, getBookiePlFromMatchedTrades } from '../utils/bookiePl'
 import { teamEq } from '../utils/gatedFadePredictor'
 import { tradeMatchesMarket, sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
-import MatchPredictionCard, { MatchReversalNotice } from '../components/MatchPredictionCard'
+import MatchPredictionCard from '../components/MatchPredictionCard'
 import TotalBetLoadBars from '../components/TotalBetLoadBars'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
 import { getCricketMatchBundle, getCricketOdds, getTennisSnapshot } from '../api'
@@ -389,6 +389,8 @@ export default function MatchDetail({ sport }) {
     }
   }, [matchId, sport, authReady, isLoggedIn, requiresLogin, requiresPro, subscriptionBlocked, matchEnded])
 
+  const effectiveInPlay = isMatchLiveByStart(snapshot, timingNow)
+
   const { matchStartTime, preMatchSnapshot, preMatchFields, predictionSnapshot } = useMemo(() => {
     const cachedStart = location.state?.startTime ?? location.state?.matchData?.startTime ??
       (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(`match_start_${matchId}`) : null)
@@ -401,7 +403,7 @@ export default function MatchDetail({ sport }) {
       captured: frozenPreMatchFields,
       capturedTotals: frozenPreMatchProviderTotals,
     }) : null
-    const predictionInput = periodSnapshot && periodFields?.providerTotals?.some(value => value != null)
+    const predictionBase = periodSnapshot && periodFields?.providerTotals?.some(value => value != null)
       ? {
         ...periodSnapshot,
         preMatchProviderTotals: { team1: periodFields.providerTotals[0], team2: periodFields.providerTotals[1] },
@@ -411,14 +413,23 @@ export default function MatchDetail({ sport }) {
         },
       }
       : snapshot
+    const livePnl = snapshot?.inPlayPnl ?? predictionBase?.inPlayPnl
+    const pnl1 = livePnl?.team1 == null || String(livePnl.team1).trim() === '' ? null : Number(livePnl.team1)
+    const pnl2 = livePnl?.team2 == null || String(livePnl.team2).trim() === '' ? null : Number(livePnl.team2)
+    const hasLivePnlValues = Number.isFinite(pnl1) && Number.isFinite(pnl2) && (pnl1 !== 0 || pnl2 !== 0)
+    const predictionInput = predictionBase ? {
+      ...predictionBase,
+      inPlay: effectiveInPlay,
+      inPlayPnl: livePnl,
+      status: snapshot?.status ?? predictionBase.status,
+      useInPlayPnl: hasLivePnlValues,
+    } : null
     return { matchStartTime: startTime, preMatchSnapshot: periodSnapshot, preMatchFields: periodFields,
       predictionSnapshot: predictionInput }
   }, [snapshot, completePreMatchCapture, frozenPreMatchFields, frozenPreMatchProviderTotals,
-    location.state?.startTime, location.state?.matchData?.startTime, matchId])
+    location.state?.startTime, location.state?.matchData?.startTime, matchId, effectiveInPlay])
 
   const liveStartPred = useMemo(() => predictionSnapshot ? predictMatchStart(predictionSnapshot) : null, [predictionSnapshot])
-
-  const effectiveInPlay = isMatchLiveByStart(snapshot, timingNow)
 
   useEffect(() => {
     const start = getMatchStartTimestamp({
@@ -665,22 +676,9 @@ export default function MatchDetail({ sport }) {
   const exactStakeVolume=value=>value==null?'Unavailable':`€${value.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`
 
   const { pl1, pl2, plDraw } = getSimpleBookiePl(snapshot, t1, t2, drawName)
-  const matchStartPred = effectiveInPlay && liveStartPred?.inPlayPnlEvidence
+  const matchStartPred = liveStartPred?.inPlayPnlEvidence
     ? liveStartPred
     : lockedStartPred || liveStartPred
-
-  const pickName = matchStartPred?.winnerName
-  const isPickT1 = pickName ? teamEq(pickName, t1) : false
-  const pickBackOdds = isPickT1 ? t1Odds?.back : t2Odds?.back
-  const oppBackOdds = isPickT1 ? t2Odds?.back : t1Odds?.back
-  const exitAdvice = (matchStartPred && effectiveInPlay && pickName)
-    ? getMatchStartExitAdvice({
-      lockedPick: matchStartPred,
-      inPlay: effectiveInPlay,
-      pickBackOdds: typeof pickBackOdds === 'number' ? pickBackOdds : parseFloat(pickBackOdds),
-      opponentBackOdds: typeof oppBackOdds === 'number' ? oppBackOdds : parseFloat(oppBackOdds),
-    })
-    : null
 
   const validMarketTrades = (trades) => trades.filter(trade => (
     finiteNumber(trade?.size) > 0 && finiteNumber(trade?.price) > 1 && tradeSide(trade)
@@ -829,17 +827,6 @@ export default function MatchDetail({ sport }) {
     ] : []),
   ]
   const insightRows = metricsPeriod === 'exposure' ? flowRows : periodRows
-  const providerEvidence = matchStartPred?.providerTotalEvidence
-  const activityEvidence = matchStartPred?.reportedActivityEvidence
-  const totalBetEvidence = {
-    team1: snapshot.preMatchTotalBets?.[`team${(snapshot.teamNames || []).indexOf(t1) + 1}`] ?? null,
-    team2: snapshot.preMatchTotalBets?.[`team${(snapshot.teamNames || []).indexOf(t2) + 1}`] ?? null,
-  }
-  const evidence = matchStartPred?.marketEvidence || (matchStartPred?.inPlayPnlEvidence ? {
-    inPlayPnl: matchStartPred.inPlayPnlEvidence, agreeingSignals: 1, signalCount: 1,
-  } : activityEvidence || providerEvidence ? {
-    activity: activityEvidence, provider: providerEvidence, agreeingSignals: 1, signalCount: 1,
-  } : null)
   const percentage = value => Number.isFinite(value) ? `${value.toFixed(0)}%` : '—'
   const formatInsightValue = (row, value) => {
     if (value == null && row.missingLabel) return <small>{row.missingLabel}</small>
@@ -938,8 +925,7 @@ export default function MatchDetail({ sport }) {
         <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
       ) : (
         <div className="match-v2-shell">
-          <MatchReversalNotice advice={exitAdvice} />
-          <MatchPredictionCard prediction={matchStartPred} evidence={evidence} totalBetEvidence={totalBetEvidence} teamNames={[t1, t2]} formatAmount={formatTotalBets} formatPercentage={percentage} />
+          <MatchPredictionCard prediction={matchStartPred} />
           <TotalBetLoadBars markets={[{ label: 'Match Load',
             team1: { name: t1, amount: marketProviderTotals[0] },
             team2: { name: t2, amount: marketProviderTotals[1] } }]} />

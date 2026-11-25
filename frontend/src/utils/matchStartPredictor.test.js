@@ -205,3 +205,16 @@ test('a changed league profile invalidates a previous prediction lock', () => {
   assert.equal(lockMatchStartPrediction(current, previous).winnerName, teamA)
   assert.equal(lockMatchStartPrediction({ ...current, winnerName: teamB }, current).winnerName, teamA)
 })
+
+test('higher positive in-play P/L overrides pre-match totals while live, when flagged, and after completion', () => {
+  const base = {
+    competitionName: 'European Cricket Series',
+    teamNames: ['Brescia Lions', 'Roma Gladiators'],
+    preMatchTotalBets: { team1: 284572.03, team2: 284529.03 },
+    inPlayPnl: { team1: -79.66, team2: 84.49 },
+  }
+  assert.equal(predictMatchStart({ ...base, inPlay: true }).winnerName, 'Roma Gladiators')
+  assert.equal(predictMatchStart({ ...base, inPlay: false, status: 'ended' }).winnerName, 'Roma Gladiators')
+  assert.equal(predictMatchStart({ ...base, inPlay: false, useInPlayPnl: true }).winnerName, 'Roma Gladiators')
+  assert.equal(predictMatchStart({ ...base, inPlay: false, status: 'cancelled' }).winnerName, 'Brescia Lions')
+})

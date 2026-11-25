@@ -172,13 +172,19 @@ function predictProviderTotalMatch(input) {
 
 function predictInPlayPnl(input) {
   const names = input?.teamNames;
-  const inPlay = input?.inPlay === true || /^(live|in-play|inplay)$/i.test(String(input?.status || '').trim());
+  const status = String(input?.status || '').trim().toLowerCase().replace(/[\s_]+/g, '-');
   const pnl = input?.inPlayPnl;
-  if (!inPlay || !Array.isArray(names) || names.length < 2
+  if (!Array.isArray(names) || names.length < 2
     || names.slice(0, 2).some(name => typeof name !== 'string' || !name.trim()) || !pnl) return null;
   const readPnl = value => value == null || String(value).trim() === '' ? null : Number(value);
   const team1 = readPnl(pnl.team1);
   const team2 = readPnl(pnl.team2);
+  const abandoned = /^(cancelled|canceled|abandoned)$/.test(status);
+  const hasInPlayValues = Number.isFinite(team1) && Number.isFinite(team2) && (team1 !== 0 || team2 !== 0);
+  const liveStatus = /^(live|in-play|inplay)$/.test(status);
+  const endedWithLivePnl = /^(ended|verified|pending|completed|closed|result)$/.test(status) && hasInPlayValues;
+  const inPlay = !abandoned && (input?.inPlay === true || liveStatus || endedWithLivePnl || (input?.useInPlayPnl === true && hasInPlayValues));
+  if (!inPlay) return null;
   if (!Number.isFinite(team1) || !Number.isFinite(team2) || team1 === team2) return null;
   const winnerIdx = team1 > team2 ? 0 : 1;
   return {
