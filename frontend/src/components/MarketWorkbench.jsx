@@ -386,14 +386,21 @@ export default function MarketWorkbench({
         </div>
       </section>
 
-      <details className="match-v2-card match-depth-panel" open={isToss}>
+      <details className="match-v2-card match-depth-panel" open>
         <summary className="match-depth-summary">
-          <span><BarChart3 size={16} /><strong>{isToss ? 'Betfair Exchange Toss Graphs' : 'Market depth & trades'}</strong><small>€{formatVolStr(marketVol)} volume</small></span>
+          <span><BarChart3 size={16} /><strong>Betfair Market Graphs</strong><small>€{formatVolStr(marketVol)} matched</small></span>
           <ChevronDown size={16} />
         </summary>
         <div className="match-depth-content">
+          <div className="bf-market-banner">
+            <div>
+              <strong>{t1} v {t2}</strong>
+              {effectiveSnapshot.competitionName && <span> · {effectiveSnapshot.competitionName}</span>}
+            </div>
+            <span>{isToss ? 'Toss Market' : 'Match Odds'}</span>
+          </div>
           <header className="match-depth-toolbar">
-            <div><h2>Recorded trades</h2><p>Filter price history and market depth</p></div>
+            <div><h2>{isToss ? 'Toss Market Graphs' : 'Match Market Graphs'}</h2><p>Odds &amp; Volume, Price/Volume over time, and Exchange Available/Traded ladder</p></div>
             <div className="match-depth-controls">
               <div className="match-period-tabs" aria-label="Trade history range">
                 {[['all', 'All'], ['3h', '3H'], ['1h', '1H']].map(([key, label]) => (

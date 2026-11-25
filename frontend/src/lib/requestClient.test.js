@@ -58,5 +58,11 @@ test('large ladders stay bounded and preserve full scroll height, including afte
     assert.ok(window.end-window.start<=19)
     assert.equal(window.before+(window.end-window.start)*44+window.after,440000)
   }
+  for(const top of [0,700,280000]) {
+    const window=virtualWindow(10000,top,{rowHeight:28,viewport:390,overscan:8})
+    assert.equal(window.before+(window.end-window.start)*28+window.after,280000)
+    assert.ok(window.before<=top)
+    assert.ok(window.before+(window.end-window.start)*28>=Math.min(280000,top+390))
+  }
   assert.deepEqual(virtualWindow(2,440000),{start:0,end:2,before:0,after:0})
 })

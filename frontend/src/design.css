@@ -784,7 +784,7 @@ input[type="search"]::-webkit-search-cancel-button { display: none; }
 .match-depth-controls .match-period-tabs { margin: 0; }
 .match-depth-controls select { min-width: 0; max-width: 180px; background: #fff; border: 1px solid #d6dfeb; border-radius: 6px; padding: 7px 8px; color: #314761; font-size: 11px; }
 .match-session-title { color: #314761; font-size: 12px; margin-bottom: 8px; }
-.match-price-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.match-price-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
 .match-workbench .selection-volume { padding: 10px; border-radius: 8px; }
 .match-workbench .selection-volume__header { margin-bottom: 8px; }
 .match-workbench .selection-volume__header h3 { font-size: 13px; overflow-wrap: anywhere; }
