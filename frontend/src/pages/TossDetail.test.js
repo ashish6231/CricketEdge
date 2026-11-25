@@ -32,7 +32,11 @@ test('toss detail uses the MatchDetail layout and enforces all four exposure val
     assert.match(detailHtml, /Toss Load/)
     assert.match(detailHtml, /Market overview/)
     assert.match(detailHtml, /Period data/)
-    assert.match(detailHtml, /Market depth &amp; trades/)
+    assert.match(detailHtml, /Betfair Exchange Toss Graphs/)
+    assert.match(detailHtml, /Betfair Graph/)
+    assert.match(detailHtml, /Last Price Matched/)
+    assert.match(detailHtml, /Price &amp; Volume/)
+    assert.match(detailHtml, /Weight of money/)
     assert.match(detailHtml, /Bookie P\/L/)
     assert.match(detailHtml, /−€60\.00/)
     assert.match(detailHtml, /\+€60\.00/)
@@ -100,6 +104,24 @@ test('toss detail uses the MatchDetail layout and enforces all four exposure val
     assert.doesNotMatch(render(), /match-v2-prediction/)
     delete snap.teams.Alpha.trades
     assert.doesNotMatch(render(), /match-v2-prediction/)
+
+    const { default: MarketWorkbench } = await vite.ssrLoadModule('/src/components/MarketWorkbench.jsx')
+    const dualSourceSnap = {
+      teamNames: ['Dubai Capitals', 'Desert Vipers'],
+      competitionName: 'International League T20',
+      inPlayPnl: { team1: -633.67, team2: 694.02 },
+      teams: {
+        'Dubai Capitals': { pnlIfWins: -633.67, trades: [{ type: 'back', size: 100, price: 2 }] },
+        'Desert Vipers': { pnlIfWins: 694.02, trades: [] },
+      },
+    }
+    const tossOverviewHtml = renderToStaticMarkup(createElement(MarketWorkbench, { snapshot: dualSourceSnap, isToss: true }))
+    assert.match(tossOverviewHtml, /−€633\.67/)
+    assert.match(tossOverviewHtml, /\+€694\.02/)
+
+    const matchOverviewHtml = renderToStaticMarkup(createElement(MarketWorkbench, { snapshot: dualSourceSnap, isToss: false }))
+    assert.match(matchOverviewHtml, /−€100\.00/)
+    assert.match(matchOverviewHtml, /\+€100\.00/)
   } finally {
     await vite.close()
   }

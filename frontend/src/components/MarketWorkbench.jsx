@@ -7,6 +7,7 @@ import { getPreMatchPeriod } from '../utils/preMatchPeriod'
 import { capturePreMatchExposure } from '../../../server/utils/preMatchExposure.mjs'
 import { processTeamData, getLiveProviderTotals } from '../utils/selectionVolume'
 import {
+  getDirectProviderBookiePl,
   getSettledBookiePl,
   splitMatchOutcomes,
   finiteNumber,
@@ -147,7 +148,9 @@ export default function MarketWorkbench({
   const formatStakeVolume = value => value == null ? 'Unavailable' : `€${fmt(value)}`
   const exactStakeVolume = value => value == null ? 'Unavailable' : `€${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 
-  const { pl1, pl2, plDraw } = getSettledBookiePl(effectiveSnapshot, t1, t2, drawName)
+  const { pl1, pl2, plDraw } = isToss
+    ? getDirectProviderBookiePl(effectiveSnapshot, t1, t2, drawName)
+    : getSettledBookiePl(effectiveSnapshot, t1, t2, drawName)
 
   const validMarketTrades = (trades) => trades.filter(trade => (
     finiteNumber(trade?.size) > 0 && finiteNumber(trade?.price) > 1 && tradeSide(trade)
@@ -383,9 +386,9 @@ export default function MarketWorkbench({
         </div>
       </section>
 
-      <details className="match-v2-card match-depth-panel">
+      <details className="match-v2-card match-depth-panel" open={isToss}>
         <summary className="match-depth-summary">
-          <span><BarChart3 size={16} /><strong>Market depth &amp; trades</strong><small>€{formatVolStr(marketVol)} volume</small></span>
+          <span><BarChart3 size={16} /><strong>{isToss ? 'Betfair Exchange Toss Graphs' : 'Market depth & trades'}</strong><small>€{formatVolStr(marketVol)} volume</small></span>
           <ChevronDown size={16} />
         </summary>
         <div className="match-depth-content">

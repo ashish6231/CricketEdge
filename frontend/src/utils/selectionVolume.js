@@ -174,6 +174,29 @@ export function processTeamData(name, teamData, timeFilter = 'all', runner = nul
   const lastPrice = chronological.at(-1)?.price ?? null
   const previous = chronological.findLast(t => t.price !== lastPrice)?.price ?? lastPrice
   const known = available && (timeFilter === 'all' || missingTimes === 0 || times.length > 0)
+  const timeSeries = chronological.map((t, index, list) => {
+    const windowStart = Math.max(0, index - 2)
+    const slice = list.slice(windowStart, index + 1)
+    const ma = Number((slice.reduce((sum, item) => sum + item.price, 0) / slice.length).toFixed(3))
+    const probability = t.price > 0 ? Number((100 / t.price).toFixed(1)) : null
+    const maProb = probability != null
+      ? Number((slice.reduce((sum, item) => sum + (item.price > 0 ? 100 / item.price : 0), 0) / slice.length).toFixed(1))
+      : null
+    const d = new Date(t.timestamp)
+    return {
+      time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      fullTime: d.toLocaleString([], { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      timestamp: t.timestamp,
+      price: t.price,
+      ma,
+      probability,
+      maProb,
+      volume: t.size,
+      backVol: t.side === 'back' ? t.size : 0,
+      layVol: t.side === 'lay' ? t.size : 0,
+      side: t.side,
+    }
+  })
   return {
     name, available: known, invalid, missingTimes, timeFilter,
     totalBack: known ? totalBack : null, totalLay: known ? totalLay : null,
@@ -184,6 +207,6 @@ export function processTeamData(name, teamData, timeFilter = 'all', runner = nul
     liquidityBook,
     liquidityAvailable: liquidity.available || recordedLevelBook.length > 0,
     liquiditySource: liquidity.available ? 'live' : recordedLevelBook.length ? 'recorded-level' : 'unavailable',
-    timeSeries: chronological.map(t => ({ time: new Date(t.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), price: t.price, volume: t.size })),
+    timeSeries,
   }
 }

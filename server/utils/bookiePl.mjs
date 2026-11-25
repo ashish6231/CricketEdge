@@ -291,6 +291,35 @@ export function getSettledBookiePl(snap, team1, team2, drawName = null) {
   return resultFor(byName, selected, 'per-odds-trades', { verified: true })
 }
 
+/**
+ * Direct provider P/L from tennisliveload (teams[].pnlIfWins, falling back to
+ * inPlayPnl), intentionally bypassing buggy deepMetrics.simplePL and falling back
+ * to full trade settlement when direct API P/L fields are absent.
+ */
+export function getDirectProviderBookiePl(snap, team1, team2, drawName = null) {
+  const selected = [team1, team2, ...(drawName ? [drawName] : [])]
+  if (!snap || snap.error || snap._seeded) {
+    return resultFor({}, selected, 'unavailable', { verified: false, reason: 'Snapshot P/L is unavailable.' })
+  }
+
+  const teamNames = Array.isArray(snap.teamNames) ? snap.teamNames : []
+  const byName = {}
+  for (const name of selected) {
+    const teamIndex = teamNames.indexOf(name)
+    const periodKey = teamIndex >= 0 ? `team${teamIndex + 1}` : null
+    const direct = finiteNumber(
+      snap.teams?.[name]?.pnlIfWins ?? (periodKey ? snap.inPlayPnl?.[periodKey] : null),
+    )
+    if (direct != null) byName[name] = direct
+  }
+
+  if (selected.every((name) => byName[name] != null)) {
+    return resultFor(byName, selected, 'tennisliveload', { verified: false })
+  }
+
+  return getSettledBookiePl(snap, team1, team2, drawName)
+}
+
 /** Exact pre-match settlement P/L, using odds-bearing trades only when they
  * fully reconcile to the provider Back/Lay totals shown for every outcome. */
 export function getBookiePlFromPreMatchTrades(snap, team1, team2, drawName = null, {

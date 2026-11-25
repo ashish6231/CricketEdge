@@ -6,6 +6,7 @@ import {
   calcBookiePlMulti,
   calcBookiePlFromTrades,
   getBookiePl,
+  getDirectProviderBookiePl,
   getSettledBookiePl,
 } from './bookiePl.js'
 
@@ -125,4 +126,42 @@ test('getSettledBookiePl supports 3-way markets with Draw and guards incomplete 
     teams: { India: { trades: [] }, England: { trades: [] } },
   }
   assert.equal(getSettledBookiePl(emptyComplete, 'India', 'England').pl1, 0)
+})
+
+test('getDirectProviderBookiePl prefers pnlIfWins and inPlayPnl over simplePL and falls back to trades', () => {
+  const fromPnlIfWins = {
+    teamNames: ['Dubai Capitals', 'Desert Vipers'],
+    deepMetrics: { simplePL: { team1_win: -682.63, team2_win: -28.65 } },
+    inPlayPnl: { team1: 10, team2: -10 },
+    teams: {
+      'Dubai Capitals': { pnlIfWins: -633.67, trades: [{ type: 'back', size: 100, price: 2 }] },
+      'Desert Vipers': { pnlIfWins: 694.02, trades: [] },
+    },
+  }
+  const direct = getDirectProviderBookiePl(fromPnlIfWins, 'Dubai Capitals', 'Desert Vipers')
+  assert.equal(direct.pl1, -633.67)
+  assert.equal(direct.pl2, 694.02)
+  assert.equal(direct.source, 'tennisliveload')
+
+  const fromInPlayPnl = {
+    teamNames: ['Dubai Capitals', 'Desert Vipers'],
+    inPlayPnl: { team1: 111.5, team2: -74.25 },
+    teams: { 'Dubai Capitals': { trades: [] }, 'Desert Vipers': { trades: [] } },
+  }
+  const liveDirect = getDirectProviderBookiePl(fromInPlayPnl, 'Dubai Capitals', 'Desert Vipers')
+  assert.equal(liveDirect.pl1, 111.5)
+  assert.equal(liveDirect.pl2, -74.25)
+  assert.equal(liveDirect.source, 'tennisliveload')
+
+  const fallbackTrades = {
+    teamNames: ['Dubai Capitals', 'Desert Vipers'],
+    teams: {
+      'Dubai Capitals': { trades: [{ type: 'back', size: 100, price: 2 }] },
+      'Desert Vipers': { trades: [] },
+    },
+  }
+  const calculated = getDirectProviderBookiePl(fallbackTrades, 'Dubai Capitals', 'Desert Vipers')
+  assert.equal(calculated.pl1, -100)
+  assert.equal(calculated.pl2, 100)
+  assert.equal(calculated.source, 'per-odds-trades')
 })

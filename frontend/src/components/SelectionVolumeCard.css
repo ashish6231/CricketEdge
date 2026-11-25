@@ -26,5 +26,41 @@
 .selection-volume__table tbody .selection-volume__back-cell { background: #d9f0fc; color: #075985; }
 .selection-volume__table tbody .selection-volume__lay-cell { background: #ffe1e8; color: #9f1239; }
 .selection-volume__chart { height: 290px; margin-top: 12px; }
+.selection-volume__chart--betfair { height: 280px; margin-top: 6px; }
+.selection-volume__figure { margin: 0; }
+.visually-hidden:where(:not(:focus-within, :active)) { position: absolute !important; clip-path: inset(50%) !important; overflow: hidden !important; width: 1px !important; height: 1px !important; margin: -1px !important; padding: 0 !important; border: 0 !important; white-space: nowrap !important; }
+.selection-volume--betfair { container: bf-card / inline-size; background: #fbfcfe; border-color: #cbd5e1; }
+.bf-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; }
+.bf-header__title { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-inline-size: 0; }
+.bf-header__title h3 { font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; overflow-wrap: break-word; }
+.bf-badge { display: inline-flex; align-items: center; background: #ffb80c; color: #1e293b; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; padding: 3px 7px; border-radius: 5px; }
+.bf-trend { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; background: #f1f5f9; color: #334155; }
+.bf-trend--dropping { background: #dcfce7; color: #166534; }
+.bf-trend--rising { background: #fee2e2; color: #991b1b; }
+.bf-kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 10px; }
+.bf-kpi { background: #fff; border: 1px solid #e2e8f0; border-radius: 9px; padding: 9px 10px; min-inline-size: 0; }
+.bf-kpi--ltp { background: #fffbeb; border-color: #fde68a; }
+.bf-kpi dt { font-size: 10px; font-weight: 650; color: #64748b; margin-bottom: 3px; }
+.bf-kpi dd { margin: 0; font-size: 13px; font-weight: 800; color: #0f172a; font-variant-numeric: tabular-nums; overflow-wrap: break-word; }
+.bf-kpi dd span { font-size: 11px; font-weight: 650; color: #475569; }
+.bf-wom { margin-bottom: 12px; }
+.bf-wom__labels { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px; font-size: 11px; font-weight: 700; margin-bottom: 5px; font-variant-numeric: tabular-nums; }
+.bf-wom__back-label { color: #075985; }
+.bf-wom__lay-label { color: #9f1239; }
+.bf-wom__track { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: #e2e8f0; }
+.bf-wom__back-fill { background: #72bbef; }
+.bf-wom__lay-fill { background: #faa9ba; }
+.bf-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.bf-toolbar__options { display: flex; flex-wrap: wrap; gap: 6px; }
+.bf-chip { min-block-size: 24px; min-inline-size: 24px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 9px; font-size: 11px; font-weight: 650; color: #334155; background: #fff; cursor: pointer; }
+.bf-chip[aria-pressed="true"] { background: #1e3a8a; border-color: #1e3a8a; color: #fff; }
+.selection-volume__switch button { min-block-size: 24px; min-inline-size: 24px; }
+@media (pointer: coarse) { .bf-chip, .selection-volume__switch button { min-block-size: 44px; min-inline-size: 44px; padding: 6px 12px; } }
+@container bf-card (inline-size < 420px) { .bf-kpis { grid-template-columns: 1fr; } }
+.bf-tooltip { background: #0f172a; color: #f8fafc; border-radius: 8px; padding: 9px 11px; font-size: 11px; box-shadow: 0 8px 20px #0f172a30; min-inline-size: 170px; }
+.bf-tooltip__time { color: #94a3b8; font-size: 10px; margin-bottom: 5px; }
+.bf-tooltip__row { display: flex; justify-content: space-between; gap: 12px; margin-top: 3px; font-variant-numeric: tabular-nums; }
+.bf-tooltip__back { color: #72bbef; }
+.bf-tooltip__lay { color: #faa9ba; }
 .selection-volume__empty { padding: 40px 12px; color: #68738c; text-align: center; font-size: 13px; }
 @media (max-width: 480px) { .selection-volume { padding: 10px; } .selection-volume__summary { padding: 12px; } .selection-volume__summary > div { font-size: 12px; } .selection-volume__table { font-size: 11px; } .selection-volume__table th, .selection-volume__table td { padding: 10px 6px; } }
