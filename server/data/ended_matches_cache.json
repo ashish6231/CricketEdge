@@ -10529,6 +10529,27 @@
     "runners": [],
     "totalMatched": 210990
   },
+  "36353390": {
+    "matchLoad": {
+      "team1": {
+        "name": "Dubai Capitals",
+        "money": 52962088,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Desert Vipers",
+        "money": 36182666,
+        "percent": 0,
+        "odds": 820,
+        "trend": "down"
+      },
+      "totalMatched": 89144754
+    },
+    "runners": [],
+    "totalMatched": 89144754
+  },
   "36353838": {
     "matchLoad": {
       "team1": {

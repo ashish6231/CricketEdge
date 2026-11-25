@@ -258,6 +258,39 @@ export function getBookiePlFromMatchedTrades(snap, team1, team2) {
   }, selected, 'per-odds-trades', { verified: true, stats })
 }
 
+/**
+ * Full bookmaker settlement P/L (2-way or 3-way with Draw) computed directly
+ * from every matched bet placed on the market:
+ *   Winner = (-BackLiab_winner + LayLiab_winner) + sum_{other} (BackStake_other - LayStake_other)
+ */
+export function getSettledBookiePl(snap, team1, team2, drawName = null) {
+  const selected = [team1, team2, ...(drawName ? [drawName] : [])]
+  if (!snap || snap.error || snap._seeded) {
+    return resultFor({}, selected, 'unavailable', { verified: false, reason: 'Snapshot trades are unavailable.' })
+  }
+
+  const tradeMap = {}
+  for (const name of selected) {
+    const trades = snap.teams?.[name]?.trades
+    if (!Array.isArray(trades)) {
+      return resultFor({}, selected, 'unavailable', { verified: false, reason: 'Complete per-odds trades are unavailable.' })
+    }
+    tradeMap[name] = trades
+  }
+
+  const hasAnyTrade = selected.some((name) => tradeMap[name].length > 0)
+  if (!hasAnyTrade && snap.tradesComplete !== true) {
+    return resultFor({}, selected, 'unavailable', { verified: false, reason: 'No matched bets recorded yet.' })
+  }
+
+  const byName = calcBookiePlMulti(tradeMap)
+  if (selected.some((name) => byName[name] == null)) {
+    return resultFor({}, selected, 'unavailable', { verified: false, reason: 'One or more per-odds trades are malformed.' })
+  }
+
+  return resultFor(byName, selected, 'per-odds-trades', { verified: true })
+}
+
 /** Exact pre-match settlement P/L, using odds-bearing trades only when they
  * fully reconcile to the provider Back/Lay totals shown for every outcome. */
 export function getBookiePlFromPreMatchTrades(snap, team1, team2, drawName = null, {
