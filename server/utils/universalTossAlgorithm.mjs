@@ -1,95 +1,150 @@
 import { getCurrentProviderTotals, getExplicitPreMatchProviderTotals } from './providerTotals.mjs';
-import { getSimpleBookiePl, getMarketExposureFromTrades } from './bookiePl.mjs';
-import { resolveInternationalMatchLeague } from './providerTotalMatchPredictor.mjs';
+import { getDirectProviderBookiePl, getMarketExposureFromTrades, tradeSide } from './bookiePl.mjs';
 
-export const UNIVERSAL_TOSS_VERSION = 'toss-v18-league-net-exposure-simple-pl';
+export const UNIVERSAL_TOSS_VERSION = 'toss-v19-peak-odd-lower-traded-volume';
 
 export const INCOMPLETE_TOSS_DATA_MESSAGE = "Prediction data is incomplete, can't predict.";
 
-/** Competition metadata determines the exception; domestic women's leagues stay lower. */
-export function usesHigherTossExposure(snapshot, competition = '') {
-  const explicit = typeof competition === 'object' && competition !== null
-    ? competition.competitionName || competition.seriesName || '' : competition;
-  const name = String(explicit || snapshot?.competitionName || snapshot?.seriesName || '');
-  const key = name.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/20\d{2}$/, '');
-  return /^(?:wbbl|womens?bigbash(?:league)?)$/.test(key)
-    || !!resolveInternationalMatchLeague(name)
-    || (/\binternationals?\b/i.test(name) && !/\bleague\b/i.test(name));
-}
-
-const finite = value => value == null || !['number','string'].includes(typeof value) || String(value).trim() === ''
+const finite = value => value == null || !['number', 'string'].includes(typeof value) || String(value).trim() === ''
   ? null : Number.isFinite(Number(value)) ? Number(value) : null;
 const validNames = names => Array.isArray(names) && names.length === 2
   && names.every(name => typeof name === 'string' && name.trim())
   && names[0].trim().toLowerCase() !== names[1].trim().toLowerCase();
-const validPair = values => Array.isArray(values) && values.length === 2 && values.every(value => value != null && value >= 0 && Number.isFinite(value));
 
-const positivePair = values => validPair(values) && values.every(value => value > 0);
-
-/** All four back/lay exposure values must be positive before selecting a winner. */
-export function selectTossWinner({teamNames, risk, selection = 'lower'} = {}) {
-  if (!validNames(teamNames) || !positivePair(risk?.back) || !positivePair(risk?.lay)) return null;
-  const netExposure = risk.back.map((back,index) => finite(back - risk.lay[index]));
-  if (netExposure.some(value => value == null) || netExposure[0] === netExposure[1]) return null;
-  // Compare signed values: negative net exposure and a balanced net of zero are valid.
-  const winnerIdx = selection === 'higher' ? (netExposure[0] > netExposure[1] ? 0 : 1) : (netExposure[0] < netExposure[1] ? 0 : 1);
-  return {winner:teamNames[winnerIdx],winnerIdx,netExposure};
+/**
+ * Group valid trades by odd (price) and return the price level with the
+ * highest Total Traded volume (`back + lay`).
+ */
+export function getPeakTradedOdd(trades) {
+  if (!Array.isArray(trades) || trades.length === 0) return null;
+  const byPrice = new Map();
+  for (const trade of trades) {
+    const price = finite(trade?.price);
+    const size = finite(trade?.size);
+    const side = tradeSide(trade);
+    if (price == null || price <= 1 || size == null || size <= 0 || !side) continue;
+    byPrice.set(price, (byPrice.get(price) || 0) + size);
+  }
+  if (!byPrice.size) return null;
+  let peak = null;
+  for (const [price, traded] of [...byPrice.entries()].sort((a, b) => a[0] - b[0])) {
+    if (!peak || traded > peak.traded) peak = { price, traded };
+  }
+  return peak;
 }
 
-export function getTossRuleInputs(snapshot, competition = '') {
+/** Pick the team whose highest-traded-volume odd has the LOWER traded amount. */
+export function selectTossWinner({ teamNames, peaks } = {}) {
+  if (!validNames(teamNames) || !Array.isArray(peaks) || peaks.length !== 2) return null;
+  if (!peaks[0] || !peaks[1] || !(peaks[0].traded > 0) || !(peaks[1].traded > 0)) return null;
+  if (peaks[0].traded === peaks[1].traded) return null;
+  const winnerIdx = peaks[0].traded < peaks[1].traded ? 0 : 1;
+  return { winner: teamNames[winnerIdx], winnerIdx, peaks };
+}
+
+export function getTossRuleInputs(snapshot) {
   const teamNames = snapshot?.teamNames;
   const providerTotals = getCurrentProviderTotals(snapshot) || getExplicitPreMatchProviderTotals(snapshot);
-  const displayedPl = getSimpleBookiePl(snapshot,teamNames?.[0],teamNames?.[1]);
-  const pl = [finite(displayedPl.pl1),finite(displayedPl.pl2)];
-  // Net exposure is the same Back risk − Lay risk displayed on TossDetail.
-  const exposure = getMarketExposureFromTrades(snapshot,teamNames?.[0],teamNames?.[1]);
+  const displayedPl = getDirectProviderBookiePl(snapshot, teamNames?.[0], teamNames?.[1]);
+  const pl = [finite(displayedPl.pl1), finite(displayedPl.pl2)];
+  const exposure = getMarketExposureFromTrades(snapshot, teamNames?.[0], teamNames?.[1]);
   const risk = {
-    back:[finite(exposure.team1.backExposure),finite(exposure.team2.backExposure)],
-    lay:[finite(exposure.team1.layExposure),finite(exposure.team2.layExposure)],
+    back: [finite(exposure.team1.backExposure), finite(exposure.team2.backExposure)],
+    lay: [finite(exposure.team1.layExposure), finite(exposure.team2.layExposure)],
   };
-  risk.net = [0,1].map(index => risk.back[index] != null && risk.lay[index] != null
+  risk.net = [0, 1].map(index => risk.back[index] != null && risk.lay[index] != null
     ? finite(risk.back[index] - risk.lay[index]) : null);
-  risk.available = positivePair(risk.back) && positivePair(risk.lay) && risk.net.every(value => value != null);
+  const peaks = validNames(teamNames)
+    ? teamNames.map(name => getPeakTradedOdd(snapshot?.teams?.[name]?.trades))
+    : [null, null];
   const rule = {
-    mode:'risk',selection:usesHigherTossExposure(snapshot,competition) ? 'higher' : 'lower',
-    requirePositivePl:false,signalCount:1,predictorVersion:UNIVERSAL_TOSS_VERSION,
+    mode: 'peak-odd-volume',
+    selection: 'lower',
+    requirePositivePl: false,
+    signalCount: 1,
+    predictorVersion: UNIVERSAL_TOSS_VERSION,
   };
-  const available = !snapshot?.error && validNames(teamNames) && risk.available;
-  return {teamNames,providerTotals,pl,risk,netExposure:risk.net,period:'current',rule,
-    mode:rule.mode,selection:rule.selection,requirePositivePl:false,available,unavailableReason:available ? null : INCOMPLETE_TOSS_DATA_MESSAGE};
+  const available = !snapshot?.error && validNames(teamNames) && Boolean(peaks[0] && peaks[1]);
+  return {
+    teamNames,
+    peaks,
+    providerTotals,
+    pl,
+    risk,
+    netExposure: risk.net,
+    period: 'current',
+    rule,
+    mode: rule.mode,
+    selection: rule.selection,
+    requirePositivePl: false,
+    available,
+    unavailableReason: available ? null : INCOMPLETE_TOSS_DATA_MESSAGE,
+  };
 }
 
-/** WBBL and internationals select higher net exposure; other leagues select lower. */
-export function getUniversalTossPrediction(snapshot, competition = '') {
-  const inputs = getTossRuleInputs(snapshot,competition);
-  const direction = inputs.selection;
-  const upper = direction.toUpperCase();
+/** Predict toss winner using lower peak-odd traded volume across all leagues. */
+export function getUniversalTossPrediction(snapshot, _competition = '') {
+  const inputs = getTossRuleInputs(snapshot);
   const metadata = {
-    predictorVersion:UNIVERSAL_TOSS_VERSION,
-    tier:`UNIVERSAL_TOSS_${upper}_NET_EXPOSURE`,
-    algoName:`${direction === 'higher' ? 'Higher' : 'Lower'} Net Exposure Toss Algorithm`,
-    ruleFamily:`${direction}-net-back-minus-lay-exposure`,
-    validation:'unvalidated-league-exposure-rule',trainingSamples:0,
-    validationNote:'WBBL and international matches select higher net exposure (back minus lay). All other leagues select lower net exposure. Future accuracy is unvalidated.',
-    inputTiming:'current-displayed-back-and-lay-risk',usedFallback:false,
+    predictorVersion: UNIVERSAL_TOSS_VERSION,
+    tier: 'UNIVERSAL_TOSS_LOWER_PEAK_ODD_VOLUME',
+    algoName: 'Lower Peak-Odd Traded Volume Toss Algorithm',
+    ruleFamily: 'lower-peak-odd-traded-volume',
+    validation: 'unvalidated-peak-odd-volume-rule',
+    trainingSamples: 0,
+    validationNote: 'Selects the odd with the highest traded volume for each team and predicts the team with the lower peak traded volume.',
+    inputTiming: 'current-per-odd-traded-volume',
+    usedFallback: false,
   };
   const pick = inputs.available ? selectTossWinner(inputs) : null;
-  if (!pick) return {...metadata,winner:null,winnerName:null,abstain:true,
-    reason:inputs.unavailableReason || 'No pick: net exposure is equal for both teams.'};
-  const {winner,winnerIdx} = pick;
-  const {providerTotals,pl,risk} = inputs;
-  const reason = `${winner} has the ${direction} net exposure (${risk.back[winnerIdx].toFixed(2)} back − ${risk.lay[winnerIdx].toFixed(2)} lay = ${risk.net[winnerIdx].toFixed(2)} vs ${risk.net[1-winnerIdx].toFixed(2)}).`;
-  const signals = [{label:'Net exposure (Back − Lay)',sublabel:`${direction === 'higher' ? 'Higher' : 'Lower'} net exposure selects the winner`,active:true,
-    v1:risk.net[0].toFixed(2),v2:risk.net[1].toFixed(2),winnerWins:true}];
-  return {...metadata,winner,winnerName:winner,winnerIdx,reason,
-    pattern:`${upper}_NET_BACK_MINUS_LAY_EXPOSURE`,verdictTag:`${upper} NET EXPOSURE`,
-    confidence:{label:'Rule support; future accuracy unvalidated',color:'text-yellow-500',pct:'Uncalibrated',calibrated:false},
-    confidenceCalibrated:false,
-    risk:{tier:'unvalidated',label:'Risk unvalidated',shortLabel:'Unvalidated',wrongPct:'Uncalibrated',calibrated:false,note:metadata.validationNote},
-    algorithmEvidence:{risk,providerTotal:{team1:providerTotals?.[0] ?? null,team2:providerTotals?.[1] ?? null},
-      pl:{team1:pl[0],team2:pl[1]},winnerIdx,signalCount:1,mode:inputs.mode,
-      selection:direction,plFormula:'lay-stake-minus-back-exposure',requirePositivePl:false,inputSource:'toss-current-display'},
-    signals,activeSignals:1,metrics:{t1:inputs.teamNames[0],t2:inputs.teamNames[1]},
-    matchedRules:[{reason,winner,priority:100,selected:true}],
+  if (!pick) {
+    return {
+      ...metadata,
+      winner: null,
+      winnerName: null,
+      abstain: true,
+      reason: inputs.unavailableReason || 'No pick: peak-odd traded volume is equal for both teams.',
+    };
+  }
+  const { winner, winnerIdx, peaks } = pick;
+  const { providerTotals, pl, risk } = inputs;
+  const winPeak = peaks[winnerIdx];
+  const losePeak = peaks[1 - winnerIdx];
+  const reason = `${winner} has the lower peak-odd traded volume (${winPeak.traded.toFixed(2)} @ ${winPeak.price.toFixed(2)} vs ${losePeak.traded.toFixed(2)} @ ${losePeak.price.toFixed(2)}).`;
+  const signals = [{
+    label: 'Peak-odd traded volume',
+    sublabel: 'Team with lower highest-traded-odd volume wins the prediction',
+    active: true,
+    v1: `${peaks[0].traded.toFixed(2)} @ ${peaks[0].price.toFixed(2)}`,
+    v2: `${peaks[1].traded.toFixed(2)} @ ${peaks[1].price.toFixed(2)}`,
+    winnerWins: true,
+  }];
+  return {
+    ...metadata,
+    winner,
+    winnerName: winner,
+    winnerIdx,
+    reason,
+    pattern: 'LOWER_PEAK_ODD_TRADED_VOLUME',
+    verdictTag: 'LOWER PEAK ODD VOLUME',
+    confidence: { label: 'Rule support; future accuracy unvalidated', color: 'text-yellow-500', pct: 'Uncalibrated', calibrated: false },
+    confidenceCalibrated: false,
+    risk: { tier: 'unvalidated', label: 'Risk unvalidated', shortLabel: 'Unvalidated', wrongPct: 'Uncalibrated', calibrated: false, note: metadata.validationNote },
+    algorithmEvidence: {
+      peaks,
+      risk,
+      providerTotal: { team1: providerTotals?.[0] ?? null, team2: providerTotals?.[1] ?? null },
+      pl: { team1: pl[0], team2: pl[1] },
+      winnerIdx,
+      signalCount: 1,
+      mode: inputs.mode,
+      selection: 'lower',
+      requirePositivePl: false,
+      inputSource: 'toss-current-display',
+    },
+    signals,
+    activeSignals: 1,
+    metrics: { t1: inputs.teamNames[0], t2: inputs.teamNames[1] },
+    matchedRules: [{ reason, winner, priority: 100, selected: true }],
   };
 }
