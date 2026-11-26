@@ -30,10 +30,16 @@ function finiteNumber(value) {
   return Number.isFinite(number) ? number : null
 }
 
+/**
+ * Betfair Exchange LINE markets use:
+ *   - `back` = SELL line = UNDER (NO): customer wins when score <= line
+ *   - `lay`  = BUY line  = OVER (YES): customer wins when score > line
+ * Explicit Fancy labels (`yes` / `no`) map directly.
+ */
 function sessionSide(trade) {
   const side = String(trade?.type || trade?.side || '').trim().toLowerCase()
-  if (side === 'back' || side === 'b' || side === 'yes') return 'yes'
-  if (side === 'lay' || side === 'l' || side === 'no') return 'no'
+  if (side === 'yes' || side === 'lay' || side === 'l') return 'yes'
+  if (side === 'no' || side === 'back' || side === 'b') return 'no'
   return null
 }
 
@@ -97,6 +103,26 @@ export function calcSessionPlAtScore(lines, score) {
   return calcSessionPlBreakdown(lines, score).pl
 }
 
+/** Compare bookie outcomes across a target run line: NO (<= lineScore) vs YES (> lineScore). */
+export function summarizeLineOutcome(lines, lineScore) {
+  if (!Array.isArray(lines) || !lines.length || !Number.isSafeInteger(lineScore) || lineScore < 0) {
+    return null
+  }
+  const noSide = calcSessionPlBreakdown(lines, lineScore)
+  const yesSide = calcSessionPlBreakdown(lines, lineScore + 1)
+  if (noSide.pl == null || yesSide.pl == null) return null
+  const edge = roundMoney(yesSide.pl - noSide.pl)
+  const favoredSide = edge > 0 ? 'YES' : edge < 0 ? 'NO' : 'EVEN'
+  return {
+    line: lineScore,
+    yesFrom: lineScore + 1,
+    noSide,
+    yesSide,
+    favoredSide,
+    advantage: Math.abs(edge),
+  }
+}
+
 /** Full outcome domain: 0 through the last threshold, plus a constant upper tail.
  * All scores >= the final row have identical settlement; no higher lines remain.
  */
@@ -149,9 +175,11 @@ export function formatVolStr(val) {
 }
 
 export function fmtRs(n) {
-  if (n === null || n === undefined) return '—'
-  const sign = n >= 0 ? '+' : ''
-  return `${sign}€${formatVolStr(n)}`
+  if (n === null || n === undefined || !Number.isFinite(Number(n))) return '—'
+  const num = Number(n)
+  if (num === 0) return '€0.00'
+  const sign = num > 0 ? '+' : '−'
+  return `${sign}€${formatVolStr(Math.abs(num))}`
 }
 
 const LIQUIDITY = {
@@ -176,16 +204,30 @@ export function computeSessionMetrics(oddsItem, trades = [], marketSummary = nul
   const lines = buildLinesFromTrades(marketTrades)
   const canCalculatePl = lines.length > 0 && invalidTradeCount === 0
 
-  const oddsYes = finiteNumber(oddsItem.bestYes)
-  const oddsNo = finiteNumber(oddsItem.bestNo)
-  let bestYes = oddsYes != null && oddsYes > 0 ? oddsYes : null
-  let bestNo = oddsNo != null && oddsNo > 0 ? oddsNo : null
+  // TLL feeds Betfair `availableToBack` (SELL/Under = NO) as `bestYes` and
+  // `availableToLay` (BUY/Over = YES) as `bestNo`. Un-invert Betfair LINE quotes
+  // so `bestNo` is ALWAYS <= `bestYes` (Indian Fancy style: NO left, YES right).
+  const explicitNo = finiteNumber(oddsItem.noLine)
+  const explicitYes = finiteNumber(oddsItem.yesLine)
+  const rawBack = finiteNumber(oddsItem.bestYes)
+  const rawLay = finiteNumber(oddsItem.bestNo)
+  const alreadyFancyOrder = rawBack != null && rawBack > 0 && rawLay != null && rawLay > 0 && rawBack > rawLay
+  let bestNo = explicitNo != null && explicitNo > 0
+    ? explicitNo
+    : alreadyFancyOrder
+      ? rawLay
+      : (rawBack != null && rawBack > 0 ? rawBack : null)
+  let bestYes = explicitYes != null && explicitYes > 0
+    ? explicitYes
+    : alreadyFancyOrder
+      ? rawBack
+      : (rawLay != null && rawLay > 0 ? rawLay : null)
 
-  if (bestYes == null && lines.length) {
-    bestYes = lines.reduce((best, l) => (l.yes > 0 && (best == null || l.price > best) ? l.price : best), null)
-  }
   if (bestNo == null && lines.length) {
     bestNo = lines.reduce((best, l) => (l.no > 0 && (best == null || l.price < best) ? l.price : best), null)
+  }
+  if (bestYes == null && lines.length) {
+    bestYes = lines.reduce((best, l) => (l.yes > 0 && (best == null || l.price > best) ? l.price : best), null)
   }
 
   // This is a quote midpoint, not a score prediction.
@@ -195,7 +237,7 @@ export function computeSessionMetrics(oddsItem, trades = [], marketSummary = nul
   // A quote midpoint or profitable outcome is not a run prediction.
   const predicted = null
 
-  const gap = bestYes != null && bestNo != null ? bestNo - bestYes : null
+  const gap = bestYes != null && bestNo != null ? Math.abs(bestYes - bestNo) : null
   const plRowsFull = canCalculatePl ? computePlRows(lines, { full: true, bestYes, bestNo }) : []
   const plRows = canCalculatePl
     ? computePlRows(lines, { bestYes, bestNo, marketMid, over: parsed.over })
@@ -203,6 +245,10 @@ export function computeSessionMetrics(oddsItem, trades = [], marketSummary = nul
   const bestPlRow = plRowsFull.length
     ? plRowsFull.reduce((best, r) => (r.pl > best.pl ? r : best), plRowsFull[0])
     : null
+  const totalYes = roundMoney(lines.reduce((s, l) => s + l.yes, 0))
+  const totalNo = roundMoney(lines.reduce((s, l) => s + l.no, 0))
+  const yesBets = lines.reduce((s, l) => s + l.yesBets, 0)
+  const noBets = lines.reduce((s, l) => s + l.noBets, 0)
   const totalVol = lines.reduce((s, l) => s + l.totalVol, 0)
   const tradeCount = lines.reduce((sum, line) => sum + line.betCount, 0)
   const providerVolume = finiteNumber(
@@ -244,6 +290,10 @@ export function computeSessionMetrics(oddsItem, trades = [], marketSummary = nul
     canCalculatePl,
     hasTrades: lines.length > 0,
     tradeCount,
+    totalYes,
+    totalNo,
+    yesBets,
+    noBets,
     totalVol,
     providerVolume,
     providerTradeCount,

@@ -54,8 +54,7 @@
    Betfair Market Graph card  (isToss / exchange view, isSession = false)
    Mobile-first: single column.  Wide screen → two-column via @container.
 ───────────────────────────────────────────────────────────────────────────── */
-.selection-volume--bf-split {
-  container: bf-card / inline-size;
+.selection-volume.selection-volume--bf-split {
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -195,11 +194,17 @@
   flex-shrink: 0;
 }
 
-/* ── Right panel: ladder ── */
+/* ── Right panel: ladder (hidden by default on mobile unless Price Ladder tab is active) ── */
+.bf-split-left.is-hidden-mobile {
+  display: none;
+}
 .bf-split-right {
   min-width: 0;
-  display: flex;
+  display: none;
   flex-direction: column;
+}
+.bf-split-right.is-active-mobile {
+  display: flex;
 }
 .bf-right-head {
   display: flex;
@@ -227,6 +232,7 @@
   cursor: pointer;
 }
 .bf-ladder-scroll {
+  max-height: 390px;
   overflow: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -279,10 +285,10 @@
 .bf-tooltip__lay { color: #be123c; }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   Wide screen: two-column layout (card is wide enough)
+   Wide screen: two-column layout
 ───────────────────────────────────────────────────────────────────────────── */
-@container bf-card (inline-size >= 700px) {
-  .selection-volume--bf-split {
+@media (min-width: 760px) {
+  .selection-volume.selection-volume--bf-split {
     display: grid;
     grid-template-columns: minmax(290px, .44fr) minmax(0, .56fr);
     grid-template-rows: auto 1fr auto;
@@ -297,6 +303,7 @@
     border-right: 1px solid #e2e8f0;
   }
   .bf-split-right {
+    display: flex;
     grid-column: 2;
     grid-row: 2;
   }
@@ -307,23 +314,19 @@
     grid-column: 1 / -1;
     grid-row: 3;
   }
-  /* On wide layout, ladder is always visible — hide the "Price Ladder" tab */
-  .bf-tab-ladder { display: none; }
-  .bf-split-left.is-hidden-mobile { display: flex; }
-  .bf-split-right { display: flex; }
+  /* Price Ladder tab expands the ladder full width */
+  .bf-split-left.is-hidden-mobile { display: none; }
+  .bf-split-right.is-active-mobile { grid-column: 1 / -1; }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
    Mobile: single column, toggle between chart view and ladder view
 ───────────────────────────────────────────────────────────────────────────── */
-@container bf-card (inline-size < 700px) {
-  .bf-split-left.is-hidden-mobile { display: none; }
-  .bf-split-right { display: none; }
-  .bf-split-right.is-active-mobile { display: flex; flex-direction: column; }
+@media (max-width: 759px) {
   .bf-mobile-back { display: inline-flex; align-items: center; }
   /* Ladder fills phone screen neatly */
   .bf-ladder-scroll { max-height: 55vh; }
-  /* Chart is taller on phone since it has full width */
+  /* Chart height on phone */
   .bf-chart-frame { height: 190px; }
   /* Pill switch fills width cleanly and wraps sub-toggle onto second row */
   .bf-header-controls { flex-wrap: wrap; }

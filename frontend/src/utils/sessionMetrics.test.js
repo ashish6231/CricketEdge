@@ -7,28 +7,30 @@ import {
   calcSessionPlAtScore,
   computeSessionMetrics,
   computePlRows,
+  fmtRs,
   sessionDataFingerprint,
   settleSessionLines,
+  summarizeLineOutcome,
 } from './sessionMetrics.js'
 
-test('session P/L uses the bookie side of customer YES and NO stakes', () => {
+test('session P/L uses Betfair Line Market rules (back = NO/Under, lay = YES/Over)', () => {
   const lines = buildLinesFromTrades([
     { type: 'back', price: '100.5', size: '100' },
     { type: 'lay', price: '102.5', size: '60' },
   ])
 
-  // 100 runs: YES loses (+100), NO wins (-60).
-  assert.equal(calcSessionPlAtScore(lines, 100), 40)
-  assert.deepEqual(calcSessionPlBreakdown(lines, 100), { receives: 100, pays: 60, pl: 40 })
-  // 101 runs: first YES wins (-100), second NO wins (-60).
-  assert.equal(calcSessionPlAtScore(lines, 101), -160)
-  assert.deepEqual(calcSessionPlBreakdown(lines, 101), { receives: 0, pays: 160, pl: -160 })
-  // 103 runs: YES wins (-100), NO loses (+60).
-  assert.equal(calcSessionPlAtScore(lines, 103), -40)
-  assert.deepEqual(calcSessionPlBreakdown(lines, 103), { receives: 60, pays: 100, pl: -40 })
+  // 100 runs: NO (100.5 back) wins (-100), YES (102.5 lay) loses (+60).
+  assert.equal(calcSessionPlAtScore(lines, 100), -40)
+  assert.deepEqual(calcSessionPlBreakdown(lines, 100), { receives: 60, pays: 100, pl: -40 })
+  // 101 runs: NO (100.5 back) loses (+100), YES (102.5 lay) loses (+60).
+  assert.equal(calcSessionPlAtScore(lines, 101), 160)
+  assert.deepEqual(calcSessionPlBreakdown(lines, 101), { receives: 160, pays: 0, pl: 160 })
+  // 103 runs: NO (100.5 back) loses (+100), YES (102.5 lay) wins (-60).
+  assert.equal(calcSessionPlAtScore(lines, 103), 40)
+  assert.deepEqual(calcSessionPlBreakdown(lines, 103), { receives: 100, pays: 60, pl: 40 })
 })
 
-test('compacted tradeCount changes bet count but never P/L or matched money', () => {
+test('compacted tradeCount changes bet count, un-inverts TLL Betfair quotes, and computes exact P/L', () => {
   const marketName = '1st Innings 10 Overs Line'
   const metrics = computeSessionMetrics(
     { marketName, bestYes: '78.5', bestNo: '79.5' },
@@ -39,12 +41,15 @@ test('compacted tradeCount changes bet count but never P/L or matched money', ()
     { marketName, tradeCount: 6, totalVolume: 350.75 },
   )
 
+  assert.equal(metrics.bestNo, 78.5)
+  assert.equal(metrics.bestYes, 79.5)
   assert.equal(metrics.marketMid, 79)
   assert.equal(metrics.tradeCount, 6)
   assert.equal(metrics.totalVol, 350.75)
   assert.equal(metrics.ledgerStatus, 'verified')
-  assert.equal(metrics.plRowsFull.find(row => row.score === 79)?.pl, -350.75)
-  assert.equal(metrics.plRowsFull.find(row => row.score === 80)?.pl, -150.25)
+  assert.equal(metrics.plRowsFull.find(row => row.score === 79)?.pl, 350.75)
+  assert.equal(metrics.plRowsFull.find(row => row.score === 80)?.pl, 150.25)
+  assert.equal(fmtRs(-296000), '−€2.96L')
 })
 
 test('market summaries are merged and a mismatched ledger is marked syncing', () => {
@@ -73,7 +78,7 @@ test('every score includes all YES and NO trades, not just bets on that run line
   // Independent per-bet settlement, before any line aggregation.
   for (let score=0; score<=100; score++) {
     const expected=trades.reduce((net,trade) => {
-      const customerWins=trade.type==='yes'||trade.type==='back' ? score>trade.price : score<=trade.price
+      const customerWins=(trade.type==='yes'||trade.type==='lay') ? score>trade.price : score<=trade.price
       return net+(customerWins ? -trade.size : trade.size)
     },0)
     assert.equal(calcSessionPlAtScore(session.lines,score),expected,`score ${score}`)
@@ -83,7 +88,7 @@ test('every score includes all YES and NO trades, not just bets on that run line
   }
   assert.equal(session.plRowsFull[0].score,0)
   assert.equal(session.plRowsFull.at(-1).score,55)
-  assert.deepEqual(session.plRanges,[{from:0,to:54,outcome:'loss'},{from:55,to:null,outcome:'profit'}])
+  assert.deepEqual(session.plRanges,[{from:0,to:54,outcome:'profit'},{from:55,to:null,outcome:'loss'}])
   assert.equal(session.predicted,null)
 })
 
@@ -142,4 +147,22 @@ test('trade corrections refresh even with unchanged count, money, and final time
     assert.notEqual(sessionDataFingerprint(data),sessionDataFingerprint({...data,trades:[{...data.trades[0],...changes}]}))
   }
   assert.equal(sessionDataFingerprint(data),sessionDataFingerprint(JSON.parse(JSON.stringify(data))))
+})
+
+test('summarizeLineOutcome compares NO (<= line) vs YES (> line) bookie edge accurately', () => {
+  const lines = buildLinesFromTrades([
+    { type: 'yes', price: 57.5, size: 200 },
+    { type: 'no', price: 57.5, size: 50 },
+    { type: 'yes', price: 58.5, size: 100 },
+    { type: 'no', price: 58.5, size: 400 },
+  ])
+  const summary = summarizeLineOutcome(lines, 58)
+  assert.equal(summary.line, 58)
+  assert.equal(summary.yesFrom, 59)
+  assert.equal(summary.noSide.pl, -450)
+  assert.equal(summary.yesSide.pl, 150)
+  assert.equal(summary.favoredSide, 'YES')
+  assert.equal(summary.advantage, 600)
+  assert.equal(summarizeLineOutcome([], 58), null)
+  assert.equal(summarizeLineOutcome(lines, -1), null)
 })

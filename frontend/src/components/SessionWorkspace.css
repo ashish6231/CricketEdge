@@ -1,0 +1,344 @@
+/* Compact, aligned Session Fancy Board & Run-Wise Position Sheet UI */
+.detail-page.session-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px 10px 28px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 640px) {
+  .detail-page.session-shell {
+    padding: 14px 16px 32px !important;
+    gap: 10px;
+  }
+}
+
+.session-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.session-card {
+  background: #ffffff;
+  border: 1px solid #d5dbe6;
+  border-radius: 10px;
+  padding: 10px;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .session-card {
+    padding: 12px 14px;
+  }
+}
+
+.session-kpi-bar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  overflow: hidden;
+}
+
+.session-kpi-cell {
+  padding: 6px 4px;
+  text-align: center;
+  min-width: 0;
+}
+
+.session-kpi-cell + .session-kpi-cell {
+  border-left: 1px solid #e2e8f0;
+}
+
+.session-innings-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  padding: 3px;
+  background: #f1f5f9;
+  border: 1px solid #d5dbe6;
+  border-radius: 8px;
+}
+
+.session-innings-tab {
+  min-height: 32px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.session-innings-tab.is-active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+/* Session market selector */
+.session-sel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+@media (min-width: 640px) {
+  .session-sel-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .session-sel-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.session-sel-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 7px 9px;
+  border: 1px solid #dbe2ec;
+  border-radius: 8px;
+  background: #ffffff;
+  text-align: left;
+  min-width: 0;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.session-sel-btn:hover {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.session-sel-btn.is-active {
+  border-color: #d97706;
+  background: #fffbeb;
+  box-shadow: 0 0 0 1px #f59e0b;
+}
+
+/* Indian Fancy Rate Strip: NO (left, rose) | MID | YES (right, sky) */
+.session-quotes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(72px, 0.65fr) minmax(0, 1fr);
+  gap: 6px;
+}
+
+.session-quote-cell {
+  border-radius: 8px;
+  border: 1px solid;
+  padding: 6px 6px;
+  text-align: center;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.session-quote-cell strong {
+  display: block;
+  font-size: 18px;
+  line-height: 1.15;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (min-width: 640px) {
+  .session-quote-cell strong {
+    font-size: 21px;
+  }
+}
+
+/* NO vs YES customer volume bar */
+.session-load-wrap {
+  margin-top: 8px;
+  padding: 7px 9px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+}
+
+.session-load-track {
+  display: flex;
+  height: 7px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+  margin: 5px 0 0;
+}
+
+/* Binary line comparison cards */
+.session-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.session-compare-card {
+  border-radius: 8px;
+  border: 1px solid #dbe2ec;
+  padding: 8px 9px;
+  background: #ffffff;
+  min-width: 0;
+}
+
+.session-compare-card.is-favored {
+  border-color: #10b981;
+  background: #ecfdf5;
+}
+
+.session-compare-card.is-risk {
+  border-color: #fecdd3;
+  background: #fff1f2;
+}
+
+/* Stepper control for target score */
+.session-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.session-stepper button {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #334155;
+  background: #f8fafc;
+}
+
+.session-stepper button:hover {
+  background: #e2e8f0;
+}
+
+.session-stepper input {
+  width: 52px;
+  height: 28px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #0f172a;
+  border-left: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+/* Visual Run-Wise Bookie Profit Curve (pure CSS/flex, SSR-safe & instant) */
+.session-curve-box {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 8px;
+}
+
+.session-curve-bars {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(14px, 1fr);
+  gap: 2px;
+  align-items: stretch;
+  height: 76px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
+
+.session-curve-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  border-radius: 4px;
+  padding: 1px;
+  cursor: pointer;
+}
+
+.session-curve-col.is-active {
+  background: #fef3c7;
+  outline: 1px solid #d97706;
+}
+
+.session-curve-half {
+  width: 100%;
+  flex: 1 1 0;
+  display: flex;
+  justify-content: center;
+}
+
+.session-curve-half.is-pos {
+  align-items: flex-end;
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.session-curve-half.is-neg {
+  align-items: flex-start;
+}
+
+.session-curve-bar {
+  width: 80%;
+  max-width: 14px;
+  min-height: 2px;
+}
+
+/* Compact actionable run chips */
+.session-score-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  max-height: 210px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  padding: 2px;
+}
+
+@media (min-width: 640px) {
+  .session-score-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .session-score-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+.session-score-btn {
+  border: 1px solid #dbe2ec;
+  border-radius: 7px;
+  padding: 5px 3px;
+  text-align: center;
+  background: #ffffff;
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.session-score-btn.is-active {
+  border-color: #d97706;
+  background: #fffbeb;
+  box-shadow: 0 0 0 1px #f59e0b;
+}
+
+.session-lines-scroll {
+  max-height: 240px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}

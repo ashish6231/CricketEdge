@@ -142,48 +142,50 @@ export default function SessionDetail() {
   )
 
   return (
-    <div className="detail-page mx-auto max-w-5xl space-y-3 pb-8">
-      <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/session'))} className="flex items-center gap-1.5 text-sm font-semibold text-text-muted hover:text-primary"><ArrowLeft size={15} /> Back to Sessions</button>
+    <div className="detail-page session-shell">
+      <div className="session-topbar">
+        <button onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/session'))} className="flex items-center gap-1.5 text-xs font-semibold text-text-muted hover:text-primary"><ArrowLeft size={14} /> Back to Sessions</button>
+        <div className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold ${isLive ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-blue-200 bg-blue-50 text-blue-700'}`}>
+          {isLive ? '● LIVE' : isEnded ? 'COMPLETED' : 'UPDATED'}{lastRefresh && ` · ${lastRefresh.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`}
+        </div>
+      </div>
 
-      <header className="rounded-xl border border-border bg-white p-4 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-3">
+      <header className="session-card">
+        <div className="flex items-center justify-between gap-2">
           <div className="min-w-0">
-            <div className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-700"><TrendingUp size={12} /> Session Analysis</div>
-            <h1 className="text-xl font-bold leading-tight text-text-primary">{matchName}</h1>
-            <p className="mt-1 text-[11px] text-text-muted">Matched session bets se transparent run-wise bookie P/L</p>
-          </div>
-          <div className={`rounded-full border px-3 py-1.5 text-[10px] font-bold ${isLive ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-blue-200 bg-blue-50 text-blue-700'}`}>
-            {isLive ? '● LIVE' : isEnded ? 'COMPLETED' : 'UPDATED'}{lastRefresh && ` · ${lastRefresh.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`}
+            <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-700"><TrendingUp size={11} /> Session Analysis</div>
+            <h1 className="truncate text-base font-bold leading-tight text-text-primary sm:text-lg">{matchName}</h1>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-3 divide-x divide-border rounded-lg border border-border bg-slate-50">
-          {[['Markets', summary.markets], ['Matched bets', summary.bets], ['Total money', summary.matched ? `€${formatVolStr(summary.matched)}` : '—']].map(([label, value]) => (
-            <div key={label} className="px-2 py-2.5 text-center"><div className="text-[9px] font-bold uppercase tracking-wide text-text-muted">{label}</div><div className="mt-0.5 text-base font-bold tabular-nums text-text-primary">{value}</div></div>
+        <div className="session-kpi-bar mt-2">
+          {[['Markets', summary.markets], ['Bets', summary.bets], ['Matched', summary.matched ? `€${formatVolStr(summary.matched)}` : '—']].map(([label, value]) => (
+            <div key={label} className="session-kpi-cell">
+              <div className="text-[9px] font-bold uppercase tracking-wide text-text-muted">{label}</div>
+              <div className="text-sm font-bold tabular-nums text-text-primary">{value}</div>
+            </div>
           ))}
         </div>
       </header>
 
       {innings.length > 1 && (
-        <section className="rounded-xl border border-border bg-white p-2 shadow-sm">
-          <div className="flex gap-2" role="tablist" aria-label="Innings">
-            {innings.map(inning => (
-              <button key={inning} type="button" role="tab" aria-selected={activeInning === inning} onClick={() => { setInningTouched(true); setActiveInning(inning); setSelectedMarket(null) }} className={`flex-1 rounded-lg border py-2.5 text-sm font-bold ${activeInning === inning ? 'border-amber-500 bg-amber-500 text-slate-950 shadow-sm' : 'border-border bg-white text-text-muted hover:border-amber-300 hover:bg-amber-50'}`}>
-                {inning === 1 ? '1st' : inning === 2 ? '2nd' : `${inning}th`} Innings
-              </button>
-            ))}
-          </div>
-        </section>
+        <div className="session-innings-tabs" role="tablist" aria-label="Innings">
+          {innings.map(inning => (
+            <button key={inning} type="button" role="tab" aria-selected={activeInning === inning} onClick={() => { setInningTouched(true); setActiveInning(inning); setSelectedMarket(null) }} className={`session-innings-tab${activeInning === inning ? ' is-active' : ''}`}>
+              {inning === 1 ? '1st' : inning === 2 ? '2nd' : `${inning}th`} Innings
+            </button>
+          ))}
+        </div>
       )}
 
-      {filtered.length ? <><SessionSelector sessions={filtered} selectedMarket={selectedMarket} onSelect={setSelectedMarket} /><SessionWorkspace session={selectedSession} completed={isEnded} /></> : <div className="rounded-xl border border-border bg-white py-14 text-center shadow-sm"><Activity className="mx-auto mb-3 text-slate-400" size={36} /><p className="text-sm text-text-muted">Is innings mein session market nahi mila</p></div>}
+      {filtered.length ? <><SessionSelector sessions={filtered} selectedMarket={selectedMarket} onSelect={setSelectedMarket} /><SessionWorkspace session={selectedSession} completed={isEnded} /></> : <div className="session-card py-10 text-center"><Activity className="mx-auto mb-2 text-slate-400" size={28} /><p className="text-xs text-text-muted">Is innings mein session market nahi mila</p></div>}
 
-      <details className="group overflow-hidden rounded-xl border border-border bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-bold text-text-primary hover:bg-slate-50"><Info size={15} className="text-primary" /> P/L kaise calculate hota hai? <ChevronDown size={15} className="ml-auto text-text-muted transition-transform group-open:rotate-180" /></summary>
-        <div className="space-y-2 border-t border-border px-4 py-3 text-xs text-text-muted">
-          <p><b className="text-sky-700">YES</b>: final score line se upar hua to YES customer wins.</p>
-          <p><b className="text-rose-700">NO</b>: final score line par/neeche raha to NO customer wins.</p>
-          <p><b className="text-text-primary">Bookie P/L</b>: 1:1 stake basis par losing stakes received − winning customers ki net winnings.</p>
-          <p><b className="text-emerald-700">Ledger complete</b>: received bet count aur money provider totals se match karte hain; provider direct P/L value nahi deta.</p>
+      <details className="session-card p-0 overflow-hidden">
+        <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-xs font-bold text-text-primary hover:bg-slate-50"><Info size={14} className="text-primary" /> P/L kaise calculate hota hai? <ChevronDown size={14} className="ml-auto text-text-muted" /></summary>
+        <div className="space-y-1.5 border-t border-border px-3 py-2.5 text-[11px] text-text-muted">
+          <p><b className="text-rose-700">NO (Under / Betfair Back)</b>: score line par ya usse kam raha to NO customer jeetega.</p>
+          <p><b className="text-sky-700">YES (Over / Betfair Lay)</b>: score line se upar gaya to YES customer jeetega.</p>
+          <p><b className="text-text-primary">Bookie P/L</b>: Betfair Line markets fixed 2.0 (1:1 stake) par settle hote hain — losing customer stakes minus winning payouts.</p>
+          <p><b className="text-emerald-700">Ledger complete</b>: received bet count aur money provider totals se match karte hain.</p>
         </div>
       </details>
     </div>
