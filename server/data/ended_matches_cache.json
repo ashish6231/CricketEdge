@@ -10361,6 +10361,27 @@
     "runners": [],
     "totalMatched": 7702
   },
+  "36336225": {
+    "matchLoad": {
+      "team1": {
+        "name": "Western Australia",
+        "money": 7271,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Tasmania Tigers",
+        "money": 7272,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 14543
+    },
+    "runners": [],
+    "totalMatched": 14543
+  },
   "36337767": {
     "matchLoad": {
       "team1": {
@@ -10402,6 +10423,27 @@
     },
     "runners": [],
     "totalMatched": 52437500
+  },
+  "36350714": {
+    "matchLoad": {
+      "team1": {
+        "name": "Sydney Thunder W",
+        "money": 26215477,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Adelaide Strikers W",
+        "money": 26215477,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 52430954
+    },
+    "runners": [],
+    "totalMatched": 52430954
   },
   "36350760": {
     "matchLoad": {
@@ -10507,6 +10549,27 @@
     },
     "runners": [],
     "totalMatched": 3368723
+  },
+  "36351657": {
+    "matchLoad": {
+      "team1": {
+        "name": "Sydney Sixers W",
+        "money": 20888918,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Melbourne Stars W",
+        "money": 20888919,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 41777837
+    },
+    "runners": [],
+    "totalMatched": 41777837
   },
   "36351708": {
     "matchLoad": {
@@ -10634,6 +10697,258 @@
     "runners": [],
     "totalMatched": 1501213
   },
+  "36358200": {
+    "matchLoad": {
+      "team1": {
+        "name": "Delhi",
+        "money": 15984,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Railways",
+        "money": 15983,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 31967
+    },
+    "runners": [],
+    "totalMatched": 31967
+  },
+  "36358219": {
+    "matchLoad": {
+      "team1": {
+        "name": "Bengal",
+        "money": 274203,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Rajasthan",
+        "money": 274202,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 548405
+    },
+    "runners": [],
+    "totalMatched": 548405
+  },
+  "36358364": {
+    "matchLoad": {
+      "team1": {
+        "name": "Keralam",
+        "money": 10572,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Himachal Pradesh",
+        "money": 10572,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 21144
+    },
+    "runners": [],
+    "totalMatched": 21144
+  },
+  "36359098": {
+    "matchLoad": {
+      "team1": {
+        "name": "Chhattisgarh",
+        "money": 455,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Vidarbha",
+        "money": 456,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 911
+    },
+    "runners": [],
+    "totalMatched": 911
+  },
+  "36359270": {
+    "matchLoad": {
+      "team1": {
+        "name": "Uttarakhand",
+        "money": 19565,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Mumbai",
+        "money": 19564,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 39129
+    },
+    "runners": [],
+    "totalMatched": 39129
+  },
+  "36359294": {
+    "matchLoad": {
+      "team1": {
+        "name": "Punjab",
+        "money": 7019,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Bihar",
+        "money": 7018,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 14037
+    },
+    "runners": [],
+    "totalMatched": 14037
+  },
+  "36359312": {
+    "matchLoad": {
+      "team1": {
+        "name": "Chandigarh",
+        "money": 11369,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Jharkhand",
+        "money": 11369,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 22738
+    },
+    "runners": [],
+    "totalMatched": 22738
+  },
+  "36359365": {
+    "matchLoad": {
+      "team1": {
+        "name": "Maharashtra",
+        "money": 255507,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Andhra",
+        "money": 255506,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 511013
+    },
+    "runners": [],
+    "totalMatched": 511013
+  },
+  "36359428": {
+    "matchLoad": {
+      "team1": {
+        "name": "Karnataka",
+        "money": 284,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Baroda",
+        "money": 283,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 567
+    },
+    "runners": [],
+    "totalMatched": 567
+  },
+  "36359595": {
+    "matchLoad": {
+      "team1": {
+        "name": "Madhya Pradesh",
+        "money": 5681,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Puducherry",
+        "money": 5681,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 11362
+    },
+    "runners": [],
+    "totalMatched": 11362
+  },
+  "36359773": {
+    "matchLoad": {
+      "team1": {
+        "name": "Hyderabad",
+        "money": 16437,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Odisha",
+        "money": 16437,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 32874
+    },
+    "runners": [],
+    "totalMatched": 32874
+  },
+  "36359804": {
+    "matchLoad": {
+      "team1": {
+        "name": "Jammu And Kashmir",
+        "money": 16510,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Haryana",
+        "money": 16511,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 33021
+    },
+    "runners": [],
+    "totalMatched": 33021
+  },
   "36360211": {
     "matchLoad": {
       "team1": {
@@ -10717,5 +11032,26 @@
     },
     "runners": [],
     "totalMatched": 232340
+  },
+  "36364263": {
+    "matchLoad": {
+      "team1": {
+        "name": "Muscat Thunderers",
+        "money": 3144,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Majees Titans",
+        "money": 3145,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 6289
+    },
+    "runners": [],
+    "totalMatched": 6289
   }
 }

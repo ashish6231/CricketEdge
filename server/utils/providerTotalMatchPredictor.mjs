@@ -1,13 +1,21 @@
 import { getExplicitPreMatchProviderTotals } from './providerTotals.mjs';
 import { defineLeagueProfile } from './leagueProfileRuntime.mjs';
 
+const totalVolumeNumber = value => value == null || !['number', 'string'].includes(typeof value) || String(value).trim() === ''
+  ? null : Number.isFinite(Number(value)) && Number(value) >= 0 ? Number(value) : null;
+
+function hasValidTwoTeamMatch(snapshot) {
+  const names = snapshot?.teamNames;
+  return Boolean(snapshot && !snapshot.error && Array.isArray(names) && names.length === 2
+    && !names.some(name => typeof name !== 'string' || !name.trim())
+    && names[0].trim().toLowerCase() !== names[1].trim().toLowerCase());
+}
+
 // Only provider-frozen pre-match values may decide this rule. Current totals,
 // live activity, odds, P/L and fitted league adjustments cannot change the pick.
 export function getProviderTotalMatchPrediction(snapshot, {selection = 'higher', scope = 'international'} = {}) {
-  const names = snapshot?.teamNames;
-  if (!snapshot || snapshot.error || !Array.isArray(names) || names.length !== 2
-    || names.some(name => typeof name !== 'string' || !name.trim())
-    || names[0].trim().toLowerCase() === names[1].trim().toLowerCase()) return null;
+  if (!hasValidTwoTeamMatch(snapshot)) return null;
+  const names = snapshot.teamNames;
   const totals = getExplicitPreMatchProviderTotals(snapshot);
   if (!totals || totals.some(value => value == null) || totals[0] === totals[1]) return null;
   const winnerIdx = selection === 'lower' ? (totals[0] < totals[1] ? 0 : 1) : (totals[0] > totals[1] ? 0 : 1);
@@ -19,6 +27,25 @@ export function getProviderTotalMatchPrediction(snapshot, {selection = 'higher',
     providerTotalEvidence: {team1:totals[0],team2:totals[1],winnerIdx,signalCount:1,selection},
     confidence: 'Single provider-total rule; future accuracy unvalidated',
     confidenceCalibrated: false, inputTiming: 'provider-frozen-pre-match-total',
+  };
+}
+
+export function getPreMatchTotalVolumeMatchPrediction(snapshot, { selection = 'higher', scope = 'smat' } = {}) {
+  if (!hasValidTwoTeamMatch(snapshot)) return null;
+  const names = snapshot.teamNames;
+  const vol1 = totalVolumeNumber(snapshot.preMatchVolume?.team1?.total);
+  const vol2 = totalVolumeNumber(snapshot.preMatchVolume?.team2?.total);
+  if (vol1 == null || vol2 == null || vol1 === vol2) return null;
+  const totals = [vol1, vol2];
+  const winnerIdx = selection === 'lower' ? (vol1 < vol2 ? 0 : 1) : (vol1 > vol2 ? 0 : 1);
+  return {
+    winner: names[winnerIdx], winnerIdx,
+    tier: `${scope.toUpperCase()}_MATCH_${selection.toUpperCase()}_PREMATCH_TOTAL_VOL`,
+    ruleFamily: `${scope}-${selection}-prematch-total-vol`,
+    reason: `${names[winnerIdx]} has the ${selection} pre-match Total Vol (${totals[winnerIdx].toFixed(2)} vs ${totals[1 - winnerIdx].toFixed(2)}).`,
+    preMatchTotalVolumeEvidence: { team1: totals[0], team2: totals[1], winnerIdx, signalCount: 1, selection },
+    confidence: 'Single pre-match Total Vol rule; future accuracy unvalidated',
+    confidenceCalibrated: false, inputTiming: 'provider-frozen-pre-match-total-vol',
   };
 }
 
@@ -59,20 +86,55 @@ export function isWomensMatch(snapshot) {
     .every(name => /\bwomens?\b|(?:^|[\s-])w$/i.test(String(name || '').replace(/[’']/g,'')));
 }
 
-export function createProviderTotalMatchProfile(league, algorithmId, {selection = 'higher', scope = 'international'} = {}) {
+function buildFrozenSingleSignalProfile(league, algorithmId, { strategy, profileVersion, validationStatus, predictSnapshot }) {
   const profile = defineLeagueProfile({
-    league, algorithmId,
-    profileVersion: `${league.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-${selection}-prematch-provider-total-${selection === 'lower' ? 'v3' : 'v2'}`,
-    strategy: `${selection}-prematch-provider-total`,
-    parameters: {}, baselineAdjustments: [], model: null, trainingTree: null,
-    trainingSamples: 0, ranges: null, validationStatus: 'unvalidated-single-provider-total-rule',
+    league,
+    algorithmId,
+    profileVersion,
+    strategy,
+    parameters: {},
+    baselineAdjustments: [],
+    model: null,
+    trainingTree: null,
+    trainingSamples: 0,
+    ranges: null,
+    validationStatus,
   });
-  return Object.freeze({...profile,predict(snapshot) {
-    const result = getProviderTotalMatchPrediction(snapshot,{selection,scope});
-    return result ? {...result,algorithmId:profile.algorithmId,algorithmLeague:profile.league,
-      profileVersion:profile.profileVersion,algorithmStrategy:profile.strategy,
-      trainingSamples:0,validation:profile.validationStatus} : null;
-  }});
+  return Object.freeze({
+    ...profile,
+    predict(snapshot) {
+      const result = predictSnapshot(snapshot);
+      return result ? {
+        ...result,
+        algorithmId: profile.algorithmId,
+        algorithmLeague: profile.league,
+        profileVersion: profile.profileVersion,
+        algorithmStrategy: profile.strategy,
+        trainingSamples: 0,
+        validation: profile.validationStatus,
+      } : null;
+    },
+  });
+}
+
+export function createProviderTotalMatchProfile(league, algorithmId, {selection = 'higher', scope = 'international'} = {}) {
+  const strategy = `${selection}-prematch-provider-total`;
+  return buildFrozenSingleSignalProfile(league, algorithmId, {
+    strategy,
+    profileVersion: `${league.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-${selection}-prematch-provider-total-${selection === 'lower' ? 'v3' : 'v2'}`,
+    validationStatus: 'unvalidated-single-provider-total-rule',
+    predictSnapshot: snapshot => getProviderTotalMatchPrediction(snapshot, { selection, scope }),
+  });
+}
+
+export function createPreMatchTotalVolumeMatchProfile(league, algorithmId, { selection = 'higher', scope = 'smat' } = {}) {
+  const strategy = `${selection}-prematch-total-vol`;
+  return buildFrozenSingleSignalProfile(league, algorithmId, {
+    strategy,
+    profileVersion: `${league.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${strategy}-v1`,
+    validationStatus: 'unvalidated-single-prematch-total-vol-rule',
+    predictSnapshot: snapshot => getPreMatchTotalVolumeMatchPrediction(snapshot, { selection, scope }),
+  });
 }
 
 export function createInternationalProviderTotalProfile(league, algorithmId) {

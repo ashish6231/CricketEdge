@@ -753,6 +753,7 @@ router.get('/audit-logs', requireAdmin, async (req, res) => {
 router.get('/scraper/status', requireSuperAdmin, async (req, res) => {
   try {
     const tllSession = require('../services/scraper-tennisliveload/session');
+    await tllSession.syncFromDbIfStale?.(15000);
     const status = tllSession.getStatus();
     res.json({ success: true, data: status });
   } catch (err) {
@@ -765,11 +766,15 @@ router.post('/scraper/emergency-login', requireSuperAdmin, async (req, res) => {
     const tllSession = require('../services/scraper-tennisliveload/session');
     console.log('⚡ [Admin] Manual auto-login triggered from admin panel...');
     const ok = await tllSession.autoLogin({ reason: 'admin_manual_trigger' });
+    const status = tllSession.getStatus();
     if (ok) {
-      const status = tllSession.getStatus();
       res.json({ success: true, message: 'Fresh session created and saved to MariaDB Database!', data: status });
     } else {
-      res.status(500).json({ success: false, error: 'Auto-login failed. Verify TENNIS_EMAIL and TENNIS_PASSWORD in server environment.' });
+      res.status(500).json({
+        success: false,
+        error: status.lastLoginError || 'Auto-login failed. Verify TENNIS_EMAIL and TENNIS_PASSWORD in server environment.',
+        data: status,
+      });
     }
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

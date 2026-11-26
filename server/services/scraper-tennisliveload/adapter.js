@@ -76,10 +76,14 @@ class TennisLiveLoadAdapter extends SourceAdapter {
   async _request(endpoint, params = null, method = 'GET', _isRetry = false) {
     if (!this.session.getCookies()) {
       await this.session.loadSavedSession();
+    } else {
+      await this.session.syncFromDbIfStale?.();
     }
+    const headers = this._getHeaders();
+    const usedCookie = headers.Cookie || '';
     const url = `${BASE_URL}${endpoint}`;
     try {
-      const config = { headers: this._getHeaders() };
+      const config = { headers };
       const resp = method === 'GET'
         ? await this.axiosInstance.get(url, { ...config, params })
         : await this.axiosInstance.post(url, params, config);
@@ -96,19 +100,29 @@ class TennisLiveLoadAdapter extends SourceAdapter {
       if (err.response) {
         const status = err.response.status;
         if (status === 401) {
-          const count = this.session.record401Failure();
-          console.warn(`⚠️  [TLL-Adapter] 401 on ${endpoint} (consecutive failure #${count})`);
-
-          // Instant self-healing auto-login on 401 (retry once)
           if (!_isRetry) {
-            console.log(`🔄 [TLL-Adapter] 401 encountered! Triggering instant auto-login for ${endpoint}...`);
-            const ok = await this.session.autoLogin({ reason: `401 on ${endpoint}` });
+            // If another in-flight request or process already updated the session cookie, retry cleanly without logging in again.
+            const latestInMemory = this.session.getCookies();
+            if (usedCookie && latestInMemory && latestInMemory !== usedCookie) {
+              return await this._request(endpoint, params, method, true);
+            }
+            const syncedFromDb = await this.session.syncSessionFromDb?.({ excludeCookie: usedCookie });
+            if (syncedFromDb) {
+              console.log(`🔄 [TLL-Adapter] Loaded fresher session cookie from DB; retrying ${endpoint}...`);
+              return await this._request(endpoint, params, method, true);
+            }
+
+            const count = this.session.record401Failure();
+            console.warn(`⚠️  [TLL-Adapter] 401 on ${endpoint} (consecutive failure #${count})`);
+            console.log(`🔄 [TLL-Adapter] 401 encountered! Triggering auto-login for ${endpoint}...`);
+            const ok = await this.session.autoLogin({ reason: `401 on ${endpoint}`, failedCookie: usedCookie });
             if (ok) {
               console.log(`✅ [TLL-Adapter] Auto-login succeeded! Retrying ${endpoint} with fresh cookie...`);
               return await this._request(endpoint, params, method, true);
-            } else {
-              console.warn(`❌ [TLL-Adapter] Auto-login failed during 401 recovery on ${endpoint}.`);
             }
+            console.warn(`❌ [TLL-Adapter] Auto-login failed during 401 recovery on ${endpoint}.`);
+          } else {
+            this.session.record401Failure();
           }
         }
         return { error: `HTTP ${status}`, upstreamStatus: status };

@@ -20,7 +20,7 @@ const axios = require('axios');
 const prisma = require('../../db/prisma');
 const { getRedisClient, acquireLock, refreshLock, releaseLock } = require('../../shared/redis');
 
-const COOKIES_FILE = path.join(__dirname, '../../tennis_cookies.json');
+const COOKIES_FILE = process.env.TLL_COOKIES_FILE || path.join(__dirname, '../../tennis_cookies.json');
 const LOCK_KEY = 'scraper:tll:lock';
 const LOCK_TTL_SEC = 30;
 
@@ -33,6 +33,7 @@ let _consecutive401Count = 0;
 let _loginPromise = null;
 let _lastLoginAttemptAt = 0;
 let _lastLoginError = null;
+let _lastDbSyncAt = 0;
 
 function normalizeSessionCookie(value) {
   let cookie = String(value || '').trim().replace(/^"|"$/g, '')
@@ -88,6 +89,9 @@ async function saveSession(newCookie) {
   const trimmed = normalizeSessionCookie(newCookie);
   if (!trimmed) return;
   _sessionCookies = trimmed;
+  _consecutive401Count = 0;
+  _lastLoginError = null;
+  _lastDbSyncAt = Date.now();
 
   const expiryMs = getCookieExpiryTimestamp(trimmed);
 
@@ -129,22 +133,61 @@ async function saveSession(newCookie) {
   console.log(`✅ [TLL-Session] session updated (valid for ~${hoursLeft}h)`);
 }
 
+async function readSessionRowFromDb({ retries = 1 } = {}) {
+  if (!prisma || typeof prisma.siteSettings?.findUnique !== 'function') return { ok: false, row: null };
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const row = await prisma.siteSettings.findUnique({ where: { key: 'TENNIS_SESSION_COOKIES' } });
+      const cookie = row?.value?.cookie ? normalizeSessionCookie(row.value.cookie) : '';
+      return { ok: true, row, cookie };
+    } catch (err) {
+      if (attempt < retries) {
+        await new Promise(resolve => setTimeout(resolve, 400 * (attempt + 1)));
+      } else {
+        console.warn('⚠️  [TLL-Session] failed to query DB for cookie:', err.message);
+      }
+    }
+  }
+  return { ok: false, row: null, cookie: '' };
+}
+
+/**
+ * Pull any newer/different valid cookie stored in MariaDB (e.g. saved by another
+ * process/deploy or via the admin panel) into memory before triggering auto-login.
+ */
+async function syncSessionFromDb({ excludeCookie = '' } = {}) {
+  const excluded = normalizeSessionCookie(excludeCookie);
+  const { ok, cookie } = await readSessionRowFromDb({ retries: 0 });
+  if (!ok) return false;
+  _lastDbSyncAt = Date.now();
+  if (!cookie) return false;
+  const msLeft = getCookieExpiryMs(cookie);
+  if (msLeft === 0) return false;
+
+  const current = getCookies();
+  if (cookie === current && (!excluded || cookie !== excluded)) return true;
+  if (!excluded || cookie !== excluded) {
+    _sessionCookies = cookie;
+    _consecutive401Count = 0;
+    _lastLoginError = null;
+    console.log('🔄 [TLL-Session] synced newer session cookie from MariaDB Database');
+    return true;
+  }
+  return false;
+}
+
+async function syncFromDbIfStale(maxAgeMs = 60000) {
+  if (Date.now() - _lastDbSyncAt < maxAgeMs) return false;
+  return syncSessionFromDb();
+}
+
 /**
  * Load session strictly from MariaDB Database.
  * If expired or missing, triggers auto-login.
  */
 async function loadSavedSession() {
-  let dbCookie = null;
-  try {
-    if (prisma && typeof prisma.siteSettings?.findUnique === 'function') {
-      const dbRow = await prisma.siteSettings.findUnique({ where: { key: 'TENNIS_SESSION_COOKIES' } });
-      if (dbRow?.value?.cookie) {
-        dbCookie = String(dbRow.value.cookie).trim().replace(/^"|"$/g, '');
-      }
-    }
-  } catch (err) {
-    console.warn('⚠️  [TLL-Session] failed to query DB for cookie on startup:', err.message);
-  }
+  const { ok: dbOk, cookie: dbCookie } = await readSessionRowFromDb({ retries: 2 });
+  if (dbOk) _lastDbSyncAt = Date.now();
 
   // Fallback to local disk file only if DB query returned nothing
   let fileCookie = null;
@@ -162,6 +205,7 @@ async function loadSavedSession() {
     const msLeft = getCookieExpiryMs(candidate);
     if (msLeft === -1 || msLeft > 0) {
       _sessionCookies = candidate;
+      _consecutive401Count = 0;
       if (dbCookie && dbCookie !== candidate) await saveSession(candidate);
       console.log(`✅ [TLL-Session] loaded valid session from Database (~${(msLeft > 0 ? (msLeft / 3600000).toFixed(1) : 'unknown')}h left)`);
       return true;
@@ -171,19 +215,26 @@ async function loadSavedSession() {
     console.warn('⚠️  [TLL-Session] no cookie found in Database. Triggering auto-login...');
   }
 
-  // Auto-login to fetch a brand new fresh 24h cookie
-  return await autoLogin({ reason: 'startup_missing_or_expired' });
+  // If DB was unreachable and file fallback had nothing valid, avoid unnecessary login churn unless allowed.
+  return await autoLogin({ reason: dbOk ? 'startup_missing_or_expired' : 'startup_db_unavailable' });
 }
 
 /**
- * Automated Login Engine (Mutexed & Throttled)
- * Triggers instantly when 401 occurs or on startup if cookie is expired/missing.
+ * Automated Login Engine (Mutexed & DB-Coordinated)
+ * Triggers when 401 occurs, on startup if expired/missing, or right before expiry.
  */
-async function autoLogin({ reason = '401' } = {}) {
+async function autoLogin({ reason = '401', failedCookie = '' } = {}) {
   // If already logging in, wait for existing promise
   if (_loginPromise) {
     console.log(`⏳ [TLL-Session] autoLogin already in progress (waiting on same promise, reason: ${reason})...`);
     return _loginPromise;
+  }
+
+  const failedNorm = normalizeSessionCookie(failedCookie);
+  const currentNorm = getCookies();
+  if (failedNorm && currentNorm && currentNorm !== failedNorm && isConnected()) {
+    _consecutive401Count = 0;
+    return true;
   }
 
   const email = process.env.TENNIS_EMAIL;
@@ -206,6 +257,12 @@ async function autoLogin({ reason = '401' } = {}) {
 
   _loginPromise = (async () => {
     try {
+      // Cross-process guard: when recovering a failed cookie, check if another process already saved a fresh one.
+      if (failedNorm && await syncSessionFromDb({ excludeCookie: failedNorm })) {
+        console.log('♻️  [TLL-Session] reused fresh cookie already saved in MariaDB by another process.');
+        return true;
+      }
+
       console.log(`🔑 [TLL-Session] executing automated login to tennisliveload.com (reason: ${reason})...`);
       const baseUrl = (process.env.TENNIS_BASE_URL || 'https://tennisliveload.com').replace(/\/$/, '');
 
@@ -360,12 +417,15 @@ function getStatus() {
   const cookie = getCookies();
   const msLeft = getCookieExpiryMs(cookie);
   const expiryTimestamp = getCookieExpiryTimestamp(cookie);
-  const hoursLeft = msLeft > 0 ? (msLeft / (1000 * 60 * 60)).toFixed(1) : (msLeft === 0 ? '0 (Expired)' : 'Unknown');
+  const connected = isConnected() && _consecutive401Count === 0;
+  const hoursLeft = _consecutive401Count > 0
+    ? '0'
+    : msLeft > 0 ? (msLeft / (1000 * 60 * 60)).toFixed(1) : (msLeft === 0 ? '0 (Expired)' : 'Unknown');
 
   return {
-    isConnected: isConnected(),
+    isConnected: connected,
     hoursLeft,
-    msLeft,
+    msLeft: connected ? msLeft : 0,
     expiryTimestamp,
     hasCredentials: Boolean(process.env.TENNIS_EMAIL && process.env.TENNIS_PASSWORD),
     consecutive401s: _consecutive401Count,
@@ -385,6 +445,8 @@ module.exports = {
   getCookieExpiryMs,
   getCookieExpiryTimestamp,
   saveSession,
+  syncSessionFromDb,
+  syncFromDbIfStale,
   loadSavedSession,
   autoLogin,
   saveRefreshedCookies,

@@ -185,6 +185,10 @@ export function predictMatchStart(snap, { mode = 'rules' } = {}) {
       label: 'In-play P/L', sublabel: 'Higher current P/L selects the live pick', active: true,
       v1: prediction.inPlayPnlEvidence.team1.toFixed(2),
       v2: prediction.inPlayPnlEvidence.team2.toFixed(2),
+    }] : prediction.preMatchTotalVolumeEvidence ? [{
+      label: 'Pre-match Total Vol', sublabel: `${prediction.preMatchTotalVolumeEvidence.selection === 'lower' ? 'Lower' : 'Higher'} pre-match Total Vol selects the winner`, active: true,
+      v1: prediction.preMatchTotalVolumeEvidence.team1.toFixed(2),
+      v2: prediction.preMatchTotalVolumeEvidence.team2.toFixed(2),
     }] : prediction.providerTotalEvidence ? [{
       label: 'Pre-match provider total', sublabel: `${prediction.providerTotalEvidence.selection === 'lower' ? 'Lower' : 'Higher'} provider total selects the winner`, active: true,
       v1: prediction.providerTotalEvidence.team1.toFixed(2),

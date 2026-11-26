@@ -31,6 +31,7 @@ const tossSnapshotRefresher = createTossSnapshotRefresher({
 let _pollInterval = parseInt(process.env.TLL_POLL_INTERVAL_MS, 10) || 10000;
 let _timer = null;
 let _isRunning = false;
+let _lastProactiveRefreshAttempt = 0;
 const _sessionDetailLastAttempt = new Map();
 const _upcomingSnapshotLastAttempt = new Map();
 const _tennisSnapshotLastAttempt = new Map();
@@ -146,6 +147,13 @@ async function runPollCycle() {
 
   _isRunning = true;
   try {
+    // Proactively refresh before the 24h cookie expires (at most once per 5m if failing).
+    const msLeft = session.getCookieExpiryMs();
+    if (msLeft > 0 && msLeft < 30 * 60 * 1000 && Date.now() - _lastProactiveRefreshAttempt >= 5 * 60 * 1000) {
+      _lastProactiveRefreshAttempt = Date.now();
+      await session.autoLogin({ reason: 'proactive_pre_expiry', failedCookie: session.getCookies() });
+    }
+
     const queue = getIngestQueue();
 
     // 1. Fetch raw matches lists in parallel

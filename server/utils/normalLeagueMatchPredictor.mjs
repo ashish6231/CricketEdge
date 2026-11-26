@@ -4,9 +4,9 @@ import { checkPreMatchDataQuality } from './preMatchDataQuality.mjs';
 import { WNCL_ALGORITHM, isWNCLLeague } from './wnclMatchPredictor.mjs';
 import { INDEPENDENT_LEAGUE_PROFILES } from './matchLeagueProfiles/index.mjs';
 import { isWorldLegendsLeague, WORLD_LEGENDS_LEAGUE } from './worldLegendsActivity.mjs';
-import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createProviderTotalMatchProfile, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
+import { resolveInternationalMatchLeague, isWomensCompetition, isWomensMatch, createProviderTotalMatchProfile, createPreMatchTotalVolumeMatchProfile, createWomensProviderTotalProfile, createMensProviderTotalProfile } from './providerTotalMatchPredictor.mjs';
 
-export const PREDICTOR_VERSION = 'match-v14-inplay-pnl-priority';
+export const PREDICTOR_VERSION = 'match-v15-smat-prematch-total-vol';
 export const DEFAULT_MATCH_MODE = 'rules';
 const normalize = name => String(name || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 const profiles = new Map(INDEPENDENT_LEAGUE_PROFILES.map(profile => [normalize(profile.league),profile]));
@@ -74,6 +74,16 @@ function isEmiratesD20League(name) {
   const key = normalize(name).replace(/20\d{2}$/, '');
   return key === 'emiratesd20' || key === 'emiratesd20league';
 }
+const syedMushtaqAliProfile = createPreMatchTotalVolumeMatchProfile(
+  'Syed Mushtaq Ali Trophy',
+  'match-syed-mushtaq-ali-trophy-total-vol-v1',
+  { selection: 'higher', scope: 'smat' },
+);
+const SYED_MUSHTAQ_ALI_ALGORITHM = Object.freeze({ ...syedMushtaqAliProfile, profile: syedMushtaqAliProfile });
+export function isSyedMushtaqAliTrophy(name) {
+  const key = normalize(name).replace(/20\d{2}$/, '');
+  return key === 'syedmushtaqalitrophy' || key === 'syedmustaqalitrophy' || key === 'smat';
+}
 const aliases = {
   t20i: 'International Twenty20 Matches',
   'internationalt20matches': 'International Twenty20 Matches',
@@ -96,6 +106,7 @@ function womensAlgorithm(name, base = null) {
 
 export function getLeagueMatchAlgorithm(name) {
   if (isEmiratesD20League(name)) return EMIRATES_D20_ALGORITHM;
+  if (!isWomensCompetition(name) && isSyedMushtaqAliTrophy(name)) return SYED_MUSHTAQ_ALI_ALGORITHM;
   const international = resolveInternationalMatchLeague(name);
   let algorithm = international ? registry.get(normalize(international)) : null;
   if (!algorithm && isWorldLegendsLeague(name)) algorithm = registry.get(normalize(WORLD_LEGENDS_LEAGUE));
@@ -159,11 +170,12 @@ export function predictNormalLeagueMatch(input) {
 }
 
 function predictProviderTotalMatch(input) {
-  const livePick = predictInPlayPnl(input);
+  const algorithm = getInputMatchAlgorithm(input);
+  const bypassInPlayPnl = algorithm?.profile?.strategy === 'higher-prematch-total-vol';
+  const livePick = bypassInPlayPnl ? null : predictInPlayPnl(input);
   if (livePick) return { ...livePick, predictorVersion: PREDICTOR_VERSION,
     leagueRegistered: getLeagueMatchAlgorithm(input?.competitionName)?.leagueRegistered !== false,
     modelScope: 'rules', mode: DEFAULT_MATCH_MODE };
-  const algorithm = getInputMatchAlgorithm(input);
   const prediction = algorithm?.predict(input);
   return prediction ? { ...prediction, predictorVersion: PREDICTOR_VERSION,
     leagueRegistered: algorithm.leagueRegistered !== false,
