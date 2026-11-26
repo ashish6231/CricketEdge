@@ -1,15 +1,17 @@
 /** Session market parsing + bookie P/L metrics (shared by SessionDetail & MatchDetail) */
+import { resolveCrexInningsOrder, resolveCrexScores, teamIdentityMatches } from './crexScore.js'
 
 export function parseSession(name) {
-  const inningMatch = name.match(/(\d+)(st|nd|rd|th)\s+innings/i)
-  const overMatch = name.match(/(\d+)\s+overs?\s+line/i)
-  const isRunsLine = /runs\s+line/i.test(name)
+  const str = String(name || '').trim()
+  const inningMatch = str.match(/(\d+)(st|nd|rd|th)\s+innings/i)
+  const overMatch = str.match(/(\d+)\s+overs?\s+line/i)
+  const isRunsLine = /runs\s+line/i.test(str)
   const over = overMatch ? parseInt(overMatch[1]) : (isRunsLine ? 999 : 0)
   return {
     inning: inningMatch ? parseInt(inningMatch[1]) : 1,
     over,
     isRunsLine,
-    label: isRunsLine ? 'Total Runs Line' : overMatch ? `${over} Overs Line` : name,
+    label: isRunsLine ? 'Total Runs Line' : overMatch ? `${over} Overs Line` : str,
   }
 }
 
@@ -331,6 +333,187 @@ export function buildAllSessions(odds = [], trades = [], markets = []) {
   return merged
     .map(o => computeSessionMetrics(o, trades, marketMap.get(normalizeMarketName(o.marketName)) || null))
     .sort((a, b) => a.inning - b.inning || a.over - b.over)
+}
+
+/** Extract optional leading team label before innings/over/runs keywords. */
+export function extractSessionTeamPrefix(marketName) {
+  const str = String(marketName || '').trim()
+  if (!str) return ''
+  const inningMatch = str.match(/^(.*?)\b\d+(?:st|nd|rd|th)\s+innings\b/i)
+  if (inningMatch) return inningMatch[1].trim()
+  const lineMatch = str.match(/^(.*?)\b(?:\d+\s+overs?\s+line\b|runs\s+line\b)/i)
+  return lineMatch?.[1]?.trim() || ''
+}
+
+function resolveCandidateTeamIndex(prefix, candidates) {
+  if (!prefix || !candidates.length) return -1
+  const cleanPrefix = prefix.toLowerCase().replace(/[^a-z0-9]/g, '')
+  let bestIndex = -1
+  let bestScore = 0
+  candidates.forEach((candidate, index) => {
+    const cleanName = String(candidate?.name || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+    const cleanShort = String(candidate?.short || '').toLowerCase().replace(/[^a-z0-9]/g, '')
+    if (cleanPrefix && cleanPrefix === cleanName) {
+      if (1000 + cleanName.length > bestScore) { bestScore = 1000 + cleanName.length; bestIndex = index }
+      return
+    }
+    if (cleanPrefix && cleanShort && cleanPrefix === cleanShort) {
+      if (900 + cleanShort.length > bestScore) { bestScore = 900 + cleanShort.length; bestIndex = index }
+      return
+    }
+    if (teamIdentityMatches(prefix, candidate?.name, candidate?.short)) {
+      const score = 100 + cleanName.length
+      if (score > bestScore) { bestScore = score; bestIndex = index }
+    }
+  })
+  return bestIndex
+}
+
+/** Group parsed sessions team-wise using explicit prefixes first and confirmed CREX batting order second. */
+export function groupSessionsByTeam({ sessions = [], t1 = '', t2 = '', crexData = null } = {}) {
+  if (!Array.isArray(sessions) || !sessions.length) {
+    return { groups: [], orderConfirmed: false, groupedByTeam: false, defaultGroupKey: null }
+  }
+
+  const sc = crexData?.scorecard || {}
+  const resolvedT1 = t1 || sc.team1?.name || crexData?.team1Name || ''
+  const resolvedT2 = t2 || sc.team2?.name || crexData?.team2Name || ''
+  const hasTeamPair = Boolean(resolvedT1 && resolvedT2 && resolvedT1 !== resolvedT2)
+
+  const crexOrder = hasTeamPair
+    ? resolveCrexInningsOrder(crexData, resolvedT1, resolvedT2)
+    : { confirmed: false, teams: [], firstBattingName: null, secondBattingName: null }
+  const scores = hasTeamPair ? resolveCrexScores(crexData, resolvedT1, resolvedT2) : null
+
+  const shortFor = name => {
+    for (const side of [sc.team1, sc.team2]) {
+      if (side?.name && teamIdentityMatches(name, side.name, side.shortName)) return side.shortName || ''
+    }
+    return ''
+  }
+
+  const baseTeams = hasTeamPair
+    ? (crexOrder.confirmed
+      ? [crexOrder.firstBattingName, crexOrder.secondBattingName]
+      : [resolvedT1, resolvedT2]
+    ).map((name, idx) => ({
+      key: teamIdentityMatches(name, resolvedT1, shortFor(resolvedT1)) ? 'team1' : 'team2',
+      name,
+      short: shortFor(name),
+      score: teamIdentityMatches(name, resolvedT1, shortFor(resolvedT1)) ? scores?.team1Score : scores?.team2Score,
+      slotOrder: idx,
+    }))
+    : []
+
+  const bucketMap = new Map()
+  const ensureBucket = (key, meta) => {
+    if (!bucketMap.has(key)) {
+      bucketMap.set(key, {
+        key,
+        label: meta.label,
+        short: meta.short || '',
+        score: meta.score || null,
+        isTeam: Boolean(meta.isTeam),
+        innings: new Set(),
+        sessions: [],
+        slotOrder: meta.slotOrder ?? 99,
+      })
+    }
+    return bucketMap.get(key)
+  }
+
+  let anyExplicitTeam = false
+  for (const session of sessions) {
+    const prefix = extractSessionTeamPrefix(session.marketName)
+    let matchedTeam = null
+
+    if (prefix && baseTeams.length) {
+      const idx = resolveCandidateTeamIndex(prefix, baseTeams)
+      if (idx >= 0) matchedTeam = baseTeams[idx]
+    } else if (prefix && !baseTeams.length) {
+      const key = `prefix:${prefix.toLowerCase().replace(/[^a-z0-9]/g, '')}`
+      anyExplicitTeam = true
+      const bucket = ensureBucket(key, { label: prefix, isTeam: true, slotOrder: session.inning })
+      bucket.innings.add(session.inning)
+      bucket.sessions.push(session)
+      continue
+    } else if (baseTeams.length && crexOrder.confirmed && (session.inning === 1 || session.inning === 2)) {
+      const targetName = session.inning === 1 ? crexOrder.firstBattingName : crexOrder.secondBattingName
+      matchedTeam = baseTeams.find(team => team.name === targetName) || null
+    }
+
+    if (matchedTeam) {
+      if (prefix) anyExplicitTeam = true
+      const bucket = ensureBucket(matchedTeam.key, {
+        label: matchedTeam.name,
+        short: matchedTeam.short,
+        score: matchedTeam.score,
+        isTeam: true,
+        slotOrder: matchedTeam.slotOrder,
+      })
+      bucket.innings.add(session.inning)
+      bucket.sessions.push(session)
+    } else {
+      const inningKey = `inning:${session.inning}`
+      const inningTitle = session.inning === 1 ? '1st Innings' : session.inning === 2 ? '2nd Innings' : `${session.inning}th Innings`
+      const bucket = ensureBucket(inningKey, {
+        label: inningTitle,
+        isTeam: false,
+        slotOrder: 50 + session.inning,
+      })
+      bucket.innings.add(session.inning)
+      bucket.sessions.push(session)
+    }
+  }
+
+  // Keep both matched teams visible when explicit prefixes or confirmed batting order map at least one team,
+  // or sort buckets in batting/innings order.
+  const groups = [...bucketMap.values()]
+    .sort((a, b) => a.slotOrder - b.slotOrder)
+    .map(group => {
+      const innings = [...group.innings].sort((a, b) => a - b)
+      const sortedSessions = [...group.sessions].sort((a, b) => a.inning - b.inning || Number(b.hasTrades) - Number(a.hasTrades) || a.over - b.over)
+      const tradeCount = sortedSessions.reduce((sum, item) => sum + item.tradeCount, 0)
+      const totalVol = sortedSessions.reduce((sum, item) => sum + item.totalVol, 0)
+      const verifiedCount = sortedSessions.filter(item => item.ledgerStatus === 'verified').length
+      const hasTrades = sortedSessions.some(item => item.hasTrades)
+      const maxInning = innings.length ? Math.max(...innings) : 0
+      const roleLabel = group.isTeam
+        ? (crexOrder.confirmed && innings.length === 1 && (innings[0] === 1 || innings[0] === 2)
+          ? (innings[0] === 1 ? '1st Innings' : '2nd Innings')
+          : innings.length > 1
+            ? `${innings.map(n => (n === 1 ? '1st' : n === 2 ? '2nd' : `${n}th`)).join(' & ')} Inn`
+            : `${innings[0] === 1 ? '1st' : innings[0] === 2 ? '2nd' : `${innings[0]}th`} Inn`)
+        : (group.key === 'inning:1' ? 'Batting 1st' : group.key === 'inning:2' ? 'Batting 2nd' : 'Match Session')
+      return {
+        key: group.key,
+        label: group.label,
+        short: group.short,
+        score: group.score,
+        isTeam: group.isTeam,
+        roleLabel,
+        innings,
+        maxInning,
+        sessions: sortedSessions,
+        tradeCount,
+        totalVol,
+        verifiedCount,
+        hasTrades,
+      }
+    })
+
+  const groupedByTeam = groups.some(group => group.isTeam)
+  const verifiedGroups = groups.filter(group => group.verifiedCount > 0)
+  const tradedGroups = groups.filter(group => group.hasTrades)
+  const preferredPool = verifiedGroups.length ? verifiedGroups : tradedGroups.length ? tradedGroups : groups
+  const defaultGroup = preferredPool.reduce((best, item) => (!best || item.maxInning > best.maxInning ? item : best), null)
+
+  return {
+    groups,
+    orderConfirmed: Boolean(crexOrder.confirmed || anyExplicitTeam),
+    groupedByTeam,
+    defaultGroupKey: defaultGroup?.key || groups[0]?.key || null,
+  }
 }
 
 /** Exact calculation inputs: corrections can change P/L without changing row

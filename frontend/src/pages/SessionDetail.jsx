@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
-import { Activity, AlertCircle, ArrowLeft, ChevronDown, Info, LoaderCircle, RefreshCw, TrendingUp } from 'lucide-react'
+import { AlertCircle, ArrowLeft, LoaderCircle, RefreshCw, TrendingUp } from 'lucide-react'
 import { getSessionTrades } from '../api'
 import LoginRequiredGate from '../components/LoginRequiredGate'
 import SubscriptionRequiredGate from '../components/SubscriptionRequiredGate'
-import { SessionSelector, SessionWorkspace } from '../components/SessionWorkspace'
+import SessionPanel from '../components/SessionPanel'
 import { getMatchBundle, getSocket, subscribeMatch, unsubscribeMatch } from '../socket'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import { hasFeatureAccess } from '../lib/subscriptionAccess'
@@ -18,12 +18,10 @@ export default function SessionDetail() {
   const cached = initialBundle?.session || null
   const [data, setData] = useState(cached)
   const [matchMeta, setMatchMeta] = useState(initialBundle?.cricket || null)
+  const [crexData, setCrexData] = useState(initialBundle?.crex || null)
   const [loading, setLoading] = useState(!cached)
   const [requiresLogin, setRequiresLogin] = useState(false)
   const [requiresPro, setRequiresPro] = useState(false)
-  const [activeInning, setActiveInning] = useState(1)
-  const [inningTouched, setInningTouched] = useState(false)
-  const [selectedMarket, setSelectedMarket] = useState(null)
   const [lastRefresh, setLastRefresh] = useState(cached ? new Date() : null)
   const [retryToken, setRetryToken] = useState(0)
 
@@ -48,6 +46,7 @@ export default function SessionDetail() {
         setRequiresPro(true); setLoading(false); return
       }
       if (bundle.cricket) setMatchMeta(bundle.cricket)
+      if (bundle.crex) setCrexData(bundle.crex)
       if (bundle.session) applySession(bundle.session)
     }
     const onGenericBundle = bundle => {
@@ -85,42 +84,26 @@ export default function SessionDetail() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [matchId, isLoggedIn, retryToken])
 
-  const sessions = useMemo(() => buildAllSessions(
-    data?.odds || [],
-    data?.trades || [],
-    Array.isArray(data?.markets) ? data.markets : Object.values(data?.markets || {}),
-  ), [data])
-  const innings = useMemo(() => [...new Set(sessions.map(session => session.inning))].sort(), [sessions])
-
-  useEffect(() => {
-    if (!sessions.length || inningTouched) return
-    const complete = sessions.filter(session => session.ledgerStatus === 'verified')
-    const active = complete.length ? Math.max(...complete.map(session => session.inning)) : sessions.find(session => session.hasTrades)?.inning
-    if (active != null && active !== activeInning) setActiveInning(active)
-  }, [sessions, activeInning, inningTouched])
-
-  const filtered = useMemo(() => sessions
-    .filter(session => innings.length <= 1 || session.inning === activeInning)
-    .sort((a, b) => Number(b.hasTrades) - Number(a.hasTrades) || a.over - b.over),
-  [sessions, activeInning, innings.length])
-
-  useEffect(() => {
-    if (!filtered.length) { setSelectedMarket(null); return }
-    if (!filtered.some(session => session.marketName === selectedMarket)) {
-      setSelectedMarket((filtered.find(session => session.ledgerStatus === 'verified') || filtered.find(session => session.hasTrades) || filtered[0]).marketName)
-    }
-  }, [filtered, selectedMarket])
-
-  const selectedSession = filtered.find(session => session.marketName === selectedMarket) || null
+  const marketsList = useMemo(
+    () => (Array.isArray(data?.markets) ? data.markets : Object.values(data?.markets || {})),
+    [data],
+  )
+  const sessions = useMemo(
+    () => buildAllSessions(data?.odds || [], data?.trades || [], marketsList),
+    [data, marketsList],
+  )
   const summary = useMemo(() => ({
-    markets: filtered.length,
-    bets: filtered.reduce((sum, session) => sum + session.tradeCount, 0),
-    matched: filtered.reduce((sum, session) => sum + session.totalVol, 0),
-  }), [filtered])
+    markets: sessions.length,
+    bets: sessions.reduce((sum, session) => sum + session.tradeCount, 0),
+    matched: sessions.reduce((sum, session) => sum + session.totalVol, 0),
+  }), [sessions])
   const statusText = String(matchMeta?.status || '').toLowerCase()
   const isLive = Boolean(matchMeta?.inPlay) || /live|in.?play/.test(statusText)
   const isEnded = /ended|complete|finished|result/.test(statusText)
   const matchName = data?.matchName || matchMeta?.matchName || (matchMeta?.teamNames || []).join(' v ') || 'Session Markets'
+  const fallbackNames = matchName.split(/\s+v(?:s)?\.?\s+/i)
+  const t1 = matchMeta?.teamNames?.[0] || fallbackNames[0]?.trim() || ''
+  const t2 = matchMeta?.teamNames?.[1] || fallbackNames[1]?.trim() || ''
 
   if (authReady && !isLoggedIn) return <LoginRequiredGate description="Sign in and subscribe to view session markets." />
   if (authReady && !hasFeatureAccess(user, 'session')) return <SubscriptionRequiredGate featureLabel="Cricket session" onBack={() => navigate('/session')} />
@@ -167,27 +150,16 @@ export default function SessionDetail() {
         </div>
       </header>
 
-      {innings.length > 1 && (
-        <div className="session-innings-tabs" role="tablist" aria-label="Innings">
-          {innings.map(inning => (
-            <button key={inning} type="button" role="tab" aria-selected={activeInning === inning} onClick={() => { setInningTouched(true); setActiveInning(inning); setSelectedMarket(null) }} className={`session-innings-tab${activeInning === inning ? ' is-active' : ''}`}>
-              {inning === 1 ? '1st' : inning === 2 ? '2nd' : `${inning}th`} Innings
-            </button>
-          ))}
-        </div>
-      )}
-
-      {filtered.length ? <><SessionSelector sessions={filtered} selectedMarket={selectedMarket} onSelect={setSelectedMarket} /><SessionWorkspace session={selectedSession} completed={isEnded} /></> : <div className="session-card py-10 text-center"><Activity className="mx-auto mb-2 text-slate-400" size={28} /><p className="text-xs text-text-muted">Is innings mein session market nahi mila</p></div>}
-
-      <details className="session-card p-0 overflow-hidden">
-        <summary className="flex cursor-pointer list-none items-center gap-2 px-3 py-2.5 text-xs font-bold text-text-primary hover:bg-slate-50"><Info size={14} className="text-primary" /> P/L kaise calculate hota hai? <ChevronDown size={14} className="ml-auto text-text-muted" /></summary>
-        <div className="space-y-1.5 border-t border-border px-3 py-2.5 text-[11px] text-text-muted">
-          <p><b className="text-rose-700">NO (Under / Betfair Back)</b>: score line par ya usse kam raha to NO customer jeetega.</p>
-          <p><b className="text-sky-700">YES (Over / Betfair Lay)</b>: score line se upar gaya to YES customer jeetega.</p>
-          <p><b className="text-text-primary">Bookie P/L</b>: Betfair Line markets fixed 2.0 (1:1 stake) par settle hote hain — losing customer stakes minus winning payouts.</p>
-          <p><b className="text-emerald-700">Ledger complete</b>: received bet count aur money provider totals se match karte hain.</p>
-        </div>
-      </details>
+      <SessionPanel
+        odds={data?.odds || []}
+        trades={data?.trades || []}
+        markets={marketsList}
+        t1={t1}
+        t2={t2}
+        crexData={crexData}
+        completed={isEnded}
+        onRetry={() => { setLoading(true); setRetryToken(value => value + 1) }}
+      />
     </div>
   )
 }

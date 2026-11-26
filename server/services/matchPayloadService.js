@@ -665,12 +665,18 @@ async function getMatchBundlePayload(matchId, user, sport = 'cricket', options =
     ? null
     : attachMatchMeta(cricketRaw, matchInfo);
 
-  if (!cricket) {
-    if (matchInfo && matchInfo.status !== 'ended') {
+  if (!cricket || !sessionRaw || sessionRaw.error) {
+    const needsCricket = !cricket && matchInfo && matchInfo.status !== 'ended';
+    const sessionMatches = typeof dataCache.getSessionMatches === 'function' ? dataCache.getSessionMatches() : null;
+    const hasSessionListing = Boolean(findMatchInfo(sessionMatches, mid));
+    const needsSession = (!sessionRaw || sessionRaw.error) && hasSessionListing;
+    if (process.env.INGESTION_ENABLED !== 'false') {
       try {
         const tllWorker = require('./scraper-tennisliveload');
-        if (process.env.INGESTION_ENABLED !== 'false' && typeof tllWorker.triggerImmediateMatchFetch === 'function') {
+        if (needsCricket && typeof tllWorker.triggerImmediateMatchFetch === 'function') {
           tllWorker.triggerImmediateMatchFetch(mid, { notifySubscribers: true });
+        } else if (needsSession && typeof tllWorker.triggerImmediateSessionFetch === 'function') {
+          tllWorker.triggerImmediateSessionFetch(mid, { notifySubscribers: true });
         }
       } catch {}
     }

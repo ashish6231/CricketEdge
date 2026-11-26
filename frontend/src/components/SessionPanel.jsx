@@ -1,73 +1,188 @@
-import { memo, useEffect, useMemo, useState } from 'react'
-import { Activity, ChevronDown, Info } from 'lucide-react'
-import { buildAllSessions } from '../utils/sessionMetrics'
+import { memo, useId, useMemo, useRef, useState } from 'react'
+import { Activity, ChevronDown, Info, LoaderCircle, RefreshCw } from 'lucide-react'
+import { buildAllSessions, formatVolStr, groupSessionsByTeam } from '../utils/sessionMetrics'
 import { SessionSelector, SessionWorkspace } from './SessionWorkspace'
 
-function SessionPanel({ odds = [], trades = [], markets = [], t1 = '', t2 = '' }) {
-  const [activeInning, setActiveInning] = useState(1)
-  const [inningTouched, setInningTouched] = useState(false)
+function SessionPanel({
+  odds = [],
+  trades = [],
+  markets = [],
+  t1 = '',
+  t2 = '',
+  crexData = null,
+  completed = false,
+  loading = false,
+  onRetry = null,
+}) {
+  const baseId = useId()
+  const tabRefs = useRef(new Map())
+  const [selectedGroupKey, setSelectedGroupKey] = useState(null)
+  const [selectedInning, setSelectedInning] = useState(null)
   const [selectedMarket, setSelectedMarket] = useState(null)
+
   const sessions = useMemo(() => buildAllSessions(odds, trades, markets), [odds, trades, markets])
-  const innings = useMemo(() => [...new Set(sessions.map(session => session.inning))].sort(), [sessions])
+  const { groups, groupedByTeam, orderConfirmed, defaultGroupKey } = useMemo(
+    () => groupSessionsByTeam({ sessions, t1, t2, crexData }),
+    [sessions, t1, t2, crexData],
+  )
 
-  useEffect(() => {
-    if (inningTouched || !sessions.length) return
-    const complete = sessions.filter(session => session.ledgerStatus === 'verified')
-    const active = complete.length ? Math.max(...complete.map(session => session.inning)) : sessions.find(session => session.hasTrades)?.inning
-    if (active != null && active !== activeInning) setActiveInning(active)
-  }, [sessions, activeInning, inningTouched])
+  const activeGroup = groups.find(group => group.key === selectedGroupKey)
+    || groups.find(group => group.key === defaultGroupKey)
+    || groups[0]
+    || null
+  const groupSessions = useMemo(() => activeGroup?.sessions || [], [activeGroup])
+  const groupInnings = useMemo(
+    () => [...new Set(groupSessions.map(session => session.inning))].sort((a, b) => a - b),
+    [groupSessions],
+  )
 
-  const filtered = useMemo(() => sessions
-    .filter(session => innings.length <= 1 || session.inning === activeInning)
+  const defaultInning = useMemo(() => {
+    const complete = groupSessions.filter(session => session.ledgerStatus === 'verified')
+    return complete.length
+      ? Math.max(...complete.map(session => session.inning))
+      : groupSessions.find(session => session.hasTrades)?.inning ?? groupInnings[0] ?? 1
+  }, [groupSessions, groupInnings])
+  const activeInning = groupInnings.includes(selectedInning) ? selectedInning : defaultInning
+
+  const filtered = useMemo(() => groupSessions
+    .filter(session => groupInnings.length <= 1 || session.inning === activeInning)
     .sort((a, b) => Number(b.hasTrades) - Number(a.hasTrades) || a.over - b.over),
-  [sessions, activeInning, innings.length])
+  [groupSessions, groupInnings.length, activeInning])
 
-  useEffect(() => {
-    if (!filtered.length) { setSelectedMarket(null); return }
-    if (!filtered.some(session => session.marketName === selectedMarket)) {
-      setSelectedMarket((filtered.find(session => session.ledgerStatus === 'verified') || filtered.find(session => session.hasTrades) || filtered[0]).marketName)
-    }
-  }, [filtered, selectedMarket])
+  const defaultMarket = filtered.length
+    ? (filtered.find(session => session.ledgerStatus === 'verified') || filtered.find(session => session.hasTrades) || filtered[0]).marketName
+    : null
+  const activeMarket = filtered.some(session => session.marketName === selectedMarket) ? selectedMarket : defaultMarket
 
-  if (!sessions.length) {
-    const matchLabel = t1 && t2 ? `${t1} vs ${t2}` : 'This match'
+  const selectGroup = (key) => {
+    setSelectedGroupKey(key)
+    setSelectedInning(null)
+    setSelectedMarket(null)
+    const tabEl = tabRefs.current.get(key)
+    tabEl?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
+  }
+
+  if (loading && !sessions.length) {
     return (
-      <div className="rounded-xl border border-border bg-white p-8 text-center shadow-sm">
-        <Activity className="mx-auto mb-3 text-amber-500" size={30} />
-        <h3 className="text-base font-bold text-text-primary">Session markets are syncing</h3>
-        <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-text-muted">{matchLabel} ke over-wise matched bets aate hi run-wise P/L yahan automatically dikhega.</p>
+      <div className="session-card flex flex-col items-center justify-center py-10 text-center">
+        <LoaderCircle className="mb-2 h-6 w-6 animate-spin text-amber-600" />
+        <p className="text-xs font-bold text-slate-800">Session markets load ho rahe hain...</p>
       </div>
     )
   }
 
-  const selectedSession = filtered.find(session => session.marketName === selectedMarket) || null
+  if (!sessions.length) {
+    const matchLabel = t1 && t2 ? `${t1} vs ${t2}` : 'This match'
+    return (
+      <div className="session-card py-8 text-center">
+        <Activity className="mx-auto mb-2.5 text-amber-500" size={28} />
+        <h3 className="text-sm font-bold text-slate-900">Session markets are syncing</h3>
+        <p className="mx-auto mt-1 max-w-md text-xs leading-relaxed text-slate-500">
+          {matchLabel} ke team-wise session quotes aur matched bets aate hi run-wise P/L yahan automatically dikhega.
+        </p>
+        {onRetry && (
+          <button
+            type="button"
+            onClick={onRetry}
+            className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700 hover:border-amber-300 hover:bg-amber-50"
+          >
+            <RefreshCw size={13} /> Refresh Session
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  const selectedSession = filtered.find(session => session.marketName === activeMarket) || null
+  const activeTabId = activeGroup ? `${baseId}-team-${activeGroup.key}` : undefined
 
   return (
-    <div className="space-y-3 fade-in">
-      {innings.length > 1 && (
-        <section className="rounded-xl border border-border bg-white p-2 shadow-sm">
-          <div className="flex gap-2" role="tablist" aria-label="Session innings">
-            {innings.map(inning => (
+    <div className="space-y-2.5 fade-in">
+      {groups.length > 0 && (
+        <section className="session-card" aria-label="Team-wise sessions">
+          <div className="mb-1.5 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-[11px] font-bold uppercase tracking-wide text-slate-600">
+              {groupedByTeam ? 'Team-wise Sessions' : 'Innings Sessions'}
+            </h2>
+            {!groupedByTeam && !orderConfirmed && (
+              <span className="text-[10px] font-medium text-slate-500">
+                Toss / batting order confirm hote hi team name dikhega
+              </span>
+            )}
+          </div>
+          <div
+            className="session-team-tablist"
+            role="tablist"
+            aria-label={groupedByTeam ? 'Teams' : 'Innings'}
+          >
+            {groups.map(group => {
+              const active = group.key === activeGroup?.key
+              return (
+                <button
+                  key={group.key}
+                  ref={el => { if (el) tabRefs.current.set(group.key, el); else tabRefs.current.delete(group.key) }}
+                  id={`${baseId}-team-${group.key}`}
+                  type="button"
+                  role="tab"
+                  aria-selected={active}
+                  onClick={() => selectGroup(group.key)}
+                  className="session-team-tab"
+                >
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="truncate text-xs font-extrabold">{group.label}</span>
+                    <span className="session-team-role">{group.roleLabel}</span>
+                  </span>
+                  <span className="flex items-center justify-between gap-2 text-[10px] tabular-nums text-slate-500">
+                    <span>{group.sessions.length} lines · {group.tradeCount}b</span>
+                    <span className="font-bold text-slate-700">
+                      {group.score || (group.totalVol ? `€${formatVolStr(group.totalVol)}` : '—')}
+                    </span>
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      <div role="tabpanel" aria-labelledby={activeTabId} tabIndex={0} className="space-y-2.5 focus:outline-none">
+        {groupInnings.length > 1 && (
+          <div className="session-innings-tabs" role="tablist" aria-label={`${activeGroup?.label || 'Team'} innings`}>
+            {groupInnings.map(inning => (
               <button
                 key={inning}
                 type="button"
                 role="tab"
                 aria-selected={activeInning === inning}
-                onClick={() => { setInningTouched(true); setActiveInning(inning); setSelectedMarket(null) }}
-                className={`flex-1 rounded-lg border py-2.5 text-sm font-bold ${activeInning === inning ? 'border-amber-500 bg-amber-500 text-slate-950 shadow-sm' : 'border-border bg-white text-text-muted hover:border-amber-300 hover:bg-amber-50'}`}
+                onClick={() => { setSelectedInning(inning); setSelectedMarket(null) }}
+                className={`session-innings-tab${activeInning === inning ? ' is-active' : ''}`}
               >
                 {inning === 1 ? '1st' : inning === 2 ? '2nd' : `${inning}th`} Innings
               </button>
             ))}
           </div>
-        </section>
-      )}
+        )}
 
-      {filtered.length ? <><SessionSelector sessions={filtered} selectedMarket={selectedMarket} onSelect={setSelectedMarket} /><SessionWorkspace session={selectedSession} /></> : <div className="rounded-xl border border-border bg-white py-10 text-center text-sm text-text-muted">Is innings mein session market nahi mila.</div>}
+        {filtered.length ? (
+          <>
+            <SessionSelector sessions={filtered} selectedMarket={activeMarket} onSelect={setSelectedMarket} />
+            <SessionWorkspace session={selectedSession} completed={completed} />
+          </>
+        ) : (
+          <div className="session-card py-10 text-center text-xs text-slate-500">
+            Is innings mein session market nahi mila.
+          </div>
+        )}
+      </div>
 
-      <details className="group overflow-hidden rounded-xl border border-border bg-white shadow-sm">
-        <summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-sm font-bold text-text-primary hover:bg-slate-50"><Info size={15} className="text-primary" /> P/L formula <ChevronDown size={15} className="ml-auto text-text-muted transition-transform group-open:rotate-180" /></summary>
-        <div className="border-t border-border px-4 py-3 text-xs leading-relaxed text-text-muted">1:1 stake basis: losing customer stakes received − winning customers ki net winnings = bookie P/L. “Ledger complete” ka matlab bet count aur matched money provider totals se match karte hain.</div>
+      <details className="group overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <summary className="flex cursor-pointer list-none items-center gap-2 px-3.5 py-2.5 text-xs font-bold text-slate-800 hover:bg-slate-50">
+          <Info size={14} className="text-primary" /> P/L kaise calculate hota hai?
+          <ChevronDown size={14} className="ml-auto text-slate-400 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="border-t border-slate-200 px-3.5 py-2.5 text-[11px] leading-relaxed text-slate-600">
+          1:1 stake basis: losing customer stakes received − winning customers ki net winnings = bookie P/L. “Ledger complete” ka matlab bet count aur matched money provider totals se match karte hain.
+        </div>
       </details>
     </div>
   )

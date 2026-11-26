@@ -4,9 +4,9 @@ import { getLiveProviderTotals, getFrozenPreMatchProviderTotals, canCapturePreMa
 import { TossSnapshotDetails } from './TossDetail'
 import MarketWorkbench from '../components/MarketWorkbench'
 
-import { useEffect, useState, useMemo, useRef } from 'react'
+import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 import { useParams, useNavigate, useOutletContext, useLocation } from 'react-router-dom'
-import { ArrowLeft, BookOpen, Coins, Radio } from 'lucide-react'
+import { ArrowLeft, BookOpen, Coins, Radio, TrendingUp } from 'lucide-react'
 import { CrexScorecardBanner, CrexLiveTab } from '../components/CrexLiveSection'
 import { isLoginRequiredError } from '../utils/publicAuth'
 import LoginRequiredGate from '../components/LoginRequiredGate'
@@ -17,7 +17,7 @@ import { splitMatchOutcomes, finiteNumber } from '../utils/bookiePl'
 import { sessionDataFingerprint } from '../utils/sessionMetrics'
 import SessionPanel from '../components/SessionPanel'
 import { getSocket, subscribeMatch, unsubscribeMatch, getMatchBundle, setMatchBundle } from '../socket'
-import { getCricketMatchBundle, getCricketOdds, getTennisSnapshot } from '../api'
+import { getCricketMatchBundle, getCricketOdds, getSessionTrades, getTennisSnapshot } from '../api'
 import { isCompleteMatchBundle } from '../utils/matchBundle'
 import { getMatchStartTimestamp, isMatchEnded, isMatchLiveByStart } from '../utils/matchTiming'
 
@@ -111,10 +111,12 @@ export default function MatchDetail({ sport }) {
   const [crexData, setCrexData] = useState(seedCrex)
   const [liveOdds, setLiveOdds] = useState(null)
   const crexDataRef = useRef(seedCrex)
+  const tabRefs = useRef(new Map())
   const [activeTab, setActiveTab] = useState(() => sessionStorage.getItem(`tab_${matchId}`) || 'simple')
   const handleTabChange = (key) => {
     sessionStorage.setItem(`tab_${matchId}`, key)
     setActiveTab(key)
+    tabRefs.current.get(key)?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' })
   }
   const [tossSnapshot, setTossSnapshot] = useState(prefetched?.toss || null)
   const [lockedStartPred, setLockedStartPred] = useState(() => {
@@ -142,10 +144,31 @@ export default function MatchDetail({ sport }) {
     }
   })
   const [completePreMatchCapture,setCompletePreMatchCapture]=useState(null)
-  const [sessionTrades, setSessionTrades] = useState([])
-  const [sessionOdds, setSessionOdds] = useState([])
-  const [sessionMarkets, setSessionMarkets] = useState([])
+  const initialSession = prefetched?.session && !prefetched.session.error ? prefetched.session : null
+  const [sessionTrades, setSessionTrades] = useState(() => initialSession?.trades || [])
+  const [sessionOdds, setSessionOdds] = useState(() => initialSession?.odds || [])
+  const [sessionMarkets, setSessionMarkets] = useState(() => (
+    Array.isArray(initialSession?.markets)
+      ? initialSession.markets
+      : Object.values(initialSession?.markets || {})
+  ))
+  const [sessionLoading, setSessionLoading] = useState(false)
+  const lastSessionFpRef = useRef(initialSession ? sessionDataFingerprint(initialSession) : '')
+  const sessionFetchAttemptedRef = useRef(false)
   const [timingNow, setTimingNow] = useState(() => Date.now())
+
+  const applySessionSnapshot = useCallback((sessionData) => {
+    if (!sessionData || sessionData.error) return false
+    const marketsArr = Array.isArray(sessionData.markets) ? sessionData.markets : Object.values(sessionData.markets || {})
+    if (!sessionData.trades?.length && !sessionData.odds?.length && !marketsArr.length) return false
+    const fp = sessionDataFingerprint(sessionData)
+    if (fp === lastSessionFpRef.current) return true
+    lastSessionFpRef.current = fp
+    setSessionTrades(sessionData.trades || [])
+    setSessionOdds(sessionData.odds || [])
+    setSessionMarkets(marketsArr)
+    return true
+  }, [])
 
   useEffect(() => {
     if (subscriptionBlocked) return
@@ -154,17 +177,8 @@ export default function MatchDetail({ sport }) {
     // A cached snapshot is only the initial view; always refresh this route.
     setTossSnapshot(getMatchBundle(matchId)?.toss || null)
 
-    let lastSessionFp = ''
     const applySessionData = (sessionData) => {
-      if (!sessionData?.trades && !sessionData?.odds?.length) return
-      const fp = sessionDataFingerprint(sessionData)
-      if (fp === lastSessionFp) return
-      lastSessionFp = fp
-      if (sessionData.trades) setSessionTrades(sessionData.trades)
-      if (sessionData.odds) setSessionOdds(sessionData.odds)
-      if (sessionData.markets) {
-        setSessionMarkets(Array.isArray(sessionData.markets) ? sessionData.markets : Object.values(sessionData.markets))
-      }
+      applySessionSnapshot(sessionData)
     }
 
     const handleBundle = (bundle) => {
@@ -494,11 +508,39 @@ export default function MatchDetail({ sport }) {
     if (authReady && !isLoggedIn) setRequiresLogin(true)
   }, [authReady, isLoggedIn])
 
+  const hasSessionData = sessionOdds.length > 0 || sessionTrades.length > 0 || sessionMarkets.length > 0
+
+  const fetchSessionFallback = useCallback(async () => {
+    if (sport !== 'cricket' || !matchId || subscriptionBlocked || requiresLogin) return
+    setSessionLoading(true)
+    try {
+      const sessionData = await getSessionTrades(matchId)
+      applySessionSnapshot(sessionData)
+    } catch {
+      // Session market may not exist for every fixture yet; empty state handles sync/absence.
+    } finally {
+      setSessionLoading(false)
+    }
+  }, [sport, matchId, subscriptionBlocked, requiresLogin, applySessionSnapshot])
+
+  useEffect(() => {
+    sessionFetchAttemptedRef.current = false
+  }, [matchId])
+
+  useEffect(() => {
+    if (sport !== 'cricket' || activeTab !== 'session' || hasSessionData || sessionFetchAttemptedRef.current) return
+    sessionFetchAttemptedRef.current = true
+    fetchSessionFallback()
+  }, [sport, activeTab, hasSessionData, fetchSessionFallback])
+
   useEffect(() => {
     if (!loading && activeTab === 'toss' && !hasTossData) {
       setActiveTab('simple')
     }
-  }, [loading, activeTab, hasTossData])
+    if (sport !== 'cricket' && activeTab !== 'simple') {
+      setActiveTab('simple')
+    }
+  }, [loading, activeTab, hasTossData, sport])
 
   // On slow networks: if token exists, show skeleton instead of blank null
   // authReady false only blocks when no token at all (truly logged out)
@@ -578,6 +620,26 @@ export default function MatchDetail({ sport }) {
     ? [matchStartPred.providerTotalEvidence.team1, matchStartPred.providerTotalEvidence.team2]
     : preMatchFields?.providerTotals || [null, null]
 
+  const availableTabs = [
+    { key: 'simple', label: 'Market', icon: <BookOpen size={13} /> },
+    sport === 'cricket' && crexData ? {
+      key: 'crex',
+      label: 'Live',
+      icon: <Radio size={13} />,
+    } : null,
+    sport === 'cricket' ? {
+      key: 'session',
+      label: 'Session',
+      icon: <TrendingUp size={13} />,
+    } : null,
+    sport === 'cricket' && hasTossData ? {
+      key: 'toss',
+      label: 'Toss',
+      icon: <Coins size={13} />,
+    } : null,
+  ].filter(Boolean)
+  const resolvedTab = availableTabs.some(tab => tab.key === activeTab) ? activeTab : 'simple'
+
   return (
     <div className="detail-page match-workbench w-full">
 
@@ -592,23 +654,13 @@ export default function MatchDetail({ sport }) {
         </button>
 
         <div className="match-detail-tabs" role="tablist" aria-label="Match views">
-          {[
-            { key: 'simple', label: 'Market', icon: <BookOpen size={13} /> },
-            sport === 'cricket' && crexData ? {
-              key: 'crex',
-              label: 'Live',
-              icon: <Radio size={13} />
-            } : null,
-            sport === 'cricket' && hasTossData ? {
-              key: 'toss',
-              label: 'Toss',
-              icon: <Coins size={13} />
-            } : null,
-          ].filter(Boolean).map(({ key, label, icon }) => {
-            const isActive = activeTab === key
+          {availableTabs.map(({ key, label, icon }) => {
+            const isActive = resolvedTab === key
             return (
               <button
                 key={key}
+                ref={el => { if (el) tabRefs.current.set(key, el); else tabRefs.current.delete(key) }}
+                id={`match-tab-${key}`}
                 type="button"
                 role="tab"
                 aria-label={label}
@@ -624,46 +676,58 @@ export default function MatchDetail({ sport }) {
         </div>
       </div>
 
-      {activeTab !== 'toss' && <header className="match-page-heading">
+      {resolvedTab !== 'toss' && <header className="match-page-heading">
         <div><span className="match-eyebrow">{snapshot.competitionName || 'Match market'}</span><h1>{t1} <span>vs</span> {t2}</h1></div>
         <div className="match-schedule">{effectiveInPlay && <span className="match-live-tag"><span />Live</span>}{matchSchedule && <span>{matchSchedule.date} · {matchSchedule.time}</span>}</div>
       </header>}
 
       {/* ── Live Scorecard Hero Banner — cricket only ── */}
-      {sport === 'cricket' && activeTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} matchInPlay={effectiveInPlay} />}
+      {sport === 'cricket' && resolvedTab !== 'toss' && <CrexScorecardBanner crexData={crexData} t1={t1} t2={t2} matchInPlay={effectiveInPlay} />}
 
-      {activeTab === 'toss' ? (
-        <div className="space-y-4">
-          {tossSnapshot ? (
-            <TossSnapshotDetails snap={tossSnapshot} isEmbedded />
-          ) : (
-            <div className="rounded-xl p-6 max-w-md mx-auto text-center border border-[#1e2538] my-6 bg-[#0c101d] shadow-xl">
-              <div className="text-3xl mb-2">🪙</div>
-              <h3 className="text-sm font-bold text-white mb-1">Toss Market Synchronizing</h3>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
-                Toss orderbook and live bookie load for <b>{t1} vs {t2}</b> will appear here as soon as the toss market is opened on the exchange.
-              </p>
-            </div>
-          )}
-        </div>
-      ) : activeTab === 'session' ? (
-        <SessionPanel odds={sessionOdds} trades={sessionTrades} markets={sessionMarkets} t1={t1} t2={t2} />
-      ) : activeTab === 'crex' && sport === 'cricket' && crexData ? (
-        <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
-      ) : (
-        <MarketWorkbench
-          snapshot={snapshot}
-          prediction={matchStartPred}
-          predictionLabel="Predicted winner"
-          loadLabel="Match Load"
-          liveOdds={liveOdds}
-          startTime={matchStartTime}
-          preMatchCapture={completePreMatchCapture}
-          preMatchFields={preMatchFields}
-          frozenPreMatchProviderTotals={frozenPreMatchProviderTotals}
-          predictionProviderTotals={predictionProviderTotals}
-        />
-      )}
+      <div role="tabpanel" aria-labelledby={`match-tab-${resolvedTab}`} tabIndex={0} className="focus:outline-none">
+        {resolvedTab === 'toss' ? (
+          <div className="space-y-4">
+            {tossSnapshot ? (
+              <TossSnapshotDetails snap={tossSnapshot} isEmbedded />
+            ) : (
+              <div className="rounded-xl p-6 max-w-md mx-auto text-center border border-[#1e2538] my-6 bg-[#0c101d] shadow-xl">
+                <div className="text-3xl mb-2">🪙</div>
+                <h3 className="text-sm font-bold text-white mb-1">Toss Market Synchronizing</h3>
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Toss orderbook and live bookie load for <b>{t1} vs {t2}</b> will appear here as soon as the toss market is opened on the exchange.
+                </p>
+              </div>
+            )}
+          </div>
+        ) : resolvedTab === 'session' ? (
+          <SessionPanel
+            odds={sessionOdds}
+            trades={sessionTrades}
+            markets={sessionMarkets}
+            t1={t1}
+            t2={t2}
+            crexData={crexData}
+            completed={matchEnded}
+            loading={sessionLoading}
+            onRetry={fetchSessionFallback}
+          />
+        ) : resolvedTab === 'crex' && sport === 'cricket' && crexData ? (
+          <CrexLiveTab crexData={crexData} t1={t1} t2={t2} />
+        ) : (
+          <MarketWorkbench
+            snapshot={snapshot}
+            prediction={matchStartPred}
+            predictionLabel="Predicted winner"
+            loadLabel="Match Load"
+            liveOdds={liveOdds}
+            startTime={matchStartTime}
+            preMatchCapture={completePreMatchCapture}
+            preMatchFields={preMatchFields}
+            frozenPreMatchProviderTotals={frozenPreMatchProviderTotals}
+            predictionProviderTotals={predictionProviderTotals}
+          />
+        )}
+      </div>
     </div>
   )
 }

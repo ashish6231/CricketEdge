@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { mergeCrexUpdate, orderCrexTeamsByInnings, resolveCrexScores } from './crexScore.js'
+import { mergeCrexUpdate, orderCrexTeamsByInnings, resolveCrexInningsOrder, resolveCrexScores } from './crexScore.js'
 
 test('does not double-swap an already aligned reversed fixture', () => {
   const crex = {
@@ -67,4 +67,21 @@ test('uses the chase equation ahead of ambiguous provider ordering', () => {
     team2: { name: 'Canada', shortName: 'CAN', score: '256-10 50.0' },
   } }, 'Canada', 'Nepal')
   assert.deepEqual(teams.map(team => team.name), ['Canada', 'Nepal'])
+})
+
+test('resolveCrexInningsOrder marks pre-toss matches unconfirmed and live toss/chase matches confirmed', () => {
+  const preToss = resolveCrexInningsOrder({ scorecard: {
+    team1: { name: 'Dubai Capitals', score: null },
+    team2: { name: 'Desert Vipers', score: null },
+  } }, 'Dubai Capitals', 'Desert Vipers')
+  assert.equal(preToss.confirmed, false)
+
+  const afterToss = resolveCrexInningsOrder({ scorecard: {
+    tossText: 'Dubai Capitals won the toss and opted to bowl',
+    team1: { name: 'Dubai Capitals', score: null },
+    team2: { name: 'Desert Vipers', score: null },
+  } }, 'Dubai Capitals', 'Desert Vipers')
+  assert.equal(afterToss.confirmed, true)
+  assert.equal(afterToss.firstBattingName, 'Desert Vipers')
+  assert.equal(afterToss.secondBattingName, 'Dubai Capitals')
 })

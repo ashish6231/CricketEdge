@@ -7,7 +7,9 @@ import {
   calcSessionPlAtScore,
   computeSessionMetrics,
   computePlRows,
+  extractSessionTeamPrefix,
   fmtRs,
+  groupSessionsByTeam,
   sessionDataFingerprint,
   settleSessionLines,
   summarizeLineOutcome,
@@ -165,4 +167,61 @@ test('summarizeLineOutcome compares NO (<= line) vs YES (> line) bookie edge acc
   assert.equal(summary.advantage, 600)
   assert.equal(summarizeLineOutcome([], 58), null)
   assert.equal(summarizeLineOutcome(lines, -1), null)
+})
+
+test('groupSessionsByTeam separates explicit Test team markets and preserves multiple innings per team', () => {
+  const odds = [
+    { marketName: 'Bangladesh 1st Innings 10 Over Line', bestYes: 34.5, bestNo: 35.5 },
+    { marketName: 'Bangladesh 2nd Innings Runs Line', bestYes: 188.5, bestNo: 189.5 },
+    { marketName: 'South Africa 1st Innings 10 Over Line', bestYes: 42.5, bestNo: 43.5 },
+  ]
+  const trades = [
+    { team: 'Bangladesh 1st Innings 10 Over Line', type: 'back', price: 34.5, size: 50 },
+    { team: 'Bangladesh 2nd Innings Runs Line', type: 'lay', price: 188.5, size: 120 },
+    { team: 'South Africa 1st Innings 10 Over Line', type: 'back', price: 42.5, size: 80 },
+  ]
+  const sessions = buildAllSessions(odds, trades)
+  assert.equal(extractSessionTeamPrefix('Bangladesh 2nd Innings Runs Line'), 'Bangladesh')
+
+  const grouped = groupSessionsByTeam({ sessions, t1: 'South Africa', t2: 'Bangladesh' })
+  assert.equal(grouped.groupedByTeam, true)
+  assert.equal(grouped.orderConfirmed, true)
+  assert.deepEqual(grouped.groups.map(g => g.label), ['South Africa', 'Bangladesh'])
+  assert.deepEqual(grouped.groups[0].sessions.map(s => s.marketName), ['South Africa 1st Innings 10 Over Line'])
+  assert.deepEqual(grouped.groups[1].innings, [1, 2])
+  assert.equal(grouped.groups[1].sessions.length, 2)
+  assert.equal(grouped.defaultGroupKey, grouped.groups[1].key)
+})
+
+test('groupSessionsByTeam assigns generic 1st/2nd Innings markets using confirmed CREX batting order and withholds before toss', () => {
+  const sessions = buildAllSessions(
+    [
+      { marketName: '1st Innings 6 Overs Line', bestYes: 48.5, bestNo: 49.5 },
+      { marketName: '2nd Innings 6 Overs Line', bestYes: 51.5, bestNo: 52.5 },
+    ],
+    [
+      { team: '1st Innings 6 Overs Line', type: 'back', price: 48.5, size: 100 },
+      { team: '2nd Innings 6 Overs Line', type: 'lay', price: 52.5, size: 75 },
+    ],
+  )
+
+  const preToss = groupSessionsByTeam({ sessions, t1: 'Dubai Capitals', t2: 'Desert Vipers' })
+  assert.equal(preToss.groupedByTeam, false)
+  assert.equal(preToss.orderConfirmed, false)
+  assert.deepEqual(preToss.groups.map(g => g.roleLabel), ['Batting 1st', 'Batting 2nd'])
+
+  const confirmed = groupSessionsByTeam({
+    sessions,
+    t1: 'Dubai Capitals',
+    t2: 'Desert Vipers',
+    crexData: { scorecard: { tossText: 'Dubai Capitals won the toss and opted to bowl', team1: { name: 'Dubai Capitals', score: '80-2 9.0' }, team2: { name: 'Desert Vipers', score: '165-6 20.0' } } },
+  })
+  assert.equal(confirmed.groupedByTeam, true)
+  assert.equal(confirmed.orderConfirmed, true)
+  assert.deepEqual(confirmed.groups.map(g => `${g.label} (${g.roleLabel})`), [
+    'Desert Vipers (1st Innings)',
+    'Dubai Capitals (2nd Innings)',
+  ])
+  assert.equal(confirmed.groups[0].sessions[0].marketName, '1st Innings 6 Overs Line')
+  assert.equal(confirmed.groups[1].sessions[0].marketName, '2nd Innings 6 Overs Line')
 })

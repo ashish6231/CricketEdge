@@ -10577,14 +10577,14 @@
         "name": "Sydney Sixers W",
         "money": 20888918,
         "percent": 50,
-        "odds": null,
+        "odds": 1.06,
         "trend": "up"
       },
       "team2": {
         "name": "Melbourne Stars W",
         "money": 20888919,
         "percent": 50,
-        "odds": null,
+        "odds": 1000,
         "trend": "up"
       },
       "totalMatched": 41777837
@@ -10759,6 +10759,90 @@
     },
     "runners": [],
     "totalMatched": 548405
+  },
+  "36358238": {
+    "matchLoad": {
+      "team1": {
+        "name": "Mizoram",
+        "money": 1777,
+        "percent": 0,
+        "odds": 250,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Uttar Pradesh",
+        "money": 183279,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "totalMatched": 185055
+    },
+    "runners": [],
+    "totalMatched": 185055
+  },
+  "36358240": {
+    "matchLoad": {
+      "team1": {
+        "name": "Tripura",
+        "money": 38494,
+        "percent": 94,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Assam",
+        "money": 11699,
+        "percent": 6,
+        "odds": 15,
+        "trend": "down"
+      },
+      "totalMatched": 50193
+    },
+    "runners": [],
+    "totalMatched": 50193
+  },
+  "36358256": {
+    "matchLoad": {
+      "team1": {
+        "name": "Saurashtra",
+        "money": 78526,
+        "percent": 41,
+        "odds": 9.2,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Tamil Nadu",
+        "money": 113236,
+        "percent": 59,
+        "odds": 1.1,
+        "trend": "up"
+      },
+      "totalMatched": 191762
+    },
+    "runners": [],
+    "totalMatched": 191762
+  },
+  "36358307": {
+    "matchLoad": {
+      "team1": {
+        "name": "Gujarat",
+        "money": 29955,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Goa",
+        "money": 1579,
+        "percent": 0,
+        "odds": 350,
+        "trend": "up"
+      },
+      "totalMatched": 31534
+    },
+    "runners": [],
+    "totalMatched": 31534
   },
   "36358364": {
     "matchLoad": {
@@ -11054,6 +11138,27 @@
     "runners": [],
     "totalMatched": 232340
   },
+  "36361656": {
+    "matchLoad": {
+      "team1": {
+        "name": "Roma Gladiators",
+        "money": 21,
+        "percent": 50,
+        "odds": 2.76,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Napoli Knights",
+        "money": 6,
+        "percent": 50,
+        "odds": null,
+        "trend": "up"
+      },
+      "totalMatched": 27
+    },
+    "runners": [],
+    "totalMatched": 27
+  },
   "36364263": {
     "matchLoad": {
       "team1": {
@@ -11074,5 +11179,26 @@
     },
     "runners": [],
     "totalMatched": 6289
+  },
+  "36364264": {
+    "matchLoad": {
+      "team1": {
+        "name": "Royal Oman Stallions",
+        "money": 44010,
+        "percent": 100,
+        "odds": 1.01,
+        "trend": "down"
+      },
+      "team2": {
+        "name": "Mustafa Fragrance",
+        "money": 5541,
+        "percent": 0,
+        "odds": 1000,
+        "trend": "up"
+      },
+      "totalMatched": 49550
+    },
+    "runners": [],
+    "totalMatched": 49550
   }
 }

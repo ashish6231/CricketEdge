@@ -369,7 +369,7 @@ function RunWisePl({ session }) {
         <summary className="cursor-pointer px-3 py-2 text-xs font-bold text-slate-800 hover:bg-slate-50">
           All betting lines settled at {score} runs ({lineSettlements.length})
         </summary>
-        <div className="session-lines-scroll border-t border-slate-200">
+        <div tabIndex={0} role="region" aria-label="Line-wise bookie settlement table" className="session-lines-scroll border-t border-slate-200">
           <table className="w-full text-right text-[11px] tabular-nums" aria-label="Line-wise bookie settlement">
             <thead className="sticky top-0 bg-slate-100 text-[10px] text-slate-600">
               <tr>

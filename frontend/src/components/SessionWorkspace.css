@@ -341,4 +341,74 @@
   overflow: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  container-type: inline-size;
+}
+
+/* Single-row horizontal scrollable team-wise session tabs (WCAG 1.4.1 shape + color underline) */
+.session-team-tablist {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-snap-type: inline proximity;
+  padding-bottom: 2px;
+}
+
+.session-team-tablist::-webkit-scrollbar {
+  display: none;
+}
+
+.session-team-tab {
+  position: relative;
+  flex: 1 0 auto;
+  min-inline-size: 165px;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px 10px;
+  border: 1px solid #d5dbe6;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #0f172a;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.session-team-tab:hover {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.session-team-tab[aria-selected="true"] {
+  border-color: #d97706;
+  background: #fffbeb;
+  color: #78350f;
+}
+
+.session-team-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 8px 0;
+  border-block-end: 3px solid #d97706;
+}
+
+.session-team-role {
+  flex: none;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 1px 6px;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.session-team-tab[aria-selected="true"] .session-team-role {
+  border-color: #f59e0b;
+  background: #fef3c7;
+  color: #92400e;
 }

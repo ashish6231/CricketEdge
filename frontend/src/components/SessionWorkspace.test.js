@@ -46,5 +46,25 @@ test('session workspace shows complete outcome ranges, per-line settlement and n
     ]))
     assert.match(zero,/BREAK EVEN/)
     assert.doesNotMatch(zero,/BOOKIE PROFIT|BOOKIE LOSS/)
+
+    const { default: SessionPanel } = await vite.ssrLoadModule('/src/components/SessionPanel.jsx')
+    const panelHtml = renderToStaticMarkup(createElement(SessionPanel, {
+      t1: 'Dubai Capitals',
+      t2: 'Desert Vipers',
+      crexData: { scorecard: { tossText: 'Dubai Capitals won the toss and opted to bowl', team1: { name: 'Dubai Capitals', score: '45-1 5.0' }, team2: { name: 'Desert Vipers', score: '160-5 20.0' } } },
+      odds: [
+        { marketName: '1st Innings 6 Overs Line', bestYes: 48.5, bestNo: 49.5 },
+        { marketName: '2nd Innings 6 Overs Line', bestYes: 51.5, bestNo: 52.5 },
+      ],
+      trades: [
+        { team: '1st Innings 6 Overs Line', type: 'back', price: 48.5, size: 100 },
+        { team: '2nd Innings 6 Overs Line', type: 'lay', price: 52.5, size: 75 },
+      ],
+    }))
+    assert.match(panelHtml, /Team-wise Sessions/)
+    assert.match(panelHtml, /Desert Vipers/)
+    assert.match(panelHtml, /Dubai Capitals/)
+    assert.match(panelHtml, /aria-selected="true"/)
+    assert.match(panelHtml, /role="tabpanel"/)
   } finally { await vite.close() }
 })

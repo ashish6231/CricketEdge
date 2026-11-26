@@ -29,8 +29,8 @@ function hasRecordedScore(team) {
   return Boolean(score && !/yet to bat|yet to begin|upcoming/i.test(score))
 }
 
-/** Keep the scorecard in innings order: first-innings batting side, then the chasing side. */
-export function orderCrexTeamsByInnings(crex, team1Name, team2Name) {
+/** Resolve batting order from confirmed CREX scorecard, chase equation, or toss decision. */
+export function resolveCrexInningsOrder(crex, team1Name, team2Name) {
   const scorecard = crex?.scorecard || {}
   const teams = [
     { ...(scorecard.team1 || {}), name: scorecard.team1?.name || team1Name || 'Team 1' },
@@ -38,26 +38,42 @@ export function orderCrexTeamsByInnings(crex, team1Name, team2Name) {
   ]
 
   const scored = teams.map(hasRecordedScore)
-  if (scored[0] !== scored[1]) return scored[0] ? teams : [teams[1], teams[0]]
+  if (scored[0] !== scored[1]) {
+    const ordered = scored[0] ? teams : [teams[1], teams[0]]
+    return { teams: ordered, firstBattingName: ordered[0].name, secondBattingName: ordered[1].name, confirmed: true }
+  }
 
   const chaseText = scorecard.statusEquation || crex?.statusText || ''
   const chaseStatement = chaseText.match(/^(.+?)\s+(?:need|needs|require|requires)\b/i)
   if (chaseStatement) {
     const chasingIndex = teams.findIndex(team => teamIsMentioned(chaseStatement[1], team))
-    if (chasingIndex >= 0) return chasingIndex === 1 ? teams : [teams[1], teams[0]]
+    if (chasingIndex >= 0) {
+      const ordered = chasingIndex === 1 ? teams : [teams[1], teams[0]]
+      return { teams: ordered, firstBattingName: ordered[0].name, secondBattingName: ordered[1].name, confirmed: true }
+    }
   }
 
   const tossText = scorecard.tossText || crex?.tossText || ''
   const decision = tossText.match(/\b(?:opt(?:ed)?|chose|elected|decided)(?:\s+to)?\s+(bat|bowl|field)\b/i)
-  if (!decision) return teams
+  if (!decision) {
+    return { teams, firstBattingName: teams[0].name, secondBattingName: teams[1].name, confirmed: false }
+  }
 
   const winnerText = tossText.slice(0, decision.index)
   const winnerIndex = teams.findIndex(team => teamIsMentioned(winnerText, team))
-  if (winnerIndex < 0) return teams
+  if (winnerIndex < 0) {
+    return { teams, firstBattingName: teams[0].name, secondBattingName: teams[1].name, confirmed: false }
+  }
 
   const winnerBattedFirst = decision[1].toLowerCase() === 'bat'
   const firstInningsIndex = winnerBattedFirst ? winnerIndex : 1 - winnerIndex
-  return firstInningsIndex === 0 ? teams : [teams[1], teams[0]]
+  const ordered = firstInningsIndex === 0 ? teams : [teams[1], teams[0]]
+  return { teams: ordered, firstBattingName: ordered[0].name, secondBattingName: ordered[1].name, confirmed: true }
+}
+
+/** Keep the scorecard in innings order: first-innings batting side, then the chasing side. */
+export function orderCrexTeamsByInnings(crex, team1Name, team2Name) {
+  return resolveCrexInningsOrder(crex, team1Name, team2Name).teams
 }
 
 export function teamIdentityMatches(localName, providerName, providerShort = '') {
