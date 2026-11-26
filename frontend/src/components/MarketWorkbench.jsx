@@ -8,7 +8,7 @@ import { capturePreMatchExposure } from '../../../server/utils/preMatchExposure.
 import { processTeamData, getLiveProviderTotals } from '../utils/selectionVolume'
 import {
   getDirectProviderBookiePl,
-  getSettledBookiePl,
+  getSimpleBookiePl,
   splitMatchOutcomes,
   finiteNumber,
   tradeTimestamp,
@@ -145,7 +145,7 @@ export default function MarketWorkbench({
 
   const { pl1, pl2, plDraw } = isToss
     ? getDirectProviderBookiePl(effectiveSnapshot, t1, t2, drawName)
-    : getSettledBookiePl(effectiveSnapshot, t1, t2, drawName)
+    : getSimpleBookiePl(effectiveSnapshot, t1, t2, drawName)
 
   const validMarketTrades = (trades) => trades.filter(trade => (
     finiteNumber(trade?.size) > 0 && finiteNumber(trade?.price) > 1 && tradeSide(trade)

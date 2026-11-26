@@ -112,7 +112,16 @@ test('toss detail uses the MatchDetail layout and enforces all four exposure val
 
     const matchOverviewHtml = renderToStaticMarkup(createElement(MarketWorkbench, { snapshot: dualSourceSnap, isToss: false }))
     assert.match(matchOverviewHtml, /−€100\.00/)
-    assert.match(matchOverviewHtml, /\+€100\.00/)
+    assert.doesNotMatch(matchOverviewHtml, /\+€100\.00/)
+    assert.doesNotMatch(matchOverviewHtml, /\+€694\.02/)
+
+    const matchSimplePlSnap = {
+      ...dualSourceSnap,
+      deepMetrics: { simplePL: { team1_win: -412.5, team2_win: 185.25 } },
+    }
+    const matchSimplePlHtml = renderToStaticMarkup(createElement(MarketWorkbench, { snapshot: matchSimplePlSnap, isToss: false }))
+    assert.match(matchSimplePlHtml, /−€412\.50/)
+    assert.match(matchSimplePlHtml, /\+€185\.25/)
     assert.match(matchOverviewHtml, /Match Market Graphs/)
     assert.match(matchOverviewHtml, /Price, Exchange Available and Traded/)
     assert.match(matchOverviewHtml, /Odds &amp; Volume/)

@@ -10403,6 +10403,27 @@
     "runners": [],
     "totalMatched": 10236703
   },
+  "36345066": {
+    "matchLoad": {
+      "team1": {
+        "name": "Southern Rocks",
+        "money": 539,
+        "percent": 8,
+        "odds": 11.5,
+        "trend": "up"
+      },
+      "team2": {
+        "name": "Tuskers",
+        "money": 23748,
+        "percent": 92,
+        "odds": 1.03,
+        "trend": "up"
+      },
+      "totalMatched": 24287
+    },
+    "runners": [],
+    "totalMatched": 24287
+  },
   "36350641": {
     "matchLoad": {
       "team1": {
