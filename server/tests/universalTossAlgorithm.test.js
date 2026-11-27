@@ -46,25 +46,30 @@ test('getPeakTradedOdd aggregates back + lay per price and selects the highest t
   assert.deepEqual(combined, { price: 2.0, traded: 110 });
 });
 
-test('selectTossWinner predicts the team with the lower peak-odd traded volume', () => {
+test('selectTossWinner predicts the team with a positive and higher Bookie P/L', () => {
   const pick = selectTossWinner({
     teamNames: ['Dubai Capitals', 'Desert Vipers'],
-    peaks: [{ price: 1.96, traded: 518.13 }, { price: 2.04, traded: 381.62 }],
+    pl: [-633.67, 694.02],
   });
   assert.equal(pick.winner, 'Desert Vipers');
   assert.equal(pick.winnerIdx, 1);
 
-  assert.equal(selectTossWinner({
+  // Both positive -> higher positive P/L wins
+  const bothPos = selectTossWinner({
     teamNames: ['Alpha', 'Beta'],
-    peaks: [{ price: 2, traded: 100 }, { price: 2.04, traded: 100 }],
-  }), null);
-  assert.equal(selectTossWinner({
-    teamNames: ['Alpha', 'Beta'],
-    peaks: [null, { price: 2, traded: 100 }],
-  }), null);
+    pl: [49.02, 4.26],
+  });
+  assert.equal(bothPos.winner, 'Alpha');
+  assert.equal(bothPos.winnerIdx, 0);
+
+  // Neither positive, equal, or missing -> abstain
+  assert.equal(selectTossWinner({ teamNames: ['Alpha', 'Beta'], pl: [-10, -5] }), null);
+  assert.equal(selectTossWinner({ teamNames: ['Alpha', 'Beta'], pl: [0, -5] }), null);
+  assert.equal(selectTossWinner({ teamNames: ['Alpha', 'Beta'], pl: [100, 100] }), null);
+  assert.equal(selectTossWinner({ teamNames: ['Alpha', 'Beta'], pl: [null, 100] }), null);
 });
 
-test('all league entry points apply lower peak-odd traded volume uniformly', () => {
+test('all league entry points apply higher positive Bookie P/L uniformly', () => {
   const { LEAGUE_MATCH_ALGORITHMS } = require('../utils/normalLeagueMatchPredictor.mjs');
   for (const name of [...LEAGUE_MATCH_ALGORITHMS.map(profile => profile.league), 'WBBL', 'WODI', 'Unknown League', '']) {
     const snapshot = { ...fixture(), competitionName: name };
@@ -74,16 +79,19 @@ test('all league entry points apply lower peak-odd traded volume uniformly', () 
       assert.equal(result.winner || result.winnerName, 'Desert Vipers', name);
       assert.equal(result.predictorVersion, inputs.rule.predictorVersion);
       assert.equal(result.activeSignals, 1);
+      assert.equal(result.algorithmEvidence.requirePositivePl, true);
       assert.equal(result.algorithmEvidence.inputSource, 'toss-current-display');
     }
   }
 });
 
-test('missing, equal, invalid values or unavailable trades abstain instead of guessing', () => {
+test('missing, equal, non-positive or invalid values abstain instead of guessing', () => {
   const changes = [
     { teams: undefined },
     { teams: { 'Dubai Capitals': { trades: [] }, 'Desert Vipers': { trades: [] } } },
     { teams: { 'Dubai Capitals': { trades: [{ type: 'back', size: 10, price: 1 }] }, 'Desert Vipers': { trades: [{ type: 'back', size: 10, price: 2 }] } } },
+    { teams: { 'Dubai Capitals': { pnlIfWins: -10, trades: [] }, 'Desert Vipers': { pnlIfWins: -5, trades: [] } } },
+    { teams: { 'Dubai Capitals': { pnlIfWins: 50, trades: [] }, 'Desert Vipers': { pnlIfWins: 50, trades: [] } } },
     { teamNames: ['Alpha', ' alpha '] },
     { error: 'feed failed' },
   ];
@@ -94,7 +102,7 @@ test('missing, equal, invalid values or unavailable trades abstain instead of gu
   }
 });
 
-test('frontend and backend share the exact P/L and peak-odd toss prediction', async () => {
+test('frontend and backend share the exact Bookie P/L toss prediction', async () => {
   const frontend = await import('../../frontend/src/utils/tossPredictor.js');
   const bookie = await import('../../frontend/src/utils/bookiePl.js');
   assert.deepEqual(frontend.predictTossWinner(fixture()), predictTossWinner(fixture()));

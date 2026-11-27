@@ -1,7 +1,7 @@
 import { getCurrentProviderTotals, getExplicitPreMatchProviderTotals } from './providerTotals.mjs';
 import { getDirectProviderBookiePl, getMarketExposureFromTrades, tradeSide } from './bookiePl.mjs';
 
-export const UNIVERSAL_TOSS_VERSION = 'toss-v19-peak-odd-lower-traded-volume';
+export const UNIVERSAL_TOSS_VERSION = 'toss-v20-higher-positive-bookie-pl';
 
 export const INCOMPLETE_TOSS_DATA_MESSAGE = "Prediction data is incomplete, can't predict.";
 
@@ -10,6 +10,7 @@ const finite = value => value == null || !['number', 'string'].includes(typeof v
 const validNames = names => Array.isArray(names) && names.length === 2
   && names.every(name => typeof name === 'string' && name.trim())
   && names[0].trim().toLowerCase() !== names[1].trim().toLowerCase();
+const formatPl = value => `${value >= 0 ? '+' : '−'}€${Math.abs(value).toFixed(2)}`;
 
 /**
  * Group valid trades by odd (price) and return the price level with the
@@ -33,13 +34,15 @@ export function getPeakTradedOdd(trades) {
   return peak;
 }
 
-/** Pick the team whose highest-traded-volume odd has the LOWER traded amount. */
-export function selectTossWinner({ teamNames, peaks } = {}) {
-  if (!validNames(teamNames) || !Array.isArray(peaks) || peaks.length !== 2) return null;
-  if (!peaks[0] || !peaks[1] || !(peaks[0].traded > 0) || !(peaks[1].traded > 0)) return null;
-  if (peaks[0].traded === peaks[1].traded) return null;
-  const winnerIdx = peaks[0].traded < peaks[1].traded ? 0 : 1;
-  return { winner: teamNames[winnerIdx], winnerIdx, peaks };
+/** Pick the team with a positive and higher Bookie P/L. */
+export function selectTossWinner({ teamNames, pl } = {}) {
+  if (!validNames(teamNames) || !Array.isArray(pl) || pl.length !== 2) return null;
+  const pl1 = finite(pl[0]);
+  const pl2 = finite(pl[1]);
+  if (pl1 == null || pl2 == null || pl1 === pl2) return null;
+  if (!(pl1 > 0 || pl2 > 0)) return null;
+  const winnerIdx = pl1 > pl2 ? 0 : 1;
+  return { winner: teamNames[winnerIdx], winnerIdx, pl: [pl1, pl2] };
 }
 
 export function getTossRuleInputs(snapshot) {
@@ -58,13 +61,13 @@ export function getTossRuleInputs(snapshot) {
     ? teamNames.map(name => getPeakTradedOdd(snapshot?.teams?.[name]?.trades))
     : [null, null];
   const rule = {
-    mode: 'peak-odd-volume',
-    selection: 'lower',
-    requirePositivePl: false,
+    mode: 'bookie-pl',
+    selection: 'higher',
+    requirePositivePl: true,
     signalCount: 1,
     predictorVersion: UNIVERSAL_TOSS_VERSION,
   };
-  const available = !snapshot?.error && validNames(teamNames) && Boolean(peaks[0] && peaks[1]);
+  const available = !snapshot?.error && validNames(teamNames) && pl[0] != null && pl[1] != null;
   return {
     teamNames,
     peaks,
@@ -76,47 +79,49 @@ export function getTossRuleInputs(snapshot) {
     rule,
     mode: rule.mode,
     selection: rule.selection,
-    requirePositivePl: false,
+    requirePositivePl: true,
     available,
     unavailableReason: available ? null : INCOMPLETE_TOSS_DATA_MESSAGE,
   };
 }
 
-/** Predict toss winner using lower peak-odd traded volume across all leagues. */
+/** Predict toss winner using positive and higher Bookie P/L across all leagues. */
 export function getUniversalTossPrediction(snapshot, _competition = '') {
   const inputs = getTossRuleInputs(snapshot);
   const metadata = {
     predictorVersion: UNIVERSAL_TOSS_VERSION,
-    tier: 'UNIVERSAL_TOSS_LOWER_PEAK_ODD_VOLUME',
-    algoName: 'Lower Peak-Odd Traded Volume Toss Algorithm',
-    ruleFamily: 'lower-peak-odd-traded-volume',
-    validation: 'unvalidated-peak-odd-volume-rule',
+    tier: 'UNIVERSAL_TOSS_HIGHER_POSITIVE_BOOKIE_PL',
+    algoName: 'Higher Positive Bookie P/L Toss Algorithm',
+    ruleFamily: 'higher-positive-bookie-pl',
+    validation: 'unvalidated-bookie-pl-rule',
     trainingSamples: 0,
-    validationNote: 'Selects the odd with the highest traded volume for each team and predicts the team with the lower peak traded volume.',
-    inputTiming: 'current-per-odd-traded-volume',
+    validationNote: 'Selects the team with a positive and higher current Bookie P/L.',
+    inputTiming: 'current-displayed-bookie-pl',
     usedFallback: false,
   };
   const pick = inputs.available ? selectTossWinner(inputs) : null;
   if (!pick) {
+    const abstainReason = inputs.unavailableReason
+      || (inputs.pl[0] === inputs.pl[1]
+        ? 'No pick: Bookie P/L is equal for both teams.'
+        : 'No pick: neither team has a positive Bookie P/L.');
     return {
       ...metadata,
       winner: null,
       winnerName: null,
       abstain: true,
-      reason: inputs.unavailableReason || 'No pick: peak-odd traded volume is equal for both teams.',
+      reason: abstainReason,
     };
   }
-  const { winner, winnerIdx, peaks } = pick;
-  const { providerTotals, pl, risk } = inputs;
-  const winPeak = peaks[winnerIdx];
-  const losePeak = peaks[1 - winnerIdx];
-  const reason = `${winner} has the lower peak-odd traded volume (${winPeak.traded.toFixed(2)} @ ${winPeak.price.toFixed(2)} vs ${losePeak.traded.toFixed(2)} @ ${losePeak.price.toFixed(2)}).`;
+  const { winner, winnerIdx, pl } = pick;
+  const { providerTotals, risk, peaks } = inputs;
+  const reason = `${winner} has the higher positive Bookie P/L (${formatPl(pl[winnerIdx])} vs ${formatPl(pl[1 - winnerIdx])}).`;
   const signals = [{
-    label: 'Peak-odd traded volume',
-    sublabel: 'Team with lower highest-traded-odd volume wins the prediction',
+    label: 'Bookie P/L',
+    sublabel: 'Team with positive and higher Bookie P/L wins the prediction',
     active: true,
-    v1: `${peaks[0].traded.toFixed(2)} @ ${peaks[0].price.toFixed(2)}`,
-    v2: `${peaks[1].traded.toFixed(2)} @ ${peaks[1].price.toFixed(2)}`,
+    v1: formatPl(pl[0]),
+    v2: formatPl(pl[1]),
     winnerWins: true,
   }];
   return {
@@ -125,8 +130,8 @@ export function getUniversalTossPrediction(snapshot, _competition = '') {
     winnerName: winner,
     winnerIdx,
     reason,
-    pattern: 'LOWER_PEAK_ODD_TRADED_VOLUME',
-    verdictTag: 'LOWER PEAK ODD VOLUME',
+    pattern: 'HIGHER_POSITIVE_BOOKIE_PL',
+    verdictTag: 'HIGHER POSITIVE P/L',
     confidence: { label: 'Rule support; future accuracy unvalidated', color: 'text-yellow-500', pct: 'Uncalibrated', calibrated: false },
     confidenceCalibrated: false,
     risk: { tier: 'unvalidated', label: 'Risk unvalidated', shortLabel: 'Unvalidated', wrongPct: 'Uncalibrated', calibrated: false, note: metadata.validationNote },
@@ -138,8 +143,8 @@ export function getUniversalTossPrediction(snapshot, _competition = '') {
       winnerIdx,
       signalCount: 1,
       mode: inputs.mode,
-      selection: 'lower',
-      requirePositivePl: false,
+      selection: 'higher',
+      requirePositivePl: true,
       inputSource: 'toss-current-display',
     },
     signals,

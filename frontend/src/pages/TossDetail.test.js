@@ -83,12 +83,25 @@ test('toss detail uses the MatchDetail layout and enforces all four exposure val
     }
 
     const completeTeams = structuredClone(snap.teams)
-    snap.teams = structuredClone(completeTeams)
-    snap.teams.Alpha.trades = []
+    snap.teams = { Alpha: { trades: [] }, Beta: { trades: [] } }
     for (const isEmbedded of [false, true]) {
       const incomplete = render(isEmbedded)
       assert.doesNotMatch(incomplete, /match-v2-prediction/)
     }
+
+    // Both negative Bookie P/L -> abstains
+    snap.teams = {
+      Alpha: { pnlIfWins: -20, trades: [] },
+      Beta: { pnlIfWins: -5, trades: [] },
+    }
+    assert.doesNotMatch(render(), /match-v2-prediction/)
+
+    // Both positive Bookie P/L -> picks higher positive Bookie P/L
+    snap.teams = {
+      Alpha: { pnlIfWins: 120, trades: [] },
+      Beta: { pnlIfWins: 40, trades: [] },
+    }
+    assert.match(render(), /<h2>Alpha<\/h2>/)
 
     snap.teams = structuredClone(completeTeams)
     snap.teams.Beta.trades = structuredClone(snap.teams.Alpha.trades)
